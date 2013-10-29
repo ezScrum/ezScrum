@@ -1,0 +1,1 @@
+pybot --variable ezScrum_LOGIN_URL:httpZYY140.124.181.87Z8080YezScrum --variable projectName:fromLinuxClient --variable projectDisplayName:fromLinuxCDisplayName -E colon:Z -E slash:Y ezScrum_TestCase.html plugin/ezScrum_Plugin_TestCase.html 

@@ -1,0 +1,215 @@
+*** Settings ***
+Documentation     CI 測試不穩定,需加入同步機制?
+Suite Setup       Test TaskBoard - Setup
+Suite Teardown    Test TaskBoard - Teardown
+Force Tags        TaskBoard    Unstable
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Sprint.txt
+Resource          keywords/TaskBoard/ezScrum_TaskBoard.txt
+Resource          keywords/TaskBoard/ezScrum_TaskBoard_SetupTeardown.txt
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           BuiltIn
+Library           Collections
+Library           SeleniumLibrary
+
+*** Test Cases ***
+Test TaskBoard - Sprint Information
+    [Documentation]    驗證TaskBoard頁面，有關於Sprint Information的資料是否正確
+    [Setup]    Test TaskBoard - Sprint Information Setup
+    Select Node Product    TaskBoard
+    # Verify sprint information
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimation}
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release #0
+    # Verify taskcard information
+    # story information
+    ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    ${_TempStoryEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Should Be Equal As Strings    ${_TempStoryName}    ${tcStoryName}
+    Should Be Equal    ${_TempStoryEstimation}    ${tcStoryEstimation} Point    # x Point
+    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimation}    ${tcStoryImportance}    ${EMPTY}
+    ...    ${tcStoryNotes}    ${tcStoryHowToDemo}
+    # task information
+    ${_TempTaskName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    Should Be Equal As Strings    ${_TempTaskName}    ${tcTaskName}
+    Should Be Equal    ${_TempTaskEstimation}    ${tcTaskEstimation} hr    # x hr
+    Verify Task Information With Arguments In TaskBoard    ${tcTaskID}    ${tcTaskName}    ${EMPTY}    ${EMPTY}    ${tcTaskEstimation}    ${tcTaskEstimation}
+    ...    0    ${tcTaskNotes}
+    [Teardown]    Test TaskBoard - Sprint Information Teardown
+
+Test TaskBoard - Task Checked Out
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Not Checked Out 拖拉至 Checked Out 後，資料是否正確
+    [Setup]    Test TaskBoard - Task Checked Out Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    # Verify taskcard information
+    ${_TaskHandler}=    Set Variable    admin
+    ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    ${_TempTaskHandler}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//span[@class="TaskCard_Handler"]
+    Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
+    Should Be Equal    ${_TempTaskEstimation}    3 hr    # x hr
+    Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimation}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
+    [Teardown]    Test TaskBoard - Task Checked Out Teardown
+
+Test TaskBoard - Task Done
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
+    [Setup]    Test TaskBoard - Task Done Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    # Verify taskcard information
+    ${_TaskHandler}=    Set Variable    admin
+    ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    ${_TempTaskHandler}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//span[@class="TaskCard_Handler"]
+    Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
+    Should Be Equal    ${_TempTaskEstimation}    0 hr    # x hr
+    Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimation}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="closed"]    1
+    [Teardown]    Test TaskBoard - Task Done Teardown
+
+Test TaskBoard - Task ReOpen
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Done 拖拉至 Not Checked Out 後，資料是否正確
+    [Setup]    Test TaskBoard - Task ReOpen Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
+    # Verify taskcard information
+    ${_TaskHandler}=    Set Variable    admin
+    ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    ${_TempTaskHandler}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//span[@class="TaskCard_Handler"]
+    Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
+    Should Be Equal    ${_TempTaskEstimation}    0 hr    # x hr
+    Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimation}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
+    [Teardown]    Test TaskBoard - Task ReOpen Teardown
+
+Test TaskBoard - Task ReChecked Out
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out \ 拖拉至 Not Checked Out 後，資料是否正確
+    [Setup]    Test TaskBoard - Task ReChecked Out Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task ReChecked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    # Verify taskcard information
+    ${_TaskHandler}=    Set Variable    admin
+    ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
+    Should Be Equal    ${_TempTaskEstimation}    0 hr    # x hr
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimation}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    0
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="new"]    1
+    [Teardown]    Test TaskBoard - Task ReChecked Out Teardown
+
+Test TaskBoard - Story Done
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Done 後，資料是否正確
+    [Setup]    Test TaskBoard - Story Done Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Story Done With Arguments    ${tcStoryID}
+    # Verify taskcard information
+    ${_TempStoryDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    ${_TempStoryEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
+    Should Be Equal    ${_TempStoryEstimation}    ${tcStoryEstimation} Point    # x Point
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="closed"]    1
+    [Teardown]    Test TaskBoard - Story Done Teardown
+
+Test TaskBoard - Story ReOpen
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Done 拖拉至 Not Checked Out 後，資料是否正確
+    [Setup]    Test TaskBoard - Story ReOpen Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Story Done With Arguments    ${tcStoryID}
+    Story Reopen With Arguments    ${tcStoryID}
+    # Verify taskcard information
+    ${_TempStoryDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    ${_TempStoryEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
+    Should Be Equal    ${_TempStoryEstimation}    ${tcStoryEstimation} Point    # x Point
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    [Teardown]    Test TaskBoard - Story ReOpen Teardown
+
+Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
+    [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..
+    Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_closed"]/div
+    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
+    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=doneStageID
+    Wait Until Page Contains    warning!
+    Wait Until Page Contains    Please check all the tasks of Story ${tcStoryID} are done.
+    ${xpathOKButton}=    Find Current Window Element    warning!    OK
+    Element Enable And Submit    ${xpathOKButton}
+    # Verify taskcard information
+    ${_TempStoryDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    ${_TempStoryEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
+    Should Be Equal    ${_TempStoryEstimation}    ${tcStoryEstimation} Point    # x Point
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
+
+Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
+    [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
+    Wait Until Page Contains    warning!
+    Wait Until Page Contains    Please check all the tasks of Story ${tcStoryID} are done.
+    ${xpathOKButton}=    Find Current Window Element    warning!    OK
+    Element Enable And Submit    ${xpathOKButton}
+    # Verify taskcard information
+    ${_TempStoryDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    ${_TempStoryEstimation}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
+    Should Be Equal    ${_TempStoryEstimation}    ${tcStoryEstimation} Point    # x Point
+    Select Node Product    Sprint Backlog
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown

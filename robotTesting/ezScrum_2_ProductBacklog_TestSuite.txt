@@ -1,0 +1,418 @@
+*** Settings ***
+Documentation     test ezScrumn page
+Suite Setup       Test Product Backlog Suite Setup
+Suite Teardown    Test Product Backlog Suite Teardown
+Force Tags        ProductBacklog
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Filter.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Search.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_SetupTeardown.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           SeleniumLibrary
+
+*** Variables ***
+${tsTag}          testTagName    # 測試正常字元
+${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
+@{tsStoryA}       ID    Name    Value    Estimation    Importance    Notes    Tags
+...               How To Demo
+@{tsStoryB}       ID    Name    Value    Estimation    Importance    Notes    Tags
+...               How To Demo
+
+*** Test Cases ***
+Test ProductBacklog - Create Story Identify Invalid Value
+    [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)
+    Click Element    xpath=//button[text()="Add Story"]    andDontWait
+    Wait Until Page Contains    Add New Story
+    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Add New Story
+    Verify Invalid Value    Value    a    Add New Story
+    Verify Invalid Value    Value    &    Add New Story
+    Verify Invalid Value    Value    \\    Add New Story
+    Verify Invalid Value    Estimation    a    Add New Story
+    Verify Invalid Value    Estimation    &    Add New Story
+    Verify Invalid Value    Estimation    \\    Add New Story
+    Verify Invalid Value    Importance    a    Add New Story
+    Verify Invalid Value    Importance    &    Add New Story
+    Verify Invalid Value    Importance    \\    Add New Story
+    ${xpathCreateStoryCancel}=    Find Current Window Element    Add New Story    Cancel
+    Element Should Be Visible    xpath=${xpathCreateStoryCancel}
+    Click Button    xpath=${xpathCreateStoryCancel}    andDontWait
+
+Test ProductBacklog - Edit Story Identify Invalid Value
+    [Documentation]    Edit Story(長度限制),Edit Story (測試限制數字欄位),Edit Story (測試特殊字元)
+    [Setup]    Test Edit Story Identify Invalid Value Setup
+    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
+    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
+    Wait Until Page Contains    Edit Story
+    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Edit Story
+    Verify Invalid Value    Value    a    Edit Story
+    Verify Invalid Value    Value    &    Edit Story
+    Verify Invalid Value    Value    \\    Edit Story
+    Verify Invalid Value    Estimation    a    Edit Story
+    Verify Invalid Value    Estimation    &    Edit Story
+    Verify Invalid Value    Estimation    \\    Edit Story
+    Verify Invalid Value    Importance    a    Edit Story
+    Verify Invalid Value    Importance    &    Edit Story
+    Verify Invalid Value    Importance    \\    Edit Story
+    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
+    ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
+    Element Enable And Submit    ${xpathEditStoryCancel}
+    [Teardown]    Test Edit Story Identify Invalid Value Teardown
+
+Test ProductBacklog - Create Story
+    [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。
+    [Setup]    Test Create Story Setup
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    [Teardown]    Test Create Story Teardown
+
+Test ProductBacklog - Create Story With Invalid Value
+    [Setup]    Test Create Story With Invalid Value Setup
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    [Teardown]    Test Create Story With Invalid Value Teardown    ${storyID}
+
+Test ProductBacklog - Edit Story
+    [Documentation]    Add Story(正常資料)。點選Story，點選按鈕Edit Story，修改各個欄位資料，Tag欄位勾選/取消勾選Tag後送出。
+    [Setup]    Test Edit Story Setup
+    Edit Story With Arguments    oriStory    testTagName
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    3    5    8    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    [Teardown]    Test Edit Story Teardown    ${storyID}
+
+Test ProductBacklog - Story History
+    [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
+    [Setup]    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
+    ...    "Note: newStoryNote"    "HowToDemo: newStoryHowToDemo"
+    Set Test Variable    ${storyName}    newStory
+    # Set Selenium Speed 1
+    ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Click Element    xpath=//button[text()="Show History"]    andDontWait
+    ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
+    Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
+    ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
+    Element Enable And Submit    ${xpathIssueHistoryListClose}
+    # Set Selenium Speed 0
+    # Test Product Backlog Filter
+    # [Documentation] 建立多Story後點選按鈕Filter, 測試 Backlogged, Detailed, Done, Default。
+    # [Setup] Test Product Backlog Filter Setup
+    # 測試各Filter
+    # Test Product Backlog Filter Backlogged
+    # Test Product Backlog Filter Detailed
+    # Test Product Backlog Filter Done
+    # Test Product Backlog Filter Default
+    # [Teardown] Test Product Backlog Filter Teardown
+    # Test Product Backlog AttachFile
+    # [Documentation] 點選一Story，點選按鈕Attach File，請選擇任一檔案上傳。\n點選一Story，展開該Story，點選Delete。\n*# 夾帶檔案目前有問題, 透過robot的Choose File或是Call Selenium Api無法成功夾帶檔案, 可以成功送出, 但不會出現迴紋針符號, 再重新進到ProductBacklog會讀取很久, 且發現該Story消失。*
+    # Test Product Backlog AttachFile Invalid Character
+    # [Documentation] 點選一Story，點選按鈕Attach File，各別選擇事先建立好的檔案(系統檔檔名為#,%,&,+的空檔)上傳。\n*夾帶檔案目前有問題, 透過robot的Choose File或是Call Selenium Api無法成功夾帶檔案, 可以成功送出, 但不會出現迴紋針符號, 再重新進到ProductBacklog會讀取很久, 且發現該Story消失。*
+    # Test Product Backlog Search
+    # [Documentation] 於Search欄位，點選下拉式選單的項目，在於field填入要搜尋的keyword，各別作搜尋的測試(Release, Sprint用None為 keyword即可)。*#BUG, 新增完一筆story後, 直接點選"Please Select...", 表格內不顯示該story*
+    # [Setup] Test Product Backlog Search Setup
+    # Set Selenium Speed 1
+    # Story Name 測試
+    # Set Product Backlog Search Condition Story Name newStoryFirst
+    # Set Selenium Speed 0
+    # Element Should Be Visible xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFirst")]
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStorySecond")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryThird")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFourth")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
+    # Notes 測試
+    # Set Product Backlog Search Condition Notes newStorySecond
+    # Set Selenium Speed 0
+    # Element Should Be Visible xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStorySecond")]
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFirst")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryThird")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFourth")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
+    # How To Demo 測試
+    # Set Product Backlog Search Condition How To Demo newStoryThird
+    # Set Selenium Speed 0
+    # Element Should Be Visible xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryThird")]
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFirst")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStorySecond")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFourth")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
+    # Release 測試
+    # Set Product Backlog Search Condition Release none
+    # Set Selenium Speed 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFirst")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStorySecond")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryThird")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFourth")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
+    # Sprint ID 測試
+    # Set Product Backlog Search Condition Sprint ID none
+    # Set Selenium Speed 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFirst")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStorySecond")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryThird")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFourth")] 0
+    # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
+    # [Teardown] Test Product Backlog Search Teardown
+    # Set Selenium Speed 0
+    [Teardown]    Delete Story With Arguments    newStory
+
+Test ProductBacklog - Remove Story Tag
+    [Documentation]    Remove Tag
+    [Tags]    tag
+    [Setup]    Test Remove Story Tag Setup
+    Delete Tag With Arguments    testTagName
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    [Teardown]    Test Remove Story Tag Teardown
+
+Test ProductBacklog - Mark And UnMark Story Tag
+    [Documentation]    Mark And UnMark Tag
+    [Setup]    Test Mark And UnMark Story Tag Setup
+    # Mark
+    Mark And UnMark Tag With Arguments    Mark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    # UnMark
+    Mark And UnMark Tag With Arguments    UnMark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    [Teardown]    Test Mark And UnMark Story Tag Teardown
+
+Test ProductBacklog - Create Tag
+    [Documentation]    測試兩種Tag: 正常字串 & 特殊字元
+    ...
+    ...
+    ...    test Tag 'C'RD
+    [Tags]    tag
+    [Setup]    Test Create Tag Setup
+    # check if 正常字串 tag added
+    Element Text Should Be    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[1]    ${tsTag}
+    # check if 特殊字元 tag added
+    Element Text Should Be    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[2]    ${tsTagX}
+    [Teardown]    Test Create Tag Teardown
+
+Test ProductBacklog - Duplicate Tag
+    [Documentation]    測試輸入已存在的Tag Name(特殊字元)
+    ...
+    ...    test Tag C'R'D
+    [Tags]    tag
+    [Setup]    Create Tag With Arguments    ${tsTagX}
+    ${tag}=    Set Variable    ${tsTagX}
+    # add already existed Tag
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Input Text    xpath=//input[@name="newTagName"]    ${tag}
+    ${xpathAddTag}=    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    # assert
+    ${alertMessage}=    Get Alert Message
+    ${correctAlertMessage}=    Set Variable    Tag Name : ${tag} already exist
+    Should Be Equal As Strings    ${alertMessage}    ${correctAlertMessage}
+    # close Add Tag window
+    ${xpathAddTagClose}=    Find Current Window Element    Add Tag    Close
+    Click Element    xpath=${xpathAddTagClose}    andDontWait
+    # check again
+    ${tagCount}=    Count Tag Amount With Arguments    ${tag}
+    ${text}=    Get Text    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount}]
+    Should Be Equal    ${tag}    ${text}
+    # close Tag Manage window
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait
+    [Teardown]    Delete Tag With Arguments    ${tsTagX}
+
+Test ProductBacklog - Delete Tag
+    [Documentation]    test Tag CR'D'
+    [Tags]    tag
+    [Setup]    Test Delete Tag Setup    3
+    ${testTagCount}    Set Variable    3
+    # get existed Tag count
+    ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}    # stable issue
+    # delete & check
+    : FOR    ${index}    IN RANGE    0    ${tagCount}
+    \    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
+    \    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
+    \    Click Element    xpath=//button[text()="Remove Tag"]    andDontWait
+    \    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="Yes"] ]    andDontWait
+    \    ${expectedCount}=    Evaluate    ${tagCount} - ${index} - 1
+    \    ${count}=    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
+    \    ${realCount}=    Convert To Integer    ${count}
+    \    Should Be Equal    ${expectedCount}    ${realCount}    # integer compare
+    Set Selenium Speed    ${SELENIUM_SPEED}    # restore origional speed
+    # check if Tag empty
+    ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
+    Should Be Equal    0    ${tagCount}    # string compare
+    [Teardown]    Test Delete Tag Teardown
+
+Test ProductBacklog - Session - New Story
+    [Documentation]    測試在兩個不同的視窗(專案也不同)分別建立Product Backlog的Story,彼此去檢驗對方的Story內容是否正確
+    [Tags]    session
+    [Setup]    Test ProductBacklog Session - New Story Setup
+    ${_rawIndex} =    Set Variable    1
+    # assert B project in Window A
+    # Notes, Tags, How To Demo 未顯示不做比對
+    Select Window    ${tcBrowserAlias_A}
+    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B    # Window A, Project B
+    Select Node Product    Product Backlog
+    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
+    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
+    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
+    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
+    Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
+    Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
+    Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
+    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
+    # assert A project in Window B
+    # Notes, Tags, How To Demo 未顯示不做比對
+    Select Window    ${tcBrowserAlias_B}
+    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_A    # Window B, Project A
+    Select Node Product    Product Backlog
+    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
+    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
+    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
+    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
+    Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
+    Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
+    Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
+    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
+    [Teardown]    Test ProductBacklog Session - New Story Teardown
+
+Test ProductBacklog - Session - Read Story With Tag
+    [Documentation]    測試在兩個不同的視窗(專案也不同)所建立Product Backlog的Story,
+    ...    彼此去檢驗對方的Story內容(包含Tag)是否正確
+    [Tags]    session
+    [Setup]    Test ProductBacklog Session - Read Story With Tag Setup
+    ${_rawIndex} =    Set Variable    1
+    # assert B project in Window A
+    # Notes, How To Demo 未顯示不做比對
+    Select Window    ${tcBrowserAlias_A}
+    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B    # Window A, Project B
+    Select Node Product    Product Backlog
+    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
+    ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
+    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
+    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
+    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
+    Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
+    Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
+    Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
+    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
+    Should Be Equal    ${tsStoryB[6]}    ${_actualTagName}
+    # assert A project in Window B
+    # Notes, How To Demo 未顯示不做比對
+    Select Window    ${tcBrowserAlias_B}
+    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_A    # Window B, Project A
+    Select Node Product    Product Backlog
+    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
+    ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
+    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
+    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
+    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
+    Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
+    Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
+    Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
+    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
+    Should Be Equal    ${tsStoryA[6]}    ${_actualTagName}
+    [Teardown]    Test ProductBacklog Session - Read Story With Tag Teardown
+
+Test ProductBacklog - Filter - Backlogged
+    [Documentation]    確認Backlogged Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Backlogged
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Detailed
+    [Documentation]    確認Detailed Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Detailed
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Default
+    [Documentation]    確認Detailed Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Default
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Done
+    [Documentation]    確認Done Filter正常運作
+    [Tags]    FilterDone
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Done
+    [Teardown]    Test Product Backlog Done Filter Teardown
+
+Test ProductBacklog - Search
+    [Tags]    Unstable
+    [Setup]    Test Product Backlog Search Setup
+    # search前先重新整理
+    Reload Page
+    Title Should Be    ezScrum, SSLab NTUT
+    Select Node Product    Product Backlog
+    Wait Until Page Contains Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
+    # 設定搜尋條件    搜尋StoryName
+    Set Product Backlog Search Condition    Story Name    First
+    # 驗證搜尋結果
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋StoryNote
+    Set Product Backlog Search Condition    Notes    Second
+    # 驗證搜尋結果
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋Story How To Demo
+    Set Product Backlog Search Condition    How To Demo    Third
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋SprintID
+    Set Product Backlog Search Condition    Sprint ID    1
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋SprintID
+    Set Product Backlog Search Condition    Sprint ID    2
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋Release
+    Set Product Backlog Search Condition    Release    1
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    [Teardown]    Test Product Backlog Search Teardown

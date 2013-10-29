@@ -1,0 +1,68 @@
+*** Settings ***
+Library         SeleniumLibrary
+Resource        ../common_resource.txt
+
+*** Keywords ***
+Add Account
+    Click Element  xpath=//button[text()="Add Account"]  andDontWait
+    Wait Until Page Contains  Add New Account
+    # fill Account Info
+    Focus AND Input Text  //input[@name="id"]  ${tsAccountID}  # User ID
+    Focus AND Input Text  //input[@name="name"]  ${tsAccountID}Name  # User Name
+    Focus AND Input Text  //input[@name="passwd"]  ${tsAccountID}  # Password
+    Focus AND Input Text  //input[@name="reenter"]  ${tsAccountID}  # Re-enter
+    Focus AND Input Text  //input[@name="mail"]  ${tsAccountID}@${tsAccountEmail}  # E-mail Address
+    # Save
+    ${_xpathSaveButton}=  Find Current Window Element  Add New Account  Save
+    Element Enable And Submit  ${_xpathSaveButton}
+    Wait Until Page Contains  Success.
+
+Delete Account
+    # select AccountId
+    Mouse Down  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
+    Mouse Up  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
+    # click "Delete" Button
+    Click Element  xpath=//button[text()="Delete Account"]  andDontWait
+    # confirm, click "Yes" Button
+    Click Element  xpath=//button[text()="Yes"]  andDontWait
+    Wait Until Page Contains  Success.
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]  0
+
+Assign Role Add
+    [Arguments]  ${accountId}  ${PROJECT_NAME}  ${role}
+    # select Account
+    TableGrid3_SelectItem  0  ${accountId}
+    # click "Assign Role" button xpath=//button[text()="Assign Role"]
+    Click Button  Assign Role  andDontWait
+    # <User Information>
+    # check ID & Name?
+    # <Unassigned Projects>
+    # item: Unassigned Project
+    DropDownMenu_Select  unassignRole  ${PROJECT_NAME}
+    # item: Role # PO, Master, Team # Stakeholder, Guest
+    DropDownMenu_Select  Role  ${role}
+    # button: Add Role
+    Click Button  Add Role  andDontWait
+    Wait Until Page Contains  Update Role Success.
+    # <Assigned Projects>
+    # close window
+    Click Button  Close  andDontWait
+
+Assign Role Remove
+    [Arguments]  ${accountId}  ${PROJECT_NAME}
+    [Documentation]  一個專案只能指派一個 Role
+    # select Account
+    TableGrid3_SelectItem  0  ${accountId}
+    # click "Assign Role" button xpath=//button[text()="Assign Role"]
+    Click Button  Assign Role  andDontWait
+    # <User Information>
+    # check ID & Name?
+    # <Unassigned Projects>
+    # do nothing
+    # <Assigned Projects>
+    TableGrid3_SelectItem  0  ${PROJECT_NAME}
+    Click Button  Remove Role  andDontWait
+    Wait Until Page Contains  Update Role Success.
+    # close window
+    Click Button  Close  andDontWait
+

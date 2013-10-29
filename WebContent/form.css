@@ -1,0 +1,64 @@
+.FieldHead {
+	color: #333333;
+	background-color: #B5D5E3;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.CreateProjectTitle {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #333333;
+}
+input.field,textarea.field,select.field {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.subtitle {
+	background-color: #FFE4B5;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #556B2F;
+}
+
+.field {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.smallField {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 30%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.selectField {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	width: 30%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.noBorderField {
+	color: Gray;
+	border: 0px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.requireStar{
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: Red;
+}

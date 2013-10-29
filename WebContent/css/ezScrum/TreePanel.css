@@ -1,0 +1,36 @@
+.x-tree-node div.treepanel-parent{
+    background:#eee url(../ext/images/default/panel/white-top-bottom.gif) repeat-x;
+    margin-top:1px;
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ccc;
+    padding-top:2px;
+    padding-bottom:1px;
+    font-size: 15px;
+}
+.treepanel-parent .x-tree-node-icon {
+    display:none;
+}
+.treepanel-parent a span {
+    font-weight:bold;
+    color:#222;
+}
+.treepanel-leaf {
+	font-size: 15px;
+	padding-top:10px;
+    border:1px solid #fff;
+}
+.treepanel-leaf .x-tree-ec-icon {
+    display:none;
+}
+.treepanel-leaf-line {
+	font-size: 15px;
+	padding-top:10px;
+    border:1px solid #fff;
+    text-decoration: underline;
+}
+.treepanel-leaf-line .x-tree-ec-icon {
+    display:none;
+}
+.leaf-icon {
+    background-image:url(../../images/Bullet.gif) !important;
+}

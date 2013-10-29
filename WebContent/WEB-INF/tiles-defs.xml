@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd"><tiles-definitions>
+
+    <!-- Project Configuration -->
+    <definition name="project.Summary"			path="/Pages/ezScrumContent.jsp" />
+    <definition name="project.Management" 		path="/Pages/ezScrumManagement.jsp" />
+    <definition name="project.Management.user"	path="/Pages/ezScrumUserManagement.jsp" />
+    <definition name="project.Management.admin" 		path="/Pages/ezScrumTenantManagement.jsp" />
+    
+    <definition name="project.Projectlist"		path="/Pages/ViewList.jsp" />
+    
+    
+	<!-- Issue Detail Page -->    
+    <definition name="project.IssueInformation" page="/Pages/ShowIssueInformation.jsp" />
+    
+	<definition name="viewScrumIssue.show" page="/Pages/ezTrack/ViewScrumIssue.jsp" >
+    </definition>
+    
+    <definition name="viewCustomIssue.show" page="/Pages/ezTrack/ViewCustomIssue.jsp">
+    </definition>
+
+	
+	<!-- Layout -->    <definition name="base.layout" path="/Layout/Layout.jsp">        <put name="title"  value="${title}" />        <put name="body"  value="${body}" />
+        <put name="topMenu"  value="/Pages/Titles/Title.jsp" />
+        <put name="footer"  value="/Pages/Titles/Footer.jsp" />
+    </definition>
+    
+    
+    <definition name="base.layout2" path="/Layout/SubLayout.jsp">
+        <put name="title"  value="${title}" />
+        <put name="caption"  value="caption.base" />
+        <!-- <put name="dynamicCaption"  value="${dynamicCaption}" /> -->
+        <put name="topMenu"  value="/Pages/Titles/Title.jsp" />
+        <put name="leftMenu"   value="/Pages/Menus/ProjectLeftMenu.jsp" />
+        <put name="body"  value="${body}" />
+        <put name="footer"  value="/Pages/Titles/Footer.jsp" />
+    </definition>
+
+    <definition name="admin.layout" extends="base.layout2" >
+        <put name="topMenu"  value="/Pages/Titles/Title2.jsp" />
+        <put name="leftMenu"   value="/Pages/Menus/AdminLeftMenu.jsp" />
+    </definition>
+
+    <definition name="project.layout" extends="base.layout2" >
+        <put name="topMenu"  value="/Pages/Titles/Title.jsp" />
+        <put name="leftMenu"   value="/Pages/Menus/ProjectLeftMenu.jsp" />
+    </definition>
+    
+    
+    <!-- Logon -->    <definition name="main.logon" extends="base.layout">
+        <put name="title"  value="ezScrum Logon!" />
+        <put name="topMenu"  value="/Pages/Titles/Title_for_Logon.jsp" />
+        <put name="body"  value="/Pages/Logon.jsp" />
+    </definition>
+    
+    <definition name="main.projectList" extends="base.layout">
+        <put name="title"  value="ezScrum Project List" />
+        <put name="topMenu"  value="/Pages/Titles/Title.jsp" />
+        <put name="body"  value="/Pages/ViewList.jsp" />
+    </definition>
+    
+    <definition name="issue.prefs" extends="project.layout">
+        <put name="title"  value="ezScrum ITS Reference" />
+        <put name="caption"  value="caption.project.config" />
+        <put name="body"  value="/Pages/IssuePreferenceForm.jsp" />
+    </definition>
+    
+    
+    <!-- Error Message Page -->
+    <definition name="admin.backup" extends="admin.layout">
+        <put name="title"  value="ezScrum System Environment" />
+        <put name="caption"  value="caption.admin.environment" />
+        <put name="body"  value="/Pages/MessagePage.jsp" />
+    </definition>
+    
+    <definition name="error.show" extends="project.layout">
+        <put name="title"  value="ezScrum Product Backlog" />
+        <put name="caption"  value="caption.error.show" />
+        <put name="body"  value="/Error.jsp" />
+    </definition>
+    
+    
+    <!-- BRAC Management -->
+    <definition name="user.accountManage" extends="admin.layout">
+        <put name="title" value="ezScrum System Environment" />
+        <put name="body" value="/Pages/RBAC/UserEditAccount.jsp" />
+        <put name="caption"  value="caption.admin.management" />
+        <put name="leftMenu" value="/Pages/Menus/UserLeftMenu.jsp" />
+    </definition>
+    
+    <definition name="admin.accountManage" extends="admin.layout">
+        <put name="title"  value="ezScrum System Environment" />
+        <put name="caption"  value="caption.admin.management" />
+        <put name="body"  value="/Pages/RBAC/AccountManage.jsp" />
+    </definition>
+    
+    <definition name="admin.scrumRoleManage" extends="admin.layout">
+        <put name="title"  value="ezScrum System Environment" />
+        <put name="caption"  value="caption.admin.scrumrolemanagement" />
+        <put name="body"  value="/Pages/RBAC/ScrumRoleManage.jsp" />
+    </definition>
+    
+    
+    <!-- Update Management -->
+	<definition name="admin.checkUpdate" extends="admin.layout">
+        <put name="title"  value="Check ezScrum Update" />
+        <put name="caption"  value="caption.admin.checkUpdate" />
+        <put name="body"  value="/Pages/ShowCheckUpdate.jsp" />
+    </definition>
+    
+    <definition name="admin.restartManager" extends="admin.layout">
+        <put name="title"  value="Restart ezScrum" />
+        <put name="caption"  value="caption.admin.serverManager" />
+        <put name="body"  value="/Pages/ShowRestartManager.jsp" />
+    </definition>
+
+
+	<!-- Only for Guest user -->
+	<definition name="Guest.Summary" extends="base.layout">
+		<put name="title" value="ezScrum TaskBoard Summary" />
+		<put name="topMenu"  value="/Pages/Titles/Title_for_Guest.jsp" />
+		<put name="caption"  value="caption.project.Summary" />
+		<put name="body" value="/Pages/GuestSummary.jsp" />
+	</definition>
+	
+    <definition name="project.Members" extends="project.layout">
+        <put name="title"  value="ezScrum Project Members" />
+        <put name="caption"  value="caption.project.Members" />
+        <put name="body"  value="/Pages/ShowProjectMembers.jsp" />
+    </definition>
+    
+    <definition name="project.Config" extends="project.layout">
+        <put name="title"  value="ezScrum Project References" />
+        <put name="caption"  value="caption.project.config" />
+        <put name="body"  value="/Pages/ProjectEdit.jsp" />
+    </definition>
+    
+    
+    <!-- Project Management - Product Backlog -->	
+    <definition name="productBacklog.show" extends="project.layout">
+        <put name="title"  value="ezScrum Product Backlog" />
+        <put name="caption"  value="caption.productBacklog.show" />
+        <put name="body"  value="/Pages/ShowProductBacklog.jsp" />
+    </definition>
+    
+    <definition name="addExistedStory.show" extends="project.layout">
+        <put name="title"  value="ezScrum Product Backlog" />
+        <put name="caption"  value="caption.productBacklog.show" />
+        <put name="body"  value="/Pages/ShowAddExistedStory.jsp" />
+    </definition>
+    
+    
+    <!-- Project Management - Release -->
+    <definition name="releasePlan.show" extends="project.layout">
+    	<put name="title"  value="ezScrum Setup Release Plan" />
+    	<put name="caption"  value="caption.releasePlan.show" />
+    	<put name="body"  value="/Pages/ShowReleasePlan.jsp" />
+    </definition>
+    
+    <definition name="releaseBacklog.show" extends="project.layout">
+    	<put name="title"  value="ezScrum Release Backlog" />
+    	<put name="caption"  value="caption.releaseBacklog.show" />
+    	<put name="body"  value="/Pages/ShowReleaseBacklog.jsp" />
+    </definition>
+    
+    <definition name="printableReleaseInformation.show" path="/Pages/ShowPrintableReleaseInformation.jsp">
+    </definition>
+    
+    
+    <!-- Project Management - Sprint -->
+    <definition name="sprintPlan.show" extends="project.layout">
+        <put name="title"  value="ezScrum Setup Iteration Plan" />
+        <put name="caption"  value="caption.issuePlan.show" />
+        <put name="body"  value="/Pages/ShowSprintPlan.jsp" />
+    </definition>
+    
+    <definition name="sprintBacklog.show" extends="project.layout">
+        <put name="title"  value="ezScrum Sprint Backlog" />
+        <put name="caption"  value="caption.sprintBacklog.show" />
+        <put name="body"  value="/Pages/ShowSprintBacklog.jsp" />
+    </definition>
+    
+    <definition name="addExistedTask.show" extends="project.layout">
+        <put name="title"  value="ezScrum Sprint Backlog" />
+        <put name="caption"  value="caption.sprintBacklog.show" />
+        <put name="body"  value="/Pages/ShowAddExistedTask.jsp" />
+    </definition>
+    
+    <!-- the action remove 2010.10.18
+    <definition name="addExistedSprint.show" extends="project.layout">
+        <put name="title"  value="ezScrum Sprint Backlog" />
+        <put name="caption"  value="caption.sprintBacklog.show" />
+        <put name="body"  value="/Pages/ShowAddExistedSprint.jsp" />
+    </definition>
+     -->
+     
+    <definition name="sprintInformation.show" path="/Pages/ShowSprintInformation.jsp">
+    </definition>
+    
+    <!-- Project Management - Task Board -->
+    <definition name="taskBoard.show" extends="project.layout">
+        <put name="title"  value="ezScrum Task Board" />
+        <put name="caption"  value="caption.taskBoard.show" />
+        <put name="body"  value="/Pages/TaskBoard.jsp" />
+    </definition>    
+    
+    <definition name="checkOutTask.show" extends="project.layout">
+        <put name="title"  value="ezScrum Task Baord" />
+        <put name="caption"  value="caption.taskBoard.show" />
+        <put name="body"  value="/Pages/ShowCheckOutTask.jsp" />
+    </definition>
+    
+    <definition name="editIssueHistory.show" extends="project.layout">
+        <put name="title"  value="ezScrum Issue History" />
+        <put name="caption"  value="caption.editIssueHistory.show" />
+        <put name="body"  value="/Pages/ShowEditIssueHistory.jsp" />
+    </definition>
+        
+    <definition name="issueHistory.show" extends="project.layout">
+        <put name="title"  value="ezScrum Issue History" />
+        <put name="caption"  value="caption.editIssueHistory.show" />
+        <put name="body"  value="/Pages/ShowIssueHistory.jsp" />
+    </definition>
+    
+    
+    <!-- Project Management - Retrospective -->
+    <definition name="retrospective.show" extends="project.layout">
+        <put name="title"  value="ezScrum Retrospective" />
+        <put name="caption"  value="caption.retrospective.show" />
+        <put name="body"  value="/Pages/ShowRetrospective.jsp" />
+    </definition>
+    
+    
+    <!-- Project Management - Unplanned Item -->
+    <definition name="unplannedItem.show" extends="project.layout">
+        <put name="title"  value="Unplanned Item" />
+        <put name="caption"  value="caption.unplannedItem.show" />
+        <put name="body"  value="/Pages/ShowUnplannedItem.jsp" />
+    </definition>
+    
+    
+    <!-- Project Management - Scrum Report -->
+    <definition name="scrumReport.show" extends="project.layout">
+        <put name="title"  value="Scrum Report" />
+        <put name="caption"  value="caption.scrumReport.show" />
+        <put name="body"  value="/Pages/ScrumReport.jsp" />
+    </definition>
+    
+    <definition name="ScheduleReport.show" path="/Pages/ShowScheduleReport.jsp">
+    </definition>
+    
+    <definition name="showRemainingReport.show" path="/Pages/ShowRemainingReport.jsp" />
+    
+    
+    <!-- Caption -  caption.base -->
+    <definition name="caption.base" page="/Pages/FunctionCaption.jsp" >
+        <put name="captionString"  value="${captionString}" />
+        <put name="dynamicCaption"  value="/Pages/PurePage.jsp" />
+        <put name="subCaptionString"  value="" />
+    </definition>
+       
+    <definition name="caption.admin.management" extends="caption.base" >
+        <put name="captionString"  value="Account Management" />
+    </definition>
+    
+    <definition name="caption.admin.scrumrolemanagement" extends="caption.base" >
+        <put name="captionString"  value="Scrum Role Management" />
+    </definition>
+    
+    
+    <definition name="caption.admin.checkUpdate" extends="caption.base" >
+        <put name="captionString"  value="Check Update" />
+    </definition>
+    
+    <definition name="caption.admin.serverManager" extends="caption.base" >
+        <put name="captionString"  value="Server Manager" />
+    </definition>    
+    
+    <definition name="caption.admin.environment" extends="caption.base" >
+        <put name="captionString"  value="System Environment Configuration" />
+    </definition>
+    
+	<definition name="caption.admin.builders" extends="caption.base" >
+        <put name="captionString"  value="Builder Preferences" />
+    </definition>
+    
+
+    <!-- Caption -  caption.project.base -->
+    <definition name="caption.project.base" extends="caption.base" >
+        <put name="captionString"  value="Project: " />
+        <put name="dynamicCaption"  value="/Pages/ProjectName.jsp" />
+    </definition>
+    
+    <definition name="caption.project.Summary" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Summary" />
+    </definition>
+    
+	<definition name="caption.project.Members" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Members" />
+    </definition>
+    
+    <definition name="caption.project.config" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Configuration" />
+    </definition>
+    
+    <definition name="caption.productBacklog.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Product Backlog" />
+    </definition>
+    
+    <definition name="caption.releasePlan.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Release Plan" />
+    </definition> 
+    
+    <definition name="caption.releaseBacklog.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Release Backlog" />
+    </definition>
+    
+    <definition name="caption.issuePlan.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Sprint Plan" />
+    </definition>
+    
+    <definition name="caption.sprintBacklog.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Sprint Backlog" />
+    </definition>
+    
+    <definition name="caption.taskBoard.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Task Board" />
+    </definition>
+    
+    <definition name="caption.editIssueHistory.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Edit History" />
+    </definition>
+    
+    <definition name="caption.retrospective.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Retrospective" />
+    </definition>
+    
+    <definition name="caption.unplannedItem.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Unplanned Item" />
+    </definition>
+   
+    <definition name="caption.scrumReport.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Scrum Report" />
+    </definition>
+    
+    <definition name="caption.error.show" extends="caption.project.base" >
+        <put name="subCaptionString"  value="error!!" />
+    </definition>
+
+    <definition name="caption.issue.info.input" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Enter detail information of issue by error messages in Builder Report" />
+    </definition>
+    
+    <definition name="caption.issue.add" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Finished Issue Report" />
+    </definition>
+        
+    <definition name="caption.rule.create" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Create Rule By Yourself" />
+    </definition>
+    
+    <definition name="caption.project.participants" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Participants" />
+    </definition>
+
+    <definition name="caption.project.references.inputLibraryPath" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- References: Input internal Library path" />
+    </definition>
+
+    <definition name="caption.project.references.selectSystemLibrary" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- References: Select System Library" />
+    </definition>
+
+    <definition name="caption.project.builder.preference" extends="caption.project.base" >
+        <put name="subCaptionString"  value="-- Builder List: Config preference" />
+    </definition>
+
+    <definition name="caption.project.buildReport" extends="caption.project.base" >
+        <put name="subCaptionString"  value="--Project Reports" />
+    </definition>
+
+    <definition name="caption.project.checkoutResult" extends="caption.project.base" >
+        <put name="subCaptionString"  value="--Checkout Result" />
+    </definition>
+
+    <definition name="caption.project.schedule.1" extends="caption.project.base" >
+        <put name="subCaptionString"  value="--Setup Schedule: Select Frequency Type" />
+    </definition>
+
+    <definition name="caption.project.schedule.2" extends="caption.project.base" >
+        <put name="subCaptionString"  value="--Setup Schedule: Setup Interval" />
+    </definition>
+
+    <definition name="caption.project.schedule.3" extends="caption.project.base" >
+        <put name="subCaptionString"  value="--Setup Schedule: Setup Exclude Day" />
+    </definition>
+    
+    
+    <!-- ezTrack -->
+    <definition name="scrumIssue.show" path="/Pages/ShowScrumIssue.jsp"></definition>
+    
+    <definition name="customIssue.show" path="/Pages/ShowCustomIssue.jsp"></definition>
+
+    <!-- ezKanban -->
+    <!-- sample tiles definitions
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends="base.layout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+		</tiles-definitions>

@@ -1,0 +1,81 @@
+*** Settings ***
+Library         SeleniumLibrary
+
+*** Keywords ***
+Select ProjectList
+    [Arguments]  ${PROJECT_NAME}
+    Wait Until Page Contains  ${PROJECT_NAME}
+    Click Element  xpath=//span[.="Project List"]/../..//span[.="${PROJECT_NAME}"]  andDontWait
+
+Select ScrumRoleList
+    [Arguments]  ${scrumRole}
+    [Documentation]  若以機器速度執行(< 100ms)的話,讀取資料需要一點時間\n必須等待 loading info 訊息出現才能正常操作\n(簡單的同步機制)
+    Click Element  xpath=//span[.="Scrum Role List"]/../..//li/div/a/span[.="${scrumRole}"]  andDontWait
+    # 同步機制
+    ${_speed}=  Convert To Number  ${SELENIUM_SPEED}
+    ${_isMachineSpeed} =  Evaluate  ${_speed} <= 0.025
+    Run Keyword If  ${_isMachineSpeed} == True  Wait Until Page Contains  ${MSG_WAIT_FOR_LOAD_DATA}
+
+Set PermissionCheckList
+    [Arguments]  ${scrumRole}
+    ${_pathCheckbox} =  Set Variable  //input[@type="checkbox"][@name="${tsPermissionCheckList[0]}"]
+    ${_xpathCheckbox} =  Set Variable  xpath=//input[@type="checkbox"][@name="${tsPermissionCheckList[0]}"]
+    # select "test data" src
+    @{_testData_Role}  Create List
+    # string compare ## 'str1' == 'str2' 而非 str1 == str2 ## 否則會出現 SyntaxError: invalid syntax (<string>, line 1)
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[0]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_PO}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[1]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Master}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[2]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Team}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[3]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Stakeholder}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[4]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Guest}
+    LOG  ${_testData_Role}
+    ${_index} =  Evaluate  0
+    : FOR  ${_var}  IN  @{tsPermissionCheckList}
+    \  ${_xpathCheckbox} =  Set Variable  xpath=//input[@type="checkbox"][@name="${_var}"]
+    \  Run Keyword If  ${@{_testData_Role}[${_index}]} == 1  Select Checkbox  ${_xpathCheckbox}
+    \  Run Keyword If  ${@{_testData_Role}[${_index}]} == 0  Unselect Checkbox  ${_xpathCheckbox}
+    \  ${_index} =  Evaluate  ${_index} + 1
+    ${setCheckedCount} =  Set Variable  ${_index}
+    [Return]  ${setCheckedCount}
+
+Save Permission
+    Click Button  Save Permission  andDontWait
+    Wait Until Page Contains  Save Permission Success.
+
+Check PermissionCheckList
+    [Arguments]  ${scrumRole}
+    # select "test data" source
+    @{_testData_Role}  Create List
+    # string compare ## 'str1' == 'str2' 而非 str1 == str2 ## 否則會出現 SyntaxError: invalid syntax (<string>, line 1)
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[0]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_PO}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[1]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Master}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[2]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Team}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[3]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Stakeholder}
+    Run Keyword If  '${scrumRole}' == '${tsScrumRoleList[4]}'  Set Test Variable  @{_testData_Role}  @{tsPermission_Guest}
+    LOG  ${_testData_Role}
+    # 檢查 Checkbox 是否有被正確勾選
+    ${_index} =  Evaluate  0
+    : FOR  ${_var}  IN  @{tsPermissionCheckList}
+    \  ${_xpathCheckbox} =  Set Variable  xpath=//input[@type="checkbox"][@name="${_var}"]
+    \  Run Keyword If  ${_testData_Role[${_index}]} == 1  Checkbox Should Be Selected  ${_xpathCheckbox}
+    \  Run Keyword If  ${_testData_Role[${_index}]} == 0  Checkbox Should Not Be Selected  ${_xpathCheckbox}
+    \  ${_index} =  Evaluate  ${_index} + 1
+    # 回傳檢查操作權限的個數
+    ${setCheckedCount} =  Set Variable  ${_index}
+    [Return]  ${setCheckedCount}
+
+Verify ScrumRole
+    [Arguments]  ${scrumRole}
+    # set and save
+    Select ScrumRoleList  ${scrumRole}
+    Set PermissionCheckList  ${scrumRole}
+    Save Permission
+    # check
+    Select ScrumRoleList  ${scrumRole}
+    Check PermissionCheckList  ${scrumRole}
+
+Check ScrumRole
+    [Arguments]  ${scrumRole}
+    Select ScrumRoleList  ${scrumRole}
+    Check PermissionCheckList  ${scrumRole}
+

@@ -1,0 +1,91 @@
+*** Settings ***
+Suite Setup       ezScrumGAE Suite Setup
+Suite Teardown    ezScrumGAE Suite Teardown
+Force Tags        GAE
+Library           SeleniumLibrary
+Resource          keywords/TenantManagement/ezScrumGAE_SetupTeardown.txt
+Resource          keywords/TenantManagement/ezScrumGAE_TenantManagement.txt
+
+*** Variables ***
+@{tsTenantInfo}    testTenant    testTenantName    testTenant Description    testTenantAdmin    1
+
+*** Test Cases ***
+Test Tenant Management - Add Tenant
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Add Tenant Setup
+    ${_isCreated} =     Check Tenant Is Create    ${tsTenantInfo[0]}
+    Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    1
+    Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    1
+    # assert
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsTenantInfo[0]}")]    1    # ID
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tsTenantInfo[1]}")]    1    # Name
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-2" and (text()="${tsTenantInfo[2]}")]    1    # Description
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="usable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Add Tenant Teardown
+
+Test Tenant Management - Add Tenant With Disable
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Add Tenant Setup
+    ${_isCreated} =     Check Tenant Is Create    ${tsTenantInfo[0]}
+    Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    0
+    Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    0
+    # assert
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsTenantInfo[0]}")]    1    # ID
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tsTenantInfo[1]}")]    1    # Name
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-2" and (text()="${tsTenantInfo[2]}")]    1    # Description
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="unusable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Add Tenant Teardown
+
+Test Tenant Management - Edit Tenant With Disable
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Edit Tenant Setup
+    # init variable
+    ${tsTenantInfo[1]} =    Set Variable    ${tsTenantInfo[1]}Update
+    ${tsTenantInfo[2]} =    Set Variable    ${tsTenantInfo[2]} Update
+    ${tsTenantInfo[3]} =    Set Variable    ${tsTenantInfo[3]}Update
+    Edit Tenant    ${tsTenantInfo[0]}    0
+    # assert
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsTenantInfo[0]}")]    1    # ID
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tsTenantInfo[1]}")]    1    # Name
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-2" and (text()="${tsTenantInfo[2]}")]    1    # Description
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="unusable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Edit Tenant Teardown
+
+Test Tenant Management - Edit Tenant
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Edit Tenant Setup
+    Edit Tenant    ${tsTenantInfo[0]}    1
+    # assert
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsTenantInfo[0]}")]    1    # ID
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tsTenantInfo[1]}")]    1    # Name
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-2" and (text()="${tsTenantInfo[2]}")]    1    # Description
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="usable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Edit Tenant Teardown
+
+Test Tenant Management - Stop Tenant
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Stop Tenant Setup
+    Stop Tenant    ${tsTenantInfo[0]}
+    # assert
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="unusable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Stop Tenant Teardown
+
+Test Tenant Management - Renew Tenant
+    [Tags]    TM
+    [Setup]    Test Tenant Management - Renew Tenant Setup
+    Renew Tenant    ${tsTenantInfo[0]}
+    # assert
+    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tsTenantInfo[3]}")]
+    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="usable"]    1    # Enable
+    [Teardown]    Test Tenant Management - Renew Tenant Teardown

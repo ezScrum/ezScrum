@@ -1,0 +1,216 @@
+*** Settings ***
+Force Tags        SprintBacklog
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Sprint.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_SetupTeardown.txt
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           BuiltIn
+Library           Collections
+Library           SeleniumLibrary
+
+*** Test Cases ***
+Test Sprint Backlog - Edit Story
+    [Setup]    Test Sprint Backlog - Edit Story Setup
+    # story information
+    ${oriStoryName}=    Set Variable    add story for test edit story
+    ${updateStoryName}=    Set Variable    update story for test edit story
+    ${value}=    Set Variable    3
+    ${estimation}=    Set Variable    5
+    ${importance}=    Set Variable    8
+    ${notes}=    Set Variable    update story for notes
+    ${howToDemo}=    Set Variable    update story for how to demo
+    # 編輯story information並回傳story id
+    ${storyID}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimation}    ${importance}
+    ...    ${notes}    ${howToDemo}
+    # 驗證story information
+    Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimation}    ${importance}    ${EMPTY}    ${notes}
+    ...    ${howToDemo}
+    [Teardown]    Test Sprint Backlog - Edit Story Teardown
+
+Test Sprint Backlog - Add Story
+    [Setup]    Test Sprint Backlog - Add Story Setup
+    # story information
+    ${storyName}=    Set Variable    add story for test add story
+    ${value}=    Set Variable    3
+    ${estimation}=    Set Variable    5
+    ${importance}=    Set Variable    8
+    ${notes}=    Set Variable    add story for notes
+    ${howToDemo}=    Set Variable    add story for how to demo
+    # add story
+    Create Story With Arguments    ${storyName}    ${value}    ${estimation}    ${importance}    ${EMPTY}    ${notes}
+    ...    ${howToDemo}
+    # 驗證story information
+    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimation}    ${importance}    ${EMPTY}    ${notes}
+    ...    ${howToDemo}
+    [Teardown]    Test Sprint Backlog - Add Story Teardown
+
+Test Sprint Backlog - Drop Story
+    [Setup]    Test Sprint Backlog - Drop Story Setup
+    # story information
+    ${oriStoryName}=    Set Variable    add story for test drop story
+    ${storyID}=    Get Story ID In Sprint Backlog    ${oriStoryName}
+    # 驗證未 drop story 前的sprint
+    Select Node Product    Product Backlog
+    ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
+    Should Be Equal    ${storySprint}    1
+    # drop story
+    Select Node Product    Sprint Backlog
+    Drop Story    ${oriStoryName}
+    # 驗證 sprint backlog
+    Page Should Not Contain Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyID}")]/../../td[1]/a/span
+    # 驗證 product backlog
+    Select Node Product    Product Backlog
+    ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
+    Should Be Equal    ${storySprint}    None
+    [Teardown]    Test Sprint Backlog - Drop Story Teardown
+
+Test Sprint Backlog - Add Existing Story
+    [Setup]    Test Sprint Backlog - Add Existing Story Setup
+    # story information for add
+    ${storyName}=    Set Variable    add story for test add existing story
+    ${value}=    Set Variable    3
+    ${estimation}=    Set Variable    5
+    ${importance}=    Set Variable    8
+    ${notes}=    Set Variable    add story for notes
+    ${howToDemo}=    Set Variable    add story for how to demo
+    # click show add existing story window
+    Add Existing Story    ${storyName}
+    # verify story
+    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimation}    ${importance}    ${EMPTY}    ${notes}
+    ...    ${howToDemo}
+    [Teardown]    Test Sprint Backlog - Add Existing Story Teardown
+
+Test Sprint Backlog - Edit Sprint
+    [Setup]    Test Sprint Backlog - Edit Sprint Setup
+    ${sprintGoal}=    Set Variable    update sprint goal
+    ${sprintInterval}=    Set Variable    3
+    ${sprintMembers}=    Set Variable    5
+    ${sprintAvaliableDays}=    Set Variable    116
+    ${sprintFocusFactor}=    Set Variable    50
+    # update sprint information
+    Select Node Product    Sprint Backlog
+    Edit Sprint In Sprint Backlog    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Wait Until Page Contains    Success.
+    # verify sprint information in Sprint Backlog
+    ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
+    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0.0 ; Task Hours : 0.0 ; Total Hours to Commit : 58.0
+    # verify sprint information in Sprint Plan
+    Select Node Product    Sprint Plan
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="1")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${sprintInterval}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${sprintMembers}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${sprintAvaliableDays} hours")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-8" and (text()="${sprintFocusFactor}")]    1
+    [Teardown]    Test Sprint Backlog - Edit Sprint Teardown
+
+Test Sprint Backlog - Add Task
+    [Setup]    Test Sprint Backlog - Add Task Setup
+    # task information
+    ${taskName}=    Set Variable    task 1 for add task
+    ${taskEstimation}=    Set Variable    3
+    ${taskRemains}=    Set Variable    3
+    ${taskNotes}=    Set Variable    notes for add task
+    # new task
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimation}    ${taskNotes}
+    # verify task information in Sprint Backlog
+    Verify Task Information With Arguments    ${storyName}    ${taskName}    ${EMPTY}    ${EMPTY}    ${taskEstimation}    ${taskRemains}
+    ...    0    ${taskNotes}
+    [Teardown]    Test Sprint Backlog - Add Task Teardown
+
+Test Sprint Backlog - Edit Task
+    [Setup]    Test Sprint Backlog - Edit Task Setup
+    # task information
+    ${oriTaskName}=    Set Variable    task 1 for edit task
+    ${oriTaskEstimation}=    Set Variable    3
+    ${oriTaskNotes}=    Set Variable    notes for edit task
+    # new task
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Add Task With Arguments    ${storyID}    ${oriTaskName}    ${oriTaskEstimation}    ${oriTaskNotes}
+    # edit task
+    ${updateTaskName}=    Set Variable    update task 1 name
+    ${updateTaskEstimation}=    Set Variable    5
+    ${updateTaskRemains}=    Set Variable    5
+    ${updateTaskActual}=    Set Variable    5
+    ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
+    ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
+    Edit Task With Arguments    ${taskID}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskRemains}    ${updateTaskActual}
+    ...    ${updateTaskNotes}
+    # verify task information in Sprint Backlog
+    Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimation}    ${updateTaskRemains}
+    ...    ${updateTaskActual}    ${updateTaskNotes}
+    [Teardown]    Test Sprint Backlog - Edit Task Teardown
+
+Test Sprint Backlog - Drop Task
+    [Setup]    Test Sprint Backlog - Drop Task Setup
+    # task information
+    ${taskName}=    Set Variable    task 1 for drop task
+    ${taskEstimation}=    Set Variable    3
+    ${taskNotes}=    Set Variable    notes for drop task
+    # new task
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimation}    ${taskNotes}
+    # drop task
+    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
+    Drop Task With Arguments    ${taskID}
+    # verify task information in Sprint Backlog
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]    0
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[3]/div[text()="${taskName}"]    0
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[6]/div[text()="${taskEstimation}"]    0
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[8]/div[text()="new"]    0
+    [Teardown]    Test Sprint Backlog - Drop Task Teardown
+
+Test Sprint Backlog - Add Existing Task
+    [Setup]    Test Sprint Backlog - Add Existing Task Setup
+    ${taskCount}=    Set Variable    4
+    ${taskEstimation}=    Set Variable    3
+    ${taskNotes}=    Set Variable    notes for add existing task
+    @{taskNameList}=    Create List
+    @{taskIDList}=    Create List
+    # new task
+    : FOR    ${index}    IN RANGE    1    ${taskCount}
+    \    ${taskName}=    Set Variable    task ${index} for add existing task
+    \    Append To List    ${taskNameList}    ${taskName}
+    \    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    \    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimation}    ${taskNotes}
+    \    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
+    \    Append To List    ${taskIDList}    ${taskID}
+    # drop task
+    : FOR    ${id}    IN    @{taskIDList}
+    \    Drop Task With Arguments    ${id}
+    # show add existing tasks window
+    Add Existing Task With Arguments    ${storyName}    @{taskIDList}
+    # verify story and task information
+    ${idCount}=    Get Length    ${taskIDList}
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    : FOR    ${index}    IN RANGE    ${idCount}
+    \    ${correctTaskID}=    Get From List    ${taskIDList}    ${index}
+    \    ${correctTaskName}=    Get From List    ${taskNameList}    ${index}
+    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]    1
+    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[3]/div[text()="${correctTaskName}"]    1
+    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[6]/div[text()="${taskEstimation}"]    1
+    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[8]/div[text()="new"]    1
+    [Teardown]    Test Sprint Backlog - Add Existing Task Teardown
+
+Test Sprint Backlog - Show Task History
+    [Setup]    Test Sprint Backlog - Show Task History Setup
+    ${taskName}=    Set Variable    task for show task history
+    ${taskEstimation}=    Set Variable    3
+    ${taskNotes}=    Set Variable    notes for show task history
+    # new task
+    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimation}    ${taskNotes}
+    # show task history
+    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
+    Show Task History With Arguments    ${taskID}    ${taskName}
+    [Teardown]    Test Sprint Backlog - Show Task History Teardown

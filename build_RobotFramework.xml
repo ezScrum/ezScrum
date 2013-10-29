@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PortableRobotFramework" basedir="." default="default">
+	<!-- 感謝蔚儒學長提供範例檔案,參考網址
+http://tonylin.idv.tw/dokuwiki/doku.php/rf:rf:portable_robot_package
+	 -->
+	
+	<!-- 準備動作 -->
+	<!-- 1.在此建置腳本所在目錄建立 packages 目錄,並在此目錄下建立子目錄 jre -->
+	<!-- 2.將從網路下載的檔案 RobotFramework .jar & Selenium LIB .tar.gz 放到  packages 目錄下 -->
+	<!-- 3.將加工製作出來的可攜帶　JAVA Runtime Environment 各種版本 放到  packages/jre 目錄下 -->
+	
+	<!-- NOTE -->
+	<!-- build　目錄為建置過程中的暫放目錄, dist 目錄為最終產出目錄 -->
+	
+	<!-- 將  Linux & Windows 分成各自的 target -->
+		
+	<!-- =================================================================== -->
+	<!-- Variable Declaration -->
+	<!-- =================================================================== -->
+	
+	<!-- COMMON -->	
+    <property name="build.dir" value="${basedir}/build" />
+    <property name="dist.dir" value="${basedir}/dist" />
+    <property name="packages.dir" value="${basedir}/packages" />
+    <property name="build.common.dir" value="${build.dir}/common-package" />
+    <property name="build.common.libs.dir" value="${build.common.dir}/Lib" />	
+	
+	<!-- 1.RobotFramework --><!-- 包含 jython -->
+	<property name="RF_VERSION" value="2.7.5" />
+    <property name="robotframework" value="robotframework-${RF_VERSION}.jar" />	
+    <property name="rf.jar.file" value="${packages.dir}/${robotframework}" />
+	
+	<!-- 2.Selenium LIB --><!-- 主要是用到它的原始碼(python),第一次執行會先做編譯動作 -->
+	<property name="S_VERSION" value="2.9.1" />
+    <property name="robotframework-selenium.package.dir" value="robotframework-seleniumlibrary-${S_VERSION}" />
+    <property name="robotframework-selenium" value="${robotframework-selenium.package.dir}.tar.gz" />	
+    <property name="build.selenium.dir" value="${build.dir}/${robotframework-selenium.package.dir}" />
+    <property name="rfs.tar.file" value="${packages.dir}/${robotframework-selenium}" />
+	
+	<!-- 3.JRE --><!-- 製作出可攜帶版本使得系統免裝 JAVA(但系統必須先設定 path 才可使用),製作方法請參考
+http://stackoverflow.com/questions/1619662/where-can-i-get-the-latest-jre-jdk-as-a-zip-file-i-mean-no-exe-installer
+	-->
+    <property name="packages.jre.dir" value="${packages.dir}/jre" />		
+		<!-- linux -->	
+	<property name="JRE_LINUX_VERSION" value="?" />
+    <property name="linux-jre-x86.dir" value="jre1.6.0_31_i586"/>	
+    <property name="linux-jre-x86" value="${linux-jre-x86.dir}.tar.gz" />	
+    <property name="jre.linux.x86.tar.file" value="${packages.jre.dir}/${linux-jre-x86}" />	
+		<!-- linux x64 -->
+	<property name="JRE_LINUX_x64_VERSION" value="?" />	
+    <property name="linux-jre-x64.dir" value="jre1.6.0_31_x64"/>			
+    <property name="linux-jre-x64" value="${linux-jre-x64.dir}.tar.gz" />
+    <property name="jre.linux.x64.tar.file" value="${packages.jre.dir}/${linux-jre-x64}" />
+		<!-- windows -->	
+	<property name="JRE_WIN_VERSION" value="6u38" />
+    <property name="win-jre" value="jre-${JRE_WIN_VERSION}-windows.zip" />
+    <property name="jre.win.x86.zip.file" value="${packages.jre.dir}/${win-jre}" />	
+		<!-- windows x64 -->	
+	<property name="JRE_WIN_x64_VERSION" value="6u38" />
+    <property name="win-jre64" value="jre-${JRE_WIN_VERSION}-windows.zip" />
+	
+	
+	<!-- =================================================================== -->
+	<!-- COMMON -->
+	<!-- =================================================================== -->
+    <target name="default">
+        <antcall target="clear" />
+        <antcall target="prepare" />
+        <antcall target="package" />
+        <delete dir="${build.dir}" />
+    </target>
+ 
+    <target name="clear">
+        <delete dir="${build.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+ 
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${dist.dir}" />
+        <mkdir dir="${build.common.dir}" />
+        <untar compression="gzip" src="${rfs.tar.file}" dest="${build.dir}" />
+        <untar compression="gzip" src="${jre.linux.x86.tar.file}" dest="${build.dir}" />
+        <untar compression="gzip" src="${jre.linux.x64.tar.file}" dest="${build.dir}" />
+        <unzip src="${jre.win.x86.zip.file}" dest="${build.dir}" />
+ 
+        <antcall target="create common folder" />
+    </target>
+ 
+    <target name="create common folder">
+        <copy tofile="${build.common.dir}/robotframework.jar" file="${rf.jar.file}" />
+        <mkdir dir="${build.common.libs.dir}" />
+        <copy todir="${build.common.libs.dir}">
+            <fileset dir="${build.selenium.dir}/src" />
+        </copy>
+    </target>
+ 
+    <target name="package">
+        <antcall target="package windows" />
+        <antcall target="package linux">
+            <param name="jre.package.name" value="${linux-jre-x86.dir}" />
+            <param name="package.name" value="linux-x86-portable-robotframework"/>
+        </antcall>
+        <antcall target="package linux">
+            <param name="jre.package.name" value="${linux-jre-x64.dir}" />
+            <param name="package.name" value="linux-x64-portable-robotframework" />
+        </antcall>
+    </target>
+ 
+	<!-- =================================================================== -->
+	<!-- LINUX -->
+	<!-- =================================================================== -->
+	
+    <target name="package linux">
+        <copy todir="${build.dir}/${package.name}">
+            <fileset dir="${build.common.dir}" />
+        </copy>
+        <move todir="${build.dir}/${package.name}/jre" failonerror="false">
+            <fileset dir="${build.dir}/${jre.package.name}" />
+        </move>
+        <tar destfile="${dist.dir}/${package.name}.tar.gz" compression="gzip">
+            <tarfileset dir="${build.dir}">
+                <include name="${package.name}"/>
+                <include name="${package.name}/**"/>
+                <exclude name="${package.name}/jre/bin/java"/>
+            </tarfileset>
+            <tarfileset dir="${build.dir}" mode="755">
+                <include name="${package.name}/jre/bin/java"/>
+            </tarfileset>
+        </tar>
+    </target>
+	
+    <target name="build_linux">
+	
+    </target>		
+ 
+    <target name="build_linux_x64">
+	
+    </target>	
+	
+	<!-- =================================================================== -->
+	<!-- WINDOWS -->
+	<!-- =================================================================== -->
+	
+    <target name="prepare_windows">
+    	<!-- 建立建置目錄 -->
+        <mkdir dir="${build.dir}" />
+    	<mkdir dir="${build.common.dir}" />     
+    	<!-- 解壓縮 Selenium LIB 到建置目錄下 -->
+        <untar compression="gzip" src="${rfs.tar.file}" dest="${build.dir}" />
+    	<!-- 解壓縮 JRE 到建置目錄下 -->
+		<unzip src="${jre.win.x86.zip.file}" dest="${build.dir}/jre-${JRE_WIN_VERSION}" />    	
+    	<!-- 將 RobotFramework package 複製到建置目錄下,並將解壓縮後 Selenium LIB 目錄 src 複製到建置目錄的 LIB 下  -->    	
+		<copy tofile="${build.common.dir}/robotframework.jar" file="${rf.jar.file}" />
+			<mkdir dir="${build.common.libs.dir}" />
+			<copy todir="${build.common.libs.dir}">
+			<fileset dir="${build.selenium.dir}/src" />
+		</copy>    	
+    </target>	
+	
+    <target name="package_windows">    	
+    	<!-- 將 RobotFramework package + Selenium LIB (source code) 複製到輸出目錄下  -->
+        <copy todir="${build.dir}/win-portable-robotframework">
+            <fileset dir="${build.common.dir}" />
+        </copy>
+    	<!-- 將 JRE 解開後的目錄與檔案移到輸出目錄下  -->
+        <move todir="${build.dir}/win-portable-robotframework/jre" failonerror="false">
+            <fileset dir="${build.dir}/jre-${JRE_WIN_VERSION}" />
+        </move>
+		<!-- 建立最終產出目錄 -->
+		<mkdir dir="${dist.dir}" />      	
+    	<!-- 將輸出目錄壓縮並放到最終產出目錄下 -->
+        <zip destfile="${dist.dir}/win-portable-robotframework.zip" basedir="${build.dir}">
+            <include name="win-portable-robotframework" />
+            <include name="win-portable-robotframework/**" />
+        </zip>
+    </target>
+	
+    <target name="build_windows">
+        <antcall target="clear" />
+        <antcall target="prepare_windows" />            	
+        <antcall target="package_windows" />
+    	<delete dir="${build.dir}" />
+    </target>	
+	
+    <target name="build_windows_x64">
+	
+    </target>		
+	
+</project>

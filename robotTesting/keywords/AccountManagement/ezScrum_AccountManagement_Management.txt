@@ -1,0 +1,149 @@
+*** Keywords ***
+Check Account
+    [Arguments]    ${accountId}
+    ${isAccountExisted}=    Set Variable    0
+    ${isAccountExisted}=    Get Matching Xpath Count    //td/div[text()="${accountId}"]
+    Log    ${isAccountExisted}    INFO
+    # Get Variable Value
+    [Return]    ${isAccountExisted}
+
+Add Account By Parameter
+    [Arguments]    ${accountId}    ${name}    ${mail}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # check if already existed
+    # click "Add" Button
+    Click Element    xpath=//button[text()="Add Account"]    andDontWait
+    # fill Account Info
+    Focus AND Input Text    //input[@name="id"]    ${accountId}    # User ID
+    Focus AND Input Text    //input[@name="name"]    ${name}    # User Name
+    Focus AND Input Text    //input[@name="passwd"]    ${accountId}    # Password
+    Focus AND Input Text    //input[@name="reenter"]    ${accountId}    # Re-enter
+    Focus AND Input Text    //input[@name="mail"]    ${mail}    # E-mail Address
+    # Save
+    ${xpathSaveButton}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    # check if added #show "OK' buuton
+
+Edit Account
+    [Arguments]    ${accountId}
+    [Documentation]    select from Accounts List\n
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    # click "Edit Information" Button
+    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    # update Account Info
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="name"]    ${accountId}NameEdited    # User Name
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="mail"]    ${accountId}Edited@scrum.tw    # E-mail Address
+    # Save
+    ${xpathEditInformationSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathEditInformationSaveButton}
+    Wait Until Page Contains    Success.
+    # click "Change Password" Button
+    Click Element    xpath=//button[text()="Change Password"]    andDontWait
+    # update Account Info
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${accountId}    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    ${accountId}    # Re-enter
+    # Save
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+
+Check Account In Edit
+    [Arguments]    ${accountId}    ${name}    ${mail}
+    [Documentation]    select from Accounts List\n
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
+    # click "Edit" Button
+    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    # Check Account Info
+    Wait Until Page Contains Element    xpath=//input[@name="id"]
+    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="id"]    ${accountId}
+    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="name"]    ${name}
+    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="mail"]    ${mail}
+    # Save
+    ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    Wait Until Page Contains    Success.
+
+Delete Account
+    [Arguments]    ${accountId}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # select AccountId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    # click "Stop" Button
+    Click Element    xpath=//button[text()="Delete Account"]    andDontWait
+    # confirm, click "Yes" Button
+    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    # check if deleted
+    Wait Until Page Contains    Success.
+
+Clean Accounts
+    [Documentation]    Delete all accounts except Admin
+    ${AccountCount}=    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]
+    : FOR    ${_index}    IN RANGE    0    ${AccountCount}
+    \    Mouse Down    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]
+    \    Mouse Up    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]
+    \    Click Element    xpath=//button[text()="Delete Account"]    andDontWait
+    \    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    \    Wait Until Page Contains    Success.
+
+Enable Account
+    [Arguments]    ${accountId}
+    [Documentation]    Enable and Disable existing account.
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # select AccountId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    # click "Edit" Button
+    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Select Checkbox    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="enable"]
+    # Save
+    ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    Wait Until Page Contains    Success.
+
+Disable Account
+    [Arguments]    ${accountId}
+    [Documentation]    Enable and Disable existing account.
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # select AccountId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    # click "Edit" Button
+    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Unselect Checkbox    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="enable"]
+    # Save
+    ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    Wait Until Page Contains    Success.
+
+Login With Admin
+    ${isLogin}=    Get Matching Xpath Count    //img[@src="images/logout.gif"]
+    Run Keyword If    ${isLogin} == 1    _logout
+    Input Text    userId    admin
+    Input Password    password    admin
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
+
+_logout
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+
+Change Account Password
+    [Arguments]    ${accountId}    ${newPassword}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
+    # click "Change Password" Button
+    Click Element    xpath=//button[text()="Change Password"]    andDontWait
+    # update Account Info
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${newPassword}    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    ${newPassword}    # Re-enter
+    # Save
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+

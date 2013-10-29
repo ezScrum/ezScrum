@@ -1,0 +1,183 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../common_resource.txt
+Resource          ../Project/ezScrum_Project.txt
+Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          ../SprintBacklog/ezScrum_SprintBacklog_Task.txt
+
+*** Keywords ***
+Test TaskBoard - Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+
+Test TaskBoard - Teardown
+    Close Browser
+
+Test TaskBoard - Precondition
+    _LoginEzScrum
+    # 確認專案是否存在
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Sprint Plan
+    # new sprint
+    Create Sprint    TaskBoard AT    2    4    100    100
+    # new story
+    Select Node Product    Sprint Backlog
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimation}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    Create Story With Arguments    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimation}    ${tcStoryImportance}    ${EMPTY}    ${tcStoryNotes}
+    ...    ${tcStoryHowToDemo}
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
+
+Test TaskBoard - Postcondition
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # delete story and tag
+    Select Node Product    Product Backlog
+    Clean All Story
+    Clean All Tag
+    # delete sprint
+    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    _LogoutEzScrum
+
+Test TaskBoard - Sprint Information Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Sprint Information Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Task Checked Out Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task Checked Out
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task Checked Out
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Task Checked Out Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Task Done Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task Done
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task Done
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Task Done Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Task ReOpen Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task ReOpen
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task ReOpen
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Task ReOpen Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Task ReChecked Out Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Task ReChecked Out Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Story Done Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Story Done Teardown
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # Test TaskBoard - Postcondition
+    Select Node Product    Product Backlog
+    # Delete Story
+    Delete Closed Story With StoryID    ${tcStoryID}
+    # clean tag
+    Clean All Tag
+    # clean sprint
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Logout ezScrum
+
+Test TaskBoard - Story ReOpen Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test story ReOpen
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test story ReOpen
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Story ReOpen Teardown
+    Test TaskBoard - Postcondition
+
+Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
+    Test TaskBoard - Precondition
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test Story Done But All the tasks of Story are not Done
+    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test Story Done But All the tasks of Story are not Done
+    # new task
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+
+Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
+    Test TaskBoard - Postcondition
+
+_LoginEzScrum
+    ${userName}=    Set Variable    admin
+    ${userPassword}=    Set Variable    admin
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Input Text    userId    ${userName}
+    Input Password    password    ${userPassword}
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
+
+_LogoutEzScrum
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!

@@ -1,0 +1,112 @@
+.TaskBoard_Table {
+	
+}
+
+.TaskBoard_Non_Checkout_Header {
+	BORDER: 1px solid #222222;
+	font-weight: bolder;
+	background-color: #FF6347;
+	text-align: center;
+}
+
+.TaskBoard_Checkout_Header {
+	BORDER: 1px solid #222222;
+	font-weight: bolder;
+	background-color: #B1FF3E;
+	text-align: center;
+}
+
+.TaskBoard_Done_Header {
+	BORDER: 1px solid #222222;
+	font-weight: bolder;
+	background-color: #FDFF55;
+	text-align: center;
+}
+
+.StoryCard_Header {
+	background-color: #EFA2A1;
+	border: solid 1px black;
+	padding: 5px;
+	height: 10px;
+	width: 100%;
+}
+
+.StoryCard_ProgressBar {
+	background-color: #EFA2A1;
+	width: 100%;
+	height: 10px;
+}
+
+.StroyCard_Description {
+	valign: top;
+	padding: 10px;
+}
+
+.StroyCard_Notes {
+	valign: top;
+	padding: 10px;
+	border: solid 1px black;
+	cellspacing: 1px;
+}
+
+.StoryCard_Value {
+	valign: top;
+	padding: 10px;
+	font-family: impact;
+	width:25%;
+	align:right;
+}
+
+.StoryCard_Table {
+	margin-top: 5px;
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-bottom: 5px;
+	border: solid 3px #191919;
+	width: 90%;
+	cellpadding: 10px;
+	cellspacing: 1px;
+	border-collpase: collpase;
+	word-break : break-all;
+}
+
+.TaskCard_Table {
+	margin-top: 5px;
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-bottom: 5px;
+	border: solid 3px #191919;
+	width: 90%;
+	cellpadding: 10px;
+	cellspacing: 1px;
+	border-collpase: collpase;
+	word-break : break-all;
+}
+
+.TaskCard_Description {
+	valign: top;
+	padding: 10px;
+}
+
+.TaskCard_Value{
+	valign: top;
+	padding: 10px;
+	font-size:120%;
+	font-family: impact;
+	width:50px;
+	align:right;
+	
+}
+
+.TaskCard_Handler{
+	font-family: impact;
+	font-size:120%;
+}
+
+.TaskCard_Header {
+	background-color: #BFBFFF;
+	border: solid 1px black;
+	padding: 5px;
+	height: 10px;
+	width: 100%;
+}

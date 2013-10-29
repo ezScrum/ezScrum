@@ -1,0 +1,24 @@
+*** Settings ***
+Documentation   多人對同一個 Server 進行操作
+Suite Setup     Test Concurrent Suite Setup
+Suite Teardown  Test Concurrent Suite Teardown
+Force Tags      Concurrent
+Resource        keywords/Concurrent/ezScrum_Concurrent_SetupTeardown.txt
+Resource        keywords/Concurrent/ezScrum_Concurrent_ProductBacklog.txt
+
+*** Variables ***
+@{tsStory}  ID  Name  Value  Estimation  Importance  Notes  How To Demo
+...  Tags
+
+*** Test Cases ***
+Test Concurrent - ProductBacklog - Add Stories
+    [Documentation]  反覆執行: 先新增 tag 再新增 story 的動作
+    # init
+    ${tsCount} =  Evaluate  ${RUN_TIMES}
+    ##
+    : FOR  ${tsIndex}  IN RANGE  1  ${tsCount} + 1
+    \  Create Story With Tag  ${tsIndex}
+    ##
+    Comment  Capture Page Screenshot  "./1.png"  css=#CCFFDD
+    Comment  Capture Screenshot  "./2.png"
+

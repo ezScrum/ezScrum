@@ -1,0 +1,459 @@
+<FlowViewLayout Version="1.2">
+  <StrutsActivity path="/viewList.do" location="315,165" dimension="221,87" />
+  <StrutsActivity path="/build.do" location="570,255" dimension="206,84" />
+  <StrutsActivity path="/createProject.do" location="-150,270" dimension="254,84" />
+  <StrutsActivity path="/saveProject.do" location="-15,630" dimension="233,84" />
+  <StrutsActivity path="/showSelectedProject.do" location="420,975" dimension="226,84" />
+  <StrutsActivity path="/logon.do" location="-45,-15" dimension="210,84" />
+  <StrutsActivity path="/resetProjectSession.do" location="300,15" dimension="150,100" />
+  <StrutsActivity path="/manageReference.do" location="345,660" dimension="263,76" />
+  <StrutsActivity path="/filterExitProject.do" location="735,960" dimension="150,100" />
+  <StrutsActivity path="/showProjectInfoForm.do" location="-210,780" dimension="151,84" />
+  <StrutsActivity path="/showSystemLibrarie.do" location="-195,915" dimension="196,91" />
+  <StrutsActivity path="/showReportHistory.do" location="345,555" dimension="166,84" />
+  <StrutsActivity path="/showProjectReport.do" location="600,420" dimension="166,91" />
+  <StrutsActivity path="/showSystemEnvironment.do" location="-90,1050" dimension="196,84" />
+  <StrutsActivity path="/showSystemBuilder.do" location="-195,1215" dimension="286,100" />
+  <StrutsActivity path="/saveSystemEnvironment.do" location="465,1110" dimension="295,84" />
+  <StrutsActivity path="/showBuilderPreference.do" location="-150,1335" dimension="226,91" />
+  <StrutsActivity path="/logonSubmit.do" location="-15,135" dimension="180,100" />
+  <StrutsActivity path="/logout.do" location="495,-15" dimension="226,76" />
+  <StrutsActivity path="/showEmptyProjectForm.do" location="-330,210" dimension="150,76" />
+  <StrutsActivity path="/showProjectReference.do" location="930,660" dimension="150,46" />
+  <StrutsActivity path="/showProjectBuilderList.do" location="570,1245" dimension="150,46" />
+  <StrutsActivity path="/showInputInternalLibForm.do" location="375,795" dimension="196,61" />
+  <StrutsActivity path="/addInternalLibrary.do" location="900,780" dimension="286,76" />
+  <StrutsActivity path="/saveBuilderPreference.do" location="465,1335" dimension="226,91" />
+  <StrutsActivity path="/setupSchedule.do" location="-210,1470" dimension="286,136" />
+  <StrutsActivity path="/setupScheduleSubmit.do" location="585,1545" dimension="316,91" />
+  <StrutsActivity path="/resetSchedule.do" location="-210,1665" dimension="276,76" />
+  <StrutsActivity path="/showParticipants.do" location="-255,1770" dimension="292,76" />
+  <StrutsActivity path="/selectBuilder.do" location="600,1440" dimension="241,76" />
+  <StrutsActivity path="/manageProjectBuilder.do" location="810,1335" dimension="286,76" />
+  <StrutsActivity path="/testing.do" location="495,1785" dimension="150,100" />
+  <StrutsActivity path="home;6" location="-195,-15" dimension="94,60" />
+  <StrutsActivity path="InputInternalLibreryForm;6" location="375,885" dimension="196,61" />
+  <StrutsActivity path="ProjectReferences;6" location="933,545" dimension="150,56" />
+  <StrutsActivity path="main.projectList" location="645,165" dimension="104,48" />
+  <StrutsActivity path="project.buildReport" location="945,390" dimension="120,48" />
+  <StrutsActivity path="project.checkoutResult" location="930,240" dimension="135,48" />
+  <StrutsActivity path="/Error.jsp" location="345,345" dimension="136,61" />
+  <StrutsActivity path="project.Summery" location="180,345" dimension="109,48" />
+  <StrutsActivity path="main.createProject" location="-315,390" dimension="114,48" />
+  <StrutsActivity path="project.Config" location="15,795" dimension="106,48" />
+  <StrutsActivity path="main.logon" location="-150,150" dimension="82,48" />
+  <StrutsActivity path="project.References" location="720,660" dimension="115,48" />
+  <StrutsActivity path="project.References.selectProject" location="975,975" dimension="175,48" />
+  <StrutsActivity path="project.References.selectSystemLibrary" location="105,930" dimension="211,48" />
+  <StrutsActivity path="project.History" location="585,570" dimension="106,48" />
+  <StrutsActivity path="admin.systemEnvironment" location="225,1035" dimension="153,48" />
+  <StrutsActivity path="admin.systemBuilderList" location="165,1230" dimension="144,48" />
+  <StrutsActivity path="project.BuilderList.preference" location="165,1395" dimension="168,48" />
+  <StrutsActivity path="admin.systemBuilderPreference" location="165,1320" dimension="176,48" />
+  <StrutsActivity path="project.BuilderList" location="780,1245" dimension="121,48" />
+  <StrutsActivity path="project.References.inputInternalLibrary" location="615,795" dimension="213,48" />
+  <StrutsActivity path="project.setupSchedule.setInterval" location="240,1515" dimension="196,48" />
+  <StrutsActivity path="project.setupSchedule.setExcludeDay" location="240,1455" dimension="202,48" />
+  <StrutsActivity path="project.setupSchedule.selectType" location="240,1575" dimension="196,48" />
+  <StrutsActivity path="project.Participants" location="255,1800" dimension="117,48" />
+  <StrutsActivity path="project.BuilderList.SelectBuilder" location="915,1455" dimension="181,48" />
+  <StrutsActivity path="/viewProjectSummary.do" location="1250,850" dimension="280,84" />
+  <StrutsActivity path="project.Summary" location="1850,850" dimension="109,48" />
+  <StrutsActivity path="ProjectSummary;6" location="1850,950" dimension="153,72" />
+  <StrutsTransition id="/viewProjectSummery.do,SummeryView,project.Summery,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="150,-35" rDim2="36,111" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveBuilderPreference.do,systemFail,admin.systemBuilderPreference,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="465,1353" />
+      <AbsolutePoint location="341,1353" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showProjectInfoForm.do,success,project.Config,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-59,822" />
+      <AbsolutePoint location="15,822" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/manageProjectBuilder.do,success,/showProjectBuilderList.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="-285,-38" rDim2="120,67" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/resetSchedule.do,next,/setupSchedule.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-72,1665" />
+      <AbsolutePoint location="-72,1606" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/logonSubmit.do,success,/resetProjectSession.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="135,10" rDim2="-165,130" />
+      <Point rDim1="135,-80" rDim2="-165,40" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="project.Config,null,/saveProject.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="68,795" />
+      <AbsolutePoint location="68,714" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveBuilderPreference.do,system,/showSystemBuilder.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="-83,-90" rDim2="547,25" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/Error.jsp,null,/build.do,2" routingType="1">
+    <Bendpoints>
+      <Point rDim1="232,15" rDim2="2,108" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showProjectBuilderList.do,null,project.BuilderList,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="720,1268" />
+      <AbsolutePoint location="780,1268" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveSystemEnvironment.do,success,/showSystemEnvironment.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="-628,17" rDim2="94,93" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showSelectedProject.do,success,/filterExitProject.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="646,1017" />
+      <AbsolutePoint location="735,1017" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showParticipants.do,success,project.Participants,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="37,1815" />
+      <AbsolutePoint location="255,1815" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showSystemLibrarie.do,success,project.References.selectSystemLibrary,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1,960" />
+      <AbsolutePoint location="105,960" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="ProjectReferences;6,null,project.References,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="933,585" />
+      <AbsolutePoint location="791,585" />
+      <AbsolutePoint location="791,660" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/resetProjectSession.do,success,/viewList.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="375,115" />
+      <AbsolutePoint location="375,165" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/logon.do,success,main.logon,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-45,60" />
+      <AbsolutePoint location="-116,60" />
+      <AbsolutePoint location="-116,150" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showProjectReference.do,null,project.References,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="930,683" />
+      <AbsolutePoint location="835,683" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/addInternalLibrary.do,success,project.References,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1043,780" />
+      <AbsolutePoint location="1043,751" />
+      <AbsolutePoint location="777,751" />
+      <AbsolutePoint location="777,708" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="project.setupSchedule.selectType,null,/setupScheduleSubmit.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="436,1599" />
+      <AbsolutePoint location="585,1599" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="admin.systemEnvironment,null,/saveSystemEnvironment.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="294,1083" />
+      <AbsolutePoint location="294,1152" />
+      <AbsolutePoint location="465,1152" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/selectBuilder.do,success,project.BuilderList.SelectBuilder,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="841,1478" />
+      <AbsolutePoint location="915,1478" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="main.logon,null,/logonSubmit.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-68,174" />
+      <AbsolutePoint location="-15,174" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/viewProjectSummery.do,error,/Error.jsp,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="255,-5" rDim2="-38,135" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showEmptyProjectForm.do,null,main.createProject,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-288,286" />
+      <AbsolutePoint location="-288,390" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="ProjectSummery;6,null,/viewProjectSummary.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-127,615" />
+      <AbsolutePoint location="-127,453" />
+      <AbsolutePoint location="551,453" />
+      <AbsolutePoint location="551,84" />
+      <AbsolutePoint location="1390,84" />
+      <AbsolutePoint location="1390,850" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/build.do,buildSucess,project.buildReport,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="703,339" />
+      <AbsolutePoint location="703,375" />
+      <AbsolutePoint location="1005,375" />
+      <AbsolutePoint location="1005,390" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/manageReference.do,result,project.References,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="304,18" rDim2="-42,51" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="main.createProject,null,/createProject.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-258,390" />
+      <AbsolutePoint location="-258,312" />
+      <AbsolutePoint location="-150,312" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showBuilderPreference.do,system,admin.systemBuilderPreference,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="76,1353" />
+      <AbsolutePoint location="165,1353" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveBuilderPreference.do,projectFail,project.BuilderList.preference,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="465,1410" />
+      <AbsolutePoint location="333,1410" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/createProject.do,success,/viewProjectSummary.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="104,297" />
+      <AbsolutePoint location="225,297" />
+      <AbsolutePoint location="225,-90" />
+      <AbsolutePoint location="1420,-90" />
+      <AbsolutePoint location="1420,850" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/createProject.do,success,/viewProjectSummery.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="60,354" />
+      <AbsolutePoint location="60,465" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveProject.do,error,project.Config,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="101,714" />
+      <AbsolutePoint location="101,795" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showProjectReport.do,success,project.buildReport,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="766,423" />
+      <AbsolutePoint location="945,423" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveProject.do,success,/viewProjectSummery.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="101,630" />
+      <AbsolutePoint location="101,565" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/viewProjectSummary.do,error,/Error.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1250,900" />
+      <AbsolutePoint location="586,900" />
+      <AbsolutePoint location="586,753" />
+      <AbsolutePoint location="331,753" />
+      <AbsolutePoint location="331,375" />
+      <AbsolutePoint location="345,375" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="home;6,null,/logon.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-101,15" />
+      <AbsolutePoint location="-45,15" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupSchedule.do,page2,project.setupSchedule.setInterval,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="202,-8" rDim2="-203,-9" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupScheduleSubmit.do,return,/viewProjectSummary.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="901,1590" />
+      <AbsolutePoint location="1390,1590" />
+      <AbsolutePoint location="1390,934" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/build.do,ViewProjectList,/viewList.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="570,297" />
+      <AbsolutePoint location="425,297" />
+      <AbsolutePoint location="425,252" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupSchedule.do,page1,project.setupSchedule.selectType,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="262,67" rDim2="-226,6" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/filterExitProject.do,success,project.References.selectProject,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="885,1008" />
+      <AbsolutePoint location="975,1008" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="ProjectSummary;6,null,/viewProjectSummary.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1926,950" />
+      <AbsolutePoint location="1926,930" />
+      <AbsolutePoint location="1530,930" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/createProject.do,error,main.createProject,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-150,342" />
+      <AbsolutePoint location="-228,342" />
+      <AbsolutePoint location="-228,390" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveBuilderPreference.do,project,/showProjectBuilderList.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="585,1335" />
+      <AbsolutePoint location="585,1291" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupSchedule.do,page3,project.setupSchedule.setExcludeDay,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="322,-8" rDim2="-176,-24" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/saveProject.do,success,/viewProjectSummary.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="89,630" />
+      <AbsolutePoint location="89,483" />
+      <AbsolutePoint location="551,483" />
+      <AbsolutePoint location="551,633" />
+      <AbsolutePoint location="1360,633" />
+      <AbsolutePoint location="1360,850" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="project.References,null,/manageReference.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="720,684" />
+      <AbsolutePoint location="608,684" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupScheduleSubmit.do,return,/viewProjectSummery.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="-38,180" rDim2="660,1240" />
+      <Point rDim1="-1088,180" rDim2="-390,1240" />
+      <Point rDim1="-1043,-1085" rDim2="-405,-20" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showReportHistory.do,success,project.History,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="511,597" />
+      <AbsolutePoint location="585,597" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/viewProjectSummary.do,SummaryView,project.Summary,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1530,883" />
+      <AbsolutePoint location="1850,883" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="InputInternalLibreryForm;6,null,/showInputInternalLibForm.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="473,885" />
+      <AbsolutePoint location="473,856" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="project.References.inputInternalLibrary,null,/addInternalLibrary.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="828,819" />
+      <AbsolutePoint location="900,819" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/build.do,error,/Error.jsp,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="-43,78" rDim2="187,-15" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showBuilderPreference.do,project,project.BuilderList.preference,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="76,1410" />
+      <AbsolutePoint location="165,1410" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showSystemEnvironment.do,success,admin.systemEnvironment,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="106,1068" />
+      <AbsolutePoint location="225,1068" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="ProjectSummery;6,null,/viewProjectSummery.do,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="-86,615" />
+      <AbsolutePoint location="-86,515" />
+      <AbsolutePoint location="45,515" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/setupSchedule.do,finish,/setupScheduleSubmit.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="22,112" rDim2="-863,75" />
+      <Point rDim1="802,112" rDim2="-83,75" />
+    </Bendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/viewList.do,success,main.projectList,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="536,198" />
+      <AbsolutePoint location="645,198" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/build.do,checkoutSuccess,project.checkoutResult,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="776,267" />
+      <AbsolutePoint location="930,267" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showInputInternalLibForm.do,null,project.References.inputInternalLibrary,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="571,825" />
+      <AbsolutePoint location="615,825" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/showSystemBuilder.do,success,admin.systemBuilderList,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="91,1233" />
+      <AbsolutePoint location="165,1233" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+</FlowViewLayout>

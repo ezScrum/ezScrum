@@ -1,0 +1,111 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           Collections
+Resource          ../../ServerConfig.txt
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ezScrumGAE_TenantManagement.txt
+
+*** Keywords ***
+ezScrumGAE Suite Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Maximize Browser Window
+    Title Should Be    ezScrum Logon!
+    #
+    Set Selenium Speed    ${SELENIUM_SPEED}
+
+ezScrumGAE Suite Teardown
+    Comment    Click Image    images/logout.gif
+    Comment    Title Should Be    ezScrum Logon!
+    Comment    Close Browser
+
+_SystemAdmin Login
+    # fill Logon Form
+    Comment    Set Selenium Speed    ${SELENIUM_SPEED}
+    Input Text    userId    admin
+    Input Password    password    admin
+    Submit Form    logonForm
+    Wait Until Page Contains    Tenant Management
+    Title Should Be    ezScrum, SSLab NTUT
+
+_SystemAdmin Logout
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+
+delete Tenant
+    Select From List    xpath=//select[@id='kind_input']    TenantDataStore
+    Click Button    list_button    andDontWait
+    # select all
+    Wait Until Page Contains Element    xpath=//input[@id='allkeys']
+    Click Element    xpath=//input[@id='allkeys']    andDontWait
+    Click Button    xpath=//input[@id='delete_button']    andDontWait
+    # confirm, click "Yes" Button
+    Wait Until Page Contains    deleted.
+    Xpath Should Match X Times    //thead/tr[@class='even']    0
+    ${message} =    Confirm Action
+
+clean Tenant
+    [Documentation]    clean all Tenant
+    ${_GAE_Console_URL} =    Set Variable    ${LOGIN_URL}/_ah/admin/datastore
+    # setup
+    Go To    ${_GAE_Console_URL}
+    Wait Until Page Contains    Entity Kind:
+    Comment    Set Selenium Speed    ${SELENIUM_SPEED}
+    #
+    ${isTenantExisted} =    Get Matching Xpath Count    //select[@id='kind_input']/option[.='TenantDataStore']
+    Log    ${isTenantExisted}
+    Run Keyword If    ${isTenantExisted} == 1    delete Tenant
+    #
+    Go To    ${LOGIN_URL}
+
+Test Tenant Management - Add Tenant Setup
+    clean Tenant
+    _SystemAdmin Login
+
+Test Tenant Management - Add Tenant Teardown
+    _SystemAdmin Logout
+    clean Tenant
+
+Test Tenant Management - Edit Tenant Setup
+    clean Tenant
+    _SystemAdmin Login
+    # add Tenant
+    ${_isCreated} =    Check Tenant Is Create    ${tsTenantInfo[0]}
+    Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    1
+    _SystemAdmin Logout
+    #
+    _SystemAdmin Login
+
+Test Tenant Management - Edit Tenant Teardown
+    _SystemAdmin Logout
+    clean Tenant
+
+Test Tenant Management - Stop Tenant Setup
+    clean Tenant
+    _SystemAdmin Login
+    # add Tenant
+    ${_isCreated} =    Check Tenant Is Create    ${tsTenantInfo[0]}
+    Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    1
+    Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    1
+    _SystemAdmin Logout
+    #
+    _SystemAdmin Login
+
+Test Tenant Management - Stop Tenant Teardown
+    _SystemAdmin Logout
+    clean Tenant
+
+Test Tenant Management - Renew Tenant Setup
+    clean Tenant
+    _SystemAdmin Login
+    # add Tenant
+    ${_isCreated} =    Check Tenant Is Create    ${tsTenantInfo[0]}
+    Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    0
+    Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    0
+    _SystemAdmin Logout
+    #
+    _SystemAdmin Login
+
+Test Tenant Management - Renew Tenant Teardown
+    _SystemAdmin Logout
+    clean Tenant

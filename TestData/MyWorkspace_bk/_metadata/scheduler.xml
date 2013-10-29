@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE preferences SYSTEM 'http://java.sun.com/dtd/preferences.dtd'>
+
+<preferences EXTERNAL_XML_VERSION="1.0">
+  <root type="system">
+    <map />
+    <node name="jcis">
+      <map />
+      <node name="scheduler">
+        <map>
+          <entry key="profileId" value="EveryFewDays" />
+          <entry key="interval" value="2" />
+          <entry key="hour" value="0" />
+          <entry key="minute" value="0" />
+          <entry key="excludeMonday" value="false" />
+          <entry key="excludeTuesday" value="true" />
+          <entry key="excludeWednesday" value="true" />
+          <entry key="excludeThursday" value="false" />
+          <entry key="excludeFriday" value="true" />
+          <entry key="excludeSaturday" value="true" />
+          <entry key="excludeSunday" value="true" />
+          <entry key="runAfterDate" value="N/A" />
+        </map>
+      </node>
+    </node>
+  </root>
+</preferences>
+

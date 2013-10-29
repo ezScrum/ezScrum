@@ -1,0 +1,246 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           Collections
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+Resource          ezScrum_ProductBacklog_Story.txt
+Resource          ezScrum_ProductBacklog_Tag.txt
+Resource          ezScrum_ProductBacklog_Search.txt
+Resource          ezScrum_ProductBacklog_Filter.txt
+Resource          ../SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          ../ReleasePlan/ezScrum_ReleasePlan_Management.txt
+
+*** Keywords ***
+Test Product Backlog Suite Setup
+    Login Page    ${LOGIN_URL}
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Product Backlog
+    Clean All Tag
+    Clean All Story
+
+Test Product Backlog Suite Teardown
+    Select Node Product    Product Backlog
+    Clean All Tag
+    Clean All Story
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    Close Browser
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Edit Story Identify Invalid Value Setup
+    Create Story With Arguments    new Edit Story With Invalid Value    0    0    0    ${EMPTY}    "Note: newStoryNormal"
+    ...    "HowToDemo: newStoryNormal"
+
+Test Edit Story Identify Invalid Value Teardown
+    Delete Story With Arguments    new Edit Story With Invalid Value
+
+Test Create Story Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
+    ...    HowToDemo: newStory
+
+Test Create Story Teardown
+    Delete Story With Arguments    newStory
+    Delete Tag With Arguments    testTagName
+
+Test Create Story With Invalid Value Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    ${EMPTY}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+
+Test Create Story With Invalid Value Teardown
+    [Arguments]    ${storyID}
+    Delete Tag With Arguments    testTagName
+    Delete Story Use StoryID    ${storyID}
+
+Test Edit Story Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    oriStory    5    3    1    testTagName    Note: newStory
+    ...    HowToDemo: newStory
+
+Test Edit Story Teardown
+    [Arguments]    ${storyID}
+    Delete Tag With Arguments    testTagName
+    Delete Story Use StoryID    ${storyID}
+
+Test Remove Story Tag Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
+    ...    HowToDemo: newStory
+
+Test Remove Story Tag Teardown
+    Delete Story With Arguments    newStory
+
+Test Mark And UnMark Story Tag Setup
+    Create Tag With Arguments    markAndUnMarkTag
+    Create Story With Arguments    newStory    5    3    1    ${EMPTY}    Note: newStory
+    ...    HowToDemo: newStory
+
+Test Mark And UnMark Story Tag Teardown
+    Delete Tag With Arguments    markAndUnMarkTag
+    Delete Story With Arguments    newStory
+
+Test Create Tag Setup
+    [Documentation]    建立兩種Tag: 正常字串 & 特殊字元
+    # open Tag Manage window
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    # add tagName: \ Normal
+    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Input Text    xpath=//input[@name="newTagName"]    ${tsTag}
+    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tsTag}
+    # add tagName: \ Special
+    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Input Text    xpath=//input[@name="newTagName"]    ${tsTagX}
+    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tsTagX}
+
+Test Create Tag Teardown
+    [Documentation]    刪除兩種Tag: 正常字串 & 特殊字元
+    # remove TestData
+    Delete Tag
+    Delete Tag
+    # close Tag Manage window
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait
+
+Test Delete Tag Setup
+    [Arguments]    ${tagCount}
+    # open Tag Manage window
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    # add Tag
+    : FOR    ${index}    IN RANGE    1    ${tagCount} + 1
+    \    Create Tag    ${tsTag}_${index}
+
+Test Delete Tag Teardown
+    # close Tag Manage window
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait
+
+Test Product Backlog Filter Setup
+    # 建立測試資料
+    Create Story With Arguments    newStoryNormal    0    0    0    ${EMPTY}    "Note: newStoryNormal"
+    ...    "HowToDemo: newStoryNormal"
+    Create Story With Arguments    newStoryBacklogged    0    0    0    ${EMPTY}    "Note: newStoryBacklogged"
+    ...    "HowToDemo: newStoryBacklogged"
+    Create Story With Arguments    newStoryDetailed    5    5    5    ${EMPTY}    "Note: newStoryDetailed"
+    ...    "HowToDemo: newStoryDetailed"
+    Create Story With Arguments    newStoryDone    8    8    8    ${EMPTY}    "Note: newStoryDone"
+    ...    "HowToDemo: newStoryDone"
+
+Test Product Backlog Filter Teardown
+    # 刪除測試資料
+    Delete Story With Arguments    newStoryNormal
+    Delete Story With Arguments    newStoryBacklogged
+    Delete Story With Arguments    newStoryDetailed
+    Delete Story With Arguments    newStoryDone
+
+Test Product Backlog Done Filter Teardown
+    # 刪除測試資料
+    Delete Story With Arguments    newStoryNormal
+    Delete Story With Arguments    newStoryBacklogged
+    Delete Story With Arguments    newStoryDetailed
+    Delete Closed With StoryName    newStoryDone
+
+Test Product Backlog Search Setup
+    # 新增story
+    Create Story With Arguments    newStoryFirst    1    1    1    ${EMPTY}    newStoryFirstNote
+    ...    newStoryFirstHowToDemo
+    Create Story With Arguments    newStorySecond    3    3    3    ${EMPTY}    newStorySecondNote
+    ...    newStorySecondHowToDemo
+    Create Story With Arguments    newStoryThird    5    5    5    ${EMPTY}    newStoryThirdNote
+    ...    newStoryThirdHowToDemo
+    Create Story With Arguments    newStoryFourth    8    8    8    ${EMPTY}    newStoryFourthNote
+    ...    newStoryFourthHowToDemo
+    Create Story With Arguments    newStoryFifth    8    8    8    ${EMPTY}    newStoryFifthNote
+    ...    newStoryFifthHowToDemo
+    # 新增Sprint
+    Select Node Product    Sprint Plan
+    ${sprintStartDate}=    Get Start Date    NOW
+    Create Sprint with Date    sprint1 in A    ${sprintStartDate}    2    4    100    100
+    ${sprintStartDate}=    Get Start Date    NOW +14d
+    Create Sprint with Date    sprint2 in A    ${sprintStartDate}    2    4    100    100
+    # 將story加到sprint
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]    andDontWait
+    Wait Until Page Contains Element    xpath=//div[@id="AddExistedStory_Window"]//span[text()="Select Existed Stories"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFourth")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFourth")]
+    Click Element    xpath=//button[text()="Add Existed Stories"]    andDontWait
+    Wait Until Page Contains    Add Existing Stories
+    Click Element    xpath=//table[@id="SprintBacklog_nextSprintBtn"]//button    andDontWait    # 切換到下一個sprint
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]    andDontWait
+    Wait Until Page Contains Element    xpath=//div[@id="AddExistedStory_Window"]//span[text()="Select Existed Stories"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFifth")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFifth")]
+    Click Element    xpath=//button[text()="Add Existed Stories"]    andDontWait
+    # 新增Release
+    Select Node Product    Release Plan
+    ${sprintStartDate}=    Get Start Date    NOW
+    ${sprintEndDate}=    Get Start Date    NOW +28d
+    @{tsReleasePlan}=    Create List    testReleasePlan    ${sprintStartDate}    ${sprintEndDate}    test Release Plan Description
+    NewReleasePlan    @{tsReleasePlan}
+
+Test Product Backlog Search Teardown
+    [Documentation]    先重新整理進入product backlog將搜尋狀態清除(由於無法直接透過點選Please Select ...清除搜尋結果)，
+    ...    再將所建立的story刪除
+    Reload Page
+    Title Should Be    ezScrum, SSLab NTUT
+    Select Node Product    Product Backlog
+    Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
+    Clean All Story
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+
+Test ProductBacklog Session - New Story Setup
+    LOG    ${tsStoryA}
+    LOG    ${tsStoryB}
+    CreateStoryInA
+    CreateStoryInB
+
+Test ProductBacklog Session - New Story Teardown
+    # Window A
+    Select Window    ${tcBrowserAlias_A}
+    Select Node Product    Product Backlog
+    Clean All Story
+    Close Window
+    # Window B
+    Select Window    ${tcBrowserAlias_B}
+    Select Node Product    Product Backlog
+    Clean All Story
+    Close Window
+    # go to main window
+    Select Window
+
+Test ProductBacklog Session - Read Story With Tag Setup
+    LOG    ${tsStoryA}
+    LOG    ${tsStoryB}
+    CreateStoryWithTagInA
+    CreateStoryWithTagInB
+
+Test ProductBacklog Session - Read Story With Tag Teardown
+    # Window A
+    Select Window    ${tcBrowserAlias_A}
+    Select Node Product    Product Backlog
+    Clean All Tag
+    Clean All Story
+    Close Window
+    # Window B
+    Select Window    ${tcBrowserAlias_B}
+    Select Node Product    Product Backlog
+    Clean All Tag
+    Clean All Story
+    Close Window
+    # go to main window
+    Select Window

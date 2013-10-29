@@ -1,0 +1,114 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          common_resource.txt
+Resource          ../Global Define.txt
+
+*** Variables ***
+${userName}       admin
+${userPassword}    admin
+
+*** Keywords ***
+Login Page
+    [Arguments]    ${loginUrl}
+    [Documentation]    User name和password的值，預設皆為admin
+    Run Keyword if    "${VERSION}"=="GAE"    _GAE Setup    ${loginUrl}
+    Run Keyword if    "${VERSION}"=="Web"    Open Browser    ${loginUrl}    ${BROWSER}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+
+Login With Invalid Credentials Should Fail
+    [Arguments]    ${name}    ${password}    ${errorMessage}
+    Maximize Browser Window
+    Input Text    userId    ${name}
+    Input Password    password    ${password}
+    Submit Form    logonForm
+    ${errorMessageCount}=    Get Matching Xpath Count    //span[@class="FormError"]
+    ${errorMessageOne}=    Get Text    xpath=(//span[@class="FormError"])[1]
+    ${errorMessageTwo}=    Run Keyword if    "${errorMessageCount}"=="2"    Get Text    xpath=(//span[@class="FormError"])[2]
+    Run Keyword if    "${errorMessageCount}"=="1"    Should Be Equal    ${errorMessage}    ${errorMessageOne}
+    Run Keyword if    "${errorMessageCount}"=="2"    Should Be Equal    ${errorMessage}    ${errorMessageOne}\n${errorMessageTwo}
+    Title Should Be    ezScrum Logon!
+
+Login Page With Account
+    [Arguments]    ${loginUrl}    ${name}    ${password}
+    LOG    ${VERSION}
+    Run Keyword if    "${VERSION}"=="GAE"    _GAE Setup    ${loginUrl}
+    Run Keyword if    "${VERSION}"=="Web"    Open Browser    ${loginUrl}    ${BROWSER}
+    Maximize Browser Window
+    _InputLoginForm    ${name}    ${password}
+
+Login Page With Account In The Same Browser
+    [Arguments]    ${name}    ${password}
+    _InputLoginForm    ${name}    ${password}
+
+Login Page Using New Tab With Alias
+    [Arguments]    ${loginUrl}    ${alias}
+    [Documentation]    1. 透過分頁的方式登入ezScrum
+    ...    2. 登入的User name和password的值設定在Global Config裡，預設皆為admin
+    Run Keyword if    '${VERSION}' == 'GAE'    Set Test Variable    ${loginUrl}    ${loginUrl}/logon.do?tenantId=${TENANT_ID}
+    New Tab With Alias    ${loginUrl}    ${alias}
+    Maximize Browser Window
+    Wait Until Page Contains Element    userId
+    Wait Until Page Contains Element    password
+    _InputLoginForm    ${userName}    ${userPassword}
+
+_InputLoginForm
+    [Arguments]    ${name}    ${password}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Input Text    userId    ${name}
+    Input Password    password    ${password}
+    Submit Form    logonForm
+    # 待修正
+    Wait Until Page Contains Element    xpath=//img[@src="images/logout.gif"]
+    ${isValid} =    Get Matching Xpath Count    //tbody/tr/td[text()="ProjectList"]
+    # GAE bug
+    Run Keyword if    ${isValid} == 0    Click Element    xpath=//td[.='Management']    andDontWait
+    Run Keyword if    ${isValid} == 0    Wait Until Page Loaded
+    Run Keyword if    ${isValid} == 0    Wait Until Page Contains    ProjectList
+    #
+    Run Keyword if    "${VERSION}"=="GAE"    SwitchToPage    ProjectList
+    Wait Until Page Contains Element    xpath=//span[text()="Project List"]
+    #
+    Title Should Be    ezScrum, SSLab NTUT
+
+_GAE Setup
+    [Arguments]    ${loginUrl}
+    ${_GAE_LOGIN_URL} =    Set Variable    ${loginUrl}/logon.do?tenantId=${TENANT_ID}
+    #
+    Open Browser    ${_GAE_LOGIN_URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # 檢查Tenant是否存在
+    ${isInvalidTenancy} =    Get Matching Xpath Count    //span[.='Invalid Tenancy']
+    Run Keyword if    ${isInvalidTenancy} == 1    _GAE Add Tenant    ${loginUrl}
+    Run Keyword if    ${isInvalidTenancy} == 1    Go To    ${_GAE_LOGIN_URL}
+    #
+    Wait Until Page Contains    Welcome to ${TENANT_ID}
+
+_GAE Add Tenant
+    [Arguments]    ${loginUrl}
+    Go To    ${loginUrl}
+    # fill Logon Form
+    Input Text    userId    admin
+    Input Password    password    admin
+    Submit Form    logonForm
+    Wait Until Page Contains    Tenant Management
+    Wait Until Page Contains Element    xpath=//button[text()="Add Tenant"]
+    Click Element    xpath=//button[text()="Add Tenant"]    andDontWait
+    # fill Tenant Info
+    Focus AND Input Text    //input[@name="id"]    ${TENANT_ID}
+    Focus AND Input Text    //input[@name="name"]    ${TENANT_ID}_name
+    Input Text    xpath=//textarea[@name="description"]    ${TENANT_ID} description
+    # fill Rent Service
+    Focus AND Input Text    //input[@name="adminname"]    admin
+    ${_xpathCheckbox} =    Set Variable    xpath=//input[@type="checkbox"][@name="enable"]
+    Select Checkbox    ${_xpathCheckbox}
+    # Save
+    ${xpathSaveButton} =    Find Current Window Element    Add New Tenant With Rent Service    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    # 同步機制
+    Wait Until Page Contains    Success.
+    #
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    #

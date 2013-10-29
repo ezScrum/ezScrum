@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee   http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<!-- stuts web setting -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+   
+   
+   <!-- stapler setting-->
+   <servlet>
+  		<servlet-name>Stapler</servlet-name>
+  		<servlet-class>org.kohsuke.stapler.Stapler</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+  		<servlet-name>Stapler</servlet-name>
+  		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<listener>
+	    <listener-class>ntut.csie.ezScrum.stapler.WebAppMain</listener-class>
+    </listener>
+	
+	<!-- Session setting-->	
+	<listener>
+	 	<listener-class>ntut.csie.ezScrum.web.support.HttpSessionCollector</listener-class>
+	</listener>
+   
+    <filter>
+        <filter-name>encodingservlet</filter-name>
+        <filter-class>ntut.csie.ezScrum.web.EncodingServlet</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingservlet</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <!-- error page -->
+    <error-page>
+		<error-code>404</error-code>
+		<location>/Error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/Error.jsp</location>
+	</error-page>
+	
+	<!-- restful web service setting -->
+	<display-name>ezScrumMobile</display-name>
+	<servlet>
+    	<servlet-name>Jersey REST Service</servlet-name>
+    	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    	<init-param>
+      		<param-name>com.sun.jersey.config.property.packages</param-name>
+      		<param-value>ntut.csie.ezScrum.restful.mobile.controller</param-value>
+   		</init-param>
+    	<load-on-startup>1</load-on-startup>
+ 	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>Jersey REST Service</servlet-name>
+    	<url-pattern>/web-service/*</url-pattern>
+  	</servlet-mapping>
+</web-app>
+

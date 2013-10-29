@@ -1,0 +1,9 @@
+grant {
+    permission java.net.SocketPermission "*:1024-65535",
+        "connect,accept";
+    permission java.net.SocketPermission "*:80", "connect";
+    permission java.lang.RuntimePermission "createClassLoader";
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.io.FilePermission "<<ALL FILES>>", "read";
+};

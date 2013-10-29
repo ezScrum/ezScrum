@@ -1,0 +1,28 @@
+.TopMenu {
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.SelectColor {
+	color: #000000;
+}
+
+.UnSelectColor {
+	color: #000000;
+}
+
+.UserProfile {
+	background-color: #AFBFCF;
+	font-family: Times New Roman, Times, serif;
+	font-size: 18px;
+	font-weight: normal;
+	border: 0px solid #003366;
+	padding: 3px;
+	opacity:0.6;
+	filter:Alpha(Opacity=60);
+}
+
+.TopPanelProjectInfo {
+}

@@ -1,0 +1,274 @@
+05-26 10:32:52 log: flush
+java.lang.NullPointerException
+	at org.h2.engine.Database.flush(Database.java:1681)
+	at org.h2.store.WriterThread.run(WriterThread.java:85)
+	at java.lang.Thread.run(Unknown Source)
+05-26 10:36:50 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CONTENT"; expected "COMMIT, CREATE, CALL, CHECKPOINT, COMMENT, {"; SQL statement:
+CONTENT [42001-129]
+05-26 10:40:27 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY[*] CONTENT BLOB "; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table Mantis_bug_file_table modify CONTENT BLOB [42001-129]
+05-26 10:40:43 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY[*] CONTENT BLOB(1024) "; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table Mantis_bug_file_table modify CONTENT BLOB(1024) [42001-129]
+05-26 10:41:51 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY[*] CONTENT BLOB "; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table Mantis_bug_file_table modify CONTENT BLOB [42001-129]
+05-26 10:42:09 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE SET CONTENT[*] BLOB "; expected "REFERENTIAL_INTEGRITY"; SQL statement:
+alter table Mantis_bug_file_table set CONTENT BLOB [42001-129]
+05-26 10:42:19 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE SET CONTENT[*] BLOB(1024) "; expected "REFERENTIAL_INTEGRITY"; SQL statement:
+alter table Mantis_bug_file_table set CONTENT BLOB(1024) [42001-129]
+05-26 10:42:33 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY[*] CONTENT BLOB "; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table Mantis_bug_file_table modify CONTENT BLOB [42001-129]
+05-26 10:44:54 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY[*] CONTENT BLOB"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+ALTER TABLE MANTIS_BUG_FILE_TABLE MODIFY CONTENT BLOB [42001-129]
+07-14 13:02:44 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "EZSCRUM_TAG_RELATION"; expected "EXPLAIN, EXECUTE, {"; SQL statement:
+EZSCRUM_TAG_RELATION [42001-131]
+07-14 13:02:58 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "EZSCRUM_TAG_RELATION"; expected "EXPLAIN, EXECUTE, {"; SQL statement:
+EZSCRUM_TAG_RELATION [42001-131]
+07-14 14:57:25 jdbc[2]: Connection not closed
+java.lang.Exception: Stack Trace
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:121)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:94)
+	at org.h2.Driver.connect(Driver.java:58)
+	at org.h2.server.web.WebServer.getConnection(WebServer.java:589)
+	at org.h2.server.web.WebApp.login(WebApp.java:884)
+	at org.h2.server.web.WebApp.process(WebApp.java:202)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:161)
+	at org.h2.server.web.WebThread.process(WebThread.java:129)
+	at org.h2.server.web.WebThread.run(WebThread.java:86)
+	at java.lang.Thread.run(Unknown Source)
+07-14 17:10:15 jdbc[2]: Connection not closed
+java.lang.Exception: Stack Trace
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:121)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:94)
+	at org.h2.Driver.connect(Driver.java:58)
+	at org.h2.server.web.WebServer.getConnection(WebServer.java:589)
+	at org.h2.server.web.WebApp.login(WebApp.java:884)
+	at org.h2.server.web.WebApp.process(WebApp.java:202)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:161)
+	at org.h2.server.web.WebThread.process(WebThread.java:129)
+	at org.h2.server.web.WebThread.run(WebThread.java:86)
+	at java.lang.Thread.run(Unknown Source)
+07-14 17:38:02 jdbc[3]: Connection not closed
+java.lang.Exception: Stack Trace
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:121)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:94)
+	at org.h2.Driver.connect(Driver.java:58)
+	at org.h2.server.web.WebServer.getConnection(WebServer.java:589)
+	at org.h2.server.web.WebApp.login(WebApp.java:884)
+	at org.h2.server.web.WebApp.process(WebApp.java:202)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:161)
+	at org.h2.server.web.WebThread.process(WebThread.java:129)
+	at org.h2.server.web.WebThread.run(WebThread.java:86)
+	at java.lang.Thread.run(Unknown Source)
+07-14 18:46:42 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZKANBAN_STATUSORDER
+(
+ISSUEID INT NOT NULL ,
+ORDER[*] TINYINTEZSCRUM_TAG_RELATION NOT NULL
+)
+CREATE TABLE EZTRACK_COMBOFIELD
+( 
+TYPEFIELDID INT(10) UNSIGNED NOT NULL,
+COMBONAME VARCHAR(40) NOT NULL
+) "; expected "identifier"; SQL statement:
+CREATE TABLE ezkanban_statusorder
+(
+issueID int not null ,
+order tinyintEZSCRUM_TAG_RELATION not null
+)
+CREATE TABLE eztrack_combofield
+( 
+typefieldid int(10) UNSIGNED not null,
+comboname varchar(40) not null
+) [42001-131]
+07-14 18:46:42 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED[*] AUTO_INCREMENT NOT NULL,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; expected ")"; SQL statement:
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42001-131]
+07-14 18:48:10 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Unknown data type: "TINYINTEZSCRUM_TAG_RELATION"; SQL statement:
+CREATE TABLE ezkanban_statusorder
+(
+issueID int not null ,
+"ORDER" tinyintEZSCRUM_TAG_RELATION not null
+)
+CREATE TABLE eztrack_combofield
+( 
+typefieldid int(10) UNSIGNED not null,
+comboname varchar(40) not null
+)
+
+
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [50004-131]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:316)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.command.Parser.parseColumn(Parser.java:3383)
+	at org.h2.command.Parser.parseColumnForTable(Parser.java:3248)
+	at org.h2.command.Parser.parseCreateTable(Parser.java:4707)
+	at org.h2.command.Parser.parseCreate(Parser.java:3504)
+	at org.h2.command.Parser.parsePrepared(Parser.java:315)
+	at org.h2.command.Parser.parse(Parser.java:279)
+	at org.h2.command.Parser.parse(Parser.java:251)
+	at org.h2.command.Parser.prepareCommand(Parser.java:223)
+	at org.h2.engine.Session.prepareLocal(Session.java:420)
+	at org.h2.engine.Session.prepareCommand(Session.java:381)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1070)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:163)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:151)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1258)
+	at org.h2.server.web.WebApp.query(WebApp.java:974)
+	at org.h2.server.web.WebApp.process(WebApp.java:214)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:161)
+	at org.h2.server.web.WebThread.process(WebThread.java:129)
+	at org.h2.server.web.WebThread.run(WebThread.java:86)
+	at java.lang.Thread.run(Unknown Source)
+07-14 18:48:49 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZKANBAN_STATUSORDER
+(
+ISSUEID INT NOT NULL ,
+""ORDER"" TINYINT NOT NULL
+)
+CREATE[*] TABLE EZTRACK_COMBOFIELD
+( 
+TYPEFIELDID INT(10) UNSIGNED NOT NULL,
+COMBONAME VARCHAR(40) NOT NULL
+)
+
+
+CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED AUTO_INCREMENT NOT NULL,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; SQL statement:
+CREATE TABLE ezkanban_statusorder
+(
+issueID int not null ,
+"ORDER" tinyint not null
+)
+CREATE TABLE eztrack_combofield
+( 
+typefieldid int(10) UNSIGNED not null,
+comboname varchar(40) not null
+)
+
+
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42000-131]
+07-14 18:49:23 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZKANBAN_STATUSORDER
+(
+ISSUEID INT NOT NULL ,
+""ORDER"" TINYINT(3) NOT NULL
+)
+CREATE[*] TABLE EZTRACK_COMBOFIELD
+( 
+TYPEFIELDID INT(10) UNSIGNED NOT NULL,
+COMBONAME VARCHAR(40) NOT NULL
+)
+
+
+CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED AUTO_INCREMENT NOT NULL,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; SQL statement:
+CREATE TABLE ezkanban_statusorder
+(
+issueID int not null ,
+"ORDER" tinyint(3) not null
+)
+CREATE TABLE eztrack_combofield
+( 
+typefieldid int(10) UNSIGNED not null,
+comboname varchar(40) not null
+)
+
+
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42000-131]
+07-14 18:49:58 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED[*] AUTO_INCREMENT NOT NULL,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; expected ")"; SQL statement:
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42001-131]
+07-14 18:50:38 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED[*] AUTO_INCREMENT NOT NULL,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; expected ")"; SQL statement:
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED auto_increment not null,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42001-131]
+07-14 18:50:50 jdbc[2]: SQLException
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE EZTRACK_TYPEFIELD
+( 
+TYPEFIELDID INT PRIMARY KEY UNSIGNED[*] NOT NULL AUTO_INCREMENT ,
+ISSUETYPEID INT UNSIGNED NOT NULL,
+TYPEFIELDNAME VARCHAR(20) NOT NULL,
+TYPEFIELDCATEGORY VARCHAR(80) NOT NULL
+) "; expected ")"; SQL statement:
+CREATE TABLE eztrack_typefield
+( 
+typefieldid int primary key UNSIGNED not null auto_increment ,
+issuetypeid int UNSIGNED not null,
+typefieldname varchar(20) not null,
+typefieldcategory varchar(80) not null
+) [42001-131]

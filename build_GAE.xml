@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ezScrumGAE" default="runEntry" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Variable Declaration -->
+	<!-- =================================================================== -->
+
+	<!-- this is for platform checking -->
+	<property environment="env" />
+
+	<!-- JAVA relative parameter -->
+	<property name="javac_target_version" value="1.6" />
+	<property name="javac_encoding" value="utf-8" />
+	<property name="javac_deprecation" value="on" />
+	<property name="javac_debug" value="on" />
+
+	<property name="java.runtime.localDir" value="javabootstrap" />
+	<property name="java.runtime.localDir.jre6" value="javabootstrap/jre6" />
+
+	<!-- =================================================================== -->
+	<!-- Path/Location Declaration -->
+	<!-- =================================================================== -->
+	<!-- use "location" instead of "value" -->
+
+	<!-- common Directory -->
+	<property name="Temp.Dir" location="_temp" />
+	<property name="Temp.Classes.Dir" location="${Temp.Dir}/tmpClasses" />
+	<property name="sdk.dir" location="${env.GAE_SDK}" />
+	<property name="RFStest.dir" location="${base.Dir}/robotTesting" />
+	<property name="report.dir" location="${RFStest.dir}/TestReport" />
+
+	<property name="ProjectBuild.Dir" location="build" />
+	<!-- WEB -->
+	<property name="Web.Dir" location="WebContent" />
+	<property name="Web.Inf" location="${Web.Dir}/WEB-INF" />
+	<property name="Web.Class.Dir" location="${Web.Inf}/classes" />
+	<property name="Web.PlugInWorkspace" location="${Web.Dir}/pluginWorkspace" />
+
+	<property name="Target.Dir" location="${Web.Class.Dir}" />
+	<property name="Target.WarFile" location="ezScrum.war"/>
+	<!-- LIB -->
+	<property name="Local.Library.Dir" location="lib" />
+	<property name="Web.Library.Dir" location="${Web.Inf}/lib" />
+	<!-- Source Code -->
+	<property name="Source.Dir" location="." />
+	<property name="Source.Java.Dir" location="java" />
+	<property name="Source.Test.Dir" location="test" />
+	<property name="Source.Tools.Dir" location="tools" />
+	<!-- UT -->
+	<property name="ProjectTest.Dir" location="_UnitTest" />
+	<!-- AT -->
+	<property name="RFStest.Dir" location="robotTesting" />
+	<property name="RFSreport.Dir" location="_TestReport" />
+	<!-- Product -->
+	<property name="Product.Dir" location="_product" />
+	<property name="Product.Inf.Dir" location="${Product.Dir}/war/WEB-INF" />
+	<property name="Product.Class.Dir" location="${Product.Inf.Dir}/classes" />
+	<property name="Product.Lib.Dir" location="${Product.Inf.Dir}/lib" />
+
+	<!--  -->
+	<target name="_______segment_LIB_______" />
+	<!-- =================================================================== -->
+	<!-- Import LIB -->
+	<!-- =================================================================== -->
+
+	<!-- GAE -->
+	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+
+	<!-- -->
+	<path id="project.classpath">
+		<!-- WEB runtime LIB -->
+		<pathelement path="${Web.Class.Dir}" />
+		<!-- local LIB -->
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<!-- Web LIB -->
+		<fileset dir="${Web.Library.Dir}">
+			<filename name="**/*.jar" />
+		</fileset>
+		<!-- SDK LIB -->
+		<fileset dir="${sdk.dir}/lib">
+			<include name="shared/**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Jetty Server Library-->
+	<path id="jetty.server.classpath">
+		<fileset dir="${Local.Library.Dir}/Jetty">
+			<filename name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Web Library -->
+	<path id="web.library.classpath">
+		<fileset dir="${Web.Library.Dir}">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- 目前 Web Lib 目錄下也有放ANT相關的LIB,會造成 run UT crashed,應該要移除!? -->
+	<!-- Library for UT compile -->
+	<path id="ut.library.classpath">
+		<!-- mock struts test 需使用到 servelet API -->
+		<fileset dir="${Local.Library.Dir}/tomcat5.5">
+			<filename name="*.jar" />
+		</fileset>
+		<!-- test LIB -->
+		<fileset dir="${Local.Library.Dir}/test">
+			<filename name="*.jar" />
+		</fileset>
+		<!-- Web LIB -->
+		<fileset dir="${Web.Library.Dir}">
+			<include name="JCIS_*.jar" />
+			<!-- 待移除 -->
+			<include name="ezScrum_*.jar" />
+			<!-- 待移除 -->
+			<include name="ezTrack*.jar" />
+			<!-- 待移除 -->
+			<include name="mysql-*.jar" />
+			<include name="struts*.jar" />
+			<!-- plugin used -->
+			<include name="gson-*.jar" />
+			<include name="jettison-*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Library for running UT -->
+	<path id="ut_run.library.classpath">
+		<fileset dir="${Web.Library.Dir}">
+			<!-- web test used-->
+			<include name="commons-lang-*.jar" />
+			<include name="c3p0-*.jar" />
+			<include name="commons-collections-*.jar" />
+			<!-- pluginLoader test used-->
+			<include name="commons-io-*.jar" />
+			<!-- GAE 也有使用到 -->
+			<!-- 參考GAE -->
+			<include name="commons-beantuils.jar" />
+			<include name="commons-digester.jar" />
+			<include name="commons-fileupload.jar" />
+			<include name="commons-logging-*.jar" />
+			<include name="commons-validator.jar" />
+			<include name="commons-vfs-*.jar" />
+			<!--加密用 -->
+			<include name="ganymed.jar"/>
+		</fileset>
+	</path>
+
+
+	<!-- =================================================================== -->
+	<!-- ASPECT J -->
+	<!-- =================================================================== -->
+
+	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+		<classpath>
+			<pathelement location="${Local.Library.Dir}/aspectj/aspectjtools.jar" />
+		</classpath>
+	</taskdef>
+
+	<!-- AspectJ Library -->
+	<path id="aspectj.library.classpath">
+		<fileset dir="${Local.Library.Dir}/aspectj">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+
+	<!-- =================================================================== -->
+	<!-- GAE -->
+	<!-- =================================================================== -->
+
+	<!-- GAE TEST ClassPath  -->
+	<path id="gaeTest.classpath">
+		<!-- JUnit -->
+		<fileset dir="${Local.Library.Dir}/test/gae">
+			<include name="ant-contrib-1.0b3.jar"/>
+			<include name="hamcrest-core-1.1.jar"/>
+			<include name="hamcrest-library-1.1.jar"/>
+			<include name="jmock-2.5.1.jar"/>
+			<include name="jmock-junit3-2.5.1.jar"/>
+			<include name="jdo2-api-2.3-eb.jar"/>
+		</fileset>
+		<!-- GAE -->
+		<fileset dir="${sdk.dir}/lib">
+			<include name="testing/appengine-testing.jar"/>
+			<include name="impl/appengine-api.jar"/>
+			<include name="impl/appengine-api-labs.jar"/>
+			<include name="impl/appengine-api-stubs.jar"/>
+			<include name="user/**/*.jar"/>
+		</fileset>	
+	</path>
+
+	<!--  -->
+	<target name="_______segment_Platform_______" />
+	<!-- =================================================================== -->
+	<!-- Platform Dependency -->
+	<!-- =================================================================== -->
+
+	<!--  -->
+	<target name="checkPlatform"
+	    depends="check.unix, check.windows">
+	</target>
+
+	<!-- UNIX -->
+	<target name="check.unix" depends="os_check" unless="is.windows">
+		<echo message="####### run on UNIX platform #######"/>
+		<property name="target.Dir" location="RobotFramework"/>
+	</target>
+
+	<!-- WINDOWS -->
+	<target name="check.windows" depends="os_check" if="is.windows">
+		<echo message="!!!!!!! run on WINDOWS platform !!!!!!!"/>
+	</target>
+
+	<!--  -->
+	<target name="temp">
+		<!-- unix -->
+		<exec executable="${unix.program}"
+	      osfamily="unix"/>
+		<!-- windows -->
+		<exec executable="${windows.program}"
+		  osfamily="windows"/>
+	</target>
+
+	<!--  -->
+	<target name="os_check"
+	      description="check opearting system">
+		<echo> OS checking...</echo>
+		<condition property="is.windows">
+			<!-- windows/unix -->
+			<os family="windows"/>
+		</condition>
+	</target>
+
+	<!--  -->
+	<target name="deployPlatform"
+	    depends="deploy.unix, deploy.windows">
+	</target>
+
+	<!-- UNIX -->
+	<target name="deploy.unix" depends="os_check" unless="is.windows">
+		<echo message="deploy on UNIX platform"/>
+		<property name="target.Dir" location="${base.Dir}/RobotFramework"/>
+		<!-- ezScrumGAE -->
+		<property name="ezScrumGAE.zipFile" location="${Product.Dir}/ezScrumGAE.zip"/>
+		<property name="ezScrumGAE.unzipDir" location="${Product.Dir}"/>
+		<property name="ezScrumGAE.runDir" location="${ezScrumGAE.unzipDir}/WebContent"/>
+		<!-- GAE -->
+		<property name="gae.zip.srcDir" location="${target.Dir}"/>
+		<property name="gae.unzip.trgDir" location=".."/>
+		<property name="gae.Dir" location="${sdk.dir}"/>
+		<property name="gae.RunFile" location="${gae.Dir}/bin/dev_appserver.sh"/>
+	</target>
+
+	<!-- WINDOWS -->
+	<target name="deploy.windows" depends="os_check" if="is.windows">
+		<echo message="deploy on WINDOWS platform"/>
+		<property name="target.Dir" location="${base.Dir}/webApp"/>
+		<property name="winIP.lib" location="${Local.Library.Dir}/ant-contrib-1.0b3.jar"/>
+		<!-- ezScrumGAE -->
+		<property name="ezScrumGAE.zipFile" location="${Product.Dir}/ezScrumGAE.zip"/>
+		<property name="ezScrumGAE.unzipDir" location="${Product.Dir}"/>
+		<property name="ezScrumGAE.runDir" location="${ezScrumGAE.unzipDir}/WebContent"/>
+		<!-- GAE -->
+		<property name="gae.zip.srcDir" location="${target.Dir}"/>
+		<property name="gae.unzip.trgDir" location=".."/>
+		<property name="gae.Dir" location="${sdk.dir}"/>
+		<property name="gae.RunFile" location="${gae.Dir}/bin/dev_appserver.cmd"/>
+	</target>
+
+	<!--  -->
+	<target name="_______segment_GAE_______"/>
+
+	<!-- =================================================================== -->
+	<!-- GAE part -->
+	<!-- =================================================================== -->
+
+	<property name="gae.version" value="1.6.0" />
+	<!-- for remind, not use other version -->
+	<property name="gae.hostIP" value="127.0.0.1" />
+	<property name="gae.port" value="8888" />
+
+	<!-- download GAE -> only works on linux -->
+	<target name="downloadGAE" depends="os_check" unless="is.windows">
+		<echo>run LAB FTP get...</echo>
+		<ftp action="list" 
+		       server="140.124.181.156"
+		       userid="lab1321" 
+		       password="lab1321*"
+		       listing="labftp_listing.txt">
+			<fileset>
+				<include name="**"/>
+			</fileset>
+		</ftp>
+
+		<ftp action="get"
+		       server="140.124.181.156"
+		       remotedir="RobotFramework"
+		       userid="lab1321" 
+		       password="lab1321*"
+		       binary="true">
+			<fileset dir="${gae.zip.srcDir}">
+				<include name="appengine-java-sdk-1.6.2.zip"/>
+			</fileset>
+		</ftp>
+	</target>
+
+	<!-- unzip GAE  -->
+	<target name="unzipGAE" depends="deployPlatform">
+		<echo message="unzip GAE..."/>
+		<unzip src="${gae.zip.srcDir}/appengine-java-sdk-1.6.2.zip" 
+  		   dest="${gae.unzip.trgDir}" 
+  		   overwrite="false"/>
+	</target>
+
+	<!-- deploy GAE  -->
+	<target name="deployGAE" depends="downloadGAE, unzipGAE">
+		<echo message="deploy GAE..."/>
+	</target>
+
+	<target name="startGAEserverOnWindows" depends="os_check" if="is.windows">
+		<!-- need lib -->
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${winIP.lib}"/>
+			</classpath>
+		</taskdef>
+		<!-- get IP first! -->
+		<exec executable="cmd" outputproperty="winip">
+			<arg value="/c" />
+			<arg value="ipconfig" />
+		</exec>
+		<propertyregex property="localIP" input="${winip}" regexp=". . . . . . . . . . . . : (.*)&#xD;&#xA;" select="\1"/>
+		<echo> get Windows IP = ${localIP}</echo>
+		<echo> get port = ${gae.port}</echo>
+		<!-- -->
+		<echo message="startup GAE on Windows..."/>
+		<exec executable="cmd" spawn="true">
+			<!-- spawn="true" : create new thread -->
+			<arg value="/c" />
+			<arg value="${gae.RunFile}"/>
+			<arg value="--address=${gae.hostIP}"/>
+			<arg value="--port=${gae.port}"/>
+			<arg value="${ezScrumGAE.runDir}"/>
+		</exec>
+		<echo message="http://${gae.hostIP}:${gae.port}"/>
+		<sleep seconds="20"/>
+		<!-- <waitfor maxwait="30" maxwaitunit="second" checkevery="1000">
+			<http url="http://${gae.hostIP}:${gae.port}"/>
+		</waitfor> -->
+	</target>
+
+	<!-- startup GAE on Unix -->
+	<target name="startGAEserverOnUnix" depends="os_check" unless="is.windows">
+		<!-- get IP first! -->
+		<exec executable="hostname" outputproperty="linuxip">
+			<arg value="-I" />
+		</exec>
+		<echo> get LINUX IP = ${linuxip}</echo>
+		<!-- -->
+		<echo message="startup GAE on Unix..."/>
+		<property name="localIP" value="${linuxip}"/>
+		<exec executable="${gae.RunFile}" spawn="true">
+			<arg value="--address=${gae.hostIP}"/>
+			<arg value="--port=${gae.port}"/>
+			<arg value="${ezScrumGAE.runDir}"/>
+		</exec>
+		<echo message="http://${gae.hostIP}:${gae.port}"/>
+		<sleep seconds="20"/>
+		<!-- <waitfor maxwait="30" maxwaitunit="second" checkevery="1000">
+		<http url="http://${gae.hostIP}:${gae.port}"/>
+	</waitfor> -->
+	</target>
+
+	<target name="startGAEserver"
+		    depends="deployPlatform, startGAEserverOnUnix, startGAEserverOnWindows">
+	</target>
+
+	<!-- stop GAE on Windows -->
+	<target name="stopGAEserverOnWindows" depends="os_check" if="is.windows">
+		<exec executable="cmd" output="pid.out.file">
+			<arg value="/c" />
+			<arg value="${env.JAVA_HOME}/bin/jps"/>
+		</exec>
+		<loadfile srcfile="pid.out.file" property="pid.out">
+			<filterchain>
+				<linecontains>
+					<contains value="DevAppServerMain"/>
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="DevAppServerMain"/>
+					<trim/>
+					<ignoreblank/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+		<echo>Stop gaeServer instance with PID - "${pid.out}"</echo>
+		<exec executable="pskill" output="pid.out.file">
+			<arg value="${pid.out}"/>
+		</exec>
+		<delete file="pid.out.file"/>
+	</target>
+
+	<!-- stop GAE on Unix -->
+	<target name="stopGAEserverOnUnix" depends="os_check" if="is.windows">
+		<!-- ? -->
+	</target>
+
+	<target name="stopGAEserver" 
+		depends="deployPlatform, stopGAEserverOnUnix, stopGAEserverOnWindows">
+	</target>
+
+	<!--  -->
+	<target name="_______segment_WebApp_______"/>
+
+	<!-- =================================================================== -->
+	<!-- ezScrum part -->
+	<!-- =================================================================== -->
+
+	<target name="clean">
+		<echo> clear DIR: Web Class, Product </echo>
+		<delete>
+			<fileset dir="${Web.Class.Dir}" excludes="ApplicationResources.properties"/>
+		</delete>
+		<delete dir="${Product.Dir}"/>
+		<!--  -->
+		<echo> copy file: /META-INF/jdoconfig.xml to WebApp directory </echo>
+		<mkdir dir="${Web.Class.Dir}/META-INF"/>
+		<copy todir="${Web.Class.Dir}/META-INF">
+			<fileset dir="${Source.Java.Dir}/META-INF"/>
+		</copy>		
+	</target>
+
+	<target name="createDir">
+		<mkdir dir="${Web.Class.Dir}"/>
+		<mkdir dir="${Product.Dir}"/>
+	</target>
+
+	<target name="copyGAElib"
+			description="Copies the App Engine JARs to the WebContent.">
+		<echo> 複製 GAE lib 到 WebApp/lib 目錄下.</echo>
+		<copy
+	        todir="${Web.Library.Dir}"
+	        flatten="true">
+			<fileset dir="${sdk.dir}/lib/user">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copyAspectJlib"
+			description="Copies the AspectJ to the WebContent.">
+		<echo> 複製 AspectJ lib 到 WebApp/lib 目錄下.</echo>
+		<copy
+	        todir="${Web.Library.Dir}"
+	        flatten="true">
+			<fileset dir="${Local.Library.Dir}/aspectj">
+				<include name="aspectjrt.jar" />
+				<include name="aspectjweaver.jar" />
+				<include name="org.aspectj.matcher.jar" />
+			</fileset>
+		</copy>
+	</target>	
+	
+	<target name="copyJDOconfig"
+			description="DataNucleus Access Platform 需要此設定檔，指示它使用「應用服務引擎」資料存放區做為 JDO 實作的後端" >
+		<echo> copy file: /META-INF/jdoconfig.xml to WebApp directory </echo>
+		<mkdir dir="${Web.Class.Dir}/META-INF"/>
+		<copy todir="${Web.Class.Dir}/META-INF">
+			<fileset dir="${Source.Java.Dir}/META-INF"/>
+		</copy>
+	</target>
+
+
+	<target name="compile" 
+			depends="copyGAElib, createDir"
+	      	description="Compiles Java source and copies other source files to the Web DIR.">
+		<echo> 使用 AspectJ post-1.1 compiler 編譯原始碼 </echo>
+		<!-- 使用 AspectJ post-1.1 compiler -->
+		<iajc
+			source = "1.6"
+	        srcdir="${Source.Java.Dir}"
+	        destDir="${Web.Class.Dir}"
+	  		encoding="utf-8"
+	    	debug="on" >
+			<classpath refid="project.classpath" />
+			<classpath refid="aspectj.library.classpath" />
+		</iajc>
+		<!-- -->
+		<copydir dest="build/classes" src="${Web.Class.Dir}" />
+	</target>
+
+	<target name="compileX" 
+	      	description="只做編譯原始碼的動作">
+		<echo> 使用 AspectJ post-1.1 compiler 編譯原始碼 </echo>
+		<!-- 使用 AspectJ post-1.1 compiler -->
+		<iajc
+			source = "1.6"
+	        srcdir="${Source.Java.Dir}"
+	        destDir="${Web.Class.Dir}"
+	  		encoding="utf-8"
+	    	debug="on" >
+			<classpath refid="project.classpath" />
+			<classpath refid="aspectj.library.classpath" />
+		</iajc>
+	</target>
+
+	<!-- ======================================================================= -->
+	<!-- long DIR name(> ? chars) & depth(> 3 level) will cause -->
+	<!--   run "java" CreateProcess error=87 -->
+	<!-- ======================================================================= -->
+
+	<target name="JDO" depends="compileX">
+		<echo> JDO enhancement on compiled data store classes!</echo>
+		<enhance failonerror="true">
+			<classpath>
+				<pathelement path="${appengine.tools.classpath}"/>
+				<pathelement path="${Web.Class.Dir}"/>
+				<fileset dir="${Web.Inf}/lib" includes="*.jar"/>
+			</classpath>
+			<!-- -->
+			<fileset dir="${Web.Class.Dir}" includes="**/SaaS/database/*.class"/>			
+			<fileset dir="${Web.Class.Dir}" includes="**/SaaS/aspect/*.class"/>
+		</enhance>
+	</target>
+
+	<!-- startup GAE on Windows -->
+	<target name="runGae" depends="os_check, deployPlatform" if="is.windows">
+		<echo message="startup GAE on Windows locally..."/>
+		<exec executable="cmd">
+			<arg value="/c" />
+			<arg value="${gae.Dir}/bin/dev_appserver.cmd"/>
+			<arg value="--address=${gae.hostIP}" />
+			<arg value="--port=${gae.port}" />
+			<arg value="${Web.Dir}" />
+			<!-- <arg value="${ezScrumGAE.runDir}"/> -->
+		</exec>
+		<echo message="http://${gae.hostIP}:${gae.port}" />
+	</target>
+
+	<!-- ======================================================================= -->
+	<!-- GAE DB use JDO enhancement to manage database, must use it ! -->
+	<!-- ======================================================================= -->
+
+	<!-- 建立 JDO 類別時 (DataStore)，使用 Java 註解來描述在資料存放區中儲存實例的方式，以及從資料存放區擷取時重新建立實例的方式。
+	Access Platform 會使用編譯後的處理步驟 (DataNucleus 稱為「強化」類別)，將類別連結至實作。 -->
+	<target name="datanucleusenhance" depends="JDO"
+	      description="Performs JDO enhancement on compiled data classes.">
+		<echo> data nucleus enhance </echo>
+		<echo> Performs JDO enhancement on compiled data classes. </echo>
+	</target>
+
+	<!-- -->
+	<target name="request_logs"
+	      description="Downloads log data from App Engine for the application.">
+		<appcfg action="request_logs" war="war">
+			<options>
+				<arg value="--num_days=5"/>
+			</options>
+			<args>
+				<arg value="logs.txt"/>
+			</args>
+		</appcfg>
+	</target>
+
+	<target name="zipWebContent" depends="copyGAElib, copyAspectJlib, copyJDOconfig, datanucleusenhance">
+		<zip destfile="${Product.Dir}/ezScrumGAE.zip" >
+			<zipfileset dir="${Web.Dir}" prefix="WebContent" />
+		</zip>
+	</target>
+
+	<!-- build Product code  -->
+	<target name="buildProduct" depends="zipWebContent">
+		<echo message="build Product code..."/>
+	</target>
+
+	<!-- unzip Product code  -->
+	<target name="unzipProduct" depends="deployPlatform, buildProduct">
+		<echo message="unzip Product code..."/>
+		<unzip src="${ezScrumGAE.zipFile}" 
+	  		   dest="${ezScrumGAE.unzipDir}" 
+	  		   overwrite="false"/>
+	</target>
+
+	<target name="buildProductAll" depends="unzipProduct">
+	</target>
+
+	<target name="makeProduct" 
+			description="產生 Product">
+		<!-- 產生目錄 -->
+		<mkdir dir="${Product.Dir}"/>
+		<!-- 編譯: 使用 AspectJ post-1.1 compiler -->
+		<delete dir="${Product.Class.Dir}"/>
+		<iajc
+			source = "1.6"
+	        srcdir="${Source.Java.Dir}"
+	        destDir="${Product.Class.Dir}"
+	  		encoding="utf-8"
+	    	debug="on" >
+			<classpath refid="project.classpath" />
+			<classpath refid="aspectj.library.classpath" />
+		</iajc>
+		<!-- JDO 強化  -->
+		<enhance failonerror="true">
+			<classpath>
+				<pathelement path="${appengine.tools.classpath}"/>
+				<pathelement path="${Product.Class.Dir}"/>
+				<fileset dir="${Web.Inf}/lib/GAE" includes="*.jar"/>
+			</classpath>
+			<!-- -->
+			<fileset dir="${Product.Class.Dir}" includes="**/SaaS/database/*.class"/>
+		</enhance>
+		<!-- JDO 設定檔案複製 -->
+		<mkdir dir="${Web.Inf}/META-INF"/>
+		<copy todir="${Web.Inf}/META-INF">
+			<fileset dir="${Source.Java.Dir}/META-INF"/>
+		</copy>
+	</target>
+
+	<target name="runProduct" 
+			description="執行 Product">
+		<exec executable="cmd">
+			<arg value="/c" />
+			<arg value="${sdk.dir}/bin/dev_appserver.cmd"/>
+			<arg value="--port=8888"/>
+			<arg value="${Product.Dir}/war"/>
+		</exec>
+	</target>
+
+	<!--  -->
+	<target name="_______segment_UnitTest_______"/>
+
+	<!-- =================================================================== -->
+	<!-- JUnitTest -->
+	<!-- =================================================================== -->
+
+	<property name="UT.TestClassesDir" location="${ProjectTest.Dir}/test-classes" />
+	<property name="UT.TestResultsDir" location="${ProjectTest.Dir}/test-results" />
+
+	<target name="cleanUT.Dir" description="清除之前所產生的檔案">
+		<delete dir="${ProjectTest.Dir}" />
+		<mkdir dir="${ProjectTest.Dir}" />
+	</target>
+
+	<target name="compileUTcode" depends="cleanUT.Dir" description="編譯測試程式碼">
+		<echo message="Compile All Java Test File： ${Source.Test.Dir}" />
+		<!-- 清除之前產生的檔案 -->
+		<delete dir="${UT.TestClassesDir}" />
+		<mkdir dir="${UT.TestClassesDir}" />
+		<!-- java compile -->
+		<javac 
+			srcdir="${Source.Test.Dir}" 
+			destdir="${UT.TestClassesDir}"	
+			source="${javac_target_version}" 
+			target="${javac_target_version}" 
+			bootclasspath="${java.runtime.localDir.jre6}/rt.jar"
+			includeAntRuntime="false"
+			encoding="${javac_encoding}">
+			<include name="**/SaaS/**"/>
+			<classpath>
+				<pathelement location="${UT.TestClassesDir}" />
+				<pathelement location="${Web.Class.Dir}" />
+				<pathelement location="${Local.Library.Dir}/test/junit.jar" />
+			</classpath>
+			<classpath refid="ut.library.classpath" />
+			<classpath refid="gaeTest.classpath" />
+		</javac>
+	</target>
+
+	<!-- run Unit Test -->
+	<target name="runUT" depends="JDO, compileUTcode">
+		<echo message="run UT..."/>
+		<echo message="GAE DB 需要  /META-INF/jdoconfig.xml 才能進行測試"/>
+		<!-- 清除之前產生的檔案 -->
+		<delete dir="${UT.TestResultsDir}" />
+		<mkdir dir="${UT.TestResultsDir}" />
+		<!-- JUnit run -->
+		<junit fork="on" haltonfailure="no" printsummary="on">
+			<sysproperty key="basedir" value="${basedir}" />
+			<!-- 指定需要使用到的 LIB -->
+			<classpath>
+				<pathelement location="${UT.TestClassesDir}" />
+				<pathelement location="${Web.Class.Dir}" />
+				<pathelement location="${Local.Library.Dir}/test/junit.jar" />
+			</classpath>
+			<classpath refid="ut.library.classpath" />
+			<classpath refid="ut_run.library.classpath" />
+			<classpath refid="aspectj.library.classpath" />
+			<classpath refid="gaeTest.classpath" />
+			<!-- 指定輸出報表的格式 -->
+			<formatter type="xml" />
+			<!-- 要測試的 Test Suite or Test Case(較完整) 二選一 -->
+			<!-- 指定要測試的 Test Suite -->
+			<!--			
+			<batchtest todir="${UT.TestResultsDir}">
+				<fileset dir="${UT.TestClassesDir}">
+					<include name="**/*TestSuite.class" />
+				</fileset>
+			</batchtest>
+-->
+			<!-- 指定要測試的 Test Case -->
+			<batchtest todir="${UT.TestResultsDir}">
+				<fileset dir="${UT.TestClassesDir}" includes="**/*Test.class" />
+			</batchtest>
+		</junit>
+		<!-- 若 XML 轉換成 HTML 有錯誤(JAVA版本問題),更改 Runtime JRE 設定可解決此問題 -->
+		<junitreport todir="${UT.TestResultsDir}">
+			<fileset dir="${UT.TestResultsDir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${ProjectTest.Dir}/html" />
+		</junitreport>
+	</target>
+
+	<!-- UT entry -->
+	<target name="UnitTest" 
+			depends="runUT">
+		<echo message="run UT testing done!"/>
+	</target>
+
+	<!--  -->
+	<target name="_______segment_AcceptanceTest_______"/>
+
+	<!-- =================================================================== -->
+	<!-- RFS Test -->
+	<!-- =================================================================== -->
+
+	<property name="rsf.TestDir" location="${RFStest.dir}"/>
+	<property name="rsf.TestFile" location="${rsf.TestDir}/ezScrum_TestCase.txt"/>
+	<property name="rsf.TestOutputDir" location="${report.dir}"/>
+
+	<!-- test GAE on Windows -->
+	<target name="testGAEOnWindows" depends="os_check" if="is.windows">
+		<echo message="test GAE on Windows..."/>
+		<echo> output DIR: ${rsf.TestOutputDir}</echo>
+		<echo> test file: ${rsf.TestFile}</echo>
+		<exec executable="cmd" spawn="false">
+			<!-- spawn="true" : create new thread -->
+			<arg value="/c" />
+			<arg value="pybot -d ${rsf.TestOutputDir}"/>
+			<arg value="${rsf.TestFile}"/>
+		</exec>
+	</target>
+
+	<!-- test GAE on Unix -->
+	<target name="testGAEOnUnix" depends="os_check" unless="is.windows">
+		<echo message="test GAE on Unix..."/>
+		<echo> output DIR: ${rsf.TestOutputDir}</echo>
+		<echo> test file: ${rsf.TestFile}</echo>
+		<mkdir dir="${rsf.TestOutputDir}"/>
+		<exec executable="pybot" spawn="false">
+			<!-- spawn="true" : create new thread -->
+			<arg value="-d"/>
+			<arg value="${rsf.TestOutputDir}"/>
+			<arg value="${rsf.TestFile}"/>
+		</exec>
+	</target>
+
+	<!-- test GAE -->
+	<target name="testGAE"
+		  depends="testGAEOnUnix, testGAEOnWindows">
+	</target>
+
+	<!--  -->
+	<target name="ezScrumGAE_RFS_Test" depends="deployPlatform, testGAE">
+		<echo message="ezScrumGAE RFS testing done!"/>
+	</target>
+
+	<!--  -->
+	<target name="_______segment_RunWebService_ByJetty_______" />
+	<!-- =================================================================== -->
+	<!-- Web Service part  -->
+	<!-- =================================================================== -->
+
+	<property name="WebService.IP" value="127.0.0.1"/>
+	<property name="WebService.Port" value="8080"/>
+	<property name="WebService.WaitForReady" value="5"/>
+
+	<property name="Jetty.Dir" location="${env.Jetty}" />
+	<property name="Jetty.RunDir" location="." />
+	<property name="JettyStartFile" value="start.jar"/>
+	<property name="JettyRunner" location="${Jetty.RunDir}/${JettyStartFile}"/>
+	<property name="JettyRunnerManiFest" location="${Jetty.RunDir}/MANIFEST.MF"/>
+	<property name="JettyRunnerConfig" location="${Jetty.RunDir}/JettyServer.xml"/>
+
+	<property name="main.class" value="ntut.csie.ezScrum.web.JettyServer" />
+
+
+	<target name="createManifest" description="創建清單文件">
+		<delete file="${JettyRunnerManiFest}" />
+		<manifestclasspath property="jar.manifest.classpath" jarfile="${Jetty.RunDir}/start.jar">
+			<classpath refid="web.library.classpath" />
+		</manifestclasspath>
+		<manifest file="${JettyRunnerManiFest}">
+			<attribute name="Main-Class" value="${main.class}" />
+			<attribute name="Class-Path" value="${jar.manifest.classpath}" />
+		</manifest>
+	</target>
+
+	<target name="buildJettyRunner" depends="createManifest" description="建立可執行Jar檔用來啟動Web Service">
+		<jar destfile="${JettyRunner}" manifest="${JettyRunnerManiFest}">
+			<fileset dir="${ProjectBuild.Dir}/classes">
+				<include name="**/Jetty*.class" />
+				<!-- MonitorThread generated by JVM -->
+			</fileset>
+		</jar>
+		<delete file="${JettyRunnerManiFest}"/>
+	</target>
+
+	<target name="start_WebService.Windows" depends="os_check, buildJettyRunner" if="is.windows">
+		<!-- -->
+		<echo message="startup Web Service on Windows..."/>
+		<exec executable="cmd">
+			<arg value="/c" />
+			<arg value="java -jar ${JettyRunner} ${JettyRunnerConfig}" />
+		</exec>
+		<echo message="http://${WebService.IP}:${WebService.Port}"/>
+		<sleep seconds="${WebService.WaitForReady}"/>
+		<!-- <waitfor maxwait="30" maxwaitunit="second" checkevery="1000">
+				<http url="http://${gae.hostIP}:${gae.port}"/>
+			</waitfor> -->
+	</target>
+
+	<target name="runWeb">
+		<!-- -->
+		<echo message="startup Web Service on Windows..."/>
+		<exec executable="cmd">
+			<!-- spawn="true" : create new thread -->
+			<arg value="/c" />
+			<arg value="java -jar ${JettyRunner} ${JettyRunnerConfig}" />
+		</exec>
+		<echo message="http://${WebService.IP}:${WebService.Port}"/>
+		<sleep seconds="${WebService.WaitForReady}"/>
+	</target>
+
+	<target name="start_WebService.Unix" depends="os_check" unless="is.windows">
+		<echo message="need your support..."/>
+	</target>
+
+	<target name="start_WebService" depends="start_WebService.Unix, start_WebService.Windows">
+	</target>
+
+	<target name="Start_WebService" depends="checkPlatform, start_WebService">
+		<echo message="Start WebService done!"/>
+	</target>
+
+	<!-- ========= Stop ========= -->
+
+	<property name="PID.File" value="pid.out.file"/>
+	<target name="stop_WebService.Windows" depends="os_check" if="is.windows">
+		<!-- 使用JDK提供的工具 JPS 可以顯示目前所有 Java Process 的 PID -->
+		<!-- 直接在命令列下打 "jps" 顯示的內容即為  pid.out.file 的內容 -->
+		<exec executable="cmd" output="${PID.File}">
+			<arg value="/c" />
+			<arg value="${env.JAVA_HOME}/bin/jps"/>
+		</exec>
+		<loadfile srcfile="${PID.File}" property="pid.out">
+			<filterchain>
+				<linecontains>
+					<contains value="${JettyStartFile}"/>
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="${JettyStartFile}"/>
+					<trim/>
+					<ignoreblank/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+		<!-- ready to kill -->
+		<echo>Stop Web Serveice instance with PID - "${pid.out}"</echo>
+		<exec executable="${Local.Library.Dir}/pskill" output="${PID.File}">
+			<arg value="${pid.out}"/>
+		</exec>
+		<delete file="${PID.File}"/>
+	</target>
+
+	<target name="stop_WebService.Unix" depends="os_check" unless="is.windows">
+	</target>
+
+	<target name="stop_WebService"
+			  depends="stop_WebService.Unix, stop_WebService.Windows">
+	</target>
+
+	<!--  -->
+	<target name="Stop_WebService" depends="checkPlatform, stop_WebService">
+		<echo message="Stop WebService done!"/>
+	</target>
+
+	<!--  -->
+	<target name="_______segment_Entry_______"/>
+
+	<!-- =================================================================== -->
+	<!-- run entry -->
+	<!-- =================================================================== -->
+	<target name="runEntry">
+		<antcall target="deployPlatform"/>
+		<antcall target="buildProduct"/>
+		<antcall target="JUnitTest"/>
+<!--		
+		<antcall target="startGAEserver"/>
+		<antcall target="ezScrumGAE_RFS_Test"/>
+		<antcall target="stopGAEserver"/>
+-->		
+	</target>
+
+
+	<!-- END  -->
+</project>
+

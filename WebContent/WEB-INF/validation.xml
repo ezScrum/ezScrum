@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.0//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd">
+
+<form-validation>
+  <formset>
+    <form name="projectInfoForm" >
+      <field property="name"  depends="required" >
+		 <arg0 key="error.projectname"/>
+      </field>
+      <field property="displayName"  depends="required" >
+		 <arg0 key="error.projectDisplayName"/>
+      </field>
+      <!-- 
+      <field property="outputPath" depends="required">
+		 <arg0 key="error.outputPath"/>
+      </field>      
+      <field property="sourcePathString" depends="required">
+		 <arg0 key="error.sourcePath"/>
+      </field>
+       -->
+      <!-- ITS config  
+      <field property="serverURL" depends="required">
+         <arg0 key="error.serverURL"/>
+      </field>
+      <field property="serverPath" depends="required">
+         <arg0 key="error.serverPath"/>
+      </field>
+      <field property="accountOfDB" depends="required">
+         <arg0 key="error.accountOfDB"/>
+      </field>
+      <field property="pwdOfDB" depends="required">
+         <arg0 key="error.pwdOfDB"/>
+      </field>
+      -->
+ 	  
+    </form> 
+    <form name="saveSystemEnvironmentForm" >
+      <field property="snapshotName"  depends="required" >
+		 <arg0 key="error.snapshotName"/>
+      </field>
+      <field property="snapshotPath"  depends="required" >
+		 <arg0 key="error.snapshotPath"/>
+      </field>
+      <field property="workspaceRootPath"  depends="required" >
+		 <arg0 key="error.workspaceRootPath"/>
+      </field>
+    </form> 
+       
+    <form name="logonForm" >
+      <field property="userId"  depends="required" >
+		 <arg0 key="error.logon.userId"/>
+      </field>
+      <field property="password"  depends="required" >
+		 <arg0 key="error.logon.passeword"/>
+      </field>
+    </form>        
+    <form name="manageReferencesForm" >
+      <field property="libraryPath"  depends="required" >
+		 <arg0 key="error.internalLibrary"/>
+      </field>
+    </form>        
+  </formset>
+</form-validation>

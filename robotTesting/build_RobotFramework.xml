@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PortableRobotFramework" basedir="." default="runEntry">
+	<!-- 感謝蔚儒學長提供範例檔案,參考網址
+http://tonylin.idv.tw/dokuwiki/doku.php/rf:rf:portable_robot_package
+	 -->
+
+	<!-- 準備動作 -->
+	<!-- 1.在此建置腳本所在目錄建立 packages 目錄,並在此目錄下建立子目錄 jre -->
+	<!-- 2.將從網路下載的檔案 RobotFramework .jar & Selenium LIB .tar.gz 放到  packages 目錄下 -->
+	<!-- 3.將加工製作出來的可攜帶　JAVA Runtime Environment 各種版本 放到  packages/jre 目錄下 -->
+
+	<!-- NOTE -->
+	<!-- build　目錄為建置過程中的暫放目錄, dist 目錄為最終產出目錄 -->
+
+	<!-- 將  Linux & Windows 分成各自的 target -->
+
+	<!-- =================================================================== -->
+	<!-- Variable Declaration -->
+	<!-- =================================================================== -->
+
+	<property environment="env" />
+	<!-- this is for platform checking -->
+
+	<!-- COMMON -->
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="dist.dir" location="${basedir}/dist" />
+	<property name="packages.dir" location="${basedir}/packages" />
+	<property name="build.common.dir" location="${build.dir}/common-package" />
+	<property name="build.common.libs.dir" location="${build.common.dir}/Lib" />
+
+	<!-- 1.RobotFramework -->
+	<!-- 包含 jython -->
+	<property name="RF_VERSION" value="2.7.5" />
+	<property name="robotframework" value="robotframework-${RF_VERSION}.jar" />
+	<property name="rf.jar.file" location="${packages.dir}/${robotframework}" />
+
+	<!-- 2.Selenium LIB -->
+	<!-- 主要是用到它的原始碼(python),第一次執行會先做編譯動作 -->
+	<property name="S_VERSION" value="2.9.1" />
+	<property name="robotframework-selenium.package.dir" value="robotframework-seleniumlibrary-${S_VERSION}" />
+	<property name="robotframework-selenium" value="${robotframework-selenium.package.dir}.tar.gz" />
+	<property name="build.selenium.dir" location="${build.dir}/${robotframework-selenium.package.dir}" />
+	<property name="rfs.tar.file" location="${packages.dir}/${robotframework-selenium}" />
+
+	<!-- 3.JRE -->
+	<!-- 製作出可攜帶版本使得系統免裝 JAVA(但系統必須先設定 path 才可使用),製作方法請參考
+http://stackoverflow.com/questions/1619662/where-can-i-get-the-latest-jre-jdk-as-a-zip-file-i-mean-no-exe-installer
+	-->
+	<property name="packages.jre.dir" location="${packages.dir}/jre" />
+	<!-- linux -->
+	<property name="JRE_LINUX_VERSION" value="?" />
+	<property name="linux-jre-x86.dir" location="jre1.6.0_31_i586"/>
+	<property name="linux-jre-x86" location="${linux-jre-x86.dir}.tar.gz" />
+	<property name="jre.linux.x86.tar.file" location="${packages.jre.dir}/${linux-jre-x86}" />
+	<!-- linux x64 -->
+	<property name="JRE_LINUX_x64_VERSION" value="?" />
+	<property name="linux-jre-x64.dir" location="jre1.6.0_31_x64"/>
+	<property name="linux-jre-x64" location="${linux-jre-x64.dir}.tar.gz" />
+	<property name="jre.linux.x64.tar.file" location="${packages.jre.dir}/${linux-jre-x64}" />
+	<!-- windows -->
+	<property name="JRE_WIN_VERSION" value="7u10" />
+	<property name="win-jre" value="jre-${JRE_WIN_VERSION}-windows.zip" />
+	<property name="jre.win.x86.zip.file" location="${packages.jre.dir}/${win-jre}" />
+	<property name="target.win.x86" value="portable-robotframework-win" />
+	<!-- windows x64 -->
+	<property name="JRE_WIN_x64_VERSION" value="7u10" />
+	<property name="win-jre64" value="jre-${JRE_WIN_VERSION}-windows-x64.zip" />
+	<property name="jre.win.x64.zip.file" location="${packages.jre.dir}/${win-jre64}" />
+	<property name="target.win.x64" value="portable-robotframework-win-x64" />
+
+	<!--  -->
+	<target name="_______segment_Platform_______" />
+	<!-- =================================================================== -->
+	<!-- Platform Dependency -->
+	<!-- =================================================================== -->
+	<!-- check OS -->
+	<target name="os_check" description="check opearting system">
+		<echo> OS checking...</echo>
+		<condition property="is.windows">
+			<!-- windows/unix -->
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<!--  -->
+	<target name="checkPlatform" depends="check.unix, check.windows">
+	</target>
+
+	<!-- UNIX -->
+	<target name="check.unix" depends="os_check" unless="is.windows">
+		<echo message="####### run on UNIX platform #######" />
+	</target>
+
+	<!-- WINDOWS -->
+	<target name="check.windows" depends="os_check" if="is.windows">
+		<echo message="!!!!!!! run on WINDOWS platform !!!!!!!" />
+	</target>
+
+
+	<!--  -->
+	<target name="_______segment_Common_______" />
+	<!-- =================================================================== -->
+	<!-- COMMON -->
+	<!-- =================================================================== -->
+	<target name="common_clear">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="common_prepare">
+		<!-- 建立建置目錄 -->
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.common.dir}" />
+		<!-- 解壓縮 Selenium LIB 到建置目錄下 -->
+		<untar compression="gzip" src="${rfs.tar.file}" dest="${build.dir}" />
+		<!-- 解壓縮 JRE 到建置目錄下 
+		<unzip src="${jre.win.x86.zip.file}" dest="${build.dir}/jre-${JRE_WIN_VERSION}" />
+		-->
+		<!-- 將 RobotFramework package 複製到建置目錄下,並將解壓縮後 Selenium LIB 目錄 src 複製到建置目錄的 LIB 下  -->
+		<copy tofile="${build.common.dir}/robotframework.jar" file="${rf.jar.file}" />
+		<mkdir dir="${build.common.libs.dir}" />
+		<copy todir="${build.common.libs.dir}">
+			<fileset dir="${build.selenium.dir}/src" />
+		</copy>
+	</target>
+
+
+	<!--  -->
+	<target name="_______segment_LINUX_______" />
+	<!-- =================================================================== -->
+	<!-- LINUX -->
+	<!-- =================================================================== -->
+	<target name="package_linux_x86" depends="os_check" unless="is.windows">
+		<copy todir="${build.dir}/${package.name}">
+			<fileset dir="${build.common.dir}" />
+		</copy>
+		<move todir="${build.dir}/${package.name}/jre" failonerror="false">
+			<fileset dir="${build.dir}/${jre.package.name}" />
+		</move>
+		<tar destfile="${dist.dir}/${package.name}.tar.gz" compression="gzip">
+			<tarfileset dir="${build.dir}">
+				<include name="${package.name}"/>
+				<include name="${package.name}/**"/>
+				<exclude name="${package.name}/jre/bin/java"/>
+			</tarfileset>
+			<tarfileset dir="${build.dir}" mode="755">
+				<include name="${package.name}/jre/bin/java"/>
+			</tarfileset>
+		</tar>
+	</target>
+
+	<target name="build_linux_x86" depends="os_check" unless="is.windows">
+
+	</target>
+
+	<target name="build_linux_x64" depends="os_check" unless="is.windows">
+
+	</target>
+
+	<target name="build_linux" depends="os_check" unless="is.windows">
+
+	</target>
+		
+		
+	<!--  -->
+	<target name="_______segment_WINDOWS_______" />		
+	<!-- =================================================================== -->
+	<!-- WINDOWS -->
+	<!-- =================================================================== -->
+	<target name="prepare_windows_x86" depends="os_check" if="is.windows">
+		<delete file="${dist.dir}/${target.win.x86}.zip" />
+		<!-- 解壓縮 JRE 到建置目錄下 -->
+		<unzip src="${jre.win.x86.zip.file}" dest="${build.dir}/jre-${JRE_WIN_VERSION}" />
+	</target>
+
+	<target name="package_windows_x86" depends="os_check" if="is.windows">
+		<!-- 將 RobotFramework package + Selenium LIB (source code) 複製到輸出目錄下  -->
+		<copy todir="${build.dir}/${target.win.x86}">
+			<fileset dir="${build.common.dir}" />
+		</copy>
+		<!-- 將 JRE 解開後的目錄與檔案移到輸出目錄下  -->
+		<move todir="${build.dir}/${target.win.x86}/jre" failonerror="false">
+			<fileset dir="${build.dir}/jre-${JRE_WIN_VERSION}" />
+		</move>
+		<!-- 建立最終產出目錄 -->
+		<mkdir dir="${dist.dir}" />
+		<!-- 將輸出目錄壓縮並放到最終產出目錄下 -->
+		<zip destfile="${dist.dir}/${target.win.x86}.zip" basedir="${build.dir}">
+			<include name="${target.win.x86}" />
+			<include name="${target.win.x86}/**" />
+		</zip>
+	</target>
+
+	<target name="build_windows_x86" depends="os_check" if="is.windows">
+		<antcall target="common_prepare" />
+		<antcall target="prepare_windows_x86" />
+		<antcall target="package_windows_x86" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- WINDOWS x64 -->
+	<!-- =================================================================== -->
+
+	<target name="prepare_windows_x64" depends="os_check" if="is.windows">
+		<delete file="${dist.dir}/${target.win.x64}.zip" />
+		<!-- 解壓縮 JRE 到建置目錄下 -->
+		<unzip src="${jre.win.x64.zip.file}" dest="${build.dir}/jre-${JRE_WIN_VERSION}-x64" />
+	</target>
+
+	<target name="package_windows_x64" depends="os_check" if="is.windows">
+		<!-- 將 RobotFramework package + Selenium LIB (source code) 複製到輸出目錄下  -->
+		<copy todir="${build.dir}/${target.win.x64}">
+			<fileset dir="${build.common.dir}" />
+		</copy>
+		<!-- 將 JRE 解開後的目錄與檔案移到輸出目錄下  -->
+		<move todir="${build.dir}/${target.win.x64}/jre" failonerror="false">
+			<fileset dir="${build.dir}/jre-${JRE_WIN_VERSION}-x64" />
+		</move>
+		<!-- 建立最終產出目錄 -->
+		<mkdir dir="${dist.dir}" />
+		<!-- 將輸出目錄壓縮並放到最終產出目錄下 -->
+		<zip destfile="${dist.dir}/${target.win.x64}.zip" basedir="${build.dir}">
+			<include name="${target.win.x64}" />
+			<include name="${target.win.x64}/**" />
+		</zip>
+	</target>
+
+	<target name="build_windows_x64" depends="os_check" if="is.windows">
+		<antcall target="common_prepare" />
+		<antcall target="prepare_windows_x64" />
+		<antcall target="package_windows_x64" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="build_windows" depends="os_check" if="is.windows">
+		<antcall target="build_windows_x86" />
+		<antcall target="build_windows_x64" />
+	</target>
+
+	<!--  -->
+	<target name="_______segment_Entry_______" />
+	<!-- =================================================================== -->
+	<!-- run entry -->
+	<!-- =================================================================== -->
+	<target name="runEntry">
+		<antcall target="checkPlatform"/>
+		<antcall target="common_clear" />
+		<antcall target="build_windows" />
+		<antcall target="build_linux" />
+	</target>
+
+</project>

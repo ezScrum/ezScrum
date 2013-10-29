@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcatProjectProperties>
+    <rootDir>/WebRoot</rootDir>
+    <exportSource>false</exportSource>
+    <reloadable>true</reloadable>
+    <redirectLogger>false</redirectLogger>
+    <updateXml>true</updateXml>
+    <warLocation>D:\jakarta-tomcat-5.0.28\webapps\ezScrum.war</warLocation>
+    <extraInfo></extraInfo>
+    <webPath>/JCIS</webPath>
+</tomcatProjectProperties>

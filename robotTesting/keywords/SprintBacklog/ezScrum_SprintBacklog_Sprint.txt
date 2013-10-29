@@ -1,0 +1,20 @@
+*** Settings ***
+Library         SeleniumLibrary
+Resource        ../../Global Define.txt
+Resource        ../common_resource.txt
+
+*** Keywords ***
+Edit Sprint In Sprint Backlog
+    [Arguments]  ${sprintGoal}  ${sprintInterval}  ${sprintMembers}  ${sprintAvaliableDays}  ${sprintFocusFactor}
+    Click Element  xpath=//table[@id="SprintBacklog_editSprintBtn"]//button[text()="Edit Sprint"]  andDontWait
+    Focus AND Input Text  //textarea[@name="Goal"]  ${sprintGoal}
+    Click Image  xpath=//input[@name="StartDate"]/../img  andDontWait
+    Click Element  xpath=//button[text()="Today"]  andDontWait
+    Focus AND Input Text  //input[@name="Interval"]  ${sprintInterval}
+    Focus AND Input Text  //input[@name="Members"]  ${sprintMembers}
+    Focus AND Input Text  //input[@name="AvaliableDays"]  ${sprintAvaliableDays}
+    Focus AND Input Text  //input[@name="FocusFactor"]  ${sprintFocusFactor}
+    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
+    ${xpathEditSprint}=  Find Current Window Element  Edit Sprint #${sprintID}  Submit
+    Element Enable And Submit  ${xpathEditSprint}
+

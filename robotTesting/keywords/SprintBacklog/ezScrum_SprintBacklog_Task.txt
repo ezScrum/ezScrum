@@ -1,0 +1,87 @@
+*** Settings ***
+Library         SeleniumLibrary
+Resource        ../../Global Define.txt
+Resource        ../common_resource.txt
+Resource        ezScrum_SprintBacklog_Story.txt
+
+*** Keywords ***
+Add Task With Arguments
+    [Arguments]  ${storyID}  ${taskName}  ${taskEstimation}  ${taskNotes}
+    Click Element  xpath=//td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../..  andDontWait
+    Click Element  xpath=//button[text()="Add Task"]  andDontWait
+    Focus AND Input Text  //span[text()="Add New Task"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${taskName}
+    Focus AND Input Text  //span[text()="Add New Task"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimation"]  ${taskEstimation}
+    Focus AND Input Text  //span[text()="Add New Task"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${taskNotes}
+    ${xpathAddTask}=  Find Current Window Element  Add New Task  Submit
+    Element Enable And Submit  ${xpathAddTask}
+    Wait Until Page Contains  Create Task Success.
+
+Add Existing Task With Arguments
+    [Arguments]  ${storyName}  @{taskIDList}
+    Click Element  xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..  andDontWait
+    Click Element  xpath=//button[text()="Add Existing Task"]  andDontWait
+    Wait Until Page Contains  Add Existing Task
+    : FOR  ${id}  IN  @{taskIDList}
+    \  Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${id}"]  1
+    \  Mouse Down  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${id}"]/../..//div[@class="x-grid3-row-checker"]
+    \  Mouse Up  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${id}"]/../..//div[@class="x-grid3-row-checker"]
+    Click Element  xpath=//button[text()="Add Task To Story"]  andDontWait
+    Wait Until Page Contains  Success.
+
+Edit Task With Arguments
+    [Arguments]  ${taskID}  ${taskName}  ${taskHandler}  ${taskPartners}  ${taskRemains}  ${taskActual}  ${taskNotes}
+    Click Element  xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..  andDontWait
+    Click Element  xpath=//button[text()="Edit Task"]  andDontWait
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${taskName}
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]  ${taskHandler}
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]  ${taskPartners}
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]  ${taskRemains}
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]  ${taskActual}
+    Focus AND Input Text  //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${taskNotes}
+    ${xpathEditTask}=  Find Current Window Element  Edit Task #${taskID}  Submit
+    Element Enable And Submit  ${xpathEditTask}
+    Wait Until Page Contains  Edit Task Success.
+
+Drop Task With Arguments
+    [Arguments]  ${taskID}
+    Click Element  xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..  andDontWait
+    Click Element  xpath=//button[text()="Drop Task"]  andDontWait
+    ${xpathDropTask}=  Find Current Window Element  Drop Task  Drop
+    Element Enable And Submit  ${xpathDropTask}
+    Wait Until Page Contains  Drop Task Success.
+
+Show Task History With Arguments
+    [Arguments]  ${taskID}  ${taskName}
+    Click Element  xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..  andDontWait
+    Click Element  xpath=//button[text()="Task History"]  andDontWait
+    Wait Until Page Contains  Issue History List
+    Xpath Should Match X Times  //span[@class="x-panel-header-text" ]/font[text()="＜Task＞ #${taskID} ${taskName}"]  1
+    ${xpathTaskHistoryListClose}=  Find Current Window Element  Issue History List  Close
+    Element Enable And Submit  ${xpathTaskHistoryListClose}
+
+Verify Task Information With Arguments
+    [Arguments]  ${storyName}  ${taskName}  ${taskHandler}  ${taskPartners}  ${taskEstimation}  ${taskRemains}  ${taskActual}
+    ...  ${taskNotes}
+    ${storyID}=  Get Story ID In Sprint Backlog  ${storyName}
+    Xpath Should Match X Times  //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../../tr[2]//div[text()="${taskName}"]/../../td[3]/div[text()="${taskName}"]  1
+    Xpath Should Match X Times  //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../../tr[2]//div[text()="${taskName}"]/../../td[6]/div[text()="${taskEstimation}"]  1
+    Xpath Should Match X Times  //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../../tr[2]//div[text()="${taskName}"]/../../td[8]/div[text()="new"]  1
+    ${taskID}=  Get Task ID In Sprint Backlog  ${taskName}
+    Click Element  xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..  andDontWait
+    Click Element  xpath=//button[text()="Edit Task"]  andDontWait
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${taskName}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]  ${taskHandler}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]  ${taskPartners}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimation"]  ${taskEstimation}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]  ${taskRemains}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]  ${taskActual}
+    Compare Field Content  xpath=//span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${taskNotes}
+    ${xpathEditTask}=  Find Current Window Element  Edit Task #${taskID}  Cancel
+    Element Enable And Submit  ${xpathEditTask}
+
+Get Task ID In Sprint Backlog
+    [Arguments]  ${taskName}
+    Wait Until Page Contains Element  xpath=//div[@class="x-treegrid-text" and (text()="${taskName}")]/../../td[1]/a/span  3
+    ${taskID}=  Get Text  xpath=//div[@class="x-treegrid-text" and (text()="${taskName}")]/../../td[1]/a/span
+    [Return]  ${taskID}
+

@@ -1,0 +1,51 @@
+*** Settings ***
+Documentation     test ezScrumn sprint plan page
+Suite Setup       Test SprintPlan Setup
+Suite Teardown    Test SprintPlan Teardown
+Force Tags        SprintPlan
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_SetupTeardown.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/common_resource.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           SeleniumLibrary
+Library           BuiltIn
+
+*** Test Cases ***
+Test Sprint Plan - Create Sprint
+    [Setup]    Test Create Sprint Setup
+    Select Node Product    Sprint Plan
+    Create Sprint    sprint1 sprint goal    2    4    100    100
+    [Teardown]    Test Create Sprint Teardown
+
+Test Sprint Plan - Delete Sprint
+    [Setup]    Test Delete Sprint Setup
+    Select Node Product    Sprint Plan
+    Delete Sprint
+    [Teardown]    Test Delete Sprint Teardown
+
+Test Sprint Plan - Sprint Goal With NewLine
+    [Documentation]    修正在Sprint Goal 輸入換行符號時，無法進入Sprint Backlog.
+    [Setup]    Test Sprint Goal With NewLine Setup
+    Select Node Product    Sprint Plan
+    Verify Sprint Goal With NewLine
+    [Teardown]    Test Sprint Goal With NewLine Teardown
+
+Test Sprint Plan - Session - Read Sprint Plan
+    [Setup]    Test Sprint Session Setup
+    # 切換到第一個分頁並進入 sprint plan 檢查所建立的 sprint
+    Select Window    ${tcBrowserAlias_A}
+    Select Node Product    Sprint Plan
+    Wait Until Page Contains Element    xpath=//span[text()="Sprint Plan List"]
+    Create Sprint    create sprint in projetc A    2    4    100    100
+    Xpath Should Match X Times    //div[@id="SprintPlan_Page"]//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="create sprint in projetc A"]    1
+    
+    # 切換到第二個分頁並進入 sprint plan 檢查, 應沒有 sprint plan 存在
+    Select Window    ${tcBrowserAlias_B}
+    Select Node Product    Sprint Plan
+    Wait Until Page Contains Element    xpath=//span[text()="Sprint Plan List"]
+    Xpath Should Match X Times    //div[@id="SprintPlan_Page"]//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="create sprint in projetc A"]    0
+    
+    [Teardown]    Test Sprint Session Teardown

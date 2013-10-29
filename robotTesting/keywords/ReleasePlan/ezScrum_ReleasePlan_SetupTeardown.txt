@@ -1,0 +1,182 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          ezScrum_ReleasePlan_Management.txt
+
+*** Keywords ***
+Test Release Plan - PreCondition
+    Login Page    ${LOGIN_URL}
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Release Plan
+    # prepare test suite data
+    ${sprintStartDate}=    Get Start Date    NOW
+    ${sprintEndDate}=    Get Start Date    NOW +28d
+    @{tsReleasePlan}=    Create List    testReleasePlan    ${sprintStartDate}    ${sprintEndDate}    test Release Plan Description
+    Set Suite Variable    @{tsReleasePlan}
+
+Test Release Plan - PostCondition
+    Select Window
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+    Exit ezScrum System
+
+Test Release Plan - Add Release Teardown
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Edit Release Setup
+    NewReleasePlan    @{tsReleasePlan}
+
+Test Release Plan - Edit Release Teardown
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Show Release Backlog Setup
+    NewReleasePlan    @{tsReleasePlan}
+
+Test Release Plan - Show Release Backlog Teardown
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Delete Release Setup
+    NewReleasePlan    @{tsReleasePlan}
+
+Test Release Plan - Delete Release Teardown
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Contain Sprints Setup
+    Log    setup
+
+Test Release Plan - Contain Sprints Teardown
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - New Sprint Setup
+    Select Node Product    Release Plan
+    ${startDateFormat}=    Get Start Date    NOW
+    ${endDateFormat}=    Get Start Date    NOW +56d
+    Set List Value    ${tsReleasePlan}    1    ${startDateFormat}
+    Set List Value    ${tsReleasePlan}    2    ${endDateFormat}
+    NewReleasePlan    @{tsReleasePlan}
+    Wait Until Page Contains    ${tsReleasePlan[0]}
+
+Test Release Plan - New Sprint Teardown
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Edit Sprint Setup
+    Select Node Product    Release Plan
+    ${startDateFormat}=    Get Start Date    NOW
+    ${endDateFormat}=    Get Start Date    NOW +56d
+    Set List Value    ${tsReleasePlan}    1    ${startDateFormat}
+    Set List Value    ${tsReleasePlan}    2    ${endDateFormat}
+    NewReleasePlan    @{tsReleasePlan}
+    ${sprintStartDate}=    Get Start Date    NOW
+    Wait Until Page Contains    ${tsReleasePlan[0]}
+    Create Sprint In Release Plan    sprint1 sprint goal    ${sprintStartDate}    2    4    100    100
+    Wait Until Page Contains    sprint1 sprint goal
+
+Test Release Plan - Edit Sprint Teardown
+    Select Node Product    Sprint Plan
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+
+Test Release Plan - Session - Contain Sprints Setup
+    # 開瀏覽器的動作在precondition裡做完
+    # ------ project A ------
+    Set Test Variable    ${tcBrowserAlias_A}    ${PROJECT_NAME}_A
+    New Tab With Alias    ${LOGIN_URL}    ${tcBrowserAlias_A}
+    Wait Until Page Contains Element    createProjectBtn
+    # 確認專案是否存在
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}_A
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_A    ${PROJECT_NAME}DisplayName_A    ${PROJECT_COMMENT}_A    ${PROJECT_MANAGER}_A
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_A
+    # 建立sprint in Project A and contain story
+    Select Node Product    Sprint Plan
+    ${sprintStartDate}=    Get Start Date    NOW
+    ${tcSprintID_A}=    Create Sprint with Date    sprint1 in A    ${sprintStartDate}    2    4    100
+    ...    100
+    Set Test Variable    ${tcSprintID_A}
+    Select Node Product    Sprint Backlog
+    # story information
+    Set Test Variable    ${tcStoryName_A}    story 1 in project A
+    Set Test Variable    ${tcValue_A}    3
+    Set Test Variable    ${tcEstimation_A}    5
+    Set Test Variable    ${tcImportance_A}    8
+    Set Test Variable    ${tcNotes_A}    test session for release plan in project A
+    Set Test Variable    ${tcHowToDemo_A}    display correctly information in release plan in project A
+    # add story
+    Create Story With Arguments    ${tcStoryName_A}    ${tcValue_A}    ${tcEstimation_A}    ${tcImportance_A}    ${EMPTY}    ${tcNotes_A}
+    ...    ${tcHowToDemo_A}
+    ${tcStoryID_A}=    Get Story ID In Sprint Backlog    ${tcStoryName_A}
+    Set Test Variable    ${tcStoryID_A}
+    # 建立release in project A and contain sprint
+    Select Node Product    Release Plan
+    Set List Value    ${tsReleasePlan}    0    release Plan 1 name in project A
+    Set List Value    ${tsReleasePlan}    3    release Plan 1 Description in project A
+    ${tcReleaseID_A}=    NewReleasePlan    @{tsReleasePlan}
+    Set Test Variable    ${tcReleaseID_A}
+    # ------ project A end ------
+    # ------ project B ------
+    Set Test Variable    ${tcBrowserAlias_B}    ${PROJECT_NAME}_B
+    New Tab With Alias    ${LOGIN_URL}    ${tcBrowserAlias_B}
+    Wait Until Page Contains Element    createProjectBtn
+    # 確認專案是否存在
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}_B
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_B    ${PROJECT_NAME}DisplayName_B    ${PROJECT_COMMENT}_B    ${PROJECT_MANAGER}_B
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_B
+    # 建立sprint in Project B and contain story
+    Select Node Product    Sprint Plan
+    ${sprintStartDate}=    Get Start Date    NOW
+    ${tcSprintID_B}=    Create Sprint with Date    sprint1 in B    ${sprintStartDate}    1    2    100
+    ...    100
+    Set Test Variable    ${tcSprintID_B}
+    Select Node Product    Sprint Backlog
+    # story information
+    Set Test Variable    ${tcStoryName_B}    story 1 in project B
+    Set Test Variable    ${tcValue_B}    1
+    Set Test Variable    ${tcEstimation_B}    2
+    Set Test Variable    ${tcImportance_B}    3
+    Set Test Variable    ${tcNotes_B}    test session for release plan in project B
+    Set Test Variable    ${tcHowToDemo_B}    display correctly information in release plan in project B
+    # add story
+    Create Story With Arguments    ${tcStoryName_B}    ${tcValue_B}    ${tcEstimation_B}    ${tcImportance_B}    ${EMPTY}    ${tcNotes_B}
+    ...    ${tcHowToDemo_B}
+    ${tcStoryID_B}=    Get Story ID In Sprint Backlog    ${tcStoryName_B}
+    Set Test Variable    ${tcStoryID_B}
+    # 建立release in project B and contain sprint
+    Select Node Product    Release Plan
+    Set List Value    ${tsReleasePlan}    0    release Plan 1 name in project B
+    Set List Value    ${tsReleasePlan}    3    release Plan 1 Description in project B
+    ${tcReleaseID_B}=    NewReleasePlan    @{tsReleasePlan}
+    Set Test Variable    ${tcReleaseID_B}
+    # ------ project B end ------
+
+Test Release Plan - Session - Contain Sprints Teardown
+    Select Window    ${tcBrowserAlias_A}
+    Select Node Product    Product Backlog
+    Clean All Story
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+    Close Window
+    Select Window    ${tcBrowserAlias_B}
+    Select Node Product    Product Backlog
+    Clean All Story
+    Clean All Sprint
+    Select Node Product    Release Plan
+    Clean Release
+    Close Window
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

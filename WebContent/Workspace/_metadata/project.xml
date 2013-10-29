@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project id="" name="">
+    <Output>/bin</Output>
+    <Src>
+        <Path>/</Path>
+        <Path>/</Path>
+        <Path>/</Path>
+    </Src>
+    <CreateDate>2005-08-29T12:15:02.795+08:00</CreateDate>
+    <CVS>
+        <ConnectionType>ssh</ConnectionType>
+        <UserID>chwu</UserID>
+        <Password>albert</Password>
+        <Host>pl.csie.ntut.edu.tw</Host>
+        <RepositoryPath>/usr/local/repository</RepositoryPath>
+        <ModuleName>JCIS/TestData/MyWorkspace/Project1</ModuleName>
+    </CVS>
+    <Version>0.1</Version>
+    <State>beta</State>
+    <ProjectManager></ProjectManager>
+    <Comment></Comment>
+    <ProjectReferences/>
+    <ExternalReferences/>
+    <InternalReferences/>
+	<Roles></Roles>
+    <Participants/>
+    <Builders/>
+    <Natures/>
+</Project>
+

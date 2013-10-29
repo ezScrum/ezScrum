@@ -1,0 +1,35 @@
+.ISSUE_Importance {  
+	background-color: #A1EEEF;
+}
+
+.ISSUE_Estimation {
+	background-color: #EFC9A1;
+}
+
+.ISSUE_Sprint {
+	background-color: #FFFF66;
+}
+
+.ISSUE_Status {
+	background-color: #A1EFA2;
+}
+
+.ISSUE_Add {
+	background-color: #A2A1EF;
+}
+
+.ISSUE_Drop {
+	background-color: #EFA2A1;
+}
+
+.ISSUE_Append {
+	background-color: #A2A1EF;
+}
+
+.ISSUE_Remove {
+	background-color: #EFA2A1;
+}
+
+.ISSUE_ActualHour {
+	background-color: #CCFFFF;
+}

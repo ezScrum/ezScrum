@@ -1,0 +1,292 @@
+.innerTable {
+	border: 1px solid #666666;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.tableHead {
+	background-color: #AFBFCF;
+	font-family: Courier New, Courier, mono;
+	font-size: 12px;
+	font-weight: normal;
+}
+.tableBody {
+	background-color: #FEEBAB;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+.tableBodyAlt {
+	background-color: #FFFFBF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+.tableBodyAlt2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.UserProfile {
+	background-color: #AFBFCF;
+	font-family: Times New Roman, Times, serif;
+	font-size: 12px;
+	font-weight: normal;
+	border: 1px solid #003366;
+	padding: 3px;
+	opacity:0.6;
+	filter:Alpha(Opacity=60);
+}
+A.TopMenuSelect{
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+A.TopMenuUnSelect{
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #663399;
+	text-decoration: none;
+}
+
+.TopMenuSelect{
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.TopMenuUnSelect{
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #663399;
+	text-decoration: none;
+}
+
+A.LeftMenuSelect {
+	font-size: 12px;
+	color: #362D16;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.LeftMenuCaptionTop{
+	background-color: #663366;
+}
+
+.LeftMenuCaption{
+	background: #E7D1F8;
+	font-size: 12px;
+	font-weight: bold;
+	color: #666666;
+	font-family: Arial, Helvetica, sans-serif;
+	padding-bottom: 3;
+	padding-left: 3;
+	padding-right: 3;
+	padding-top: 3;
+	text-indent: 10;
+}
+
+
+.ProjectCaption {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #333333;
+	margin-left: 15px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.SummaryDescription{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 150%;
+}
+.ProjectTitle {
+	color: #660000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.SummaryTableCaption{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	color: Gray;
+}
+
+.SummaryTableCaptionBorder{
+	border-bottom: 1px solid #BBBBBB;
+}
+
+.SummarySubTableCaptionBorder{
+	border-bottom: 1px solid #BBBBBB;
+	border-left: 1px solid #BBBBBB;
+	border-top: 1px solid #BBBBBB;
+	border-right: 1px solid #BBBBBB;
+	background-color: #E9EBD8;
+	padding: 5px 5px 5px 5px;
+	font-size: 12px;
+	font-weight: bold;
+	color: Gray;
+}
+
+.SummarySubTableCaptionBorder_NoLeft{
+	border-bottom: 1px solid #BBBBBB;
+	border-top: 1px solid #BBBBBB;
+	border-right: 1px solid #BBBBBB;
+	background-color: #E9EBD8;
+	padding: 5px 5px 5px 5px;
+	font-size: 12px;
+	font-weight: bold;
+	color: Gray;
+}
+
+.SummarySubTableCaptionBorder_NoRight{
+	border-bottom: 1px solid #BBBBBB;
+	border-left: 1px solid #BBBBBB;
+	border-top: 1px solid #BBBBBB;
+	background-color: #E9EBD8;
+	padding: 5px 5px 5px 5px;
+	font-size: 12px;
+	font-weight: bold;
+	color: Gray;
+}
+
+.SummaryTableBodyBorder{
+	border-bottom: 1px solid #BBBBBB;
+	border-left: 1px solid #BBBBBB;
+	border-right: 1px solid #BBBBBB;
+	padding: 5px 5px 5px 5px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.SummaryFieldText{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 150%;
+}
+
+.SummaryDataText{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: Teal;
+}
+
+.ActionResultText{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: Red;
+}
+
+.SummaryDataContent{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: mediumvioletred;
+}
+
+.LeftMenuBody{
+	padding-bottom: 20px;
+}
+.TableListTitle {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: White;
+	background-color: #867AC5;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.TableListHead {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bolder;
+	color: #333333;
+	background-color: #E9EBD8;
+	border-bottom: 1px solid #556B2F;
+}
+
+.TableListBorder{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border-bottom: 1px solid Gray;
+	border-top: 1px solid Gray;
+	border-left: 1px solid Gray;
+	border-right: 1px solid Gray;
+}
+.TableListBody{
+	background-color: #EBEBEB;
+}
+A.CreatProject{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #6495ED;
+}
+a:active.CreatProject {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #6495ED;
+}
+.RSS{
+	color: #FFFFFF;
+}
+.FormError{
+	font-size: 12px;
+	color: Red;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.InputText {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 95%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.FixedInputText {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 200;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.InputTextArea {
+	border: 1px solid #7498AD;
+	font-size: 12px;
+	padding: 2px 2px 2px 2px;
+	width: 95%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.LinkBorder{
+	border: 0px solid #7498AD;
+	cursor: pointer;
+}
+.MessageFormat {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: Red;
+}
+.ErrorMessage {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	color: Black;
+}
+.showbuilderInfo {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	color: Black;
+	margin-left: 0;
+	margin-top: 0;
+}
+.SelectBuilderMessage {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	font-weight: bolder;
+	color: Black;
+}
+

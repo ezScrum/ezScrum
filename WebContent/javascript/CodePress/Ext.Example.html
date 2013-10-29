@@ -1,0 +1,28 @@
+<html>
+
+<script type="text/javascript" src="ext-base.js"></script>
+<script type="text/javascript" src="ext-all.js"></script>
+<link rel="stylesheet" type="text/css" href="ext-all.css" />
+
+<script type="text/javascript" src="Ext.ux.codepress.js"></script>
+
+<script type="text/javascript">
+Ext.onReady(function() {
+	var cp = new Ext.ux.CodePress({
+		id: 'codepressTest'
+		//, sourceEl: 'ext_html_example'	// 可指定 src 的 id
+		, language: 'java'
+		, code: 'public void Hello() {}'	// 直接設定 src 的 code
+		, width: 600
+		, height: 600
+		, renderTo: 'src'
+	});
+});
+</script>
+
+<body>
+
+<div id="src"></div>
+
+</body>
+</html>

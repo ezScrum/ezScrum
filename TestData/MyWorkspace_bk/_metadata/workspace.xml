@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace>
+	<Builders>
+		<Builder name="test" displayName="JUnit" className="junit.runner" ></Builder>
+		<Builder name="compile" displayName="Java Compiler"  ></Builder>
+		<Builder name="pmd" displayName="PMD"  ></Builder>
+		<Builder name="javadoc" displayName="Java Doc"  ></Builder>
+		<Builder name="statcvs" displayName="Stat CVS"  ></Builder>
+		<Builder name="antJUnit" displayName="Ant JUnit"  ></Builder>
+		<Builder name="remoteLinuxTest" displayName="Remote Linux Test"  ></Builder>
+		<Builder name="remoteWinTest" displayName="Remote Windows Test"  ></Builder>
+	</Builders>
+	<Libraries>
+		<Library name="JUnit" displayName="JUnit"></Library>
+		<Library name="J2EE" displayName="J2EE Lib"></Library>
+		<Library name="Spring" displayName="Spring Framework"></Library>
+	</Libraries>
+</Workspace>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrumRole>
+  <ProductOwner>
+    <Permission>AccessProductBacklog</Permission>
+    <Permission>AccessReleasePlan</Permission>
+    <Permission>AccessSprintPlan</Permission>
+    <Permission>AccessSprintBacklog</Permission>
+    <Permission>AccessTaskboard</Permission>
+    <Permission>AccessUnplanned</Permission>
+    <Permission>AccessRetrospective</Permission>
+    <Permission>AccessReport</Permission>
+    <Permission>AccessEditProject</Permission>
+  </ProductOwner>
+  <ScrumMaster>
+    <Permission>AccessProductBacklog</Permission>
+    <Permission>AccessReleasePlan</Permission>
+    <Permission>AccessSprintPlan</Permission>
+    <Permission>AccessSprintBacklog</Permission>
+    <Permission>AccessTaskboard</Permission>
+    <Permission>AccessUnplanned</Permission>
+    <Permission>AccessRetrospective</Permission>
+    <Permission>AccessReport</Permission>
+  </ScrumMaster>
+  <ScrumTeam>
+    <Permission>AccessProductBacklog</Permission>
+    <Permission>AccessReleasePlan</Permission>
+    <Permission>AccessSprintPlan</Permission>
+    <Permission>AccessSprintBacklog</Permission>
+    <Permission>AccessTaskboard</Permission>
+    <Permission>AccessUnplanned</Permission>
+    <Permission>AccessRetrospective</Permission>
+    <Permission>AccessReport</Permission>
+  </ScrumTeam>
+  <Stakeholder>
+    <Permission>AccessReport</Permission>
+  </Stakeholder>
+  <Guest>
+  	<Permission>AccessTaskboard</Permission>
+  </Guest>
+</ScrumRole>
+

@@ -1,0 +1,73 @@
+*** Settings ***
+Library           SeleniumLibrary
+
+*** Keywords ***
+Check Tenant Is Create
+    [Arguments]    ${tenantID}
+    ${isTenantExisted} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantID}")]    # check ID
+    Comment    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${TenantID} name")]    1    # Name
+    Comment    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-2" and (text()="${TenantID} description")]    1    # Description
+    Comment    ${_pathAdminName} =    Set Variable    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${TenantID}admin")]
+    Comment    Xpath Should Match X Times    ${_pathAdminName}    1    # AdminName
+    Comment    Xpath Should Match X Times    ${_pathAdminName}/../../td[5]/div//img[@title="usable"]    1    # Enable
+    [Return]    ${isTenantExisted}
+
+Add Tenant
+    [Arguments]    ${tenantId}    ${enable}
+    # click "Add" Button
+    Click Element    xpath=//button[text()="Add Tenant"]    andDontWait
+    ${TenantID}    Set Variable    ${tenantId}
+    # fill Tenant Info
+    Focus AND Input Text    //input[@name="id"]    ${TenantID}
+    Focus AND Input Text    //input[@name="name"]    ${tsTenantInfo[1]}
+    Input Text    xpath=//textarea[@name="description"]    ${tsTenantInfo[2]}
+    # fill Rent Service
+    Focus AND Input Text    //input[@name="adminname"]    ${tsTenantInfo[3]}
+    ${_xpathCheckbox} =    Set Variable    xpath=//input[@type="checkbox"][@name="enable"]
+    Run Keyword if    ${enable} == 1    Select Checkbox    ${_xpathCheckbox}
+    Run Keyword if    ${enable} == 0    UnSelect Checkbox    ${_xpathCheckbox}
+    # Save
+    ${xpathSaveButton} =    Find Current Window Element    Add New Tenant With Rent Service    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    # 同步機制
+    Wait Until Page Contains    Success.
+
+Edit Tenant
+    [Arguments]    ${tenantId}    ${enable}
+    # select TenantId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    # click "Edit" Button
+    Click Element    xpath=//button[text()="Edit Tenant"]    andDontWait
+    Focus AND Input Text    //input[@name="id"]    ${tenantId}    # ID
+    Focus AND Input Text    //input[@name="name"]    ${tsTenantInfo[1]}    # Name
+    Input Text    xpath=//textarea[@name="description"]    ${tsTenantInfo[2]}    # Description
+    Focus AND Input Text    //input[@name="adminname"]    ${tsTenantInfo[3]}    # Admin Name
+    ${_xpathCheckbox} =    Set Variable    xpath=//input[@type="checkbox"][@name="enable"]
+    Run Keyword if    ${enable} == 1    Select Checkbox    ${_xpathCheckbox}
+    Run Keyword if    ${enable} == 0    UnSelect Checkbox    ${_xpathCheckbox}
+    # Save
+    ${xpathSaveButton}=    Find Current Window Element    Edit Tenant # ${tenantId}    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    # 同步機制
+    Wait Until Page Contains    Success.
+
+Stop Tenant
+    [Arguments]    ${tenantId}
+    # select TenantId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    # click "Stop" Button
+    Click Element    xpath=//button[text()="Stop Tenant"]    andDontWait
+    # confirm, click "Yes" Button
+    Click Element    xpath=//button[text()="Yes"]    andDontWait
+
+Renew Tenant
+    [Arguments]    ${tenantId}
+    # select TenantId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
+    # click "Stop" Button
+    Click Element    xpath=//button[text()="Renew Tenant"]    andDontWait
+    # confirm, click "Yes" Button
+    Click Element    xpath=//button[text()="Yes"]    andDontWait

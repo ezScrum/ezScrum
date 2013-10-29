@@ -1,0 +1,77 @@
+*** Settings ***
+Documentation     建立多Story後點選按鈕Filter, 測試 Backlogged, Detailed, Done, Default。
+Library           SeleniumLibrary
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          ../TaskBoard/ezScrum_TaskBoard.txt
+
+*** Keywords ***
+Test Product Backlog Filter Backlogged
+    [Documentation]    點選按鈕Filter點選Backlogged。
+    Click Element    xpath=//button[text()="Filter"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Backlogged"]    andDontWait
+    ${temp}    Get Element Attribute    //div[(text()="newStoryNormal")]/../../../../../@class
+    Should Contain    ${temp}    BACKLOG
+    ${temp}    Get Element Attribute    //div[(text()="newStoryBacklogged")]/../../../../../@class
+    Should Contain    ${temp}    BACKLOG
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDone")]    0
+    Click Element    xpath=//button[text()="Backlogged"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Default"]    andDontWait
+
+Test Product Backlog Filter Detailed
+    [Documentation]    點選按鈕Filter點選Detailed。
+    Click Element    xpath=//button[text()="Filter"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Detailed"]    andDontWait
+    ${temp}    Get Element Attribute    //div[(text()="newStoryDetailed")]/../../../../../@class
+    Should Contain    ${temp}    DETAIL
+    ${temp}    Get Element Attribute    //div[(text()="newStoryDone")]/../../../../../@class
+    Should Contain    ${temp}    DETAIL
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDone")]    1
+    Click Element    xpath=//button[text()="Detailed"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Default"]    andDontWait
+
+Test Product Backlog Filter Done
+    [Documentation]    點選按鈕Filter點選Done。由於目前尚未測試task與story的狀態(Not Checked Out, Checked Out, Done), 所以當filter設定為done時, 是檢查0個story
+    Select Node Product    Sprint Plan
+    Create Sprint    sprint1 sprint goal    2    4    100    100
+    Select Node Product    Sprint Backlog
+    Add Existing Story    newStoryDone
+    # 將Story拉到Done
+    Select Node Product    TaskBoard
+    Set Test Variable    ${tcStoryName}    newStoryDone
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Story Done With Arguments    ${tcStoryID}
+    # 確認是否有被選到
+    Select Node Product    Product Backlog
+    Click Element    xpath=//button[text()="Filter"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Done"]    andDontWait
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    0
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDone")]    1
+    Clean All Sprint
+    Select Node Product    Product Backlog
+    Click Element    xpath=//button[text()="Done"]    andDontWait
+    Click Element    xpath=//ul/li/a/span[text()="Default"]    andDontWait
+
+Test Product Backlog Filter Default
+    [Documentation]    點選按鈕Filter點選Default。
+    ${temp}    Get Element Attribute    //div[(text()="newStoryNormal")]/../../../../../@class
+    Should Contain    ${temp}    BACKLOG
+    ${temp}    Get Element Attribute    //div[(text()="newStoryBacklogged")]/../../../../../@class
+    Should Contain    ${temp}    BACKLOG
+    ${temp}    Get Element Attribute    //div[(text()="newStoryDetailed")]/../../../../../@class
+    Should Contain    ${temp}    DETAIL
+    ${temp}    Get Element Attribute    //div[(text()="newStoryDone")]/../../../../../@class
+    Should Contain    ${temp}    DETAIL
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDone")]    1

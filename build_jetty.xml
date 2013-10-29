@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ezScrum" default="default" basedir=".">
+	<!-- 變數設定 -->
+
+	<property name="Local.Test.Workspace" location="TestData/MyWorkspace" />
+
+	<property name="Local.Library.Dir" location="lib" />
+	<property name="WEB_INF" location="WebContent/WEB-INF" />
+	<property name="WEB_PLUGINWORKSPACE" location="WebContent/pluginWorkspace" />
+
+	<property name="Web.Library.Dir" location="${WEB_INF}/lib" />
+	<property name="Web.Class.Dir" location="${WEB_INF}/classes" />
+
+	<property name="Output.Dir" location="OutputDir" />
+	<property name="Output.Dir.Linux.Ubuntu" location="OutputDir_Linux_Ubuntu" />
+
+	<property name="Source.Dir" location="." />
+	<property name="Source.Java.Dir" location="java" />
+	<property name="Source.Test.Dir" location="test" />
+	<property name="Source.Tools.Dir" location="tools" />
+	<property name="deprecation" value="on" />
+	<property name="main.class" value="ntut.csie.ezScrum.web.JettyServer" />
+	<property name="Service.Wrapper.x86" location="ServiceWrapper/ServiceWrapper_x86" />
+	<property name="Service.Wrapper.Linux.Ubuntu" location="ServiceWrapper/ServiceWrapper_Ubuntu" />
+
+	<property name="build.classes" location="./build/classes" />
+	<property name="All.report" location="./dist" />
+
+	<!-- 
+	     由於CI建置ezScrum的VM是在 ubuntu 上，
+	     當java compile時會缺少rt.jar導致error，因此將jre6 rt.jar 放置 ftp 上去下載完成建置過程。
+	     所需用到的參數：
+	     ezScrum.Version				# ezScrum 版本控制
+	     ezScrum.FTP.site.ip    		# ftp ip
+	     ezScrum.FTP.site.username		# ftp 帳號
+	     ezScrum.FTP.site.password		# ftp 密碼
+	     ezScrum.FTP.site.ci.remoteDir		# ftp 上 ezScrum release 的資料夾位置，以版本作為分類準則
+	     ezScrum.FTP.site.srcDir		# ftp 上 ezScrum release src 的資料夾位置
+	     ezScrum.FTP.site.binDir		# ftp 上 ezScrum release bin 的資料夾位置
+	     ezScrum.FTP.site.jreDir		# ftp 上放置 rt.jar 的位置
+	     java.runtime.localDir			# 本機 java 的資料夾位置
+	     java.runtime.localDir.jre6		# 本機 jre 的資料夾位置
+	 -->
+	<property file="ezScrum_FTPServer_Config.txt" />
+	
+	<!-- 設定ClassPath-->
+
+	<!-- Jetty Server Library-->
+	<path id="jetty.server.classpath">
+		<fileset dir="${Local.Library.Dir}" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Web Library-->
+	<path id="web.library.classpath">
+		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="copy.library.classpath">
+		<fileset dir="${Output.Dir}/lib" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+
+		<fileset dir="${Output.Dir.Linux.Ubuntu}/lib" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Test ClassPath-->
+	<path id="testAll.classpath">
+		<pathelement location="${build.classes}" />
+		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+		<fileset dir="${Local.Library.Dir}" casesensitive="yes">
+			<filename name="**/*.jar" />
+		</fileset>
+	</path>
+
+
+	<!-- ================================= 
+          target: MakeDir              
+         ================================= -->
+	<target name="MakeDir" depends="" description="建立資料夾">
+		<echo message="Create OutputDir：${Output.Dir}">
+		</echo>
+		
+		<mkdir dir="./build" />
+		<mkdir dir="./build/classes" />
+
+		<mkdir dir="${Output.Dir}" />
+		<mkdir dir="${Output.Dir}/WebContent/WEB-INF" />
+		<mkdir dir="${Output.Dir}/WebContent/META-INF" />
+		<mkdir dir="${Output.Dir}/WebContent/WEB-INF/classes" />
+		<mkdir dir="${Output.Dir}/logs" />
+
+		<delete dir="${Output.Dir}/report" />
+		<mkdir dir="${Output.Dir}/report" />
+		<mkdir dir="${All.report}" />
+
+		<!-- ======= for linux ======= -->
+		<echo message="Create OutputDir_Linux：${Output.Dir.Linux.Ubuntu}" />
+		<mkdir dir="${Output.Dir.Linux.Ubuntu}" />
+		<mkdir dir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF" />
+		<mkdir dir="${Output.Dir.Linux.Ubuntu}/WebContent/META-INF" />
+		<mkdir dir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" />
+
+	</target>
+
+	<!-- ****************************
+			download jre6 runtime library file
+	********************************** -->
+	<target name="downloadJRE6RT" description="下載jre6 rt.jar">
+		<echo message="Download jre 6 rt.jar" />
+		<ftp server="${ezScrum.FTP.site.ip}" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" action="get" verbose="yes" depends="yes" remotedir="${ezScrum.FTP.site.jreDir}">
+			<fileset dir="${java.runtime.localDir.jre6}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</ftp>
+	</target>
+
+	<!-- ================================= 
+          target: CompileALLSrc              
+         ================================= -->
+	<target name="CompileALLSrc" depends="MakeDir" description="編譯所有Java檔">
+		<echo message="Compile All Java File：${Source.Java.Dir}" />
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+			<classpath refid="jetty.server.classpath" />
+			<classpath refid="web.library.classpath" />
+			<!-- 移除雲端版本的部分 -->			
+			<exclude name="**/SaaS/**"/>
+		</javac>
+
+		<!-- ======= for linux ======= -->
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+			<classpath refid="jetty.server.classpath" />
+			<classpath refid="web.library.classpath" />
+			<!-- 移除雲端版本的部分 -->			
+			<exclude name="**/SaaS/**"/>			
+		</javac>
+	</target>
+
+	<!-- ================================= 
+	          target: CompileForTest              
+	     ================================= -->
+	<target name="CompileForTest" depends="MakeDir" description="編譯所有Java檔">
+		<echo message="Compile All Java File：${Source.Java.Dir}" />
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${build.classes}" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+			<classpath refid="jetty.server.classpath" />
+			<classpath refid="web.library.classpath" />
+			<!-- 移除雲端版本的部分 -->			
+			<exclude name="**/SaaS/**"/>			
+		</javac>
+	</target>
+
+	<!-- ================================= 
+          target: Clean              
+         ================================= -->
+	<target name="Clean" description="刪除建置過程中的中間檔案">
+		<echo message="Delete OutputDir：${Output.Dir}" />
+		<delete dir="${Output.Dir}" />
+
+		<!-- ======= for linux ======= -->
+		<echo message="Delete OutputDir：${Output.Dir.Linux.Ubuntu}" />
+		<delete dir="${Output.Dir.Linux.Ubuntu}" />
+
+		<echo message="Delete jre6 runtime rt.jar" />
+		<delete dir="${java.runtime.localDir}" />
+	</target>
+
+	<!-- ================================= 
+          target: CopyDir              
+         ================================= -->
+	<target name="CopyDir" description="複製WebContent">
+		<copydir dest="${Output.Dir}/lib" src="${Local.Library.Dir}">
+		</copydir>
+		<copyfile dest="${Output.Dir}/JettyServer.xml" src="JettyServer.xml" />
+		<copydir dest="${Output.Dir}" src="${Service.Wrapper.x86}" />
+
+		<!-- ======= for linux ======= -->
+		<copydir dest="${Output.Dir.Linux.Ubuntu}/lib/" src="${Local.Library.Dir}" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/JettyServer.xml" src="JettyServer.xml" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/launch" src="launch.sh" />
+		<copydir dest="${Output.Dir.Linux.Ubuntu}" src="${Service.Wrapper.Linux.Ubuntu}" />
+	</target>
+
+	<!-- ================================= 
+          target: Manifest              
+         ================================= -->
+	<target name="create.manifest" description="創建清單文件">
+		<manifestclasspath property="jar.manifest.classpath" jarfile="${Output.Dir}/ezScrum.jar">
+			<classpath refid="copy.library.classpath" />
+		</manifestclasspath>
+		<manifest file="${Output.Dir}/MANIFEST.MF">
+			<attribute name="Main-Class" value="${main.class}" />
+			<attribute name="Class-Path" value="${jar.manifest.classpath}" />
+		</manifest>
+	</target>
+
+	<!-- ================================= 
+          target: BuildJar              
+         ================================= -->
+	<target name="BuildJar" depends="create.manifest" description="建立可執行Jar檔">
+		<jar destfile="${Output.Dir}/start.jar" manifest="${Output.Dir}/MANIFEST.MF">
+			<fileset dir="${Output.Dir}/WebContent/WEB-INF/classes">
+				<include name="**/Jetty*.class" />
+			</fileset>
+		</jar>
+
+		<!-- ======= for linux ======= -->
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/start.jar" src="${Output.Dir}/start.jar" />
+	</target>
+
+	<!-- ================================= 
+	       target: Build Updater              
+	     ================================= -->
+	<target name="BuildUpdaterJar" depends ="MakeDir,CompileALLSrc" description="建立Updater的Jar檔">
+		<manifest file="${Output.Dir}/UPDATER_MANIFEST.MF">
+			<attribute name="Main-Class" value="ntut.csie.ezScrum.updater.Updater" />
+			<attribute name="Class-Path" value="lib/Executer.jar" />
+		</manifest>
+		<jar destfile="${Output.Dir}/updater.jar" manifest="${Output.Dir}/UPDATER_MANIFEST.MF">
+			<fileset dir="${Output.Dir}/WebContent/WEB-INF/classes">
+				<include name="**/ezScrum/updater/Updater.class" />
+			</fileset>
+		</jar>
+		
+		<!-- ======= for linux ======= -->
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/updater.jar" src="${Output.Dir}/updater.jar" />
+	</target>
+
+	<!-- ================================= 
+          target: Zip Project              
+         ================================= -->
+	<target name="Zip" description="壓縮編譯完成的Project以便發布 for Windows">
+		<zip destfile="${All.report}/ezScrum.zip" update="true">
+			<zipfileset dir="WebContent" prefix="ezScrum/WebContent" />
+			<zipfileset dir="${Output.Dir}" prefix="ezScrum" />
+		</zip>
+	</target>
+
+	<!-- ==================================
+		  target: Tar Project
+		 ================================== -->
+	<target name="Tar" description="封裝完成的Project以便發布 for Ubuntu">
+		<tar destfile="${All.report}/ezScrum_Ubuntu.tar">
+			<tarfileset dir="WebContent" prefix="ezScrum_Ubuntu/WebContent" />
+			<tarfileset dir="${Output.Dir.Linux.Ubuntu}" prefix="ezScrum_Ubuntu" />
+		</tar>
+	</target>
+
+
+	<target name="GZIP" description="壓縮編譯完成的Project以便發布 for Ubuntu" depends="Tar">
+		<gzip destfile="${All.report}/ezScrum_Ubuntu.tar.gz" src="${All.report}/ezScrum_Ubuntu.tar" />
+		<delete file="${All.report}/ezScrum_Ubuntu.tar" />
+	</target>
+
+	<!-- ================================= 
+          target: Set UnitTest file path               
+         ================================= -->
+	<target name="Test" depends="CompileForTest" description="設定 Junit 檔案路徑">
+		<junit printsummary="yes">
+			<sysproperty key="ntut.csie.jcis.resource.WorkspaceRoot" value="${Local.Test.Workspace}" />
+			<sysproperty key="ntut.csie.jcis.resource.BaseDir" value="${basedir}" />
+
+			<jvmarg value="-Xms64m -Xmx1024m" />
+			<jvmarg value="-XX:MaxPermSize=1024m" />
+			<classpath refid="testAll.classpath" />
+			<formatter type="xml" />
+			<batchtest todir="${Output.Dir}/report">
+				<fileset dir="${build.classes}">
+					<include name="**/ezScrum/test/TestSuite/**TestSuite.class" />
+					<include name="**/ezTrack/test/TestSuite/**TestSuite.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- ================================= 
+          target: Generate UnitTest Report
+         ================================= -->
+	<target name="GenTestReport" depends="Test" description="執行 Junit">
+		<echo>Generate Report!</echo>
+		<junitreport todir="${Output.Dir}/report">
+			<fileset dir="${Output.Dir}/report">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${Output.Dir}/report/html" />
+		</junitreport>
+	</target>
+
+	<!-- ================================= 
+	      target: zip  UnitTest Report
+	     ================================= -->
+	<target name="ZipGenTestReport" depends="GenTestReport" description="壓縮 UnitTest 報表">
+		<zip destfile="${All.report}/TestReport.zip" update="true">
+			<zipfileset dir="${Output.Dir}/report/html" />
+		</zip>
+	</target>
+	
+	<!-- ================================= 
+          target: Zip Source Code             
+         ================================= -->
+	<target name="ZipSourceCode" description="封裝 ezScrum 的 source ocde">
+ 	    <echo message="確認要輸出ezScrum_SourceCode_${ezScrum.Version}.zip的資料夾是否存在，沒有則建立" />
+	    <mkdir dir="${All.report}"/>
+		<echo message="zip file: ${All.report}/ezScrum_SourceCode_${ezScrum.Version}.zip" />
+		<zip destfile="${All.report}/ezScrum_SourceCode_${ezScrum.Version}.zip">
+			<zipfileset dir="${Source.Dir}" prefix="ezScrum" excludes="build/**,dist/**,OutputDir/**, OutputDir_Linux_Ubuntu/**, .svn/**, ezScrum_FTPServer_Config.txt"/>
+		</zip>
+	</target>
+	
+	<!-- ================================= 
+          target: Create folder in ftp             
+         ================================= -->
+	<target name="createFolderInFtp" description="在FTP上新建資料夾">
+		<echo message="Create ezScrum folder in ftp" />
+		<ftp server="${ezScrum.FTP.site.ip}" action="mkdir" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" remotedir="${ezScrum.FTP.site.srcDir}"/>
+		<ftp server="${ezScrum.FTP.site.ip}" action="mkdir" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" remotedir="${ezScrum.FTP.site.binDir}"/>
+	</target>
+	
+	<!-- ================================= 
+          target: upload to ftp            
+         ================================= -->
+	<target name="uploadArtifactToFtp" depends="createFolderInFtp" description="上傳 artifact 到 ftp">
+		<echo message="Upload zip file: ${All.report}/ezScrum_SourceCode_${ezScrum.Version}.zip" />
+		<echo>server:${ezScrum.FTP.site.ip}, userid:${ezScrum.FTP.site.username}, remotedir:${ezScrum.FTP.site.remoteDir} </echo>
+		
+		<echo>remote src dir =  ${ezScrum.FTP.site.srcDir}</echo>
+		<ftp server="${ezScrum.FTP.site.ip}" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" remotedir="${ezScrum.FTP.site.srcDir}">
+			<fileset dir="${All.report}" includes="ezScrum_SourceCode_${ezScrum.Version}.zip" />
+		</ftp>
+		<echo>remote bin dir =  ${ezScrum.FTP.site.binDir} </echo>
+		<ftp server="${ezScrum.FTP.site.ip}" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" remotedir="${ezScrum.FTP.site.binDir}">
+			<fileset dir="${All.report}" includes="ezScrum_Ubuntu.tar.gz, ezScrum.zip" />
+		</ftp>
+	</target>
+	
+	<!-- =================================
+		  target: download plug-in from ftp
+		 =================================	-->
+    <target name="downloadPlugin" description="下載plugins">
+	    <ftp server="${ezScrum.FTP.site.ip}" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" 
+	         action="get" verbose="yes" depends="yes" passive="yes" remotedir="${ezScrum.FTP.site.binDir}">
+	        <fileset dir="temp_plugin">
+	            <include name="**/*.war"/>
+	        </fileset>
+	    </ftp>
+	</target>
+    
+    <!-- =================================
+    	  target: unZip plugin war  
+    	 ================================= -->
+	<target name="unZip" description="解壓縮  .war file">
+	    <mkdir dir="temp_plugin/redminePlugin"/>
+	    <unzip src="temp_plugin/redminePlugin.war" dest="temp_plugin/redminePlugin"/>
+	</target>
+	
+	<!-- =================================
+		  target: 將plug-in放置ezScrum plug-in workspace
+		 ================================= -->
+	<target name="movePlugin" description="將plug-in放置ezScrum plug-in workspace">
+		<copy todir="${WEB_PLUGINWORKSPACE}/redminePlugin">
+	    	<fileset dir="temp_plugin/redminePlugin"/>
+	 	</copy>
+ 	</target>
+ 	
+	<!-- =================================
+		  target: 清除暫時使用的資料夾
+		 ================================= -->
+	<target name="cleanTempFolder" description="清除plugin建置時的資料夾">
+	    <delete dir="temp_plugin"/>
+	</target>
+	
+	<!-- =================================
+		  target: 清除pluginWorkspace底下所有的plugin
+		 ================================= -->
+	<target name="cleanPlugins" >
+	    <delete includeemptydirs="true">
+    		<fileset dir="${WEB_PLUGINWORKSPACE}" includes="**/*" defaultexcludes="false"/>
+    	</delete>
+	</target>
+
+	<!-- **************************
+			clean production artifact
+	********************************** -->
+	<target name="cleanProduction">
+		<echo message="clean ./dist folder" />
+		<delete dir="${All.report}" />
+	</target>
+	
+	<target name="default" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
+	<target name="build" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
+	<target name="quickbuild" depends="cleanProduction,MakeDir,CompileALLSrc,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
+	<target name="deployPlugin" depends="cleanPlugins, downloadPlugin, unZip, movePlugin, cleanTempFolder" />
+	<target name="release" description="Release ezScrum and upload to FTP" depends="deployPlugin, cleanProduction, MakeDir, CompileALLSrc, CopyDir, create.manifest, BuildJar, BuildUpdaterJar, Zip, GZIP, Clean, ZipSourceCode, uploadArtifactToFtp"/>
+</project>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DataNucleus Access Platform 需要此設定檔，指示它使用「應用服務引擎」資料存放區做為 JDO 實作的後端 -->
+<!-- 加上 http://java.sun.com/xml/ns/jdo/jdoconfig_3_0.xsd 以避免 Eclipse parsing error -->
+<jdoconfig xmlns="http://java.sun.com/xml/ns/jdo/jdoconfig"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:SchemaLocation="http://java.sun.com/xml/ns/jdo/jdoconfig http://java.sun.com/xml/ns/jdo/jdoconfig_3_0.xsd">
+
+	<persistence-manager-factory name="transactions-optional">
+		<property name="javax.jdo.PersistenceManagerFactoryClass"
+           value="org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory"/>
+		<property name="javax.jdo.option.ConnectionURL" value="appengine"/>
+		<property name="javax.jdo.option.NontransactionalRead" value="true"/>
+		<property name="javax.jdo.option.NontransactionalWrite" value="true"/>
+		<property name="javax.jdo.option.RetainValues" value="true"/>
+		<property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
+	</persistence-manager-factory>
+   
+	<!-- 官方網站並無以下宣告 -->
+	<persistence-manager-factory name="eventual-reads-short-deadlines">
+        <property name="javax.jdo.PersistenceManagerFactoryClass"
+            value="org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory"/>
+        <property name="javax.jdo.option.ConnectionURL" value="appengine"/>
+        <property name="javax.jdo.option.NontransactionalRead" value="true"/>
+        <property name="javax.jdo.option.NontransactionalWrite" value="true"/>
+        <property name="javax.jdo.option.RetainValues" value="true"/>
+        <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
+
+        <property name="datanucleus.appengine.datastoreReadConsistency" value="EVENTUAL" />
+        <property name="javax.jdo.option.DatastoreReadTimeoutMillis" value="5000" />
+        <property name="javax.jdo.option.DatastoreWriteTimeoutMillis" value="10000" />
+    </persistence-manager-factory>
+    
+</jdoconfig>

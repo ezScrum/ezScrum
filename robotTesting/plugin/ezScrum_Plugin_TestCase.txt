@@ -1,0 +1,12 @@
+*** Setting ***
+Library           RequestsLibrary
+Library           lib/UploadPlugin.py
+
+*** Test Case ***
+Redmine Plugin Operation
+    Create Session    ezScrum    ${LOGIN_URL}
+    add plugin    ${LOGIN_URL}/addPlugin
+    ${resp}    GET    ezScrum    /getInstalledPluginList
+    Should Contain    ${resp.content}    redminePlugin
+    GET    ezScrum    /removePlugin?pluginName=redminePlugin
+

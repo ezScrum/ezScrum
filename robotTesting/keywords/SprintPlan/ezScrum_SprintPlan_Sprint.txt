@@ -1,0 +1,99 @@
+*** Settings ***
+Library         SeleniumLibrary
+Resource        ../../Global Define.txt
+Resource        ../common_resource.txt
+
+*** Keywords ***
+Create Sprint
+    [Arguments]  ${sprintGoal}  ${sprintInterval}  ${sprintMembers}  ${sprintAvaliableDays}  ${sprintFocusFactor}
+    Click Element  xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]  andDontWait
+    Focus AND Input Text  //textarea[@name="Goal"]  ${sprintGoal}
+    Click Image  xpath=//input[@name="StartDate"]/../img  andDontWait
+    Click Element  xpath=//button[text()="Today"]  andDontWait
+    Focus AND Input Text  //input[@name="Interval"]  ${sprintInterval}
+    Focus AND Input Text  //input[@name="Members"]  ${sprintMembers}
+    Focus AND Input Text  //input[@name="AvaliableDays"]  ${sprintAvaliableDays}
+    Focus AND Input Text  //input[@name="FocusFactor"]  ${sprintFocusFactor}
+    ${sprintID}=  Get Value  xpath=//span[text()="Add New Sprint"]/../../../../..//input[@name="Id"]
+    ${xpathAddNewSprint}=  Find Current Window Element  Add New Sprint  Submit
+    Element Enable And Submit  ${xpathAddNewSprint}
+    Wait Until Page Contains  Success.
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]  1
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]  1
+
+Create Sprint With Date
+    [Arguments]  ${sprintGoal}  ${sprintStartDate}  ${sprintInterval}  ${sprintMembers}  ${sprintAvaliableDays}  ${sprintFocusFactor}
+    Click Element  xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]  andDontWait
+    Focus AND Input Text  //textarea[@name="Goal"]  ${sprintGoal}
+    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="StartDate"]  ${sprintStartDate}
+    Focus AND Input Text  //input[@name="Interval"]  ${sprintInterval}
+    Focus AND Input Text  //input[@name="Members"]  ${sprintMembers}
+    Focus AND Input Text  //input[@name="AvaliableDays"]  ${sprintAvaliableDays}
+    Focus AND Input Text  //input[@name="FocusFactor"]  ${sprintFocusFactor}
+    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
+    ${xpathAddNewSprint}=  Find Current Window Element  Add New Sprint  Submit
+    Element Enable And Submit  ${xpathAddNewSprint}
+    Wait Until Page Contains  Success.
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]  1
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]  1
+    [Return]  ${sprintID}
+
+Delete Sprint With Arguments
+    [Arguments]  ${ID}
+    Mouse Down  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${ID}")]
+    Mouse Up  xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${ID}")]
+    Click Element  xpath=//button[text()="Delete Sprint"]  andDontWait
+    ${xpathDeleteSprintDelete}=  Find Current Window Element  Delete Sprint  Delete
+    Click Element  xpath=${xpathDeleteSprintDelete}  andDontWait
+    Wait Until Page Contains  Success.
+    Xpath Should Match X Times  //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${ID}")]  0
+
+Delete Sprint
+    [Documentation]  固定點選表格內的第一個sprint,透過按下button"Delete Sprint"來刪除sprint
+    Mouse Down  //div[@id="SprintPlan_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Mouse Up  //div[@id="SprintPlan_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Click Element  xpath=//button[text()="Delete Sprint"]  andDontWait
+    ${xpathDeleteSprint}=  Find Current Window Element  Delete Sprint  Delete
+    Click Element  xpath=${xpathDeleteSprint}  andDontWait
+    Wait Until Page Contains  Success.
+
+Verify Sprint Goal With NewLine
+    [Documentation]  修正在Sprint Goal 輸入換行符號時，無法進入Sprint Backlog.
+    # 新增sprint goal有換行資訊的sprint
+    Click Element  xpath=//button[text()="New Sprint"]  andDontWait
+    Focus AND Input Text  //textarea[@name="Goal"]  sprint1 \n\n sprint goal
+    Click Image  xpath=//input[@name="StartDate"]/../img  andDontWait
+    Click Element  xpath=//button[text()="Today"]  andDontWait
+    Focus AND Input Text  //input[@name="Interval"]  2
+    Focus AND Input Text  //input[@name="Members"]  4
+    Focus AND Input Text  //input[@name="AvaliableDays"]  100
+    Focus AND Input Text  //input[@name="FocusFactor"]  100
+    Focus  //input[@name="DemoDate"]
+    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
+    ${xpathAddNewSprint}=  Find Current Window Element  Add New Sprint  Submit
+    Element Enable And Submit  ${xpathAddNewSprint}
+    # 進入sprint backlog驗證此sprint資訊是否正確
+    Select Node Product  Sprint Backlog
+    Click Element  xpath=//table[@id="SprintBacklog_editSprintBtn"]/.//button[text()="Edit Sprint"]  andDontWait
+    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
+    ${sprintGoal}=  Get Value  xpath=//textarea[@name="Goal"]
+    ${sprintInterval}=  Get Value  xpath=//input[@name="Interval"]
+    ${sprintMembers}=  Get Value  xpath=//input[@name="Members"]
+    ${sprintAvaliableDays}=  Get Value  xpath=//input[@name="AvaliableDays"]
+    ${sprintFocusFactor}=  Get Value  xpath=//input[@name="FocusFactor"]
+    Should Be Equal As Strings  ${sprintGoal}  sprint1 \n\n sprint goal
+    Should Be Equal As Strings  ${sprintInterval}  2
+    Should Be Equal As Strings  ${sprintMembers}  4
+    Should Be Equal As Strings  ${sprintAvaliableDays}  100
+    Should Be Equal As Strings  ${sprintFocusFactor}  100
+    ${xpathEditSprintCancel}=  Find Current Window Element  Edit Sprint #${sprintID}  Cancel
+    Element Enable And Submit  ${xpathEditSprintCancel}
+
+Clean All Sprint
+    Select Node Product  Sprint Plan
+    # get Sprint count
+    ${_count} =  Get Matching Xpath Count  //div[@id="SprintPlan_Page"]//table[@class="x-grid3-row-table"]
+    # delete all Sprint
+    : FOR  ${_index}  IN RANGE  0  ${_count}
+    \  Delete Sprint
+

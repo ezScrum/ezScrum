@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace>
+	<Builders>
+		<Builder id="compile" displayName="Java Compiler" className="Javac" description="Java Compiler"></Builder>
+		<Builder id="antJUnit" className="AntJUnitBuilder" displayName="JUnit Testing" description="A unit tesing builder for Java"></Builder>
+		<Builder id="pmd" displayName="PMD" className="PmdBuilder" description="Scans Java source code and looks for potential problems."></Builder>
+		<Builder id="VCcompile" displayName="VCcompile" className="VCBuilder" description="Visual C++ Compiler"></Builder>
+		<Builder id="VC6compile" description="Visual C++ 6.0 Compiler" className="VC6Builder"
+			displayName="VC6compile">
+		</Builder>
+		<Builder id="GCCcompile" displayName="GCCcompile" className="GCCBuilder" description="GNU C/C++ Compiler"></Builder>
+		<Builder id="Cppunit" displayName="CppUnit" className="CppunitBuilder" description="A unit testing builder for C++"></Builder>
+		<Builder id="RATS" displayName="RATS" className="RATSBuilder" description="Analyzing time series and cross sectional data, developing and estimating econometric models, forecasting, and much more."></Builder>
+		<Builder id="statcvs" displayName="Stat CVS" className="StatCvsBuilder" description="Generates various tables and charts describing the project development for CVS."></Builder>
+		<Builder id="statsvn" displayName="Stat SVN" className="StatSvnBuilder" description="Generates various tables and charts describing the project development for SVN."></Builder>
+		<Builder id="javadoc" displayName="Java Doc" className="JavadocBuilder" description="Generating the Java document."></Builder>
+		<Builder id="PPQA" displayName="PPQA" description="Quality Assurance By Rule" className="PPQABuilder"></Builder>
+		<Builder id="Statistics" displayName="Statistics" className="StatisticsBuilder"></Builder>
+		<Builder id="TaskBoard" displayName="TaskBoard" className="TaskBoardBuilder" description="A Taskboard for Sprint Backlog"></Builder>
+		
+		<Builder id="LOCBuilder" displayName="LOCBuilder" className="LOCBuilder" description="Compute the project LOC and generate the LOC various chart."></Builder>
+		<Builder id="antScript" displayName="antScript" className="AntBuilder" description="Build the project by an ant script."></Builder>
+			
+		<Builder id="findbug" displayName="findBugBuilder" className="FindBugBuilder" description="Static analysis to look for bugs in Java code."></Builder>
+		<Builder id="cobertura" displayName="Code Coverage Builder" className="CoberturaBuilder" description="Code Coverage"></Builder>
+		<Builder id="antJar" displayName="AntJar Builder" className="AntJarBuilder" description="Do jar task by Ant Script."></Builder>
+		
+		<Builder id="NAnt" displayName="NAnt Builder" className="NAntBuilder" description="Build projects based on .net framework by NAnt"></Builder>
+	</Builders>
+	<Libraries>
+		<Library name="JUnit" displayName="JUnit"></Library>
+		<Library name="J2EE" displayName="J2EE Lib"></Library>
+		<Library name="Spring" displayName="Spring Framework"></Library>
+		<Library name="WiMAX" displayName="WiMAX Library"></Library>
+	</Libraries>
+</Workspace>

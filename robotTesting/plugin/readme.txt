@@ -1,0 +1,5 @@
+precondition:測試ezScrum插件框架的action需要在執行環境中引入requests的module
+
+easy_install requests
+
+該測試中，目前只測試插件的CRUD。若action中需要用到session資料的尚未測試。

@@ -1,0 +1,126 @@
+*** Settings ***
+Resource        ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource        ../SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource        ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource        ../SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource        ../AccountManagement/ezScrum_AccountManagement_Management.txt
+Resource        ../ScrumRole/ezScrum_ScrumRole_Account.txt
+Resource        ezScrum_Project.txt
+
+*** Variables ***
+${tsAccountId}  TestAccountID
+${tsAccountName}  TestAccountName
+${tsAccountMail}  TestAccountMail@scrum.tw
+
+*** Keywords ***
+Test Project - Test Permission Denied Setup
+    Login Page  ${LOGIN_URL}
+    Wait Until Page Contains Element  createProjectBtn
+    SwitchToPage  ProjectList
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}_A
+    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project with Arguments  ${PROJECT_NAME}_A  ${PROJECT_NAME}DisplayName_A  ${PROJECT_COMMENT}_A  ${PROJECT_MANAGER}_A
+    # Create Project With Arguments ${PROJECT_NAME}_A ${PROJECT_NAME}DisplayName_A ${PROJECT_COMMENT}_A ${PROJECT_MANAGER}_A
+    SwitchToPage  ProjectList
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}_B
+    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project With Arguments  ${PROJECT_NAME}_B  ${PROJECT_NAME}DisplayName_B  ${PROJECT_COMMENT}_B  ${PROJECT_MANAGER}_B
+    # Create Project With Arguments ${PROJECT_NAME}_B ${PROJECT_NAME}DisplayName_B ${PROJECT_COMMENT}_B ${PROJECT_MANAGER}_B
+    SwitchToPage  Management
+    Clean Accounts
+    Add Account By Parameter  ${tsAccountId}  ${tsAccountName}  ${tsAccountMail}
+    Assign Role Add  ${tsAccountId}  ${PROJECT_NAME}_A  ScrumTeam
+    Exit ezScrum System
+
+Test Project - Test Permission Denied Teardown
+    Login Page  ${LOGIN_URL}
+    Wait Until Page Contains  ${PROJECT_NAME}DisplayName_A
+    Wait Until Page Contains  ${PROJECT_NAME}DisplayName_B
+    SwitchToPage  Management
+    Assign Role Remove  ${tsAccountId}  ${PROJECT_NAME}_A
+    Clean Accounts
+    Exit ezScrum System
+
+Test Project Summary - Project And Sprint Information Setup
+    [Documentation]  建立兩個專案，分別皆建立sprint、story、task
+    # -------------- project A start ------------
+    # project A
+    Set Test Variable  ${tcBrowserAlias_A}  ${PROJECT_NAME}_A
+    Login Page With Account  ${LOGIN_URL}  admin  admin
+    New Tab With Alias  ${LOGIN_URL}  ${tcBrowserAlias_A}
+    Wait Until Page Contains Element  createProjectBtn
+    # 確認專案是否存在
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}_A
+    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project With Arguments  ${PROJECT_NAME}_A  ${PROJECT_NAME}DisplayName_A  ${PROJECT_COMMENT}_A  ${PROJECT_MANAGER}_A
+    Run Keyword If  "${_IsProjectIDExisted}"=="true"  Select Project  ${PROJECT_NAME}DisplayName_A
+    # new sprint in project A
+    Select Node Product  Sprint Plan
+    Set Test Variable  ${tcSprintGoal_A}  Test Project Summary for Session in ${PROJECT_NAME} A
+    Set Test Variable  ${tcSprintInterval_A}  2
+    Set Test Variable  ${tcSprintMembers_A}  5
+    Set Test Variable  ${tcSprintAvaliableDays_A}  100
+    Set Test Variable  ${tcSprintFocusFactor_A}  100
+    Create Sprint  ${tcSprintGoal_A}  ${tcSprintInterval_A}  ${tcSprintMembers_A}  ${tcSprintAvaliableDays_A}  ${tcSprintFocusFactor_A}
+    # new story in project A
+    Select Node Product  Sprint Backlog
+    Set Test Variable  ${tcStoryEstimationInA}  2
+    ${_StoryName}=  Set Variable  story in project A
+    ${_StoryValue}=  Set Variable  1
+    ${_StoryImportance}=  Set Variable  3
+    ${_StoryNotes}=  Set Variable  notes in project A
+    ${_StoryHowToDemo}=  Set Variable  demo in project A
+    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimationInA}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
+    ${tcStoryIDInA}=  Get Story ID In Sprint Backlog  ${_StoryName}
+    # new task in project
+    Set Test Variable  ${tcTaskEstimationInA}  3
+    ${_TaskName}=  Set Variable  task 1 in project A
+    ${_TaskNotes}=  Set Variable  notes in project A
+    Add Task With Arguments  ${tcStoryIDInA}  ${_TaskName}  ${tcTaskEstimationInA}  ${_TaskNotes}
+    # -------------- project A end ------------
+    # -------------- project B start ------------
+    Set Test Variable  ${tcBrowserAlias_B}  ${PROJECT_NAME}_B
+    New Tab With Alias  ${LOGIN_URL}  ${tcBrowserAlias_B}
+    Wait Until Page Contains Element  createProjectBtn
+    # 確認專案是否存在
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}_B
+    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project With Arguments  ${PROJECT_NAME}_B  ${PROJECT_NAME}DisplayName_B  ${PROJECT_COMMENT}_B  ${PROJECT_MANAGER}_B
+    Run Keyword If  "${_IsProjectIDExisted}"=="true"  Select Project  ${PROJECT_NAME}DisplayName_B
+    # new sprint in project B
+    Select Node Product  Sprint Plan
+    Set Test Variable  ${tcSprintGoal_B}  Test Project Summary for Session in ${PROJECT_NAME} B
+    Set Test Variable  ${tcSprintInterval_B}  2
+    Set Test Variable  ${tcSprintMembers_B}  5
+    Set Test Variable  ${tcSprintAvaliableDays_B}  100
+    Set Test Variable  ${tcSprintFocusFactor_B}  100
+    Create Sprint  ${tcSprintGoal_B}  ${tcSprintInterval_B}  ${tcSprintMembers_B}  ${tcSprintAvaliableDays_B}  ${tcSprintFocusFactor_B}
+    # new story in project B
+    Select Node Product  Sprint Backlog
+    ${_StoryName}=  Set Variable  story in project B
+    ${_StoryValue}=  Set Variable  5
+    ${_StoryImportance}=  Set Variable  8
+    ${_StoryNotes}=  Set Variable  notes in project B
+    ${_StoryHowToDemo}=  Set Variable  demo in project B
+    Set Test Variable  ${tcStoryEstimationInB}  13
+    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimationInB}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
+    ${tcStoryIDInB}=  Get Story ID In Sprint Backlog  ${_StoryName}
+    # new task in project
+    ${_TaskName}=  Set Variable  task 1 in project B
+    ${_TaskNotes}=  Set Variable  notes in project B
+    Set Test Variable  ${tcTaskEstimationInB}  3
+    Add Task With Arguments  ${tcStoryIDInB}  ${_TaskName}  ${tcTaskEstimationInB}  ${_TaskNotes}
+    # -------------- project B end ------------
+
+Test Project Summary - Project And Sprint Information Teardown
+    Select Window  ${tcBrowserAlias_A}
+    Select Node Product  Product Backlog
+    Clean All Story
+    Clean All Sprint
+    Close Window
+    Select Window  ${tcBrowserAlias_B}
+    Select Node Product  Product Backlog
+    Clean All Story
+    Clean All Sprint
+    Close Window
+    Clean DB  ${DB_URL}  ${DB_ACCOUNT}  ${DB_PASSWORD}  ${DB_NAME}
+    # 如果有開分頁, 最後要關瀏覽器時, 一定要Select Window, 沒有帶參數的話預設值是main
+    Select Window
+    Close Browser
+

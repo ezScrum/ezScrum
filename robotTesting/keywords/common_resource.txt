@@ -1,0 +1,128 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           BuiltIn
+Library           HttpLibrary.HTTP
+Library           lib/DatabaseHandler.py
+
+*** Keywords ***
+ezScrum Suite Setup
+    Start Selenium Server
+    Wait Until Keyword Succeeds    1min    5s    _SeleniumServerCheck    200
+    Wait Until Keyword Succeeds    1min    5s    _DeployEZScrumServerCheck    200
+
+ezScrum Suite Teardown
+    Stop Selenium Server
+
+_SeleniumServerCheck
+    [Arguments]    ${status}
+    Get    http://127.0.0.1:4444/wd/hub
+    Log Response Status
+    Follow Response
+    Response Status Code Should Equal    ${status}
+
+_DeployEZScrumServerCheck
+    [Arguments]    ${status}
+    Get    ${LOGIN_URL}/logon.do
+    Log Response Status
+    Response Status Code Should Equal    ${status}
+
+New Tab With Alias
+    [Arguments]    ${loginUrl}    ${alias}
+    [Documentation]    1. 透過 selenium api 的 openWindow 來完成開分頁的功能
+    ...    2. 使用此keyword的限制 : open browser的url domain name必須與欲新增的分頁domain name一致
+    Call Selenium Api    openWindow    ${loginUrl}    ${alias}
+    Select Window    ${alias}
+
+Compare Field Content
+    [Arguments]    ${xpath}    ${correctValue}
+    ${testValue}=    Get Value    ${xpath}
+    Should Be Equal    ${correctValue}    ${testValue}
+
+Select Project
+    [Arguments]    ${PROJECT_NAME}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${PROJECT_NAME}")]
+    Wait Until Page Loaded
+
+Select Node Product
+    [Arguments]    ${nodeName}
+    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]    andDontWait
+
+Element Enable And Submit
+    [Arguments]    ${xpathElement}
+    Element Should Be Visible    xpath=${xpathElement}
+    Click Element    xpath=${xpathElement}    andDontWait
+
+Focus AND Input Text
+    [Arguments]    ${xpathElement}    ${text}
+    Focus    xpath=${xpathElement}
+    Input Text    xpath=${xpathElement}    ${text}
+
+Find Current Window Element
+    [Arguments]    ${currentWindowTitle}    ${elementName}
+    ${currentWindowElement}=    Set Variable    //span[text()="${currentWindowTitle}"]/../../../../../div[@class="x-window-bwrap"]/.//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="${elementName}"] ]
+    Xpath Should Match X Times    ${currentWindowElement}    1
+    [Return]    ${currentWindowElement}
+
+Enter ezScrum System
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Input Text    userId    ${gLOGIN_INFO[1]}
+    Input Password    password    ${gLOGIN_INFO[2]}
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
+
+Exit ezScrum System
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    Close Browser
+
+Logon ezScrum System
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    Wait Until Page Contains Element    userId
+    Wait Until Page Contains Element    password
+
+SwitchToPage
+    [Arguments]    ${pageName}
+    [Documentation]    Page Name:
+    ...
+    ...    ProjectList
+    ...    Management
+    Click Element    xpath=//tbody/tr/td[text()="${pageName}"]    andDontWait
+    Wait Until Page Loaded    ${PAGE_LOAD_TIMEOUT}
+
+SwitchToItemLink
+    [Arguments]    ${isProjectPage}    ${itemName}
+    [Documentation]    切換頁面的某個功能選項
+    ...    預設是ProjectList頁面
+    ${_tagName}=    Set Variable If    ${isProjectPage} == 'True'    span    u
+    ${_tagName}=    Set Variable If    ${isProjectPage} == 'False'    u    span
+    Click Element    xpath=//li//${_tagName}[.="${itemName}"]    andDontWait
+    # 加入同步機制比較妥當
+
+DropDownMenu_Select
+    [Arguments]    ${menuName}    ${itemName}
+    # focus on Menu
+    Click Element    xpath=//input[@name="${menuName}"]    andDontWait    # open
+    # select Item
+    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text() = "${itemName}"]    andDontWait
+
+TableGrid3_SelectItem
+    [Arguments]    ${columnIndex}    ${itemName}    # index start from 0
+    [Documentation]    點選 Table Grid 的第 n 個欄位
+    ...    (必須要給此欄位所顯示的名稱才能定位)
+    # //div[@class= "x-grid3-cell-inner x-grid3-col-0" and text()="lab1321a"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and text()="${itemName}"]
+
+TableGrid3_GetItemCount
+    [Arguments]    ${TableName}
+    [Documentation]    給定 Table 名稱,可回傳總資料項目的筆數
+    # get item count
+    ${ItemCount} =    Get Matching Xpath Count    //span[.="${TableName}"]/../..//div[@class="x-grid3-body"]//tr
+    Log    ItemCount = ${ItemCount}
+    [Return]    ${ItemCount}
+
+Clean DB
+    [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    [Documentation]    GAE 清除資料庫的方式稍後再補上
+    Run Keyword if    "${VERSION}"=="Web"    clean database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

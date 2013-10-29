@@ -1,0 +1,137 @@
+*** Keywords ***
+Test Account Management - PreCondition
+    Login Page    ${LOGIN_URL}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    click element    xpath=//td[text()="Management"]    andDontWait
+    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
+    Clean Accounts
+    Logon ezScrum System
+    
+Test Account Management - PostCondition
+    Login With Admin
+    Click Element    xpath=//td[text()="Management"]    andDontWait
+    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
+    Clean Accounts
+    Exit ezScrum System
+
+_ClickManagmentElement
+    [Arguments]    ${userName}
+    Click element    xpath=//td[text()="Management"]    andDontWait
+    Run Keyword if    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    Run Keyword Unless    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="User Information"]
+    Run Keyword if    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="${userName}"]
+    Run Keyword Unless    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//div[@id="userEditInformationTab"]//input[@name="id"]
+
+_Logon
+    Clean Accounts
+    Logon ezScrum System
+
+Test Account Management - Add Account Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+
+Test Account Management - Add Account Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+    
+Test Account Management - Add Duplicate Account Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+
+Test Account Management - Add Duplicate Account Teardown
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - Edit Account Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+
+Test Account Management - Edit Account Teardown
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - Delete Account Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+
+Test Account Management - Delete Account Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - Enable Account Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+
+Test Account Management - Enable Account Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - Click Add Account Can Display Correct Information Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Set Test Variable    ${tcAccountID}    account
+    Add Account By Parameter    ${tcAccountID}1    ${tcAccountID}1    ${tcAccountID}1@mail.com
+    Add Account By Parameter    ${tcAccountID}2    ${tcAccountID}2    ${tcAccountID}2@mail.com
+
+Test Account Management - Click Add Account Can Display Correct Information Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+
+Do Not Delete Account of Admin Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Set Test Variable    ${tcAccountID}    testAccount
+    Add Account By Parameter    ${tcAccountID}1    ${tcAccountID}1    ${tcAccountID}1@mail.com
+
+Do Not Delete Account of Admin Teardown
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    _Logon
+
+Test Account Management - Change Password Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+
+Test Account Management - Change Password Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - Validate Confirm Password Setup
+    Login With Admin
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+
+Test Account Management - Validate Confirm Password Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon
+
+Test Account Management - User Modify Personal Information Setup
+    # 建立新使用者
+    Login With Admin
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+    # 登出系統
+    Logon ezScrum System
+    # 以新使用者登入系統
+    Login Page With Account In The Same Browser    ${tsAccountId}    ${tsAccountId}
+    _ClickManagmentElement    ${tsAccountId}
+
+Test Account Management - User Modify Personal Information Teardown
+    Login With Admin
+    _ClickManagmentElement    admin
+    _Logon

@@ -1,0 +1,15 @@
+/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+.sort-desc {
+    background-image: url("../../images/default/grid/sort_desc.gif") !important;
+    
+}
+
+.sort-asc {
+    background-image: url("../../images/default/grid/sort_asc.gif") !important;
+    
+}

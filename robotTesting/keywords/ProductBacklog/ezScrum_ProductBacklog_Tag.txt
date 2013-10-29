@@ -1,0 +1,83 @@
+*** Settings ***
+Documentation     Create,Delete,Duplicate Tag
+Library           SeleniumLibrary
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+
+*** Keywords ***
+Create Tag
+    [Arguments]    ${tagName}
+    [Documentation]    必須先自行開啟Tab Manage視窗
+    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Input Text    xpath=//input[@name="newTagName"]    ${tagName}
+    ${xpathAddTag}=    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']    # 什麼用途?
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tagName}
+
+Create Tag With Arguments
+    [Arguments]    ${tagName}
+    [Documentation]    打開Tab Manage視窗
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Input Text    xpath=//input[@name="newTagName"]    ${tagName}
+    ${xpathAddTag}=    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tagName}
+    ${tagCount}=    Count Tag Amount With Arguments    ${tagName}
+    Should Not Be Equal    0    ${tagCount}
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait
+
+Delete Tag
+    [Documentation]    固定點選表格內的第一個tag,透過按下button"Remove Tag"來刪除tag
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[1]
+    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[1]
+    Click Element    xpath=//button[text()="Remove Tag"]    andDontWait
+    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="Yes"] ]    andDontWait
+    Set Selenium Speed    ${SELENIUM_SPEED}
+
+Delete Tag With Arguments
+    [Arguments]    ${tag}
+    [Documentation]    打開Tab Manage視窗
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    ${tagCount}=    Count Tag Amount With Arguments    ${tag}
+    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount}]
+    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount}]
+    Click Element    xpath=//button[text()="Remove Tag"]    andDontWait
+    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="Yes"] ]    andDontWait
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait
+    Set Test Variable    ${correctTagText}    ${EMPTY}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+
+Mark And UnMark Tag With Arguments
+    [Arguments]    ${eventName}    ${storyName}    ${tagName}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Click Element    xpath=//button[text()="Tag"]    andDontWait
+    Click Element    xpath=(//span[@class="x-menu-item-text" and text()="${tagName}"])[2]    andDontWait
+    Run Keyword if    "${eventName}"=="Mark"    Set Test Variable    ${correctTagText}    ${tagName}
+    Run Keyword if    "${eventName}"=="UnMark"    Set Test Variable    ${correctTagText}    ${EMPTY}
+
+Count Tag Amount With Arguments
+    [Arguments]    ${name}
+    [Documentation]    計算已加入的 Tag 總數
+    ${tagAmount}=    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name" ]
+    Element Text Should Be    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagAmount}]    ${name}
+    [Return]    ${tagAmount}
+
+Clean All Tag
+    # call out Management menu
+    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    # get Tag count
+    ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
+    # delete all tag
+    : FOR    ${index}    IN RANGE    0    ${tagCount}
+    \    Delete Tag
+    # close Management menu
+    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManageClose}    andDontWait

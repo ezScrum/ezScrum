@@ -1,0 +1,6 @@
+*** Variables ***
+${DB_URL}         DB_URL
+${DB_NAME}        DB_NAME
+${DB_ACCOUNT}     DB_ACCOUNT
+${DB_PASSWORD}    DB_PASSWORD
+${BROWSER}        googlechrome

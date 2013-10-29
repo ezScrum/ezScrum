@@ -1,0 +1,17 @@
+*** Variables ***
+${BROWSER}        googlechrome    # Browser Support: firefox(firefox ff) , ie, googlechrome, opera, safari
+${LOGIN_URL}      http://localhost:8080/ezScrum    # command line arguments will overwrite its value
+${SELENIUM_SPEED}    0.2
+${SELENIUM_SPEED_SLOW}    1    # unit: sec
+${PROJECT_NAME}    localtestProject    # --- Project Information ---
+${PROJECT_MANAGER}    Manager
+${PROJECT_COMMENT}    Comment
+${ATTACH_FILE_SIZE}    2
+${CREATE_PROJECT_WAIT}    10
+${CREATE_PROJECT_TIMEOUT}    60s
+${PAGE_LOAD_TIMEOUT}    30    # unit: second
+${MSG_WAIT_FOR_LOAD_DATA}    loading info...    # Message
+${TEST_ID}        0    # 在做 Concurrent 測試時,用來辨識是何台機器進行測試的
+${RUN_TIMES}      10    # 在做 Concurrent 測試時,用來指定要重複執行某項任務的次數
+${VERSION}        Web    # Web or GAE
+${TENANT_ID}      t1    # for GAE, 預設的租戶id
