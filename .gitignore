@@ -3,6 +3,7 @@ build
 _UnitTest
 
 /StartDate.log
+/WebContent/Workspace/*/_metadata
 /WebContent/Workspace/_metadata/its_config.xml
 /ezScrum_FTPServer_Config.txt
 /TestData/MyWorkspace_bk/_metadata/its_config.xml
