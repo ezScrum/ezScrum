@@ -26,7 +26,7 @@
   <Actors>
     <Groups />
     <Accounts>
-      <Account id="admin" name="admin" password="01feebbe1ab216e41264b042a2b2ddb6" enable="true" />
+      <Account id="admin" name="admin" password="21232f297a57a5a743894a0e4a801fc3" email="example@ezScrum.tw" enable="true" />      
     </Accounts>
   </Actors>
   <Assigns>

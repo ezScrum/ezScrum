@@ -3,9 +3,8 @@ build
 _UnitTest
 
 /StartDate.log
-/WebContent/Workspace/test/_metadata/buildInfo.xml
-/WebContent/Workspace/test/_metadata/project.xml
 /WebContent/Workspace/_metadata/its_config.xml
 /ezScrum_FTPServer_Config.txt
 /TestData/MyWorkspace_bk/_metadata/its_config.xml
 /TestData/TestConfig.properties
+/WebContent/RoleBase.xml
