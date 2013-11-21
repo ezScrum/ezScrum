@@ -55,7 +55,7 @@ public class ITSPrefsStorage {
 	@SuppressWarnings("unchecked")
 	private void init() {
 		try {
-			prefsMap = mPrefsUtil.getPrefs(PROJECT_FOLDER_NAME, mSysPrefsPath, mProjectPrefsPath, "");
+			prefsMap = mPrefsUtil.getPrefs(mSysPrefsPath, "");
 		} catch (PrefsUtilException e) {
 			e.printStackTrace();
 		}
@@ -63,7 +63,7 @@ public class ITSPrefsStorage {
 
 	public void save() {
 		try {
-			mPrefsUtil.saveUsrDefined(PROJECT_FOLDER_NAME, prefsMap, mProjectPrefsPath);
+			mPrefsUtil.saveSysDefined(prefsMap, mSysPrefsPath);
 		} catch (PrefsUtilException e) {
 			e.printStackTrace();
 		}
