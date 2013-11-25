@@ -248,6 +248,9 @@
 			<forward name="success" path="/Error.jsp" />
         </action>
         
+        <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
+        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
+        
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">
 			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />
 			<forward name="success" path="main.logon" />
@@ -494,10 +497,9 @@
         <action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
 
         <!--    *********************
-                *		ezTrack		*
+                *		other		*
                 *********************
              -->
-        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         <action path="/showScrumIssue" forward="scrumIssue.show" />
         <action path="/showCustomIssue" forward="customIssue.show" />
 
