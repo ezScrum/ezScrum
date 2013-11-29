@@ -18,7 +18,7 @@
 --
 -- Table structure for table `buildresult`
 --
-/*build test*/
+/*build test123*/
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (
   `ID` int(11) NOT NULL auto_increment,
