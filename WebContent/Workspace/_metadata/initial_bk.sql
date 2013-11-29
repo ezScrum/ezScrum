@@ -18,7 +18,7 @@
 --
 -- Table structure for table `buildresult`
 --
-/**test push git*/
+/*build test*/
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (
   `ID` int(11) NOT NULL auto_increment,
