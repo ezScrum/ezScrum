@@ -47,7 +47,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     },
     loadData: function(sID, handler) {
     	var obj = this;
-
     	Ext.Ajax.request({
     		url : 'getTaskBoardStoryTaskList.do',
     		params : {
