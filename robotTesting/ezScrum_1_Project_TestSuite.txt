@@ -58,10 +58,10 @@ Test Project - Session - Summary of Project And Sprint Information
     Select Node Product  Summary
     # Verify
     # 由於project create date當有不一樣的project name or db name時，才會改變。
-    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="Commnet"]  ${PROJECT_COMMENT}_A
-    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="ProjectManager"]  ${PROJECT_MANAGER}_A
-    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="SprintGoal"]  ${tcSprintGoal_A}
-    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Story_Undone_Total_Point"]  ${tcStoryEstimationInA}.0 / ${tcStoryEstimationInA}.0
+    Compare Field Content  //div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="Commnet"]  ${PROJECT_COMMENT}_A
+    Compare Field Content  //div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="ProjectManager"]  ${PROJECT_MANAGER}_A
+    Compare Field Content  //div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="SprintGoal"]  ${tcSprintGoal_A}
+    Compare Field Content  //div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Story_Undone_Total_Point"]  ${tcStoryEstimationInA}.0 / ${tcStoryEstimationInA}.0
     Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Task_Undone_Total_Point"]  ${tcTaskEstimationInA}.0 / ${tcTaskEstimationInA}.0
     [Teardown]  Test Project Summary - Project And Sprint Information Teardown
 

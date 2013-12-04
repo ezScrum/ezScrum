@@ -59,9 +59,9 @@ Check Account In Edit
     Click Element    xpath=//button[text()="Edit Information"]    andDontWait
     # Check Account Info
     Wait Until Page Contains Element    xpath=//input[@name="id"]
-    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="id"]    ${accountId}
-    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="name"]    ${name}
-    Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="mail"]    ${mail}
+    Compare Field Content    //span[text()="Edit Information"]/../../../../..//input[@name="id"]    ${accountId}
+    Compare Field Content    //span[text()="Edit Information"]/../../../../..//input[@name="name"]    ${name}
+    Compare Field Content    //span[text()="Edit Information"]/../../../../..//input[@name="mail"]    ${mail}
     # Save
     ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
     Element Enable And Submit    ${xpathSaveButton}

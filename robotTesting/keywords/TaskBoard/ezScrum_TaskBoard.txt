@@ -60,13 +60,13 @@ Verify Story Information With Arguments In TaskBoard
     [Arguments]  ${_StoryID}  ${_StoryName}  ${_StoryValue}  ${_StoryEstimation}  ${_StoryImportance}  ${tagName}  ${_StoryNotes}
     ...  ${_StoryHowToDemo}
     Click Element  xpath=//div[@id="TaskBoard_Page"]//div[@id="${_StoryID}_new"]//a[@title="Edit the Story"]  andDontWait
-    Compare Field Content  xpath=//textarea[@name="Name"]  ${_StoryName}
-    Compare Field Content  xpath=//input[@name="Value"]  ${_StoryValue}
-    Compare Field Content  xpath=//input[@name="Estimation"]  ${_StoryEstimation}
-    Compare Field Content  xpath=//input[@name="Importance"]  ${_StoryImportance}
-    Compare Field Content  xpath=//textarea[@name="Notes"]  ${_StoryNotes}
-    Compare Field Content  xpath=//input[@name="Tags"]  ${tagName}
-    Compare Field Content  xpath=//textarea[@name="HowToDemo"]  ${_StoryHowToDemo}
+    Compare Field Content  //textarea[@name="Name"]  ${_StoryName}
+    Compare Field Content  //input[@name="Value"]  ${_StoryValue}
+    Compare Field Content  //input[@name="Estimation"]  ${_StoryEstimation}
+    Compare Field Content  //input[@name="Importance"]  ${_StoryImportance}
+    Compare Field Content  //textarea[@name="Notes"]  ${_StoryNotes}
+    Compare Field Content  //input[@name="Tags"]  ${tagName}
+    Compare Field Content  //textarea[@name="HowToDemo"]  ${_StoryHowToDemo}
     ${_XpathEditStoryCancel}=  Find Current Window Element  Edit Story #${_StoryID}  Cancel
     Element Enable And Submit  ${_XpathEditStoryCancel}
 
@@ -74,13 +74,13 @@ Verify Task Information With Arguments In TaskBoard
     [Arguments]  ${_TaskID}  ${_TaskName}  ${_TaskHandler}  ${_TaskPartners}  ${_TaskEstimation}  ${_TaskRemains}  ${_TaskActual}
     ...  ${_TaskNotes}
     Click Element  xpath=//div[@id="TaskBoard_Page"]//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../..//a[@title="Edit the Task"]  andDontWait
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${_TaskName}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]  ${_TaskHandler}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]  ${_TaskPartners}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimation"]  ${_TaskEstimation}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]  ${_TaskRemains}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]  ${_TaskActual}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${_TaskNotes}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${_TaskName}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]  ${_TaskHandler}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]  ${_TaskPartners}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimation"]  ${_TaskEstimation}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]  ${_TaskRemains}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]  ${_TaskActual}
+    Compare Field Content  //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${_TaskNotes}
     ${_XpathEditStoryCancel}=  Find Current Window Element  Edit Task #${_TaskID}  Cancel
     Element Enable And Submit  ${_XpathEditStoryCancel}
 
