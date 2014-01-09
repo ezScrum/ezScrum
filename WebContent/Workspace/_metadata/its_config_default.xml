@@ -16,7 +16,7 @@
               <entry key="Account" value="YOUR_ACCOUNT_NAME"/>
               <entry key="Password" value="YOUR_PASSWORD"/>
               <entry key="DatabaseType" value="MySQL"/>
-              <entry key="DatabaseName" value="bugtracker"/>
+              <entry key="DatabaseName" value="YOUT_DB_NAME"/>
             </map>
           </node>
         </node>
