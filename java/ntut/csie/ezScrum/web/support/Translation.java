@@ -198,21 +198,21 @@ public class Translation {
 			JsonObject jsonStory = new JsonObject();
 
 			jsonStory.append("Id", stories[i].getIssueID());
-			jsonStory.append("Link", TranslateChar.TranslateJSONChar(stories[i].getIssueLink()));
 			jsonStory.append("Name", TranslateChar.TranslateJSONChar((stories[i].getSummary())));
 			jsonStory.append("Value", stories[i].getValue());
+			jsonStory.append("Estimate", stories[i].getEstimated());
 			jsonStory.append("Importance", stories[i].getImportance());
-			jsonStory.append("Estimation", stories[i].getEstimated());
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTag(), ",")));
 			jsonStory.append("Status", stories[i].getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories[i].getNotes()));
 			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories[i].getHowToDemo()));
+			jsonStory.append("Link", TranslateChar.TranslateJSONChar(stories[i].getIssueLink()));
 			jsonStory.append("Release", TranslateChar.HandleNullString(stories[i].getReleaseID()));
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(stories[i].getSprintID()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTag(), ",")));
 			jsonStory.append("FilterType", getFilterType(stories[i]));
 
-			if (stories[i].getAttachFile().size() == 0) jsonStory.append("Attach", "false");
-			else jsonStory.append("Attach", "true");
+			if (stories[i].getAttachFile().size() == 0) jsonStory.append("Attach", false);
+			else jsonStory.append("Attach", true);
 
 			List<IssueAttachFile> files = stories[i].getAttachFile();
 			JsonArray jsonFiles = new JsonArray();

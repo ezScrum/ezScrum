@@ -18,6 +18,9 @@
 --
 -- Table structure for table `buildresult`
 --
+/*ghghghghghgh*/
+
+
 
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (

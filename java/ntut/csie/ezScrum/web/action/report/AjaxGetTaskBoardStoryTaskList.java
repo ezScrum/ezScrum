@@ -1,33 +1,18 @@
 package ntut.csie.ezScrum.web.action.report;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.TaskboardHelper;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-
-import com.google.gson.Gson;
 
 public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	private static Log log = LogFactory.getLog(AjaxGetTaskBoardStoryTaskList.class);
