@@ -140,6 +140,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		} else {
 			Ext.example.msg(title, 'Sorry, please try again.');
 		}
+		this.initialTaskBoard();
 	},
 	notify_EditTask: function(record) {
 		EditTaskWindow.hide();// share component
@@ -157,6 +158,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
 		Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
 		Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
+		this.initialTaskBoard();
 	},
 	notify_AttachFile: function(success, record, msg) {
 		AttachFile_Window.hide();
