@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.tools.DocxMaker;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -51,7 +53,7 @@ public class ShowPrintableReleaseAction extends Action {
     	
     	//get release information
     	ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
-    	IReleasePlanDesc reDesc= RPhelper.getReleasePlan(releaseID);		
+    	IReleasePlanDesc reDesc = RPhelper.getReleasePlan(releaseID);		
     	//initial data
     	SprintPlanHelper SPhelper = new SprintPlanHelper(project);
     	stories = new HashMap<String, List<IIssue>>();
@@ -64,14 +66,9 @@ public class ShowPrintableReleaseAction extends Action {
 	    	if(sprinDescList != null) {
 	    		for (ISprintPlanDesc desc : sprinDescList) {
 	    			String sprintID = desc.getID();
-//		    		int intSprintID = Integer.parseInt(sprintID);
-//		    		SprintBacklogMapper sb = new SprintBacklogMapper(project, session, intSprintID);
-//		    		List<IIssue> issues = sb.getStoriesByImp();
 		    		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintID);
 		    		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		    		List<IIssue> issues = sprintBacklogLogic.getStoriesByImp();
-//		    		IIssue[] issues = sb.getStories();
-//		    		issues = sortStory(issues);		    	// sort story information by importance
 		    		stories.put(sprintID, issues);
 	    		
 		    		//the sum of story points
@@ -88,7 +85,6 @@ public class ShowPrintableReleaseAction extends Action {
 		    		}
 	    		}
 	    	}
-	       	
 	    	
 	    	//set attribute in request
 	    	request.setAttribute("release", reDesc);
@@ -97,9 +93,9 @@ public class ShowPrintableReleaseAction extends Action {
 			request.setAttribute("TaskMap", TaskMap);
 			request.setAttribute("tatolStoryPoints", tatolStoryPoints);
 			
-//			ScrumRole sr = new ScrumRoleManager().getScrumRole(project, session.getAccount());
 			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, session.getAccount());
-			
+			DocxMaker docxMaker = new DocxMaker();
+			File file = docxMaker.getReleasePlanDocx(reDesc, sprinDescList, stories, TaskMap, tatolStoryPoints);
 			if (sr.getAccessReleasePlan()) {
 				return mapping.findForward("success");
 			} else {
