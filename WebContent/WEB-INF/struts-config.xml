@@ -198,6 +198,9 @@
     		<!-- Scrum Report -->
 
 
+			<!-- Export -->
+			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />
+			<action path="/ajaxGetVelocity"				type="ntut.csie.ezScrum.web.action.export.AjaxGetVelocityAction" />
 
 		<!-- ========================================= -->
 		<!-- 以下待確認 -->
