@@ -254,7 +254,6 @@ public class ReleasePlanHelper {
      *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
      */
     public String setSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
-//    	JSONArray velocityList = new JSONArray();
     	JSONObject velocityObject = new JSONObject();
     	JSONArray sprints = new JSONArray();
     	double totalVelocity = 0;
@@ -264,6 +263,7 @@ public class ReleasePlanHelper {
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", sprint.getID());
+	    			sprintplan.put("Name", "Sprint" + sprint.getID());
 	    			int sprintVelocity = calculateStoryDonePoint(sprint.getID(), SBhelper);
 	    			sprintplan.put("Velocity", sprintVelocity);
 	    			totalVelocity += sprintVelocity;
@@ -272,7 +272,7 @@ public class ReleasePlanHelper {
 	    		}
 	    	}
 	    	velocityObject.put("Sprints", sprints);
-	    	velocityObject.put("Average ", totalVelocity/sprintCount);
+	    	velocityObject.put("Average", totalVelocity/sprintCount);
     	} catch (JSONException e) {
             e.printStackTrace();
         }

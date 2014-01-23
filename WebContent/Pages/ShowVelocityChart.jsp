@@ -10,42 +10,62 @@
 <button id="download">Download</button>
 </body>
 <script>
-	var sprints = ["Sprint1", "Sprint2", "Sprint3", "Sprint4", "Sprint5", "Sprint6", "Sprint7", "Sprint8", "Sprint9", "Sprint10"];
-	var steps = 10;
-	
-	
-	var lineChartData = {
-		labels : sprints,
-		datasets : [
-			{
-				fillColor : "rgba(255,255,255,0.0)",
-				strokeColor : "rgba(52, 152, 219,1)",
-				pointColor : "rgba(52, 152, 219,1)",
-				data : [5,8,5,13,7,18,9,10,6,12]
-			},
-			{
-				fillColor : "rgba(255,255,255,0.0)",
-				strokeColor : "rgba(231, 76, 60,1)",
-				pointColor : "rgba(231, 76, 60,1)",
-				data : [10,10,10,10,10,10,10,10,10,10]
-			}
-		]
-		
-	}
-	
-	var options = {
-			scaleGridLineColor : "rgba(0,0,0,.15)",
-			scaleOverride: true,
-		    scaleSteps: steps,
-		    scaleStepWidth: Math.ceil(15 / steps),
-		    scaleStartValue: 0,
-		    bezierCurve : false
-	}
-	
-	
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
-	
 	$(document).ready(function() {
+		console.log(document.URL.split("?")[0]);
+		$.ajax({
+			url : "/ezScrum/ajaxGetVelocity.do?" + document.URL.split("?")[0],
+			type : "GET",
+			success : function(data) {
+				var sprints = data.Sprints;
+				var steps = sprints.length;
+				var velocitys = [];
+				var averages = [];
+				var labelname = [];
+				var max = 0;
+				for (var i = 0; i < sprints.length; i++) {
+					velocitys[i] = sprints[i].Velocity;
+					averages[i] = data.Average;
+					labelname[i] = sprints[i].Name;
+					if (sprints[i].Velocity > max) {
+						max = sprints[i].Velocity;
+					}
+				};
+				var lineChartData = {
+					labels : labelname,
+					datasets : [
+						{ // ideal line
+							fillColor : "rgba(255,255,255,0.0)",
+							strokeColor : "rgba(52, 152, 219,1)",
+							pointColor : "rgba(52, 152, 219,1)",
+							data : velocitys
+						},
+						{ // averages line
+							fillColor : "rgba(255,255,255,0.0)",
+							strokeColor : "rgba(231, 76, 60,1)",
+							pointColor : "rgba(231, 76, 60,1)",
+							data : averages
+						}
+					]
+				}
+				var width = 0;
+				if (max <= 24) {
+					width = 2;
+				} else {
+					width = 5;
+				}
+				var options = {
+						scaleGridLineColor : "rgba(0,0,0,.15)",
+						scaleOverride: true,
+						scaleSteps: Math.ceil((max*1.2) / width),
+						scaleStepWidth: width,
+						scaleStartValue: 0,
+						bezierCurve : false
+				}
+				var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
+			},
+			dataType : "json"
+		});
+		
 		$("#download").click(function() {
 			var canvas = document.getElementById("canvas");
 			var img    = canvas.toDataURL("image/png");
