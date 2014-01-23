@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RoleBase>
+  <Roles>
+    <Role id="admin" name="administrator">
+      <Permissions>
+        <Permission name="system_admin" />
+        <Permission name="system_createProject" />
+      </Permissions>
+    </Role>
+    <Role id="user" name="Default User">
+      <Permissions>
+        <Permission name="system_read" />
+      </Permissions>
+    </Role>
+    <Role id="CreateProject" name="CreateProject">
+      <Permissions>
+        <Permission name="system_createProject" />
+      </Permissions>
+    </Role>
+  </Roles>
+  <Permissions>
+    <Permission name="system_admin" operation="admin" resourceName="system" />
+    <Permission name="system_read" operation="read" resourceName="system" />
+    <Permission name="system_createProject" operation="createProject" resourceName="system" />
+  </Permissions>
+  <Actors>
+    <Groups />
+    <Accounts>
+      <Account id="admin" name="admin" password="21232f297a57a5a743894a0e4a801fc3" email="example@ezScrum.tw" enable="true" />      
+    </Accounts>
+  </Actors>
+  <Assigns>
+    <Assign actor="admin" role="admin" />
+    <Assign actor="admin" role="user" />
+  </Assigns>
+</RoleBase>
+
