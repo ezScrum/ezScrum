@@ -196,7 +196,10 @@
 
 
     		<!-- Scrum Report -->
-
+			
+			<action path="/showVelocityChart" type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
+				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
+			</action>
 
 			<!-- Export -->
 			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />

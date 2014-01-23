@@ -1,7 +1,7 @@
 ezScrum.Version=1.7.1.1
-ezScrum.FTP.site.ip=140.124.181.132
-ezScrum.FTP.site.username=ezscrum
-ezScrum.FTP.site.password=lab1321*
+ezScrum.FTP.site.ip=IP_ADDRESS
+ezScrum.FTP.site.username=FTP_USERNAME
+ezScrum.FTP.site.password=FTP_PASSWORD
 ezScrum.FTP.site.release.remoteDir=/ezScrum_Release
 ezScrum.FTP.site.ci.remoteDir=/ezScrum_CI
 ezScrum.FTP.site.srcDir=${ezScrum.FTP.site.release.remoteDir}/${ezScrum.Version}/src

@@ -20,6 +20,10 @@ ezScrum.ContentPanel = new Ext.Panel({
 	    
 	    // Issue Action index
 	    // 11, 12
-	    ITSConfigPage, PluginConfigPage
+	    ITSConfigPage, PluginConfigPage,
+	    
+	    // Export Document index
+	    // 13
+	    ExportDocumentPage
 	]
 });
