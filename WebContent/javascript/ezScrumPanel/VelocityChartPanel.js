@@ -14,11 +14,11 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url			: '.do',
 			modify_url	: '.do',	
 			items   : [],
-	        buttons : [{
-	        	scope    : this,
-	        	text     : 'Export',
-	        	handler  : this.doExport
-	        }]
+			buttons : [{
+				scope	: this,
+				text 	: 'Export',
+				handler	: this.doExport
+			}]
 		}
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -34,29 +34,44 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 	},
 	createCheckboxs: function() {
 		var obj = this;
-		for(var i=0;i<4;i++) {
-			obj.add({xtype: 'checkbox', boxLabel:'checkbox_'+i, id: 'checkbox_id_'+i});
-		}
-		obj.add({
-    		id   : 'scheduleReport',
-    		url  : 'showVelocityChart.do?PID=Project1',
-    		html : '<iframe id="scheduleReport" name="scheduleReport" src="showVelocityChart.do?PID=Project1" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>'
-    	});
+		var releases = [];
+		Ext.Ajax.request({
+			url		: 'ajaxGetReleasePlan.do',
+			success	: function(response) {
+				releases = Ext.decode(response.responseText).Releases;
+				for(var i=0;i<releases.length;i++) {
+					obj.add({
+						xtype		: 'checkbox',
+						id			: 'checkbox_id_'+i,
+						boxLabel	: releases[i].Name,
+						releaseId	: releases[i].ID
+					});
+				}
+			}
+		});
 	},
 	doExport: function() {
+		var obj = this;
 		var checked = [];
+		var queryString = "PID=test02&releases=";
 		for(var i=0;i<this.items.length;i++) {
 			if(this.get(i).checked) {
-				checked.push(this.get(i).id);
+				checked.push(this.get(i).releaseId);
 			}
 		}
-		console.log(checked);
-		
-		var chart = new Ext.chart.Chart({
-			height	: 600,
-			width	: 800
-		});
-		this.add();
+		for (var i = 0; i < checked.length; i++) {
+			queryString += checked[i];
+			if (i != checked.length - 1) {
+				queryString += ",";
+			}
+		};
+
+		if (checked.length != 0) {
+			obj.add({
+				id	: 'scheduleReport',
+				html: '<iframe id="scheduleReport" name="scheduleReport" src="showVelocityChart.do?' + queryString + '" width="600" height="800" frameborder="0" scrolling="auto"></iframe>'
+			});
+		}
 	}
 });
 

@@ -191,19 +191,16 @@
   	  		<action path="/ajaxAddNewRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxAddNewRetrospectiveAction" />
     		<action path="/ajaxDeleteRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxDeleteRetrospectiveAction" />
 
-
     		<!-- Unplanned -->
 
-
     		<!-- Scrum Report -->
-			
-			<action path="/showVelocityChart" type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
-				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
-			</action>
 
 			<!-- Export -->
 			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />
 			<action path="/ajaxGetVelocity"				type="ntut.csie.ezScrum.web.action.export.AjaxGetVelocityAction" />
+			<action path="/showVelocityChart" 			type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
+				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
+			</action>
 
 		<!-- ========================================= -->
 		<!-- 以下待確認 -->

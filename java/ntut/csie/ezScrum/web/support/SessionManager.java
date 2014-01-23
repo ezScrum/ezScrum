@@ -85,8 +85,7 @@ public class SessionManager {
 	public static final IProject getProject(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		// 拿到request header的URL parameter
-//		String projectID = getURLParameter(request, "PID");
-		String projectID = "test02";
+		String projectID = getURLParameter(request, "PID");
 		
 		if (projectID != null) {
 			// 拿session裡的project資料
