@@ -25,13 +25,13 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 		VelocityChartFormLayout.superclass.initComponent.apply(this, arguments);
 		this.createCheckboxs();
 	},
-	loadDataModel: function() {
-		var obj = this;
-		var loadmask = new Ext.LoadMask(this.getEl(), {msg: "loading info..."});
-		loadmask.show();
-		this.createCheckboxs();
-		loadmask.hide();
-	},
+	// loadDataModel: function() {
+	// 	var obj = this;
+	// 	var loadmask = new Ext.LoadMask(this.getEl(), {msg: "loading info..."});
+	// 	loadmask.show();
+	// 	this.createCheckboxs();
+	// 	loadmask.hide();
+	// },
 	createCheckboxs: function() {
 		var obj = this;
 		var releases = [];
@@ -67,11 +67,18 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 		};
 
 		if (checked.length != 0) {
+			// var EObj = document.getElementById("scheduleReport");
+			// console.log(EObj);
+			// if (EObj != null) {
+			// 	console.log("here");
+			// 	EObj.parentNode.removeChild(EObj);
+			// }
 			obj.add({
 				id	: 'scheduleReport',
-				html: '<iframe id="scheduleReport" name="scheduleReport" src="showVelocityChart.do?' + queryString + '" width="600" height="800" frameborder="0" scrolling="auto"></iframe>'
+				html: '<iframe id="scheduleReport" name="scheduleReport" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
 			});
 		}
+		this.doLayout();
 	}
 });
 

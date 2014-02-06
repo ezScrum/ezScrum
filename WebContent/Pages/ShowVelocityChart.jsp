@@ -11,9 +11,15 @@
 </body>
 <script>
 	$(document).ready(function() {
-		console.log(document.URL.split("?")[0]);
+		console.log(document.URL.split("?")[1]);
 		$.ajax({
-			url : "/ezScrum/ajaxGetVelocity.do?" + document.URL.split("?")[0],
+
+			// var element = document.getElementById("scheduleReport");
+			// if (element != null) {
+			// 	$("#scheduleReport").remove();
+			// }
+
+			url : "/ezScrum/ajaxGetVelocity.do?" + document.URL.split("?")[1],
 			type : "GET",
 			success : function(data) {
 				var sprints = data.Sprints;
@@ -65,7 +71,7 @@
 			},
 			dataType : "json"
 		});
-		
+
 		$("#download").click(function() {
 			var canvas = document.getElementById("canvas");
 			var img    = canvas.toDataURL("image/png");
