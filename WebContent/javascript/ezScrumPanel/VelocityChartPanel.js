@@ -11,8 +11,6 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 	buttonAlign		: 'left',
 	initComponent : function() {
 		var config = {
-			url			: '.do',
-			modify_url	: '.do',	
 			items   : [],
 			buttons : [{
 				scope	: this,
@@ -20,18 +18,10 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 				handler	: this.doExport
 			}]
 		}
-		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		VelocityChartFormLayout.superclass.initComponent.apply(this, arguments);
 		this.createCheckboxs();
 	},
-	// loadDataModel: function() {
-	// 	var obj = this;
-	// 	var loadmask = new Ext.LoadMask(this.getEl(), {msg: "loading info..."});
-	// 	loadmask.show();
-	// 	this.createCheckboxs();
-	// 	loadmask.hide();
-	// },
 	createCheckboxs: function() {
 		var obj = this;
 		var releases = [];
@@ -51,9 +41,8 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 		});
 	},
 	doExport: function() {
-		var obj = this;
 		var checked = [];
-		var queryString = "PID=test02&releases=";
+		var queryString = "PID=" + getURLParameter("PID") + "&releases=";
 		for(var i=0;i<this.items.length;i++) {
 			if(this.get(i).checked) {
 				checked.push(this.get(i).releaseId);
@@ -67,15 +56,9 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 		};
 
 		if (checked.length != 0) {
-			// var EObj = document.getElementById("scheduleReport");
-			// console.log(EObj);
-			// if (EObj != null) {
-			// 	console.log("here");
-			// 	EObj.parentNode.removeChild(EObj);
-			// }
-			obj.add({
-				id	: 'scheduleReport',
-				html: '<iframe id="scheduleReport" name="scheduleReport" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
+			this.add({
+				id	: 'velocityChart',
+				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
 			});
 		}
 		this.doLayout();

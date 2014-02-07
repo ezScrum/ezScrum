@@ -7,20 +7,14 @@
 </head>
 <body>
 <canvas id="canvas" height="450" width="600" style="background:#fcf5f2;"></canvas>
-<button id="download">Download</button>
 </body>
 <script>
 	$(document).ready(function() {
-		console.log(document.URL.split("?")[1]);
+		
 		$.ajax({
-
-			// var element = document.getElementById("scheduleReport");
-			// if (element != null) {
-			// 	$("#scheduleReport").remove();
-			// }
-
 			url : "/ezScrum/ajaxGetVelocity.do?" + document.URL.split("?")[1],
 			type : "GET",
+			dataType : "json",
 			success : function(data) {
 				var sprints = data.Sprints;
 				var steps = sprints.length;
@@ -65,17 +59,15 @@
 						scaleSteps: Math.ceil((max*1.2) / width),
 						scaleStepWidth: width,
 						scaleStartValue: 0,
-						bezierCurve : false
+						bezierCurve: false,
+						onAnimationComplete: function() {
+							var canvas = document.getElementById("canvas");
+							var img    = canvas.toDataURL("image/png");
+							document.write('<img src="'+img+'"/>');
+						}
 				}
-				var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
-			},
-			dataType : "json"
-		});
-
-		$("#download").click(function() {
-			var canvas = document.getElementById("canvas");
-			var img    = canvas.toDataURL("image/png");
-			document.write('<img src="'+img+'"/>');
+				var velocityChart = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
+			}
 		});
 	});
 </script>
