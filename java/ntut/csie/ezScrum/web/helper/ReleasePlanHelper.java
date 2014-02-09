@@ -279,6 +279,14 @@ public class ReleasePlanHelper {
 		return velocityObject.toString();
     }
     
+    /**
+     * form AjaxGetStoryCountAction
+     * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
+     */
+    public String setStoryCountToJSon() {
+    	
+    }
+    
     // 計算此sprint內的story done的story point
     private int calculateStoryDonePoint(String sprintID, SprintBacklogHelper SBhelper) {
     	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
