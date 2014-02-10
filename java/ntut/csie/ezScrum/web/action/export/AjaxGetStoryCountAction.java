@@ -46,7 +46,7 @@ public class AjaxGetStoryCountAction extends Action {
 		
 		// 取得ReleasePlans
 		List<IReleasePlanDesc> releaseDescs = RPhelper.getReleasePlans(releases);
-		StringBuilder result = new StringBuilder(RPhelper.setSprintVelocityToJSon(releaseDescs, SBhelper));
+		StringBuilder result = new StringBuilder(RPhelper.setStoryCountToJSon(releaseDescs, SBhelper));
 		return result;
 	}
 }

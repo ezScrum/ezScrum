@@ -283,8 +283,30 @@ public class ReleasePlanHelper {
      * form AjaxGetStoryCountAction
      * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
      */
-    public String setStoryCountToJSon() {
-    	
+    public String setStoryCountToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    	JSONObject velocityObject = new JSONObject();
+    	JSONArray sprints = new JSONArray();
+    	int TotalStoryCount = 0;
+    	int StoryDoneCount = 0;
+    	int sprintCount = 0; // 計算被選的release內的sprint總數
+    	try {
+    		for (IReleasePlanDesc release : ListReleaseDescs) {
+	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    			JSONObject sprintplan = new JSONObject();
+	    			sprintplan.put("ID", sprint.getID());
+	    			sprintplan.put("Name", "Sprint" + sprint.getID());
+	    			TotalStoryCount += getStoryCount(sprint.getID(), SBhelper);
+	    			sprintplan.put("StoryDoneCount", getStoryDoneCount(sprint.getID(), SBhelper));
+	    			sprints.put(sprintplan);
+	    			sprintCount++;
+	    		}
+	    	}
+	    	velocityObject.put("Sprints", sprints);
+	    	velocityObject.put("TotalStoryCount", TotalStoryCount);
+    	} catch (JSONException e) {
+            e.printStackTrace();
+    	}
+    	return null;
     }
     
     // 計算此sprint內的story done的story point
@@ -297,6 +319,24 @@ public class ReleasePlanHelper {
     		}
     	}
     	return storypoint;
+    }
+    
+    // 計算sprint的story總數
+    private int getStoryCount(String sprintID, SprintBacklogHelper SBhelper) {
+    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
+    	int StoryCount = stories.length;
+    	return StoryCount;
+    }
+    
+    private int getStoryDoneCount(String sprintID, SprintBacklogHelper SBhelper) {
+    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
+    	int storydonecount = 0;
+		for (IIssue story : stories) {
+    		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
+    			storydonecount++;
+    		}
+    	}
+		return storydonecount;
     }
 	
 	//透過release des將sprint的資訊寫成JSon
