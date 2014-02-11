@@ -4,7 +4,6 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 	border			: false,
 	frame			: true,
 	layout			: 'anchor',
-	store			: VelocityStore,
 	title			: 'Velocity Chart Export',
 	bodyStyle		: 'padding: 0px',
 	labelAlign		: 'right',
