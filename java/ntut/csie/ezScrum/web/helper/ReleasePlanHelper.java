@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -254,29 +255,30 @@ public class ReleasePlanHelper {
      *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
      */
     public String setSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
-    	JSONObject velocityObject = new JSONObject();
+    	JSONObject velocityobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
-    	double totalVelocity = 0;
-    	int sprintCount = 0; // 計算被選的release內的sprint總數
+    	HashMap<String, Integer> storyinfo;
+    	double totalvelocity = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
 	    	for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", sprint.getID());
 	    			sprintplan.put("Name", "Sprint" + sprint.getID());
-	    			int sprintVelocity = calculateStoryDonePoint(sprint.getID(), SBhelper);
-	    			sprintplan.put("Velocity", sprintVelocity);
-	    			totalVelocity += sprintVelocity;
+	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+	    			sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
 	    			sprints.put(sprintplan);
-	    			sprintCount++;
+	    			totalvelocity += storyinfo.get("StoryPoint");
+	    			sprintcount++;
 	    		}
 	    	}
-	    	velocityObject.put("Sprints", sprints);
-	    	velocityObject.put("Average", totalVelocity/sprintCount);
+	    	velocityobject.put("Sprints", sprints);
+	    	velocityobject.put("Average", totalvelocity/sprintcount);
     	} catch (JSONException e) {
             e.printStackTrace();
         }
-		return velocityObject.toString();
+		return velocityobject.toString();
     }
     
     /**
@@ -284,59 +286,72 @@ public class ReleasePlanHelper {
      * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
      */
     public String setStoryCountToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
-    	JSONObject velocityObject = new JSONObject();
+    	JSONObject storycountobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
-    	int TotalStoryCount = 0;
-    	int StoryDoneCount = 0;
-    	int sprintCount = 0; // 計算被選的release內的sprint總數
+    	HashMap<String, Integer> storyinfo;
+    	int totalstorycount = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
     		for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", sprint.getID());
 	    			sprintplan.put("Name", "Sprint" + sprint.getID());
-	    			TotalStoryCount += getStoryCount(sprint.getID(), SBhelper);
-	    			sprintplan.put("StoryDoneCount", getStoryDoneCount(sprint.getID(), SBhelper));
+	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+	    			totalstorycount += storyinfo.get("StoryCount");
+	    			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
 	    			sprints.put(sprintplan);
-	    			sprintCount++;
+	    			sprintcount++;
 	    		}
 	    	}
-	    	velocityObject.put("Sprints", sprints);
-	    	velocityObject.put("TotalStoryCount", TotalStoryCount);
+	    	storycountobject.put("Sprints", sprints);
+	    	storycountobject.put("TotalSprintCount", sprintcount);
+	    	storycountobject.put("TotalStoryCount", totalstorycount);
     	} catch (JSONException e) {
             e.printStackTrace();
     	}
-    	return null;
+    	updateJSonInfo(storycountobject);
+    	return storycountobject.toString();
     }
     
-    // 計算此sprint內的story done的story point
-    private int calculateStoryDonePoint(String sprintID, SprintBacklogHelper SBhelper) {
+    // 取得Sprint的Story資訊
+    private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
+    	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
     	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
     	int storypoint = 0;
+    	int storydonecount = 0;
     	for (IIssue story : stories) {
     		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
     			storypoint += Integer.valueOf(story.getEstimated());
-    		}
-    	}
-    	return storypoint;
-    }
-    
-    // 計算sprint的story總數
-    private int getStoryCount(String sprintID, SprintBacklogHelper SBhelper) {
-    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
-    	int StoryCount = stories.length;
-    	return StoryCount;
-    }
-    
-    private int getStoryDoneCount(String sprintID, SprintBacklogHelper SBhelper) {
-    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
-    	int storydonecount = 0;
-		for (IIssue story : stories) {
-    		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
     			storydonecount++;
     		}
     	}
-		return storydonecount;
+    	storyinfo.put("StoryPoint", storypoint);
+    	storyinfo.put("StoryCount", stories.length);
+    	storyinfo.put("StoryDoneCount", storydonecount);
+    	return storyinfo;
+    }
+    
+    // 更新JSON string裡面的資訊
+    private JSONObject updateJSonInfo(JSONObject jsoninfo) {
+    	try {
+    		 // JSON是call by reference!!! 查memory=>System.identityHashCode(Object x)
+	        JSONArray sprints = (JSONArray)jsoninfo.get("Sprints");
+	        int sprintcount = jsoninfo.getInt("TotalSprintCount");
+	        int storycount = jsoninfo.getInt("TotalStoryCount");
+	        int storyremaining = jsoninfo.getInt("TotalStoryCount");
+	        double idealrange = (double)storycount / sprintcount;
+	        for (int i = 0; i < sprints.length(); i++) {
+	        	JSONObject sprintplan = sprints.getJSONObject(i);
+	        	storyremaining -= sprintplan.getInt("StoryDoneCount");
+	        	sprintplan.put("StoryRemainingCount", storyremaining);
+	        	sprintplan.put("StoryIdealCount", storycount - (idealrange * (i + 1)));
+	        }
+	        jsoninfo.put("Sprints", sprints);
+        } catch (JSONException e) {
+	        e.printStackTrace();
+        }
+    	return jsoninfo;
     }
 	
 	//透過release des將sprint的資訊寫成JSon

@@ -103,6 +103,8 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 	event_ExportDocument: function(node) {
 		if (node.id == "VelocityUrl") {
 			this.Page_Index = 13;
+		} else if (node.id == "StoryCountUrl") {
+			this.Page_Index = 14;
 		}
 	},
 	notify_Main_Content: function() {
