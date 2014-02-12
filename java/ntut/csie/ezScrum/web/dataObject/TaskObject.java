@@ -21,7 +21,7 @@ public class TaskObject {
 		name = task.getSummary();
 		estimation = task.getEstimated();
 		status = task.getStatus();
-		// issue 沒有 handler 可以抓
+		handler = task.getAssignto();
 		partners = task.getPartners();
 		remains = task.getRemains();
 		actual = task.getActualHour();

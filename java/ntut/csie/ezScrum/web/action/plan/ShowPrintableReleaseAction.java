@@ -94,8 +94,6 @@ public class ShowPrintableReleaseAction extends Action {
 			request.setAttribute("tatolStoryPoints", tatolStoryPoints);
 			
 			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, session.getAccount());
-			DocxMaker docxMaker = new DocxMaker();
-			File file = docxMaker.getReleasePlanDocx(reDesc, sprinDescList, stories, TaskMap, tatolStoryPoints);
 			if (sr.getAccessReleasePlan()) {
 				return mapping.findForward("success");
 			} else {
