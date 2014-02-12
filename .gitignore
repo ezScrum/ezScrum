@@ -1,4 +1,4 @@
-.classpath
+
 build
 _UnitTest
 /dist
@@ -19,3 +19,4 @@ _UnitTest
 /TestData/MyWorkspace_bk/RoleBase.xml
 
 /robotTesting/keywords/lib/*.pyc
+/.classpath
