@@ -1,10 +1,10 @@
-//the form for Story Count Chart Page
-StoryCountFormLayout = Ext.extend(Ext.form.FormPanel, {
-	id				: 'StoryCount_Form',
+//the form for StoryCount Chart Page
+StoryCountChartFormLayout = Ext.extend(Ext.form.FormPanel, {
+	id				: 'StoryCountChart_Form',
 	border			: false,
 	frame			: true,
 	layout			: 'anchor',
-	title			: 'Story Count Export',
+	title			: 'StoryCount Chart Export',
 	bodyStyle		: 'padding: 0px',
 	labelAlign		: 'right',
 	buttonAlign		: 'left',
@@ -18,7 +18,7 @@ StoryCountFormLayout = Ext.extend(Ext.form.FormPanel, {
 			}]
 		}
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
-		StoryCountFormLayout.superclass.initComponent.apply(this, arguments);
+		StoryCountChartFormLayout.superclass.initComponent.apply(this, arguments);
 		this.createCheckboxs();
 	},
 	createCheckboxs: function() {
@@ -40,28 +40,28 @@ StoryCountFormLayout = Ext.extend(Ext.form.FormPanel, {
 		});
 	},
 	doExport: function() {
-//		var checked = [];
-//		var queryString = "PID=" + getURLParameter("PID") + "&releases=";
-//		for(var i=0;i<this.items.length;i++) {
-//			if(this.get(i).checked) {
-//				checked.push(this.get(i).releaseId);
-//			}
-//		}
-//		for (var i = 0; i < checked.length; i++) {
-//			queryString += checked[i];
-//			if (i != checked.length - 1) {
-//				queryString += ",";
-//			}
-//		};
-//
-//		if (checked.length != 0) {
-//			this.add({
-//				id	: 'StoryCount',
-//				html: '<iframe id="StoryCount" name="StoryCount" src="showStoryCount.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
-//			});
-//		}
-//		this.doLayout();
+		var checked = [];
+		var queryString = "PID=" + getURLParameter("PID") + "&releases=";
+		for(var i=0;i<this.items.length;i++) {
+			if(this.get(i).checked) {
+				checked.push(this.get(i).releaseId);
+			}
+		}
+		for (var i = 0; i < checked.length; i++) {
+			queryString += checked[i];
+			if (i != checked.length - 1) {
+				queryString += ",";
+			}
+		};
+
+		if (checked.length != 0) {
+			this.add({
+				id	: 'velocityChart',
+				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
+			});
+		}
+		this.doLayout();
 	}
 });
 
-Ext.reg('StoryCountChartForm', StoryCountFormLayout);
+Ext.reg('StoryCountChartForm', StoryCountChartFormLayout);

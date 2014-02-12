@@ -1,5 +1,5 @@
 var StoryCountPage = new Ext.Panel({
-	id			: 'StoryCount_Page',
+	id			: 'Story_Count_Page',
 	layout		: 'anchor',
 	autoScroll	: true,
 	items : [
