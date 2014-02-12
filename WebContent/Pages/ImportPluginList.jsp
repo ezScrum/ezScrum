@@ -8,6 +8,7 @@
 
 <jsp:include page="../pluginWorkspace/DocxMakerPlugin/import.jsp"/>
 <jsp:include page="../pluginWorkspace/redmineWebPlugin/import.jsp"/>
+<jsp:include page="../pluginWorkspace/TaskBoardPlugin/import.jsp"/>
 </head>
 <body>
 </body>
