@@ -56,8 +56,8 @@ StoryCountChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 
 		if (checked.length != 0) {
 			this.add({
-				id	: 'velocityChart',
-				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
+				id	: 'storyCountChart',
+				html: '<iframe id="storyCountChart" name="storyCountChart" src="showStoryCountChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
 			});
 		}
 		this.doLayout();
