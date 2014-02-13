@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +30,8 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ReleasePlanHelper {
 	private ReleasePlanMapper rpMapper;
@@ -292,18 +295,33 @@ public class ReleasePlanHelper {
     	int totalstorycount = 0;
     	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
+    		ArrayList<ISprintPlanDesc> allSprints = new ArrayList<ISprintPlanDesc>();
     		for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
-	    			JSONObject sprintplan = new JSONObject();
-	    			sprintplan.put("ID", sprint.getID());
-	    			sprintplan.put("Name", "Sprint" + sprint.getID());
-	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
-	    			totalstorycount += storyinfo.get("StoryCount");
-	    			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
-	    			sprints.put(sprintplan);
-	    			sprintcount++;
+	    			allSprints.add(sprint);
 	    		}
 	    	}
+    		
+    		Collections.sort(allSprints, new Comparator<ISprintPlanDesc>() {
+
+				@Override
+				public int compare(ISprintPlanDesc o1, ISprintPlanDesc o2) {
+					return Integer.parseInt(o1.getID()) - Integer.parseInt(o2.getID());
+				}
+    			
+    		});
+    		
+    		for(ISprintPlanDesc sprint : allSprints) {
+    			JSONObject sprintplan = new JSONObject();
+    			sprintplan.put("ID", sprint.getID());
+    			sprintplan.put("Name", "Sprint" + sprint.getID());
+    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+    			totalstorycount += storyinfo.get("StoryCount");
+    			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
+    			sprints.put(sprintplan);
+    			sprintcount++;
+    		}
+    		
 	    	storycountobject.put("Sprints", sprints);
 	    	storycountobject.put("TotalSprintCount", sprintcount);
 	    	storycountobject.put("TotalStoryCount", totalstorycount);
