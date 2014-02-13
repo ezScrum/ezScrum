@@ -6,7 +6,7 @@
 <script type="text/javascript" src="javascript/Chart.js"></script>
 </head>
 <body>
-<canvas id="canvas" height="450" width="600" style="background: #fff;"></canvas>
+<canvas id="canvas" height="600" width="800" style="background: #fff;"></canvas>
 </body>
 <script>
 	$(document).ready(function() {

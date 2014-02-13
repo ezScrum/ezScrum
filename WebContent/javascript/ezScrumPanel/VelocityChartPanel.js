@@ -57,7 +57,7 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 		if (checked.length != 0) {
 			this.add({
 				id	: 'velocityChart',
-				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="650" height="550" frameborder="0" scrolling="auto"></iframe>'
+				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="850" height="650" frameborder="0" scrolling="auto"></iframe>'
 			});
 		}
 		this.doLayout();
