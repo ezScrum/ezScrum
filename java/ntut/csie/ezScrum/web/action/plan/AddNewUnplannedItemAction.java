@@ -43,7 +43,7 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 		String taskName = request.getParameter("Name");
 		String SprintName = request.getParameter("SprintID");
 		String SprintID = SprintName.substring(SprintName.indexOf("#") + 1);
-		String taskEst = request.getParameter("Estimation");
+		String taskEst = request.getParameter("Estimate");
 		String handler = request.getParameter("Handler");
 		String partners = request.getParameter("Partners");
 		String notes = request.getParameter("Notes");
@@ -68,7 +68,7 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 			  .append("<Link>").append(tsc.TranslateXMLChar(unplannedItem.getIssueLink())).append("</Link>")
 			  .append("<Name>").append(tsc.TranslateXMLChar(unplannedItem.getSummary())).append("</Name>")
 			  .append("<SprintID>").append(unplannedItem.getSprintID()).append("</SprintID>")
-			  .append("<Estimation>").append(unplannedItem.getEstimated()).append("</Estimation>")
+			  .append("<Estimate>").append(unplannedItem.getEstimated()).append("</Estimate>")
 			  .append("<Status>").append(unplannedItem.getStatus()).append("</Status>")
 			  .append("<ActualHour>").append(unplannedItem.getActualHour()).append("</ActualHour>")
 			  .append("<Handler>").append(unplannedItem.getAssignto()).append("</Handler>")

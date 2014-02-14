@@ -130,8 +130,8 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			// update Story Card Info
 			var storyId = record.data['Id'];
 			var storyName = record.data['Name'];
-			var storyEstimation = record.data['Estimation'];
-			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimation);
+			var storyEstimate = record.data['Estimate'];
+			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimate);
 
 			// update Sprint Desc. and Burndown Chart
 			var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();

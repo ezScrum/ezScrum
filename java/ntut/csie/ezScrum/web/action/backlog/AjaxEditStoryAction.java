@@ -43,7 +43,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		long id = Long.parseLong(request.getParameter("issueID"));
 		String Name = request.getParameter("Name");
 		String importances = request.getParameter("Importance");
-		String estimated = request.getParameter("Estimation");
+		String estimate = request.getParameter("Estimate");
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
@@ -51,7 +51,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 //		String mantisUrl = prefs.getServerUrl();
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
-		IIssue issue = productBacklogHelper.editStory(id, Name, value, importances, estimated, howToDemo, notes);
+		IIssue issue = productBacklogHelper.editStory(id, Name, value, importances, estimate, howToDemo, notes);
 		StringBuilder result = productBacklogHelper.translateStoryToJson(issue);
 		
 		return result;

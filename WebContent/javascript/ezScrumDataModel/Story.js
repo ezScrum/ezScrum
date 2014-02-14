@@ -13,7 +13,7 @@ var storyStore = new Ext.data.Store({
 		name : 'Value',
 		type : 'int'
 	}, {
-		name : 'Estimation',
+		name : 'Estimate',
 		type : 'float'
 	}, {
 		name : 'Status'
@@ -38,7 +38,7 @@ var createStoryCloumns = function() {
 			{ dataIndex : 'Tag', header : 'Tag', width : 90}, 
 			{ dataIndex : 'Name', header : 'Story Name', width : 400},
 			{ dataIndex : 'Value', header : 'Value', width : 90}, 
-			{ dataIndex : 'Estimation', header : 'Estimation', width : 90},
+			{ dataIndex : 'Estimate', header : 'Estimate', width : 90},
 			{ dataIndex : 'Importance', header : 'Importance', width : 90},
 			{ dataIndex : 'Status', header : 'Status', width : 90},
 			{ dataIndex : 'Release' ,header : 'Release', hidden : true,width : 90}

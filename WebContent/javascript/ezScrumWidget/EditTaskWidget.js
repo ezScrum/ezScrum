@@ -140,8 +140,8 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		        }, 
 		        PartnerTriggerField_EditTask,
 		        {
-		            fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		            fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            vtype:'Float'
 		        }, {
 		        	fieldLabel: 'Remains',
@@ -219,7 +219,7 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 						issueID	: record.data['Id'], 
 						Name	: record.data['Name'], 
 						Partners: record.data['Partners'],
-						Estimation	: record.data['Estimation'], 
+						Estimate	: record.data['Estimate'], 
 						Actual	: record.data['Actual'],
 						Notes	: record.data['Notes'],
 						Remains	: record.data['Remains']

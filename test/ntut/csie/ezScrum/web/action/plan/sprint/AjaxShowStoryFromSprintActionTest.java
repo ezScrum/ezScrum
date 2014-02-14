@@ -116,38 +116,39 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedResponseText = 
-				"<ExistingStories>" +
-						"<Story>" +
-							"<Id>1</Id>" +
-							"<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>" +
-							"<Name>TEST_STORY_1</Name>" +
-							"<Value>50</Value>" +
-							"<Importance>100</Importance>" +
-							"<Estimation>2</Estimation>" +
-							"<Status>new</Status>" +
-							"<Notes>TEST_STORY_NOTE_1</Notes>" +
-							"<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>" +
-							"<Release>None</Release>" +
-							"<Sprint>1</Sprint>" +
-							"<Tag></Tag>" +
-						"</Story>" +
-						"<Story>" +
-							"<Id>2</Id>" +
-							"<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>" +
-							"<Name>TEST_STORY_2</Name>" +
-							"<Value>50</Value>" +
-							"<Importance>100</Importance>" +
-							"<Estimation>2</Estimation>" +
-							"<Status>new</Status>" +
-							"<Notes>TEST_STORY_NOTE_2</Notes>" +
-							"<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>" +
-							"<Release>None</Release>" +
-							"<Sprint>1</Sprint>" +
-							"<Tag></Tag>" +
-						"</Story>" +
-					"</ExistingStories>";
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText
+					.append("<ExistingStories>")
+						.append("<Story>")
+							.append("<Id>1</Id>")
+							.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
+							.append("<Name>TEST_STORY_1</Name>")
+							.append("<Value>50</Value>")
+							.append("<Importance>100</Importance>")
+							.append("<Estimate>2</Estimate>")
+							.append("<Status>new</Status>")
+							.append("<Notes>TEST_STORY_NOTE_1</Notes>")
+							.append("<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>")
+							.append("<Release>None</Release>")
+							.append("<Sprint>1</Sprint>")
+							.append("<Tag></Tag>")
+						.append("</Story>")
+						.append("<Story>")
+							.append("<Id>2</Id>")
+							.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+							.append("<Name>TEST_STORY_2</Name>")
+							.append("<Value>50</Value>")
+							.append("<Importance>100</Importance>")
+							.append("<Estimate>2</Estimate>")
+							.append("<Status>new</Status>")
+							.append("<Notes>TEST_STORY_NOTE_2</Notes>")
+							.append("<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>")
+							.append("<Release>None</Release>")
+							.append("<Sprint>1</Sprint>")
+							.append("<Tag></Tag>")
+						.append("</Story>")
+					.append("</ExistingStories>");
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText, actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }

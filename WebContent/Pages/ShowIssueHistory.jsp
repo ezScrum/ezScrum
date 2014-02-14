@@ -10,7 +10,7 @@ function trOnLoad(){
 		var desc = elements[i].getElementsByTagName("td")[0].innerHTML;
 		if (desc.match("Importance"))
 			elements[i].style.backgroundColor='#A1EEEF';
-		else if (desc.match("Estimation"))
+		else if (desc.match("Estimate"))
 			elements[i].style.backgroundColor='#EFC9A1';
 		else if (desc.match("Sprint"))
 			elements[i].style.backgroundColor='#FFFF66';

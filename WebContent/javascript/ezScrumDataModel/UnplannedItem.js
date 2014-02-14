@@ -1,5 +1,5 @@
 var UnplannedItemRecord = Ext.data.Record.create([
-	{name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimation', sortType:'asFloat'}, 'Status', 'ActualHour', 'Handler', 'Partners', 'Notes', 'Link'
+	{name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimate', sortType:'asFloat'}, 'Status', 'ActualHour', 'Handler', 'Partners', 'Notes', 'Link'
 ]);
 	
 var UnplannedItemReader = new Ext.data.XmlReader({
@@ -14,7 +14,7 @@ var UnplannedItemStore = new Ext.data.Store({
 		{name : 'Link'},
 		{name : 'Name'},
 		{name : 'SprintID'},
-		{name : 'Estimation', type:'float'},
+		{name : 'Estimate', type:'float'},
 		{name : 'Status'},
 		{name : 'ActualHour'},
 		{name : 'Handler'},
@@ -29,7 +29,7 @@ var UnplannedItemColumnModel = function () {
 		{dataIndex: 'Id',header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},	//	makeIssueDetailUrl function in IssueGridPanelSupport.js
 		{dataIndex: 'Name',header: 'Name', width: 300},
 		{dataIndex: 'SprintID',header: 'SprintID', width: 50},
-		{dataIndex: 'Estimation',header: 'Estimation', width: 70},
+		{dataIndex: 'Estimate',header: 'Estimate', width: 70},
 		{dataIndex: 'Status',header: 'Status', width: 50},
 		{dataIndex: 'ActualHour',header: 'Actual', width: 50},
 		{dataIndex: 'Handler',header: 'Handler', width: 50},

@@ -71,7 +71,7 @@ var SprintPlanJsonReader = new Ext.data.JsonReader({
  * This is for ezScrumSharedComponent/AddExistedStoryWindow.js
  * */
 var StoryRecord = Ext.data.Record.create([
-	{name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimation', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
+	{name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
 ]);
 
 

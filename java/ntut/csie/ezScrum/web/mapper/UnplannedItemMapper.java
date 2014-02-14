@@ -74,7 +74,7 @@ public class UnplannedItemMapper {
 		return list;
 	}
 
-	public long add(String name, String estimation,
+	public long add(String name, String estimate,
 	        String handler, String partners, String notes, Date date,
 	        String unplanneditemIssueType, String SprintID) {
 
@@ -95,7 +95,7 @@ public class UnplannedItemMapper {
 
 		modifyHandler(id, handler, date);
 		// 利用edit來增加tag
-		this.editNote(id, estimation, partners, actualHour, notes, date, SprintID);
+		this.editNote(id, estimate, partners, actualHour, notes, date, SprintID);
 
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		updateFlag = true;
@@ -141,7 +141,7 @@ public class UnplannedItemMapper {
 	 * 以下為私有函式
 	 */
 
-	private boolean editNote(long taskID, String estimation, String partners,
+	private boolean editNote(long taskID, String estimate, String partners,
 	        String actualHour, String notes, Date modifyDate, String sprintID) {
 		// 建立tag
 		IIssue task = getById(taskID);
@@ -151,10 +151,10 @@ public class UnplannedItemMapper {
 		        (modifyDate == null ? new Date() : modifyDate),
 		        DateUtil._16DIGIT_DATE_TIME_2));
 
-		if (estimation != null && !estimation.equals("")) {
-			if (!task.getEstimated().equals(estimation)) {
+		if (estimate != null && !estimate.equals("")) {
+			if (!task.getEstimated().equals(estimate)) {
 				Element storyPoint = new Element(ScrumEnum.ESTIMATION);
-				storyPoint.setText(estimation);
+				storyPoint.setText(estimate);
 				history.addContent(storyPoint);
 			}
 		}

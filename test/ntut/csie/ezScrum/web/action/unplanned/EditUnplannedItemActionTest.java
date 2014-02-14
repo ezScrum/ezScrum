@@ -103,7 +103,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -166,7 +166,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -216,7 +216,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -279,7 +279,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -329,7 +329,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -392,7 +392,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -442,7 +442,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -492,7 +492,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -542,7 +542,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		addRequestParameter("Name", uName);
 		addRequestParameter("Status", uStatus);	
 		addRequestParameter("SprintID", "Sprint #" + sprintID);
-		addRequestParameter("Estimation", uEstimation);		
+		addRequestParameter("Estimate", uEstimation);		
 		addRequestParameter("Handler", uHandler);
 		addRequestParameter("Partners", uPartners);
 		addRequestParameter("ActualHour", uActualHour);
@@ -580,7 +580,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase{
 		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueID + "</Link>");
 		result.append("<Name>" + name + "</Name>");
 		result.append("<SprintID>" + sprintID + "</SprintID>");
-		result.append("<Estimation>" + estimation + "</Estimation>");
+		result.append("<Estimate>" + estimation + "</Estimate>");
 		result.append("<Status>" + status + "</Status>");
 		result.append("<ActualHour>" + actualhour + "</ActualHour>");
 		result.append("<Handler>" + handler + "</Handler>");

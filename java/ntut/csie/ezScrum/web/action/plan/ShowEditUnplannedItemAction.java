@@ -37,7 +37,7 @@ public class ShowEditUnplannedItemAction extends Action {
 		  .append("<Link>").append(adapter.TranslateXMLChar(unplannedItem.getIssueLink())).append("</Link>")
 		  .append("<Name>").append(adapter.TranslateXMLChar(unplannedItem.getSummary())).append("</Name>")
 		  .append("<SprintID>").append(unplannedItem.getSprintID()).append("</SprintID>")
-		  .append("<Estimation>").append(unplannedItem.getEstimated()).append("</Estimation>")
+		  .append("<Estimate>").append(unplannedItem.getEstimated()).append("</Estimate>")
 		  .append("<Status>").append(unplannedItem.getStatus()).append("</Status>")
 		  .append("<ActualHour>").append(unplannedItem.getActualHour()).append("</ActualHour>")
 		  .append("<Handler>").append(adapter.TranslateXMLChar(unplannedItem.getAssignto())).append("</Handler>")

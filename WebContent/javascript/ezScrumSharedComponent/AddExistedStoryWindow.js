@@ -45,7 +45,7 @@ var ExistedStoryColumnModel = function() {
 		{dataIndex: 'Release', header: 'Release', width: 50},
 		{dataIndex: 'Sprint', header: 'Sprint', width: 50},
 		{dataIndex: 'Value', header: 'Value', width: 50},
-		{dataIndex: 'Estimation', header: 'Estimation', width: 70},
+		{dataIndex: 'Estimate', header: 'Estimate', width: 70},
 		{dataIndex: 'Importance', header: 'Importance', width: 70},
 		{dataIndex: 'Status', header: 'Status', width: 50}
 	];
@@ -65,7 +65,7 @@ var ExistedStoryStore = new Ext.data.Store({
 		{name: 'Name'},
 		{name: 'Value', type: 'int'},
 		{name: 'Importance', type: 'int'},
-		{name: 'Estimation', type: 'float'},
+		{name: 'Estimate', type: 'float'},
 		{name: 'Status'},
 		{name: 'Release'},
 		{name: 'Sprint'},

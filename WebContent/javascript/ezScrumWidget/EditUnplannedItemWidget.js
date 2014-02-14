@@ -84,8 +84,8 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Partners'
 		        },
 		        {
-		        	fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		        	fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            xtype: 'numberfield',
 		            allowNegative: false
 		        },
@@ -164,7 +164,7 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 					/* 初始化控制項為 Unplanned item 原本的值 */
 					SprintCombo_EditUnplannedItem.setNewValue("Sprint #" + record.data['SprintID']);
 					
-					this.getForm().setValues({issueID : record.data['Id'], Name : record.data['Name'], Estimation : record.data['Estimation'], Status : record.data['Status'], ActualHour : record.data['ActualHour'], Handler : record.data['Handler'], Partners : record.data['Partners'], Notes : record.data['Notes']});
+					this.getForm().setValues({issueID : record.data['Id'], Name : record.data['Name'], Estimate : record.data['Estimate'], Status : record.data['Status'], ActualHour : record.data['ActualHour'], Handler : record.data['Handler'], Partners : record.data['Partners'], Notes : record.data['Notes']});
 					this.fireEvent('LoadSuccess', this, response, record);
 					
 					// append issueID to window title

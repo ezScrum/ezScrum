@@ -39,12 +39,12 @@ var SprintReader = new Ext.data.XmlReader({
 
 /* 定義 Story 資料欄位 */
 var Story = Ext.data.Record.create([
-   {name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimation', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
+   {name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
 ]);
 
 /* 定義 Task 資料欄位 */
 var Task = Ext.data.Record.create([
-   {name:'Id', sortType:'asInt'}, 'Link', 'Name', 'Status', {name:'Estimation', sortType:'asFloat'}, 'Actual', 'Handler', 'Partners', 'Notes', 'Actors', 'Remains'
+   {name:'Id', sortType:'asInt'}, 'Link', 'Name', 'Status', {name:'Estimate', sortType:'asFloat'}, 'Actual', 'Handler', 'Partners', 'Notes', 'Actors', 'Remains'
 ]);
 
 /* 定義 Issue Tag 資料欄位 */
@@ -67,7 +67,7 @@ var Permission = Ext.data.Record.create([
  *			<Link>http://140.124.181.123/mantis/view.php?id=2388</Link>
  *			<Name>As a user, I can create product backlog</Name>
  *			<Importance>80</Importance>
- *			<Estimation>1</Estimation>
+ *			<Estimate>1</Estimate>
  *			<Status>new</Status>
  *			<Notes>
  *				1. Name 不可為空

@@ -38,7 +38,7 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	viewConfig: {
 		forceFit: true,
 		getRowClass: function(record, index, rowParams, store) {
-			var key_Css = ['Importance', 'Estimation', 'Sprint', 'Status', 'Add', 'Drop', 'Append', 'Remove', 'ActualHour'];
+			var key_Css = ['Importance', 'Estimate', 'Sprint', 'Status', 'Add', 'Drop', 'Append', 'Remove', 'ActualHour'];
 
 			for ( var i = 0; i < key_Css.length; i++) {
 				if (record.get('HistoryType').match(key_Css[i])) {

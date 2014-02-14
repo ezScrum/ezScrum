@@ -50,7 +50,7 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		result.append("<EditTask><Task>");
 		result.append("<Id>" + issue.getIssueID() + "</Id>");
 		result.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
-		result.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
+		result.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
 		result.append("<Actual>" + issue.getActualHour() + "</Actual>");
 		result.append("<Handler>" + tsc.TranslateXMLChar(issue.getAssignto()) + "</Handler>");
 		result.append("<Remains>" + issue.getRemains() + "</Remains>");

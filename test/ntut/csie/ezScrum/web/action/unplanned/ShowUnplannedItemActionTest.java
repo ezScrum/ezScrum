@@ -347,7 +347,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 			result.append("<Link>" + tsc.TranslateXMLChar(this.TEST_LINK + String.valueOf(startIssueID+i)) + "</Link>");		
 			result.append("<Name>" + "p1s" + sprintID + "_" + this.TEST_NAME + String.valueOf(i+1) + "</Name>");
 			result.append("<SprintID>" + sprintID + "</SprintID>");
-			result.append("<Estimation>" + this.TEST_EST + "</Estimation>");
+			result.append("<Estimate>" + this.TEST_EST + "</Estimate>");
 			result.append("<Status>" + "new" + "</Status>");
 			result.append("<ActualHour>" + "0" + "</ActualHour>");
 			result.append("<Handler>" + this.TEST_HANDLER + "</Handler>");
