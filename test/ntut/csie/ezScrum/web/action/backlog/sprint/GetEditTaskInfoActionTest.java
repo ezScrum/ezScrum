@@ -101,7 +101,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("<EditTask><Task><Id>" + issueID + "</Id>");
 		expectedResponseTest.append("<Name>" + expectedTaskName	+ "</Name>");
-		expectedResponseTest.append("<Estimation>" + expectedTaskEstimation + "</Estimation>");
+		expectedResponseTest.append("<Estimate>" + expectedTaskEstimation + "</Estimate>");
 		expectedResponseTest.append("<Actual>" + expectedTaskActualHour + "</Actual><Handler></Handler>");
 		expectedResponseTest.append("<Remains>" + expectedTaskRemains + "</Remains><Partners></Partners>");
 		expectedResponseTest.append("<Notes>" + expectedTaskNote + "</Notes></Task></EditTask>");

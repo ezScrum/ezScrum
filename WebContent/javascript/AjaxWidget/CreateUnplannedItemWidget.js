@@ -87,8 +87,8 @@ ezScrum.CreateUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Partners'
 		        },
 		        {
-		        	fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		        	fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            xtype: 'numberfield',
 		            allowNegative: false
 		        }, 

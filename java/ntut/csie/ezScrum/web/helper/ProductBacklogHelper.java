@@ -62,7 +62,7 @@ public class ProductBacklogHelper {
 	public IIssue addNewStory(StoryInformation storyInformation){
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
-		String estimation = storyInformation.getEstimation();
+		String estimate = storyInformation.getEstimation();
 		String value = storyInformation.getValue();
 		String howToDemo = storyInformation.getHowToDemo();
 		String notes = storyInformation.getNotes();
@@ -73,7 +73,7 @@ public class ProductBacklogHelper {
 		//	1. 新增story
 		IIssue story = this.productBacklogMapper.addStory(storyInformation);
 		long issueID = story.getIssueID();
-		this.editStory(issueID, name, value, importance, estimation, howToDemo, notes);;
+		this.editStory(issueID, name, value, importance, estimate, howToDemo, notes);;
 		
 		//	2. 新增Tag至Story上面
 		this.addTagToStory(tagIDs, issueID);
@@ -95,7 +95,7 @@ public class ProductBacklogHelper {
 		long issueID = Long.parseLong(storyInformation.getStroyID());
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
-		String estimation = storyInformation.getEstimation();
+		String estimate = storyInformation.getEstimation();
 		String value = storyInformation.getValue();
 		String howToDemo = storyInformation.getHowToDemo();
 		String notes = storyInformation.getNotes();
@@ -106,7 +106,7 @@ public class ProductBacklogHelper {
 			//	如果這個SprintID有Release資訊，那麼也將此Story加入Release
 			this.addStoryToRelease(sprintID, list);
 		}
-		return editStory(issueID, name, value, importance, estimation, howToDemo, notes);
+		return editStory(issueID, name, value, importance, estimate, howToDemo, notes);
 	}
 	
 	/**
@@ -115,15 +115,15 @@ public class ProductBacklogHelper {
 	 * @param name
 	 * @param value
 	 * @param importance
-	 * @param estimation
+	 * @param estimate
 	 * @param howToDemo
 	 * @param note
 	 * @return
 	 */
-	public IIssue editStory(long issueID, String name, String value, String importance, String estimation, String howToDemo, String note) {
+	public IIssue editStory(long issueID, String name, String value, String importance, String estimate, String howToDemo, String note) {
 		this.productBacklogMapper.modifyName(issueID, name, null);
 //		Element history = this.productBacklogLogic.translateIssueToXML(value, importance, estimation, howToDemo, note);
-		Element history = this.translateIssueToXML(value, importance, estimation, howToDemo, note);
+		Element history = this.translateIssueToXML(value, importance, estimate, howToDemo, note);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = this.productBacklogMapper.getIssue(issueID);
 			issue.addTagValue(history);
@@ -137,7 +137,7 @@ public class ProductBacklogHelper {
 		}
 	}
 	
-	private Element translateIssueToXML(String value, String importance, String estimation, String howToDemo, String note) {
+	private Element translateIssueToXML(String value, String importance, String estimate, String howToDemo, String note) {
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
 		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
 
@@ -148,9 +148,9 @@ public class ProductBacklogHelper {
 			history.addContent(importanceElem);
 		}
 
-		if (estimation != null && !estimation.equals("")) {
+		if (estimate != null && !estimate.equals("")) {
 			Element storyPoint = new Element(ScrumEnum.ESTIMATION);
-			storyPoint.setText(estimation);
+			storyPoint.setText(estimate);
 			history.addContent(storyPoint);
 		}
 		

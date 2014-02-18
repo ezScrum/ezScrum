@@ -67,7 +67,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 					sb.append("<Link>" + tsc.TranslateXMLChar(issues[i].getIssueLink()) + "</Link>");
 					sb.append("<Name>" + tsc.TranslateXMLChar(issues[i].getSummary()) + "</Name>");
 					sb.append("<Status>" + issues[i].getStatus() + "</Status>");
-					sb.append("<Estimation>" + issues[i].getEstimated() + "</Estimation>");
+					sb.append("<Estimate>" + issues[i].getEstimated() + "</Estimate>");
 					sb.append("<Actual>" + issues[i].getActualHour() + "</Actual>");
 					sb.append("<Handler>" + issues[i].getAssignto() + "</Handler>");
 					sb.append("<Partners>" + issues[i].getPartners() + "</Partners>");

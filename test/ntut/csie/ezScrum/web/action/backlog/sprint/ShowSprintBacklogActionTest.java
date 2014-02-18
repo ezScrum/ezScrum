@@ -163,7 +163,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")
 							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")			
-							.append("\"Estimation\":\"").append(expectedStoryEstimation).append("\",")
+							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"Tag\":\"\",")

@@ -167,7 +167,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 							.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getIssueID()).append("</Link>")
 							.append("<Name>").append(task.getSummary()).append("</Name>")
 							.append("<Status>").append("new").append("</Status>")
-							.append("<Estimation>").append(task.getEstimated()).append("</Estimation>")
+							.append("<Estimate>").append(task.getEstimated()).append("</Estimate>")
 							.append("<Actual>").append(task.getActualHour()).append("</Actual>")
 							.append("<Handler></Handler>")
 							.append("<Partners></Partners>")

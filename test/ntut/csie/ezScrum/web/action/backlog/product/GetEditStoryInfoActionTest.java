@@ -78,26 +78,26 @@ public class GetEditStoryInfoActionTest extends MockStrutsTestCase{
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedResponseText =
-			"<ProductBacklog>" +
-				"<Total>1</Total>" +
-				"<Story>" +
-					"<Id>2</Id>" +
-					"<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>" +
-					"<Name>TEST_STORY_2</Name>" +
-					"<Value>50</Value>" +
-					"<Importance>100</Importance>" +
-					"<Estimation>2</Estimation>" +
-					"<Status>new</Status>" +
-					"<Notes>TEST_STORY_NOTE_2</Notes>" +
-					"<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>" +
-					"<Release>None</Release>" +
-					"<Sprint>None</Sprint>" +
-					"<Tag></Tag>" +
-					"<Attach>false</Attach>" +
-				"</Story>" +
-			"</ProductBacklog>";
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText.append("<ProductBacklog>")
+				.append("<Total>1</Total>")
+				.append("<Story>")
+					.append("<Id>2</Id>")
+					.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+					.append("<Name>TEST_STORY_2</Name>")
+					.append("<Value>50</Value>")
+					.append("<Importance>100</Importance>")
+					.append("<Estimate>2</Estimate>")
+					.append("<Status>new</Status>")
+					.append("<Notes>TEST_STORY_NOTE_2</Notes>")
+					.append("<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>")
+					.append("<Release>None</Release>")
+					.append("<Sprint>None</Sprint>")
+					.append("<Tag></Tag>")
+					.append("<Attach>false</Attach>")
+				.append("</Story>")
+			.append("</ProductBacklog>");
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText, actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }

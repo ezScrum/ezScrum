@@ -13,7 +13,7 @@ var customIssueCategoryReader = new Ext.data.XmlReader({
 
 /* defined Scrum Issue data */
 var scrumIssue = Ext.data.Record.create([
-   {name:'Id', sortType:'asInt'}, 'Name', 'Category', {name:'Estimation', sortType:'asFloat'}, 'Status', 'Notes', {name:'Sprint', sortType:'asInt'}, 'Link', 'Attach', 'AttachFileList'
+   {name:'Id', sortType:'asInt'}, 'Name', 'Category', {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', {name:'Sprint', sortType:'asInt'}, 'Link', 'Attach', 'AttachFileList'
 ]);
 /* Scrum Issue reader*/
 var jsonScrumIssueReader = new Ext.data.JsonReader({

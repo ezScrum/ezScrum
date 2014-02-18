@@ -7,7 +7,7 @@ Resource        keywords/Concurrent/ezScrum_Concurrent_SetupTeardown.txt
 Resource        keywords/Concurrent/ezScrum_Concurrent_ProductBacklog.txt
 
 *** Variables ***
-@{tsStory}  ID  Name  Value  Estimation  Importance  Notes  How To Demo
+@{tsStory}  ID  Name  Value  Estimate  Importance  Notes  How To Demo
 ...  Tags
 
 *** Test Cases ***

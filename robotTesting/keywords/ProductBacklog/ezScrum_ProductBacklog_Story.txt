@@ -10,14 +10,14 @@ Resource          ezScrum_ProductBacklog_Tag.txt
 
 *** Keywords ***
 Verify Story Information With Arguments
-    [Arguments]    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${storyNotes}
+    [Arguments]    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
     ...    ${storyHowToDemo}
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]    andDontWait
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
-    Compare Field Content    //input[@name="Estimation"]    ${storyEstimation}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
     Compare Field Content    //input[@name="Importance"]    ${storyImportance}
     Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    //input[@name="Tags"]    ${correctTagText}
@@ -39,7 +39,7 @@ Verify Story Information With Arguments
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal    ${testStoryNameText}    ${storyName}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${storyValue}")]    1
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${storyEstimation}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${storyEstimate}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-8" and (text()="${storyImportance}")]    1
 
 Get Story ID
@@ -49,7 +49,7 @@ Get Story ID
     [Return]    ${_StoryID}
 
 Create Story With Arguments
-    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${tag}    ${storyNotes}
+    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tag}    ${storyNotes}
     ...    ${storyHowToDemo}
     [Documentation]    點選 Add story，建立story。
     Click Element    xpath=//button[text()="Add Story"]    andDontWait
@@ -58,7 +58,7 @@ Create Story With Arguments
     Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
-    Focus AND Input Text    //input[@name="Estimation"]    ${storyEstimation}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
     Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
     Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
@@ -108,7 +108,7 @@ Edit Story With Arguments
     Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
     Focus AND Input Text    //textarea[@name="Name"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     Focus AND Input Text    //input[@name="Value"]    3
-    Focus AND Input Text    //input[@name="Estimation"]    5
+    Focus AND Input Text    //input[@name="Estimate"]    5
     Focus AND Input Text    //input[@name="Importance"]    8
     Focus AND Input Text    //textarea[@name="Notes"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     Focus AND Input Text    //textarea[@name="HowToDemo"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
@@ -144,12 +144,12 @@ Clean All Story
     \    Delete Story
 
 _CreateStoryInforamationToList
-    [Arguments]    ${listName}    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}
+    [Arguments]    ${listName}    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}
     ...    ${tagName}    ${storyNotes}    ${storyHowToDemo}
     Set List Value    ${listName}    0    ${storyID}
     Set List Value    ${listName}    1    ${storyName}
     Set List Value    ${listName}    2    ${storyValue}
-    Set List Value    ${listName}    3    ${storyEstimation}
+    Set List Value    ${listName}    3    ${storyEstimate}
     Set List Value    ${listName}    4    ${storyImportance}
     Set List Value    ${listName}    5    ${storyNotes}
     Set List Value    ${listName}    6    ${tagName}
@@ -168,16 +168,16 @@ CreateStoryInA
     Select Node Product    Product Backlog
     ${_StoryName}=    Set Variable    story in project A
     ${_StoryValue}=    Set Variable    1
-    ${_StoryEstimation} =    Set Variable    2
+    ${_StoryEstimate} =    Set Variable    2
     ${_StoryImportance}=    Set Variable    3
     ${_StoryNotes}=    Set Variable    notes in project A
     ${_StoryHowToDemo}=    Set Variable    demo in project A
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    NONE    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryInB
@@ -196,13 +196,13 @@ CreateStoryInB
     ${_StoryImportance}=    Set Variable    8
     ${_StoryNotes}=    Set Variable    notes in project B
     ${_StoryHowToDemo}=    Set Variable    demo in project B
-    ${_StoryEstimation}    Set Variable    13
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
+    ${_StoryEstimate}    Set Variable    13
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    NONE    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryWithTagInA
@@ -220,17 +220,17 @@ CreateStoryWithTagInA
     Create Tag With Arguments    ${_tagName}
     ${_StoryName}=    Set Variable    story in project A
     ${_StoryValue}=    Set Variable    1
-    ${_StoryEstimation} =    Set Variable    2
+    ${_StoryEstimate} =    Set Variable    2
     ${_StoryImportance}=    Set Variable    3
     ${_StoryNotes}=    Set Variable    notes in project A
     ${_StoryHowToDemo}=    Set Variable    demo in project A
     # ${EMPTY}
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    ${_tagName}    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryWithTagInB
@@ -251,14 +251,14 @@ CreateStoryWithTagInB
     ${_StoryImportance}=    Set Variable    8
     ${_StoryNotes}=    Set Variable    notes in project B
     ${_StoryHowToDemo}=    Set Variable    demo in project B
-    ${_StoryEstimation}    Set Variable    13
+    ${_StoryEstimate}    Set Variable    13
     # ${EMPTY}
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    ${_tagName}    ${_StoryNotes}    ${_StoryHowToDemo}
 
 Delete Closed Story With StoryID

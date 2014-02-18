@@ -86,7 +86,7 @@ public class ImportStoriesAction extends PermissionAction {
 						String summary = stories.get(i).getSummary();
 						String des ="";
 						String imp = stories.get(i).getImportance();
-						String estimation = stories.get(i).getEstimated();
+						String estimate = stories.get(i).getEstimated();
 						String howToDemo = stories.get(i).getHowToDemo();
 						String notes = stories.get(i).getNotes();
 						String value = stories.get(i).getTagValue(ScrumEnum.VALUE);
@@ -94,7 +94,7 @@ public class ImportStoriesAction extends PermissionAction {
 						String sprintID = stories.get(i).getSprintID();
 						String tagIDs = "";
 						String releaseID = "";
-						StoryInformation storyInformation = new StoryInformation(summary, imp, estimation, value, howToDemo, notes, des, sprintID, releaseID, tagIDs);
+						StoryInformation storyInformation = new StoryInformation(summary, imp, estimate, value, howToDemo, notes, des, sprintID, releaseID, tagIDs);
 //						productBacklogHelper.addStory(storyInformation);
 						productBacklogHelper.addNewStory(storyInformation);
 					}

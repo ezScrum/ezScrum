@@ -31,7 +31,7 @@ public class Translation {
 			sb.append("<Link>" + TranslateChar.TranslateXMLChar(stories[i].getIssueLink()) + "</Link>");
 			sb.append("<Name>" + TranslateChar.TranslateXMLChar(stories[i].getSummary()) + "</Name>");
 			sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-			sb.append("<Estimation>" + stories[i].getEstimated() + "</Estimation>");
+			sb.append("<Estimate>" + stories[i].getEstimated() + "</Estimate>");
 			sb.append("<Status>" + stories[i].getStatus() + "</Status>");
 			sb.append("<Notes>" + TranslateChar.TranslateXMLChar(stories[i].getNotes()) + "</Notes>");
 			sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(stories[i].getHowToDemo()) + "</HowToDemo>");
@@ -61,7 +61,7 @@ public class Translation {
 		sb.append("<Name>" + TranslateChar.TranslateXMLChar(story.getSummary()) + "</Name>");
 		sb.append("<Value>" + story.getValue() + "</Value>");
 		sb.append("<Importance>" + story.getImportance() + "</Importance>");
-		sb.append("<Estimation>" + story.getEstimated() + "</Estimation>");
+		sb.append("<Estimate>" + story.getEstimated() + "</Estimate>");
 		sb.append("<Status>" + story.getStatus() + "</Status>");
 		sb.append("<Notes>" + TranslateChar.TranslateXMLChar(story.getNotes()) + "</Notes>");
 		sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(story.getHowToDemo()) + "</HowToDemo>");
@@ -93,7 +93,7 @@ public class Translation {
 			jsonIssue.append("Link", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getIssueLink()));
 			jsonIssue.append("Category", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getCategory()));
 			jsonIssue.append("Name", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getSummary()));
-			jsonIssue.append("Estimation", scrumIssues.get(i).getEstimated());
+			jsonIssue.append("Estimate", scrumIssues.get(i).getEstimated());
 			jsonIssue.append("Status", scrumIssues.get(i).getStatus());
 			jsonIssue.append("Notes", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getNotes()));
 			jsonIssue.append("Sprint", TranslateChar.HandleNullString(scrumIssues.get(i).getSprintID()));
@@ -341,7 +341,7 @@ public class Translation {
 			jsonStory.append("Name", TranslateChar.TranslateJSONChar(issue.getSummary()));
 			jsonStory.append("Value", issue.getValue());
 			jsonStory.append("Importance", issue.getImportance());
-			jsonStory.append("Estimation", issue.getEstimated());
+			jsonStory.append("Estimate", issue.getEstimated());
 			jsonStory.append("Status", issue.getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(issue.getNotes()));
 			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTag(), ",")));

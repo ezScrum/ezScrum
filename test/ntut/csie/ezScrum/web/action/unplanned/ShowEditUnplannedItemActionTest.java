@@ -377,7 +377,7 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueID + "</Link>");
 		result.append("<Name>" + namePrefix + "_TEST_UNPLANNED_" + index + "</Name>");
 		result.append("<SprintID>" + sprintID + "</SprintID>");
-		result.append("<Estimation>" + estimation + "</Estimation>");
+		result.append("<Estimate>" + estimation + "</Estimate>");
 		result.append("<Status>" + "new" + "</Status>");
 		result.append("<ActualHour>" + "0" + "</ActualHour>");
 		result.append("<Handler>" + handler + "</Handler>");

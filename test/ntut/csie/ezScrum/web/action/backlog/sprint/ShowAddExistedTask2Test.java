@@ -150,8 +150,8 @@ public class ShowAddExistedTask2Test extends MockStrutsTestCase {
 							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Status>").append("new")
-							.append("</Status><Estimation>").append(expectedTaskEstimation)
-							.append("</Estimation><Actual>").append(0)
+							.append("</Status><Estimate>").append(expectedTaskEstimation)
+							.append("</Estimate><Actual>").append(0)
 							.append("</Actual><Handler></Handler><Partners></Partners><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></Tasks>");
 		String actualResponseText = response.getWriterBuffer().toString();

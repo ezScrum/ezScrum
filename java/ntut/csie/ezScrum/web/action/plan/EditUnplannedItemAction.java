@@ -47,7 +47,7 @@ public class EditUnplannedItemAction extends PermissionAction {
 		String status = request.getParameter("Status");
 		String SprintName = request.getParameter("SprintID");
 		String sprintID = SprintName.substring(SprintName.indexOf("#") + 1);
-		String estimated = request.getParameter("Estimation");
+		String estimate = request.getParameter("Estimate");
 		String handler = request.getParameter("Handler");
 		String partners = request.getParameter("Partners");
 		String actualHour = request.getParameter("ActualHour");
@@ -59,7 +59,7 @@ public class EditUnplannedItemAction extends PermissionAction {
 		}
 
 		UnplannedItemHelper helper = new UnplannedItemHelper(project, session);
-		helper.modifyUnplannedItemIssue(id, name, handler, status, partners, estimated, actualHour, notes, sprintID,
+		helper.modifyUnplannedItemIssue(id, name, handler, status, partners, estimate, actualHour, notes, sprintID,
 		        DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME_MYSQL));
 
 		// return result of unplanned item in XML
@@ -71,7 +71,7 @@ public class EditUnplannedItemAction extends PermissionAction {
 			  .append("<Link>").append(translateSpecialChar.TranslateXMLChar(unplannedItem.getIssueLink())).append("</Link>")
 			  .append("<Name>").append(translateSpecialChar.TranslateXMLChar(unplannedItem.getSummary())).append("</Name>")
 			  .append("<SprintID>").append(unplannedItem.getSprintID()).append("</SprintID>")
-			  .append("<Estimation>").append(unplannedItem.getEstimated()).append("</Estimation>")
+			  .append("<Estimate>").append(unplannedItem.getEstimated()).append("</Estimate>")
 			  .append("<Status>").append(unplannedItem.getStatus()).append("</Status>")
 			  .append("<ActualHour>").append(unplannedItem.getActualHour()).append("</ActualHour>")
 			  .append("<Handler>").append(unplannedItem.getAssignto()).append("</Handler>")

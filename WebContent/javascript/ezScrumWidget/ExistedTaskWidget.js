@@ -43,7 +43,7 @@
 		            {dataIndex: 'Id',header: 'Id', width: 50,filterable: true/*, renderer: makeIssueDetailUrl*/},
 		            {dataIndex: 'Name',header: 'Name', width: 300},
 		            {dataIndex: 'Status',header: 'Status', width: 70},
-		            {dataIndex: 'Estimation',header: 'Estimation', width: 70},
+		            {dataIndex: 'Estimate',header: 'Estimate', width: 70},
 		            {dataIndex: 'Handler',header: 'Handler', width: 70}
 		        ];
 
@@ -71,7 +71,7 @@
 			{name : 'Link'},
 			{name : 'Name'},
 			{name : 'Status'},
-			{name : 'Estimation', type:'float'},
+			{name : 'Estimate', type:'float'},
 			{name : 'Actual'},
 			{name : 'Handler'},
 			{name : 'Partners'},

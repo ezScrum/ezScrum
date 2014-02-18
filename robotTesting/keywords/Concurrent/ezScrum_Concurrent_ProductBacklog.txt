@@ -13,14 +13,14 @@ _GetStoryIDx
 
 _CreateStory
     [Arguments]  @{storyInfo}
-    [Documentation]  0: ID, 1:name, 2: value, 3: estimation, 4: importance, \n5: note, 6: howToDemo, 7: tag
+    [Documentation]  0: ID, 1:name, 2: value, 3: Estimate, 4: importance, \n5: note, 6: howToDemo, 7: tag
     Click Element  xpath=//button[text()="Add Story"]  andDontWait
     Wait Until Page Contains  Add New Story
     Run Keyword Unless  "${storyInfo[7]}"=="${EMPTY}"  Click Image  xpath=//label[text()="Tags:"]/.././/img  andDontWait
     Run Keyword Unless  "${storyInfo[7]}"=="${EMPTY}"  Click Element  xpath=//span[@class="x-menu-item-text" and text()="${storyInfo[7]}"]  andDontWait
     Focus AND Input Text  //textarea[@name="Name"]  ${storyInfo[1]}
     Focus AND Input Text  //input[@name="Value"]  ${storyInfo[2]}
-    Focus AND Input Text  //input[@name="Estimation"]  ${storyInfo[3]}
+    Focus AND Input Text  //input[@name="Estimate"]  ${storyInfo[3]}
     Focus AND Input Text  //input[@name="Importance"]  ${storyInfo[4]}
     Focus AND Input Text  //textarea[@name="Notes"]  ${storyInfo[5]}
     Focus AND Input Text  //textarea[@name="HowToDemo"]  ${storyInfo[6]}

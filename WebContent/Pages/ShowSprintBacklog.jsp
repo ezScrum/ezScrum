@@ -154,7 +154,7 @@
         var columns = [
 		            {dataIndex: 'Id',header: 'Id', width: 50,filterable: true,renderer: function(value, metaData, record, rowIndex, colIndex, store){var link = "<a href=\"" + record.data['Link'] + "\" target=\"_blank\">" + value + "</a>"; return link;}},
 		            {dataIndex: 'Name',header: 'Name', width: 300},
-		            {dataIndex: 'Estimation',header: 'Estimation', width: 70},
+		            {dataIndex: 'Estimate',header: 'Estimate', width: 70},
 		            {dataIndex: 'Actual',header: 'Actual', width: 70},
 		            {dataIndex: 'Handler',header: 'Handler', width: 70},
 		            {dataIndex: 'Partners',header: 'Partners', width: 70},
@@ -175,7 +175,7 @@
             {name:'Id', type:'int'},
             {name:'Link'},
             {name:'Name'},
-            {name : 'Estimation', type:'float'},
+            {name : 'Estimate', type:'float'},
             {name : 'Actual'},
             {name : 'Handler'},
             {name : 'Partners'},
@@ -192,7 +192,7 @@
             {name:'Name'},
             {name : 'Value', type:'int'},
             {name : 'Importance', type:'int'},
-            {name : 'Estimation', type:'float'},
+            {name : 'Estimate', type:'float'},
             {name : 'Status'},
             {name : 'Release'},
             {name : 'Sprint'},
@@ -444,7 +444,7 @@
             
             //變更masterWidget的Story Point
             //移除Story之後，要扣掉移除的Story與Task的點數
-            masterWidget.changeStoryPoint(record.data['Estimation'],0,false);
+            masterWidget.changeStoryPoint(record.data['Estimate'],0,false);
         }
         ,
         addRecord:function(record)
@@ -457,12 +457,12 @@
             this.getView().focusRow(index);
             
              // 變更目前 Sprint 的點數
-            masterWidget.changeStoryPoint(record.data['Estimation'],0,true);               
+            masterWidget.changeStoryPoint(record.data['Estimate'],0,true);               
         },
         updateRecord:function(record)
         {
-			//保存舊的Estimation
-            var oldValue = this.getStore().getById(record.data['Id']).data['Estimation'];
+			//保存舊的Estimate
+            var oldValue = this.getStore().getById(record.data['Id']).data['Estimate'];
             var id = record.data['Id'];
             var data = this.getStore().getById(id);
             var index = this.getStore().indexOf(data);
@@ -473,7 +473,7 @@
             this.getSelectionModel().selectRow(index);
             this.getView().focusRow(index);
              //計算要Story變更之後，要增加的點數
-            var changeStoryPoint = parseFloat(record.data['Estimation']) - parseFloat(oldValue);
+            var changeStoryPoint = parseFloat(record.data['Estimate']) - parseFloat(oldValue);
             // 變更目前 Sprint 的點數
             masterWidget.changeStoryPoint(changeStoryPoint,0,true);
         }
@@ -500,7 +500,7 @@
             var point = 0;
             this.getStore().each(function(rec)
             {
-                point += (rec.get('Estimation') - 0);
+                point += (rec.get('Estimate') - 0);
             });
             return point;
         },
@@ -516,7 +516,7 @@
             var record = this.getStore().getById(issueId);
             this.getStore().remove(record);
             //變更masterWidget的Task Point
-            var taskPoint = record.data['Estimation'];
+            var taskPoint = record.data['Estimate'];
             //移除Task之後，要扣掉Task的點數
             masterWidget.changeStoryPoint(0,taskPoint,false);
         }
@@ -530,12 +530,12 @@
             this.getSelectionModel().selectRow(index);
             this.getView().focusRow(index);
             
-            masterWidget.changeStoryPoint(0,record.data['Estimation'],true);
+            masterWidget.changeStoryPoint(0,record.data['Estimate'],true);
         },
         updateRecord:function(record)
         {
-            //保存舊的Estimation
-            var oldValue = this.getStore().getById(record.data['Id']).data['Estimation'];
+            //保存舊的Estimate
+            var oldValue = this.getStore().getById(record.data['Id']).data['Estimate'];
             
             var id = record.data['Id'];
             var data = this.getStore().getById(id);
@@ -549,7 +549,7 @@
             this.getView().focusRow(index);
             
             //計算要Story變更之後，要增加的點數
-            var changeTaskPoint = parseFloat(record.data['Estimation']) - parseFloat(oldValue);
+            var changeTaskPoint = parseFloat(record.data['Estimate']) - parseFloat(oldValue);
             // 變更目前 Sprint 的點數
             masterWidget.changeStoryPoint(0,changeTaskPoint,true);
         }

@@ -28,7 +28,7 @@
 	
 	/* 定義 UnplannedItem 資料欄位 */
 	var UnplannedItem = Ext.data.Record.create([
-	   {name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimation', sortType:'asFloat'}, 'Status', 'ActualHour', 'Handler', 'Partners', 'Notes', 'Link'
+	   {name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimate', sortType:'asFloat'}, 'Status', 'ActualHour', 'Handler', 'Partners', 'Notes', 'Link'
 	]);
 	
 	var unplannedItemReader = new Ext.data.XmlReader({
@@ -43,7 +43,7 @@
 			{name : 'Link'},
 			{name : 'Name'},
 			{name : 'SprintID'},
-			{name : 'Estimation', type:'float'},
+			{name : 'Estimate', type:'float'},
 			{name : 'Status'},
 			{name : 'ActualHour'},
 			{name : 'Handler'},
@@ -75,7 +75,7 @@
         var columns = [
 		            {dataIndex: 'Id',header: 'Id', width: 50,filterable: true,renderer: function(value, metaData, record, rowIndex, colIndex, store){return "<a href=\"" + record.data['Link'] + "\" target=\"_blank\">" + value + "</a>";}},
 		            {dataIndex: 'Name',header: 'Name', width: 300},
-		            {dataIndex: 'Estimation',header: 'Estimation', width: 70},
+		            {dataIndex: 'Estimate',header: 'Estimate', width: 70},
 		            {dataIndex: 'Status',header: 'Status', width: 70},
 		            {dataIndex: 'ActualHour',header: 'Actual', width: 70},
 		            {dataIndex: 'Handler',header: 'Handler', width: 70},

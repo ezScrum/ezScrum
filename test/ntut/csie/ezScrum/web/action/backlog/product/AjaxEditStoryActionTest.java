@@ -82,7 +82,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("issueID", issueID);
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
-		addRequestParameter("Estimation", expectedStoryEstimation);
+		addRequestParameter("Estimate", expectedStoryEstimation);
 		addRequestParameter("Value", expectedStoryValue);
 		addRequestParameter("HowToDemo", expectedStoryHoewToDemo);
 		addRequestParameter("Notes", expectedStoryNote);

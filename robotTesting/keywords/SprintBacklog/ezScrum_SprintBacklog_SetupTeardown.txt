@@ -57,12 +57,12 @@ Test Sprint Backlog - Add Existing Story Setup
     # story information for add
     ${storyName}=  Set Variable  add story for test add existing story
     ${value}=  Set Variable  3
-    ${estimation}=  Set Variable  5
+    ${Estimate}=  Set Variable  5
     ${importance}=  Set Variable  8
     ${notes}=  Set Variable  add story for notes
     ${howToDemo}=  Set Variable  add story for how to demo
     # add story
-    Create Story With Arguments  ${storyName}  ${value}  ${estimation}  ${importance}  ${EMPTY}  ${notes}  ${howToDemo}
+    Create Story With Arguments  ${storyName}  ${value}  ${Estimate}  ${importance}  ${EMPTY}  ${notes}  ${howToDemo}
 
 Test Sprint Backlog - Add Existing Story Teardown
     Test Sprint Backlog - PostCondition

@@ -170,7 +170,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 									.append("\"Name\":\"").append(issue.getSummary()).append("\",")							
 									.append("\"Value\":\"").append(issue.getValue()).append("\",")
 									.append("\"Importance\":\"").append(issue.getImportance()).append("\",")
-									.append("\"Estimation\":\"").append(issue.getEstimated()).append("\",")
+									.append("\"Estimate\":\"").append(issue.getEstimated()).append("\",")
 									.append("\"Status\":\"new\",")
 									.append("\"Notes\":\"").append(issue.getNotes()).append("\",")
 									.append("\"Tag\":\"\",")

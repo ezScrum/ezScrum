@@ -5,13 +5,13 @@ Resource          ../common_resource.txt
 
 *** Keywords ***
 Edit Story With Arguments In Sprint Backlog
-    [Arguments]    ${oriTargetStoryName}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${storyNotes}
+    [Arguments]    ${oriTargetStoryName}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
     ...    ${storyHowToDemo}
     Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..    andDontWait
     Click Element    xpath=//button[text()="Edit Story"]    andDontWait
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
-    Focus AND Input Text    //input[@name="Estimation"]    ${storyEstimation}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
     Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
     Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
@@ -22,14 +22,14 @@ Edit Story With Arguments In Sprint Backlog
     [Return]    ${storyID}
 
 Verify Story Information With Arguments In Sprint Backlog
-    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${tagName}    ${storyNotes}
+    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
     # 比對 edit story widget content
     Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..    andDontWait
     Click Element    xpath=//button[text()="Edit Story"]    andDontWait
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
-    Compare Field Content    //input[@name="Estimation"]    ${storyEstimation}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
     Compare Field Content    //input[@name="Importance"]    ${storyImportance}
     Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    //input[@name="Tags"]    ${tagName}

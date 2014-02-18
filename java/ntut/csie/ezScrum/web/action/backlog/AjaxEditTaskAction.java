@@ -48,7 +48,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		String taskName = request.getParameter("Name");
 		String handler = request.getParameter("HandlerComboBox_ForEditTask");
 		String partners = request.getParameter("Partners");
-		String estimation = request.getParameter("Estimation");
+		String estimate = request.getParameter("Estimate");
 		String remains = request.getParameter("Remains");
 		String actual = request.getParameter("Actual");
 		String notes = request.getParameter("Notes");
@@ -58,7 +58,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintID);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		sprintBacklogLogic.editTask(issueID, taskName, estimation, remains, handler, partners, actual, notes, null);
+		sprintBacklogLogic.editTask(issueID, taskName, estimate, remains, handler, partners, actual, notes, null);
 		
 		IIssue issue = sprintBacklogMapper.getIssue(issueID);		
 		StringBuilder result = new StringBuilder("");
@@ -67,7 +67,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		result.append("<Id>" + issue.getIssueID() + "</Id>");
 		result.append("<Link>" + tsc.TranslateXMLChar(issue.getIssueLink()) + "</Link>");
 		result.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
-		result.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
+		result.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
 		result.append("<Actual>" + issue.getActualHour() + "</Actual>");
 		result.append("<Handler>" + issue.getAssignto() + "</Handler>");
 		result.append("<Partners>" + tsc.TranslateXMLChar(issue.getPartners()) + "</Partners>");

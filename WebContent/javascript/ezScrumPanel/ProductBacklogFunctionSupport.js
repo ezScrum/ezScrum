@@ -213,9 +213,9 @@ function initButton_MultiSort() {
 		}
 	}, reorderable));
 	tbar_multisort.add(createSorterButton({
-		text: 'Estimation',
+		text: 'Estimate',
 		sortData: {
-			field: 'Estimation',
+			field: 'Estimate',
 			direction: 'DESC'
 		}
 	}, reorderable));

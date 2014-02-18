@@ -128,7 +128,7 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 	setNewTitleInfo: function(store, selectedNode) {
 		var point = 0;
 		store.each( function(rec) {
-			point += (rec.get('Estimation') - 0);
+			point += (rec.get('Estimate') - 0);
 		});	
 		
 		var goal = selectedNode.attributes['Name'];

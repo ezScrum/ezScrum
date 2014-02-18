@@ -106,7 +106,7 @@ Test Release Plan - Session - Contain Sprints
     # Xpath Should Match X Times ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="&nbsp;"] 1 # tag
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-2" and text()="${tcStoryName_A}"]    1
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-3" and text()="${tcValue_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-4" and text()="${tcEstimation_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-4" and text()="${tcEstimate_A}"]    1
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-5" and text()="${tcImportance_A}"]    1
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-6" and text()="new"]    1
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-7" and text()="${tcReleaseID_A}"]    1

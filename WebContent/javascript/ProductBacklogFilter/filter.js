@@ -4,7 +4,7 @@ function TheFilter() {
 	
 	if (FilterType=="Status") {
 		doStatus();
-	} else if (FilterType=="Importance" || FilterType=="Estimation") {
+	} else if (FilterType=="Importance" || FilterType=="Estimate") {
 		doInput();
 	} else {	// default
 		document.getElementById("NextItemTd").innerHTML = "";

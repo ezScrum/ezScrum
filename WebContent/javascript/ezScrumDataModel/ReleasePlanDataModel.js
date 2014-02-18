@@ -18,7 +18,7 @@ var releaseStoryStore = new Ext.data.Store({
 		name: 'Importance',
 		type: 'int'
 	}, {
-		name: 'Estimation',
+		name: 'Estimate',
 		type: 'float'
 	}, {
 		name: 'Status'
@@ -121,8 +121,8 @@ var createReleaseStoryCloumns = function() {
 		header: 'Value',
 		width: 90
 	}, {
-		dataIndex: 'Estimation',
-		header: 'Estimation',
+		dataIndex: 'Estimate',
+		header: 'Estimate',
 		width: 90
 	}, {
 		dataIndex: 'Importance',
@@ -172,7 +172,7 @@ var ReleaseBacklogStoryStore = new Ext.data.Store({
 		name: 'Importance',
 		type: 'int'
 	}, {
-		name: 'Estimation',
+		name: 'Estimate',
 		type: 'float'
 	}, {
 		name: 'Status'
@@ -207,8 +207,8 @@ var ReleaseBacklogColumns = function() {
 		header: 'Sprint ID',
 		width: 65
 	}, {
-		dataIndex: 'Estimation',
-		header: 'Estimation',
+		dataIndex: 'Estimate',
+		header: 'Estimate',
 		width: 80
 	}, {
 		dataIndex: 'Status',

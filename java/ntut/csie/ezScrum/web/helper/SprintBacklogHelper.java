@@ -322,7 +322,7 @@ public class SprintBacklogHelper {
 			sb.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
 			sb.append("<Value>" + issue.getValue() + "</Value>");
 			sb.append("<Importance>" + issue.getImportance() + "</Importance>");
-			sb.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
+			sb.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
 			sb.append("<Status>" + issue.getStatus() + "</Status>");
 			sb.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes()) + "</Notes>");
 			sb.append("<HowToDemo>" + tsc.TranslateXMLChar(issue.getHowToDemo()) + "</HowToDemo>");

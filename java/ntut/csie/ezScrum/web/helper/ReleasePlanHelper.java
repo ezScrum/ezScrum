@@ -279,7 +279,7 @@ public class ReleasePlanHelper {
 				sb.append("<Name>" + this.replaceStr(stories[i].getSummary())+ "</Name>");
 				sb.append("<Value>" + stories[i].getValue()+"</Value>");
 				sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-				sb.append("<Estimation>" + stories[i].getEstimated() + "</Estimation>");
+				sb.append("<Estimate>" + stories[i].getEstimated() + "</Estimate>");
 				sb.append("<Status>" + stories[i].getStatus() + "</Status>");
 				sb.append("<Notes>" + this.replaceStr(stories[i].getNotes()) + "</Notes>");
 				sb.append("<HowToDemo>" + this.replaceStr(stories[i].getHowToDemo()) + "</HowToDemo>");

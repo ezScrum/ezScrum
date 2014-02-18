@@ -92,7 +92,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String expectedSprintID = "1";
 		String expectedTaskNote = "UT for Add New Task for Notes";
 		addRequestParameter("Name", expectedTaskName);
-		addRequestParameter("Estimation", expectedTaskEstimation);
+		addRequestParameter("Estimate", expectedTaskEstimation);
 		addRequestParameter("Notes", expectedTaskNote);
 		addRequestParameter("SpecificTime", expectedSpecificTime);
 		addRequestParameter("sprintId", expectedSprintID);
@@ -108,8 +108,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
 							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
-							.append("</Name><Estimation>").append(expectedTaskEstimation)
-							.append("</Estimation><Actual>").append(0)
+							.append("</Name><Estimate>").append(expectedTaskEstimation)
+							.append("</Estimate><Actual>").append(0)
 							.append("</Actual><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></AddNewTask>");
 		String actualResponseText = response.getWriterBuffer().toString();
@@ -142,7 +142,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String expectedSprintID = "1";
 		String expectedTaskNote = "";
 		addRequestParameter("Name", expectedTaskName);
-		addRequestParameter("Estimation", expectedTaskEstimation);
+		addRequestParameter("Estimate", expectedTaskEstimation);
 		addRequestParameter("Notes", expectedTaskNote);
 		addRequestParameter("SpecificTime", expectedSpecificTime);
 		addRequestParameter("sprintId", expectedSprintID);
@@ -158,8 +158,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
 							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
-							.append("</Name><Estimation>").append(0)
-							.append("</Estimation><Actual>").append("0")
+							.append("</Name><Estimate>").append(0)
+							.append("</Estimate><Actual>").append("0")
 							.append("</Actual><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></AddNewTask>");
 		String actualResponseText = response.getWriterBuffer().toString();

@@ -61,19 +61,19 @@ Test Project Summary - Project And Sprint Information Setup
     Create Sprint  ${tcSprintGoal_A}  ${tcSprintInterval_A}  ${tcSprintMembers_A}  ${tcSprintAvaliableDays_A}  ${tcSprintFocusFactor_A}
     # new story in project A
     Select Node Product  Sprint Backlog
-    Set Test Variable  ${tcStoryEstimationInA}  2
+    Set Test Variable  ${tcStoryEstimateInA}  2
     ${_StoryName}=  Set Variable  story in project A
     ${_StoryValue}=  Set Variable  1
     ${_StoryImportance}=  Set Variable  3
     ${_StoryNotes}=  Set Variable  notes in project A
     ${_StoryHowToDemo}=  Set Variable  demo in project A
-    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimationInA}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
+    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimateInA}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
     ${tcStoryIDInA}=  Get Story ID In Sprint Backlog  ${_StoryName}
     # new task in project
-    Set Test Variable  ${tcTaskEstimationInA}  3
+    Set Test Variable  ${tcTaskEstimateInA}  3
     ${_TaskName}=  Set Variable  task 1 in project A
     ${_TaskNotes}=  Set Variable  notes in project A
-    Add Task With Arguments  ${tcStoryIDInA}  ${_TaskName}  ${tcTaskEstimationInA}  ${_TaskNotes}
+    Add Task With Arguments  ${tcStoryIDInA}  ${_TaskName}  ${tcTaskEstimateInA}  ${_TaskNotes}
     # -------------- project A end ------------
     # -------------- project B start ------------
     Set Test Variable  ${tcBrowserAlias_B}  ${PROJECT_NAME}_B
@@ -98,14 +98,14 @@ Test Project Summary - Project And Sprint Information Setup
     ${_StoryImportance}=  Set Variable  8
     ${_StoryNotes}=  Set Variable  notes in project B
     ${_StoryHowToDemo}=  Set Variable  demo in project B
-    Set Test Variable  ${tcStoryEstimationInB}  13
-    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimationInB}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
+    Set Test Variable  ${tcStoryEstimateInB}  13
+    Create Story With Arguments  ${_StoryName}  ${_StoryValue}  ${tcStoryEstimateInB}  ${_StoryImportance}  ${EMPTY}  ${_StoryNotes}  ${_StoryHowToDemo}
     ${tcStoryIDInB}=  Get Story ID In Sprint Backlog  ${_StoryName}
     # new task in project
     ${_TaskName}=  Set Variable  task 1 in project B
     ${_TaskNotes}=  Set Variable  notes in project B
-    Set Test Variable  ${tcTaskEstimationInB}  3
-    Add Task With Arguments  ${tcStoryIDInB}  ${_TaskName}  ${tcTaskEstimationInB}  ${_TaskNotes}
+    Set Test Variable  ${tcTaskEstimateInB}  3
+    Add Task With Arguments  ${tcStoryIDInB}  ${_TaskName}  ${tcTaskEstimateInB}  ${_TaskNotes}
     # -------------- project B end ------------
 
 Test Project Summary - Project And Sprint Information Teardown

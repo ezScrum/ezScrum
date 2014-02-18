@@ -130,8 +130,8 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				name: 'Value',
 				vtype: 'Number'
 			}, {
-				fieldLabel: 'Estimation',
-				name: 'Estimation',
+				fieldLabel: 'Estimate',
+				name: 'Estimate',
 				vtype: 'Float'
 			}, {
 				fieldLabel: 'Importance',
@@ -288,7 +288,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 						Name: replaced_Name,
 						Value: record.data['Value'],
 						Importance: record.data['Importance'],
-						Estimation: record.data['Estimation'],
+						Estimate: record.data['Estimate'],
 						Notes: replaced_Notes,
 						HowToDemo: replaced_HowToDemo
 					});

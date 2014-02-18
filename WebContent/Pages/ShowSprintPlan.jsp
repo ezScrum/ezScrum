@@ -78,7 +78,7 @@ var storyStore = new Ext.data.Store({
                         name : 'Value',
                         type : 'int'
                     }, {
-                        name : 'Estimation',
+                        name : 'Estimate',
                         type : 'float'
                     }, {
                         name : 'Status'
@@ -154,7 +154,7 @@ var createSprintCloumns = function() {
 
 /*
  * {name : 'Id', type:'int'}, {name : 'Link'}, {name : 'Name'}, {name :
- * 'Importance', type:'int'}, {name : 'Estimation', type:'float'}, {name :
+ * 'Importance', type:'int'}, {name : 'Estimate', type:'float'}, {name :
  * 'Status'}, {name : 'Release'}, {name : 'Sprint'}, {name : 'Notes'}, {name :
  * 'HowToDemo'}, {name : 'Tag'}
  */
@@ -180,8 +180,8 @@ var createStoryCloumns = function() {
         header : 'Value',
         width : 90
     }, {
-        dataIndex : 'Estimation',
-        header : 'Estimation',
+        dataIndex : 'Estimate',
+        header : 'Estimate',
         width : 90
     }, {
         dataIndex : 'Importance',
@@ -232,7 +232,7 @@ sprintSelectionModel.on('rowselect', function(sm, rowIdx, r) {
                             storyStore.loadData(response.responseXML);
                             var point = 0;
                             storyStore.each(function(rec) {
-                                        point += (rec.get('Estimation') - 0);
+                                        point += (rec.get('Estimate') - 0);
                                     });
 
                             // 改變Story List的title顯示Sprint的名稱與ID
