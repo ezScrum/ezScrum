@@ -134,7 +134,7 @@ public class ReleasePlanHelper {
 	}
 	
 	// return the release plans of releasePlanID' string
-	public List<IReleasePlanDesc> getReleasePlans(String releasePlanIDs) {
+	public List<IReleasePlanDesc> getReleasePlansByIDs(String releasePlanIDs) {
 		String[] plansString = releasePlanIDs.split(",");
 		List<IReleasePlanDesc> plans = new ArrayList<IReleasePlanDesc>();
 		

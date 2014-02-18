@@ -17,7 +17,6 @@ public class ScrumRole {
 	private boolean m_retrospective = false;
 	private boolean m_report = false;
 	private boolean m_editProject = false;
-	private boolean m_export = false;
 	
 	private boolean m_kanbanBacklog = false;
 	private boolean m_manageStatus = false;
@@ -86,10 +85,6 @@ public class ScrumRole {
 		return m_editProject;
 	}
 	
-	public boolean getAccessExport(){
-		return m_export;
-	}
-	
 	// Kanban
 	public boolean getAccessKanbanBacklog(){
 		return m_kanbanBacklog;
@@ -149,10 +144,6 @@ public class ScrumRole {
 		m_editProject = permission;
 	}
 	
-	public void setAccessExport(boolean permission){
-		m_export = permission;
-	}
-	
 	// Kanban
 	public void setAccessKanbanBacklog(boolean permission){
 		m_kanbanBacklog = permission;
@@ -183,7 +174,6 @@ public class ScrumRole {
 		m_sprintBacklog = false;
 		m_unplanned = false;
 		m_retrospective = false;
-		m_export = false;
 	}
 	// 使用Scrum流程則Kanban流程的權限全部設為False
 	public void setToScrumPermission(){
