@@ -101,7 +101,9 @@ CREATE TABLE `ezkanban_statusorder` (
   `issueID` int(10) NOT NULL default '0',
   `order` tinyint(3) NOT NULL default '0',
   KEY `issueID` (`issueID`),
-  KEY `order` (`order`)
+  KEY `order` (`order`),
+  KEY `order_2` (`order`),
+  KEY `order_3` (`order`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --

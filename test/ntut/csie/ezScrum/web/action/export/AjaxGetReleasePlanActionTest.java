@@ -172,11 +172,8 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
     	 */
     	ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
     	List<IReleasePlanDesc> ReleasePlans = RPhelper.loadReleasePlansList();
-    	IReleasePlanDesc[] array = RPhelper.loadReleasePlans();
 		JSONObject releaseObject = new JSONObject();
     	JSONArray releaseplanlist = new JSONArray();
-    	System.out.println("list count = " + ReleasePlans.size());
-    	System.out.println("array count = " + array.length);
     	int releasecount = 0;
     	try {
 			for (IReleasePlanDesc plan : ReleasePlans) {
@@ -190,7 +187,6 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
     	} catch (JSONException e) {
             e.printStackTrace();
         }
-    	System.out.println("releasecount = " + releasecount);
     	assertEquals(5, releasecount);
     	String expectedResponseTest = releaseObject.toString();
     	String actualResponseTest = response.getWriterBuffer().toString();
