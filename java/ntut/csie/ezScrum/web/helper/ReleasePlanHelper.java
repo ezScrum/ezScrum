@@ -138,7 +138,7 @@ public class ReleasePlanHelper {
 	}
 	
 	// return the release plans of releasePlanID' string
-	public List<IReleasePlanDesc> getReleasePlans(String releasePlanIDs) {
+	public List<IReleasePlanDesc> getReleasePlansByIDs(String releasePlanIDs) {
 		String[] plansString = releasePlanIDs.split(",");
 		List<IReleasePlanDesc> plans = new ArrayList<IReleasePlanDesc>();
 		
@@ -257,7 +257,7 @@ public class ReleasePlanHelper {
      *  from AjaxGetVelocityAction,
      *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
      */
-    public String setSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    public String getSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
     	JSONObject velocityobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
     	HashMap<String, Integer> storyinfo;
@@ -288,7 +288,7 @@ public class ReleasePlanHelper {
      * form AjaxGetStoryCountAction
      * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
      */
-    public String setStoryCountToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    public String getStoryCountChartJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
     	JSONObject storycountobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
     	HashMap<String, Integer> storyinfo;
@@ -303,12 +303,10 @@ public class ReleasePlanHelper {
 	    	}
     		
     		Collections.sort(allSprints, new Comparator<ISprintPlanDesc>() {
-
 				@Override
 				public int compare(ISprintPlanDesc o1, ISprintPlanDesc o2) {
 					return Integer.parseInt(o1.getID()) - Integer.parseInt(o2.getID());
 				}
-    			
     		});
     		
     		for(ISprintPlanDesc sprint : allSprints) {
@@ -321,7 +319,6 @@ public class ReleasePlanHelper {
     			sprints.put(sprintplan);
     			sprintcount++;
     		}
-    		
 	    	storycountobject.put("Sprints", sprints);
 	    	storycountobject.put("TotalSprintCount", sprintcount);
 	    	storycountobject.put("TotalStoryCount", totalstorycount);
@@ -350,7 +347,7 @@ public class ReleasePlanHelper {
     	return storyinfo;
     }
     
-    // 更新JSON string裡面的資訊
+    // 更新JSON string裡面的資訊, 第一次只建立story data
     private JSONObject updateJSonInfo(JSONObject jsoninfo) {
     	try {
     		 // JSON是call by reference!!! 查memory=>System.identityHashCode(Object x)
