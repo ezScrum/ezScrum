@@ -173,10 +173,12 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	private final String Export_Document_Text = "Export Document";
 	private final String Export_Document_Velocity_ID = "VelocityUrl";
 	private final String Export_Document_Velocity_Text = "Velocity Chart";
+	private final String Export_Document_StoryCount_ID = "StoryCountUrl";
+	private final String Export_Document_StoryCount_Text = "StoryCount Chart";
 	private void appendExportDocument(List<ParentSideUI> list){
 		ParentSideUI exportDocument = new ParentSideUI(this.Export_Document_ID, this.Export_Document_Text);
 		exportDocument.appendChild(new ChildrenSiidUI(this.Export_Document_Velocity_ID, this.Export_Document_Velocity_Text));
-		
+		exportDocument.appendChild(new ChildrenSiidUI(this.Export_Document_StoryCount_ID, this.Export_Document_StoryCount_Text));
 		list.add(exportDocument);
 	}
 

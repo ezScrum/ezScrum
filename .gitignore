@@ -19,3 +19,4 @@ _UnitTest
 /TestData/MyWorkspace_bk/RoleBase.xml
 
 /robotTesting/keywords/lib/*.pyc
+/bin

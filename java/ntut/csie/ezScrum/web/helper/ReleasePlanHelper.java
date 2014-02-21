@@ -1,7 +1,9 @@
 package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +30,8 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ReleasePlanHelper {
 	private ReleasePlanMapper rpMapper;
@@ -253,42 +257,116 @@ public class ReleasePlanHelper {
      *  from AjaxGetVelocityAction,
      *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
      */
-    public String setSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
-    	JSONObject velocityObject = new JSONObject();
+    public String getSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    	JSONObject velocityobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
-    	double totalVelocity = 0;
-    	int sprintCount = 0; // 計算被選的release內的sprint總數
+    	HashMap<String, Integer> storyinfo;
+    	double totalvelocity = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
 	    	for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", sprint.getID());
 	    			sprintplan.put("Name", "Sprint" + sprint.getID());
-	    			int sprintVelocity = calculateStoryDonePoint(sprint.getID(), SBhelper);
-	    			sprintplan.put("Velocity", sprintVelocity);
-	    			totalVelocity += sprintVelocity;
+	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+	    			sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
 	    			sprints.put(sprintplan);
-	    			sprintCount++;
+	    			totalvelocity += storyinfo.get("StoryPoint");
+	    			sprintcount++;
 	    		}
 	    	}
-	    	velocityObject.put("Sprints", sprints);
-	    	velocityObject.put("Average", totalVelocity/sprintCount);
+	    	velocityobject.put("Sprints", sprints);
+	    	velocityobject.put("Average", totalvelocity/sprintcount);
     	} catch (JSONException e) {
             e.printStackTrace();
         }
-		return velocityObject.toString();
+		return velocityobject.toString();
     }
     
-    // 計算此sprint內的story done的story point
-    private int calculateStoryDonePoint(String sprintID, SprintBacklogHelper SBhelper) {
+    /**
+     * form AjaxGetStoryCountAction
+     * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
+     */
+    public String getStoryCountChartJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    	JSONObject storycountobject = new JSONObject();
+    	JSONArray sprints = new JSONArray();
+    	HashMap<String, Integer> storyinfo;
+    	int totalstorycount = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
+    	try {
+    		ArrayList<ISprintPlanDesc> allSprints = new ArrayList<ISprintPlanDesc>();
+    		for (IReleasePlanDesc release : ListReleaseDescs) {
+	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    			allSprints.add(sprint);
+	    		}
+	    	}
+    		
+    		Collections.sort(allSprints, new Comparator<ISprintPlanDesc>() {
+				@Override
+				public int compare(ISprintPlanDesc o1, ISprintPlanDesc o2) {
+					return Integer.parseInt(o1.getID()) - Integer.parseInt(o2.getID());
+				}
+    		});
+    		
+    		for(ISprintPlanDesc sprint : allSprints) {
+    			JSONObject sprintplan = new JSONObject();
+    			sprintplan.put("ID", sprint.getID());
+    			sprintplan.put("Name", "Sprint" + sprint.getID());
+    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+    			totalstorycount += storyinfo.get("StoryCount");
+    			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
+    			sprints.put(sprintplan);
+    			sprintcount++;
+    		}
+	    	storycountobject.put("Sprints", sprints);
+	    	storycountobject.put("TotalSprintCount", sprintcount);
+	    	storycountobject.put("TotalStoryCount", totalstorycount);
+    	} catch (JSONException e) {
+            e.printStackTrace();
+    	}
+    	updateJSonInfo(storycountobject);
+    	return storycountobject.toString();
+    }
+    
+    // 取得Sprint的Story資訊
+    private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
+    	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
     	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
     	int storypoint = 0;
+    	int storydonecount = 0;
     	for (IIssue story : stories) {
     		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
     			storypoint += Integer.valueOf(story.getEstimated());
+    			storydonecount++;
     		}
     	}
-    	return storypoint;
+    	storyinfo.put("StoryPoint", storypoint);
+    	storyinfo.put("StoryCount", stories.length);
+    	storyinfo.put("StoryDoneCount", storydonecount);
+    	return storyinfo;
+    }
+    
+    // 更新JSON string裡面的資訊, 第一次只建立story data
+    private JSONObject updateJSonInfo(JSONObject jsoninfo) {
+    	try {
+    		 // JSON是call by reference!!! 查memory=>System.identityHashCode(Object x)
+	        JSONArray sprints = (JSONArray)jsoninfo.get("Sprints");
+	        int sprintcount = jsoninfo.getInt("TotalSprintCount");
+	        int storycount = jsoninfo.getInt("TotalStoryCount");
+	        int storyremaining = jsoninfo.getInt("TotalStoryCount");
+	        double idealrange = (double)storycount / sprintcount;
+	        for (int i = 0; i < sprints.length(); i++) {
+	        	JSONObject sprintplan = sprints.getJSONObject(i);
+	        	storyremaining -= sprintplan.getInt("StoryDoneCount");
+	        	sprintplan.put("StoryRemainingCount", storyremaining);
+	        	sprintplan.put("StoryIdealCount", storycount - (idealrange * (i + 1)));
+	        }
+	        jsoninfo.put("Sprints", sprints);
+        } catch (JSONException e) {
+	        e.printStackTrace();
+        }
+    	return jsoninfo;
     }
 	
 	//透過release des將sprint的資訊寫成JSon

@@ -1,10 +1,10 @@
-//the form for Velocity Chart Page
-VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
-	id				: 'VelocityChart_Form',
+//the form for StoryCount Chart Page
+StoryCountChartFormLayout = Ext.extend(Ext.form.FormPanel, {
+	id				: 'StoryCountChart_Form',
 	border			: false,
 	frame			: true,
 	layout			: 'anchor',
-	title			: 'Velocity Chart Export',
+	title			: 'StoryCount Chart Export',
 	bodyStyle		: 'padding: 0px',
 	labelAlign		: 'right',
 	buttonAlign		: 'left',
@@ -18,7 +18,7 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 			}]
 		}
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
-		VelocityChartFormLayout.superclass.initComponent.apply(this, arguments);
+		StoryCountChartFormLayout.superclass.initComponent.apply(this, arguments);
 		this.createCheckboxs();
 	},
 	createCheckboxs: function() {
@@ -56,12 +56,12 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 
 		if (checked.length != 0) {
 			this.add({
-				id	: 'velocityChart',
-				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="850" height="650" frameborder="0" scrolling="auto"></iframe>'
+				id	: 'storyCountChart',
+				html: '<iframe id="storyCountChart" name="storyCountChart" src="showStoryCountChart.do?' + queryString + '" width="850" height="650" frameborder="0" scrolling="auto"></iframe>'
 			});
 		}
 		this.doLayout();
 	}
 });
 
-Ext.reg('VelocityChartForm', VelocityChartFormLayout);
+Ext.reg('StoryCountChartForm', StoryCountChartFormLayout);

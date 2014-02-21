@@ -16,8 +16,8 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-public class AjaxGetVelocityAction extends PermissionAction {
-
+public class AjaxGetStoryCountAction extends PermissionAction {
+	
 	@Override
 	public boolean isValidAction() {
 		return super.getScrumRole().getAccessReleasePlan();
@@ -27,23 +27,23 @@ public class AjaxGetVelocityAction extends PermissionAction {
 	public boolean isXML() {
 		return false;
 	}
-
+	
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
+		
 		ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
 		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project, session);
-
+		
 		// get selected ReleasePlan list
 		String releases = request.getParameter("releases");
-
+		
 		// 取得ReleasePlans
 		List<IReleasePlanDesc> releaseDescs = RPhelper.getReleasePlansByIDs(releases);
-		StringBuilder result = new StringBuilder(RPhelper.getSprintVelocityToJSon(releaseDescs, SBhelper));
+		StringBuilder result = new StringBuilder(RPhelper.getStoryCountChartJSon(releaseDescs, SBhelper));
 		return result;
 	}
 }

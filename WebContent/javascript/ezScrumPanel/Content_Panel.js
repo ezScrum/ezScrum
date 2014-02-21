@@ -23,7 +23,7 @@ ezScrum.ContentPanel = new Ext.Panel({
 	    ITSConfigPage, PluginConfigPage,
 	    
 	    // Export Document index
-	    // 13
-	    ExportDocumentPage
+	    // 13,				14
+	    VelocityPage, StoryCountPage
 	]
 });

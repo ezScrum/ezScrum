@@ -3,47 +3,49 @@
 <html>
 <head>
 <script type="text/javascript" src="javascript/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="javascript/Chart.min.js"></script>
+<script type="text/javascript" src="javascript/Chart.js"></script>
 </head>
 <body>
-<canvas id="canvas" height="600" width="800" style="background:#fff"></canvas>
+<canvas id="canvas" height="600" width="800" style="background: #fff;"></canvas>
 </body>
 <script>
 	$(document).ready(function() {
 
 		$.ajax({
-			url : "/ezScrum/ajaxGetVelocity.do?" + document.URL.split("?")[1],
+			url : "/ezScrum/ajaxGetStoryCount.do?" + document.URL.split("?")[1],
 			type : "GET",
 			dataType : "json",
 			success : function(data) {
 				var sprints = data.Sprints;
 				var steps = sprints.length;
-				var velocitys = [];
-				var averages = [];
-				var labelname = [];
-				var max = 0;
+				var storyCounts = [];
+				var ideals = [];
+				var labelnames = [];
+				var max = data.TotalStoryCount;
 				for (var i = 0; i < sprints.length; i++) {
-					velocitys[i] = sprints[i].Velocity;
-					averages[i] = data.Average;
-					labelname[i] = sprints[i].Name;
-					if (sprints[i].Velocity > max) {
-						max = sprints[i].Velocity;
-					}
+					storyCounts[i] = sprints[i].StoryRemainingCount;
+					ideals[i] = sprints[i].StoryIdealCount;
+					labelnames[i] = sprints[i].Name;
 				};
+				
+				storyCounts.splice(0, 0, max);
+				ideals.splice(0, 0, max);
+				labelnames.splice(0, 0, '');;
+				
 				var lineChartData = {
-					labels : labelname,
+					labels : labelnames,
 					datasets : [
-						{ // ideal line
-							fillColor : "rgba(255,255,255,0.0)",
-							strokeColor : "rgba(52, 152, 219,1)",
-							pointColor : "rgba(52, 152, 219,1)",
-							data : velocitys
-						},
-						{ // averages line
+						{
 							fillColor : "rgba(255,255,255,0.0)",
 							strokeColor : "rgba(231, 76, 60,1)",
 							pointColor : "rgba(231, 76, 60,1)",
-							data : averages
+							data : ideals
+						},
+						{
+							fillColor : "rgba(255,255,255,0.0)",
+							strokeColor : "rgba(52, 152, 219,1)",
+							pointColor : "rgba(52, 152, 219,1)",
+							data : storyCounts
 						}
 					]
 				}
@@ -56,7 +58,7 @@
 				var options = {
 						scaleGridLineColor : "rgba(0,0,0,.15)",
 						scaleOverride: true,
-						scaleSteps: Math.ceil((max*1.2) / width),
+						scaleSteps: Math.ceil(max / width),
 						scaleStepWidth: width,
 						scaleStartValue: 0,
 						bezierCurve: false,
@@ -64,7 +66,7 @@
 							document.write('<img src="'+canvasToImage(document.getElementById("canvas"), "#FFF")+'"/>');
 						}
 				}
-				var velocityChart = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
+				var storyCountChart = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
 			}
 		});
 

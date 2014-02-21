@@ -201,6 +201,10 @@
 			<action path="/showVelocityChart" 			type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
 				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
 			</action>
+			<action path="/showStoryCountChart" 		type="ntut.csie.ezScrum.web.action.export.ShowStoryCountChartAction">
+				<forward name="success" path="/Pages/ShowStoryCountChart.jsp"></forward>
+			</action>
+			<action path="/ajaxGetStoryCount"			type="ntut.csie.ezScrum.web.action.export.AjaxGetStoryCountAction" />
 
 		<!-- ========================================= -->
 		<!-- 以下待確認 -->

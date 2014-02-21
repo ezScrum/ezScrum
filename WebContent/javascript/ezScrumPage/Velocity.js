@@ -1,5 +1,5 @@
-var ExportDocumentPage = new Ext.Panel({
-	id			: 'Export_Document_Page',
+var VelocityPage = new Ext.Panel({
+	id			: 'Velocity_Page',
 	layout		: 'anchor',
 	autoScroll	: true,
 	items : [
