@@ -1,25 +1,14 @@
-//the form for Velocity Chart Page
-VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
-	id				: 'VelocityChart_Form',
-	border			: false,
-	frame			: true,
-	layout			: 'anchor',
-	title			: 'Velocity Chart Export',
-	bodyStyle		: 'padding: 0px',
-	labelAlign		: 'right',
-	buttonAlign		: 'left',
-	initComponent : function() {
-		var config = {
-			items   : [],
-			buttons : [{
-				scope	: this,
-				text 	: 'Export',
-				handler	: this.doExport
-			}]
-		}
-		Ext.apply(this, Ext.apply(this.initialConfig, config));
-		VelocityChartFormLayout.superclass.initComponent.apply(this, arguments);
-		this.createCheckboxs();
+Ext.ns('ezScrum');
+
+ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
+	id			: 'VelocityReleasePanel_ID',
+	title		: 'Releases',
+	height		: 300,
+	width		: '25%',
+	autoScroll	: true,
+	bodyPadding	: 'padding: 10px;',
+	initComponent: function() {
+		
 	},
 	createCheckboxs: function() {
 		var obj = this;
@@ -38,30 +27,89 @@ VelocityChartFormLayout = Ext.extend(Ext.form.FormPanel, {
 				}
 			}
 		});
-	},
-	doExport: function() {
-		var checked = [];
-		var queryString = "PID=" + getURLParameter("PID") + "&releases=";
-		for(var i=0;i<this.items.length;i++) {
-			if(this.get(i).checked) {
-				checked.push(this.get(i).releaseId);
-			}
-		}
-		for (var i = 0; i < checked.length; i++) {
-			queryString += checked[i];
-			if (i != checked.length - 1) {
-				queryString += ",";
-			}
-		};
-
-		if (checked.length != 0) {
-			this.add({
-				id	: 'velocityChart',
-				html: '<iframe id="velocityChart" name="velocityChart" src="showVelocityChart.do?' + queryString + '" width="850" height="650" frameborder="0" scrolling="auto"></iframe>'
-			});
-		}
-		this.doLayout();
 	}
 });
+Ext.reg('VelocityReleasePanel', ezScrum.VelocityReleasePanel);
 
-Ext.reg('VelocityChartForm', VelocityChartFormLayout);
+ezScrum.VelocitySelectPanel = Ext.extend(Ext.Panel, {
+	id			: 'VelocitySelectPanel_ID',
+	title		: 'Selected',
+	height		: 300,
+	width		: '25%',
+	autoScroll	: true,
+	bodyPadding	: 'padding: 10px;'
+});
+Ext.reg('VelocitySelectPanel', ezScrum.VelocitySelectPanel);
+
+ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
+	id			: 'VelocityControlPanel_ID',
+	border		: false,
+	layout		: {
+		type: 'hbox',
+		pack: 'center',
+		align: 'top'
+	},
+	height		: 350,
+	style		: 'padding: 15px;',
+	initComponent: function() {
+		var config = {
+			items: [{
+			    	xtype: 'VelocityReleasePanel', 
+			    	ref: 'VelocityReleasePanel_ID'
+			    }, {
+			    	html: '>>',
+			    	border: false,
+			    	bodyStyle: 'margin:140px 50px 0px 50px'
+			    }, {
+			    	xtype: 'VelocitySelectPanel',
+			    	ref: 'VelocitySelectPanel_ID'
+			    }, {
+			    	xtype: 'button',
+			    	text: 'Export',
+			    	handler: this.doExport,
+			    	style: 'margin: 275px 0px 0px 50px;'
+			    }
+			]
+		}
+		Ext.apply(this, Ext.apply(this.initialConfig, config));
+		ezScrum.VelocityControlPanel.superclass.initComponent.apply(this, arguments);
+	},
+	doExport: function() {
+		var exportPanel = Ext.getCmp('VelocityExportPanel_ID');
+		exportPanel.add({html:'hello'});
+		exportPanel.doLayout();
+	}
+});
+Ext.reg('VelocityControlPanel', ezScrum.VelocityControlPanel);
+
+ezScrum.VelocityExportPanel = Ext.extend(Ext.Panel, {
+	id			: 'VelocityExportPanel_ID',
+	border		: true,
+	layout		: 'anchor',
+	autoHeight	: true,
+	width		: '100%',
+	autoScroll	: true
+});
+Ext.reg('VelocityExportPanel', ezScrum.VelocityExportPanel);
+
+ezScrum.VelocityChartPanel = Ext.extend(Ext.Panel, {
+	id			: 'VelocityChartPanel_ID',
+	title		: 'Velocity Chart',
+	border		: false,
+	layout		: 'anchor',
+	initComponent: function() {
+		var config = {
+			items: [{
+					xtype	: 'VelocityControlPanel', 
+					ref		: 'VelocityControlPanel_ID'
+				}, {
+					xtype	: 'VelocityExportPanel',
+					ref		: 'VelocityExportPanel_ID'
+				}
+			]
+		}
+		Ext.apply(this, Ext.apply(this.initialConfig, config));
+		ezScrum.VelocityChartPanel.superclass.initComponent.apply(this, arguments);
+	}
+});
+Ext.reg('VelocityChartPanel', ezScrum.VelocityChartPanel)
