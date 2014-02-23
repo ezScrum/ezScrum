@@ -18,7 +18,7 @@ public class ReleasePlanWebServiceController {
 	private ReleasePlanWebService mReleasePlanWebService;
 	/**
 	 * 取得專案底下所有Story Get
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectID}/release-plan/{releaseID}/all?userName={userName}&password={password}
 	 **/
 	@GET
 	@Path("{releaseID}/all")

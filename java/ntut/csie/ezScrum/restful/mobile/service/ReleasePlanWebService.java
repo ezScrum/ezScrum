@@ -59,6 +59,9 @@ public class ReleasePlanWebService extends ProjectWebService {
 		return new Gson().toJson(getReleaseDocObject(releasePlan, sprintPlanList, stories, taskMap, totalStoryPoints));
 	}
 
+	/**
+	 * 將 IIssue 都轉換成 StoryObject, TaskObject 並輸出成ReleaseDocxObject
+	 */
 	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintPlanObject> sprintPlanList, HashMap<String, List<StoryObject>> stories, LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Float> totalStoryPoints) {
 		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
 		releaseObject.setReleasePlanDesc(releasePlan);
