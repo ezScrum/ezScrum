@@ -5,6 +5,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
+import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -139,11 +140,11 @@ public class AddUserToRole {
 		helper.updateAccount(user);
 	}
 
-	private void updateAccount(String res, String op) {
+	private void updateAccount(String res, String role) {
 		// ezScrum v1.8
 		AccountHelper helper = new AccountHelper(config.getUserSession());
 		try {
-			helper.assignRole_add(theAccount.getID(), res, op);
+			helper.assignRole_add(theAccount.getID(), res, role);
 		} catch (LogonException e) {
 			e.printStackTrace();
 			System.out.println("class: AddUserToRole, method: updateAccount, Logon_exception: " + e.toString());

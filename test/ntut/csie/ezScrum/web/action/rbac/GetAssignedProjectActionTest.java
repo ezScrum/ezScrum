@@ -114,7 +114,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	IAccount account = this.accountMapper.getAccountById(userId);
+    	IAccount account = this.accountMapper.getAccount(userId);
 		
 		assertNotNull(account);
 		

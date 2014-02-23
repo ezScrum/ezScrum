@@ -110,7 +110,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	IAccount account = (new AccountMapper()).getAccountById(userId);
+    	IAccount account = (new AccountMapper()).getAccount(userId);
 		
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);

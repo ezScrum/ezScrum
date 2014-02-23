@@ -103,7 +103,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	this.AUTR.exe_PO();
     	
     	IAccount acc = this.AUTR.getNoeAccount();
-    	IAccount account = this.accountMapper.getAccountById(acc.getID());
+    	IAccount account = this.accountMapper.getAccount(acc.getID());
 		IRole[] roles = account.getRoles();
     	
 		assertEquals(roles.length, 2);
@@ -138,7 +138,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	
     	actionPerform();		// 執行 action
 
-    	account = this.accountMapper.getAccountById(id);
+    	account = this.accountMapper.getAccount(id);
 		assertNotNull(account);
 		assertEquals(account.getID(), this.CA.getAccount_ID(1));
 		assertEquals(account.getName(), this.CA.getAccount_RealName(1));
@@ -173,7 +173,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	
     	actionPerform();		// 執行 action
 
-    	IAccount account = this.accountMapper.getAccountById(id);
+    	IAccount account = this.accountMapper.getAccount(id);
     	IRole[] roles = account.getRoles();
     	
     	// 測試是否正確移除 System 角色
@@ -208,7 +208,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	actionPerform();		// 執行 action
 
     	// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-    	IAccount account = this.accountMapper.getAccountById(id);
+    	IAccount account = this.accountMapper.getAccount(id);
     	IRole[] roles = account.getRoles();
     	
     	// 測試是否正確移除 System 角色
@@ -252,7 +252,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	actionPerform();		// 執行 action
 
     	// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-    	IAccount account = this.accountMapper.getAccountById(id);
+    	IAccount account = this.accountMapper.getAccount(id);
     	IRole[] roles = account.getRoles();
     	
     	// 測試是否正確移除 System 角色
@@ -311,7 +311,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
     	actionPerform();		// 執行 action
 
     	// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-    	IAccount actualAccount = this.accountMapper.getAccountById(userId);
+    	IAccount actualAccount = this.accountMapper.getAccount(userId);
     	IRole[] roles = actualAccount.getRoles();
     	
     	// 測試是否正確移除 System 角色

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.sql;
+package ntut.csie.ezScrum.mysql;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IActor;
 import junit.framework.TestCase;
 
-public class MySQLServiceTest extends TestCase {
+public class AccountTest extends TestCase {
 	private MySQLService mService;
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	
-	public MySQLServiceTest(String testMethod) {
+	public AccountTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -83,7 +83,7 @@ public class MySQLServiceTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 		
-		IAccount result = mService.getAccountById(id);
+		IAccount result = mService.getAccount(id);
 		
 		assertEquals(id, result.getID());
 	}

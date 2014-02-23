@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.support;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,11 +12,12 @@ import javax.servlet.http.HttpSession;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.support.HttpSessionCollector;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
@@ -73,13 +75,11 @@ public class SessionManager {
 	// }
 
 	/**
-	 * 從session中取得project的instance
-	 * 如果session中沒有的話，則從底層撈出project資料放置session cache起來
+	 * 從session中取得project的instance 如果session中沒有的話，則從底層撈出project資料放置session cache起來
 	 * 
 	 * @param projectName
 	 * @author Zam
-	 * @param request
-	 *            client端傳上來的request
+	 * @param request client端傳上來的request
 	 * @time 2012/8/28
 	 */
 	public static final IProject getProject(HttpServletRequest request) {
@@ -108,18 +108,15 @@ public class SessionManager {
 	/**
 	 * 傳入request與參數名稱，拿到request header的URL parameter
 	 * 
-	 * @param request
-	 *            client端傳上來的request
-	 * @param paramName
-	 *            要取得的參數名稱
+	 * @param request client端傳上來的request
+	 * @param paramName 要取得的參數名稱
 	 * @author Zam
 	 * @time 2012/8/28
 	 */
 	private static String getURLParameter(HttpServletRequest request, String paramName) {
 		try {
 			/**
-			 * 拿到request header的URL parameter
-			 * 如果拿不到referer資訊此時回傳null
+			 * 拿到request header的URL parameter 如果拿不到referer資訊此時回傳null
 			 */
 			String referer = request.getHeader("Referer");
 			if (referer == null) return null;
@@ -127,8 +124,7 @@ public class SessionManager {
 			String url = URLDecoder.decode(referer, "UTF-8");
 
 			/**
-			 * 如果用 "?"拆除出來的params是null或只有一個urlParams 代表網址後面沒有帶參數
-			 * 此時回傳null
+			 * 如果用 "?"拆除出來的params是null或只有一個urlParams 代表網址後面沒有帶參數 此時回傳null
 			 */
 			String[] urlParams = url.split("\\?");
 			if (urlParams == null || urlParams.length <= 1) return null;
@@ -156,9 +152,7 @@ public class SessionManager {
 	}
 
 	/**
-	 * 判斷Session是否有記錄該使用者對於專案操作的權限。
-	 * 有的話則使用Session記錄即可，反之必須建立該使用者權限在Session，
-	 * 以利於系統不必重複new ScrumRole instance，避免JVM out of memory。
+	 * 判斷Session是否有記錄該使用者對於專案操作的權限。 有的話則使用Session記錄即可，反之必須建立該使用者權限在Session， 以利於系統不必重複new ScrumRole instance，避免JVM out of memory。
 	 * 
 	 * @param request
 	 * @param project
@@ -166,32 +160,35 @@ public class SessionManager {
 	 * @author SPARK
 	 * @return ScrumRole
 	 */
-	public static ScrumRole getScrumRole(HttpServletRequest request, IProject project, IAccount account) {
-		// printAllSessionAttribute(request);
-		String userID = account.getID();
-		HttpSession session = request.getSession();
-		String userPermessionNameForSession = userID + sessionAttributeNameForPermession;
-		Map<String, ScrumRole> scrumRolesMap = (Map<String, ScrumRole>) session.getAttribute(userPermessionNameForSession);
-		if (scrumRolesMap == null) {
-			// scrumRolesMap = new ScrumRoleManager().getScrumRoles(account);
-			scrumRolesMap = (new ScrumRoleLogic()).getScrumRoles(account);
-			session.setAttribute(userPermessionNameForSession, scrumRolesMap);
-		}
-		ScrumRole scrumRole = scrumRolesMap.get(project.getName());
+	public static ScrumRole getScrumRole(HttpServletRequest request, IProject project, UserObject account) {
+//		// printAllSessionAttribute(request);
+//		String userID = account.getAccount();
+//		HttpSession session = request.getSession();
+//		String userPermessionNameForSession = userID + sessionAttributeNameForPermession;
+//		Map<String, ScrumRole> scrumRolesMap = (Map<String, ScrumRole>) session.getAttribute(userPermessionNameForSession);
+//		if (scrumRolesMap == null) {
+//			// scrumRolesMap = new ScrumRoleManager().getScrumRoles(account);
+//			scrumRolesMap = (new ScrumRoleLogic()).getScrumRoles(account);
+//			session.setAttribute(userPermessionNameForSession, scrumRolesMap);
+//		}
+//		ScrumRole scrumRole = scrumRolesMap.get(project.getName());
+//		return scrumRole;
+		
+		// ezScrum v1.8
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		return scrumRole;
 	}
 
 	/**
-	 * 移除Session中User所有專案的權限記錄。
-	 * example:session.removeAttribute("UserName + Permession");
+	 * 移除Session中User所有專案的權限記錄。 example:session.removeAttribute("UserName + Permession");
 	 * 
 	 * @param request
 	 * @param account
 	 * @author SPARK
 	 */
-	public static void removeScrumRolesMap(HttpServletRequest request, IAccount account) {
-		String userPermessionNameForSession = account.getID() + sessionAttributeNameForPermession;
-		
+	public static void removeScrumRolesMap(HttpServletRequest request, UserObject account) {
+		String userPermessionNameForSession = account.getAccount() + sessionAttributeNameForPermession;
+
 		List<HttpSession> sessionList = HttpSessionCollector.getSessionList(userPermessionNameForSession);
 
 		for (HttpSession session : sessionList) {
@@ -201,15 +198,16 @@ public class SessionManager {
 
 	/**
 	 * 確認登入帳號是否擁有admin權限
+	 * 
 	 * @author SPARK
 	 * @param account
 	 * @return
 	 */
 	private static boolean checkIsAdmin(IAccount account) {
-		for(IRole role:account.getRoles() ){
+		for (IRole role : account.getRoles()) {
 			String roleName = role.getRoleName();
 			String roleID = role.getRoleId();
-			if(roleName.equals("administrator") && roleID.equals("admin")){
+			if (roleName.equals("administrator") && roleID.equals("admin")) {
 				return true;
 			}
 		}
@@ -218,21 +216,23 @@ public class SessionManager {
 
 	/**
 	 * 移除Session中User所有專案的權限記錄
+	 * 
 	 * @author SPARK
 	 * @param allSessions
 	 */
 	private static void removeAdmineRole(Map<String, HttpSession> allSessions) {
-		for( Entry<String, HttpSession> entry : allSessions.entrySet() ) {
+		for (Entry<String, HttpSession> entry : allSessions.entrySet()) {
 			HttpSession session = entry.getValue();
 			IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
-			IAccount account = userSession.getAccount();
-			
-			for(IRole role:account.getRoles() ){
-				String roleName = role.getRoleName();
-				String roleID = role.getRoleId();
-				if(roleName.equals("administrator") && roleID.equals("admin")){
-					String userPermessionNameForSession = account.getID() + sessionAttributeNameForPermession;
-					session.removeAttribute( userPermessionNameForSession );
+			UserObject account = userSession.getAccount();
+			HashMap<String, ProjectRole> roles = account.getRoles();
+			ProjectRole role = roles.get("system");
+			if (role != null) {
+				ScrumRole scrumRole = role.getScrumRole();
+				String roleName = scrumRole.getRoleName();
+				if (roleName.equals("admin")) {
+					String userPermessionNameForSession = account.getAccount() + sessionAttributeNameForPermession;
+					session.removeAttribute(userPermessionNameForSession);
 				}
 			}
 		}

@@ -35,7 +35,7 @@ ezScrum.ModifyAccountForm = Ext.extend(Ext.form.FormPanel, {
             loadUrl : 'showAccountInfo.do',
             items   : [{ 
 	                fieldLabel	: 'User ID',
-	                name      	: 'id',
+	                name      	: 'account',
 	                width 		: '95%',                                         
 	                allowBlank  : false,
 	                ref			: 'Management_Account_UserID_refID',
@@ -105,7 +105,7 @@ ezScrum.ModifyAccountForm = Ext.extend(Ext.form.FormPanel, {
 	checkID	: function() {
 		var form = this.getForm();
 		var obj = this;
-		var ID = this.getForm().findField('id').getValue();
+		var ID = this.getForm().findField('account').getValue();
 		
 		Ext.Ajax.request({
 			url     : 'checkAccountID.do',

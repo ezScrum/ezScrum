@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -19,7 +20,6 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -74,8 +74,8 @@ public class ShowSprintInformationAction extends Action {
 
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
-		IAccount acc = userSession.getAccount();
-		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, acc);
+		UserObject account = userSession.getAccount();
+		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr.getAccessSprintBacklog()) {
 			return mapping.findForward("success");
 		} else {

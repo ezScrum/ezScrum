@@ -262,7 +262,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase{
     	assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
     	
     	//	assert database information
-		IAccount expectedAccount = new AccountMapper().getAccountById(userId);
+		IAccount expectedAccount = new AccountMapper().getAccount(userId);
 		assertNotNull(account);
 		assertEquals(expectedUserId, expectedAccount.getID());
 		assertEquals(expectedUserName, expectedAccount.getName());
@@ -312,7 +312,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase{
     	/**
     	 * 5. view project list
     	 */
-    	userSession = getUserSession(new AccountMapper().getAccountById(userId));
+    	userSession = getUserSession(new AccountMapper().getAccount(userId));
 		// ================ clean previous action info ========================
 		cleanActionInformation();
 		IProject project = this.CP.getProjectList().get(0);
@@ -671,7 +671,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase{
 		setRequestPathInformation(pathViewProjectSummary);
     	
 		// ================ set session info ========================
-    	IAccount account = new AccountMapper().getAccountById(CA.getAccountList().get(0).getID());
+    	IAccount account = new AccountMapper().getAccount(CA.getAccountList().get(0).getID());
     	userSession = getUserSession(account);
 		request.getSession().setAttribute("UserSession", userSession);
 		

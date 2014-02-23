@@ -102,7 +102,7 @@ public class AccountMapperTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 
-		IAccount account = mAccountMapper.getAccountById(id);
+		IAccount account = mAccountMapper.getAccount(id);
 		
 		assertEquals(id, account.getID());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());

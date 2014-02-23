@@ -1,8 +1,5 @@
 package ntut.csie.ezScrum.web.helper;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -15,6 +12,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -41,13 +39,15 @@ public class ProjectHelper {
 		return mProjectMapper.getProjectInfoForm(project);
 	}
 
-	public String getProjectListXML(IAccount account) {
+	public String getProjectListXML(UserObject account) {
 		log.info(" handle project list xml format");
 
 		// get all projects
 		ProjectLogic projectLogic = new ProjectLogic();
 		List<IProject> projects = projectLogic.getAllProjects();
-
+		// ezScrum v1.8
+		List<ProjectInformation> projectsForDb = projectLogic.getAllProjectsForDb();
+		
 		// get the user and projects permission mapping
 		Map<String, Boolean> map = projectLogic.getProjectPermissionMap(account);
 
@@ -60,26 +60,47 @@ public class ProjectHelper {
 			else hm.put(project.getName(), demoDate);
 		}
 
-		// write projects to XML format
+		// ezScrum v1.8
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Projects>");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		for (IProject project : projects) {
+		for (ProjectInformation project : projectsForDb) {
 			if (map.get(project.getName()) == Boolean.TRUE) {
 				sb.append("<Project>");
-				sb.append("<ID>" + tsc.TranslateXMLChar(project.getProjectDesc().getName()) + "</ID>");
-				sb.append("<Name>" + tsc.TranslateXMLChar(project.getProjectDesc().getDisplayName()) + "</Name>");
-				sb.append("<Comment>" + tsc.TranslateXMLChar(project.getProjectDesc().getComment()) + "</Comment>");
-				sb.append("<ProjectManager>" + tsc.TranslateXMLChar(project.getProjectDesc().getProjectManager()) + "</ProjectManager>");
-				sb.append("<CreateDate>" + dateFormat.format(project.getProjectDesc().getCreateDate()) + "</CreateDate>");
-				sb.append("<DemoDate>" + hm.get(project.getName()) + "</DemoDate>");
+				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getName())).append("</ID>");
+				sb.append("<Name>").append(tsc.TranslateXMLChar(project.getDisplayName())).append("</Name>");
+				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getComment())).append("</Comment>");
+				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getManager())).append("</ProjectManager>");
+				sb.append("<CreateDate>").append(dateFormat.format(project.getCreateDate())).append("</CreateDate>");
+				sb.append("<DemoDate>").append(hm.get(project.getName())).append("</DemoDate>");
 				sb.append("</Project>");
 			}
 		}
 		sb.append("</Projects>");
 
 		return sb.toString();
+		
+//		// write projects to XML format
+//		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("<Projects>");
+//		TranslateSpecialChar tsc = new TranslateSpecialChar();
+//		for (IProject project : projects) {
+//			if (map.get(project.getName()) == Boolean.TRUE) {
+//				sb.append("<Project>");
+//				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getProjectDesc().getName())).append("</ID>");
+//				sb.append("<Name>").append(tsc.TranslateXMLChar(project.getProjectDesc().getDisplayName())).append("</Name>");
+//				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getProjectDesc().getComment())).append("</Comment>");
+//				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getProjectDesc().getProjectManager())).append("</ProjectManager>");
+//				sb.append("<CreateDate>").append(dateFormat.format(project.getProjectDesc().getCreateDate())).append("</CreateDate>");
+//				sb.append("<DemoDate>").append(hm.get(project.getName())).append("</DemoDate>");
+//				sb.append("</Project>");
+//			}
+//		}
+//		sb.append("</Projects>");
+//
+//		return sb.toString();
 
 	}
 
@@ -97,7 +118,7 @@ public class ProjectHelper {
 	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ITSInformation itsInformation, ProjectInformation projectInformation) {
 		StringBuilder sb = new StringBuilder();
 		ProjectMapper projectMapper = new ProjectMapper();
-		try {
+//		try {
 			sb.append("<Root>");
 
 			// create project
@@ -121,10 +142,14 @@ public class ProjectHelper {
 						AccountMapper accountMapper = new AccountMapper();
 						accountMapper.createPermission(project);
 						accountMapper.createRole(project);
-
+						
+						// -- ezScrum v1.8 --
+						projectInformation = projectMapper.createProjectForDb(projectInformation);
+						projectMapper.createScrumRole(projectInformation.getId());
+						
 						sb.append("<Result>Success</Result>");
 						sb.append("<ID>" + projectInformation.getName() + "</ID>");
-
+						// -- ezScrum v1.8 --
 					} catch (TestConnectException e) {
 						// 連線失敗，告知使用者連線已失敗
 						if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
@@ -147,7 +172,9 @@ public class ProjectHelper {
 						}
 						// 如果project Create失敗，就把目前產生到一半的Project檔案刪除
 						projectMapper.deleteProject(projectInformation.getName());
-					}
+					} catch (Exception e) {
+	                    e.printStackTrace();
+                    }
 
 					sb.append("</CreateProjectResult>");
 				}
@@ -156,22 +183,25 @@ public class ProjectHelper {
 
 			sb.append("</Root>");
 			return sb.toString();
-		} catch (ConnectException e) {
-			log.info("TestConnect");
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			log.info("SaveWorkspace");
-			e.printStackTrace();
-		}
-		return sb.toString();
+//		} catch (ConnectException e) {
+//			log.info("TestConnect");
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			log.info("SaveWorkspace");
+//			e.printStackTrace();
+//		}
+//		return sb.toString();
 	}
 
-	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
-		return mProjectMapper.getProjectMemberList(userSession, project);
+	public List<UserObject> getProjectMemberList(IProject project) {
+//	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
+//		return mProjectMapper.getProjectMemberList(userSession, project);
+		// ezScrum v1.8
+		return mProjectMapper.getProjectMemberListForDb(project.getName());
 	}
 
 	private ProjectInfoForm convertProjectInfo(ProjectInformation projectInformation) {
