@@ -2,6 +2,7 @@ var UserInformation_AccountStore = new Ext.data.Store({
 	fields:[
 	    {name : 'Name'},
 		{name : 'ID'},
+		{name : 'Account'},
 		{name : 'Mail'},
 		{name : 'Roles'},
 		{name : 'Enable'},
@@ -29,7 +30,7 @@ ezScrum.ModifyUserAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
             items   : [
                 { 
             		fieldLabel	: 'User ID',
-	                name      	: 'id',
+	                name      	: 'account',
 	                width 		: '200',                                         
 	                ref			: 'Edit_UserAccountPassword_UserID_refID',
 	                regex : /^[\w-_()~ ]*$/,
@@ -51,7 +52,10 @@ ezScrum.ModifyUserAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
 	                vtype       : 'password',
 	                ref			: 'Edit_AccountPassword_RePassword_refID',
 	                allowBlank  : false
-				},{
+				}, { 
+	                name      	: 'id',
+	                hidden		: 'true'
+				}, {
 	            	xtype      : 'RequireFieldLabel'
 	            }],
 			buttons : [{
@@ -76,6 +80,7 @@ ezScrum.ModifyUserAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
 			url     : this.modifyUrl,
 			params  : {
 						id		: this.getRecord().data['ID'],
+						account	: this.getRecord().data['Account'],
 						name	: this.getRecord().data['Name'],
 						passwd	: userPassword,
 						enable	: this.getRecord().data['Enable'],
@@ -94,8 +99,8 @@ ezScrum.ModifyUserAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
 	},
     setRecord: function(record) {
     	this.getForm().reset();
-    	this.getForm().findField('id').setValue( record.data['ID'] );
-    	this.getForm().findField('id').disable();
+    	this.getForm().findField('account').setValue( record.data['Account'] );
+    	this.getForm().findField('account').disable();
     	this.userRecord = record;
     },
     getRecord: function() {

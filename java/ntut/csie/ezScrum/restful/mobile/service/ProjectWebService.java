@@ -31,7 +31,7 @@ public class ProjectWebService extends LoginWebService {
 	}
 
 	public ProjectWebService(UserObject user, String projectID) throws LogonException {
-		super(user.account, user.password);
+		super(user.getAccount(), user.getPassword());
 		
 		this.Project.add(getProject(projectID));
 	}

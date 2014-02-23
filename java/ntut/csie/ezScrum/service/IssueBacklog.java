@@ -6,6 +6,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
 import ntut.csie.jcis.resource.core.IProject;
 
 /**
@@ -14,16 +15,25 @@ import ntut.csie.jcis.resource.core.IProject;
  *
  */
 public class IssueBacklog {
-	private IProject m_project;
+	private ProjectInformation m_project;
 	private ITSPrefsStorage m_itsPrefs;
 	private IUserSession m_userSession;
 	
-	public IssueBacklog(IProject project, IUserSession userSession){
+	// ezScrum v1.8 
+	public IssueBacklog(ProjectInformation project, IUserSession userSession){
 		m_project = project;
 		m_userSession = userSession;
 		
 		//	//初始ITS的設定
 		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);
+	}
+	
+	public IssueBacklog(IProject project, IUserSession userSession){
+//		m_project = project;
+		m_userSession = userSession;
+		
+		//	//初始ITS的設定
+		m_itsPrefs = new ITSPrefsStorage(project, m_userSession);
 	}
 	
 	/**

@@ -87,7 +87,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     	
     	// 執行 action
     	actionPerform();
-    	IAccount account = this.accountMapper.getAccountById(userId);
+    	IAccount account = this.accountMapper.getAccount(userId);
 		
 		assertNull(account);
     }

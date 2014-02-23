@@ -1,7 +1,8 @@
 var Edit_AccountInformationStore = new Ext.data.Store({
 	fields:[
+	    {name : 'ID'},
+	    {name : 'Account'},
 	   	{name : 'Name'},
-		{name : 'ID'},
 		{name : 'Mail'},
 		{name : 'Roles'},
 		{name : 'Enable'},
@@ -36,7 +37,7 @@ ezScrum.EditAccountInformationForm = Ext.extend(Ext.form.FormPanel, {
             loadUrl : 'showAccountInfo.do',
             items   : [{ 
 	                fieldLabel	: 'User ID',
-	                name      	: 'id',
+	                name      	: 'account',
 	                width 		: '95%',                                         
 	                ref			: 'Management_Account_UserID_refID',
 	                regex : /^[\w-_()~ ]*$/,
@@ -62,7 +63,10 @@ ezScrum.EditAccountInformationForm = Ext.extend(Ext.form.FormPanel, {
 					name		: 'isEdit',
 					hidden		: true,
 					ref			: 'Management_Account_isEdit_refID'
-				},{
+				}, {
+					name		: 'id',
+					hidden		: true,
+				}, {
 					xtype       : 'RequireFieldLabel'
 				}],
 			buttons : [{
@@ -92,6 +96,7 @@ ezScrum.EditAccountInformationForm = Ext.extend(Ext.form.FormPanel, {
 			url     : this.url,
 			params  : {
 				id		: this.getForm().findField('id').getValue(),
+				account	: this.getForm().findField('account').getValue(),
 				name	: this.getForm().findField('name').getValue(),
 				enable	: this.getForm().findField('enable').getValue(),
 				mail	: this.getForm().findField('mail').getValue(),
@@ -116,6 +121,7 @@ ezScrum.EditAccountInformationForm = Ext.extend(Ext.form.FormPanel, {
     setTheRecord: function(record) {
     	this.getForm().setValues({
     		id			: record.get('ID'),
+    		account		: record.get('Account'),
     		name		: record.get('Name'),
     		mail		: record.get('Mail'),
     		enable		: record.get('Enable')

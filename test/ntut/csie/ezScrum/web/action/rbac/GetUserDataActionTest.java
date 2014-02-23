@@ -107,7 +107,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		IAccount account = this.accountMapper.getAccountById(userId);		// actual
+		IAccount account = this.accountMapper.getAccount(userId);		// actual
 		IAccount accountE = this.userSession.getAccount();				// excepted
 
 		assertNotNull(account);

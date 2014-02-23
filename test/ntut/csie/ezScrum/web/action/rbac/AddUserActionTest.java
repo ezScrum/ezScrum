@@ -119,7 +119,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
     	 * Verify:
     	 */
 
-    	IAccount account = this.accountMapper.getAccountById(id);
+    	IAccount account = this.accountMapper.getAccount(id);
 		assertNotNull(account);
 		assertEquals(account.getID(), this.CA.getAccount_ID(1));
 		assertEquals(account.getName(), this.CA.getAccount_RealName(1));
@@ -176,7 +176,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-		IAccount account = this.accountMapper.getAccountById(id);
+		IAccount account = this.accountMapper.getAccount(id);
 		
 		assertNotNull(account);
 		assertEquals(account.getID(), id);
@@ -274,7 +274,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
     	assertEquals(addUserExpectedResponseText, addUserActualResponseText);
     	
     	//	assert database information
-    	IAccount expectedAccount = this.accountMapper.getAccountById(userId);
+    	IAccount expectedAccount = this.accountMapper.getAccount(userId);
 		assertNotNull(account);
 		assertEquals(expectedUserId, expectedAccount.getID());
 		assertEquals(expectedUserName, expectedAccount.getName());
@@ -324,7 +324,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
     	/**
     	 * 5. view project list
     	 */
-    	account = accountMapper.getAccountById(userId);
+    	account = accountMapper.getAccount(userId);
     	userSession = getUserSession(account);
 		// ================ clean previous action info ========================
 		cleanActionInformation();

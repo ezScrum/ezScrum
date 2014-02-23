@@ -180,23 +180,23 @@ public class MantisAccountManager {
 	 * @return
 	 */
 	private boolean isScrumTeamWorker(IProject project, String userID) {
-		IAccountManager manager = AccountFactory.getManager();
-		IAccount acc = manager.getAccount(userID);
-		
-		if (acc != null) {
-			String projectName = project.getName();
-			
+//		IAccountManager manager = AccountFactory.getManager();
+//		IAccount acc = manager.getAccount(userID);
+//		
+//		if (acc != null) {
+//			String projectName = project.getName();
+//			
 //			ScrumRoleManager srmanager = new ScrumRoleManager();
 //			Map<String, ScrumRole> ScrumRoleMap = srmanager.getScrumRoles(acc);
-			Map<String, ScrumRole> ScrumRoleMap = (new ScrumRoleLogic()).getScrumRoles(acc);
-			ScrumRole sr = ScrumRoleMap.get(projectName);
-			
-			// 判斷此角色對於此專案是否有存取 TaskBoard 的權限
-			if (sr != null && sr.getAccessTaskBoard()) {
-				return true;
-			}
-		}
-		
+//			
+//			ScrumRole sr = ScrumRoleMap.get(projectName);
+//			
+//			// 判斷此角色對於此專案是否有存取 TaskBoard 的權限
+//			if (sr != null && sr.getAccessTaskBoard()) {
+//				return true;
+//			}
+//		}
+//		
 		return false;
 	}
 	
