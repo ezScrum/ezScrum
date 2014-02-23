@@ -1,5 +1,5 @@
 var MemberRecord = Ext.data.Record.create([
-	'ID', 'Name', 'Role', 'Enable'
+	'ID', 'Account', 'Name', 'Role', 'Enable'
 ]);
 
 var MemberReader = new Ext.data.XmlReader({
@@ -10,6 +10,7 @@ var MemberReader = new Ext.data.XmlReader({
 var MemberStore = new Ext.data.Store({
 	fields:[
 		{name : 'ID'},
+		{name : 'Account'},
 	   	{name : 'Name'},	
 		{name : 'Role'},
 		{name : 'Enable'}
@@ -28,7 +29,7 @@ function checkUser(val) {
 
 var MemberColumnModel = new Ext.grid.ColumnModel({
 	columns: [ 
-		{dataIndex: 'ID',header: 'User ID', width: 200},
+		{dataIndex: 'Account',header: 'User ID', width: 200},
 		{dataIndex: 'Name',header: 'User Name', width: 200},		            
 		{dataIndex: 'Role',header: 'Role', width: 200},
 		{dataIndex: 'Enable',header: 'Enable', renderer: checkUser, width: 70}		          

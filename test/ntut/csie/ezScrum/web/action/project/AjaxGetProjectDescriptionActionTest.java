@@ -178,7 +178,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccountById(account.getID())));
+		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccount(account.getID())));
 		
 		// ================ 執行 action ======================
 		actionPerform();

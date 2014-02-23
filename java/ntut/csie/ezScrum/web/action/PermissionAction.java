@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -39,7 +39,7 @@ public abstract class PermissionAction extends Action {
 		
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		IAccount account = userSession.getAccount();
+		UserObject account = userSession.getAccount();
 		sr = SessionManager.getScrumRole(request, project, account);
 		
 		
@@ -74,7 +74,7 @@ public abstract class PermissionAction extends Action {
 		// 此為錯誤權限存取，回傳權限錯誤的資訊給頁面提示使用者
 		if (result == null) {
 			result = new StringBuilder("{\"PermissionAction\":{\"ActionCheck\":\"false\", \"Id\":0}}");
-			log.info("Account " + account.getID() + " access deny.");
+			log.info("Account " + account.getAccount() + " access deny.");
 		}
 		
 		try {

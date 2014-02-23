@@ -2,6 +2,7 @@ var Modify_AccountStore = new Ext.data.Store({
 	fields:[
 	   	{name : 'Name'},
 		{name : 'ID'},
+		{name : 'Account'},
 		{name : 'Mail'},
 		{name : 'Roles'},
 		{name : 'Enable'},
@@ -37,7 +38,7 @@ ezScrum.ModifyAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
             items   : [
                 { 
             		fieldLabel	: 'User ID',
-	                name      	: 'id',
+	                name      	: 'account',
 	                width 		: '95%',                                         
 	                ref			: 'Edit_AccountPassword_UserID_refID',
 	                regex : /^[\w-_()~ ]*$/,
@@ -63,7 +64,10 @@ ezScrum.ModifyAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
 					name		: 'isEdit',
 					hidden		: true,
 					ref			: 'Edit_AccountPassword_isEdit_refID'
-				},{
+				}, { 
+	                name      	: 'id',
+	                hidden		: 'true'
+				}, {
 	            	xtype      : 'RequireFieldLabel'
 	            }],
 			buttons : [{
@@ -93,6 +97,7 @@ ezScrum.ModifyAccountPasswordForm = Ext.extend(Ext.form.FormPanel, {
 			url     : this.url,
 			params  : {
 						id      : this.getRecord().data['ID'],
+						account	: this.getRecord().data['Account'],
 						name    : this.getRecord().data['Name'],
 						passwd  : userPassword,
 						mail    : this.getRecord().data['Mail'],
@@ -144,7 +149,7 @@ ezScrum.window.ModifyAccountPasswordWindow = Ext.extend(ezScrum.layout.Window, {
     },
     showTheWindow_EditPassword: function(panel, record) {
     	// initial form info
-    	var userID = record.data['ID'];
+    	var userID = record.data['Account'];
     	this.Management_ModifyAccountPasswordForm_refID.reset();
     	this.Management_ModifyAccountPasswordForm_refID.initialEditForm(userID);
     	this.Management_ModifyAccountPasswordForm_refID.notifyPanel = panel;

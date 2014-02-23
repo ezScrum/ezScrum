@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.issue.sql.service.core;
 import java.util.Map;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
 import ntut.csie.jcis.core.exception.PrefsUtilException;
 import ntut.csie.jcis.core.util.PrefsUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -18,7 +19,7 @@ public class ITSPrefsStorage {
 	private final String DATABASE_TYPE = "DatabaseType";
 	private final String DATABASE_NAME = "DatabaseName";
 
-	private IProject mProject;
+	private ProjectInformation mProject;
 	private PrefsUtil mPrefsUtil;
 	private String mProjectPrefsPath;
 	private String mSysPrefsPath;
@@ -39,8 +40,17 @@ public class ITSPrefsStorage {
 	 * userSession可使用null來使用
 	 * 在回傳account及password將都會回傳DB的設定
 	 */
-	public ITSPrefsStorage(IProject project, IUserSession userSession) {
+	public ITSPrefsStorage(ProjectInformation project, IUserSession userSession) {
 		mProject = project;
+		mPrefsUtil = new PrefsUtil(PrefsUtil.ITS_PROJECT_PACKAGE);
+		mSysPrefsPath = ResourceFacade.getWorkspace().getRoot().getFolder(IProject.METADATA).getFullPath() + "/" + PERFS_FILE_NAME;
+		mProjectPrefsPath = mSysPrefsPath;
+		m_userSession = userSession;
+		init();
+	}
+	
+	public ITSPrefsStorage(IProject project, IUserSession userSession) {
+//		mProject = project;
 		mPrefsUtil = new PrefsUtil(PrefsUtil.ITS_PROJECT_PACKAGE);
 		mSysPrefsPath = ResourceFacade.getWorkspace().getRoot().getFolder(IProject.METADATA).getFullPath() + "/" + PERFS_FILE_NAME;
 		mProjectPrefsPath = mSysPrefsPath;
@@ -79,7 +89,7 @@ public class ITSPrefsStorage {
 
 	public String getAccount() {
 		if (m_userSession == null) return getDBAccount();
-		return m_userSession.getAccount().getID();
+		return m_userSession.getAccount().getAccount();
 	}
 
 	public String getDBAccount() {

@@ -14,6 +14,7 @@ var AssignRole_Window = new ezScrum.window.AssignRoleWindow({
 var AccountGridProxyStore = new Ext.data.Store({
 	fields:[
 	    {name : 'ID'},
+		{name : 'Account'},
 		{name : 'Name'},
 		{name : 'Mail'},
 		{name : 'Roles'},
@@ -73,7 +74,7 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
 					}
 					
 					//	當點選到admin時，將delete account button設定為disable以防刪除 admin 帳號.
-					if(this.getSelectionModel().getSelected().data['ID'] != 'admin'){
+					if(this.getSelectionModel().getSelected().data['Account'] != 'admin'){
 						this.AccountManagement_deleteAccountBtn_refID.setDisabled(false);
 					}else{
 						this.AccountManagement_deleteAccountBtn_refID.setDisabled(true);
@@ -89,7 +90,7 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
  		this.getStore().proxy.insertRecord(record);
 	},
 	editAccountRecoed: function(record) {
-		var index = this.getStore().findExact('ID', record.data['ID']);
+		var index = this.getStore().findExact('Account', record.data['Account']);
 		this.getStore().removeAt(index);
 		this.getStore().insert(index, record);
 		this.getSelectionModel().selectRow(index);
@@ -97,7 +98,7 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
  		this.getStore().proxy.updateRecord(record);
 	},
 	deleteAccountRecord: function(record) {
-		var id = record.data['ID'];
+		var id = record.data['Account'];
 		this.getStore().remove(record);
     	this.getStore().proxy.deleteRecord(id);		// proxy delete record, might do not work
 	},        

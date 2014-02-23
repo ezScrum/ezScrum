@@ -104,7 +104,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		List<IActor> accountList = this.accountMapper.getAccountList();
 		assertEquals(2, accountList.size());	// + admin
 
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -140,7 +140,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		assertEquals(this.AccountCount + 1, accountList.size());	// + admin
 
 		for (int i = 1; i < this.AccountCount + 1; i++) {
-			IAccount account = this.accountMapper.getAccountById(CA.getAccount_ID(i));
+			IAccount account = this.accountMapper.getAccount(CA.getAccount_ID(i));
 
 			assertNotNull(account);
 			assertEquals(account.getID(), this.CA.getAccount_ID(i));

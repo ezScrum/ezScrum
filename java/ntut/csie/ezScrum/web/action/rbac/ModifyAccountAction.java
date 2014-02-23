@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.account.core.IAccount;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -29,6 +29,7 @@ public class ModifyAccountAction extends Action {
 
 		// 取得要新增帳戶的資料
 		String id = request.getParameter("id");
+		String account = request.getParameter("account");
 		String password = request.getParameter("passwd");
 		String email = request.getParameter("mail");
 		String realName = request.getParameter("name");
@@ -37,10 +38,10 @@ public class ModifyAccountAction extends Action {
 
 		String roles = "user";
 
-		UserInformation user = new UserInformation(id, realName, password, email, enable);
+		UserInformation user = new UserInformation(id, account, realName, password, email, enable);
 
 		AccountHelper ah = new AccountHelper(session);
-		IAccount newAccount = null;
+		UserObject newAccount = null;
 
 		// 更新使用者資訊
 		if (Boolean.valueOf(isEdit)) {

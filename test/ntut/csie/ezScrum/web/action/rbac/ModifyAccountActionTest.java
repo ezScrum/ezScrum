@@ -121,7 +121,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// ================ assert ========================
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -167,7 +167,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -229,7 +229,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 		String expectUserPassword = this.CA.getAccount_PWD(1);
 
 		assertNotNull(account);
@@ -294,7 +294,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -362,7 +362,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -420,7 +420,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		IAccount updateAccount = this.accountMapper.getAccountById(userId);
+		IAccount updateAccount = this.accountMapper.getAccount(userId);
 
 		assertNotNull(updateAccount);
 		assertEquals(updateAccount.getID(), userId);
@@ -512,7 +512,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		IAccount account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getID(), userId);
@@ -567,7 +567,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		IAccount updateAccount = this.accountMapper.getAccountById(userId);
+		IAccount updateAccount = this.accountMapper.getAccount(userId);
 
 		assertNotNull(updateAccount);
 		assertEquals(updateAccount.getID(), userId);

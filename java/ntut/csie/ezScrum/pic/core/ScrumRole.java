@@ -1,184 +1,269 @@
 package ntut.csie.ezScrum.pic.core;
 
+import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 
 /**
  * @author py2k
  */
 public class ScrumRole {
-	private String m_projectName="";
-	private String m_roleName="";
-	
-	private boolean m_productBacklog = false;
-	private boolean m_releasePlan = false;
-	private boolean m_sprintPlan = false;
-	private boolean m_taskboard = false;
-	private boolean m_sprintBacklog = false;
-	private boolean m_unplanned = false;
-	private boolean m_retrospective = false;
-	private boolean m_report = false;
-	private boolean m_editProject = false;
-	
-	private boolean m_kanbanBacklog = false;
-	private boolean m_manageStatus = false;
-	private boolean m_kanbanBoard = false;
-	private boolean m_kanbanReport = false;
-	
+	private String mProjectName = "";
+	private String mRoleName = "";
+
+	private Boolean mProductBacklog = false;
+	private Boolean mReleasePlan = false;
+	private Boolean mSprintPlan = false;
+	private Boolean mTaskboard = false;
+	private Boolean mSprintBacklog = false;
+	private Boolean mUnplanned = false;
+	private Boolean mRetrospective = false;
+	private Boolean mReport = false;
+	private Boolean mEditProject = false;
+
+	private Boolean mKanbanBacklog = false;
+	private Boolean mManageStatus = false;
+	private Boolean mKanbanBoard = false;
+	private Boolean mKanbanReport = false;
+
 	// add for guest permission
-	private boolean m_isGuest = false;
-	private boolean m_isAdmin = false;
-	
-	public boolean isAdmin() {
-		return m_isAdmin;
+	private Boolean mIsGuest = false;
+	private Boolean mIsAdmin = false;
+
+	public Boolean isAdmin() {
+		return mIsAdmin;
 	}
 
-	public void setisAdmin(boolean permission) {
-		this.m_isAdmin = permission;
+	public void setisAdmin(Boolean permission) {
+		this.mIsAdmin = permission;
 	}
 
 	public ScrumRole(String projectName, String roleName) {
-		m_projectName = projectName;
-		m_roleName = roleName;
+		mProjectName = projectName;
+		mRoleName = roleName;
+	}	
+	
+	public ScrumRole(RoleEnum role) {
+		// 設定預設的Role權限
+		switch(role) {
+			case Guest:
+				setGuestRole();
+				break;
+			case ProductOwner:
+				setProductOwnerRole();
+				break;
+			case ScrumMaster:
+				setScrumMasterRole();
+				break;
+			case ScrumTeam:
+				setScrumTeamRole();
+				break;
+			case Stakeholder:
+				setStakeHolderRole();
+				break;
+			default:
+				break;
+		}
 	}
 	
+	private void setStakeHolderRole() {
+		setAccessProductBacklog(false);
+		setAccessReleasePlan(false);
+		setAccessRetrospective(false);
+		setAccessSprintBacklog(false);
+		setAccessSprintPlan(false);
+		setAccessTaskBoard(false);
+		setAccessUnplannedItem(false);
+		setEditProject(false);
+		setReadReport(true);
+    }
+
+	private void setScrumTeamRole() {
+		setAccessProductBacklog(true);
+		setAccessReleasePlan(true);
+		setAccessRetrospective(true);
+		setAccessSprintBacklog(true);
+		setAccessSprintPlan(true);
+		setAccessTaskBoard(true);
+		setAccessUnplannedItem(true);
+		setEditProject(false);
+		setReadReport(true);
+    }
+
+	private void setScrumMasterRole() {
+		setAccessProductBacklog(true);
+		setAccessReleasePlan(true);
+		setAccessRetrospective(true);
+		setAccessSprintBacklog(true);
+		setAccessSprintPlan(true);
+		setAccessTaskBoard(true);
+		setAccessUnplannedItem(true);
+		setEditProject(true);
+		setReadReport(true);
+    }
+
+	private void setProductOwnerRole() {
+		setAccessProductBacklog(true);
+		setAccessReleasePlan(true);
+		setAccessRetrospective(true);
+		setAccessSprintBacklog(true);
+		setAccessSprintPlan(true);
+		setAccessTaskBoard(true);
+		setAccessUnplannedItem(true);
+		setEditProject(true);
+		setReadReport(true);
+    }
+	
+	private void setGuestRole() {
+		setAccessProductBacklog(false);
+		setAccessReleasePlan(false);
+		setAccessRetrospective(false);
+		setAccessSprintBacklog(false);
+		setAccessSprintPlan(false);
+		setAccessTaskBoard(false);
+		setAccessUnplannedItem(false);
+		setEditProject(false);
+		setReadReport(false);
+    }
+
 	public String getProjectName() {
-		return m_projectName;
+		return mProjectName;
 	}
 
 	public String getRoleName() {
-		return m_roleName;
+		return mRoleName;
 	}
-	
-	//get permission
-	public boolean getAccessProductBacklog(){
-		return m_productBacklog;
+
+	// get permission
+	public Boolean getAccessProductBacklog() {
+		return mProductBacklog;
 	}
-	
-	public boolean getAccessReleasePlan(){
-		return m_releasePlan;
+
+	public Boolean getAccessReleasePlan() {
+		return mReleasePlan;
 	}
-	
-	public boolean getAccessSprintPlan(){
-		return m_sprintPlan;
+
+	public Boolean getAccessSprintPlan() {
+		return mSprintPlan;
 	}
-	
-	public boolean getAccessTaskBoard(){
-		return m_taskboard;
+
+	public Boolean getAccessTaskBoard() {
+		return mTaskboard;
 	}
-	
-	public boolean getAccessSprintBacklog(){
-		return m_sprintBacklog;
+
+	public Boolean getAccessSprintBacklog() {
+		return mSprintBacklog;
 	}
-	
-	public boolean getAccessUnplannedItem(){
-		return m_unplanned;
+
+	public Boolean getAccessUnplannedItem() {
+		return mUnplanned;
 	}
-	
-	public boolean getAccessRetrospective(){
-		return m_retrospective;
+
+	public Boolean getAccessRetrospective() {
+		return mRetrospective;
 	}
-	
-	public boolean getReadReport(){
-		return m_report;
-	}	
-	
-	public boolean getEditProject(){
-		return m_editProject;
+
+	public Boolean getReadReport() {
+		return mReport;
 	}
-	
+
+	public Boolean getEditProject() {
+		return mEditProject;
+	}
+
 	// Kanban
-	public boolean getAccessKanbanBacklog(){
-		return m_kanbanBacklog;
+	public Boolean getAccessKanbanBacklog() {
+		return mKanbanBacklog;
 	}
-	
-	public boolean getAccessManageStatus(){
-		return m_manageStatus;
+
+	public Boolean getAccessManageStatus() {
+		return mManageStatus;
 	}
-	
-	public boolean getAccessKanbanBoard(){
-		return m_kanbanBoard;
+
+	public Boolean getAccessKanbanBoard() {
+		return mKanbanBoard;
 	}
-	
-	public boolean getAccessKanbanReport(){
-		return m_kanbanReport;
+
+	public Boolean getAccessKanbanReport() {
+		return mKanbanReport;
 	}
-	
+
 	// add for guest permission
-	public boolean isGuest() {
-		return m_isGuest;
+	public Boolean isGuest() {
+		return mIsGuest;
 	}
-	
-	//set permission
-	public void setAccessProductBacklog(boolean permission){
-		m_productBacklog = permission;
+
+	// set permission
+	public void setAccessProductBacklog(Boolean permission) {
+		mProductBacklog = permission;
 	}
-	
-	public void setAccessReleasePlan(boolean permission){
-		m_releasePlan = permission;
+
+	public void setAccessReleasePlan(Boolean permission) {
+		mReleasePlan = permission;
 	}
-	
-	public void setAccessSprintPlan(boolean permission){
-		m_sprintPlan = permission;
+
+	public void setAccessSprintPlan(Boolean permission) {
+		mSprintPlan = permission;
 	}
-	
-	public void setAccessTaskBoard(boolean permission){
-		m_taskboard = permission;
+
+	public void setAccessTaskBoard(Boolean permission) {
+		mTaskboard = permission;
 	}
-	
-	public void setAccessSprintBacklog(boolean permission){
-		m_sprintBacklog = permission;
+
+	public void setAccessSprintBacklog(Boolean permission) {
+		mSprintBacklog = permission;
 	}
-	
-	public void setAccessUnplannedItem(boolean permission){
-		m_unplanned = permission;
+
+	public void setAccessUnplannedItem(Boolean permission) {
+		mUnplanned = permission;
 	}
-	
-	public void setAccessRetrospective(boolean permission){
-		m_retrospective = permission;
+
+	public void setAccessRetrospective(Boolean permission) {
+		mRetrospective = permission;
 	}
-	
-	public void setReadReport(boolean permission){
-		m_report = permission;
-	}	
-	
-	public void setEditProject(boolean permission){
-		m_editProject = permission;
+
+	public void setReadReport(Boolean permission) {
+		mReport = permission;
 	}
-	
+
+	public void setEditProject(Boolean permission) {
+		mEditProject = permission;
+	}
+
 	// Kanban
-	public void setAccessKanbanBacklog(boolean permission){
-		m_kanbanBacklog = permission;
+	public void setAccessKanbanBacklog(Boolean permission) {
+		mKanbanBacklog = permission;
 	}
-	
-	public void setAccessManageStatus(boolean permission){
-		m_manageStatus = permission;
+
+	public void setAccessManageStatus(Boolean permission) {
+		mManageStatus = permission;
 	}
-	
-	public void setAccessKanbanBoard(boolean permission){
-		m_kanbanBoard = permission;
+
+	public void setAccessKanbanBoard(Boolean permission) {
+		mKanbanBoard = permission;
 	}
-	
-	public void setAccessKanbanReport(boolean permission){
-		m_kanbanReport = permission;
+
+	public void setAccessKanbanReport(Boolean permission) {
+		mKanbanReport = permission;
 	}
-	
-	public void setisGuest(boolean permission) {
-		m_isGuest = permission;
+
+	public void setisGuest(Boolean permission) {
+		mIsGuest = permission;
 	}
-	
+
 	// 使用Kanban流程則Scrum流程的權限全部設為False
-	public void setToKanbanPermission(){
-		m_productBacklog = false;
-		m_releasePlan = false;
-		m_sprintPlan = false;
-		m_taskboard = false;
-		m_sprintBacklog = false;
-		m_unplanned = false;
-		m_retrospective = false;
+	public void setToKanbanPermission() {
+		mProductBacklog = false;
+		mReleasePlan = false;
+		mSprintPlan = false;
+		mTaskboard = false;
+		mSprintBacklog = false;
+		mUnplanned = false;
+		mRetrospective = false;
 	}
+
 	// 使用Scrum流程則Kanban流程的權限全部設為False
-	public void setToScrumPermission(){
-		m_kanbanBacklog = false;
-		m_manageStatus = false;
-		m_kanbanBoard = false;
+	public void setToScrumPermission() {
+		mKanbanBacklog = false;
+		mManageStatus = false;
+		mKanbanBoard = false;
 	}
 }
