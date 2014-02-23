@@ -1,0 +1,728 @@
+<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+	<w:tblPr>
+		<w:tblW w:w="0" w:type="auto" />
+		<w:tblBorders>
+			<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+			<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+			<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+			<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+		</w:tblBorders>
+		<w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1" />
+	</w:tblPr>
+	<w:tblGrid>
+		<w:gridCol w:w="6895" />
+		<w:gridCol w:w="1627" />
+	</w:tblGrid>
+	<w:tr >
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+				<w:vAlign w:val="center" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:spacing w:line="240" w:lineRule="auto" />
+					<w:ind w:firstLineChars="50" w:firstLine="120" />
+					<w:jc w:val="both" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+				<w:r>
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+					<w:t>
+					Sprint Backlog Item #000
+					</w:t>
+				</w:r>
+				<w:bookmarkStart w:id="0" w:name="_GoBack" />
+				<w:bookmarkEnd w:id="0" />
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+				<w:vAlign w:val="center" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:jc w:val="both" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:trPr>
+			<w:trHeight w:val="1569" />
+		</w:trPr>
+		<w:tc>
+			<w:tcPr>
+			<w:tcW w:w="6930" w:type="dxa" />
+			<w:vMerge w:val="restart" />
+			<w:tcBorders>
+			<w:bottom w:val="nil" />
+			</w:tcBorders>
+			<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			<w:vAlign w:val="center" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="0075648C">
+			<w:pPr>
+			<w:ind w:leftChars="118" w:left="283" w:firstLineChars="0" w:firstLine="0" />
+			<w:jc w:val="both" />
+			<w:rPr>
+			<w:rFonts w:hint="eastAsia" />
+			</w:rPr>
+			</w:pPr>
+			<w:r>
+			<w:rPr>
+			<w:rFonts w:hint="eastAsia" />
+			</w:rPr>
+			<w:t>
+			為了可以
+			</w:t>
+			</w:r>
+			<w:r>
+			<w:t>
+			…
+			</w:t>
+			</w:r>
+			<w:r>
+			<w:rPr>
+			<w:rFonts w:hint="eastAsia" />
+			</w:rPr>
+			<w:t>
+			，
+			</w:t>
+			</w:r>
+			<w:r w:rsidRPr="00D438B0">
+			<w:rPr>
+			<w:rFonts w:hint="eastAsia" />
+			</w:rPr>
+			<w:t>
+			身為使用者，我希望
+			</w:t>
+			</w:r>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:tcBorders>
+					<w:bottom w:val="nil" />
+				</w:tcBorders>
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:spacing w:line="240" w:lineRule="auto" />
+					<w:ind w:firstLineChars="50" w:firstLine="120" />
+				</w:pPr>
+				<w:r>
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+					<w:t>
+					Importance
+					</w:t>
+				</w:r>
+			</w:p>
+			<w:tbl>
+				<w:tblPr>
+					<w:tblW w:w="0" w:type="auto" />
+					<w:tblInd w:w="82" w:type="dxa" />
+					<w:tblBorders>
+						<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					</w:tblBorders>
+					<w:tblCellMar>
+						<w:left w:w="28" w:type="dxa" />
+						<w:right w:w="28" w:type="dxa" />
+					</w:tblCellMar>
+					<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0" />
+				</w:tblPr>
+				<w:tblGrid>
+					<w:gridCol w:w="1205" />
+				</w:tblGrid>
+				<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+					<w:tblPrEx>
+						<w:tblCellMar>
+							<w:top w:w="0" w:type="dxa" />
+							<w:bottom w:w="0" w:type="dxa" />
+						</w:tblCellMar>
+					</w:tblPrEx>
+					<w:trPr>
+						<w:trHeight w:val="1125" />
+					</w:trPr>
+					<w:tc>
+						<w:tcPr>
+							<w:tcW w:w="1205" w:type="dxa" />
+							<w:vAlign w:val="center" />
+						</w:tcPr>
+						<w:p w:rsidR="0075648C" w:rsidRPr="00285F15" w:rsidRDefault="0075648C" w:rsidP="00973549">
+							<w:pPr>
+							<w:spacing w:line="240" w:lineRule="auto" />
+							<w:ind w:firstLineChars="0" w:firstLine="0" />
+							<w:jc w:val="center" />
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+									<w:sz w:val="56" />
+									<w:szCs w:val="56" />
+								</w:rPr>
+							</w:pPr>
+							<w:r>
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+									<w:sz w:val="56" />
+									<w:szCs w:val="56" />
+								</w:rPr>
+								<w:t>
+								2
+								</w:t>
+							</w:r>
+						</w:p>
+					</w:tc>
+				</w:tr>
+			</w:tbl>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:vMerge />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+			<w:tcW w:w="1629" w:type="dxa" />
+			<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:trPr>
+			<w:trHeight w:val="1604" />
+		</w:trPr>
+	<w:tc>
+		<w:tcPr>
+			<w:tcW w:w="6930" w:type="dxa" />
+			<w:vMerge w:val="restart" />
+			<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			<w:vAlign w:val="center" />
+		</w:tcPr>
+		<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+			<w:pPr>
+				<w:spacing w:line="240" w:lineRule="auto" />
+				<w:ind w:firstLineChars="50" w:firstLine="120" />
+				<w:jc w:val="both" />
+			</w:pPr>
+			<w:r>
+				<w:rPr>
+					<w:rFonts w:hint="eastAsia" />
+				</w:rPr>
+				<w:t>
+				Notes
+				</w:t>
+			</w:r>
+		</w:p>
+		<w:tbl>
+			<w:tblPr>
+				<w:tblpPr w:leftFromText="180" w:rightFromText="180" w:vertAnchor="text" w:horzAnchor="page" w:tblpX="241" w:tblpY="1" />
+				<w:tblW w:w="0" w:type="auto" />
+				<w:tblBorders>
+					<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					<w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto" />
+				</w:tblBorders>
+				<w:tblCellMar>
+					<w:left w:w="28" w:type="dxa" />
+					<w:right w:w="28" w:type="dxa" />
+				</w:tblCellMar>
+				<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0" />
+			</w:tblPr>
+			<w:tblGrid>
+				<w:gridCol w:w="6516" />
+			</w:tblGrid>
+			<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+				<w:tblPrEx>
+					<w:tblCellMar>
+						<w:top w:w="0" w:type="dxa" />
+						<w:bottom w:w="0" w:type="dxa" />
+					</w:tblCellMar>
+				</w:tblPrEx>
+				<w:trPr>
+					<w:trHeight w:val="1890" />
+				</w:trPr>
+				<w:tc>
+					<w:tcPr>
+						<w:tcW w:w="6516" w:type="dxa" />
+					</w:tcPr>
+					<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="0075648C">
+						<w:pPr>
+							<w:ind w:firstLineChars="0" w:firstLine="0" />
+							<w:jc w:val="both" />
+							<w:rPr>
+								<w:rFonts w:hint="eastAsia" />
+							</w:rPr>
+						</w:pPr>
+						<w:r>
+							<w:rPr>
+								<w:rFonts w:hint="eastAsia" />
+							</w:rPr>
+							<w:t>
+							強健度等級
+							</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+			</w:tr>
+		</w:tbl>
+		<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+			<w:pPr>
+				<w:ind w:firstLineChars="0" w:firstLine="0" />
+				<w:jc w:val="both" />
+				<w:rPr>
+					<w:rFonts w:hint="eastAsia" />
+				</w:rPr>
+			</w:pPr>
+		</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:spacing w:line="240" w:lineRule="auto" />
+					<w:ind w:firstLineChars="100" w:firstLine="240" />
+				</w:pPr>
+				<w:r>
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+					<w:t>
+					Estimate
+					</w:t>
+				</w:r>
+			</w:p>
+			<w:tbl>
+				<w:tblPr>
+					<w:tblW w:w="0" w:type="auto" />
+					<w:tblInd w:w="82" w:type="dxa" />
+					<w:tblBorders>
+						<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					</w:tblBorders>
+					<w:tblCellMar>
+						<w:left w:w="28" w:type="dxa" />
+						<w:right w:w="28" w:type="dxa" />
+					</w:tblCellMar>
+					<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0" />
+				</w:tblPr>
+				<w:tblGrid>
+					<w:gridCol w:w="1205" />
+				</w:tblGrid>
+				<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+					<w:tblPrEx>
+						<w:tblCellMar>
+							<w:top w:w="0" w:type="dxa" />
+							<w:bottom w:w="0" w:type="dxa" />
+						</w:tblCellMar>
+					</w:tblPrEx>
+					<w:trPr>
+						<w:trHeight w:val="1125" />
+					</w:trPr>
+					<w:tc>
+						<w:tcPr>
+							<w:tcW w:w="1205" w:type="dxa" />
+							<w:vAlign w:val="center" />
+						</w:tcPr>
+						<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+							<w:pPr>
+								<w:ind w:firstLineChars="0" w:firstLine="0" />
+								<w:jc w:val="center" />
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+								</w:rPr>
+							</w:pPr>
+							<w:r>
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+									<w:sz w:val="56" />
+									<w:szCs w:val="56" />
+								</w:rPr>
+								<w:t>
+								2
+								</w:t>
+							</w:r>
+						</w:p>
+					</w:tc>
+				</w:tr>
+			</w:tbl>
+		<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+			<w:pPr>
+				<w:ind w:firstLineChars="0" w:firstLine="0" />
+				<w:rPr>
+					<w:rFonts w:hint="eastAsia" />
+				</w:rPr>
+			</w:pPr>
+		</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:vMerge />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:vMerge />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+			<w:tcW w:w="1629" w:type="dxa" />
+			<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+				<w:vAlign w:val="center" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:spacing w:line="240" w:lineRule="auto" />
+					<w:ind w:firstLineChars="50" w:firstLine="120" />
+					<w:jc w:val="both" />
+				</w:pPr>
+				<w:r>
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+					<w:t>
+					Tags
+					</w:t>
+				</w:r>
+			</w:p>
+			<w:tbl>
+				<w:tblPr>
+					<w:tblW w:w="0" w:type="auto" />
+					<w:tblInd w:w="127" w:type="dxa" />
+					<w:tblBorders>
+						<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					</w:tblBorders>
+					<w:tblCellMar>
+						<w:top w:w="57" w:type="dxa" />
+						<w:left w:w="57" w:type="dxa" />
+						<w:bottom w:w="57" w:type="dxa" />
+						<w:right w:w="28" w:type="dxa" />
+					</w:tblCellMar>
+					<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0" />
+				</w:tblPr>
+				<w:tblGrid>
+					<w:gridCol w:w="6531" />
+				</w:tblGrid>
+				<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+					<w:trPr>
+						<w:trHeight w:val="700" />
+					</w:trPr>
+					<w:tc>
+						<w:tcPr>
+							<w:tcW w:w="6531" w:type="dxa" />
+						</w:tcPr>
+						<w:p w:rsidR="0075648C" w:rsidRPr="002725C3" w:rsidRDefault="0075648C" w:rsidP="0075648C">
+							<w:pPr>
+								<w:spacing w:line="0" w:lineRule="atLeast" />
+								<w:ind w:rightChars="50" w:right="120" w:firstLineChars="0" w:firstLine="0" />
+								<w:jc w:val="both" />
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+								</w:rPr>
+							</w:pPr>
+							<w:r>
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+								</w:rPr>
+								<w:t>
+								ezScrum
+								</w:t>
+							</w:r>
+						</w:p>
+					</w:tc>
+				</w:tr>
+			</w:tbl>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:jc w:val="both" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>	
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+				<w:vAlign w:val="center" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+				<w:spacing w:line="240" w:lineRule="auto" />
+				<w:ind w:firstLineChars="50" w:firstLine="120" />
+				<w:jc w:val="both" />
+				</w:pPr>
+				<w:r>
+				<w:rPr>
+				<w:rFonts w:hint="eastAsia" />
+				</w:rPr>
+				<w:t>
+				How to demo
+				</w:t>
+				</w:r>
+			</w:p>
+			<w:tbl>
+				<w:tblPr>
+					<w:tblW w:w="0" w:type="auto" />
+					<w:tblInd w:w="127" w:type="dxa" />
+					<w:tblBorders>
+						<w:top w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:left w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:right w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto" />
+						<w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto" />
+					</w:tblBorders>
+					<w:tblCellMar>
+						<w:top w:w="57" w:type="dxa" />
+						<w:left w:w="57" w:type="dxa" />
+						<w:bottom w:w="57" w:type="dxa" />
+						<w:right w:w="28" w:type="dxa" />
+					</w:tblCellMar>
+					<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0" />
+				</w:tblPr>
+				<w:tblGrid>
+					<w:gridCol w:w="6531" />
+				</w:tblGrid>
+				<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+					<w:trPr>
+						<w:trHeight w:val="2411" />
+					</w:trPr>
+					<w:tc>
+						<w:tcPr>
+							<w:tcW w:w="6531" w:type="dxa" />
+						</w:tcPr>
+						<w:p w:rsidR="0075648C" w:rsidRPr="002725C3" w:rsidRDefault="0075648C" w:rsidP="0075648C">
+							<w:pPr>
+								<w:spacing w:line="0" w:lineRule="atLeast" />
+								<w:ind w:rightChars="50" w:right="120" w:firstLineChars="0" w:firstLine="0" />
+								<w:jc w:val="both" />
+								<w:rPr>
+									<w:rFonts w:hint="eastAsia" />
+								</w:rPr>
+							</w:pPr>
+						</w:p>
+					</w:tc>
+				</w:tr>
+			</w:tbl>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:jc w:val="both" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+	<w:tr w:rsidR="0075648C" w:rsidTr="00973549">
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="6930" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+		<w:tc>
+			<w:tcPr>
+				<w:tcW w:w="1629" w:type="dxa" />
+				<w:shd w:val="clear" w:color="auto" w:fill="auto" />
+			</w:tcPr>
+			<w:p w:rsidR="0075648C" w:rsidRDefault="0075648C" w:rsidP="00973549">
+				<w:pPr>
+					<w:ind w:firstLineChars="0" w:firstLine="0" />
+					<w:rPr>
+						<w:rFonts w:hint="eastAsia" />
+					</w:rPr>
+				</w:pPr>
+			</w:p>
+		</w:tc>
+	</w:tr>
+</w:tbl>

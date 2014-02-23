@@ -183,6 +183,7 @@
 
 
 <!--use jsp wrap js content, because ext widget must get plugin info synchronously at initial time  -->
+<jsp:include page="ntut/csie/ezScrum/stapler/ReleasePlan/ReleasePlanTopToolbar.jsp"/> 
 <jsp:include page="ntut/csie/ezScrum/stapler/ProductBacklog/ProductBacklogTopToolbar.jsp"/> 
 <jsp:include page="ntut/csie/ezScrum/stapler/TaskBoard/TaskBoardCardPanel.jsp"/>
 

@@ -58,6 +58,8 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_editSprintBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_addSprintBtn').enable();
+			if (Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn'))
+				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn').disable();
 		} else {
 			// 有選擇某個項目，判斷此 Type 為 Release or Sprint
 			var StoryPanelObj = this;
@@ -69,6 +71,8 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_addExStoryBtn').enable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showReleaseBacklogBtn').enable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').enable();
+				if (Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn'))
+					Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn').enable();
 
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
@@ -100,6 +104,8 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showReleaseBacklogBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_editSprintBtn').enable();
+				if (Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn'))
+					Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn').disable();
 				
 				var loadmask = new Ext.LoadMask(StoryPanelObj.getEl(), {msg:"loading info..."});
 				loadmask.show();
