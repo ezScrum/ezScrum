@@ -11,3 +11,7 @@ _UnitTest
 /WebContent/RoleBase.xml
 
 /robotTesting/keywords/lib/*.pyc
+/TestData/MyWorkspace_bk/RoleBase.xml
+/TestData/TestWorkspace/RoleBase.xml
+/TestData/TestWorkspace/_metadata/its_config.xml
+/dist
