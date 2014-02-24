@@ -17,7 +17,7 @@
 	<classpathentry kind="lib" path="lib/easymock.jar"/>
 	<classpathentry kind="lib" path="lib/agile.rl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_45"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/test/junit.jar"/>
 	<classpathentry kind="lib" path="lib/test/strutstest-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/aspectjrt.jar"/>
@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/test/gae/appengine-testing.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/aspectjweaver.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/org.aspectj.matcher.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ezScrum_Plugin_Protocol.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
