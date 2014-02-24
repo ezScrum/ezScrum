@@ -1,12 +1,15 @@
 package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
@@ -18,12 +21,17 @@ import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ReleasePlanHelper {
 	private ReleasePlanMapper rpMapper;
@@ -43,7 +51,7 @@ public class ReleasePlanHelper {
 	
 	public List<IReleasePlanDesc> loadReleasePlansList(){
 		List<IReleasePlanDesc> list = rpMapper.getReleasePlanList();
-		list = linkReleasePlanWithSprintList(list);		
+		list = linkReleasePlanWithSprintList(list);
 		return list;
 	}
 	
@@ -129,6 +137,18 @@ public class ReleasePlanHelper {
 		return null;
 	}
 	
+	// return the release plans of releasePlanID' string
+	public List<IReleasePlanDesc> getReleasePlansByIDs(String releasePlanIDs) {
+		String[] plansString = releasePlanIDs.split(",");
+		List<IReleasePlanDesc> plans = new ArrayList<IReleasePlanDesc>();
+		
+		for (String releasePlanID : plansString) {
+			plans.add(getReleasePlan(releasePlanID));
+		}
+		
+		return plans;
+	}
+	
 	// return the releaseID which has the sprintID
 	public String getReleaseID(String sprintID) {
 		String rid = "0";
@@ -211,11 +231,147 @@ public class ReleasePlanHelper {
 		tree += "]";
 		return tree;
 	}
+	/**
+	 *  from AjaxGetReleasePlanAction,
+	 *  將release讀出並列成list再轉成JSON
+	 */
+    public String setReleaseListToJSon (List<IReleasePlanDesc> ListReleaseDescs) {
+    	JSONObject releaseObject = new JSONObject();
+    	JSONArray releaseplanlist = new JSONArray();
+    	try {
+			for (IReleasePlanDesc plan : ListReleaseDescs) {
+				JSONObject releaseplan = new JSONObject();
+				releaseplan.put("ID", plan.getID());
+		        releaseplan.put("Name", plan.getName());
+				releaseplanlist.put(releaseplan);
+			}
+			releaseObject.put("Releases", releaseplanlist);
+    	} catch (JSONException e) {
+            e.printStackTrace();
+        }
+		
+		return releaseObject.toString();	
+	}
+    
+    /**
+     *  from AjaxGetVelocityAction,
+     *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
+     */
+    public String getSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    	JSONObject velocityobject = new JSONObject();
+    	JSONArray sprints = new JSONArray();
+    	HashMap<String, Integer> storyinfo;
+    	double totalvelocity = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
+    	try {
+	    	for (IReleasePlanDesc release : ListReleaseDescs) {
+	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    			JSONObject sprintplan = new JSONObject();
+	    			sprintplan.put("ID", sprint.getID());
+	    			sprintplan.put("Name", "Sprint" + sprint.getID());
+	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+	    			sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
+	    			sprints.put(sprintplan);
+	    			totalvelocity += storyinfo.get("StoryPoint");
+	    			sprintcount++;
+	    		}
+	    	}
+	    	velocityobject.put("Sprints", sprints);
+	    	velocityobject.put("Average", totalvelocity/sprintcount);
+    	} catch (JSONException e) {
+            e.printStackTrace();
+        }
+		return velocityobject.toString();
+    }
+    
+    /**
+     * form AjaxGetStoryCountAction
+     * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
+     */
+    public String getStoryCountChartJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    	JSONObject storycountobject = new JSONObject();
+    	JSONArray sprints = new JSONArray();
+    	HashMap<String, Integer> storyinfo;
+    	int totalstorycount = 0;
+    	int sprintcount = 0; // 計算被選的release內的sprint總數
+    	try {
+    		ArrayList<ISprintPlanDesc> allSprints = new ArrayList<ISprintPlanDesc>();
+    		for (IReleasePlanDesc release : ListReleaseDescs) {
+	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    			allSprints.add(sprint);
+	    		}
+	    	}
+    		
+    		Collections.sort(allSprints, new Comparator<ISprintPlanDesc>() {
+				@Override
+				public int compare(ISprintPlanDesc o1, ISprintPlanDesc o2) {
+					return Integer.parseInt(o1.getID()) - Integer.parseInt(o2.getID());
+				}
+    		});
+    		
+    		for(ISprintPlanDesc sprint : allSprints) {
+    			JSONObject sprintplan = new JSONObject();
+    			sprintplan.put("ID", sprint.getID());
+    			sprintplan.put("Name", "Sprint" + sprint.getID());
+    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+    			totalstorycount += storyinfo.get("StoryCount");
+    			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
+    			sprints.put(sprintplan);
+    			sprintcount++;
+    		}
+	    	storycountobject.put("Sprints", sprints);
+	    	storycountobject.put("TotalSprintCount", sprintcount);
+	    	storycountobject.put("TotalStoryCount", totalstorycount);
+    	} catch (JSONException e) {
+            e.printStackTrace();
+    	}
+    	updateJSonInfo(storycountobject);
+    	return storycountobject.toString();
+    }
+    
+    // 取得Sprint的Story資訊
+    private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
+    	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
+    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
+    	int storypoint = 0;
+    	int storydonecount = 0;
+    	for (IIssue story : stories) {
+    		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
+    			storypoint += Integer.valueOf(story.getEstimated());
+    			storydonecount++;
+    		}
+    	}
+    	storyinfo.put("StoryPoint", storypoint);
+    	storyinfo.put("StoryCount", stories.length);
+    	storyinfo.put("StoryDoneCount", storydonecount);
+    	return storyinfo;
+    }
+    
+    // 更新JSON string裡面的資訊, 第一次只建立story data
+    private JSONObject updateJSonInfo(JSONObject jsoninfo) {
+    	try {
+    		 // JSON是call by reference!!! 查memory=>System.identityHashCode(Object x)
+	        JSONArray sprints = (JSONArray)jsoninfo.get("Sprints");
+	        int sprintcount = jsoninfo.getInt("TotalSprintCount");
+	        int storycount = jsoninfo.getInt("TotalStoryCount");
+	        int storyremaining = jsoninfo.getInt("TotalStoryCount");
+	        double idealrange = (double)storycount / sprintcount;
+	        for (int i = 0; i < sprints.length(); i++) {
+	        	JSONObject sprintplan = sprints.getJSONObject(i);
+	        	storyremaining -= sprintplan.getInt("StoryDoneCount");
+	        	sprintplan.put("StoryRemainingCount", storyremaining);
+	        	sprintplan.put("StoryIdealCount", storycount - (idealrange * (i + 1)));
+	        }
+	        jsoninfo.put("Sprints", sprints);
+        } catch (JSONException e) {
+	        e.printStackTrace();
+        }
+    	return jsoninfo;
+    }
 	
 	//透過release des將sprint的資訊寫成JSon
 	private String setSprintToJSon (IReleasePlanDesc IRDesc, SprintPlanHelper SPhelper){
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		
 		String sprintTree="";
 		if (IRDesc.getSprintDescList() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			int i=0;
@@ -241,7 +397,7 @@ public class ReleasePlanHelper {
 		return sprintTree;
 	}
 	
-	/*
+	/**
 	 * from AjaxShowStoryFromReleaseAction
 	 */
 	

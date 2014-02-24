@@ -171,6 +171,11 @@ public class ReleasePlanHelperTest extends TestCase {
 				.getStartDate());
 		assertEquals(format.format(NewED).toString(), otherRelease.getEndDate());
 	}
+	
+	public void testgetReleasePlansByIDs() {
+		this.helper = new ReleasePlanHelper(this.CP.getProjectList().get(0));
+		String releasePlanIDs = "";
+	}
 
 	/************************************************************
 	 * 測試新增Sprint至Release

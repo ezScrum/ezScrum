@@ -86,6 +86,7 @@ public class SessionManager {
 		HttpSession session = request.getSession();
 		// 拿到request header的URL parameter
 		String projectID = getURLParameter(request, "PID");
+		
 		if (projectID != null) {
 			// 拿session裡的project資料
 			IProject project = (IProject) session.getAttribute(projectID);
