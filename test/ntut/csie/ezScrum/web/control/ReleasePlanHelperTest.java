@@ -8,12 +8,18 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleasePlanHelperTest extends TestCase {
 	private ReleasePlanHelper helper;
@@ -174,7 +180,79 @@ public class ReleasePlanHelperTest extends TestCase {
 	
 	public void testgetReleasePlansByIDs() {
 		this.helper = new ReleasePlanHelper(this.CP.getProjectList().get(0));
+		// no release plan select
 		String releasePlanIDs = "";
+		List<IReleasePlanDesc> plans = helper.getReleasePlansByIDs(releasePlanIDs);
+		assertEquals(0, plans.size());
+		
+		// select wrong releaseID
+		releasePlanIDs = "4";
+		plans = helper.getReleasePlansByIDs(releasePlanIDs);
+		assertEquals(null, plans.get(0));
+		
+		// select releaseID = 1,2,3
+		releasePlanIDs = "1,2,3";
+		plans = helper.getReleasePlansByIDs(releasePlanIDs);
+		assertEquals(3, plans.size());
+	}
+	
+	public void testgetSprintVelocityToJSon() throws Exception {
+		/**
+		 * no release plan select
+		 */
+		String releases = "";
+		// 取得ReleasePlans
+		IProject project = this.CP.getProjectList().get(0);
+		this.helper = new ReleasePlanHelper(project);
+		List<IReleasePlanDesc> releaseDescs = helper.getReleasePlansByIDs(releases);
+		// 取得SprintBacklog
+		ezScrumInfoConfig config = new ezScrumInfoConfig();
+		IUserSession userSession = config.getUserSession();
+		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project, userSession);
+		// assert no release plan string value
+		String actualTest = helper.getSprintVelocityToJSon(releaseDescs, SBhelper);
+		StringBuilder expectTest = new StringBuilder();
+		expectTest.append("{")
+				  .append("\"Sprints\":[],")
+				  .append("\"Average\":\"\"")
+				  .append("}");
+		assertEquals(expectTest.toString(), actualTest);
+		/**
+		 * select releaseID = 1,2,3
+		 */
+		// create sprint
+		CreateSprint CS = new CreateSprint(3, CP);
+		CS.exe();
+		// create story to sprint
+		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, CS, CP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASS.exe(); // 每個Sprint中新增2筆Story
+		// 取得ReleasePlans
+		releases = "1,2,3";
+		releaseDescs = helper.getReleasePlansByIDs(releases);
+		// update SprintBacklog mapper info
+		SBhelper = new SprintBacklogHelper(project, userSession);
+		// assert release plan string value
+		actualTest = helper.getSprintVelocityToJSon(releaseDescs, SBhelper);
+		expectTest.replace(0, actualTest.length(), ""); // clear builder
+		/**
+		 * {"Sprints":[{"ID":"1","Name":"Sprint1","Velocity":0},
+		 * 			   {"ID":"2","Name":"Sprint2","Velocity":0},
+		 * 			   {"ID":"3","Name":"Sprint3","Velocity":0}],
+		 * 	"Average":0}
+		 */
+		expectTest.append("{")
+				  .append("\"Sprints\":[{")
+					  .append("\"ID\":\"1\",")
+					  .append("\"Name\":\"Sprint1\",")
+					  .append("\"Velocity\":0},")
+					  .append("{\"ID\":\"2\",")
+					  .append("\"Name\":\"Sprint2\",")
+					  .append("\"Velocity\":0},")
+					  .append("{\"ID\":\"3\",")
+					  .append("\"Name\":\"Sprint3\",")
+					  .append("\"Velocity\":0}],")
+				  .append("\"Average\":0}");
+		assertEquals(expectTest.toString(), actualTest);
 	}
 
 	/************************************************************

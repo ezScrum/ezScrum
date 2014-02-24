@@ -133,19 +133,19 @@ public class ReleasePlanHelper {
 			if (desc.getID().equals(releasePlanID))
 				return desc;
 		}
-		
 		return null;
 	}
 	
 	// return the release plans of releasePlanID' string
 	public List<IReleasePlanDesc> getReleasePlansByIDs(String releasePlanIDs) {
-		String[] plansString = releasePlanIDs.split(",");
 		List<IReleasePlanDesc> plans = new ArrayList<IReleasePlanDesc>();
-		
+		if (releasePlanIDs.length() == 0) {
+			return plans;
+		}
+		String[] plansString = releasePlanIDs.split(",");
 		for (String releasePlanID : plansString) {
 			plans.add(getReleasePlan(releasePlanID));
 		}
-		
 		return plans;
 	}
 	
@@ -265,6 +265,8 @@ public class ReleasePlanHelper {
     	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
 	    	for (IReleasePlanDesc release : ListReleaseDescs) {
+	    		if (release == null)
+	    			break;
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", sprint.getID());
@@ -273,11 +275,14 @@ public class ReleasePlanHelper {
 	    			sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
 	    			sprints.put(sprintplan);
 	    			totalvelocity += storyinfo.get("StoryPoint");
-	    			sprintcount++;
+					sprintcount++;
 	    		}
 	    	}
 	    	velocityobject.put("Sprints", sprints);
-	    	velocityobject.put("Average", totalvelocity/sprintcount);
+	    	if (sprintcount != 0)
+	    		velocityobject.put("Average", totalvelocity/sprintcount);
+	    	else
+	    		velocityobject.put("Average", "");
     	} catch (JSONException e) {
             e.printStackTrace();
         }
