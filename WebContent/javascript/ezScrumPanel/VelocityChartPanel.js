@@ -6,27 +6,54 @@ ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
 	height		: 300,
 	width		: '25%',
 	autoScroll	: true,
-	bodyPadding	: 'padding: 10px;',
+	bodyStyle	: 'padding: 10px;',
+	releases	: [],
 	initComponent: function() {
+		var config = {
+				items:[]
+		}
+		Ext.apply(this, Ext.apply(this.initialConfig, config));
+		ezScrum.VelocityReleasePanel.superclass.initComponent.apply(this, arguments);
 		
+		this.createCheckboxs();
 	},
 	createCheckboxs: function() {
 		var obj = this;
-		var releases = [];
 		Ext.Ajax.request({
 			url		: 'ajaxGetReleasePlan.do',
 			success	: function(response) {
-				releases = Ext.decode(response.responseText).Releases;
-				for(var i=0;i<releases.length;i++) {
+				obj.releases = Ext.decode(response.responseText).Releases;
+				for(var i=0; i<obj.releases.length; i++) {
 					obj.add({
 						xtype		: 'checkbox',
 						id			: 'checkbox_id_'+i,
-						boxLabel	: releases[i].Name,
-						releaseId	: releases[i].ID
+						boxLabel	: obj.releases[i].Name,
+						releaseId	: obj.releases[i].ID,
+						listeners	: {
+							check: function(checkbox, value) {
+								obj.checkChange();
+							}
+						}
 					});
 				}
 			}
 		});
+	},
+	checkChange: function() {
+		var obj = this;
+		var selectedPanel = Ext.getCmp('VelocitySelectPanel_ID');
+		
+		selectedPanel.removeAll();
+		for(var i=0; i<obj.items.length; i++) { 
+			if(obj.get(i).checked) {
+				selectedPanel.add({
+					html: obj.get(i).boxLabel,
+					style: 'margin: 0px 0px 3px 0px;',
+					border: false
+				});
+			}
+		}
+		selectedPanel.doLayout();
 	}
 });
 Ext.reg('VelocityReleasePanel', ezScrum.VelocityReleasePanel);
@@ -37,7 +64,7 @@ ezScrum.VelocitySelectPanel = Ext.extend(Ext.Panel, {
 	height		: 300,
 	width		: '25%',
 	autoScroll	: true,
-	bodyPadding	: 'padding: 10px;'
+	bodyStyle	: 'padding: 10px;'
 });
 Ext.reg('VelocitySelectPanel', ezScrum.VelocitySelectPanel);
 
@@ -76,7 +103,34 @@ ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
 	},
 	doExport: function() {
 		var exportPanel = Ext.getCmp('VelocityExportPanel_ID');
-		exportPanel.add({html:'hello'});
+		var releasePanel = Ext.getCmp('VelocityReleasePanel_ID');
+		
+		//組合query string
+		var checked = [];
+		var queryString = "PID=" + getURLParameter("PID") + "&releases=";
+		for(var i=0; i<releasePanel.items.length; i++) {
+			if(releasePanel.get(i).checked) {
+				checked.push(releasePanel.get(i).releaseId);
+			}
+		}
+		for (var i = 0; i<checked.length; i++) {
+			queryString += checked[i];
+			if (i != checked.length - 1) {
+				queryString += ",";
+			}
+		};
+		
+		if(checked.length === 0) {
+			alert('Please select one release at least.');
+			return;
+		}
+		
+		exportPanel.removeAll();
+		exportPanel.add({
+				html: '<iframe src="showVelocityChart.do?' + queryString + '" width="820" height="650" frameborder="0" scrolling="auto"></iframe>',
+				border: false
+			}
+		);
 		exportPanel.doLayout();
 	}
 });
@@ -85,7 +139,11 @@ Ext.reg('VelocityControlPanel', ezScrum.VelocityControlPanel);
 ezScrum.VelocityExportPanel = Ext.extend(Ext.Panel, {
 	id			: 'VelocityExportPanel_ID',
 	border		: true,
-	layout		: 'anchor',
+	layout		: {
+		type: 'hbox',
+		pack: 'center',
+		align: 'top'
+	},
 	autoHeight	: true,
 	width		: '100%',
 	autoScroll	: true
