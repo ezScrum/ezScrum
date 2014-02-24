@@ -3,7 +3,7 @@ var VelocityPage = new Ext.Panel({
 	layout		: 'anchor',
 	autoScroll	: true,
 	items : [
-	    { ref: 'VelocityChartForm_ID', xtype : 'VelocityChartForm' }
+	    { ref: 'VelocityChartPanel_ID', xtype : 'VelocityChartPanel' }
 	],
 	listeners : {
 		'show' : function() {
