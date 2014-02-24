@@ -1,7 +1,6 @@
 Ext.ns('ezScrum');
 
 ezScrum.StoryCountReleasePanel = Ext.extend(Ext.Panel, {
-	id			: 'StoryCountReleasePanel_ID',
 	title		: 'Releases',
 	height		: 300,
 	width		: '25%',
@@ -59,7 +58,6 @@ ezScrum.StoryCountReleasePanel = Ext.extend(Ext.Panel, {
 Ext.reg('StoryCountReleasePanel', ezScrum.StoryCountReleasePanel);
 
 ezScrum.StoryCountSelectPanel = Ext.extend(Ext.Panel, {
-	id			: 'StoryCountSelectPanel_ID',
 	title		: 'Selected',
 	height		: 300,
 	width		: '25%',
@@ -69,7 +67,6 @@ ezScrum.StoryCountSelectPanel = Ext.extend(Ext.Panel, {
 Ext.reg('StoryCountSelectPanel', ezScrum.StoryCountSelectPanel);
 
 ezScrum.StoryCountControlPanel = Ext.extend(Ext.Panel, {
-	id			: 'StoryCountControlPanel_ID',
 	border		: false,
 	layout		: {
 		type: 'hbox',
@@ -81,20 +78,22 @@ ezScrum.StoryCountControlPanel = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var config = {
 			items: [{
-			    	xtype: 'StoryCountReleasePanel', 
-			    	ref: 'StoryCountReleasePanel_ID'
+			    	xtype	: 'StoryCountReleasePanel', 
+			    	ref		: 'StoryCountReleasePanel_ID',
+			    	id		: 'StoryCountReleasePanel_ID'
 			    }, {
-			    	html: '>>',
-			    	border: false,
-			    	bodyStyle: 'margin:140px 50px 0px 50px'
+			    	html		: '>>',
+			    	border		: false,
+			    	bodyStyle	: 'margin:140px 50px 0px 50px'
 			    }, {
-			    	xtype: 'StoryCountSelectPanel',
-			    	ref: 'StoryCountSelectPanel_ID'
+			    	xtype	: 'StoryCountSelectPanel',
+			    	ref		: 'StoryCountSelectPanel_ID',
+			    	id		: 'StoryCountSelectPanel_ID'
 			    }, {
-			    	xtype: 'button',
-			    	text: 'Export',
-			    	handler: this.doExport,
-			    	style: 'margin: 275px 0px 0px 50px;'
+			    	xtype	: 'button',
+			    	text	: 'Export',
+			    	handler	: this.doExport,
+			    	style	: 'margin: 275px 0px 0px 50px;'
 			    }
 			]
 		}
@@ -137,7 +136,6 @@ ezScrum.StoryCountControlPanel = Ext.extend(Ext.Panel, {
 Ext.reg('StoryCountControlPanel', ezScrum.StoryCountControlPanel);
 
 ezScrum.StoryCountExportPanel = Ext.extend(Ext.Panel, {
-	id			: 'StoryCountExportPanel_ID',
 	border		: true,
 	layout		: {
 		type: 'hbox',
@@ -159,10 +157,12 @@ ezScrum.StoryCountChartPanel = Ext.extend(Ext.Panel, {
 		var config = {
 			items: [{
 					xtype	: 'StoryCountControlPanel', 
-					ref		: 'StoryCountControlPanel_ID'
+					ref		: 'StoryCountControlPanel_ID',
+					id		: 'StoryCountControlPanel_ID'
 				}, {
 					xtype	: 'StoryCountExportPanel',
-					ref		: 'StoryCountExportPanel_ID'
+					ref		: 'StoryCountExportPanel_ID',
+					id		: 'StoryCountExportPanel_ID'
 				}
 			]
 		}

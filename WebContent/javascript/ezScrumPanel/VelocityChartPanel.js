@@ -1,7 +1,6 @@
 Ext.ns('ezScrum');
 
 ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
-	id			: 'VelocityReleasePanel_ID',
 	title		: 'Releases',
 	height		: 300,
 	width		: '25%',
@@ -59,7 +58,6 @@ ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
 Ext.reg('VelocityReleasePanel', ezScrum.VelocityReleasePanel);
 
 ezScrum.VelocitySelectPanel = Ext.extend(Ext.Panel, {
-	id			: 'VelocitySelectPanel_ID',
 	title		: 'Selected',
 	height		: 300,
 	width		: '25%',
@@ -69,7 +67,6 @@ ezScrum.VelocitySelectPanel = Ext.extend(Ext.Panel, {
 Ext.reg('VelocitySelectPanel', ezScrum.VelocitySelectPanel);
 
 ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
-	id			: 'VelocityControlPanel_ID',
 	border		: false,
 	layout		: {
 		type: 'hbox',
@@ -81,20 +78,22 @@ ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var config = {
 			items: [{
-			    	xtype: 'VelocityReleasePanel', 
-			    	ref: 'VelocityReleasePanel_ID'
+			    	xtype	: 'VelocityReleasePanel', 
+			    	ref		: 'VelocityReleasePanel_ID',
+			    	id		: 'VelocityReleasePanel_ID'
 			    }, {
-			    	html: '>>',
-			    	border: false,
+			    	html	: '>>',
+			    	border	: false,
 			    	bodyStyle: 'margin:140px 50px 0px 50px'
 			    }, {
-			    	xtype: 'VelocitySelectPanel',
-			    	ref: 'VelocitySelectPanel_ID'
+			    	xtype	: 'VelocitySelectPanel',
+			    	ref		: 'VelocitySelectPanel_ID',
+			    	id		: 'VelocitySelectPanel_ID'
 			    }, {
-			    	xtype: 'button',
-			    	text: 'Export',
-			    	handler: this.doExport,
-			    	style: 'margin: 275px 0px 0px 50px;'
+			    	xtype	: 'button',
+			    	text	: 'Export',
+			    	handler	: this.doExport,
+			    	style	: 'margin: 275px 0px 0px 50px;'
 			    }
 			]
 		}
@@ -137,7 +136,6 @@ ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
 Ext.reg('VelocityControlPanel', ezScrum.VelocityControlPanel);
 
 ezScrum.VelocityExportPanel = Ext.extend(Ext.Panel, {
-	id			: 'VelocityExportPanel_ID',
 	border		: true,
 	layout		: {
 		type: 'hbox',
@@ -151,7 +149,6 @@ ezScrum.VelocityExportPanel = Ext.extend(Ext.Panel, {
 Ext.reg('VelocityExportPanel', ezScrum.VelocityExportPanel);
 
 ezScrum.VelocityChartPanel = Ext.extend(Ext.Panel, {
-	id			: 'VelocityChartPanel_ID',
 	title		: 'Velocity Chart',
 	border		: false,
 	layout		: 'anchor',
@@ -159,10 +156,12 @@ ezScrum.VelocityChartPanel = Ext.extend(Ext.Panel, {
 		var config = {
 			items: [{
 					xtype	: 'VelocityControlPanel', 
-					ref		: 'VelocityControlPanel_ID'
+					ref		: 'VelocityControlPanel_ID',
+					id		: 'VelocityControlPanel_ID'
 				}, {
 					xtype	: 'VelocityExportPanel',
-					ref		: 'VelocityExportPanel_ID'
+					ref		: 'VelocityExportPanel_ID',
+					id		: 'VelocityExportPanel_ID'
 				}
 			]
 		}
