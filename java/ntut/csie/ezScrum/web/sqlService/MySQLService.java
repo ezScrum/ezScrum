@@ -194,7 +194,12 @@ public class MySQLService {
 	}
 
 	private UserObject getAccount(ResultSet result) throws SQLException {
-		String id = result.getString(AccountEnum.ID);
+		String id;
+		try {
+			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);
+		} catch (SQLException e) {
+			id = result.getString(AccountEnum.ID);
+		}
 		String account = result.getString(AccountEnum.ACCOUNT);
 		String name = result.getString(AccountEnum.NICK_NAME);
 		String password = result.getString(AccountEnum.PASSWORD);

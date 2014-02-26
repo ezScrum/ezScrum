@@ -20,7 +20,6 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.AccessPermissionManager;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -114,6 +113,18 @@ public class ProjectHelper {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getProjectScrumWorkerList(userSession, project);
 	}
+	
+	/**
+	 * 回傳此專案的Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
+	 * ezScrum v1.8
+	 * 
+	 * @param userSession
+	 * @param project
+	 */
+	public List<UserObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectInformation project) {
+		ProjectMapper projectMapper = new ProjectMapper();
+		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
+	}
 
 	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ITSInformation itsInformation, ProjectInformation projectInformation) {
 		StringBuilder sb = new StringBuilder();
@@ -197,11 +208,11 @@ public class ProjectHelper {
 //		return sb.toString();
 	}
 
-	public List<UserObject> getProjectMemberList(IProject project) {
+	public List<UserObject> getProjectMemberList(ProjectInformation project) {
 //	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
 //		return mProjectMapper.getProjectMemberList(userSession, project);
 		// ezScrum v1.8
-		return mProjectMapper.getProjectMemberListForDb(project.getName());
+		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}
 
 	private ProjectInfoForm convertProjectInfo(ProjectInformation projectInformation) {
@@ -229,5 +240,10 @@ public class ProjectHelper {
 		log.info("saveProjectInfoForm.getSourcePaths().length=" + saveProjectInfoForm.getSourcePaths().length);
 
 		return saveProjectInfoForm;
+	}
+	
+	// ezScrum v1.8
+	public ProjectInformation updateProject(ProjectInformation project) {
+		return mProjectMapper.updateProjectForDb(project);
 	}
 }

@@ -3,7 +3,10 @@ package ntut.csie.ezScrum.web.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
+import ntut.csie.ezScrum.web.helper.ProjectHelper;
+import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -29,46 +32,53 @@ public class AjaxModifyProjectAction extends PermissionAction {
 
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("modify Project!");
-		
+
 		// get parameter
-		String ProjectDisplayName = CheckStringValue(request.getParameter("ProjectDisplayName"));
-		String AttachFileSize = CheckStringValue(request.getParameter("AttachFileSize"));
-		String Comment = CheckStringValue(request.getParameter("Commnet"));
-		String ProjectManager = CheckStringValue(request.getParameter("ProjectManager"));
-		
+		String projectDisplayName = CheckStringValue(request.getParameter("ProjectDisplayName"));
+		String attachFileSize = CheckStringValue(request.getParameter("AttachFileSize"));
+		String comment = CheckStringValue(request.getParameter("Commnet"));
+		String projectManager = CheckStringValue(request.getParameter("ProjectManager"));
+
 		// get project info form
 		IProject project = (IProject) SessionManager.getProject(request);
 		ProjectMapper projectMapper = new ProjectMapper();
 		ProjectInfoForm projectform = projectMapper.getProjectInfoForm(project);
-//		ProjectLogic projectLogic = new ProjectLogic();
-//		ProjectInfoForm projectform = projectLogic.getProjectInfoForm(project);
-		
-		projectform.setDisplayName(ProjectDisplayName);
-		projectform.setAttachFileSize(AttachFileSize);
-		projectform.setComment(Comment);
-		projectform.setProjectManager(ProjectManager);
-		
+		//		ProjectLogic projectLogic = new ProjectLogic();
+		//		ProjectInfoForm projectform = projectLogic.getProjectInfoForm(project);
+
+		projectform.setDisplayName(projectDisplayName);
+		projectform.setAttachFileSize(attachFileSize);
+		projectform.setComment(comment);
+		projectform.setProjectManager(projectManager);
+
 		// save back to project info form
-//		ProjectMapper projectMapper = new ProjectMapper();
+		//		ProjectMapper projectMapper = new ProjectMapper();
 		project = projectMapper.updateProject(projectform);
-		
-		
+
 		// 設定 session
 		request.getSession().removeAttribute(project.getName());
 		request.getSession().setAttribute(project.getName(), project);
+
+		// ezScrum v1.8
+		ProjectInformation projectObject = SessionManager.getProjectObject(request);
+		projectObject.setDisplayName(projectDisplayName);
+		projectObject.setAttachFileSize(attachFileSize);
+		projectObject.setComment(comment);
+		projectObject.setManager(projectManager);
+		SessionManager.setProjectObject(request, new ProjectHelper().updateProject(projectObject));
 		
 		return new StringBuilder("success");
 	}
-	
+
 	private String CheckStringValue(String str) {
 		if (str == null)
 			return "";
-		
-		if (str.length() == 0) 
+
+		if (str.length() == 0)
 			return "";
-		
+
 		return str;
 	}
 }

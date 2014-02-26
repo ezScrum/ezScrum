@@ -88,7 +88,7 @@ public class ProjectLogic {
 	 * @param userSession
 	 * @return
 	 */
-	public boolean userIsExistedInProject(IProject project, IUserSession userSession) {
+	public boolean isUserExistInProject(IProject project, IUserSession userSession) {
 		// String adminAccountID = userSession.getAccount().getID();
 		// if( adminAccountID.equalsIgnoreCase("admin")||adminAccountID.equalsIgnoreCase("administrator") ){
 		// return true;
@@ -121,16 +121,17 @@ public class ProjectLogic {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * 比對專案是否存在
+	 * ezScrum v1.8
 	 * 
 	 * @param projectID
 	 * @return
 	 */
-	public boolean projectIsExistedInWorkspace(String projectID) {
+	public boolean isProjectExisted(String projectID) {
 		List<ProjectInformation> projects = this.getAllProjectListForDb();
-
+		
 		for (ProjectInformation project : projects) {
 			String PID = project.getName();
 			if (PID.equals(projectID)) {

@@ -34,6 +34,15 @@ public class ScrumRole {
 
 	public void setisAdmin(Boolean permission) {
 		this.mIsAdmin = permission;
+		setAccessProductBacklog(true);
+		setAccessReleasePlan(true);
+		setAccessRetrospective(true);
+		setAccessSprintBacklog(true);
+		setAccessSprintPlan(true);
+		setAccessTaskBoard(true);
+		setAccessUnplannedItem(true);
+		setEditProject(true);
+		setReadReport(true);
 	}
 
 	public ScrumRole(String projectName, String roleName) {
