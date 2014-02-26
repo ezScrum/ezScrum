@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 
 public abstract class AbstractMantisService {
 
@@ -16,18 +17,34 @@ public abstract class AbstractMantisService {
 	private ITSPrefsStorage m_prefs;
 	
 	protected int getUserID(String userName) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName("mantis_user_table");
+//		valueSet.addLikeCondition("username", userName);
+//		String query = valueSet.getSelectQuery();
+//		// String query = "SELECT `id` FROM `mantis_user_table` WHERE `username`
+//		// LIKE '"
+//		// + userName + "'";
+//		try {
+//			ResultSet result = m_control.executeQuery(query);
+//			int userID = 0;
+//			if (result.next()) {
+//				userID = result.getInt("id");
+//			}
+//			return userID;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return 0;
+		// ezScrum v1.8 還沒改到這裡的過渡期程式碼，因為user都已經轉移到資料庫，這個mantis_user_table應該不能用了，改用account table
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_user_table");
-		valueSet.addLikeCondition("username", userName);
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addTextFieldEqualCondition(AccountEnum.NICK_NAME, userName);
 		String query = valueSet.getSelectQuery();
-		// String query = "SELECT `id` FROM `mantis_user_table` WHERE `username`
-		// LIKE '"
-		// + userName + "'";
 		try {
 			ResultSet result = m_control.executeQuery(query);
 			int userID = 0;
 			if (result.next()) {
-				userID = result.getInt("id");
+				userID = result.getInt(AccountEnum.ID);
 			}
 			return userID;
 		} catch (SQLException e) {
@@ -37,18 +54,35 @@ public abstract class AbstractMantisService {
 	}
 
 	protected String getUserName(int userID) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName("mantis_user_table");
+//		valueSet.addEqualCondition("id", Integer.toString(userID));
+//		String query = valueSet.getSelectQuery();
+//		// String query = "SELECT `username` FROM `mantis_user_table` WHERE `id`
+//		// ="
+//		// + userID;
+//		try {
+//			ResultSet result = m_control.executeQuery(query);
+//			String userName = "";
+//			if (result.next()) {
+//				userName = result.getString("username");
+//			}
+//			return userName;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return "";
+		
+		// ezScrum v1.8 還沒改到這裡的過渡期程式碼，因為user都已經轉移到資料庫，這個mantis_user_table應該不能用了，改用account table
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_user_table");
-		valueSet.addEqualCondition("id", Integer.toString(userID));
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, Integer.toString(userID));
 		String query = valueSet.getSelectQuery();
-		// String query = "SELECT `username` FROM `mantis_user_table` WHERE `id`
-		// ="
-		// + userID;
 		try {
 			ResultSet result = m_control.executeQuery(query);
 			String userName = "";
 			if (result.next()) {
-				userName = result.getString("username");
+				userName = result.getString(AccountEnum.NICK_NAME);
 			}
 			return userName;
 		} catch (SQLException e) {

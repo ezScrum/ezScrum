@@ -86,6 +86,13 @@ public class ProjectMapper {
 		mService.closeConnect();
 		return result;
 	}
+	
+	public ProjectInformation getProjectByPidForDb(String pid) {
+		mService.openConnect();
+		ProjectInformation result = mService.getProjectByPid(pid);
+		mService.closeConnect();
+		return result;
+	}
 
 	public List<UserObject> getProjectMemberListForDb(String id) {
 		// TODO 待project role 完成

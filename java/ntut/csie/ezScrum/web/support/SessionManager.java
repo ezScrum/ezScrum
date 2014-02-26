@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
@@ -82,6 +83,7 @@ public class SessionManager {
 	 * @param request client端傳上來的request
 	 * @time 2012/8/28
 	 */
+	@Deprecated
 	public static final IProject getProject(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		// 拿到request header的URL parameter
@@ -95,7 +97,7 @@ public class SessionManager {
 			 */
 			if (project == null) {
 				// project = ResourceFacade.getProject(projectID);
-				project = (new ProjectMapper()).getProjectByID(projectID);
+				project = new ProjectMapper().getProjectByID(projectID);
 				if (project != null) {
 					session.setAttribute(projectID, project);
 				}
@@ -103,6 +105,51 @@ public class SessionManager {
 			return project;
 		}
 		return null;
+	}
+	
+	/**
+	 * 從session中取得project的instance 如果session中沒有的話，則從底層撈出project資料放置session cache起來
+	 * ezScrum v1.8
+	 * 
+	 * @param projectName
+	 * @author Zam
+	 * @param request client端傳上來的request
+	 * @time 2014/2/24
+	 */
+	public static final ProjectInformation getProjectObject(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		// 拿到request header的URL parameter
+		String projectID = getURLParameter(request, "PID");
+		if (projectID != null) {
+			// 拿session裡的project資料
+			ProjectInformation project = (ProjectInformation) session.getAttribute(projectID + "_new");	// 當IProject完全改完，把new拿掉
+			/**
+			 * 如果session拿不到project的資料，則往DB找
+			 */
+			if (project == null) {
+				project = new ProjectMapper().getProjectByPidForDb(projectID);
+				if (project != null) {
+					session.setAttribute(projectID + "_new", project);	// 當IProject完全改完，把new拿掉
+				}
+			}
+			return project;
+		}
+		return null;
+	}
+	
+	/**
+	 * 從session中取得project的instance 如果session中沒有的話，則從底層撈出project資料放置session cache起來
+	 * ezScrum v1.8
+	 * 
+	 * @param projectName
+	 * @author Zam
+	 * @param request client端傳上來的request
+	 * @time 2014/2/24
+	 */
+	public static final void setProjectObject(HttpServletRequest request, ProjectInformation project) {
+		HttpSession session = request.getSession();
+		session.removeAttribute(project.getName() + "_new");		// 當IProject完全改完，把new拿掉
+		session.setAttribute(project.getName() + "_new", project);	// 當IProject完全改完，把new拿掉
 	}
 
 	/**
@@ -174,6 +221,12 @@ public class SessionManager {
 //		ScrumRole scrumRole = scrumRolesMap.get(project.getName());
 //		return scrumRole;
 		
+		// ezScrum v1.8
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
+		return scrumRole;
+	}
+	
+	public static ScrumRole getScrumRole(HttpServletRequest request, ProjectInformation project, UserObject account) {
 		// ezScrum v1.8
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		return scrumRole;

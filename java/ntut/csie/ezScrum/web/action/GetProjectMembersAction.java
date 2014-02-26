@@ -6,12 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IRole;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +24,8 @@ public class GetProjectMembersAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Project Members in GetProjectMembersAction.java");
-		IProject project = (IProject) SessionManager.getProject(request);
+//		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectInformation project = (ProjectInformation) SessionManager.getProjectObject(request);
 //		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		List<UserObject> accounts = new ProjectHelper().getProjectMemberList(project);
@@ -36,7 +35,8 @@ public class GetProjectMembersAction extends Action {
 		if (accounts != null && accounts.size() > 0) {
 			for (UserObject acc : accounts) {
 				result.append("<Member>");
-				result.append("<ID>").append(acc.getAccount()).append("</ID>");
+				result.append("<ID>").append(acc.getId()).append("</ID>");
+				result.append("<Account>").append(acc.getAccount()).append("</Account>");
 				result.append("<Name>").append(acc.getName()).append("</Name>");
 //				result.append("<Role>").append(splitRole(project, acc.getRoles())).append("</Role>");
 				result.append("<Role>").append(acc.getRoles().get(project.getName()).getScrumRole().getRoleName()).append("</Role>");
