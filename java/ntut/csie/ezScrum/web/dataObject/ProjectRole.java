@@ -18,6 +18,7 @@ public class ProjectRole {
 	public void setProject(ProjectObject mProject) {
 	    this.mProject = mProject;
     }
+	
 	public ScrumRole getScrumRole() {
 	    return mScrumRole;
     }

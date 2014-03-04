@@ -205,12 +205,6 @@ public class MySQLService {
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
 		String enable = result.getString(AccountEnum.ENABLE).equals("1") ? "true" : "false";
-//		boolean isGuest = false;
-//		boolean encryption = false;
-//		IAccount account = new Account(id, name, password, isGuest, encryption);
-//		account.setEmail(email);
-//		account.setEnable(enable);
-//		return account;
 		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
 		return new UserObject(id, account, name, password, email, enable, roles);
 	}
@@ -414,10 +408,10 @@ public class MySQLService {
 		try {
 			StringBuilder query = new StringBuilder();
 			query.append("select * from ").append(ProjectRoleEnum.TABLE_NAME).append(" as pr")
-				 .append(" left join ").append(ProjectEnum.TABLE_NAME).append(" as p on ")
+				 .append(" cross join ").append(ProjectEnum.TABLE_NAME).append(" as p on ")
 				 					   .append(ProjectRoleEnum.PROJECT_ID).append(" = p.").append(ProjectEnum.ID)
-				 .append(" left join ").append(ScrumRoleEnum.TABLE_NAME).append(" as sr on pr.")
-				 					   .append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
+				 .append(" cross join ").append(ScrumRoleEnum.TABLE_NAME).append(" as sr on")
+				 					   .append(" pr.").append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
 				 					   .append(" and pr.").append(ProjectRoleEnum.ROLE).append(" = sr.").append(ScrumRoleEnum.ROLE)
 			 	 .append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(id);
 			ResultSet result = mControl.executeQuery(query.toString());
