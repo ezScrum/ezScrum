@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -34,6 +35,7 @@ public class ShowSprintInformationAction extends Action {
 
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*
@@ -66,7 +68,8 @@ public class ShowSprintInformationAction extends Action {
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintPlanId());
 		request.setAttribute("SprintPlan", plan);
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(userSession, project));
+//		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(userSession, project));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(projectObject.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "
@@ -76,7 +79,7 @@ public class ShowSprintInformationAction extends Action {
 
 		UserObject account = userSession.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
-		if (sr.getAccessSprintBacklog()) {
+		if (sr != null && sr.getAccessSprintBacklog()) {
 			return mapping.findForward("success");
 		} else {
 			return mapping.findForward("GuestOnly");

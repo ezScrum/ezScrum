@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
@@ -72,8 +72,8 @@ public class AccountHelper {
 	/**
 	 * 進行帳號建立的動作, 並且將帳號 Assign Roles, 建立完畢執行儲存檔案
 	 */
-	public UserObject createAccount(UserInformation user, String roles) {
-		UserObject account = mAccountMapper.createAccount(user, roles);
+	public UserObject createAccount(UserInformation user) {
+		UserObject account = mAccountMapper.createAccount(user);
 		return account;
 	}
 
@@ -165,7 +165,7 @@ public class AccountHelper {
 		assignRoleInfo.append("<Roles>");
 		for (Entry<String, ProjectRole> entry : rolesMap.entrySet()) {
 			ScrumRole permission = entry.getValue().getScrumRole();
-			ProjectInformation project = entry.getValue().getProject();
+			ProjectObject project = entry.getValue().getProject();
 			String resource = permission.getProjectName();
 			String operation = permission.getRoleName();
 //			if (resource.equals("system") && (operation.equals("read") || operation.equals("createProject"))) continue;
@@ -180,8 +180,8 @@ public class AccountHelper {
 		
 		// UnAssign Roles
 		ProjectLogic projectLogic = new ProjectLogic();
-		List<ProjectInformation> projects = projectLogic.getAllProjectsForDb();
-		for (ProjectInformation project : projects) {
+		List<ProjectObject> projects = projectLogic.getAllProjectsForDb();
+		for (ProjectObject project : projects) {
 			String resource = project.getName();
 			// 如果project沒有被assigned權限，則代表為unassigned的project
 			if (!assignedProject.contains(resource)) {
@@ -216,8 +216,12 @@ public class AccountHelper {
 //		return account;
 		
 		// ezScrum v1.8
-		mAccountMapper.addRoleToDb(res, id, RoleEnum.valueOf(op));
-		UserObject account = mAccountMapper.getAccountById(id);
+		UserObject account = null;
+		if (op.equals("admin")) {
+			account = mAccountMapper.addRoleToDb(id);
+		} else {
+			account = mAccountMapper.addRoleToDb(res, id, RoleEnum.valueOf(op));
+		}
 		return account;
 	}
 
@@ -240,8 +244,12 @@ public class AccountHelper {
 //		return account;
 		
 		// ezScrum v1.8
-		mAccountMapper.removeRoleToDb(res, id, RoleEnum.valueOf(op));
-		UserObject account = mAccountMapper.getAccountById(id);
+		UserObject account = null;
+		if (op.equals("admin")) {
+			account = mAccountMapper.removeRoleToDb(id);
+		} else {
+			account = mAccountMapper.removeRoleToDb(res, id, RoleEnum.valueOf(op));
+		}
 		return account;
 	}
 

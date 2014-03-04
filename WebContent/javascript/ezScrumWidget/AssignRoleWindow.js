@@ -67,7 +67,8 @@ var AssignRoleManagement_UnAssignRoleCombo = new Ext.form.ComboBox({
 		},
 		'select': function(combo) {
 			// Check system Role
-			if (combo.getValue() == "system") {
+//			if (combo.getValue() == "system") {
+			if (combo.lastSelectionText == "system") {
 				AssignRoleManagement_RoleCombo.setDisabled(false);
 				AssignRoleManagement_RoleCombo.disabled = true;
 				AssignRoleManagement_RoleCombo.originalValue = "admin";

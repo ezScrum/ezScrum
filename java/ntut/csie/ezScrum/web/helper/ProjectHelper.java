@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -45,7 +45,7 @@ public class ProjectHelper {
 		ProjectLogic projectLogic = new ProjectLogic();
 		List<IProject> projects = projectLogic.getAllProjects();
 		// ezScrum v1.8
-		List<ProjectInformation> projectsForDb = projectLogic.getAllProjectsForDb();
+		List<ProjectObject> projectsForDb = projectLogic.getAllProjectsForDb();
 		
 		// get the user and projects permission mapping
 		Map<String, Boolean> map = projectLogic.getProjectPermissionMap(account);
@@ -64,7 +64,7 @@ public class ProjectHelper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Projects>");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		for (ProjectInformation project : projectsForDb) {
+		for (ProjectObject project : projectsForDb) {
 			if (map.get(project.getName()) == Boolean.TRUE) {
 				sb.append("<Project>");
 				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getName())).append("</ID>");
@@ -121,12 +121,12 @@ public class ProjectHelper {
 	 * @param userSession
 	 * @param project
 	 */
-	public List<UserObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectInformation project) {
+	public List<UserObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
 	}
 
-	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ITSInformation itsInformation, ProjectInformation projectInformation) {
+	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ITSInformation itsInformation, ProjectObject projectInformation) {
 		StringBuilder sb = new StringBuilder();
 		ProjectMapper projectMapper = new ProjectMapper();
 //		try {
@@ -208,14 +208,14 @@ public class ProjectHelper {
 //		return sb.toString();
 	}
 
-	public List<UserObject> getProjectMemberList(ProjectInformation project) {
+	public List<UserObject> getProjectMemberList(ProjectObject project) {
 //	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
 //		return mProjectMapper.getProjectMemberList(userSession, project);
 		// ezScrum v1.8
 		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}
 
-	private ProjectInfoForm convertProjectInfo(ProjectInformation projectInformation) {
+	private ProjectInfoForm convertProjectInfo(ProjectObject projectInformation) {
 		String name = projectInformation.getName();
 		String displayName = projectInformation.getDisplayName();
 		String comment = projectInformation.getComment();
@@ -243,7 +243,7 @@ public class ProjectHelper {
 	}
 	
 	// ezScrum v1.8
-	public ProjectInformation updateProject(ProjectInformation project) {
+	public ProjectObject updateProject(ProjectObject project) {
 		return mProjectMapper.updateProjectForDb(project);
 	}
 }

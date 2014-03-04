@@ -14,7 +14,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
@@ -248,7 +248,7 @@ public class MySQLService {
 	 * -------------------------------------------
 	 */
 	
-	public boolean createProject(ProjectInformation project) {
+	public boolean createProject(ProjectObject project) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.PID, project.getName());
@@ -272,7 +272,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public boolean updateProject(ProjectInformation project) {
+	public boolean updateProject(ProjectObject project) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, project.getName());
@@ -285,13 +285,13 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public List<ProjectInformation> getProjectList() {
+	public List<ProjectObject> getProjectList() {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectEnum.TABLE_NAME);
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
-			List<ProjectInformation> list = new ArrayList<ProjectInformation>();
+			List<ProjectObject> list = new ArrayList<ProjectObject>();
 			if (result.next()) {
 				do {
 					list.add(getProject(result));
@@ -306,11 +306,11 @@ public class MySQLService {
 		}
 	}
 	
-	public ProjectInformation getProjectById(String id) {
+	public ProjectObject getProjectById(String id) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectEnum.TABLE_NAME);
-			valueSet.addTextFieldEqualCondition(ProjectEnum.ID, id);
+			valueSet.addEqualCondition(ProjectEnum.ID, id);
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			if (result.first()) {
@@ -324,7 +324,7 @@ public class MySQLService {
 		}
 	}
 	
-	public ProjectInformation getProjectByPid(String pid) {
+	public ProjectObject getProjectByPid(String pid) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectEnum.TABLE_NAME);
@@ -342,7 +342,7 @@ public class MySQLService {
 		}
 	}
 	
-	private ProjectInformation getProject(ResultSet result) throws SQLException {
+	private ProjectObject getProject(ResultSet result) throws SQLException {
 		String id = result.getString(ProjectEnum.ID);
 		String pid = result.getString(ProjectEnum.PID);
 		String name = result.getString(ProjectEnum.NAME);
@@ -350,7 +350,7 @@ public class MySQLService {
 		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
 		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
 		long createDate = result.getLong(ProjectEnum.CREATE_TIME);
-		return new ProjectInformation(id, pid, name, comment, productOwner, maxSize, createDate);
+		return new ProjectObject(id, pid, name, comment, productOwner, maxSize, createDate);
 	}
 	
 	/**
@@ -383,10 +383,10 @@ public class MySQLService {
 	
 	public List<UserObject> getProjectMemberList(String id) {
 		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
+			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
 			valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, id);
-			valueSet.addLeftJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
+			valueSet.addCrossJoinMultiCondition(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID, AccountEnum.ENABLE, "1");
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			List<UserObject> list = new ArrayList<UserObject>();
@@ -436,6 +436,27 @@ public class MySQLService {
 		}
 	}
 	
+	private ProjectRole getProjectWithScrumRole(ResultSet result) throws SQLException {
+		String id = result.getString(ProjectRoleEnum.PROJECT_ID);
+		String pid = result.getString(ProjectEnum.PID);
+		String name = result.getString(ProjectEnum.NAME);
+		String comment = result.getString(ProjectEnum.COMMENT);
+		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
+		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
+		ProjectObject project = new ProjectObject(id, pid, name, comment, productOwner, maxSize, 0);
+		
+		RoleEnum role = RoleEnum.values()[result.getInt(ProjectRoleEnum.ROLE)];
+		ScrumRole scrumRole = getScrumRole(pid, role.name(), result);
+
+		return new ProjectRole(project, scrumRole);
+    }
+	
+	/**
+	 * -------------------------------------------
+	 * System Table Operation
+	 * -------------------------------------------
+	 */
+	
 	public ProjectRole getSystemRole(String id) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
@@ -443,7 +464,7 @@ public class MySQLService {
 			valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, id);
 			ResultSet result = mControl.executeQuery(valueSet.getSelectQuery());
 			if (result.next()) {
-				ProjectInformation project = new ProjectInformation("0", "system", "system", "system", "admin", "0", 0);
+				ProjectObject project = new ProjectObject("0", "system", "system", "system", "admin", "0", 0);
 				ScrumRole scrumRole = new ScrumRole("system", "admin");
 				scrumRole.setisAdmin(true);
 				return new ProjectRole(project, scrumRole);
@@ -456,30 +477,23 @@ public class MySQLService {
 		}
 	}
 	
-	private ProjectRole getProjectWithScrumRole(ResultSet result) throws SQLException {
-		String id = result.getString(ProjectRoleEnum.PROJECT_ID);
-		String pid = result.getString(ProjectEnum.PID);
-		String name = result.getString(ProjectEnum.NAME);
-		String comment = result.getString(ProjectEnum.COMMENT);
-		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
-		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
-		ProjectInformation project = new ProjectInformation(id, pid, name, comment, productOwner, maxSize, 0);
-		
-		RoleEnum role = RoleEnum.values()[result.getInt(ProjectRoleEnum.ROLE)];
-		ScrumRole scrumRole = new ScrumRole(name, role.name());
-		scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
-		scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
-		scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
-		scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
-		scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
-		scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-		scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
-		scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
-		scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+	public boolean createSystemRole(String id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SystemEnum.TABLE_NAME);
+		valueSet.addInsertValue(SystemEnum.ACCOUNT_ID, id);
+		String query = valueSet.getInsertQuery();
+		return mControl.executeUpdate(query);
+	}
 
-		return new ProjectRole(project, scrumRole);
-    }
-
+	public boolean deleteSystemRole(String id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SystemEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, id);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	
 	/**
 	 * -------------------------------------------
 	 * Scrum Role Table Operation
@@ -506,25 +520,72 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
+	public boolean updateScrumRole(String projectId, RoleEnum role, ScrumRole scrumRole) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ScrumRoleEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(ScrumRoleEnum.ROLE, String.valueOf(role.ordinal()));
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getReadReport() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		String query = valueSet.getUpdateQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	public ScrumRole getScrumRole(String id, String projectId, RoleEnum role) {
+		try {
+			MySQLQuerySet valueSet = new MySQLQuerySet();
+			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
+			valueSet.addEqualCondition(ScrumRoleEnum.PROJECT_ID, id);
+			valueSet.addEqualCondition(ScrumRoleEnum.ROLE, String.valueOf(role.ordinal()));
+			String query = valueSet.getSelectQuery();
+			ResultSet result = mControl.executeQuery(query);
+			if (result.first()) {
+				return getScrumRole(projectId, role.name(), result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ScrumRole getScrumRole(String projectId, String role, ResultSet result) throws SQLException {
+		ScrumRole scrumRole = new ScrumRole(projectId, role);
+		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
+		scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		return scrumRole;
+	}
+	
 	public List<UserObject> getProjectWorkerList(String id) {
 		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
+			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
 			valueSet.addEqualCondition(ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.PROJECT_ID, id);
 			valueSet.addEqualCondition(ScrumRoleEnum.ACCESS_TASKBOARD, "1");
-			valueSet.addLeftJoin(ProjectRoleEnum.TABLE_NAME, ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.ROLE, ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.ROLE);
-			valueSet.addLeftJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
+			valueSet.addCrossJoin(ProjectRoleEnum.TABLE_NAME, ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.ROLE, ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.ROLE);
+			valueSet.addCrossJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			List<UserObject> list = new ArrayList<UserObject>();
-			if (result.first()) {
-				while (result.next()) {
-					list.add(getAccount(result));
-				}
-				return list;
-			} else {
-				return null;
+			while (result.next()) {
+				list.add(getAccount(result));
 			}
+			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

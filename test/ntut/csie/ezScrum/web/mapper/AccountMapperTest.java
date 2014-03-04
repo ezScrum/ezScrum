@@ -3,13 +3,12 @@ package ntut.csie.ezScrum.web.mapper;
 import java.util.List;
 
 import junit.framework.TestCase;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IActor;
@@ -55,42 +54,39 @@ public class AccountMapperTest extends TestCase {
 		String password = "account robot";
 		String email = "account@mail.com";
 		String enable = "true";
-		String roles = "user";
 		
 		UserInformation user = new UserInformation(id, name, password, email, enable);
-		IAccount account = mAccountMapper.createAccount(user, roles);
+		UserObject account = mAccountMapper.createAccount(user);
 		
-		assertEquals(id, account.getID());
+		assertEquals(id, account.getAccount());
 		assertEquals(name, account.getName());
 		assertEquals(email, account.getEmail());
 		assertEquals(enable, account.getEnable());
-		assertEquals(roles, account.getRoles()[0].getRoleId());
 	}
 	
 	public void testUpdateAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		String id = createAccount.getAccountList().get(0).getId();
+		String account = createAccount.getAccount_ID(1);
 		String name = "account robot";
 		String password = "account robot";
 		String email = "update@mail.com";
 		String enable = "true";
-		String roles = "user";
 		
-		UserInformation user = new UserInformation(id, name, password, email, enable);
-		IAccount account = mAccountMapper.updateAccount(user);
+		UserInformation user = new UserInformation(id, account, name, password, email, enable);
+		UserObject userObject = mAccountMapper.updateAccount(user);
 		
-		assertEquals(id, account.getID());
-		assertEquals(name, account.getName());
-		assertEquals(email, account.getEmail());
-		assertEquals(enable, account.getEnable());
-		assertEquals(roles, account.getRoles()[0].getRoleId());
+		assertEquals(account, userObject.getAccount());
+		assertEquals(name, userObject.getName());
+		assertEquals(email, userObject.getEmail());
+		assertEquals(enable, userObject.getEnable());
 	}
 	
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		String id = createAccount.getAccountList().get(0).getId();
 		
 		boolean result = mAccountMapper.deleteAccount(id);
 		
@@ -100,22 +96,21 @@ public class AccountMapperTest extends TestCase {
 	public void testGetAccountById() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		String id = createAccount.getAccountList().get(0).getId();
 
-		IAccount account = mAccountMapper.getAccount(id);
+		UserObject account = mAccountMapper.getAccountById(id);
 		
-		assertEquals(id, account.getID());
+		assertEquals(id, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
 		assertEquals(createAccount.getAccount_RealName(1), account.getName());
 		assertEquals("true", account.getEnable());
-		assertEquals("user", account.getRoles()[0].getRoleId());
 	}
 	
 	public void testAccountList() throws InterruptedException {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<IActor> accountList = mAccountMapper.getAccountList();
+		List<UserObject> accountList = mAccountMapper.getAccountList();
 		
 		assertEquals(2, accountList.size());
 	}
@@ -125,11 +120,11 @@ public class AccountMapperTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
-		IAccount account = null;
+		UserObject account = null;
 		
         account = mAccountMapper.confirmAccount(id, password);
         
-        assertEquals(id, account.getID());
+        assertEquals(id, account.getAccount());
 	}
 	
 	public void testIsAccountExist() {

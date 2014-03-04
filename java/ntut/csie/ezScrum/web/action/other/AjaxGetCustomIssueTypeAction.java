@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.service.CustomIssueType;
 import ntut.csie.ezScrum.service.IssueBacklog;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -23,7 +23,7 @@ public class AjaxGetCustomIssueTypeAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		//		IProject project = (IProject) request.getSession().getAttribute("Project");
-		ProjectInformation project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		IssueBacklog backlog = new IssueBacklog(project, session);

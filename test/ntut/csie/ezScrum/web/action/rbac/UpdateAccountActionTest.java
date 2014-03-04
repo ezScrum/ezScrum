@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.IAccount;
@@ -79,17 +80,19 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	String projectId = this.CP.getProjectList().get(0).getName();
     	// User Information
     	String postfix = "_update";
-    	
-    	String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
-    	String userPw = this.CA.getAccount_PWD(1) + postfix;
+    	UserObject account = CA.getAccountList().get(0);
+    	String userId = account.getId();		// 取得第一筆 Account ID
+    	String userAccount = account.getAccount();		// 取得第一筆 Account ID
+    	String userPw = account.getPassword() + postfix;
     	String userMail = "modify@test.com";
-    	String userName = this.CA.getAccount_RealName(1) + postfix;
+    	String userName = account.getName() + postfix;
     	String userEnable = "false";	// default is true
     	String userIsEdit = "true";	// false 代表是新增帳號
     	// ================ set initial data =======================    	
     	
     	// ================== set parameter info ==================== 	    
     	addRequestParameter("id", userId);
+    	addRequestParameter("account", userAccount);
     	addRequestParameter("passwd", userPw);
     	addRequestParameter("mail", userMail);
     	addRequestParameter("name", userName);
@@ -110,14 +113,14 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	IAccount account = (new AccountMapper()).getAccount(userId);
+    	account = (new AccountMapper()).getAccount(userAccount);
 		
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));	
-		assertEquals(account.getEmail(), userMail);		
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);		
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());	
+		assertEquals(userMail, account.getEmail());		
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());		
     }		
     
 }

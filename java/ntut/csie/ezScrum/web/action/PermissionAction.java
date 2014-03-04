@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -37,7 +37,7 @@ public abstract class PermissionAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		
-		ProjectInformation project = (ProjectInformation) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		UserObject account = userSession.getAccount();
 		sr = SessionManager.getScrumRole(request, project, account);

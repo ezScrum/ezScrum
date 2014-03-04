@@ -17,7 +17,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
@@ -49,7 +49,7 @@ public class ProjectMapper {
 	/**
 	 * new mapper function for ezScrum v1.8
 	 */
-	public ProjectInformation createProjectForDb(ProjectInformation project) {
+	public ProjectObject createProjectForDb(ProjectObject project) {
 		mService.openConnect();
 		mService.createProject(project);
 		project = mService.getProjectByPid(project.getName());
@@ -64,7 +64,7 @@ public class ProjectMapper {
 		return result;
 	}
 
-	public ProjectInformation updateProjectForDb(ProjectInformation project) {
+	public ProjectObject updateProjectForDb(ProjectObject project) {
 		mService.openConnect();
 		mService.updateProject(project);
 		project = mService.getProjectById(project.getId());
@@ -72,30 +72,29 @@ public class ProjectMapper {
 		return project;
 	}
 
-	public List<ProjectInformation> getProjectListForDb() {
+	public List<ProjectObject> getProjectListForDb() {
 		mService.openConnect();
-		List<ProjectInformation> result = mService.getProjectList();
+		List<ProjectObject> result = mService.getProjectList();
 		mService.closeConnect();
-		if (result == null) result = new ArrayList<ProjectInformation>();
+		if (result == null) result = new ArrayList<ProjectObject>();
 		return result;
 	}
 
-	public ProjectInformation getProjectByIdForDb(String id) {
+	public ProjectObject getProjectByIdForDb(String id) {
 		mService.openConnect();
-		ProjectInformation result = mService.getProjectById(id);
+		ProjectObject result = mService.getProjectById(id);
 		mService.closeConnect();
 		return result;
 	}
 	
-	public ProjectInformation getProjectByPidForDb(String pid) {
+	public ProjectObject getProjectByPidForDb(String pid) {
 		mService.openConnect();
-		ProjectInformation result = mService.getProjectByPid(pid);
+		ProjectObject result = mService.getProjectByPid(pid);
 		mService.closeConnect();
 		return result;
 	}
 
 	public List<UserObject> getProjectMemberListForDb(String id) {
-		// TODO 待project role 完成
 		mService.openConnect();
 		List<UserObject> result = mService.getProjectMemberList(id);
 		mService.closeConnect();
@@ -103,10 +102,20 @@ public class ProjectMapper {
 	}
 
 	public List<UserObject> getProjectScrumWorkerListForDb(String id) {
-		// TODO 待project role 完成
 		mService.openConnect();
 		List<UserObject> result = mService.getProjectWorkerList(id);
 		mService.closeConnect();
+		return result;
+	}
+	
+	public List<String> getProjectScrumWorkerList(String id) {
+		mService.openConnect();
+		List<UserObject> userList = mService.getProjectWorkerList(id);
+		mService.closeConnect();
+		List<String> result = new ArrayList<String>();
+		for (UserObject user : userList) {
+			result.add(user.getAccount());
+		}
 		return result;
 	}
 

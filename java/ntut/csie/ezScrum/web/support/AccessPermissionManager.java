@@ -42,7 +42,7 @@ public class AccessPermissionManager {
         //check create project permission
         UserObject account = userSession.getAccount();
         HashMap<String, ProjectRole> roleMap = account.getRoles();
-        ScrumRole role = roleMap.get("system").getScrumRole();
+        ProjectRole role = roleMap.get("system");
 //        AccountMapper accountMapper = new AccountMapper();
 //        IPermission permCreateProject = accountMapper.getPermission("system_createProject");
 //        IPermission permAdmin = accountMapper.getPermission("system", "admin");

@@ -3,8 +3,11 @@ package ntut.csie.ezScrum.web.mapper;
 import java.io.File;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.RoleEnum;
+import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 
@@ -12,8 +15,12 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 public class ScrumRoleMapper {
-
 //	private Map<String, ScrumRole> scrumRoles;
+	private MySQLService mService;
+	
+	public ScrumRoleMapper() {
+		mService = new MySQLService(new ITSPrefsStorage());
+	}
 	
 	/**
 	 * update permission by ScrumRole 
@@ -97,51 +104,66 @@ public class ScrumRoleMapper {
 		XmlFileUtil.SaveXmlFile(path, doc); 
 	}
 	
-	
-	// return 某個專案角色的權限
-	public ScrumRole getPermission(String resource, String rolename) {
-		String workspaceRoot = System.getProperty(ISystemPropertyEnum.WORKSPACE_PATH);
-		String path = workspaceRoot + File.separator + resource + File.separator + "_metadata" + File.separator + "ScrumRole.xml";
-		String defaultpath = workspaceRoot + File.separator + "_metadata" + File.separator + "ScrumRole.xml";
-		Document doc = XmlFileUtil.LoadXmlFile(path);
-		
-		if (doc == null) {
-			// load default file
-			doc = XmlFileUtil.LoadXmlFile(defaultpath);
-		}
-		Element root = doc.getRootElement();
-		Element role = root.getChild(rolename);
-		List<Element> role_Permissions = role.getChildren(ScrumEnum.SCRUMROLE_FILE_TAG_PERMISSION); 
-		ScrumRole s_Role = new ScrumRole(resource, rolename);
-		setAttribute(s_Role, role_Permissions);
-		return s_Role;
+	// ezScrum v1.8
+	public void updateScrumRoleForDb(String projectId, ScrumRole scrumRole) {
+		update(scrumRole);	// 過度期，更改Rolebase.xml, DB全數改為即可刪掉
+		mService.openConnect();
+		mService.updateScrumRole(projectId, RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
+		mService.closeConnect();
 	}
 	
-	// set ScrumRole permission attribute 
-	private void setAttribute(ScrumRole role, List<Element> attributes){
-		for (Element attribute: attributes) {
-			String value = attribute.getValue();
-			
-			if(value.equals(ScrumEnum.ACCESS_PRODUCTBACKLOG))
-				role.setAccessProductBacklog(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_RELEASEPLAN))
-				role.setAccessReleasePlan(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_SPRINTPLAN))
-				role.setAccessSprintPlan(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_SPRINTBACKLOG))
-				role.setAccessSprintBacklog(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_TASKBOARD))
-				role.setAccessTaskBoard(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_UNPLANNED))
-				role.setAccessUnplannedItem(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_RETROSPECTIVE))
-				role.setAccessRetrospective(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_REPORT))
-				role.setReadReport(Boolean.TRUE);
-			else if(value.equals(ScrumEnum.ACCESS_EDITPROJECT))
-				role.setEditProject(Boolean.TRUE);
-		}
+	// ezScrum v1.8
+	public ScrumRole getScrumRoleForDb(String id, String projectId, String roleName) {
+		mService.openConnect();
+		ScrumRole scrumRole = mService.getScrumRole(id, projectId, RoleEnum.valueOf(roleName));
+		mService.closeConnect();
+		return scrumRole;
 	}
+	
+//	// return 某個專案角色的權限
+//	public ScrumRole getPermission(String resource, String rolename) {
+//		String workspaceRoot = System.getProperty(ISystemPropertyEnum.WORKSPACE_PATH);
+//		String path = workspaceRoot + File.separator + resource + File.separator + "_metadata" + File.separator + "ScrumRole.xml";
+//		String defaultpath = workspaceRoot + File.separator + "_metadata" + File.separator + "ScrumRole.xml";
+//		Document doc = XmlFileUtil.LoadXmlFile(path);
+//		
+//		if (doc == null) {
+//			// load default file
+//			doc = XmlFileUtil.LoadXmlFile(defaultpath);
+//		}
+//		Element root = doc.getRootElement();
+//		Element role = root.getChild(rolename);
+//		List<Element> role_Permissions = role.getChildren(ScrumEnum.SCRUMROLE_FILE_TAG_PERMISSION); 
+//		ScrumRole s_Role = new ScrumRole(resource, rolename);
+//		setAttribute(s_Role, role_Permissions);
+//		return s_Role;
+//	}
+//	
+//	// set ScrumRole permission attribute 
+//	private void setAttribute(ScrumRole role, List<Element> attributes){
+//		for (Element attribute: attributes) {
+//			String value = attribute.getValue();
+//			
+//			if(value.equals(ScrumEnum.ACCESS_PRODUCTBACKLOG))
+//				role.setAccessProductBacklog(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_RELEASEPLAN))
+//				role.setAccessReleasePlan(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_SPRINTPLAN))
+//				role.setAccessSprintPlan(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_SPRINTBACKLOG))
+//				role.setAccessSprintBacklog(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_TASKBOARD))
+//				role.setAccessTaskBoard(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_UNPLANNED))
+//				role.setAccessUnplannedItem(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_RETROSPECTIVE))
+//				role.setAccessRetrospective(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_REPORT))
+//				role.setReadReport(Boolean.TRUE);
+//			else if(value.equals(ScrumEnum.ACCESS_EDITPROJECT))
+//				role.setEditProject(Boolean.TRUE);
+//		}
+//	}
 	
 /*	public ScrumRole getScrumRole(IProject project, IAccount account){
 		synchronized(this) {

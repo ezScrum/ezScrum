@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -25,7 +26,7 @@ public class AccountHelperTest extends TestCase {
 	private ProjectMapper projectMapper = null;
 	private ezScrumInfoConfig config = new ezScrumInfoConfig();
 	private IUserSession userSession = null;
-	private IProject project = null;
+	private ProjectObject project = null;
 	
 	public AccountHelperTest(String testMethod) {
         super(testMethod);
@@ -43,7 +44,7 @@ public class AccountHelperTest extends TestCase {
 		//this.helper = new MantisAccountMapper(this.CP.getProjectList().get(0), config.getUserSession());
 		this.projectMapper = new ProjectMapper();
 		this.userSession = config.getUserSession();
-		this.project = this.CP.getProjectList().get(0);
+		this.project = this.CP.getProjectObjectList().get(0);
 		
 		super.setUp();
 		
@@ -78,8 +79,8 @@ public class AccountHelperTest extends TestCase {
 //    	IAccount ac_ScrumMaster = ca.getAccountList().get(2);
 //    	IAccount ac_ScrumTeam = ca.getAccountList().get(3);
     	
-    	List<String> accountIDList = this.projectMapper.getProjectScrumWorkerList(this.userSession, this.project);
-    	assertEquals(1, accountIDList.size());		// 多一個是因為空白
+    	List<String> accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	assertEquals(0, accountIDList.size());
     	
     	AddUserToRole autr = new AddUserToRole(this.CP, ca);
     	autr.setAccountIndex(0);
@@ -91,25 +92,25 @@ public class AccountHelperTest extends TestCase {
     	autr.setAccountIndex(3);
     	autr.exe_ST();
     	
-    	IProject p = this.CP.getProjectList().get(0);
-    	updatePermission(p.getName(), "Stakeholder", false);	// 將 Stakeholder 角色設定成不能存取 TaskBoard
-    	updatePermission(p.getName(), "ProductOwner", false);	// 將 PO 角色設定成不能存取 TaskBoard
+    	ProjectObject p = this.CP.getProjectObjectList().get(0);
+    	updatePermission(p, "Stakeholder", false);	// 將 Stakeholder 角色設定成不能存取 TaskBoard
+    	updatePermission(p, "ProductOwner", false);	// 將 PO 角色設定成不能存取 TaskBoard
     	
-    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.userSession, this.project);
-    	assertEquals(3, accountIDList.size());		// 可以領取工作的角色剩下兩個，多一個是因為多一個空白
+    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	assertEquals(2, accountIDList.size());		// 可以領取工作的角色剩下兩個
     	assertTrue(accountIDList.contains(ca.getAccount_ID(3)));
     	assertTrue(accountIDList.contains(ca.getAccount_ID(4)));
     	
     	
-    	updatePermission(p.getName(), "ProductOwner", true);	// 將 PO 角色設定成能存取 TaskBoard
-    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.userSession, this.project);
-    	assertEquals(4, accountIDList.size());		// 可以領取工作的角色剩下四個，多一個是因為多一個空白
+    	updatePermission(p, "ProductOwner", true);	// 將 PO 角色設定成能存取 TaskBoard
+    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	assertEquals(3, accountIDList.size());		// 可以領取工作的角色剩下四個
     	assertTrue(accountIDList.contains(ca.getAccount_ID(2)));
     	assertTrue(accountIDList.contains(ca.getAccount_ID(3)));
     	assertTrue(accountIDList.contains(ca.getAccount_ID(4)));
     }
     
-	private void updatePermission(String res, String role, boolean accessTaskBoard) {
+	private void updatePermission(ProjectObject project, String role, boolean accessTaskBoard) {
 		List<String> permissionsList = new LinkedList<String>();
 		permissionsList.add(ScrumEnum.ACCESS_PRODUCTBACKLOG);
 		permissionsList.add(ScrumEnum.ACCESS_RELEASEPLAN);
@@ -125,7 +126,7 @@ public class AccountHelperTest extends TestCase {
 		permissionsList.add(ScrumEnum.ACCESS_REPORT);
 		permissionsList.add(ScrumEnum.ACCESS_EDITPROJECT);
 		
-		ScrumRole scrumrole = new ScrumRole(res, role);
+		ScrumRole scrumrole = new ScrumRole(project.getName(), role);
 		scrumrole = setAttribute(scrumrole, permissionsList);
 //		ScrumRoleManager manager = new ScrumRoleManager();
 //		try {
@@ -136,7 +137,7 @@ public class AccountHelperTest extends TestCase {
 //		}
 		ScrumRoleMapper scrumRoleMapper = new ScrumRoleMapper();
 		try {
-			scrumRoleMapper.update(scrumrole);
+			scrumRoleMapper.updateScrumRoleForDb(project.getId(), scrumrole);
 		} catch (Exception e) {
 			System.out.println("class: AccountHelperTest, method: updatePermission, exception: " + e.toString());
 			e.printStackTrace();

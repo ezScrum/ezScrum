@@ -1,18 +1,13 @@
 package ntut.csie.ezScrum.test.CreateData;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.control.MantisAccountManager;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IAccountManager;
-import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -20,8 +15,9 @@ public class AddUserToRole {
 	private CreateProject CP;
 	private CreateAccount CA;
 
-	private IAccount theAccount = null;
+	private UserObject theAccount = null;
 	private IProject theProject = null;
+	private ProjectObject projectObject = null;
 
 	private ezScrumInfoConfig config = new ezScrumInfoConfig();
 
@@ -31,6 +27,7 @@ public class AddUserToRole {
 
 		this.theAccount = this.CA.getAccountList().get(0);
 		this.theProject = this.CP.getProjectList().get(0);
+		this.projectObject = this.CP.getProjectObjectList().get(0);
 	}
 
 	/**
@@ -57,28 +54,35 @@ public class AddUserToRole {
 	public IProject getNowProject() {
 		return this.theProject;
 	}
+	
+	/**
+	 * 取得目前指定的 Project
+	 */
+	public ProjectObject getNowProjectObject() {
+		return this.projectObject;
+	}
 
 	/**
 	 * 取得目前指定的 Account
 	 */
-	public IAccount getNoeAccount() {
+	public UserObject getNowAccount() {
 		return this.theAccount;
 	}
 
-	/**
-	 * 將目前指定的 Account 加入 Admin 角色
-	 */
-	public void exe_System() {
-		String res = ScrumEnum.SYSTEM;
-		String op = ScrumEnum.SCRUMROLE_ADMIN;
-		updateAccount(res, op);
-	}
+//	/**
+//	 * 將目前指定的 Account 加入 Admin 角色
+//	 */
+//	public void exe_System() {
+//		String res = ScrumEnum.SYSTEM;
+//		String op = ScrumEnum.SCRUMROLE_ADMIN;
+//		updateAccount(res, op);
+//	}
 
 	/**
 	 * 將目前指定的 Account 加入 Product Owner 角色
 	 */
 	public void exe_PO() {
-		String res = this.theProject.getName();
+		String res = this.projectObject.getId();
 		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 		updateAccount(res, op);
 	}
@@ -87,7 +91,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Scrum Team 角色
 	 */
 	public void exe_ST() {
-		String res = this.theProject.getName();
+		String res = this.projectObject.getId();
 		String op = ScrumEnum.SCRUMROLE_SCRUMTEAM;
 		updateAccount(res, op);
 	}
@@ -96,7 +100,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Scrum Master 角色
 	 */
 	public void exe_SM() {
-		String res = this.theProject.getName();
+		String res = this.projectObject.getId();
 		String op = ScrumEnum.SCRUMROLE_SCRUMMASTER;
 		updateAccount(res, op);
 	}
@@ -105,7 +109,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Stakeholder 角色
 	 */
 	public void exe_Sh() {
-		String res = this.theProject.getName();
+		String res = this.projectObject.getId();
 		String op = ScrumEnum.SCRUMROLE_STAKEHOLDER;
 		updateAccount(res, op);
 	}
@@ -114,7 +118,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Guest 角色
 	 */
 	public void exe_Guest() {
-		String res = this.theProject.getName();
+		String res = this.projectObject.getId();
 		String op = ScrumEnum.SCRUMROLE_GUEST;
 		updateAccount(res, op);
 	}
@@ -123,10 +127,10 @@ public class AddUserToRole {
 	 * 將目前 Account 指定為系統管理員
 	 */
 	public void setNowAccountIsSystem() {
-		IAccountManager am = AccountFactory.getManager();
-		IAccount account = am.getAccount(ScrumEnum.SCRUMROLE_ADMIN);
-
-		this.theAccount = account;
+//		IAccountManager am = AccountFactory.getManager();
+//		UserObject account = am.getAccount(ScrumEnum.SCRUMROLE_ADMIN);
+		
+		this.theAccount = new AccountMapper().getAccount("admin");;
 	}
 
 	/**
@@ -134,9 +138,9 @@ public class AddUserToRole {
 	 */
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
-		IAccount account = CA.getAccountList().get(index);
+		UserObject account = CA.getAccountList().get(index);
 		AccountHelper helper = new AccountHelper(config.getUserSession());
-		UserInformation user = new UserInformation(account.getID(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
+		UserInformation user = new UserInformation(account.getId(), account.getAccount(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
 		helper.updateAccount(user);
 	}
 
@@ -144,7 +148,7 @@ public class AddUserToRole {
 		// ezScrum v1.8
 		AccountHelper helper = new AccountHelper(config.getUserSession());
 		try {
-			helper.assignRole_add(theAccount.getID(), res, role);
+			helper.assignRole_add(theAccount.getId(), res, role);
 		} catch (LogonException e) {
 			e.printStackTrace();
 			System.out.println("class: AddUserToRole, method: updateAccount, Logon_exception: " + e.toString());

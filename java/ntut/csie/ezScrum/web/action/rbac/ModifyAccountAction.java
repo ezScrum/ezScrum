@@ -60,7 +60,7 @@ public class ModifyAccountAction extends Action {
 			}
 		} else {
 			// 新增帳號
-			newAccount = ah.createAccount(user, roles);
+			newAccount = ah.createAccount(user);
 		}
 
 		StringBuilder result = new StringBuilder();

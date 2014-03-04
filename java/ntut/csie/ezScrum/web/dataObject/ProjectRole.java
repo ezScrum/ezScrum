@@ -3,19 +3,19 @@ package ntut.csie.ezScrum.web.dataObject;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 
 public class ProjectRole {
-	private ProjectInformation mProject;
+	private ProjectObject mProject;
 	private ScrumRole mScrumRole;
 	
-	public ProjectRole(ProjectInformation project, ScrumRole scrumRole) {
+	public ProjectRole(ProjectObject project, ScrumRole scrumRole) {
 		setProject(project);
 		setScrumRole(scrumRole);
 	}
 
-	public ProjectInformation getProject() {
+	public ProjectObject getProject() {
 	    return mProject;
     }
 
-	public void setProject(ProjectInformation mProject) {
+	public void setProject(ProjectObject mProject) {
 	    this.mProject = mProject;
     }
 	public ScrumRole getScrumRole() {
