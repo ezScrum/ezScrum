@@ -109,4 +109,18 @@ public class ProjectTest extends TestCase {
 				
 		assertEquals(id, result.getName());
 	}
+	
+	public void testGetProjectByPid() {
+		String id = "testProject";
+		String name = "testProject";
+		String comment = "comment";
+		String productOwner = "PO";
+		String attachFileSize = "2";
+		
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
+		mService.createProject(project);
+		ProjectObject result = mService.getProjectByPid(id);	// only one project
+		
+		assertEquals(id, result.getName());
+	}
 }
