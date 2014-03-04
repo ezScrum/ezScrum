@@ -2,22 +2,22 @@ package ntut.csie.ezScrum.mysql;
 
 import java.util.List;
 
+import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
-import ntut.csie.jcis.account.core.IAccount;
-import junit.framework.TestCase;
 
 public class ScrumRoleTest extends TestCase {
 	private MySQLService mService;
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
-	private ProjectInformation mProject;
+	private ProjectObject mProject;
 	
 	public ScrumRoleTest(String testMethod) {
 		super(testMethod);
@@ -32,7 +32,7 @@ public class ScrumRoleTest extends TestCase {
 		/**
 		 * set up a project and a user
 		 */
-		ProjectInformation project = new ProjectInformation("name", "name", "comment", "PO_YC", "2");
+		ProjectObject project = new ProjectObject("name", "name", "comment", "PO_YC", "2");
 		mService.createProject(project);
 		mProject = mService.getProjectByPid(project.getName());
 		UserInformation user = new UserInformation("account", "user name", "password", "email", "true");
@@ -67,8 +67,8 @@ public class ScrumRoleTest extends TestCase {
 			mService.createScrumRole(mProject.getId(), role, scrumRole);
 		}
 		
-		List<IAccount> userList = mService.getProjectWorkerList(mProject.getId());
+		List<UserObject> userList = mService.getProjectWorkerList(mProject.getId());
 		
-		assertEquals(RoleEnum.values().length, userList.size());
+		assertEquals(1, userList.size());
 	}
 }

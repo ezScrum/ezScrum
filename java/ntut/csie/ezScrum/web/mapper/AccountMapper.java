@@ -40,7 +40,7 @@ public class AccountMapper {
 		mService = new MySQLService(mPrefs);
 	}
 
-	public UserObject createAccount(UserInformation user, String roles) {
+	public UserObject createAccount(UserInformation user) {
 		mService.openConnect();
 		mService.createAccount(user);
 		UserObject account = mService.getAccount(user.getAccount());
@@ -135,36 +135,46 @@ public class AccountMapper {
 		createRoleToITS(p);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 
-	/**
-	 * TODO: 將外部檔案改成DB
-	 */
 	public void removeRole(IUserSession session, IAccount account, String id, List<String> roleList, String res) throws Exception {
 		removeRoleToITS(mUserSession, account, id, roleList, res);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 	
-	public boolean removeRoleToDb(String projectId, String accountId, RoleEnum role) {
+	public UserObject removeRoleToDb(String projectId, String accountId, RoleEnum role) {
 		mService.openConnect();
-		boolean result = mService.deleteProjectRole(projectId, accountId, role);
+		mService.deleteProjectRole(projectId, accountId, role);
+		UserObject result = mService.getAccountById(accountId);
+		mService.closeConnect();
+		return result;
+	}
+	
+	public UserObject removeRoleToDb(String accountId) {
+		mService.openConnect();
+		mService.deleteSystemRole(accountId);
+		UserObject result = mService.getAccountById(accountId);
 		mService.closeConnect();
 		return result;
 	}
 
-	/**
-	 * TODO: 將外部檔案改成DB
-	 */
 	public void addRole(IUserSession session, IAccount account, List<String> roleList, String id, String res, String op) throws Exception {
 		addRoleToITS(mUserSession, account, roleList, id, res, op);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 	
-	public boolean addRoleToDb(String projectId, String accountId, RoleEnum role) {
-		System.out.println("projectId = " + projectId);
-		System.out.println("accountId = " + accountId);
+	public UserObject addRoleToDb(String projectId, String accountId, RoleEnum role) {
 		mService.openConnect();
-		boolean result = mService.createProjectRole(projectId, accountId, role);
+		mService.createProjectRole(projectId, accountId, role);
+		UserObject result = mService.getAccountById(accountId);
 		mService.closeConnect();
 		return result;
 	}
 
+	public UserObject addRoleToDb(String accountId) {
+		mService.openConnect();
+		mService.createSystemRole(accountId);
+		UserObject result = mService.getAccountById(accountId);
+		mService.closeConnect();
+		return result;
+	}
+	
 	/**
 	 * 若帳號可建立且ID format正確 則回傳true
 	 */

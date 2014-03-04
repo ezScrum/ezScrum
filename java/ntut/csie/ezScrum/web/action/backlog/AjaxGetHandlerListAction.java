@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -37,14 +37,14 @@ public class AjaxGetHandlerListAction extends PermissionAction {
 		log.info("Get Handler List in the Summary Page.");
 
 		// get project from session or DB
-		ProjectInformation project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		List<UserObject> users = (new ProjectHelper()).getProjectScrumWorkerListForDb(userSession, project);
 
 		StringBuilder result = new StringBuilder();
 		result.append("<Handlers><Result>success</Result>");
 
-		for (int i = 1, size = users.size(); i < size; i++) {
+		for (int i = 0, size = users.size(); i < size; i++) {
 			result.append("<Handler>")
 			      .append("<Name>").append(users.get(i).getName()).append("</Name>")
 			      .append("</Handler>");

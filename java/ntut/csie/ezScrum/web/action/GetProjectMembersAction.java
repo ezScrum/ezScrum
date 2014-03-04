@@ -6,7 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -25,7 +25,7 @@ public class GetProjectMembersAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Project Members in GetProjectMembersAction.java");
 //		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectInformation project = (ProjectInformation) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 //		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		List<UserObject> accounts = new ProjectHelper().getProjectMemberList(project);

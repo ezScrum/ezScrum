@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class ProjectTest extends TestCase {
@@ -44,7 +44,7 @@ public class ProjectTest extends TestCase {
 		String productOwner = "PO";
 		String attachFileSize = "2";
 		
-		ProjectInformation project = new ProjectInformation(id, name, comment, productOwner, attachFileSize);
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
 		boolean result = mService.createProject(project);
 		
 		assertTrue(result);
@@ -57,7 +57,7 @@ public class ProjectTest extends TestCase {
 		String productOwner = "PO";
 		String attachFileSize = "2";
 		
-		ProjectInformation project = new ProjectInformation(id, name, comment, productOwner, attachFileSize);
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
 		mService.createProject(project);
 		boolean result = mService.deleteProject(id);
 				
@@ -72,9 +72,9 @@ public class ProjectTest extends TestCase {
 		String productOwner = "PO";
 		String attachFileSize = "2";
 		
-		ProjectInformation project = new ProjectInformation(id, name, comment, productOwner, attachFileSize);
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
 		mService.createProject(project);
-		project = new ProjectInformation(id, name, updateComment, productOwner, attachFileSize);
+		project = new ProjectObject(id, name, updateComment, productOwner, attachFileSize);
 		boolean result = mService.updateProject(project);
 				
 		assertTrue(result);
@@ -88,10 +88,10 @@ public class ProjectTest extends TestCase {
 		String productOwner = "PO";
 		String attachFileSize = "2";
 		
-		ProjectInformation project = new ProjectInformation(id, name, comment, productOwner, attachFileSize);
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
 		mService.createProject(project);
-		project = new ProjectInformation(id, name, updateComment, productOwner, attachFileSize);
-		List<ProjectInformation> result = mService.getProjectList();
+		project = new ProjectObject(id, name, updateComment, productOwner, attachFileSize);
+		List<ProjectObject> result = mService.getProjectList();
 				
 		assertEquals(1, result.size());
 	}
@@ -103,9 +103,9 @@ public class ProjectTest extends TestCase {
 		String productOwner = "PO";
 		String attachFileSize = "2";
 		
-		ProjectInformation project = new ProjectInformation(id, name, comment, productOwner, attachFileSize);
+		ProjectObject project = new ProjectObject(id, name, comment, productOwner, attachFileSize);
 		mService.createProject(project);
-		ProjectInformation result = mService.getProjectById(id);
+		ProjectObject result = mService.getProjectById("1");	// only one project
 				
 		assertEquals(id, result.getName());
 	}

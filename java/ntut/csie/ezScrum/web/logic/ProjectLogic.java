@@ -27,7 +27,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -56,7 +56,7 @@ public class ProjectLogic {
 	}
 
 	// ezScrum v1.8
-	private List<ProjectInformation> getAllProjectListForDb() {
+	private List<ProjectObject> getAllProjectListForDb() {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getProjectListForDb();
 	}
@@ -75,9 +75,9 @@ public class ProjectLogic {
 		return list;
 	}
 
-	public List<ProjectInformation> getAllProjectsForDb() {
+	public List<ProjectObject> getAllProjectsForDb() {
 		// ezScrum v1.8
-		List<ProjectInformation> list = this.getAllProjectListForDb();
+		List<ProjectObject> list = this.getAllProjectListForDb();
 		return list;
 	}
 
@@ -130,9 +130,9 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public boolean isProjectExisted(String projectID) {
-		List<ProjectInformation> projects = this.getAllProjectListForDb();
+		List<ProjectObject> projects = this.getAllProjectListForDb();
 		
-		for (ProjectInformation project : projects) {
+		for (ProjectObject project : projects) {
 			String PID = project.getName();
 			if (PID.equals(projectID)) {
 				// System.out.println( PID );
@@ -208,13 +208,13 @@ public class ProjectLogic {
 //		return map;
 		// ezScrum v1.8
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
-		List<ProjectInformation> list = this.getAllProjectListForDb();
+		List<ProjectObject> list = this.getAllProjectListForDb();
 		
 		// check 是否可以讀取專案
-		Iterator<ProjectInformation> ir = list.iterator();
+		Iterator<ProjectObject> ir = list.iterator();
 
 		while (ir.hasNext()) {
-			ProjectInformation project = (ProjectInformation) ir.next();
+			ProjectObject project = (ProjectObject) ir.next();
 			ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 			if (scrumRole != null) {
 				map.put(project.getName(), Boolean.TRUE);
@@ -231,10 +231,10 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public IProject[] getAllCustomProjects() {
-		List<ProjectInformation> CustomProjects = new ArrayList<ProjectInformation>();	// 可以讓使用者回報 issue 的專案
-		List<ProjectInformation> projects = getAllProjectListForDb();
+		List<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
+		List<ProjectObject> projects = getAllProjectListForDb();
 
-		for (ProjectInformation P : projects) {
+		for (ProjectObject P : projects) {
 //			IssueBacklog IB = new IssueBacklog(P, new UserSession(new Account("guest")));
 			IssueBacklog IB = new IssueBacklog(P, new UserSession(null));
 

@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.web.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.DateUtil;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -31,7 +31,7 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Project Description. In Project Summary Page.");
-		ProjectInformation project = (ProjectInformation) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		ProjectUI pui = new ProjectUI(project);
 		return new StringBuilder((new Gson()).toJson(pui));
 	}
@@ -45,7 +45,7 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 		private String AttachFileSize = "";
 		private String ProjectCreateDate = "";
 
-		public ProjectUI(ProjectInformation project) {
+		public ProjectUI(ProjectObject project) {
 			if (project != null) {
 				this.ID = project.getId();
 				this.ProjectName = project.getName();

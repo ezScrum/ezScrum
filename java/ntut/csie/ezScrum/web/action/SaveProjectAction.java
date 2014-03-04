@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -70,7 +70,7 @@ public class SaveProjectAction extends Action {
 
 		//	將參數物件化
 		ITSInformation itsInformation = new ITSInformation(serverURL, serverPath, dbAccount, dbPassword, projectName, dbType, dbName);
-		ProjectInformation projectInformation = new ProjectInformation(pName, pDisplayName, pComment, pManager, pAttachFileSize);
+		ProjectObject projectInformation = new ProjectObject(pName, pDisplayName, pComment, pManager, pAttachFileSize);
 
 		//	透過project helper得到response text
 		ProjectHelper projectHelper = new ProjectHelper();

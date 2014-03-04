@@ -38,7 +38,7 @@ public abstract class AbstractMantisService {
 		// ezScrum v1.8 還沒改到這裡的過渡期程式碼，因為user都已經轉移到資料庫，這個mantis_user_table應該不能用了，改用account table
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(AccountEnum.NICK_NAME, userName);
+		valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, userName);
 		String query = valueSet.getSelectQuery();
 		try {
 			ResultSet result = m_control.executeQuery(query);
@@ -82,7 +82,7 @@ public abstract class AbstractMantisService {
 			ResultSet result = m_control.executeQuery(query);
 			String userName = "";
 			if (result.next()) {
-				userName = result.getString(AccountEnum.NICK_NAME);
+				userName = result.getString(AccountEnum.ACCOUNT);
 			}
 			return userName;
 		} catch (SQLException e) {

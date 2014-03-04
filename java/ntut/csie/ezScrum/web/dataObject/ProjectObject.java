@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-public class ProjectInformation {
+public class ProjectObject {
 	// 取得所有專案的資訊
 	private String id;
 	private String name = "";
@@ -10,7 +10,7 @@ public class ProjectInformation {
 	private String attachFileSize = "";
 	private long createDate;
 
-	public ProjectInformation(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
+	public ProjectObject(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
 		setId(id);
 		setName(name);
 		setDisplayName(displayName);
@@ -20,13 +20,16 @@ public class ProjectInformation {
 		setCreateDate(createDate);
 	}
 
-	public ProjectInformation(String name, String displayName, String comment, String manager, String attachFileSize) {
+	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
 		setName(name);
 		setDisplayName(displayName);
 		setComment(comment);
 		setManager(manager);
 		setAttachFileSize(attachFileSize);
 	}
+
+	public ProjectObject() {
+    }
 
 	public void setName(String name) {
 		this.name = name;

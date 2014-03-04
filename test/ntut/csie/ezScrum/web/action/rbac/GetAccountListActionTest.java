@@ -10,10 +10,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IActor;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -101,13 +99,13 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		List<IActor> accountList = this.accountMapper.getAccountList();
+		List<UserObject> accountList = this.accountMapper.getAccountList();
 		assertEquals(2, accountList.size());	// + admin
 
-		IAccount account = this.accountMapper.getAccount(userId);
+		UserObject account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
+		assertEquals(account.getAccount(), userId);
 		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));
 		assertEquals(account.getEmail(), userMail);
 		assertEquals(account.getName(), userName);
@@ -135,15 +133,15 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		List<IActor> accountList = this.accountMapper.getAccountList();
+		List<UserObject> accountList = this.accountMapper.getAccountList();
 
 		assertEquals(this.AccountCount + 1, accountList.size());	// + admin
 
 		for (int i = 1; i < this.AccountCount + 1; i++) {
-			IAccount account = this.accountMapper.getAccount(CA.getAccount_ID(i));
+			UserObject account = this.accountMapper.getAccount(CA.getAccount_ID(i));
 
 			assertNotNull(account);
-			assertEquals(account.getID(), this.CA.getAccount_ID(i));
+			assertEquals(account.getAccount(), this.CA.getAccount_ID(i));
 			assertEquals(account.getPassword(), (new TestTool()).getMd5(this.CA.getAccount_PWD(i)));
 			assertEquals(account.getEmail(), this.CA.getAccount_Mail(i));
 			assertEquals(account.getName(), this.CA.getAccount_RealName(i));

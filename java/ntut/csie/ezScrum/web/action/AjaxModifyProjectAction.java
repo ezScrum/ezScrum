@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.web.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.dataObject.ProjectInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -62,7 +62,7 @@ public class AjaxModifyProjectAction extends PermissionAction {
 		request.getSession().setAttribute(project.getName(), project);
 
 		// ezScrum v1.8
-		ProjectInformation projectObject = SessionManager.getProjectObject(request);
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 		projectObject.setDisplayName(projectDisplayName);
 		projectObject.setAttachFileSize(attachFileSize);
 		projectObject.setComment(comment);

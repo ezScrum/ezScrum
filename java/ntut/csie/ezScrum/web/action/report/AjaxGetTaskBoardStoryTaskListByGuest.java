@@ -27,41 +27,41 @@ import com.google.gson.Gson;
 
 public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	private static Log log = LogFactory.getLog(AjaxGetTaskBoardStoryTaskListByGuest.class);
-	
+
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	        HttpServletRequest request, HttpServletResponse response) {
 
 		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sprintID = request.getParameter("sprintID");
-		
-//		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper(sprintID);
-////		SprintBacklog backlog = null;
-////		
-////		if (sprintID == null || sprintID.equals("")) {
-////			backlog = new SprintBacklog(project, userSession);
-////		} else {
-////			backlog = new SprintBacklog(project, userSession, Integer.parseInt(sprintID));
-////		}
-//
-//		List<IIssue> stories = backlog.getStoriesByImp();
-		
+
+		//		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper(sprintID);
+		////		SprintBacklog backlog = null;
+		////		
+		////		if (sprintID == null || sprintID.equals("")) {
+		////			backlog = new SprintBacklog(project, userSession);
+		////		} else {
+		////			backlog = new SprintBacklog(project, userSession, Integer.parseInt(sprintID));
+		////		}
+		//
+		//		List<IIssue> stories = backlog.getStoriesByImp();
+
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
-		
+
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
-		
+
 		for (IIssue story : stories) {
 			storyList.add(new TaskBoard_Story(story));
 		}
-		
+
 		Gson gson = new Gson();
-		
-		HashMap<String,Object> jsonMap = new HashMap<String,Object>();
+
+		HashMap<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("success", "true");
-		jsonMap.put("Total",""+stories.size());
-		jsonMap.put("Stories",storyList);
-	
+		jsonMap.put("Total", "" + stories.size());
+		jsonMap.put("Stories", storyList);
+
 		try {
 			response.setContentType("text/html; charset=utf-8");
 			response.getWriter().write(gson.toJson(jsonMap));
@@ -69,10 +69,10 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	// if partner of assignto is equals usename, return it
 	public boolean checkParent(String name, String partners, String assignto) {
 		String[] parents = partners.split(";");
@@ -80,10 +80,10 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			if (name.compareTo(p) == 0)
 				return true;
 		}
-		
+
 		if (name.compareTo(assignto) == 0)
 			return true;
-		
+
 		return false;
 	}
 
@@ -117,15 +117,15 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
 			Release = story.getReleaseID();
 			Sprint = story.getSprintID();
-			
+
 			Link = story.getIssueLink();
 			AttachFileList = getAttachFilePath(story, story.getAttachFile());
-			
-			if(!AttachFileList.isEmpty())
+
+			if (!AttachFileList.isEmpty())
 				Attach = "true";
 			else
 				Attach = "false";
-			
+
 		}
 	}
 
@@ -141,20 +141,20 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			FilePath = path;
 			UploadDate = date;
 		}
-		
-		public Date getUploadDate(){
+
+		public Date getUploadDate() {
 			return UploadDate;
 		}
 	}
-	
+
 	// 嚙諄抬蕭嚙緻IIssue嚙踝蕭AttachFile嚙踝蕭Path
 	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, List<IssueAttachFile> list) {
-		
+
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
 		for (IssueAttachFile file : list) {
 			array.add(new TaskBoard_AttachFile(file.getAttachFileId(), file.getFilename(), "fileDownload.do?projectName="
-					+ story.getProjectName() + "&fileID=" + file.getAttachFileId() + "&fileName=" + file.getFilename()
-					+ "&fileType=" + file.getFileType(), new Date(file.getDate_added())));
+			        + story.getProjectName() + "&fileID=" + file.getAttachFileId() + "&fileName=" + file.getFilename()
+			        + "&fileType=" + file.getFileType(), new Date(file.getDate_added())));
 		}
 		return array;
 	}

@@ -7,10 +7,8 @@ import java.util.Properties;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
-import ntut.csie.jcis.account.core.IActor;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 public class ezScrumInfoConfig {
 
@@ -94,9 +92,10 @@ public class ezScrumInfoConfig {
 	 * return mockup IUserSession
 	 */
 	public IUserSession getUserSession() {
-		IAccount theAccount = null;
-		IAccountManager manager = AccountFactory.getManager();
-		theAccount = manager.getAccount(USER_ID);
+//		IAccount theAccount = null;
+//		IAccountManager manager = AccountFactory.getManager();
+//		theAccount = manager.getAccount(USER_ID);
+		UserObject theAccount = new AccountMapper().getAccount(USER_ID);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}
