@@ -302,6 +302,8 @@ public class ReleasePlanHelper {
     	try {
     		ArrayList<ISprintPlanDesc> allSprints = new ArrayList<ISprintPlanDesc>();
     		for (IReleasePlanDesc release : ListReleaseDescs) {
+    			if (release == null)
+    				break;
 	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
 	    			allSprints.add(sprint);
 	    		}
@@ -459,7 +461,7 @@ public class ReleasePlanHelper {
 
 	// sort story information by importance
 	private IIssue[] sortStory(IIssue[] issues) {
-		List<IIssue> list = new ArrayList();
+		List<IIssue> list = new ArrayList<IIssue>();
 	
 		for (IIssue issue : issues) {
 			int index = 0;
