@@ -17,32 +17,34 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
+public class AjaxGetStoryCountActionTest extends MockStrutsTestCase {
 	private ezScrumInfoConfig config = new ezScrumInfoConfig();
-	private String actionPath = "/ajaxGetVelocity";
+	private String actionPath = "/ajaxGetStoryCount";
 	private IUserSession userSession = null;
 	private CreateProject CP;
 	private CreateRelease CR;
 	private CreateSprint CS;
 	private IProject project;
 
-	public AjaxGetVelocityActionTest(String testMethod) {
+	public AjaxGetStoryCountActionTest(String testMethod) {
 		super(testMethod);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
+		
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		CP = new CreateProject(1);
+		CP.exeCreate(); // 新增一測試專案
+		project = CP.getProjectList().get(0);
 
 		userSession = config.getUserSession();
 
-		super.setUp();
-
 		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));
+
 		// 設定讀取的
 		// struts-config
 		// 檔案路徑
@@ -53,35 +55,36 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
+		super.tearDown();
+		
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
+		CopyProject copyProject = new CopyProject(CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
 
-		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
 		copyProject = null;
-		this.CP = null;
-		this.CR = null;
-		this.CS = null;
+		CP = null;
+		CR = null;
+		CS = null;
 		userSession = null;
-
-		super.tearDown();
 	}
 
 	/**
 	 * project中沒有任何release plan的時候
 	 */
-	public void testAjaxGetVelocityAction_1() {
+	public void testAjaxGetStoryCountAction_1() {
 		// ================ set initial data =======================
-		String projectName = this.project.getName();
+		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
+		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession",config.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		addRequestParameter("releases", "");
 
@@ -93,14 +96,14 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 
 		/**
-		 * {"Sprints":[],"Average":""}
+		 * {"Sprints":[],"TotalSprintCount":0,"TotalStoryCount":0}
 		 */
 		// assert response text
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("{")
-							.append("\"Sprints\":[],")
-							.append("\"Average\":\"\"")
-							.append("}");
+		expectedResponseTest.append("{").append("\"Sprints\":[],")
+				            .append("\"TotalSprintCount\":0,")
+				            .append("\"TotalStoryCount\":0")
+				            .append("}");
 		String actualResponseTest = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseTest);
 	}
@@ -108,17 +111,18 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 	/**
 	 * project中有1個release plan的時候, 但releaseID不存在
 	 */
-	public void testAjaxGetVelocityAction_2() {
+	public void testAjaxGetStoryCountAction_2() {
 		// ================ set initial data =======================
-		this.CR = new CreateRelease(1, this.CP);
-		this.CR.exe();
-		String projectName = this.project.getName();
+		CR = new CreateRelease(1, CP);
+		CR.exe();
+
+		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession",config.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		addRequestParameter("releases", "3");
+		addRequestParameter("releases", "2");
 
 		// ================ 執行 action ===============================
 		actionPerform();
@@ -128,35 +132,41 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 
 		/**
-		 * {"Sprints":[],"Average":""}
+		 * {"Sprints":[],"TotalSprintCount":0,"TotalStoryCount":0}
 		 */
 		// assert response text
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("{")
-							.append("\"Sprints\":[],")
-							.append("\"Average\":\"\"")
-							.append("}");
+		                    .append("\"Sprints\":[],")
+                            .append("\"TotalSprintCount\":0,")
+                            .append("\"TotalStoryCount\":0")
+                            .append("}");
 		String actualResponseTest = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseTest);
 	}
-
+	
 	/**
 	 * project中有1個release plan的時候
 	 */
-	public void testAjaxGetVelocityAction_3() throws Exception {
+	public void testAjaxGetStoryCountAction_3() throws Exception {
 		// ================ set initial data =======================
-		this.CR = new CreateRelease(1, this.CP);
-		this.CR.exe();
-		CS = new CreateSprint(2, CP); 				// 新增2筆 sprints
+		CR = new CreateRelease(1, this.CP);
+		CR.exe();
+		CS = new CreateSprint(2, CP); // 新增2筆 sprints
 		CS.exe();
+		
 		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, CS, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		ASS.exe(); // 每個Sprint中新增2筆Story
+		
 		// 讓所有story都done
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, CS.getSprintIDList().get(0));
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(userSession, project);
+		
 		IStory[] stories = productBacklogLogic.getStories();
 		for (int i = 0; i < stories.length; i++) {
-			sprintBacklogLogic.doneIssue(stories[i].getStoryId(), stories[i].getSummary(), stories[i].getNotes(), "", stories[i].getActualHour());
+			sprintBacklogLogic.doneIssue(stories[i].getStoryId(),
+					stories[i].getSummary(), stories[i].getNotes(), "",
+					stories[i].getActualHour());
 		}
 
 		String projectName = this.project.getName();
@@ -173,25 +183,27 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		// ================ assert ==================================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-
+		
 		/**
-		 * {"Sprints":[
-		 * 		{"ID":"1","Name":"Sprint1","Velocity":2},
-		 * 		{"ID":"2","Name":"Sprint2","Velocity":2}],
-		 *  "Average":2}
+		 * {"Sprints":[{"ID":"1","Name":"Sprint1","StoryDoneCount":2,"StoryRemainingCount":2,"StoryIdealCount":2},
+		 *             {"ID":"2","Name":"Sprint2","StoryDoneCount":2,"StoryRemainingCount":0,"StoryIdealCount":0}
+		 *             ],"TotalSprintCount":2,"TotalStoryCount":4}
 		 */
 		// assert response text
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("{")
 							.append("\"Sprints\":[{")
-								.append("\"ID\":\"1\",")
-								.append("\"Name\":\"Sprint1\",")
-								.append("\"Velocity\":2},")
-								.append("{\"ID\":\"2\",")
-								.append("\"Name\":\"Sprint2\",")
-								.append("\"Velocity\":2}],")
-							.append("\"Average\":2}");
+							.append("\"ID\":\"1\",")
+							.append("\"Name\":\"Sprint1\",")
+							.append("\"StoryDoneCount\":2,\"StoryRemainingCount\":2,\"StoryIdealCount\":2},")
+							.append("{\"ID\":\"2\",")
+							.append("\"Name\":\"Sprint2\",")
+							.append("\"StoryDoneCount\":2,\"StoryRemainingCount\":0,\"StoryIdealCount\":0}")
+							.append("],\"TotalSprintCount\":2,")
+                            .append("\"TotalStoryCount\":4")
+                            .append("}");
 		String actualResponseTest = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseTest);
 	}
+
 }
