@@ -25,7 +25,6 @@ ezScrum.StoryCountReleasePanel = Ext.extend(Ext.Panel, {
 				for(var i=0; i<obj.releases.length; i++) {
 					obj.add({
 						xtype		: 'checkbox',
-						id			: 'checkbox_id_'+i,
 						boxLabel	: obj.releases[i].Name,
 						releaseId	: obj.releases[i].ID,
 						listeners	: {
