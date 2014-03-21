@@ -15,8 +15,6 @@ public class ShowVelocityChartAction extends Action{
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    request.setAttribute("releases", request.getParameter("releases"));
-	    System.out.println("\n\n\n\nsdfdfdfdfdsdfasdfasdfasdfasdfasdf\n\n\n\n");
-	    log.debug("\n\n\n\nsdfdfdfdfdsdfasdfasdfasdfasdfasdf\n\n\n\n");
 	    return super.execute(mapping, form, request, response);
 	}
 }

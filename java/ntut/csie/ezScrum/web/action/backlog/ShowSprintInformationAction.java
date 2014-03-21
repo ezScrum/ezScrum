@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
 import java.text.NumberFormat;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +28,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ShowSprintInformationAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -53,6 +57,13 @@ public class ShowSprintInformationAction extends Action {
 			return mapping.findForward("error");
 		}
 		List<IIssue> issues = sprintBacklogLogic.getStories();
+		
+		Collections.sort(issues, new Comparator<IIssue>() {
+			@Override
+			public int compare(IIssue issue1, IIssue issue2) {
+				return Integer.parseInt(issue2.getEstimated()) - Integer.parseInt(issue1.getEstimated());
+			}
+		});
 
 		request.setAttribute("SprintID", backlog.getSprintPlanId());
 		request.setAttribute("Stories", issues);
