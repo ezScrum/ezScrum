@@ -18,8 +18,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
@@ -133,8 +131,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
 		String actualActors = String.valueOf(request.getAttribute("Actors"));
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
-		@SuppressWarnings("unchecked")
-		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
+		List<?> actualIIssueList = (List<?>) request.getAttribute("Stories");
 		
 		TestTool testTool = new TestTool();
 		Date startDate = createSprint.Today;
@@ -330,5 +327,68 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		 */
 		verifyForward("success");
 		verifyForwardPath("/Pages/ShowSprintInformation.jsp");
+    }
+    
+    /**
+     * Spring Information有依據重要性排序
+     * @throws Exception 
+     */
+    public void testShowInformationAction_6() throws Exception{
+		CreateSprint createSprint = new CreateSprint(1 , this.CP); // 建立一個Sprint
+		createSprint.exe();
+		
+		int accountCount = 1; 
+		CreateAccount createAccount = new CreateAccount(accountCount); // 建立帳號
+		createAccount.exe();
+		AddUserToRole addUserToRole = new AddUserToRole(this.CP, createAccount); 
+		addUserToRole.exe_PO();
+		
+		// 分別建立兩筆 Estimation不同的story
+    	AddStoryToSprint addStoryToSprint1 = new AddStoryToSprint(1, 13, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+    	addStoryToSprint1.exe();
+    	
+    	AddStoryToSprint addStoryToSprint2 = new AddStoryToSprint(1, 8, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+    	addStoryToSprint2.exe();
+    	
+    	AddStoryToSprint addStoryToSprint3 = new AddStoryToSprint(1, 21, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+    	addStoryToSprint3.exe();
+    	
+    	
+    	
+    	// ================ set request info ========================
+    	String expectedSprintID = "1";
+		String projectName = this.project.getName();
+		request.setHeader("Referer", "?PID=" + projectName);
+		addRequestParameter("sprintID", expectedSprintID);
+		
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", config.getUserSession());
+		
+		// ================ 執行 action ======================
+		actionPerform();
+		
+		// ================ assert ========================
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+		/*
+		 * in struts-config.xml
+		 * <forward name="success" path="sprintInformation.show"/>
+		 * 因此根據sprintInformation.show必須到tiles-defs.xml找到要轉發的頁面
+		 * in tiles-defs.xml
+		 * <definition name="sprintInformation.show" path="/Pages/ShowSprintInformation.jsp"></definition>
+		 */
+		verifyForward("success");
+		verifyForwardPath("/Pages/ShowSprintInformation.jsp");
+
+        List<?> actualIIssueList = ((List<?>) request.getAttribute("Stories")); // 撈出所有story
+		
+		int storyPoint1 = Integer.parseInt(((IIssue)actualIIssueList.get(0)).getEstimated());
+		int storyPoint2 = Integer.parseInt(((IIssue)actualIIssueList.get(1)).getEstimated());
+		int storyPoint3 = Integer.parseInt(((IIssue)actualIIssueList.get(2)).getEstimated());
+		
+		assertTrue(storyPoint1 >= storyPoint2);
+		assertTrue(storyPoint2 >= storyPoint3);
+		assertTrue(storyPoint1 >= storyPoint3);
+		
     }
 }
