@@ -95,9 +95,6 @@ public class InitialSQL {
 		sqlIns.add("TRUNCATE `eztrack_typefield`");
 		sqlIns.add("TRUNCATE `eztrack_typefieldvalue`");
 
-		// clean ezKanban
-		sqlIns.add("TRUNCATE `ezkanban_statusorder`");
-
 		// clean ezScrum
 		sqlIns.add("TRUNCATE `ezscrum_story_relation`;");
 		sqlIns.add("TRUNCATE `ezscrum_tag_relation`;");

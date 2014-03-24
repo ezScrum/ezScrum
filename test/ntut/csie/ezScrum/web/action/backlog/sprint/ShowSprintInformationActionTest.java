@@ -382,13 +382,13 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
         List<?> actualIIssueList = ((List<?>) request.getAttribute("Stories")); // 撈出所有story
 		
-		int storyPoint1 = Integer.parseInt(((IIssue)actualIIssueList.get(0)).getEstimated());
-		int storyPoint2 = Integer.parseInt(((IIssue)actualIIssueList.get(1)).getEstimated());
-		int storyPoint3 = Integer.parseInt(((IIssue)actualIIssueList.get(2)).getEstimated());
+		int importancePoint1 = Integer.parseInt(((IIssue)actualIIssueList.get(0)).getImportance());
+		int importancePoint2 = Integer.parseInt(((IIssue)actualIIssueList.get(1)).getImportance());
+		int importancePoint3 = Integer.parseInt(((IIssue)actualIIssueList.get(2)).getImportance());
 		
-		assertTrue(storyPoint1 >= storyPoint2);
-		assertTrue(storyPoint2 >= storyPoint3);
-		assertTrue(storyPoint1 >= storyPoint3);
+		assertTrue(importancePoint1 >= importancePoint2);
+		assertTrue(importancePoint2 >= importancePoint3);
+		assertTrue(importancePoint1 >= importancePoint3);
 		
     }
 }
