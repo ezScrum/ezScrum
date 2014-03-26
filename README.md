@@ -18,3 +18,5 @@ Edit Config File First
 #### 4. Manually create table :####
 ##### File location: ..\ezScrum\WebContent\Workspace\_metadata\initail_bk.sql
 ##### Take this sql file all sql statement copy to your My SQL to create table#####
+
+test
