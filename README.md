@@ -17,4 +17,4 @@ Edit Config File First
 ##### serverURL, serverAccount, serverpwd, DB_name, Appserv_UseID, Appserv_pwd#####
 #### 4. Manually create table :####
 ##### File location: ..\ezScrum\WebContent\Workspace\_metadata\initail_bk.sql
-##### Take this sql file all sql statement copy to your My SQL to create table
+##### Take this sql file all sql statement copy to your My SQL to create table#####
