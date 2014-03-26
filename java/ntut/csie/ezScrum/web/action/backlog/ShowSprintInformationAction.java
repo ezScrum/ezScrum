@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -49,11 +50,13 @@ public class ShowSprintInformationAction extends Action {
 		String sprintID = request.getParameter("sprintID");
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession);
 		if (backlog == null) {
 			return mapping.findForward("error");
 		}
-		List<IIssue> issues = sprintBacklogLogic.getStories();
-
+		
+		List<IIssue> issues = sprintBacklogHelper.getStoriesByImportance();
+		
 		request.setAttribute("SprintID", backlog.getSprintPlanId());
 		request.setAttribute("Stories", issues);
 
