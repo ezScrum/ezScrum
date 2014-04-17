@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
@@ -38,9 +39,40 @@ public class ReleasePlanWebServiceController {
 								"method: getReleasePlan, " +
 								"exception: " + e.toString());
 			e.printStackTrace();
+			Response.status(410).entity("Parameter error.").build();
 		} catch (IOException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
 								"method: decode, " +
+								"exception: " + e.toString());
+			e.printStackTrace();
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 取得專案底下所有ReleasePlan Get
+	 * http://IP:8080/ezScrum/web-service/{projectID}/release-plan/all?userName={userName}&password={password}
+	 **/
+	@GET
+	@Path("all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAllReleasePlan(@QueryParam("userName") String username,
+								    @QueryParam("password") String password,
+								    @PathParam("projectID") String projectID) {
+		String jsonString = "";
+		try {
+			InformationDecoder decodeAccount = new InformationDecoder();
+			decodeAccount.decode(username, password, projectID);
+			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUserName(), decodeAccount.getDecodePwd(), projectID);
+			jsonString = mReleasePlanWebService.getAllReleasePlan();
+		} catch (LogonException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+								"method: getAllReleasePlan, " +
+								"exception: " + e.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+								"method: getAllReleasePlan, " +
 								"exception: " + e.toString());
 			e.printStackTrace();
 		}

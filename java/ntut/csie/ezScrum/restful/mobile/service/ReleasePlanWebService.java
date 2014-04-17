@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
 import ntut.csie.ezScrum.web.dataObject.ReleasePlanObject;
@@ -44,6 +45,16 @@ public class ReleasePlanWebService extends ProjectWebService {
 	}
 	
 	/**
+	 * 取得專案底下所有的Release plan
+	 * @return
+	 */
+	public String getAllReleasePlan(){
+		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		return new Gson().toJson(releaseDescs);
+	}
+	
+	
+	/**
 	 * 取得 ReleasePlan
 	 * 
 	 * @param releaseId
@@ -58,6 +69,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 		List<SprintPlanObject> sprintPlanList = releasePlan.getSprintPlan();
 		return new Gson().toJson(getReleaseDocObject(releasePlan, sprintPlanList, stories, taskMap, totalStoryPoints));
 	}
+	
 
 	/**
 	 * 將 IIssue 都轉換成 StoryObject, TaskObject 並輸出成ReleaseDocxObject
