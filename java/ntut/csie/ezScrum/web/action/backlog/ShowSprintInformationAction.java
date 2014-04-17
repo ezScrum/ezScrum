@@ -1,8 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
 import java.text.NumberFormat;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -28,8 +27,6 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ShowSprintInformationAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -53,18 +50,13 @@ public class ShowSprintInformationAction extends Action {
 		String sprintID = request.getParameter("sprintID");
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession);
 		if (backlog == null) {
 			return mapping.findForward("error");
 		}
-		List<IIssue> issues = sprintBacklogLogic.getStories();
 		
-		Collections.sort(issues, new Comparator<IIssue>() {
-			@Override
-			public int compare(IIssue issue1, IIssue issue2) {
-				return Integer.parseInt(issue2.getEstimated()) - Integer.parseInt(issue1.getEstimated());
-			}
-		});
-
+		List<IIssue> issues = sprintBacklogHelper.getStoriesByImportance();
+		
 		request.setAttribute("SprintID", backlog.getSprintPlanId());
 		request.setAttribute("Stories", issues);
 

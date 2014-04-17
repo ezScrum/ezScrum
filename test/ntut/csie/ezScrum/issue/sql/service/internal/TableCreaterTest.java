@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.BUILDRESULT_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_LOG_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_STORY_RELATION_TABLE;
-import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZKANBAN_STATISPRDER_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_STORY_RELATION_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_RELATION_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_TABLE;
@@ -210,30 +209,6 @@ public class TableCreaterTest extends TestCase {
 		}
 	}
 	
-	// test ezKanban
-	public void testcreateEzKanbanTables() throws SQLException {
-		List<String> tables = new ArrayList<String>();
-		
-		// drop tables
-		DropTable(ITSEnum.EZKANBAN_STATUSORDER);
-		tables = getTableList();
-		// assert tables not exist
-		assertFalse(tables.contains(ITSEnum.EZKANBAN_STATUSORDER));
-		
-		
-		// create table
-		this.tc.createEzKanbanTables(tables, this.control);
-		tables = getTableList();
-		// assert tables exist
-		assertTrue(tables.contains(ITSEnum.EZKANBAN_STATUSORDER));
-		
-		// assert column exist
-		EZKANBAN_STATISPRDER_TABLE STATISPRDER = new EZKANBAN_STATISPRDER_TABLE();
-		for (String col : STATISPRDER.getColumns()) {
-			assertNotNull(assertColumnExist(STATISPRDER.getTableName(), col));
-			assertFalse(assertColumnExist(STATISPRDER.getTableName(), col));
-		}
-	}
 	
 	// test DoD
 	public void testcreateDoDTables() throws SQLException {
