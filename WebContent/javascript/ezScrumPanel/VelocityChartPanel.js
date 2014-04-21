@@ -137,7 +137,7 @@ ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
 		
 		exportPanel.removeAll();
 		exportPanel.add({
-				html: '<iframe src="showVelocityChart.do?' + queryString + '" width="820" height="650" frameborder="0" scrolling="auto"></iframe>',
+				html: '<iframe src="showVelocityChart.do?' + queryString + '&PID=' + getURLParameter("PID") + '" width="820" height="650" frameborder="0" scrolling="auto"></iframe>',
 				border: false
 			}
 		);
