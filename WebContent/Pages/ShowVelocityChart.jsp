@@ -6,6 +6,13 @@
 <script type="text/javascript" src="javascript/Chart.min.js"></script>
 </head>
 <body>
+<div>
+	<input onclick="resizeCanvas(600, 800)" type="radio" name="group" value="4*3" checked>4*3 
+	<input onclick="resizeCanvas(450, 800)" type="radio" name="group" value="16*9">16*9
+	<input onclick="resizeCanvas(535, 800)" type="radio" name="group" value="3*2">3*2
+</div>
+<div id="image">
+</div>
 <canvas id="canvas" height="600" width="800" style="background:#fff"></canvas>
 </body>
 <script>
@@ -120,7 +127,7 @@
 		return stories;
 	}
 
-	$(document).ready(function() {
+	function initChart() {
 		var releases = getReleases();
 
 		var totalVelocity = 0;
@@ -192,10 +199,24 @@
 				scaleStartValue: 0,
 				bezierCurve: false,
 				onAnimationComplete: function() {
-					document.write('<img src="'+canvasToImage(document.getElementById("canvas"), "#FFF")+'"/>');
+					$('#image').empty();
+					$('#image').html('<img src="'+canvasToImage(document.getElementById("canvas"), "#FFF")+'"/>');
+					$('#canvas').hide();
 				}
 		}
 		var velocityChart = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
+	}
+
+	function resizeCanvas(height, width) {
+		$('#image').empty();
+		$('#canvas').prop('height', height);
+		$('#canvas').prop('width', width);
+		$('#canvas').show();
+		initChart();
+	}
+
+	$(document).ready(function() {
+		initChart();
 	});
 </script>
 </html>
