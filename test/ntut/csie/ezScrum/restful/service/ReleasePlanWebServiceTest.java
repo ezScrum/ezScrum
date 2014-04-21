@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restful.service;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -20,7 +19,6 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Assert;
 
 public class ReleasePlanWebServiceTest extends TestCase {
 	private CreateProject CP;

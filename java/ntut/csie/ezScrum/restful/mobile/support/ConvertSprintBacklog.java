@@ -68,12 +68,16 @@ public class ConvertSprintBacklog {
 	}
 	public String readStoryIDList( SprintBacklogLogic sprintBacklogLogic ) throws JSONException{
 		JSONObject storyIDList = new JSONObject();
-		JSONArray storyIDArray = new JSONArray();
+		JSONArray storyArray = new JSONArray();
 		List<IIssue> stroyArray = sprintBacklogLogic.getStories();
 		for( IIssue item : stroyArray ){
-			storyIDArray.put( item.getIssueID() );
+			JSONObject story = new JSONObject();
+			story.put("id", item.getIssueID());
+			story.put("point", Integer.parseInt(item.getEstimated()));
+			story.put("status", item.getStatus());
+			storyArray.put(story);
 		}
-		storyIDList.put(SprintPlanUtil.TAG_STORYIDLIST, storyIDArray );
+		storyIDList.put(SprintPlanUtil.TAG_STORYLIST, storyArray );
 		return storyIDList.toString();
 	}
 	

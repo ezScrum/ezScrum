@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -18,6 +19,7 @@ public class SprintPlanObject {
 	private String notes;
 	private String actualCost;
 	private Map<Integer,String> taskBoardStageMap;
+	private ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 	
 	public SprintPlanObject(ISprintPlanDesc sprintDesc) {
 		setId(sprintDesc.getID());
@@ -138,4 +140,8 @@ public class SprintPlanObject {
 	public void setTaskBoardStageMap(Map<Integer,String> taskBoardStageMap) {
 	    this.taskBoardStageMap = taskBoardStageMap;
     }
+	
+	public void setStories(ArrayList<StoryObject> stories) {
+		this.stories = stories;
+	}
 }

@@ -14,7 +14,7 @@ public interface SprintPlanUtil {
 	public final static String TAG_DAILYMEETING   = "dailyMeeting" ;
 	public final static String TAG_DEMOPLACE      = "demoPlace" ;
 	public final static String TAG_HOURSCANCOMMIT = "hoursCanCommit";
-	public final static String TAG_STORYIDLIST 	  = "storyIDList";
+	public final static String TAG_STORYLIST 	  = "storyList";
 	
 	public final static String TAG_CURRENTSPRINT 	  = "currentSprintPlan";
 	public final static String TAG_CURRENTSPRINTID 	  = "currentSprintID";
