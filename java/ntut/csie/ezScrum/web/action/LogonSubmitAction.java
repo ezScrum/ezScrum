@@ -24,6 +24,7 @@
 // XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_3.9.210/xslt/JavaClass.xsl
 package ntut.csie.ezScrum.web.action;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,6 +72,7 @@ public class LogonSubmitAction extends Action {
 		// 建立User Session
 		IUserSession userSession = ProjectInfoCenter.getInstance().login(userId, password);
 
+		String encodedUsername = new String(Base64.encode(userId.getBytes()));
 		String encodedPassword = new String(Base64.encode(password.getBytes()));
 
 		// 設定權限資訊
@@ -86,6 +88,11 @@ public class LogonSubmitAction extends Action {
 		projectLogic.cloneDefaultFile();
 
 		Person person = this.getPerson(userSession.getAccount());
+		
+		// for web service
+		response.addCookie(new Cookie("username", encodedUsername));
+		response.addCookie(new Cookie("userpwd", encodedPassword));
+		 
 		return mapping.findForward(person.getForwardName());
 	}
 
