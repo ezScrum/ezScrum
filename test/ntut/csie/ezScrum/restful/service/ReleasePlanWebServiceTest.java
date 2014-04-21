@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.service;
 
 import java.util.List;
 
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -19,6 +20,7 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.Assert;
 
 public class ReleasePlanWebServiceTest extends TestCase {
 	private CreateProject CP;
@@ -88,6 +90,7 @@ public class ReleasePlanWebServiceTest extends TestCase {
 		// 從ReleasePlanHelper拿出release做assert
 		List<IReleasePlanDesc> releaselist = RPhelper.loadReleasePlansList();
 		JSONArray releasesJSONArray = new JSONArray(rService.getAllReleasePlan());
+		
 		for (int i = 0; i < ReleaseCount; i++) {
 			JSONObject releaseJSONObject = (JSONObject) releasesJSONArray.get(i);
 			assertEquals(releaselist.get(i).getID(), releaseJSONObject.get("ID"));
@@ -111,7 +114,33 @@ public class ReleasePlanWebServiceTest extends TestCase {
 		}
 	}
 	
-	public void testgetReleasePlan() {
+	public void testgetReleasePlan() throws LogonException, JSONException {
+		String username = "admin";
+		String userpwd = "admin";
+		String projectID = project.getName();
+		rService = new ReleasePlanWebService(username, userpwd, projectID);
+
+		// create sprint
+		CreateSprint CS = new CreateSprint(SprintCount, CP);
+		CS.exe();
+
+		// 從ReleasePlanHelper拿出release做assert
+		List<IReleasePlanDesc> releaselist = RPhelper.loadReleasePlansList();
 		
+		for(int i = 0; i < ReleaseCount ; i++){
+			JSONObject releaseJSONObject = new JSONObject(rService.getReleasePlan(releaselist.get(i).getID()));
+			JSONObject releasePlanDescJSONObject = new JSONObject(releaseJSONObject.get("releasePlanDesc").toString());
+			assertEquals(releaselist.get(i).getID(), releasePlanDescJSONObject.get("id"));
+			assertEquals(releaselist.get(i).getName(), releasePlanDescJSONObject.get("name"));
+			assertEquals(releaselist.get(i).getStartDate(), releasePlanDescJSONObject.get("startDate"));
+			assertEquals(releaselist.get(i).getEndDate(), releasePlanDescJSONObject.get("endDate"));
+			assertEquals(releaselist.get(i).getDescription(), releasePlanDescJSONObject.get("description"));
+			
+			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("sprintDescList").toString());
+			for(int j = 0 ; j < sprintsJSONArray.length() ; j++){
+				JSONObject sprintDescListJSONObject = (JSONObject) sprintsJSONArray.get(j);
+				assertEquals(releaselist.get(i).getSprintDescList().get(j), sprintDescListJSONObject.get("sprintDescList"));
+			}
+		}
 	}
 }
