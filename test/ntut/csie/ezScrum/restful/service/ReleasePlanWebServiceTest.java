@@ -133,12 +133,6 @@ public class ReleasePlanWebServiceTest extends TestCase {
 			assertEquals(releaselist.get(i).getStartDate(), releasePlanDescJSONObject.get("startDate"));
 			assertEquals(releaselist.get(i).getEndDate(), releasePlanDescJSONObject.get("endDate"));
 			assertEquals(releaselist.get(i).getDescription(), releasePlanDescJSONObject.get("description"));
-			
-			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("sprintDescList").toString());
-			for(int j = 0 ; j < sprintsJSONArray.length() ; j++){
-				JSONObject sprintDescListJSONObject = (JSONObject) sprintsJSONArray.get(j);
-				assertEquals(releaselist.get(i).getSprintDescList().get(j), sprintDescListJSONObject.get("sprintDescList"));
-			}
 		}
 	}
 }
