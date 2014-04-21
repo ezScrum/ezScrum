@@ -71,7 +71,11 @@ public class ConvertSprintBacklog {
 		JSONArray storyIDArray = new JSONArray();
 		List<IIssue> stroyArray = sprintBacklogLogic.getStories();
 		for( IIssue item : stroyArray ){
-			storyIDArray.put( item.getIssueID() );
+			JSONObject story = new JSONObject();
+			story.put("id", item.getIssueID());
+			story.put("point", Integer.parseInt(item.getEstimated()));
+			story.put("status", item.getStatus());
+			storyIDArray.put( story );
 		}
 		storyIDList.put(SprintPlanUtil.TAG_STORYIDLIST, storyIDArray );
 		return storyIDList.toString();
