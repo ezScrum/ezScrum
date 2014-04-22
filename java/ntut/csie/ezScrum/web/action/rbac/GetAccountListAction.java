@@ -24,12 +24,9 @@ public class GetAccountListAction extends Action {
 			response.getWriter().write(new AccountHelper().getAccountListXML());
 			LogFactory.getLog(SecurityRequestProcessor.class).debug("Current Time : " + new Date().toString());
 			response.getWriter().close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return null;
-
 	}
 }

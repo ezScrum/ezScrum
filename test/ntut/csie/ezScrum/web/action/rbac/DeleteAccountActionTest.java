@@ -8,11 +8,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -77,7 +74,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     public void testDeleteAccountAction() throws LogonException {
 		
     	// ================ set initial data =======================
-		String userId = this.CA.getAccount_ID(1);
+		String userId = this.CA.getAccountList().get(0).getId();
 		
     	// ================== set parameter info ====================
     	addRequestParameter("id", userId);
@@ -87,7 +84,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     	
     	// 執行 action
     	actionPerform();
-    	IAccount account = this.accountMapper.getAccountById(userId);
+    	UserObject account = this.accountMapper.getAccount(userId);
 		
 		assertNull(account);
     }

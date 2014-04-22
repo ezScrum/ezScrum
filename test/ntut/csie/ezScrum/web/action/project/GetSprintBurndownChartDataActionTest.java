@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -52,7 +53,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * @param account
 	 * @return
 	 */
-    private IUserSession getUserSession(IAccount account){
+    private IUserSession getUserSession(UserObject account){
     	IUserSession userSession = new UserSession(account);
     	return userSession;
     }
@@ -93,153 +94,137 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		projectManager = null;
 	}
 	
-	/**
-	 * 測試 "admin"，
-	 * 在沒有建立任何Sprint的情況下，
-	 * 是否能取得正確的Sprint Burndown Chart for story資訊。
-	 * response text : {"Points":[],"success":true}
-	 */
-	public void testAdminGetSprintBurndownChartDataAction_Story(){
-		IProject project = this.CP.getProjectList().get(0);
-		String projectID = project.getName();
-		
-    	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-		// ================ set request info ========================
-		addRequestParameter("SprintID", "0");
-		addRequestParameter("Type", "story");
-		
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
-		
-		// ================ 執行 action ======================
-		actionPerform();
-		
-		// ================ assert ======================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		
-		//	assert response text
-		String actualResponseText = response.getWriterBuffer().toString();
-		String expectResponseText = 
-			"{" +
-				"\"Points\":[]," +
-				"\"success\":true" +
-			"}";
-		assertEquals(expectResponseText, actualResponseText);
-	}
-	
-	/**
-	 * 測試 "admin"，
-	 * 在沒有建立任何Sprint的情況下，
-	 * 是否能取得正確的Sprint Burndown Chart for Task資訊。
-	 * response text : {"Points":[],"success":true}
-	 */
-	public void testAdminGetSprintBurndownChartDataAction_Task(){
-		IProject project = this.CP.getProjectList().get(0);
-		String projectID = project.getName();
-		
-    	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-		// ================ set request info ========================
-		addRequestParameter("SprintID", "0");
-		addRequestParameter("Type", "task");
-		
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
-		
-		// ================ 執行 action ======================
-		actionPerform();
-		
-		// ================ assert ======================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		
-		//	assert response text
-		String actualResponseText = response.getWriterBuffer().toString();
-		String expectResponseText = 
-			"{" +
-				"\"Points\":[]," +
-				"\"success\":true" +
-			"}";
-		assertEquals(expectResponseText, actualResponseText);
-	}
-	
-	/**
-	 * 測試 "一般使用者"，
-	 * 在沒有建立任何Sprint的情況下，
-	 * 是否能取得正確的Sprint Burndown Chart for story資訊。
-	 * response text : {"Points":[],"success":true}
-	 */
-	public void testUserGetSprintBurndownChartDataAction_Story(){
-		IProject project = this.CP.getProjectList().get(0);
-		String projectID = project.getName();
-		
-    	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-		// ================ set request info ========================
-		addRequestParameter("SprintID", "0");
-		addRequestParameter("Type", "story");
-		
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
-		
-		// ================ 執行 action ======================
-		actionPerform();
-		
-		// ================ assert ======================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		
-		//	assert response text
-		String actualResponseText = response.getWriterBuffer().toString();
-		String expectResponseText = 
-			"{" +
-				"\"Points\":[]," +
-				"\"success\":true" +
-			"}";
-		assertEquals(expectResponseText, actualResponseText);
-	}
-	
-	/**
-	 * 測試 "一般使用者"，
-	 * 在沒有建立任何Sprint的情況下，
-	 * 是否能取得正確的Sprint Burndown Chart for Task資訊。
-	 * response text : {"Points":[],"success":true}
-	 */
-	public void testUserGetSprintBurndownChartDataAction_Task(){
-		IProject project = this.CP.getProjectList().get(0);
-		String projectID = project.getName();
-		
-    	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-		// ================ set request info ========================
-		addRequestParameter("SprintID", "0");
-		addRequestParameter("Type", "task");
-		
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
-		
-		// ================ 執行 action ======================
-		actionPerform();
-		
-		// ================ assert ======================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		
-		//	assert response text
-		String actualResponseText = response.getWriterBuffer().toString();
-		String expectResponseText = 
-			"{" +
-				"\"Points\":[]," +
-				"\"success\":true" +
-			"}";
-		assertEquals(expectResponseText, actualResponseText);
-	}
+//	/**
+//	 * 測試 "admin"，
+//	 * 在沒有建立任何Sprint的情況下，
+//	 * 是否能取得正確的Sprint Burndown Chart for story資訊。
+//	 * response text : {"Points":[],"success":true}
+//	 */
+//	public void testAdminGetSprintBurndownChartDataAction_Story(){
+//		IProject project = this.CP.getProjectList().get(0);
+//		String projectID = project.getName();
+//		
+//    	// ================ set URL parameter ========================
+//		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//		
+//		// ================ set request info ========================
+//		addRequestParameter("SprintID", "0");
+//		addRequestParameter("Type", "story");
+//		
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+//		
+//		// ================ 執行 action ======================
+//		actionPerform();
+//		
+//		// ================ assert ======================
+//		verifyNoActionErrors();
+//		verifyNoActionMessages();
+//		
+//		//	assert response text
+//		String actualResponseText = response.getWriterBuffer().toString();
+//		String expectResponseText = "{\"Points\":[],\"success\":true}";
+//		assertEquals(expectResponseText, actualResponseText);
+//	}
+//	
+//	/**
+//	 * 測試 "admin"，
+//	 * 在沒有建立任何Sprint的情況下，
+//	 * 是否能取得正確的Sprint Burndown Chart for Task資訊。
+//	 * response text : {"Points":[],"success":true}
+//	 */
+//	public void testAdminGetSprintBurndownChartDataAction_Task(){
+//		IProject project = this.CP.getProjectList().get(0);
+//		String projectID = project.getName();
+//		
+//    	// ================ set URL parameter ========================
+//		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//		
+//		// ================ set request info ========================
+//		addRequestParameter("SprintID", "0");
+//		addRequestParameter("Type", "task");
+//		
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+//		
+//		// ================ 執行 action ======================
+//		actionPerform();
+//		
+//		// ================ assert ======================
+//		verifyNoActionErrors();
+//		verifyNoActionMessages();
+//		
+//		//	assert response text
+//		String actualResponseText = response.getWriterBuffer().toString();
+//		String expectResponseText = "{\"Points\":[],\"success\":true}";
+//		assertEquals(expectResponseText, actualResponseText);
+//	}
+//	
+//	/**
+//	 * 測試 "一般使用者"，
+//	 * 在沒有建立任何Sprint的情況下，
+//	 * 是否能取得正確的Sprint Burndown Chart for story資訊。
+//	 * response text : {"Points":[],"success":true}
+//	 */
+//	public void testUserGetSprintBurndownChartDataAction_Story(){
+//		IProject project = this.CP.getProjectList().get(0);
+//		String projectID = project.getName();
+//		
+//    	// ================ set URL parameter ========================
+//		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//		
+//		// ================ set request info ========================
+//		addRequestParameter("SprintID", "0");
+//		addRequestParameter("Type", "story");
+//		
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+//		
+//		// ================ 執行 action ======================
+//		actionPerform();
+//		
+//		// ================ assert ======================
+//		verifyNoActionErrors();
+//		verifyNoActionMessages();
+//		
+//		//	assert response text
+//		String actualResponseText = response.getWriterBuffer().toString();
+//		String expectResponseText = "{\"Points\":[],\"success\":true}";
+//		assertEquals(expectResponseText, actualResponseText);
+//	}
+//	
+//	/**
+//	 * 測試 "一般使用者"，
+//	 * 在沒有建立任何Sprint的情況下，
+//	 * 是否能取得正確的Sprint Burndown Chart for Task資訊。
+//	 * response text : {"Points":[],"success":true}
+//	 */
+//	public void testUserGetSprintBurndownChartDataAction_Task(){
+//		IProject project = this.CP.getProjectList().get(0);
+//		String projectID = project.getName();
+//		
+//    	// ================ set URL parameter ========================
+//		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//		
+//		// ================ set request info ========================
+//		addRequestParameter("SprintID", "0");
+//		addRequestParameter("Type", "task");
+//		
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+//		
+//		// ================ 執行 action ======================
+//		actionPerform();
+//		
+//		// ================ assert ======================
+//		verifyNoActionErrors();
+//		verifyNoActionMessages();
+//		
+//		//	assert response text
+//		String actualResponseText = response.getWriterBuffer().toString();
+//		String expectResponseText = "{\"Points\":[],\"success\":true}";
+//		assertEquals(expectResponseText, actualResponseText);
+//	}
 	
 	/**
 	 * 測試 "一般使用者"，
@@ -250,7 +235,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	public void testUserGetSprintBurndownChartDataAction_StoryAndInformation() throws Exception{
 		IProject project = this.CP.getProjectList().get(0); 
 		String projectID = project.getName();
-		IAccount account = this.CA.getAccountList().get(0);
+		UserObject account = this.CA.getAccountList().get(0);
 		
 		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
 		addUserToRole.exe_ST();
@@ -295,7 +280,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 							.append("\"Points\":[");
 		for(int i = 0; i <= workDateCount; i++) {
 			expectedResponseText.append("{")
-								.append("\"Date\":\"" + sprintDateList.get(i) + "\",")
+								.append("\"Date\":\"").append(sprintDateList.get(i)).append("\",")
 								.append("\"IdealPoint\":").append(storyIdealLinePoints.get(i)).append(",")
 								.append("\"RealPoint\":");
 			if(i == 0) {
@@ -320,7 +305,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	public void testUserGetSprintBurndownChartDataAction_TaskAndInformation() throws Exception{
 		IProject project = this.CP.getProjectList().get(0); 
 		String projectID = project.getName();
-		IAccount account = this.CA.getAccountList().get(0);
+		UserObject account = this.CA.getAccountList().get(0);
 		
 		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
 		addUserToRole.exe_ST();
@@ -365,7 +350,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 							.append("\"Points\":[");
 		for(int i = 0; i <= workDateCount; i++) {
 			expectedResponseText.append("{")
-								.append("\"Date\":\"" + sprintDateList.get(i) + "\",")
+								.append("\"Date\":\"").append(sprintDateList.get(i)).append("\",")
 								.append("\"IdealPoint\":").append(taskIdealLinePoints.get(i)).append(",")
 								.append("\"RealPoint\":");
 			if(i == 0) {

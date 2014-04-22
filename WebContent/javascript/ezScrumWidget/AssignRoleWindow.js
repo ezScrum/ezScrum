@@ -1,5 +1,5 @@
 // Assign Role Information
-var AssignRoleRecord = Ext.data.Record.create(['Resource', 'Operation']);
+var AssignRoleRecord = Ext.data.Record.create(['Resource', 'ResourceId', 'Operation']);
 
 var AssignRoleReader = new Ext.data.XmlReader({
 	record: 'Assigned'
@@ -8,6 +8,8 @@ var AssignRoleReader = new Ext.data.XmlReader({
 var AssignRoleStore = new Ext.data.Store({
 	fields: [{
 		name: 'Resource'
+	}, {
+		name: 'ResourceId'
 	}, {
 		name: 'Operation'
 	}],
@@ -25,7 +27,7 @@ var AssignRoleManagement_RoleColumnModel = new Ext.grid.ColumnModel([{
 }]);
 
 // UnAssign Role Information
-var UnAssignRoleRecord = Ext.data.Record.create(['Resource']);
+var UnAssignRoleRecord = Ext.data.Record.create(['Resource', 'ResourceId']);
 
 var UnAssignRoleReader = new Ext.data.XmlReader({
 	record: 'Unassigned'
@@ -34,6 +36,8 @@ var UnAssignRoleReader = new Ext.data.XmlReader({
 var UnAssignRoleStore = new Ext.data.Store({
 	fields: [{
 		name: 'Resource'
+	}, {
+		name: 'ResourceId'
 	}],
 	reader: UnAssignRoleReader
 });
@@ -46,7 +50,7 @@ var AssignRoleManagement_UnAssignRoleCombo = new Ext.form.ComboBox({
 	forceSelection: true,
 	mode: 'local',
 	displayField: 'Resource',
-	valueField: 'Resource',
+	valueField: 'ResourceId',
 	store: UnAssignRoleStore,
 	listeners: {
 		'expand': function(combo) {
@@ -63,7 +67,8 @@ var AssignRoleManagement_UnAssignRoleCombo = new Ext.form.ComboBox({
 		},
 		'select': function(combo) {
 			// Check system Role
-			if (combo.getValue() == "system") {
+//			if (combo.getValue() == "system") {
+			if (combo.lastSelectionText == "system") {
 				AssignRoleManagement_RoleCombo.setDisabled(false);
 				AssignRoleManagement_RoleCombo.disabled = true;
 				AssignRoleManagement_RoleCombo.originalValue = "admin";
@@ -147,12 +152,15 @@ ezScrum.AssignRoleManagement_AssignRoleForm = Ext.extend(Ext.form.FormPanel, {
 				items: [{
 					fieldLabel: 'User ID',
 					name: 'accountID',
-					readOnly: true,
-					ref: '../AssignRoleManagement_AssignRoleForm_AccountID_refID'
+					readOnly: true
 				}, {
 					fieldLabel: 'User Name',
 					name: 'Name',
 					readOnly: true
+				}, {
+					name: 'id',
+					hidden: 'true',
+					ref: '../AssignRoleManagement_AssignRoleForm_AccountID_refID'
 				}]
 			}, {
 				xtype: 'fieldset',
@@ -238,7 +246,7 @@ ezScrum.AssignRoleManagement_AssignRoleForm = Ext.extend(Ext.form.FormPanel, {
 					scope: this,
 					handler: function() {
 						var cid = this.AssignRoleManagement_AssignRoleForm_AccountID_refID.value;
-						var resource = this.AssignRoleManagement_AssignedProject_Grid_refID.getSelectionModel().getSelected().data['Resource'];
+						var resource = this.AssignRoleManagement_AssignedProject_Grid_refID.getSelectionModel().getSelected().data['ResourceId'];
 						var operation = this.AssignRoleManagement_AssignedProject_Grid_refID.getSelectionModel().getSelected().data['Operation'];
 
 						ManagementMainLoadMaskShow();
@@ -293,7 +301,8 @@ ezScrum.AssignRoleManagement_AssignRoleForm = Ext.extend(Ext.form.FormPanel, {
 			// Load account data
 			if (accountRecord) {
 				this.getForm().setValues({
-					accountID: accountRecord.data['ID'],
+					id: accountRecord.data['ID'],
+					accountID: accountRecord.data['Account'],
 					Name: accountRecord.data['Name']
 				});
 				this.fireEvent('LoadSuccess', this, response, accountRecord);

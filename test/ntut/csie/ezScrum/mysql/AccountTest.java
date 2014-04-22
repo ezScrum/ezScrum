@@ -1,23 +1,22 @@
-package ntut.csie.ezScrum.sql;
+package ntut.csie.ezScrum.mysql;
 
 import java.util.List;
 
+import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IActor;
-import junit.framework.TestCase;
 
-public class MySQLServiceTest extends TestCase {
+public class AccountTest extends TestCase {
 	private MySQLService mService;
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	
-	public MySQLServiceTest(String testMethod) {
+	public AccountTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -56,13 +55,14 @@ public class MySQLServiceTest extends TestCase {
 	public void testUpdateAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		String id = createAccount.getAccountList().get(0).getId();
+		String account = createAccount.getAccount_ID(1);
 		String name = "account robot";
 		String password = "account robot";
 		String email = "update@mail.com";
 		String enable = "true";
 		
-		UserInformation user = new UserInformation(id, name, password, email, enable);
+		UserInformation user = new UserInformation(id, account, name, password, email, enable);
 		boolean result = mService.updateAccount(user);
 		
 		assertTrue(result);
@@ -71,7 +71,7 @@ public class MySQLServiceTest extends TestCase {
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		String id = createAccount.getAccountList().get(0).getId();
 		
 		boolean result = mService.deleteAccount(id);
 		
@@ -83,16 +83,16 @@ public class MySQLServiceTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 		
-		IAccount result = mService.getAccountById(id);
+		UserObject result = mService.getAccount(id);
 		
-		assertEquals(id, result.getID());
+		assertEquals(id, result.getAccount());
 	}
 	
 	public void testGetAccountList() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<IActor> result = mService.getAccountList();
+		List<UserObject> result = mService.getAccountList();
 		
 		assertEquals(2, result.size());	// include admin
 	}
@@ -103,8 +103,8 @@ public class MySQLServiceTest extends TestCase {
 		String id = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
 		
-		IAccount result = mService.confirmAccount(id, password);
+		UserObject result = mService.confirmAccount(id, password);
 		
-		assertEquals(id, result.getID());
+		assertEquals(id, result.getAccount());
 	}
 }

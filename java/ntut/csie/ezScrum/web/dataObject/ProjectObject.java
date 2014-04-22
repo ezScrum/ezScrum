@@ -1,20 +1,35 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-public class ProjectInformation {
+public class ProjectObject {
 	// 取得所有專案的資訊
+	private String id;
 	private String name = "";
 	private String displayName = "";
 	private String comment = "";
 	private String manager = "";
 	private String attachFileSize = "";
-	
-	public ProjectInformation( String name, String displayName, String comment, String manager, String attachFileSize){
-		this.setName(name);
-		this.setDisplayName(displayName);
-		this.setComment(comment);
-		this.setManager(manager);
-		this.setAttachFileSize(attachFileSize);
+	private long createDate;
+
+	public ProjectObject(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
+		setId(id);
+		setName(name);
+		setDisplayName(displayName);
+		setComment(comment);
+		setManager(manager);
+		setAttachFileSize(attachFileSize);
+		setCreateDate(createDate);
 	}
+
+	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
+		setName(name);
+		setDisplayName(displayName);
+		setComment(comment);
+		setManager(manager);
+		setAttachFileSize(attachFileSize);
+	}
+
+	public ProjectObject() {
+    }
 
 	public void setName(String name) {
 		this.name = name;
@@ -54,5 +69,21 @@ public class ProjectInformation {
 
 	public String getAttachFileSize() {
 		return attachFileSize;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public long getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(long createDate) {
+		this.createDate = createDate;
 	}
 }

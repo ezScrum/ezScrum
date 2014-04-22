@@ -15,22 +15,20 @@ import org.apache.struts.action.ActionMapping;
 public class UpdateScrumRolePermissionAction extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		String ProjectID = request.getParameter("ProjectID");
-		String RoleName = request.getParameter("RoleName");
-		String PermissionList = request.getParameter("PermissionList");
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		ScrumRoleHelper srh = new ScrumRoleHelper();		
-//		Gson gson = new Gson();
-//		AccessPermissionUI PermissionUI = gson.fromJson(PermissionList, AccessPermissionUI.class);
-		
+		String id = request.getParameter("ID");
+		String projectID = request.getParameter("ProjectID");
+		String roleName = request.getParameter("RoleName");
+		String permissionList = request.getParameter("PermissionList");
+
+		ScrumRoleHelper srh = new ScrumRoleHelper();
+
 		// default content type
 		response.setContentType("text/html; charset=utf-8");
-		
+
 		try {
-//			updatePermission(ProjectID, RoleName, PermissionUI);
-			srh.updateScrumRolePermission(ProjectID, RoleName, PermissionList);
+			srh.updateScrumRolePermission(id, projectID, roleName, permissionList);
 			response.getWriter().write("true");
 			response.getWriter().close();
 		} catch (IOException e) {
@@ -38,29 +36,7 @@ public class UpdateScrumRolePermissionAction extends Action {
 			response.getWriter().close();
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-
-	/**
-	 * 更新Permission資料
-	 */
-//	private void updatePermission(String projectID, String scrumRole, AccessPermissionUI permissionUI) throws Exception{
-//		ScrumRole scrumrole = new ScrumRole(projectID, scrumRole);
-//		
-//		if (scrumrole != null) {
-//			scrumrole.setAccessProductBacklog(permissionUI.AccessProductBacklog);
-//			scrumrole.setAccessReleasePlan(permissionUI.AccessReleasePlan);
-//			scrumrole.setAccessSprintPlan(permissionUI.AccessSprintPlan);
-//			scrumrole.setAccessSprintBacklog(permissionUI.AccessSprintBacklog);
-//			scrumrole.setAccessTaskBoard(permissionUI.AccessTaskboard);
-//			scrumrole.setAccessUnplannedItem(permissionUI.AccessUnplanned);
-//			scrumrole.setAccessRetrospective(permissionUI.AccessRetrospective);
-//			scrumrole.setReadReport(permissionUI.AccessReport);
-//			scrumrole.setEditProject(permissionUI.AccessEditProject);			
-//			
-//			ScrumRoleManager manager = new ScrumRoleManager();
-//			manager.update(scrumrole);
-//		}
-//	}
 }

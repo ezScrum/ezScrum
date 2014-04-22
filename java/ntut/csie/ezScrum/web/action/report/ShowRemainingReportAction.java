@@ -13,10 +13,10 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.RemainingWorkReport;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -114,8 +114,8 @@ public class ShowRemainingReportAction extends Action {
 			request.setAttribute("iteration", currentID);
 			request.setAttribute("RemainingWorkReport", report);
 
-			IAccount acc = session.getAccount();
-			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, acc);
+			UserObject account = session.getAccount();
+			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 			if (sr.getReadReport()) {
 				return mapping.findForward("success");
 			}
