@@ -131,7 +131,8 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
 		String actualActors = String.valueOf(request.getAttribute("Actors"));
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
-		List<?> actualIIssueList = (List<?>) request.getAttribute("Stories");
+		@SuppressWarnings("unchecked")
+		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.Today;
@@ -326,67 +327,4 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		verifyForward("success");
 		verifyForwardPath("/Pages/ShowSprintInformation.jsp");
 	}
-    
-    /**
-     * Spring Information有依據重要性排序
-     * @throws Exception 
-     */
-    public void testShowInformationAction_6() throws Exception{
-		CreateSprint createSprint = new CreateSprint(1 , this.CP); // 建立一個Sprint
-		createSprint.exe();
-		
-		int accountCount = 1; 
-		CreateAccount createAccount = new CreateAccount(accountCount); // 建立帳號
-		createAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(this.CP, createAccount); 
-		addUserToRole.exe_PO();
-		
-		// 分別建立兩筆 Estimation不同的story
-    	AddStoryToSprint addStoryToSprint1 = new AddStoryToSprint(1, 13, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-    	addStoryToSprint1.exe();
-    	
-    	AddStoryToSprint addStoryToSprint2 = new AddStoryToSprint(1, 8, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-    	addStoryToSprint2.exe();
-    	
-    	AddStoryToSprint addStoryToSprint3 = new AddStoryToSprint(1, 21, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-    	addStoryToSprint3.exe();
-    	
-    	
-    	
-    	// ================ set request info ========================
-    	String expectedSprintID = "1";
-		String projectName = this.project.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", expectedSprintID);
-		
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		
-		// ================ 執行 action ======================
-		actionPerform();
-		
-		// ================ assert ========================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		/*
-		 * in struts-config.xml
-		 * <forward name="success" path="sprintInformation.show"/>
-		 * 因此根據sprintInformation.show必須到tiles-defs.xml找到要轉發的頁面
-		 * in tiles-defs.xml
-		 * <definition name="sprintInformation.show" path="/Pages/ShowSprintInformation.jsp"></definition>
-		 */
-		verifyForward("success");
-		verifyForwardPath("/Pages/ShowSprintInformation.jsp");
-
-        List<?> actualIIssueList = ((List<?>) request.getAttribute("Stories")); // 撈出所有story
-		
-		int importancePoint1 = Integer.parseInt(((IIssue)actualIIssueList.get(0)).getImportance());
-		int importancePoint2 = Integer.parseInt(((IIssue)actualIIssueList.get(1)).getImportance());
-		int importancePoint3 = Integer.parseInt(((IIssue)actualIIssueList.get(2)).getImportance());
-		
-		assertTrue(importancePoint1 >= importancePoint2);
-		assertTrue(importancePoint2 >= importancePoint3);
-		assertTrue(importancePoint1 >= importancePoint3);
-		
-    }
 }
