@@ -42,8 +42,8 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
 		    /**
 		     * RBAC Management Side
 		     *******************************/
-	    }]
-		/*
+	    }//]
+		
 		,{
 	    	//	Plugin Management Side
 	    	text: 'Plugin Management',
@@ -61,7 +61,7 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
 				}]
 		     //	Plugin Management Side
 	    }]
-	    */
+	    
 
 	    /*
 	     * Management頁面，update相關功能尚未實作完，因此先註解掉

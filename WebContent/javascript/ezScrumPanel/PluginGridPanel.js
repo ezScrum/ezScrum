@@ -1,5 +1,5 @@
 var PluginRecord = Ext.data.Record.create([
-	'Name'
+	'Name', 'Enable'
 ]);
 
 var PluginReader = new Ext.data.XmlReader({
@@ -9,15 +9,25 @@ var PluginReader = new Ext.data.XmlReader({
 
 var PluginGridProxyStore = new Ext.data.Store({
 	fields:[
-		{name : 'Name'}
+		{name : 'Name'},
+		{name : 'Enable'}		
 	],
 	reader	: PluginReader,
 	proxy	: new Ext.ux.data.PagingMemoryProxy()
 });
 
+function checkPlugin(val) {
+	if (eval(val)) {
+		return '<center><img title="usable" src="images/ok.png" /></center>';
+	} else {
+		return '<center><img title="unusable" src="images/fail.png" /></center>';
+	}
+}
+
 var PluginColumnModel = new Ext.grid.ColumnModel({
 	columns: [
- 	     {dataIndex: 'Name',header: 'Name', width: 150}	            	          
+	  	 {dataIndex: 'Enable',header: 'Enable', renderer: checkPlugin, width: 10},
+ 	     {dataIndex: 'Name',header: 'Name', width: 150}      	          
  	]
 });
 
@@ -47,7 +57,8 @@ ezScrum.PluginGrid = Ext.extend(Ext.grid.GridPanel, {
 			    		 			addPluginFileWindow.attachFile(this);
 			    		 	   } 
 			    },
-				{id: 'PluginManagement_removePluginBtn', ref: '../PluginManagement_removePluginBtn_refID', disabled:true, text:'Remove Plugin', icon:'images/drop2.png', handler: this.checkRemovePlugin }
+				{id: 'PluginManagement_removePluginBtn', ref: '../PluginManagement_removePluginBtn_refID', disabled:true, text:'Remove Plugin', icon:'images/delete.png', handler: this.checkRemovePlugin },
+				{id: 'PluginManagement_enablePluginBtn', ref: '../PluginManagement_enablePluginBtn_refID', disabled:true, text:'Enable Plugin'}
 			   
 			],
 		    bbar : new Ext.PagingToolbar({
