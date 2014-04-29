@@ -1,6 +1,7 @@
 Ext.ns('ezScrum');
 
-ezScrum.ContentPanel = new Ext.Panel({
+//ezScrum.ContentPanel = new Ext.Panel({
+ezScrum.ContentPanel = new ezScrum.projectLeftTree.contentPanel({
 	region		: 'center',		// position
 	id			: 'content_panel',
 	layout		: 'card',
