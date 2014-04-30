@@ -24,8 +24,13 @@ public class PluginConfigManager {
 	private String filePath;
 	private final String configFileName = "/pluginConfig.conf";
 
+	public PluginConfigManager() {
+		this.filePath = this.workspacePath + "/_metadata/" + this.configFileName;
+	}
+	
 	public PluginConfigManager(String projectName) {
-		this.filePath = this.workspacePath + "//" + projectName + "/_metadata/" + this.configFileName;
+//		this.filePath = this.workspacePath + "//" + projectName + "/_metadata/" + this.configFileName;
+		this.filePath = this.workspacePath + "/_metadata/" + this.configFileName;
 	}
 
 	public PluginConfig getAvailablePluginConfigByPluginId(String pluginId) {
@@ -70,7 +75,6 @@ public class PluginConfigManager {
 			try {
 				pluginConfigFile.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -85,7 +89,6 @@ public class PluginConfigManager {
 			erasor.flush();
 			erasor.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -137,4 +140,14 @@ public class PluginConfigManager {
 		}
 		return result;
 	}
+
+	public void addConfigUI(String pluginName) {
+		List<PluginConfig> configList = getPluginConfigList();
+		PluginConfig config = new PluginConfig();
+		config.setId(pluginName);
+		config.setAvailable(true);
+		configList.add(config);
+		Gson gson = new Gson();
+		replaceFileContent(gson.toJson(configList));
+    }
 }
