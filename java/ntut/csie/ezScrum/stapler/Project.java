@@ -35,10 +35,8 @@ public class Project {
 			response.getWriter().write(this.mProjectName);
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void doGetProjectPluginConfig(StaplerRequest request, StaplerResponse response) {
@@ -60,7 +58,6 @@ public class Project {
 			try {
 				response.getWriter().write(sb.toString());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -107,7 +104,7 @@ public class Project {
 		}
 		return pluginStringList.toString();
 	}
-	
+
 	public String getProjectPagePluginString() {
 		// get plugin info from pluginConfig.conf in project folder
 		PluginConfigManager pluginConfigManager = new PluginConfigManager(mProjectName);
