@@ -181,17 +181,3 @@ _LoginEzScrum
 _LogoutEzScrum
     Click Image    images/logout.gif
     Title Should Be    ezScrum Logon!
-
-Test TaskBoard - Return To The TaskBoard Sprint ID Should Be As Same As Before Setup
-    _LoginEzScrum
-    # 確認專案是否存在
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Select Node Product    Sprint Plan
-    Create Sprint    TaskBoard AT1    2    4    100    100
-    Create Sprint Auto Date    TaskBoard AT2    2    4    100    100
-
-Test TaskBoard - Return To The TaskBoard Sprint ID Should Be As Same As Before Teardown
-    Test TaskBoard - Postcondition

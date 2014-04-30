@@ -3,7 +3,6 @@ Library           SeleniumLibrary
 Library           BuiltIn
 Library           HttpLibrary.HTTP
 Library           lib/DatabaseHandler.py
-Resource          ../Global Define.txt
 
 *** Keywords ***
 ezScrum Suite Setup
@@ -36,7 +35,7 @@ New Tab With Alias
 
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
-    ${testValue}=    Get Value    xpath=${xpath}
+    ${testValue}=    Get Value    ${xpath}
     Should Be Equal    ${correctValue}    ${testValue}
 
 Select Project
