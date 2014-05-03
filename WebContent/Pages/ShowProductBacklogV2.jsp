@@ -4,6 +4,7 @@
 <head>
 	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" href="css/ezScrum/productbacklogv2.css">
+	<script type="text/javascript" src="javascript/utils.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/angular.min.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/app.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/controllers.js"></script>
@@ -23,98 +24,25 @@
 		</div>
 	</div>
 	<div id="productbacklog" class="container-fluid">
-		<!-- <div class="col-md-3 text-center add-story" id="addstory">
-			<img src="ic_add.png" alt="" style="width: 100px;">
-		</div> -->
-		<div class="col-md-3 story-item no-padding">
-			<div class="col-md-12" style="font-size: 1.2em;">#4485</div>
+		<div class="col-md-3 story-item no-padding" ng-repeat="story in storyList">
+			<div class="col-md-12" style="font-size: 1.2em;">{{ '#'+story.id }}</div>
 			<div class="col-md-12">
 				<span style="font-size: 1.5em;">
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
+					{{ story.name }}
 				</span>
 			</div>
 			<div class="md-md-12">
 				<div class="value-item yellow">
 					<div>Imp.</div>
-					<strong class="value">99</strong>
+					<strong class="value">{{ story.importance }}</strong>
 				</div>
 				<div class="value-item blue">
 					<div>Est.</div>
-					<strong class="value">13</strong>
+					<strong class="value">{{ story.estimation }}</strong>
 				</div>
 				<div class="value-item green">
 					<div>Val.</div>
-					<strong class="value">13</strong>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 story-item no-padding">
-			<div class="col-md-12" style="font-size: 1.2em;">#4485</div>
-			<div class="col-md-12">
-				<span style="font-size: 1.5em;">
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-				</span>
-			</div>
-			<div class="md-md-12">
-				<div class="value-item yellow">
-					<div>Imp.</div>
-					<strong class="value">97</strong>
-				</div>
-				<div class="value-item blue">
-					<div>Est.</div>
-					<strong class="value">13</strong>
-				</div>
-				<div class="value-item green">
-					<div>Val.</div>
-					<strong class="value">13</strong>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 story-item no-padding">
-			<div class="col-md-12" style="font-size: 1.2em;">#4485</div>
-			<div class="col-md-12">
-				<span style="font-size: 1.5em;">
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-				</span>
-			</div>
-			<div class="md-md-12">
-				<div class="value-item yellow">
-					<div>Imp.</div>
-					<strong class="value">95</strong>
-				</div>
-				<div class="value-item blue">
-					<div>Est.</div>
-					<strong class="value">13</strong>
-				</div>
-				<div class="value-item green">
-					<div>Val.</div>
-					<strong class="value">13</strong>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 story-item no-padding">
-			<div class="col-md-12" style="font-size: 1.2em;">#4485</div>
-			<div class="col-md-12">
-				<span style="font-size: 1.5em;">
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-					身為使用者，我希望有一個好用的編輯頁面，使得我的編輯速度加快
-				</span>
-			</div>
-			<div class="md-md-12">
-				<div class="value-item yellow">
-					<div>Imp.</div>
-					<strong class="value">93</strong>
-				</div>
-				<div class="value-item blue">
-					<div>Est.</div>
-					<strong class="value">13</strong>
-				</div>
-				<div class="value-item green">
-					<div>Val.</div>
-					<strong class="value">13</strong>
+					<strong class="value">{{ story.value }}</strong>
 				</div>
 			</div>
 		</div>
