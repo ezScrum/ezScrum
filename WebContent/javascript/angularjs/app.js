@@ -3,7 +3,18 @@
 var ezScrum = angular.module('ezScrum', []);
 
 ezScrum.controller('ProductBacklogController', function($scope) {
-	$scope.hello = function() {
-		console.log("hello");
+	var init = function() {
+		console.log('asdfasdfasdf');
 	}
+	
+	$scope.isEditMode = false;
+	$scope.cancelEditMode = function() {
+		$scope.isEditMode = false;
+	}
+
+	$scope.addStory = function() {
+		$scope.isEditMode = true;
+	}
+	
+	init();
 });
