@@ -85,8 +85,15 @@ body {
 }
 
 .task-container {
-	position: relative;
-	margin-top: 100px;
+	position: absolute;
+	width: 690px;
+	height: 100%;
+	top: 80px;
+	left: 20%;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /* Plus icon */
@@ -171,15 +178,18 @@ body {
 	margin: 0;
 }
 
+.ui-box-title:hover {
+	cursor: move;
+}
+
 .ui-box-content {
 	padding: 10px;
 }
 
-.task-container {
-	width: 690px;
-	height: 100%;
-	padding-left: 15px;
-	padding-right: 15px;
-	margin-left: auto;
-	margin-right: auto;
+.position-fixed {
+	position: fixed;
+}
+
+.pointer {
+	cursor: pointer;
 }
