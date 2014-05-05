@@ -1,5 +1,12 @@
 'use strict';
 
+function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+}
+
 var ezScrum = angular.module('ezScrum', ['ng-context-menu'])
 	.directive('draggable', ['$document' , function($document) {
 	  return {
@@ -135,8 +142,20 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 		$scope.currentStory = story;
 	}
 	
+	$scope.isNumber = function(input) {
+		if(!isNumber(input)) {
+			input = 0;
+		}
+	}
+	
 	$scope.delete = function(story) {
-		deleteStory(story);
+		if(confirm('Delete this story?')) {
+			deleteStory(story);
+		}
+	}
+	
+	$scope.goBack = function() {
+		location.assign('/ezScrum/viewProject.do?PID=' + getQueryStringByName('PID'));
 	}
 	
 	init();

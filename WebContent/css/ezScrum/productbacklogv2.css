@@ -2,9 +2,6 @@ body {
 	font-family: '微軟正黑體';
 }
 
-.navbar {
-	background-color: rgba(0, 0, 0, 0.7);
-}
 
 #productbacklog {
 	padding-top: 60px;
@@ -28,12 +25,12 @@ body {
 	cursor: pointer;
 	margin: 0px 10px 10px 0px;
 	background: #fffffe;
-	/*border-radius: 3px;*/
 	border-style: solid;
 	border-width: 1px;
 	border-color: #bdc3c7;
 	padding: 5px 0px 5px 0px;
 	box-shadow: 0px 1px 0px #CFCECE;
+	height: 20%;
 }
 
 .story-item:active {
@@ -81,19 +78,20 @@ body {
 	top: 0;
 	left: 0;
 	background-color: rgba(0, 0, 0, 0.5);
-	/*display: none;*/
+	overflow: hidden;
 }
 
 .task-container {
 	position: absolute;
-	width: 690px;
+	width: 40%;
 	height: 100%;
-	top: 80px;
-	left: 20%;
+	top: 10%;
+	left: 30%;
 	padding-left: 15px;
 	padding-right: 15px;
 	margin-left: auto;
 	margin-right: auto;
+	overflow: hidden;
 }
 
 /* Plus icon */
@@ -178,10 +176,6 @@ body {
 	margin: 0;
 }
 
-.ui-box-title:hover {
-	cursor: move;
-}
-
 .ui-box-content {
 	padding: 10px;
 }
@@ -192,4 +186,16 @@ body {
 
 .pointer {
 	cursor: pointer;
+}
+
+.searchbar {
+	padding-left: 25px;
+	height: 23px;
+	width: 150px;
+}
+
+.searchbar-icon {
+	position: absolute;
+	left: 20px;
+	top: 5px;
 }
