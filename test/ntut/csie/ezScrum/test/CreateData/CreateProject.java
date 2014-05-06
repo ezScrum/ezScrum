@@ -15,6 +15,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.IAccountManager;
@@ -37,6 +38,7 @@ public class CreateProject {
 
 	private int ProjectCount = 1;
 	private List<IProject> ProjectList;
+	private List<ProjectObject> projectObjectList;
 	public String PJ_NAME = "TEST_PROJECT_";				// TEST_PROJECT_X
 	public String PM_NAME = "Project_Manager_";				// Project_Manager_X
 	public String COMMENT_NAME = "This is Test Project - ";	// This is Test Project - X
@@ -47,13 +49,38 @@ public class CreateProject {
 	public CreateProject(int count) {
 		this.ProjectCount = count;
 		this.ProjectList = new LinkedList<IProject>();
+		this.projectObjectList = new LinkedList<ProjectObject>();
 	}
 
 	public List<IProject> getProjectList() {
 		return this.ProjectList;
 	}
+	
+	// ezScrum v1.8
+	public List<ProjectObject> getProjectObjectList() {
+		return this.projectObjectList;
+	}
 
+	// ezScrum v1.8
+	public void exeCreateForDb() {
+		String projectName = "";
+		String comment = "";
+		String projectManager = "";
+		ProjectMapper projectMapper = new ProjectMapper();
+		ProjectObject project;
+		for (int i = 0; i < this.ProjectCount; i++) {
+			projectName = this.PJ_NAME + Integer.toString((i + 1));	// TEST_PROJECT_X
+			comment = this.COMMENT_NAME + Integer.toString((i + 1));	// This is Test Project - X
+			projectManager = this.PM_NAME + Integer.toString((i + 1));		// Project_Manager_X
+			project = new ProjectObject(projectName, projectName, comment, projectManager, "");
+			project = projectMapper.createProjectForDb(project);
+			projectObjectList.add(project);
+			projectMapper.createScrumRole(project.getId());
+		}
+	}
+	
 	public void exeCreate() {
+		exeCreateForDb();	// 等全部改完後，就可以全部用此method了
 		boolean success = false;
 		String projectName = "";
 		String comment = "";

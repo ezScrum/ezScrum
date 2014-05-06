@@ -1,11 +1,14 @@
 package ntut.csie.ezScrum.web.support;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
+import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.jcis.account.core.IActor;
 import ntut.csie.jcis.account.core.IPermission;
-import ntut.csie.jcis.account.core.IRole;
 
 public class TranslateUtil {
 
@@ -15,35 +18,39 @@ public class TranslateUtil {
 	 * @param roles
 	 * @return
 	 */
-	static public String getRolesString(IRole[] roles) {
+	static public String getRolesString(HashMap<String, ProjectRole> rolesMap) {
 		String roleString = "";
-		for (int i=0; i<roles.length ; i++) {
-			String id = roles[i].getRoleId();
+		int roleSize = rolesMap.size();
+		int i = 0;
+		for (Entry<String, ProjectRole> entry : rolesMap.entrySet()) {
+			ScrumRole role = entry.getValue().getScrumRole();
+			String id = role.getProjectName() + "_" + role.getRoleName();
 			roleString += id;
-			if ((i+1) != roles.length) {
+			if ((i + 1) != roleSize) {
 				roleString += ", ";
 			}
+			i++;
 		}
 		return roleString;
 	}
-	
-	static public String getPermissionString(IPermission[] permissions){
+
+	static public String getPermissionString(IPermission[] permissions) {
 		String permissionString = "";
-		for (int i = 0; i < permissions.length; i++){
+		for (int i = 0; i < permissions.length; i++) {
 			String permissionname = permissions[i].getPermissionName();
 			permissionString += permissionname;
-			if ((i + 1) != permissions.length){
+			if ((i + 1) != permissions.length) {
 				permissionString += ",";
 			}
 		}
 		return permissionString;
 	}
-	static public String getPermissionStringForView(IPermission[] permissions){
+
+	static public String getPermissionStringForView(IPermission[] permissions) {
 		String permissionString = getPermissionString(permissions);
 		permissionString = permissionString.replaceAll(",", ", ");
 		return permissionString;
 	}
-	
 
 	/**
 	 * 將Actors中的account id以,隔開
@@ -95,8 +102,7 @@ public class TranslateUtil {
 		for (int i = 0; i < roleArray.length; i++) {
 			String tmp = roleArray[i];
 			tmp = tmp.trim();
-			if (tmp.isEmpty())
-				continue;
+			if (tmp.isEmpty()) continue;
 			roleList.add(roleArray[i]);
 		}
 

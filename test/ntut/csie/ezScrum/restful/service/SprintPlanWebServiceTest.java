@@ -89,8 +89,8 @@ public class SprintPlanWebServiceTest extends TestCase {
 
 	public void testgetAllSprint() throws Exception {
 		UserObject userObject = new UserObject();
-		userObject.account = "admin";
-		userObject.password = "admin";
+		userObject.setAccount("admin");
+		userObject.setPassword("admin");
 		String projectID = project.getName();
 
 		// 沒有Sprint的時候
@@ -126,8 +126,8 @@ public class SprintPlanWebServiceTest extends TestCase {
     public void testgetSprintWithAllItem() throws Exception {
 		// User Object
 		UserObject userObject = new UserObject();
-		userObject.account = "admin";
-		userObject.password = "admin";
+		userObject.setAccount("admin");
+		userObject.setPassword("admin");
 
 		String projectID = project.getName();
 

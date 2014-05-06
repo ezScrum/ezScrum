@@ -1009,9 +1009,10 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 	// get user session
 	private IUserSession CreateUserSession() throws LogonException {
-		IAccount theAccount = null;
-		theAccount = new Account(config.USER_ID);
-		IUserSession theUserSession = new UserSession(theAccount);
+//		IAccount theAccount = null;
+//		theAccount = new Account(config.USER_ID);
+//		IUserSession theUserSession = new UserSession(theAccount);
+		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;
 	}
@@ -1019,9 +1020,10 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	// get user session
 	private static IUserSession CreateUserSession(String ID)
 			throws LogonException {
-		IAccount theAccount = null;
-		theAccount = new Account(ID);
-		IUserSession theUserSession = new UserSession(theAccount);
+//		IAccount theAccount = null;
+//		theAccount = new Account(ID);
+//		IUserSession theUserSession = new UserSession(theAccount);
+		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;
 	}

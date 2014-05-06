@@ -51,7 +51,7 @@ public class AjaxGetHandlerListWithAllAction extends PermissionAction {
 		
 		for(int i = 1; i < actors.size(); i++) {
 			result.append("<Handler>");
-			result.append("<Name>" + actors.get(i) + "</Name>");
+			result.append("<Name>").append(actors.get(i)).append("</Name>");
 			result.append("</Handler>");
 		}
 		

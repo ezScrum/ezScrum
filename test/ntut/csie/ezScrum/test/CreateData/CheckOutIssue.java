@@ -95,7 +95,7 @@ public class CheckOutIssue {
 
 	public void exeDone_Issues() throws Exception {
 		IUserSession userSession = config.getUserSession();
-		String handler = userSession.getAccount().getID();
+		String handler = userSession.getAccount().getId();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
 //			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X

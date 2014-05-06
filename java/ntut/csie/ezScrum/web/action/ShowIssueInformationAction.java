@@ -39,7 +39,8 @@ public class ShowIssueInformationAction extends Action {
 		//如果project以及session的資訊是空的 則透過專案名稱抓取資料
 		if(project ==null & session==null){
 			project = (new ProjectMapper()).getProjectByID(projectName);		// 根據專案名稱取得 IProject 物件
-			session = new UserSession(new Account("guest"));
+//			session = new UserSession(new Account("guest"));
+			session = new UserSession(null);
 		}
 		
 		IIssue issue = null;

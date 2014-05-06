@@ -11,13 +11,16 @@
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FORE_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
 -- Table structure for table `buildresult`
 --
+/*ghghghghghgh*/
+
+
 
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (
@@ -831,6 +834,8 @@ CREATE TABLE `mantis_project_table` (
   `access_min` smallint(6) NOT NULL default '10',
   `file_path` varchar(250) NOT NULL default '',
   `description` longtext NOT NULL,
+  `baseLine_velocity` int(10) NOT NULL default '50',
+  `baseLine_cost_per_storyPoint` int(10) NOT NULL default '3',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `idx_project_name` (`name`),
   KEY `idx_project_id` (`id`),
@@ -1085,6 +1090,8 @@ CREATE TABLE `mantis_user_table` (
   `lost_password_request_count` smallint(6) NOT NULL default '0',
   `failed_login_count` smallint(6) NOT NULL default '0',
   `cookie_string` varchar(64) NOT NULL default '',
+  `Baseline_Velocity` int(11) NOT NULL default '50',
+  `Baseline_Cost_Per_StoryPoint` int(11) NOT NULL default '50',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `idx_user_cookie_string` (`cookie_string`),
   UNIQUE KEY `idx_user_username` (`username`),
@@ -1098,7 +1105,7 @@ CREATE TABLE `mantis_user_table` (
 
 LOCK TABLES `mantis_user_table` WRITE;
 /*!40000 ALTER TABLE `mantis_user_table` DISABLE KEYS */;
-INSERT INTO `mantis_user_table` VALUES (1,'administrator','','root@localhost','63a9f0ea7bb98050796b649e85481845','2010-01-19 05:41:23','2010-01-19 05:41:35',1,0,90,4,0,0,'b9bec1c98360692f7ae7baecd9736deaa511ea87cfda0be2ddac035e208e1069');
+INSERT INTO `mantis_user_table` VALUES (1,'admin','','root@localhost','63a9f0ea7bb98050796b649e85481845','2010-01-19 05:41:23','2010-01-19 05:41:35',1,0,90,4,0,0,'b9bec1c98360692f7ae7baecd9736deaa511ea87cfda0be2ddac035e208e1069',50,50);
 /*!40000 ALTER TABLE `mantis_user_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1193,12 +1200,15 @@ ENGINE = InnoDB DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `ID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `comment` TEXT NULL,
-  `product_owner` BIGINT UNSIGNED NOT NULL,
+  `product_owner` VARCHAR(255), 
+  `attach_max_size` BIGINT UNSIGNED NOT NULL DEFAULT 2, 
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
-  PRIMARY KEY (`ID`))
+  PRIMARY KEY (`ID`),
+  UNIQUE INDEX `pid_UNIQUE` (`pid` ASC))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `sprint`;
@@ -1348,3 +1358,15 @@ CREATE TABLE `attach_file` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `system`;
+CREATE TABLE `system` (
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
+  `Account_ID` BIGINT NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE INDEX `Account_ID_UNIQUE` (`Account_ID` ASC))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+LOCK TABLES `system` WRITE;
+INSERT INTO `system` VALUES (1, 1);
+UNLOCK TABLES;

@@ -18,10 +18,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.RemainingWorkReport;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -108,9 +107,10 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		AddUserToRole addUserToRole = new AddUserToRole(CP, testAccount);
 		addUserToRole.exe_Guest();
 		// 使用無權限的帳號資訊塞到UserSession
-		IAccount theAccount = null;
-		IAccountManager manager = AccountFactory.getManager();
-		theAccount = manager.getAccount(testAccount.getAccount_ID(1));
+//		IAccount theAccount = null;
+//		IAccountManager manager = AccountFactory.getManager();
+//		theAccount = manager.getAccount(testAccount.getAccount_ID(1));
+		UserObject theAccount = new AccountMapper().getAccount(testAccount.getAccount_ID(1));
 		IUserSession theUserSession = new UserSession(theAccount);
 
 		StringBuilder expectedResponseTest = new StringBuilder();
@@ -132,13 +132,6 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 
 		String actualResponseText = request.getAttribute("message").toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
-
-		// ============= release ==============
-		project = null;
-		testAccount = null;
-		theAccount = null;
-		manager = null;
-		theUserSession = null;
 	}
 
 	/**
