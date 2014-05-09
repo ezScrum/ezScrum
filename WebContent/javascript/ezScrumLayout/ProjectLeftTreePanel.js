@@ -1,6 +1,6 @@
 Ext.ns('ezScrum');
 
-ezScrum.ProjectLeftPanel = Ext.extend(Ext.tree.TreePanel, {
+ezScrum.ProjectLeftPanel = Ext.extend(ezScrum.projectLeftTree.treePanel, {
 	collapsible		: true,
 	collapseMode	:'mini',
 	animCollapse	: false,
@@ -8,8 +8,8 @@ ezScrum.ProjectLeftPanel = Ext.extend(Ext.tree.TreePanel, {
 	hideCollapseTool: true,
 	id				: 'projectleftside',
 	ref				: 'projectleftside_refID',
-	rootVisible		: false,
 	lines			: false,
+	rootVisible		: false,
 	autoScroll		: true,
 	root: {
         nodeType	: 'node',
