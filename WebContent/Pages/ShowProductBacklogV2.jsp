@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <!doctype html>
 <html ng-app="ezScrum">
 <head>
@@ -10,11 +8,13 @@
 	<script type="text/javascript" src="javascript/utils.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/angular.min.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/ng-context-menu.min.js"></script>
+	<script type="text/javascript" src="javascript/angularjs/ui-utils.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/app.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/controllers.js"></script>
 	<script type="text/javascript" src="javascript/jquery-1.7.2.min.js"></script>
+	
 </head>
-<body ng-controller="ProductBacklogController">
+<body ng-controller="ProductBacklogController" ui-keyup="{'esc':'escTriggered()'}">
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
@@ -64,8 +64,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="overlay" ng-show="isEditMode || isCreateMode" ng-click="cancel()">
-	</div>
+	<div class="overlay" ng-show="isEditMode || isCreateMode" ng-click="cancel()"></div>
 	<div class="task-container" ng-show="isEditMode || isCreateMode">
 		<div class="col-md-12">
 			<div class="ui-box">
@@ -105,7 +104,7 @@
 					<div class="row">
 						<div class="col-md-9 col-md-offset-3">
 							<div class="col-md-3 no-padding">
-								Imp.<input type="text" class="input-field" onkeypress="return isNumberKey(event)"Number(tmpStory.value);">
+								Imp.<input type="text" class="input-field" ng-model="tmpStory.importance" onkeypress="return isNumberKey(event)">
 							</div>
 							<div class="col-md-3 col-md-offset-1 no-padding">
 								Est.<input type="text" class="input-field" ng-model="tmpStory.estimation" onkeypress="return isNumberKey(event)">
@@ -116,7 +115,7 @@
 						</div>
 					</div>
 					<br>
-					<div class="col-md-5 col-md-offset-7 no-padding" style="text-align: right;">
+					<div class="col-md-5 col-md-offset-7 no-padding col-sm-12" style="text-align: right;">
 						<button class="button pull-right" ng-click="save(tmpStory)" style="margin-left: 10px;">Save</button>
 						<button class="button pull-right" ng-show="isEditMode" ng-click="apply(tmpStory)" style="margin-left: 10px;">Apply</button>
 						<button class="button pull-right" ng-click="cancel()">Cancel</button>

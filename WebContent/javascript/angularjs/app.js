@@ -7,7 +7,7 @@ function isNumberKey(evt){
     return true;
 }
 
-var ezScrum = angular.module('ezScrum', ['ng-context-menu'])
+var ezScrum = angular.module('ezScrum', ['ng-context-menu', 'ui.utils'])
 	.directive('draggable', ['$document' , function($document) {
 	  return {
 	    restrict: 'A',
@@ -66,13 +66,13 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	var updateStory = function(tmpStory) {
 		var data = {
-				name: tmpStory.name,
-				value: tmpStory.value,
-				estimation: tmpStory.estimation,
-				notes: tmpStory.notes,
-				importance: tmpStory.importance,
-				howToDemo: tmpStory.howToDemo,
-				id: tmpStory.id
+			name: tmpStory.name,
+			value: tmpStory.value,
+			estimation: tmpStory.estimation,
+			notes: tmpStory.notes,
+			importance: tmpStory.importance,
+			howToDemo: tmpStory.howToDemo,
+			id: tmpStory.id
 		}
 		$http.put('/ezScrum/web-service/' + getQueryStringByName('PID') + '/story/update?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
 			success(function(data, status, headers, config) {
@@ -156,6 +156,10 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	$scope.goBack = function() {
 		location.assign('/ezScrum/viewProject.do?PID=' + getQueryStringByName('PID'));
+	}
+	
+	$scope.escTriggered = function() {
+		$scope.cancel();
 	}
 	
 	init();
