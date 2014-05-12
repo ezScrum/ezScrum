@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.ProductBacklogUtil;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.account.core.LogonException;
@@ -42,6 +43,25 @@ public class ProductBacklogWebService extends ProjectWebService {
 	
 	public String getRESTFulResponseString() {
 		return responseString;
+	}
+	
+	/**
+	 * 新增一筆Story
+	 * @throws JSONException 
+	 */
+	public void createStory(JSONObject storyProperties) throws JSONException{
+		StoryInformation storyInformation = new StoryInformation();
+		storyInformation.setName(storyProperties.getString("name"));
+		storyInformation.setImportance(storyProperties.getString("importance"));
+		storyInformation.setEstimation(storyProperties.getString("estimation"));
+		storyInformation.setValue(storyProperties.getString("value"));
+		storyInformation.setHowToDemo(storyProperties.getString("howToDemo"));
+		storyInformation.setNotes(storyProperties.getString("notes"));
+		storyInformation.setSprintID(storyProperties.getString("sprintID"));
+		storyInformation.setTagIDs(storyProperties.getString("tagIDs"));
+		
+		IIssue storyIIssue = productBacklogHelper.addNewStory(storyInformation);
+		responseString = cpbForRESTFul.createStory(storyIIssue.getIssueID());
 	}
 	
 	/****
@@ -79,7 +99,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 		IStory targetStory = null;
 		List<IIssueTag> issueTagList = new ArrayList<IIssueTag>();
 		try {
-			JSONArray tagArray = storyProperties.getJSONArray(ProductBacklogUtil.TAG_TAG);
+			JSONArray tagArray = storyProperties.getJSONArray(ProductBacklogUtil.TAG_TAGLIST);
 			
 			String id = storyProperties.getString(ProductBacklogUtil.TAG_ID);//由client端取回的storyID
 		
