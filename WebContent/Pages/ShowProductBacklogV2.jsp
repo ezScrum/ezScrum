@@ -91,16 +91,16 @@
 					<div class="row">
 						<div class="col-md-3 text-right">Tag</div>
 						<div class="col-md-9">
-							<!-- <select class="input-field" ng-model="tagList" ng-options="for tag in tagList" multiple="multiple" multiple="multiple" multiselect-dropdown>
+							<select class="input-field" ng-model="tagList">
 								<option value=""></option>
 								<option value="{{ tag.tagName }}" ng-repeat="tag in tagList">{{ tag.tagName }}</option>
-							</select> -->
-					       	<select id="multiselect" multiple="multiple" multiselectDropdown>
+							</select>
+					       	<!-- <select id="multiselect" multiple="multiple" multiselectDropdown>
 								<option value="asdf">asdf</option>
 								<option value="sdf">dfdfdf</option>
 								<option value="sdfdf">lkdjfld</option>
 								<option value="dfgfdg">eorierlskj</option>
-							</select>
+							</select> -->
 						</div>
 					</div>
 					<br>
