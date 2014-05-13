@@ -117,14 +117,13 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 		    error(function(data, status, headers, config) {
 		    });
 		
-//		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/taglist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
-//		    success(function(data, status, headers, config) {
-//		    	$scope.tagList = data;
-//		    }).
-//		    error(function(data, status, headers, config) {
-//		    });
-		
-		$scope.tagList = ['tag1', 'tag2', 'tag3'];
+		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/taglist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
+		    success(function(data, status, headers, config) {
+		    	$scope.tagList = data;
+		    }).
+		    error(function(data, status, headers, config) {
+		    });
+	
 	}
 	
 	var updateStory = function(tmpStory) {
@@ -172,16 +171,25 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	$scope.enterEditMode = function(story) {
 		$scope.boxTitle = 'Story #' + story.id;
-		
-		$scope.tmpStory = story;
-		$scope.tmpStory.estimation = parseInt(story.estimation);
-		$scope.tmpStory.value = parseInt(story.value);
-		$scope.tmpStory.importance = parseInt(story.importance);
+		$scope.tmpStory = {
+			id: story.id,
+			name: story.name,
+			notes: story.notes,
+			howToDemo: story.howToDemo,
+			estimation: story.estimation,
+			value: story.value,
+			importance: story.importance
+		}
 		
 		$scope.isEditMode = true;
 	}
 	
 	$scope.save = function(tmpStory) {
+		if($scope.tmpStory.name.trim() == '') {
+			alert("Please enter story's name");
+			return;
+		}
+		
 		if($scope.isEditMode) {
 			updateStory(tmpStory);
 		} else if($scope.isCreateMode) {
@@ -191,6 +199,10 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	}
 	
 	$scope.apply = function(tmpStory) {
+		if($scope.tmpStory.name == '') {
+			alert("Please enter story's name");
+			return;
+		}
 		updateStory(tmpStory);
 	}
 	
