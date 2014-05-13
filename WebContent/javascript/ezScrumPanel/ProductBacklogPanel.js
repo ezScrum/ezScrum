@@ -327,6 +327,13 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 						}
 					}]
 				}
+			}, {
+				itemId: 'ProductBacklog_goToNewPage',
+				text: 'New ProductBacklog V2',
+				icon: 'images/arrow_right.png',
+				handler: function() {
+					window.location.assign("/ezScrum/showProductBacklogV2.do?PID=" + getURLParameter('PID'));
+				}
 			}]
 		});
 
