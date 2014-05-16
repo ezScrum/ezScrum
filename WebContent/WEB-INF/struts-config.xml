@@ -71,6 +71,9 @@
     		<!-- Product Backlog -->
     			<!-- common -->
     		<action path="/showProductBacklog2"		type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogAction" />
+    		<action path="/showProductBacklogV2"	type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogV2Action">
+    			<forward name="success" path="/Pages/ShowProductBacklogV2.jsp"></forward>
+    		</action>
     			<!-- Story CRUD -->
     		<action path="/ajaxAddNewStory"			type="ntut.csie.ezScrum.web.action.backlog.AjaxAddNewStoryAction" />
     		<action path="/getEditStoryInfo"		type="ntut.csie.ezScrum.web.action.backlog.GetEditStoryInfoAction" />

@@ -136,6 +136,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 		CS.exe();	    // 新增 Sprint
 
 		ASS = new AddStoryToSprint(StoryCount, StoryEstimation, CS, CP, CreateProductBacklog.TYPE_ESTIMATION); // 新增 Story
+		ASS.exe();
 
 		CT = new CreateTask(TaskCount, CP);
 		CT.exe(); 
