@@ -40,8 +40,8 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 		} else if (node.parentNode.id == "pluginConfig") {
 			// Plugin configuration
 			obj.event_PluginConfig(node);
-		} else if (node.parentNode.id == "exportDocument") {
-			obj.event_ExportDocument(node);
+//		} else if (node.parentNode.id == "exportDocument") {
+//			obj.event_ExportDocument(node);
 		}
 	},
 	event_ProjectConfig: function(node) {
@@ -101,13 +101,13 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 			this.Page_Index = 12;
 		}
 	},
-	event_ExportDocument: function(node) {
-		if (node.id == "VelocityUrl") {
-			this.Page_Index = 13;
-		} else if (node.id == "StoryCountUrl") {
-			this.Page_Index = 14;
-		}
-	},
+//	event_ExportDocument: function(node) {
+//		if (node.id == "VelocityUrl") {
+//			this.Page_Index = 13;
+//		} else if (node.id == "StoryCountUrl") {
+//			this.Page_Index = 14;
+//		}
+//	},
 	notify_Main_Content: function() {
 		Ext.getCmp('content_panel').layout.setActiveItem(this.Page_Index);
 	}
