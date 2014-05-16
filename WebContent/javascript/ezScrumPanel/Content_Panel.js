@@ -25,6 +25,6 @@ ezScrum.ContentPanel = new ezScrum.projectLeftTree.contentPanel({
 	    
 	    // Export Document index
 	    // 13,				14
-	    VelocityPage, StoryCountPage
+//	    VelocityPage, StoryCountPage
 	]
 });
