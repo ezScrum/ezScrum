@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" href="css/bootstrap/bootstrap-multiselect.css">
 	<link rel="stylesheet" href="css/ezScrum/productbacklogv2.css">
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
+	<link rel="stylesheet" href="css/bootstrap/glyphicons-halflings-regular.woff">
 	
 	<!-- jQuery Lib -->
 	<script type="text/javascript" src="javascript/jquery/jquery-1.10.2.js"></script>
