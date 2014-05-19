@@ -1,18 +1,23 @@
 'use strict';
 
-function isNumberKey(evt){
+function isNumberKey(ele, evt){
+	if($(ele).val().length > 2) {
+		return false;
+	}
+	
     var charCode = (evt.which) ? evt.which : event.keyCode
     if (charCode > 31 && (charCode < 48 || charCode > 57))
         return false;
     return true;
 }
 
-var ezScrum = angular.module('ezScrum', ['ng-context-menu'])
+var ezScrum = angular.module('ezScrum', ['ng-context-menu', 'ui.utils', 'ui.bootstrap', 'multi-select'])
 	.directive('draggable', ['$document' , function($document) {
 	  return {
 	    restrict: 'A',
 	    link: function(scope, elm, attrs) {
 	      var startX, startY, initialMouseX, initialMouseY;
+	      
 	      elm.css({position: 'absolute'});
 	
 	      elm.bind('mousedown', function($event) {
@@ -43,10 +48,12 @@ var ezScrum = angular.module('ezScrum', ['ng-context-menu'])
 	  };
 	}]);
 
+
 ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	$scope.isEditMode = false;
 	$scope.isCreateMode = false;
 	$scope.currentStory = {};
+	$scope.tagList = [{name: "Tag1"}, {name: "Tag2"}, {name: "Tag3"}, {name: "Tag4"}];
 	
 	var init = function() {
 		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/storylist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
@@ -58,7 +65,11 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 		
 		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/taglist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
 		    success(function(data, status, headers, config) {
-		    	$scope.tagList = data;
+		    	var tagList = [];
+		    	for(var i=0; i<data.length; i++) {
+		    		tagList.push({name: data[i].tagName, id: data[i].tagID});
+		    	}
+		    	$scope.tagList = tagList;
 		    }).
 		    error(function(data, status, headers, config) {
 		    });
@@ -66,13 +77,13 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	var updateStory = function(tmpStory) {
 		var data = {
-				name: tmpStory.name,
-				value: tmpStory.value,
-				estimation: tmpStory.estimation,
-				notes: tmpStory.notes,
-				importance: tmpStory.importance,
-				howToDemo: tmpStory.howToDemo,
-				id: tmpStory.id
+			name: tmpStory.name,
+			value: tmpStory.value,
+			estimation: tmpStory.estimation,
+			notes: tmpStory.notes,
+			importance: tmpStory.importance,
+			howToDemo: tmpStory.howToDemo,
+			id: tmpStory.id
 		}
 		$http.put('/ezScrum/web-service/' + getQueryStringByName('PID') + '/story/update?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
 			success(function(data, status, headers, config) {
@@ -109,25 +120,41 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	$scope.enterEditMode = function(story) {
 		$scope.boxTitle = 'Story #' + story.id;
-		
-		$scope.tmpStory = story;
-		$scope.tmpStory.estimation = parseInt(story.estimation);
-		$scope.tmpStory.value = parseInt(story.value);
-		$scope.tmpStory.importance = parseInt(story.importance);
+		$scope.tmpStory = {
+			id: story.id,
+			name: story.name,
+			notes: story.notes,
+			howToDemo: story.howToDemo,
+			estimation: story.estimation,
+			value: story.value,
+			importance: story.importance,
+			tags: story.tagList
+		}
 		
 		$scope.isEditMode = true;
 	}
 	
 	$scope.save = function(tmpStory) {
+		if($scope.tmpStory.name.trim() == '') {
+			alert("Please enter story's name");
+			return;
+		}
+		
 		if($scope.isEditMode) {
 			updateStory(tmpStory);
 		} else if($scope.isCreateMode) {
 			createStory(tmpStory);
 		}
 		$scope.cancel();
+		
+		console.log(tmpStory.tags);
 	}
 	
 	$scope.apply = function(tmpStory) {
+		if($scope.tmpStory.name == '') {
+			alert("Please enter story's name");
+			return;
+		}
 		updateStory(tmpStory);
 	}
 	
@@ -156,6 +183,10 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	
 	$scope.goBack = function() {
 		location.assign('/ezScrum/viewProject.do?PID=' + getQueryStringByName('PID'));
+	}
+	
+	$scope.escTriggered = function() {
+		$scope.cancel();
 	}
 	
 	init();
