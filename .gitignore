@@ -21,3 +21,5 @@ _UnitTest
 /robotTesting/keywords/lib/*.pyc
 /bin
 /WebContent/RoleBase.xml
+
+/robotTesting/plugin/lib/*.pyc
