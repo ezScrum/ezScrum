@@ -42,7 +42,7 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 //		appendPracticeGuide(list); 不對外開放
 //		appendezTrackInformation(list); 不對外開放
 		appendITSConfig(list);
-		appendPluginConfig(list);
+//		appendPluginConfig(list);
 	}
 	
 	
@@ -156,17 +156,17 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	}
 	
 	//plugin configuration
-	private final String Project_PluginConfigration_ID = "pluginConfig";
-	private final String Project_PluginConfiguration_Text = "Plugin Configuration";
-	private final String Project_PluginConfiguration_ITSConfig_ID = "PluginUrl";
-	private final String Project_PluginConfiguration_ITSConfig_Text = "Plugin configuration";
-	private void appendPluginConfig(List<ParentSideUI> list){
-		ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_PluginConfigration_ID, this.Project_PluginConfiguration_Text);
-		ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_PluginConfiguration_ITSConfig_ID, this.Project_PluginConfiguration_ITSConfig_Text));
-		
-		list.add(ITSConfigurration);
-		
-	}
+//	private final String Project_PluginConfigration_ID = "pluginConfig";
+//	private final String Project_PluginConfiguration_Text = "Plugin Configuration";
+//	private final String Project_PluginConfiguration_ITSConfig_ID = "PluginUrl";
+//	private final String Project_PluginConfiguration_ITSConfig_Text = "Plugin configuration";
+//	private void appendPluginConfig(List<ParentSideUI> list){
+//		ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_PluginConfigration_ID, this.Project_PluginConfiguration_Text);
+//		ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_PluginConfiguration_ITSConfig_ID, this.Project_PluginConfiguration_ITSConfig_Text));
+//		
+//		list.add(ITSConfigurration);
+//		
+//	}
 	
 	// ITS configuration Side
 	
