@@ -96,7 +96,7 @@
 							<div
 							    multi-select
 							    input-model="tagList"
-							    output-model="resultTags"
+							    output-model="tmpStory.tags"
 							    button-label="name"
 							    item-label="name"
 							    max-labels="7"
