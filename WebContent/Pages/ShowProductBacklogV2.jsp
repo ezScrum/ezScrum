@@ -2,15 +2,16 @@
 <html ng-app="ezScrum">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
-	<link rel="stylesheet" href="css/bootstrap/bootstrap-multiselect.css">
+	<!-- <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">  -->
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/bootstrap/angular-multi-select.css">
 	<link rel="stylesheet" href="css/ezScrum/productbacklogv2.css">
-	<link rel="stylesheet" href="css/bootstrap/glyphicons-halflings-regular.woff">
+	
 	
 	<!-- jQuery Lib -->
-	<script type="text/javascript" src="javascript/jquery/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="javascript/jquery/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="javascript/jquery/jquery-ui-1.10.4.min.js"></script>
-	<script type="text/javascript" src="javascript/jquery/bootstrap.min.js"></script>
+	<script type="text/javascript" src="javascript/jquery/bootstrap-3.1.1.min.js"></script>
 	<script type="text/javascript" src="javascript/jquery/bootstrap-multiselect.js"></script>
 	
 	<!-- AngularJs Lib & Modules -->
@@ -19,6 +20,7 @@
 	<script type="text/javascript" src="javascript/angularjs/ui-utils.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/ui-bootstrap-tpls-0.11.0.min.js"></script>
 	<script type="text/javascript" src="javascript/angularjs/ngDialog.js"></script>
+	<script type="text/javascript" src="javascript/angularjs/angular-multi-select.js"></script>
 
 	<!-- Angular App -->
 	<script type="text/javascript" src="javascript/angularjs/app.js"></script>
@@ -39,7 +41,7 @@
 							<span class="glyphicon glyphicon-search searchbar-icon"></span><input class="searchbar" type="text" ng-model="search" placeholder="Click to search">
 						</div></a>
 					</li>
-					<li><a href="" ng-click="goBack()">< Back to origin ProductBacklog</a></li>
+					<li><a href="" ng-click="goBack()">< Back to original ProductBacklog</a></li>
 				</ul>
 			</div>
 		</div>
@@ -91,16 +93,16 @@
 					<div class="row">
 						<div class="col-md-3 text-right">Tag</div>
 						<div class="col-md-9">
-							<select class="input-field" ng-model="tagList">
-								<option value=""></option>
-								<option value="{{ tag.tagName }}" ng-repeat="tag in tagList">{{ tag.tagName }}</option>
-							</select>
-					       	<!-- <select id="multiselect" multiple="multiple" multiselectDropdown>
-								<option value="asdf">asdf</option>
-								<option value="sdf">dfdfdf</option>
-								<option value="sdfdf">lkdjfld</option>
-								<option value="dfgfdg">eorierlskj</option>
-							</select> -->
+							<div
+							    multi-select
+							    input-model="tagList"
+							    output-model="resultTags"
+							    button-label="name"
+							    item-label="name"
+							    max-labels="7"
+							    tick-property="ticked"
+							    helper-elements=""
+							></div>
 						</div>
 					</div>
 					<br>
@@ -143,7 +145,7 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function() {
-		  //$('#multiselect').multiselect();
+			//$('#multiselect').multiselect();
 		});
 	</script>
 </body>

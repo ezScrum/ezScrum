@@ -1,0 +1,198 @@
+body {
+	font-family: '微軟正黑體';
+}
+
+
+#productbacklog {
+	padding-top: 60px;
+}
+
+.add-story {
+	cursor: pointer;
+	margin-right: 10px;
+	padding: 30px 0px 30px 0px;
+	border-style: dotted;
+	border-color: #bdc3c7;
+	border-width: 1px;
+	/*border-radius: 5px;*/
+}
+
+.add-story:active {
+	background-color: #bdc3c7;
+}
+
+.story-item {
+	cursor: pointer;
+	margin: 0px 10px 10px 0px;
+	background: #fffffe;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #bdc3c7;
+	padding: 5px 0px 5px 0px;
+	box-shadow: 0px 1px 0px #CFCECE;
+	height: 20%;
+}
+
+.story-item:active {
+	background: #eeeeee;
+	box-shadow: 0px 0px 0px #fff;
+}
+
+.yellow {
+	background: #FFF792;
+}
+
+.blue {
+	background: #97C9FF;
+}
+
+.green {
+	background: #A1E8B9;
+}
+
+.value-item {
+	float: right;
+	width: 70px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	padding: 0px 5px 0px 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #CCC;
+}
+
+.value {
+	font-size: 2em;
+	float: right;
+}
+
+.no-padding {
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+.overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+}
+
+.task-container {
+	position: absolute;
+	top: 10%;
+	padding-left: 15px;
+	padding-right: 15px;
+	overflow: hidden;
+}
+
+/* Plus icon */
+#cross {
+	width: 100px;
+	height: 100px;
+	position: relative;
+	margin:10px;
+	background-size:cover ;
+	-webkit-filter: drop-shadow(4px 0px 1px black);
+	-moz-filter: drop-shadow(4px 0px 1px black);
+	filter: drop-shadow(4px 0px 1px black);
+}
+
+#cross:before, #cross:after {
+	content: "";
+	position: absolute;
+	z-index: 0;
+	background: #94ABA9;
+	transform: rotate(0deg);
+	border-radius:15px;
+}
+
+#cross:before {
+	left: 50%;
+	width: 30%;
+	margin-left: 35%;
+	height: 100%;
+}
+
+#cross:after {
+	top: 50%;
+	height: 30%;
+	margin-top: -15%;
+	width: 100%;
+}
+
+.input-field {
+	width: 100%;
+	height: 34px;
+	padding: 5px;
+	font-size: 14px;
+}
+
+.button {
+	padding: 10px;
+	border-radius: 0px;
+	color: #333;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #bdc3c7;
+	background-color: #fff;
+}
+
+.button:hover {
+	-webkit-transition: background-color 0.3s ease-in;
+	-moz-transition: background-color 0.3s ease-in;
+	-ms-transition: background-color 0.3s ease-in;
+	-o-transition: background-color 0.3s ease-in;
+	transition: background-color 0.3s ease-in;
+	
+	background-color: #555;
+	color: #fff;
+}
+
+.ui-box {
+	background: #FFF;
+	margin-bottom: 20px;
+	overflow-y: auto;
+}
+
+.ui-box-title {
+	border-bottom: 1px solid #DDD;
+	color: #FFF;
+	background-color: #3498db;
+	border-color: #bce8f1;
+	font-size: 16px;
+	padding: 0 10px;
+	font-size: 14px;
+	line-height: 40px;
+	font-weight: normal;
+	margin: 0;
+}
+
+.ui-box-content {
+	padding: 10px;
+}
+
+.position-fixed {
+	position: fixed;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.searchbar {
+	padding-left: 25px;
+	height: 23px;
+	width: 150px;
+}
+
+.searchbar-icon {
+	position: absolute;
+	left: 20px;
+	top: 5px;
+}
+
+.multiselect-container{position:absolute;list-style-type:none;margin:0;padding:0}.multiselect-container .input-group{margin:5px}.multiselect-container>li{padding:0}.multiselect-container>li>a.multiselect-all label{font-weight:700}.multiselect-container>li>label.multiselect-group{margin:0;padding:3px 20px;height:100%;font-weight:700}.multiselect-container>li>a{padding:0}.multiselect-container>li>a>label{margin:0;height:100%;cursor:pointer;font-weight:400;padding:3px 20px 3px 40px}.multiselect-container>li>a>label.radio,.multiselect-container>li>a>label.checkbox{margin:0}.multiselect-container>li>a>label>input[type=checkbox]{margin-bottom:5px}.btn-group>.btn-group:nth-child(2)>.multiselect.btn{border-top-left-radius:4px;border-bottom-left-radius:4px}
