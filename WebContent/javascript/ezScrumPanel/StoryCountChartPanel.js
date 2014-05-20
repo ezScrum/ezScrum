@@ -18,10 +18,13 @@ ezScrum.StoryCountReleasePanel = Ext.extend(Ext.Panel, {
 	},
 	createCheckboxs: function() {
 		var obj = this;
+		var username = this.getCookie("username");
+		var userpwd = this.getCookie("userpwd");
+		 
 		Ext.Ajax.request({
-			url		: 'ajaxGetReleasePlan.do',
+			url		: '/ezScrum/web-service/' + getURLParameter("PID") + '/release-plan/all?userName=' + username + '&password=' + userpwd,
 			success	: function(response) {
-				obj.releases = Ext.decode(response.responseText).Releases;
+				obj.releases = Ext.decode(response.responseText);
 				for(var i=0; i<obj.releases.length; i++) {
 					obj.add({
 						xtype		: 'checkbox',
@@ -52,6 +55,16 @@ ezScrum.StoryCountReleasePanel = Ext.extend(Ext.Panel, {
 			}
 		}
 		selectedPanel.doLayout();
+	},
+	getCookie : function(cname) {
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i].trim();
+			if (c.indexOf(name) == 0)
+				return c.substring(name.length, c.length - 1).replace('"', '');
+		}
+		return "";
 	}
 });
 Ext.reg('StoryCountReleasePanel', ezScrum.StoryCountReleasePanel);
@@ -125,7 +138,7 @@ ezScrum.StoryCountControlPanel = Ext.extend(Ext.Panel, {
 		
 		exportPanel.removeAll();
 		exportPanel.add({
-				html: '<iframe src="showStoryCountChart.do?' + queryString + '" width="820" height="650" frameborder="0" scrolling="auto"></iframe>',
+			    html: '<iframe src="showStoryCountChart.do?' + queryString + '&PID=' + getURLParameter("PID") + '" width="820" height="650" frameborder="0" scrolling="auto"></iframe>',
 				border: false
 			}
 		);

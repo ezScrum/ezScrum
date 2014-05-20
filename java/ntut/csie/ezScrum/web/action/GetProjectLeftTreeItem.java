@@ -42,8 +42,7 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 //		appendPracticeGuide(list); 不對外開放
 //		appendezTrackInformation(list); 不對外開放
 		appendITSConfig(list);
-		appendPluginConfig(list);
-		appendExportDocument(list);
+//		appendPluginConfig(list);
 	}
 	
 	
@@ -157,31 +156,18 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	}
 	
 	//plugin configuration
-	private final String Project_PluginConfigration_ID = "pluginConfig";
-	private final String Project_PluginConfiguration_Text = "Plugin Configuration";
-	private final String Project_PluginConfiguration_ITSConfig_ID = "PluginUrl";
-	private final String Project_PluginConfiguration_ITSConfig_Text = "Plugin configuration";
-	private void appendPluginConfig(List<ParentSideUI> list){
-		ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_PluginConfigration_ID, this.Project_PluginConfiguration_Text);
-		ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_PluginConfiguration_ITSConfig_ID, this.Project_PluginConfiguration_ITSConfig_Text));
-		
-		list.add(ITSConfigurration);
-		
-	}
+//	private final String Project_PluginConfigration_ID = "pluginConfig";
+//	private final String Project_PluginConfiguration_Text = "Plugin Configuration";
+//	private final String Project_PluginConfiguration_ITSConfig_ID = "PluginUrl";
+//	private final String Project_PluginConfiguration_ITSConfig_Text = "Plugin configuration";
+//	private void appendPluginConfig(List<ParentSideUI> list){
+//		ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_PluginConfigration_ID, this.Project_PluginConfiguration_Text);
+//		ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_PluginConfiguration_ITSConfig_ID, this.Project_PluginConfiguration_ITSConfig_Text));
+//		
+//		list.add(ITSConfigurration);
+//		
+//	}
 	
-	private final String Export_Document_ID = "exportDocument";
-	private final String Export_Document_Text = "Export Document";
-	private final String Export_Document_Velocity_ID = "VelocityUrl";
-	private final String Export_Document_Velocity_Text = "Velocity Chart";
-	private final String Export_Document_StoryCount_ID = "StoryCountUrl";
-	private final String Export_Document_StoryCount_Text = "StoryCount Chart";
-	private void appendExportDocument(List<ParentSideUI> list){
-		ParentSideUI exportDocument = new ParentSideUI(this.Export_Document_ID, this.Export_Document_Text);
-		exportDocument.appendChild(new ChildrenSiidUI(this.Export_Document_Velocity_ID, this.Export_Document_Velocity_Text));
-		exportDocument.appendChild(new ChildrenSiidUI(this.Export_Document_StoryCount_ID, this.Export_Document_StoryCount_Text));
-		list.add(exportDocument);
-	}
-
 	// ITS configuration Side
 	
 	/* 不對外開放
