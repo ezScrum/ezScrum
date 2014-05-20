@@ -43,6 +43,7 @@ ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
 	checkChange: function() {
 		var obj = this;
 		var selectedPanel = Ext.getCmp('VelocitySelectPanel_ID');
+		var exportbutton = Ext.getCmp('VelocityExportButton');
 		
 		selectedPanel.removeAll();
 		for(var i=0; i<obj.items.length; i++) { 
@@ -53,6 +54,11 @@ ezScrum.VelocityReleasePanel = Ext.extend(Ext.Panel, {
 					border: false
 				});
 			}
+		}
+		if(selectedPanel.items.length > 0){
+			exportbutton.enable();
+		} else {
+			exportbutton.disable();
 		}
 		selectedPanel.doLayout();
 	},
@@ -104,7 +110,9 @@ ezScrum.VelocityControlPanel = Ext.extend(Ext.Panel, {
 			    	xtype	: 'button',
 			    	text	: 'Export',
 			    	handler	: this.doExport,
-			    	style	: 'margin: 275px 0px 0px 50px;'
+			    	disabled: true,
+			    	style	: 'margin: 275px 0px 0px 50px;',
+			    	id      : 'VelocityExportButton'
 			    }
 			]
 		}
