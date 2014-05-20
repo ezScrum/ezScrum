@@ -47,25 +47,29 @@
 		</div>
 	</div>
 	<div id="productbacklog" class="container-fluid">
-		<div class="col-md-3 story-item no-padding panel panel-default" ng-repeat="story in storyList | filter:search" ng-click="enterEditMode(story)" context-menu="onRightClick(story);" data-target="myMenu">
-			<div class="col-md-12" style="font-size: 1.2em;">{{ '#'+story.id }}</div>
-			<div class="col-md-12">
-				<span style="font-size: 1.5em;">
-					{{ story.name }}
-				</span>
-			</div>
-			<div class="md-md-12">
-				<div class="value-item green">
-					<div>Val.</div>
-					<strong class="value">{{ story.value }}</strong>
+		<div class="col-md-3" ng-repeat="story in storyList | filter:search" ng-click="enterEditMode(story)" context-menu="onRightClick(story);" data-target="myMenu">
+			<div class="story-item no-padding paenl panel-default">
+				<div class="col-md-12" style="font-size: 1.2em;">{{ '#'+story.id }}</div>
+				<div class="col-md-12">
+					<div class="text-box">
+						<span class="text" style="font-size: 1.5em;">
+							{{ story.name }}
+						</span>
+					</div>
 				</div>
-				<div class="value-item blue">
-					<div>Est.</div>
-					<strong class="value">{{ story.estimation }}</strong>
-				</div>
-				<div class="value-item yellow">
-					<div>Imp.</div>
-					<strong class="value">{{ story.importance }}</strong>
+				<div class="md-md-12">
+					<div class="value-item green">
+						<div>Val.</div>
+						<strong class="value">{{ story.value }}</strong>
+					</div>
+					<div class="value-item blue">
+						<div>Est.</div>
+						<strong class="value">{{ story.estimation }}</strong>
+					</div>
+					<div class="value-item yellow">
+						<div>Imp.</div>
+						<strong class="value">{{ story.importance }}</strong>
+					</div>
 				</div>
 			</div>
 		</div>
