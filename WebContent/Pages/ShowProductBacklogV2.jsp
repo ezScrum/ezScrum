@@ -47,8 +47,8 @@
 		</div>
 	</div>
 	<div id="productbacklog" class="container-fluid">
-		<div class="col-md-3" ng-repeat="story in storyList | filter:search" ng-click="enterEditMode(story)" context-menu="onRightClick(story);" data-target="myMenu">
-			<div class="story-item no-padding paenl panel-default">
+		<div class="col-md-3 col-sm-4" ng-repeat="story in storyList | filter:search" >
+			<div class="story-item no-padding paenl panel-default" ng-click="enterEditMode(story)" context-menu="onRightClick(story);" data-target="myMenu">
 				<div class="col-md-12" style="font-size: 1.2em;">{{ '#'+story.id }}</div>
 				<div class="col-md-12">
 					<div class="text-box">
@@ -90,7 +90,7 @@
 						<div class="row">
 						<div class="col-md-3 text-right">Name</div>
 						<div class="col-md-9">
-							<textarea rows="4" style="width: 100%;resize: none;" ng-model="tmpStory.name"></textarea>
+							<textarea rows="3" style="width: 100%;resize: none;" ng-model="tmpStory.name"></textarea>
 						</div>
 					</div>
 					<br>
@@ -113,14 +113,14 @@
 					<div class="row">
 						<div class="col-md-3 text-right">How To Demo</div>
 						<div class="col-md-9">
-							<textarea rows="8" style="width: 100%;resize: none;" ng-model="tmpStory.howToDemo"></textarea>
+							<textarea rows="5" style="width: 100%;resize: none;" ng-model="tmpStory.howToDemo"></textarea>
 						</div>
 					</div>
 					<br>
 					<div class="row">
 						<div class="col-md-3 text-right">Note</div>
 						<div class="col-md-9">
-							<textarea rows="8" style="width: 100%;resize: none;" ng-model="tmpStory.notes"></textarea>
+							<textarea rows="5" style="width: 100%;resize: none;" ng-model="tmpStory.notes"></textarea>
 						</div>
 					</div>
 					<br>

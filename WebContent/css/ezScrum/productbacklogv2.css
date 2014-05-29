@@ -94,46 +94,11 @@ body {
 }
 
 .task-container {
-	position: absolute;
-	top: 10%;
+	position: fixed;
+	top: 7%;
 	padding-left: 15px;
 	padding-right: 15px;
 	overflow: hidden;
-}
-
-/* Plus icon */
-#cross {
-	width: 100px;
-	height: 100px;
-	position: relative;
-	margin:10px;
-	background-size:cover ;
-	-webkit-filter: drop-shadow(4px 0px 1px black);
-	-moz-filter: drop-shadow(4px 0px 1px black);
-	filter: drop-shadow(4px 0px 1px black);
-}
-
-#cross:before, #cross:after {
-	content: "";
-	position: absolute;
-	z-index: 0;
-	background: #94ABA9;
-	transform: rotate(0deg);
-	border-radius:15px;
-}
-
-#cross:before {
-	left: 50%;
-	width: 30%;
-	margin-left: 35%;
-	height: 100%;
-}
-
-#cross:after {
-	top: 50%;
-	height: 30%;
-	margin-top: -15%;
-	width: 100%;
 }
 
 .input-field {
