@@ -10,8 +10,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -21,9 +21,9 @@ import org.jdom.Element;
 
 public class MantisNoteService extends AbstractMantisService {
 
-	public MantisNoteService(ISQLControl control, ITSPrefsStorage prefs) {
+	public MantisNoteService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 
 	public List<IIssueNote> getIssueNotes(IIssue issue) {
@@ -171,7 +171,7 @@ public class MantisNoteService extends AbstractMantisService {
 	}
 
 	public long insertBugNote(long issueID, String note) {
-		if (getUserID(getPrefs().getAccount()) <= 0)
+		if (getUserID(getConfig().getAccount()) <= 0)
 			return -1;
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
@@ -202,7 +202,7 @@ public class MantisNoteService extends AbstractMantisService {
 
 				valueSet.addInsertValue("bug_id", Long.toString(issueID));
 				valueSet.addInsertValue("reporter_id", Integer.toString(this
-						.getUserID(getPrefs().getAccount())));
+						.getUserID(getConfig().getAccount())));
 				valueSet.addInsertValue("bugnote_text_id", Integer
 						.toString(bugNoteID));
 				valueSet.addInsertValue("view_state", "10");

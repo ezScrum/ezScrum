@@ -1,9 +1,8 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import java.io.File;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
@@ -19,7 +18,7 @@ public class ScrumRoleMapper {
 	private MySQLService mService;
 	
 	public ScrumRoleMapper() {
-		mService = new MySQLService(new ITSPrefsStorage());
+		mService = new MySQLService(new Configuration());
 	}
 	
 	/**

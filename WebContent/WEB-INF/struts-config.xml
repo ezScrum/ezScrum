@@ -322,13 +322,12 @@
 		
 		<!-- Common Used -->
 		<!-- ntut.csie.ezScrum.web.action -->
-    	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />			
-
+    	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />
     	
-    	<!-- ntut.csie.ezScrum.web.action.itsconfig -->
-    	<action path="/saveITSPreference"			type="ntut.csie.ezScrum.web.action.itsconfig.SaveITSPreferenceAction" />
-    	<action path="/showITSPreference"			type="ntut.csie.ezScrum.web.action.itsconfig.ShowITSPreferenceAction" />
-    	<!-- ntut.csie.ezScrum.web.action.itsconfig -->
+    	<!-- ntut.csie.ezScrum.web.action.config -->
+    	<action path="/saveConfiguration"			type="ntut.csie.ezScrum.web.action.config.SaveConfigurationAction" />
+    	<action path="/showConfiguration"			type="ntut.csie.ezScrum.web.action.config.ShowConfigurationAction" />
+    	<!-- ntut.csie.ezScrum.web.action.config -->
     	
     	<!-- ntut.csie.ezScrum.web.action.plan -->
     		<!-- release plan -->

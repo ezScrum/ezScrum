@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 
 public class MantisTagService extends AbstractMantisService {
 	
-	public MantisTagService(ISQLControl control, ITSPrefsStorage prefs) {
+	public MantisTagService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 	
 	public void initTag(IIssue issue) {

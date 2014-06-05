@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.mysql;
 import java.util.List;
 
 import junit.framework.TestCase;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
@@ -23,7 +23,7 @@ public class AccountTest extends TestCase {
 	protected void setUp() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mService = new MySQLService(new ITSPrefsStorage());
+		mService = new MySQLService(new Configuration(true));
 		mService.openConnect();
 	}
 

@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -20,7 +20,7 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class MantisTagServiceTest extends TestCase {
 	private ISQLControl control;
-	private ITSPrefsStorage prefs;
+	private Configuration config;
 	private MantisTagService tagService;
 	
 	private CreateProject CP;
@@ -57,14 +57,14 @@ public class MantisTagServiceTest extends TestCase {
 		
 		// 建立MantisTagService
 		IProject project = this.CP.getProjectList().get(0);
-		prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		MantisService mantisService = new MantisService(prefs);
+		config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
+		MantisService mantisService = new MantisService(config);
 		control = mantisService.getControl();
-		control.setUser(prefs.getDBAccount());
-		control.setPassword(prefs.getDBPassword());
+		control.setUser(config.getDBAccount());
+		control.setPassword(config.getDBPassword());
 		control.connection();
 		
-		tagService = new MantisTagService(control, prefs);
+		tagService = new MantisTagService(control, config);
 		productBacklogMapper = new ProductBacklogMapper(this.CP.getProjectList().get(0), ezScrumInfoConfig.getUserSession());
 		
 		super.setUp();

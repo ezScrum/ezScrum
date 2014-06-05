@@ -10,8 +10,8 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -24,7 +24,7 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.jdom.Element;
 
 public class MantisNoteServiceTest extends TestCase {
-	private ITSPrefsStorage prefs;
+	private Configuration configuration;
 	
 	private CreateProject CP;
 	private CreateProductBacklog CPB;
@@ -51,10 +51,10 @@ public class MantisNoteServiceTest extends TestCase {
 		
 		// 建立MantisTagService
 		IProject project = this.CP.getProjectList().get(0);
-		prefs = new ITSPrefsStorage(project, config.getUserSession());
-		this.MSservice = new MantisService(prefs);
-		MNService = new MantisNoteService(MSservice.getControl(), prefs);
-		MISservice = new MantisIssueService(MSservice.getControl(), prefs);
+		configuration = new Configuration(config.getUserSession(), true);
+		this.MSservice = new MantisService(configuration);
+		MNService = new MantisNoteService(MSservice.getControl(), configuration);
+		MISservice = new MantisIssueService(MSservice.getControl(), configuration);
 		
 		super.setUp();
 		

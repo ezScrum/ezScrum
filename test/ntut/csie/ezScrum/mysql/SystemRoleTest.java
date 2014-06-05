@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.mysql;
 
 import junit.framework.TestCase;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
@@ -15,7 +15,7 @@ public class SystemRoleTest extends TestCase {
 	protected void setUp() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mService = new MySQLService(new ITSPrefsStorage());
+		mService = new MySQLService(new Configuration(true));
 		mService.openConnect();
 	}
 

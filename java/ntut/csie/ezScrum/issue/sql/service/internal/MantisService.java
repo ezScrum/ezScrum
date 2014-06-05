@@ -22,9 +22,9 @@ import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.HSQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
@@ -61,19 +61,19 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	private MantisAttachFileService m_attachFileService;
 	private MantisTagService m_tagService;
 
-	public MantisService(ITSPrefsStorage prefs) {
-		setPrefs(prefs);
+	public MantisService(Configuration config) {
+		setConfig(config);
 
-		if (!getPrefs().getDBType().equals(""))
-			MANTIS_TABLE_TYPE = getPrefs().getDBType();
+		if (!getConfig().getDBType().equals(""))
+			MANTIS_TABLE_TYPE = getConfig().getDBType();
 
-		if (!getPrefs().getDBName().equals(""))
-			MANTIS_DB_NAME = getPrefs().getDBName();
+		if (!getConfig().getDBName().equals(""))
+			MANTIS_DB_NAME = getConfig().getDBName();
 
 		// =========設定要使用的SQLControl============
 		ISQLControl control = null;
 		if (MANTIS_TABLE_TYPE.equalsIgnoreCase("MySQL")) {
-			control = new MySQLControl(prefs.getServerUrl(), PORT_SERVICE_MYSQL, MANTIS_DB_NAME);
+			control = new MySQLControl(config.getServerUrl(), PORT_SERVICE_MYSQL, MANTIS_DB_NAME);
 
 		} else {
 			/*-----------------------------------------------------------
@@ -82,7 +82,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			 *	所以要先取得Workspace的路徑
 			-------------------------------------------------------------*/
 			// 因為Default DB的檔案名稱預設就是ProjectName
-			String projectName = prefs.getProjectName();
+			String projectName = config.getProjectName();
 
 			// 如果是Default SQL的話，那麼DB路徑就會被設定為Project底下的資料夾+Project檔案名稱
 			// ex. WorkspacePath/ProjectName/ProjectName
@@ -94,8 +94,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			control = new HSQLControl(DBRootPath, PORT_SERVICE_MYSQL, projectName);
 		}
 
-		control.setUser(prefs.getDBAccount());
-		control.setPassword(prefs.getDBPassword());
+		control.setUser(config.getDBAccount());
+		control.setPassword(config.getDBPassword());
 		setControl(control);
 
 	}
@@ -107,11 +107,11 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public void openConnect() {
 		getControl().connection();
 
-		m_noteService = new MantisNoteService(getControl(), getPrefs());
-		m_historyService = new MantisHistoryService(getControl(), getPrefs());
-		m_issueService = new MantisIssueService(getControl(), getPrefs());
-		m_attachFileService = new MantisAttachFileService(getControl(), getPrefs());
-		m_tagService = new MantisTagService(getControl(), getPrefs());
+		m_noteService = new MantisNoteService(getControl(), getConfig());
+		m_historyService = new MantisHistoryService(getControl(), getConfig());
+		m_issueService = new MantisIssueService(getControl(), getConfig());
+		m_attachFileService = new MantisAttachFileService(getControl(), getConfig());
+		m_tagService = new MantisTagService(getControl(), getConfig());
 	}
 
 	/************************************************************
