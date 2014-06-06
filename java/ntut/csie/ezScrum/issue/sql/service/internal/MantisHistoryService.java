@@ -10,8 +10,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.internal.IssueHistory;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -22,14 +22,14 @@ import org.apache.commons.logging.LogFactory;
 public class MantisHistoryService extends AbstractMantisService {
 	private static Log log = LogFactory.getLog(MantisHistoryService.class);
 	
-	public MantisHistoryService(ISQLControl control, ITSPrefsStorage prefs) {
+	public MantisHistoryService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 
 	public void addMantisActionHistory(long issueID, String fieldName,
 			String oldValue, String newValue, int type, Date modifyDate) {
-		int userID = getUserID(getPrefs().getAccount());
+		int userID = getUserID(getConfig().getAccount());
 		if (userID == -1)
 			return;
 

@@ -26,7 +26,6 @@ import ntut.csie.ezScrum.web.dataObject.ITSInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
-import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;

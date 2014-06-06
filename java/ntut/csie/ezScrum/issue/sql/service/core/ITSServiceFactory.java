@@ -18,15 +18,15 @@ public class ITSServiceFactory {
 	}
 	
 	@Deprecated
-	public IITSService getService(ITSPrefsStorage prefs){
+	public IITSService getService(Configuration config){
 		if (m_serviceID.equals(ITSEnum.MANTIS_SERVICE_ID))
-			return new MantisService(prefs);
+			return new MantisService(config);
 		return null;
 	}
 	
-	public IITSService getService(String serviceID, ITSPrefsStorage prefs){
+	public IITSService getService(String serviceID, Configuration config){
 		if (serviceID.equals(ITSEnum.MANTIS_SERVICE_ID))
-			return new MantisService(prefs);
+			return new MantisService(config);
 		return null;
 	}
 	

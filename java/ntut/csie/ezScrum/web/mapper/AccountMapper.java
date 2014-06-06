@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
@@ -25,19 +25,23 @@ import ntut.csie.jcis.resource.core.IProject;
 public class AccountMapper {
 	private IProject mProject;
 	private IUserSession mUserSession;
-	private ITSPrefsStorage mPrefs;
+	//private ITSPrefsStorage mPrefs;
+	private Configuration mConfig;
 	private MySQLService mService;
 
 	public AccountMapper() {
-		mPrefs = new ITSPrefsStorage();
-		mService = new MySQLService(mPrefs);
+		//mPrefs = new ITSPrefsStorage();
+		//mService = new MySQLService(mPrefs);
+		mConfig = new Configuration();
+		mService = new MySQLService(mConfig);
 	}
 
 	public AccountMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
-		mPrefs = new ITSPrefsStorage(mProject, mUserSession);
-		mService = new MySQLService(mPrefs);
+		//mPrefs = new ITSPrefsStorage(mProject, mUserSession);
+		mConfig = new Configuration(mUserSession);
+		mService = new MySQLService(mConfig);
 	}
 
 	public UserObject createAccount(UserInformation user) {

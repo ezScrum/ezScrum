@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.service;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.AbstractMantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisAttachFileService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisHistoryService;
@@ -26,23 +26,23 @@ public class EzTrackService extends AbstractMantisService {
 	private MantisAttachFileService m_attachFileService;
 	private MantisHistoryService m_historyService;
 	
-	public EzTrackService(ITSPrefsStorage prefs) {
-		setPrefs(prefs);
+	public EzTrackService(Configuration config) {
+		setConfig(config);
 
 		// =========set database type (ex: Mysql, Hsql...etc)=========
-		MANTIS_TABLE_TYPE = getPrefs().getDBType();
+		MANTIS_TABLE_TYPE = getConfig().getDBType();
 		if (MANTIS_TABLE_TYPE == null || MANTIS_TABLE_TYPE.equals(""))
 			MANTIS_TABLE_TYPE = "Default";
 
 		// =========set database name ================================
-		MANTIS_TABLE_NAME = getPrefs().getDBName();
+		MANTIS_TABLE_NAME = getConfig().getDBName();
 		if (MANTIS_TABLE_NAME == null || MANTIS_TABLE_NAME.equals(""))
 			MANTIS_TABLE_NAME = "bugtracker";
 
 		// =========設定要使用的SQLControl============
 		ISQLControl control = null;
 		if (MANTIS_TABLE_TYPE.equalsIgnoreCase("MySQL")) {
-			control = new MySQLControl(prefs.getServerUrl(),
+			control = new MySQLControl(config.getServerUrl(),
 					PORT_SERVICE_MYSQL, MANTIS_TABLE_NAME);
 
 		} else {
@@ -52,7 +52,7 @@ public class EzTrackService extends AbstractMantisService {
 			 *	所以要先取得Workspace的路徑
 			-------------------------------------------------------------*/
 			// 因為Default DB的檔案名稱預設就是ProjectName
-			String projectName = prefs.getProjectName();
+			String projectName = config.getProjectName();
 
 			// 如果是Default SQL的話，那麼DB路徑就會被設定為Project底下的資料夾+Project檔案名稱
 			// ex. WorkspacePath/ProjectName/ProjectName
@@ -65,8 +65,8 @@ public class EzTrackService extends AbstractMantisService {
 			control = new HSQLControl(DBRootPath, PORT_SERVICE_MYSQL,
 					projectName);
 		}
-		control.setUser(prefs.getDBAccount());
-		control.setPassword(prefs.getDBPassword());
+		control.setUser(config.getDBAccount());
+		control.setPassword(config.getDBPassword());
 		setControl(control);
 	}
 	
@@ -75,9 +75,9 @@ public class EzTrackService extends AbstractMantisService {
 	 */
 	public void openConnect() {
 		getControl().connection();
-		m_issueService = new EzTrackIssueService(getControl(), getPrefs());
-		m_attachFileService =  new MantisAttachFileService(getControl(), getPrefs());
-		m_historyService = new MantisHistoryService(getControl(), getPrefs());
+		m_issueService = new EzTrackIssueService(getControl(), getConfig());
+		m_attachFileService =  new MantisAttachFileService(getControl(), getConfig());
+		m_historyService = new MantisHistoryService(getControl(), getConfig());
 	}
 	
 	/**

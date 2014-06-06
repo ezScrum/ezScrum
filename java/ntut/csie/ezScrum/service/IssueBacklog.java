@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.service;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -16,7 +16,8 @@ import ntut.csie.jcis.resource.core.IProject;
  */
 public class IssueBacklog {
 	private ProjectObject m_project;
-	private ITSPrefsStorage m_itsPrefs;
+	//private ITSPrefsStorage m_itsPrefs;
+	private Configuration m_config;
 	private IUserSession m_userSession;
 
 	// ezScrum v1.8 
@@ -25,7 +26,8 @@ public class IssueBacklog {
 		m_userSession = userSession;
 
 		//	//初始ITS的設定
-		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);
+		//m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);
+		m_config = new Configuration(m_project, m_userSession);
 	}
 
 	public IssueBacklog(IProject project, IUserSession userSession) {
@@ -35,8 +37,9 @@ public class IssueBacklog {
 		//		m_project = project;
 		m_userSession = userSession;
 
-		//	//初始ITS的設定
-		m_itsPrefs = new ITSPrefsStorage(project, m_userSession);
+		// 初始Config設定
+		m_config = new Configuration(m_userSession);
+		
 	}
 
 	/**
@@ -45,7 +48,7 @@ public class IssueBacklog {
 	 * @return
 	 */
 	public IIssue getIssue(long id) {
-		EzTrackService etsService = new EzTrackService(m_itsPrefs);
+		EzTrackService etsService = new EzTrackService(m_config);
 		etsService.openConnect();
 		IIssue issue = etsService.getIssue(id);
 		etsService.closeConnect();
@@ -90,7 +93,7 @@ public class IssueBacklog {
 	}
 
 	public List<CustomIssueType> getCustomIssueType() {
-		EzTrackService etsService = new EzTrackService(m_itsPrefs);
+		EzTrackService etsService = new EzTrackService(m_config);
 		etsService.openConnect();
 		List<CustomIssueType> list = etsService.getCustomIssueType(m_project.getName());
 		etsService.closeConnect();
@@ -105,7 +108,7 @@ public class IssueBacklog {
 	 * 新增一筆 Issue Type
 	 */
 	public CustomIssueType addIssueType(String typeName, boolean isPublic) {
-		EzTrackService etsService = new EzTrackService(m_itsPrefs);
+		EzTrackService etsService = new EzTrackService(m_config);
 		etsService.openConnect();
 		// 新增資料
 		CustomIssueType type = etsService.addIssueType(m_project.getName(), typeName, isPublic);

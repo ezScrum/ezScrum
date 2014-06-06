@@ -8,8 +8,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -154,10 +154,11 @@ public class CreateTask {
 		task.setDescription(description);
 		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
 		
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(p, config.getUserSession());
+		//ITSPrefsStorage itsPrefs = new ITSPrefsStorage(p, config.getUserSession());
+		Configuration configuration = new Configuration(config.getUserSession());
 		ITSServiceFactory itsFactory = ITSServiceFactory.getInstance();
 
-		IITSService itsService = itsFactory.getService(itsPrefs);
+		IITSService itsService = itsFactory.getService(configuration);
 		itsService.openConnect();
 		
 		long taskID = itsService.newIssue(task);

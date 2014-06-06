@@ -20,8 +20,8 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisHistoryService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisIssueService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -109,9 +109,9 @@ public class ChangeStoryRelation {
 		 *   統計一下現在的Project有用到哪幾台Mantis Server，如果有兩台以上就跟他說老子不幹啦
 		-------------------------------------------------------------*/
 		for (IProject project : projects) {
-			ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
-			map.put(prefs.getServerUrl(), prefs);
-			projectMap.put(prefs.getServerUrl(), project);
+			Configuration config = new Configuration(session);
+			map.put(config.getServerUrl(), config);
+			projectMap.put(config.getServerUrl(), project);
 		}
 
 		/*-----------------------------------------------------------
@@ -121,9 +121,9 @@ public class ChangeStoryRelation {
 		for (Object key : keys) {
 			Collection formColl = (Collection) map.get(key);
 			
-			ITSPrefsStorage[] forms = (ITSPrefsStorage[])formColl.toArray(new ITSPrefsStorage[formColl.size()]);
+			Configuration[] forms = (Configuration[])formColl.toArray(new Configuration[formColl.size()]);
 			
-			ITSPrefsStorage form = forms[0];
+			Configuration form = forms[0];
 			//如果有建立Table的話，那就繼續呼叫createIndexTable
 //			if (createUpdateTable(form.getServerUrl(), PORT_SERVICE_MYSQL,
 //					MANTIS_TABLE_MYSQL, form.getDBAccount(), form
@@ -140,7 +140,7 @@ public class ChangeStoryRelation {
 				/*-----------------------------------------------------------
 				*	對每個Project建立Index
 				-------------------------------------------------------------*/
-				Collection projectColl = (Collection) projectMap.get(key);
+				Collection<?> projectColl = (Collection<?>) projectMap.get(key);
 				IProject[] tmp = (IProject[])projectColl.toArray(new IProject[projectColl.size()]);
 				for(IProject project:tmp)
 				{

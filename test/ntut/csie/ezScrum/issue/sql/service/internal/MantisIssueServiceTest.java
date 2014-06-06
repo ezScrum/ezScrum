@@ -8,7 +8,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -40,16 +40,16 @@ public class MantisIssueServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, config.getUserSession());
-		this.MService = new MantisService(itsPrefs);
-		this.MISservice = new MantisIssueService(this.MService.getControl(), itsPrefs);
+		Configuration config = new Configuration(this.config.getUserSession(), true);
+		this.MService = new MantisService(config);
+		this.MISservice = new MantisIssueService(this.MService.getControl(), config);
 		
 		super.setUp();
 		
 		// ============= release ==============
 		ini = null;
 		project = null;
-		itsPrefs = null;
+		config = null;
 	}
 	
 	protected void tearDown() throws Exception {
