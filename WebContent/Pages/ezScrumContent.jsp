@@ -226,10 +226,6 @@
 <script type="text/javascript" src="javascript/ezScrumPage/PluginConfig.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ProductBacklog.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ValidateUserEvent.js"></script>
-<!--
-<script type="text/javascript" src="javascript/ezScrumPage/Velocity.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPage/StoryCount.js"></script>
--->
 
 <script type="text/javascript" src="javascript/ezTrackPage/ViewIssues.js"></script>
 <script type="text/javascript" src="javascript/ezTrackPage/ManageIssueType.js"></script>

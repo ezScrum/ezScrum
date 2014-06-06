@@ -55,6 +55,13 @@ ezScrum.ManagementLeftPanel_Event = Ext.extend(ezScrum.Management_LeftTreePanel,
 			this.Page_Index = 0;
 		}
 	},
+	event_DbConfigManagement: function(node) {
+		if (node.id == "DbConfigUrl") {
+			this.Page_Index = 4;
+		} else {
+			this.Page_Index = 0;
+		}
+	},
 	notify_Main_Content: function() {
 		Ext.getCmp('Management_content_panel').layout.setActiveItem(this.Page_Index);
 	}
