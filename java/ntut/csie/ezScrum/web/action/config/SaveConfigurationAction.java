@@ -30,8 +30,8 @@ public class SaveConfigurationAction extends PermissionAction{
 		String ServerUrl = request.getParameter("ServerUrl");
 		String Account = request.getParameter("DBAccount");
 		String Password = request.getParameter("DBPassword");
-		String DatabaseType = request.getParameter("DatabaseType");
-		String DatabaseName = request.getParameter("DatabaseName");
+		String DatabaseType = request.getParameter("DBType");
+		String DatabaseName = request.getParameter("DBName");
 		
 		config.setServerUrl(ServerUrl);
 		config.setDBAccount(Account);

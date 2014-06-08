@@ -32,14 +32,14 @@ var sqlDataType = new Ext.data.ArrayStore({
 var sqlCombo = new Ext.form.ComboBox({
 	store : sqlDataType,
 	displayField : 'SQLName',
-	fieldLabel : 'SQL Type',
+	fieldLabel : 'DB Type',
 	typeAhead : true,
 	mode : 'local',
 	triggerAction : 'all',
 	emptyText : 'Select a DataBase',
 	selectOnFocus : true,
 	allowBlank : false,
-	name : 'SQLType'
+	name : 'DBType'
 });
 
 var DBConfigItem = [ {
@@ -61,7 +61,8 @@ var DBConfigItem = [ {
 	allowBlank : false,
 	anchor : '50%',
 	inputType : 'password'
-}, sqlCombo, {
+}, sqlCombo
+, {
 	fieldLabel : 'DB Name',
 	name : 'DBName',
 	xtype : 'textfield',

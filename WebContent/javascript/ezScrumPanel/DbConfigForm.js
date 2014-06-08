@@ -9,6 +9,7 @@ DbConfigFormLayout = Ext.extend(Ext.form.FormPanel, {
 	labelWidth		: 150,
 	buttonAlign		: 'left',
 	monitorValid	: true,
+	loadmask		: null,
 	initComponent	: function() {
 		var config = {
 			url			: 'showConfiguration.do',
@@ -26,20 +27,26 @@ DbConfigFormLayout = Ext.extend(Ext.form.FormPanel, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		DbConfigFormLayout.superclass.initComponent.apply(this, arguments);
 	},
-    loadDataModel: function() {
+	showMask : function(msg) {
+		this.loadmask = new Ext.LoadMask(this.getEl(), {msg: msg});
+		this.loadmask.show();
+	},
+	closeMask : function() {
+		this.loadmask.hide();
+	},
+    loadDataModel : function() {
     	var obj = this;
-    	var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
-		loadmask.show();
+    	this.showMask("loading info...");
     	Ext.Ajax.request({
     		url		: obj.url,
     		success	: function(response) {
 				DBConfigStore.loadData(Ext.decode(response.responseText));
 				var record = DBConfigStore.getAt(0);
 				obj.setDataModel(record);
+				obj.closeMask();
     		},
     		failure	: function(response) {
-    			var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
-    			loadmask.hide();
+    			obj.closeMask();
     			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
     		}
     	});
@@ -52,14 +59,11 @@ DbConfigFormLayout = Ext.extend(Ext.form.FormPanel, {
 			DBType		: record.get('DBType'),
 			DBName		: record.get('DBName')
 		});
-    	var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info...3"});
-		loadmask.hide();
     },
     doModify: function() {
 		var obj = this;
     	var form = this.getForm();
-    	var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info...4"});
-		loadmask.show();
+    	this.showMask('loading info...');
     	Ext.Ajax.request({
     		url		: obj.modify_url,
     		params	: form.getValues(),
@@ -70,12 +74,10 @@ DbConfigFormLayout = Ext.extend(Ext.form.FormPanel, {
 				} else {
 					Ext.example.msg('Modify DB Config', 'Sorry, the action is failure.');
 				}
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info...5"});
-				loadmask.hide();
+				obj.closeMask();
     		},
     		failure	: function(response){
-    			console.log(response);
-    			console.log(form);
+    			obj.closeMask();
     			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
     		}
     	});
