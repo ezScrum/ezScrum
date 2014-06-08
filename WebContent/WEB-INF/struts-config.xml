@@ -56,7 +56,7 @@
 		<action path="/viewManagement"		type="ntut.csie.ezScrum.web.action.ViewProjectManagementAction">
 			<forward name="Admin_ManagementView"		path="project.Management" />
 			<forward name="User_ManagementView"			path="project.Management.user" />
-			<forward name="Tenant_ManagementView" path="project.Management.admin" />
+			<forward name="Tenant_ManagementView" 		path="project.Management.admin" />
 		</action>		
 		
 			<!-- Account Management -->
@@ -324,10 +324,11 @@
 		<!-- ntut.csie.ezScrum.web.action -->
     	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />
     	
+    	
     	<!-- ntut.csie.ezScrum.web.action.config -->
     	<action path="/saveConfiguration"			type="ntut.csie.ezScrum.web.action.config.SaveConfigurationAction" />
     	<action path="/showConfiguration"			type="ntut.csie.ezScrum.web.action.config.ShowConfigurationAction" />
-    	<!-- ntut.csie.ezScrum.web.action.config -->
+    	
     	
     	<!-- ntut.csie.ezScrum.web.action.plan -->
     		<!-- release plan -->
@@ -418,6 +419,7 @@
             <forward name="success" path="admin.scrumRoleManage" />
         </action>
         
+            
         <!-- user -->
     	<action path="/getUserData"					type="ntut.csie.ezScrum.web.action.rbac.GetUserDataAction" />
     	<action path="/updateAccount"				type="ntut.csie.ezScrum.web.action.rbac.UpdateAccountAction"/>  

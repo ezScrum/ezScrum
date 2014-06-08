@@ -3,11 +3,11 @@ var DbConfigPage = new Ext.Panel({
 	layout		: 'anchor',
 	autoScroll	: true,
 	items : [
-	    { ref: 'ITSConfigModifyForm_ID', xtype : 'ITSConfigModifyForm' }
+	    { ref: 'DbConfigForm_ID', xtype : 'DbConfigForm' }
 	],
 	listeners : {
 		'show' : function() {
-			this.ITSConfigModifyForm_ID.loadDataModel();
+			this.DbConfigForm_ID.loadDataModel();
 		}
 	}
 });
