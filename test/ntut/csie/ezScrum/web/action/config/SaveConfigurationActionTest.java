@@ -2,25 +2,25 @@ package ntut.csie.ezScrum.web.action.config;
 
 import java.io.File;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONException;
+
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowConfigurationActionTest extends MockStrutsTestCase {
+public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
-	private final String actionPath = "/showConfiguration";
+	private final String actionPath = "/saveConfiguration";
 	private ezScrumInfoConfig config = new ezScrumInfoConfig();
 	private IProject project;
 	Configuration configuration;
 
-	public ShowConfigurationActionTest(String testMethod) {
+	public SaveConfigurationActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -57,18 +57,30 @@ public class ShowConfigurationActionTest extends MockStrutsTestCase {
 		ini = null;
 		copyProject = null;
 		CP = null;
+		configuration = null;
 
 		super.tearDown();
 	}
 
-	public void testShowConfigurationAction() throws JSONException {
+	public void testSaveConfigurationAction() throws JSONException {
 		// ================ set request info ========================
 		String projectName = this.project.getName();
+		String actualServerUrl = "127.0.0.1";
+		String actualDBAccount = "test";
+		String actualDBPassword = "test";
+		String actualDBType = "MySQL";
+		String actualDBName = "ezscrum_test2";
 		request.setHeader("Referer", "?PID=" + projectName);
-
+		addRequestParameter("ServerUrl", actualServerUrl);
+		addRequestParameter("DBAccount", actualDBAccount);
+		addRequestParameter("DBPassword", actualDBPassword);
+		addRequestParameter("DBType", actualDBType);
+		addRequestParameter("DBName", actualDBName);
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", config.getUserSession());
 		configuration = new Configuration(config.getUserSession());
+		
 		// ================ 執行 action ===============================
 		actionPerform();
 
@@ -77,15 +89,14 @@ public class ShowConfigurationActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		
 		// assert response text
-		String ServerUrl = configuration.getServerUrl();
-		String DBAccount = configuration.getDBAccount();
-		String DBType = configuration.getDBType();
-		String DBName = configuration.getDBName();
-		JSONObject actualResponse = new JSONObject(response.getWriterBuffer().toString());
+		String expectServerUrl = configuration.getServerUrl();
+		String expectDBAccount = configuration.getDBAccount();
+		String expectDBType = configuration.getDBType();
+		String expectDBName = configuration.getDBName();
 		
-		assertEquals(ServerUrl, actualResponse.get("ServerUrl"));
-		assertEquals(DBAccount, actualResponse.get("DBAccount"));
-		assertEquals(DBType, actualResponse.get("DBType"));
-		assertEquals(DBName, actualResponse.get("DBName"));
+		assertEquals(expectServerUrl, actualServerUrl);
+		assertEquals(expectDBAccount, actualDBAccount);
+		assertEquals(expectDBType, actualDBType);
+		assertEquals(expectDBName, actualDBName);
 	}
 }
