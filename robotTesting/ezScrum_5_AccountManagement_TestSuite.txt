@@ -114,11 +114,11 @@ Test Account Management - Click Add Account Can Display Correct Information
     # click add button
     Click Element    xpath=//button[text()="Add Account"]    andDontWait
     # verify Account Info
-    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="account"]    ${EMPTY}    # User ID
-    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="name"]    ${EMPTY}    # User Name
-    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="passwd"]    ${EMPTY}    # Password
-    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="reenter"]    ${EMPTY}    # Re-enter
-    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="mail"]    ${EMPTY}    # E-mail Address
+    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="id"]    ${EMPTY}    # User ID
+    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="name"]    ${EMPTY}    # User Name
+    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="passwd"]    ${EMPTY}    # Password
+    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="reenter"]    ${EMPTY}    # Re-enter
+    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="mail"]    ${EMPTY}    # E-mail Address
     Xpath Should Match X Times    //span[text()="Add New Account"]/../../../../..//input[@type="checkbox" and @name="enable"]    1    # enabel check box
     ${xpathCancelButtonInAddAccount}=    Find Current Window Element    Add New Account    Cancel
     Element Enable And Submit    ${xpathCancelButtonInAddAccount}

@@ -26,12 +26,12 @@ Test TaskBoard - Sprint Information
     [Setup]    Test TaskBoard - Sprint Information Setup
     Select Node Product    TaskBoard
     # Verify sprint information
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release #0
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
+    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release #0
     # Verify taskcard information
     # story information
     ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
@@ -173,8 +173,7 @@ Test TaskBoard - Story ReOpen
     [Teardown]    Test TaskBoard - Story ReOpen Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
-    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
-    ...    但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -196,8 +195,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
-    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
-    ...    但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -215,26 +213,3 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     Select Node Product    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
-
-Test TaskBoard - Return To The TaskBoard Sprint ID Should Be As Same As Before
-    [Documentation]    測試選擇了其他sprint後離開到其他頁面，回來TaskBoard後需要是離開前的sprint
-    [Setup]    Test TaskBoard - Return To The TaskBoard Sprint ID Should Be As Same As Before Setup
-    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
-    # Verify sprint information
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT1
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #1
-    #switch sprint
-    DropDownMenu_Select    ext-comp-1439    Sprint #2
-    DropDownMenu_Select    ext-comp-1439    Sprint #2
-    Set Selenium Timeout    10
-    Select Node Product    Sprint Backlog
-    Set Selenium Timeout    10
-    Select Node Product    TaskBoard
-    Set Selenium Timeout    10
-    # Verify sprint information
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT2
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #2
-    [Teardown]    Test TaskBoard - Return To The TaskBoard Sprint ID Should Be As Same As Before Teardown

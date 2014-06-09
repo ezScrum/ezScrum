@@ -15,13 +15,13 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]    andDontWait
-    Compare Field Content    //textarea[@name="Name"]    ${storyName}
-    Compare Field Content    //input[@name="Value"]    ${storyValue}
-    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
-    Compare Field Content    //input[@name="Importance"]    ${storyImportance}
-    Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
-    Compare Field Content    //input[@name="Tags"]    ${correctTagText}
-    Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
+    Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
+    Compare Field Content    xpath=//input[@name="Estimate"]    ${storyEstimate}
+    Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
+    Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
+    Compare Field Content    xpath=//input[@name="Tags"]    ${correctTagText}
+    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
