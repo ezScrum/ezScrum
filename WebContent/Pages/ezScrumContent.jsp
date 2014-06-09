@@ -179,12 +179,8 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/TaskBoardCardFormPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ezScrumReportTabPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ITSConfigFormPanel.js"></script>
-
 <script type="text/javascript" src="javascript/ezScrumPanel/SprintBacklogTreePanel.js"></script>
-<!--
-<script type="text/javascript" src="javascript/ezScrumPanel/VelocityChartPanel.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPanel/StoryCountChartPanel.js"></script>
--->
+
 
 <!--use jsp wrap js content, because ext widget must get plugin info synchronously at initial time  -->
 <jsp:include page="ntut/csie/ezScrum/stapler/ProjectLeftTree.jsp"/>
@@ -226,10 +222,6 @@
 <script type="text/javascript" src="javascript/ezScrumPage/PluginConfig.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ProductBacklog.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ValidateUserEvent.js"></script>
-<!--
-<script type="text/javascript" src="javascript/ezScrumPage/Velocity.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPage/StoryCount.js"></script>
--->
 
 <script type="text/javascript" src="javascript/ezTrackPage/ViewIssues.js"></script>
 <script type="text/javascript" src="javascript/ezTrackPage/ManageIssueType.js"></script>

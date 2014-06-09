@@ -5,12 +5,11 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
-import ntut.csie.jcis.resource.core.ResourceFacade;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -38,14 +37,22 @@ public class InitDatabaseAction extends Action {
 		IProject projectTemp = (new ProjectMapper()).getProjectByID(projectName);
 
 		// 設定ITS資訊
-		ITSPrefsStorage tmpPrefs = new ITSPrefsStorage(projectTemp, null);
-		tmpPrefs.setServerUrl(serverURL);
-		tmpPrefs.setServicePath(serverPath);
-		tmpPrefs.setDBAccount(serverAcc);
-		tmpPrefs.setDBPassword(serverPwd);
-		tmpPrefs.setDBName(dbName);
+//		ITSPrefsStorage tmpPrefs = new ITSPrefsStorage(projectTemp, null);
+//		tmpPrefs.setServerUrl(serverURL);
+//		tmpPrefs.setServicePath(serverPath);
+//		tmpPrefs.setDBAccount(serverAcc);
+//		tmpPrefs.setDBPassword(serverPwd);
+//		tmpPrefs.setDBName(dbName);
 		
-		MantisService service = new MantisService(tmpPrefs);
+		// 設定 ITS資訊
+		Configuration tmpConfig = new Configuration(null);
+		tmpConfig.setServerUrl(serverURL);
+		tmpConfig.setWebServicePath(serverPath);
+		tmpConfig.setDBAccount(serverAcc);
+		tmpConfig.setDBPassword(serverPwd);
+		tmpConfig.setDBName(dbName);
+		
+		MantisService service = new MantisService(tmpConfig);
 		service.initiateDB();
 		
 		try {

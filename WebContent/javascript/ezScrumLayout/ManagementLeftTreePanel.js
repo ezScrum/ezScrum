@@ -42,8 +42,7 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
 		    /**
 		     * RBAC Management Side
 		     *******************************/
-	    }//]
-		
+	    }
 		,{
 	    	//	Plugin Management Side
 	    	text: 'Plugin Management',
@@ -60,6 +59,22 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
 					leaf:true
 				}]
 		     //	Plugin Management Side
+	    },{
+	    	// DBConfig Management Side
+	    	text: 'Database Config Management',
+	    	id	: 'DbConfigMgt',
+	    	expanded: true,
+	    	iconCls: 'None',
+	    	cls: 'treepanel-parent',
+	    	children: [
+	    	    {
+	    	    	id:'DbConfigUrl',
+			    	cls:'treepanel-leaf',
+                	iconCls:'leaf-icon',
+					text : '<u>Database Configuration</u>', 
+					leaf:true
+	    	    }]
+	    	// DBConfig Management Side
 	    }]
 	    
 

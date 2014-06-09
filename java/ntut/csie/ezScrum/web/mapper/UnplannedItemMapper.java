@@ -7,8 +7,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
@@ -23,7 +23,7 @@ public class UnplannedItemMapper {
 
 	private IProject m_project;
 	private ITSServiceFactory m_itsFactory;
-	private ITSPrefsStorage m_itsPrefs;
+	private Configuration m_config;
 	private IUserSession m_userSession;
 
 	public UnplannedItemMapper(IProject project, IUserSession userSession) {
@@ -31,11 +31,11 @@ public class UnplannedItemMapper {
 		m_userSession = userSession;
 		// 初始ITS的設定
 		m_itsFactory = ITSServiceFactory.getInstance();
-		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);
+		m_config = new Configuration(m_userSession);
 	}
 
 	public IIssue getById(long id) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue issue = itsService.getIssue(id);
 		itsService.closeConnect();
@@ -46,7 +46,7 @@ public class UnplannedItemMapper {
 	}
 
 	public List<IIssue> getList(String sprintId) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue[] issues = itsService.getIssues(m_project.getName(), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE, null, sprintId, null);
 		itsService.closeConnect();
@@ -60,7 +60,7 @@ public class UnplannedItemMapper {
 	}
 
 	public List<IIssue> getAll() {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue[] issues = itsService.getIssues(m_project.getName(), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE);
 
@@ -78,7 +78,7 @@ public class UnplannedItemMapper {
 	        String handler, String partners, String notes, Date date,
 	        String unplanneditemIssueType, String SprintID) {
 
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		IIssue unplannedItem = new Issue();
 
@@ -108,7 +108,7 @@ public class UnplannedItemMapper {
 	        String actualHour, String notes, String sprintID, Date date) {
 		modifyHandler(issueID, handler, null);
 
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		IIssue issue = getById(issueID);
 		itsService.openConnect();
 
@@ -131,7 +131,7 @@ public class UnplannedItemMapper {
 	}
 
 	public void delete(String issueID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.removeIssue(issueID);
 		itsService.closeConnect();
@@ -199,7 +199,7 @@ public class UnplannedItemMapper {
 	}
 
 	private void updateTagValue(IIssue issue) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.updateBugNote(issue);
 		itsService.closeConnect();
@@ -209,7 +209,7 @@ public class UnplannedItemMapper {
 		IIssue task = getById(taskID);
 
 		if (!task.getAssignto().equals(handler)) {
-			IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+			IITSService itsService = m_itsFactory.getService(m_config);
 			itsService.openConnect();
 			itsService.updateHandler(task, handler, modifyDate);
 			itsService.closeConnect();

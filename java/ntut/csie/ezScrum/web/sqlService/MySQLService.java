@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
@@ -37,18 +37,19 @@ public class MySQLService {
 	private String TABLE_TYPE = "Default";
 	private String DB_NAME = "ezScrum";
 	private MySQLControl mControl;
-	private ITSPrefsStorage mPrefs;
+	private Configuration mConfig;
 
-	public MySQLService(ITSPrefsStorage prefs) {
-		mPrefs = prefs;
+	public MySQLService(Configuration config) {
+		mConfig = config;
 
-		if (!mPrefs.getDBType().equals("")) TABLE_TYPE = mPrefs.getDBType();
-		if (!mPrefs.getDBName().equals("")) DB_NAME = mPrefs.getDBName();
+		if (!mConfig.getDBType().equals("")) TABLE_TYPE = mConfig.getDBType();
+		if (!mConfig.getDBName().equals("")) DB_NAME = mConfig.getDBName();
 
 		// 設定要使用的SQLControl
-		mControl = new MySQLControl(mPrefs.getServerUrl(), PORT_SERVICE_MYSQL, DB_NAME);
-		mControl.setUser(prefs.getDBAccount());
-		mControl.setPassword(prefs.getDBPassword());
+		mControl = new MySQLControl(mConfig.getServerUrl(), PORT_SERVICE_MYSQL, DB_NAME);
+		mControl.setUser(mConfig.getDBAccount());
+		mControl.setPassword(mConfig.getDBPassword());
+
 	}
 
 	/**

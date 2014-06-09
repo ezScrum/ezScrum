@@ -23,3 +23,5 @@ _UnitTest
 /WebContent/RoleBase.xml
 
 /robotTesting/plugin/lib/*.pyc
+
+/ezScrum.ini

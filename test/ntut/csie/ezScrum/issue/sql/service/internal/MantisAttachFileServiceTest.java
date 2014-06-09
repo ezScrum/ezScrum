@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -25,7 +25,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 	private long FileID = 0;
 	
 	private ISQLControl control;
-	private ITSPrefsStorage itsPrefs;
+	private Configuration config;
 	
 	public MantisAttachFileServiceTest(String testMethod) {
         super(testMethod);
@@ -45,14 +45,14 @@ public class MantisAttachFileServiceTest extends TestCase {
 		
 		IProject project = this.CP.getProjectList().get(0);
 		
-		this.itsPrefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		MantisService mantisService = new MantisService(this.itsPrefs);
+		this.config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
+		MantisService mantisService = new MantisService(this.config);
 		this.control = mantisService.getControl();
-		this.control.setUser(this.itsPrefs.getDBAccount());
-		this.control.setPassword(this.itsPrefs.getDBPassword());
+		this.control.setUser(this.config.getDBAccount());
+		this.control.setPassword(this.config.getDBPassword());
 		this.control.connection();
 		
-		this.MAFSservice = new MantisAttachFileService(control, itsPrefs);
+		this.MAFSservice = new MantisAttachFileService(control, config);
 		
 		// ================ set initial data =======================
 		// 新增一筆檔案在一筆 issue - id(1) 
@@ -95,7 +95,7 @@ public class MantisAttachFileServiceTest extends TestCase {
     	this.CPB = null;
     	this.ezScrumInfoConfig = null;
     	this.MAFSservice = null;
-    	this.itsPrefs = null;
+    	this.config = null;
     	projectManager = null;
     	
     	super.tearDown();

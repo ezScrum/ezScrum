@@ -8,8 +8,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueTypeField;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.AbstractMantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
@@ -18,9 +18,9 @@ public class EzTrackIssueService extends AbstractMantisService {
 	//private IIssue[] m_issues;
 	//private String m_currentProjectName = "";
 	
-	public EzTrackIssueService(ISQLControl control, ITSPrefsStorage prefs) {
+	public EzTrackIssueService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 	
 	
