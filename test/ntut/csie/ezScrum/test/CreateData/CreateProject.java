@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
@@ -218,8 +219,8 @@ public class CreateProject {
 
 	// 儲存專案資訊於資料庫
 	private void saveDB(IProject project) {
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, this.config.getUserSession());
-		MantisService M_service = new MantisService(prefs);
+		Configuration config = new Configuration(this.config.getUserSession(), true);
+		MantisService M_service = new MantisService(config);
 		try {
 			M_service.TestConnect();		// 測試連線
 		} catch (TestConnectException e) {

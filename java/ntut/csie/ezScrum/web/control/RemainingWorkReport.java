@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
@@ -36,7 +37,7 @@ public class RemainingWorkReport {
 	private IITSService IITS;
 	private IUserSession session;
 	private String category;
-	private ITSPrefsStorage prefs;
+	private Configuration config;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
 	private final static String REMAININGWORK_CHART_FILE2 = "RemainingWork2.png";
 	private String ChartPath = "";
@@ -56,7 +57,7 @@ public class RemainingWorkReport {
 		this.sprintID = sprintid;
 		this.project = project;
 		this.session = userSession;
-		this.prefs = new ITSPrefsStorage(project, userSession);
+		this.config = new Configuration(userSession);
 		this.category = category;
 
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
@@ -78,7 +79,7 @@ public class RemainingWorkReport {
 		this.sprintID = sprintid;
 		this.project = project;
 		this.session = userSession;
-		this.prefs = new ITSPrefsStorage(project, userSession);
+		this.config = new Configuration(userSession);
 		this.category = category;
 
 		this.Today = setDate;
@@ -253,7 +254,7 @@ public class RemainingWorkReport {
 
 	private void createData() {
 		IITS = ITSServiceFactory.getInstance().getService(
-		        ITSEnum.MANTIS_SERVICE_ID, prefs);
+		        ITSEnum.MANTIS_SERVICE_ID, config);
 		IITS.openConnect();
 		IIssue[] issues = IITS.getIssues(project.getName());
 		IITS.closeConnect();

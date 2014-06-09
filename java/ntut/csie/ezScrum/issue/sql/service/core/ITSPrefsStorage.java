@@ -9,6 +9,7 @@ import ntut.csie.jcis.core.util.PrefsUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
 
+@Deprecated
 public class ITSPrefsStorage {
 	private final String PERFS_FILE_NAME = "its_config.xml";
 	private final String PROJECT_FOLDER_NAME = "ezScrum";

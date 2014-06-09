@@ -1,69 +1,67 @@
 *** Settings ***
-Force Tags        Project
-Library           SeleniumLibrary
-Resource          ServerConfig.txt
-Resource          Global Define.txt
-Resource          keywords/ezScrum_Login.txt
-Resource          keywords/Project/ezScrum_Project.txt
-Resource          keywords/Project/ezScrum_Project_SetupTeardown.txt
-Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
-Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
-Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
-Resource          keywords/AccountManagement/ezScrum_AccountManagement_Management.txt
-Resource          keywords/ScrumRole/ezScrum_ScrumRole_Account.txt
+Force Tags      Project
+Library         SeleniumLibrary
+Resource        ServerConfig.txt
+Resource        Global Define.txt
+Resource        keywords/ezScrum_Login.txt
+Resource        keywords/Project/ezScrum_Project.txt
+Resource        keywords/Project/ezScrum_Project_SetupTeardown.txt
+Resource        keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource        keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource        keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource        keywords/AccountManagement/ezScrum_AccountManagement_Management.txt
+Resource        keywords/ScrumRole/ezScrum_ScrumRole_Account.txt
 
 *** Test Cases ***
 Test Project - Create Project
-    [Documentation]    Create Project(全部為正常資料)
-    ...    注意: 建立與之前Project相同名稱,資料庫抓取的內容會相同!!
-    [Setup]    Login Page    ${LOGIN_URL}
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    [Documentation]  Create Project(全部為正常資料)\n注意: 建立與之前Project相同名稱,資料庫抓取的內容會相同!!
+    [Setup]  Login Page  ${LOGIN_URL}
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}
+    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project
+    Run Keyword If  "${_IsProjectIDExisted}"=="true"  Select Project  ${PROJECT_NAME}DisplayName
     Check Project Is Create
     Clean Project Data
-    [Teardown]    Exit ezScrum System
+    [Teardown]  Exit ezScrum System
 
 Test Project - Permission Denied
-    [Documentation]    新增A, B兩個專案和一個test帳號, 將test帳號assign到A專案上, 透過test帳號登入進入A專案後, 直接透過網址列改PID存取B專案.
-    ...
-    ...    # Speed = 0.05 failed -> 待加入同步機制
-    [Setup]    Test Project - Test Permission Denied Setup
+    [Documentation]  新增A, B兩個專案和一個test帳號, 將test帳號assign到A專案上, 透過test帳號登入進入A專案後, 直接透過網址列改PID存取B專案.\n\n# Speed = 0.05 failed -> 待加入同步機制
+    [Setup]  Test Project - Test Permission Denied Setup
     # 透過test帳號進入擁有權限的專案
-    Login Page With Account    ${LOGIN_URL}    ${tsAccountId}    ${tsAccountId}
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName_A
-    Select Project    ${PROJECT_NAME}DisplayName_A
+    Login Page With Account  ${LOGIN_URL}  ${tsAccountId}  ${tsAccountId}
+    Wait Until Page Contains  ${PROJECT_NAME}DisplayName_A
+    Select Project  ${PROJECT_NAME}DisplayName_A
     # 透過網址列直接修改PID進入專案
-    Go To    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B
+    Go To  ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B
     Wait Until Page Loaded
     # Permission Denied
-    Xpath Should Match X Times    //span[text()="Permission Denied"]    1
+    Xpath Should Match X Times  //span[text()="Permission Denied"]  1
     Close Browser
-    [Teardown]    Test Project - Test Permission Denied Teardown
+    [Teardown]  Test Project - Test Permission Denied Teardown
 
 Test Project - Verify ProjectID Is Existed
-    [Documentation]    身為admin, 我希望在新增專案時,如果建立已存在的Project ID或者Project Display Name, 能提示警告訊息
-    Login Page With Account    ${LOGIN_URL}    admin    admin
-    Page Should Contain Element    xpath=//table[@id="createProjectBtn"]
+    [Documentation]  身為admin, 我希望在新增專案時,如果建立已存在的Project ID或者Project Display Name, 能提示警告訊息
+    Login Page With Account  ${LOGIN_URL}  admin  admin
+    Page Should Contain Element  xpath=//table[@id="createProjectBtn"]
     # 驗證不存在的ProjectID
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}_ABC
-    Should Be True    "${_IsProjectIDExisted}"=="false"
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}_ABC
+    Should Be True  "${_IsProjectIDExisted}"=="false"
     # 驗證存在的ProjectID
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Should Be True    "${_IsProjectIDExisted}"=="true"
+    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}
+    Should Be True  "${_IsProjectIDExisted}"=="true"
     Exit ezScrum System
 
 Test Project - Session - Summary of Project And Sprint Information
-    [Documentation]    測試不同分頁的專案資訊是否能正常顯示
-    [Tags]    session
-    [Setup]    Test Project Summary - Project And Sprint Information Setup
-    Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Summary
+    [Documentation]  測試不同分頁的專案資訊是否能正常顯示
+    [Tags]  session
+    [Setup]  Test Project Summary - Project And Sprint Information Setup
+    Select Window  ${tcBrowserAlias_A}
+    Select Node Product  Summary
     # Verify
     # 由於project create date當有不一樣的project name or db name時，才會改變。
-    Compare Field Content    //div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="Commnet"]    ${PROJECT_COMMENT}_A
-    Compare Field Content    //div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="ProjectManager"]    ${PROJECT_MANAGER}_A
-    Compare Field Content    //div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="SprintGoal"]    ${tcSprintGoal_A}
-    Compare Field Content    //div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Story_Undone_Total_Point"]    ${tcStoryEstimateInA}.0 / ${tcStoryEstimateInA}.0
-    Compare Field Content    //div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Task_Undone_Total_Point"]    ${tcTaskEstimateInA}.0 / ${tcTaskEstimateInA}.0
-    [Teardown]    Test Project Summary - Project And Sprint Information Teardown
+    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="Commnet"]  ${PROJECT_COMMENT}_A
+    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="ProjectManager"]  ${PROJECT_MANAGER}_A
+    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="SprintGoal"]  ${tcSprintGoal_A}
+    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Story_Undone_Total_Point"]  ${tcStoryEstimateInA}.0 / ${tcStoryEstimateInA}.0
+    Compare Field Content  xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Task_Undone_Total_Point"]  ${tcTaskEstimateInA}.0 / ${tcTaskEstimateInA}.0
+    [Teardown]  Test Project Summary - Project And Sprint Information Teardown
+

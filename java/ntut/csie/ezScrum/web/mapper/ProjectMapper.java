@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -38,12 +38,15 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
 
-	private ITSPrefsStorage mPrefs;
+	//private ITSPrefsStorage mPrefs;
 	private MySQLService mService;
+	
+	private Configuration mConfig;
 
 	public ProjectMapper() {
-		mPrefs = new ITSPrefsStorage();
-		mService = new MySQLService(mPrefs);
+		//mPrefs = new ITSPrefsStorage();
+		mConfig = new Configuration();
+		mService = new MySQLService(mConfig);
 	}
 
 	/**
@@ -140,14 +143,14 @@ public class ProjectMapper {
 	 */
 	@Deprecated
 	public IProject createProject(IUserSession userSession, ITSInformation itsInformation, ProjectInfoForm projectInfoForm) throws Exception {
-		ITSPrefsStorage tmpPrefs = this.setITSInformation(itsInformation);
+		Configuration tmpConfig = this.setITSInformation(itsInformation);
 
 		// save in the workspace，並且建立Project資料夾
 		// 這樣後續的設定檔複製儲存動作才能正常進行
-		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, tmpPrefs);
+		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, tmpConfig);
 
 		// 建立專案資訊 in database
-		this.createProjectDB(tmpPrefs, project, userSession);
+		this.createProjectDB(tmpConfig, project, userSession);
 
 		return project;
 	}
@@ -161,9 +164,9 @@ public class ProjectMapper {
 	 * @throws Exception
 	 */
 	@Deprecated
-	private void createProjectDB(ITSPrefsStorage tmpPrefs, IProject project, IUserSession userSession) throws Exception {
+	private void createProjectDB(Configuration tmpConfig, IProject project, IUserSession userSession) throws Exception {
 		// 測試連線並且檢查DB內的Table是否正確
-		MantisService mantisService = new MantisService(tmpPrefs);
+		MantisService mantisService = new MantisService(tmpConfig);
 		mantisService.TestConnect();
 
 		// Create Project in Mantis 因為確定 ITS 資料正確，所以不用再對
@@ -181,7 +184,7 @@ public class ProjectMapper {
 	 * @return
 	 */
 	@Deprecated
-	private IProject createProjectWorkspace(IUserSession userSession, ProjectInfoForm saveProjectInfoForm, ITSPrefsStorage tmpPrefs) {
+	private IProject createProjectWorkspace(IUserSession userSession, ProjectInfoForm saveProjectInfoForm, Configuration tmpConfig) {
 		IProject project = null;
 		try {
 			log.info("Save Project Info!");
@@ -485,7 +488,7 @@ public class ProjectMapper {
 	 * @return
 	 */
 	@Deprecated
-	private ITSPrefsStorage setITSInformation(ITSInformation itsInformation) {
+	private Configuration setITSInformation(ITSInformation itsInformation) {
 		final String DEFAULT_ACCOUNT = "ezScrum";
 		final String DEFAULT_PASSWORD = "";
 		String projectName = itsInformation.getProjectName();
@@ -502,28 +505,28 @@ public class ProjectMapper {
 		// IProject projectTemp = projectMapper.getProjectByID(projectName);
 
 		// 設定ITS資訊
-		ITSPrefsStorage tmpPrefs = new ITSPrefsStorage(projectTemp, null);
-		tmpPrefs.setServerUrl(serverURL);
-		tmpPrefs.setServicePath(serverPath);
-		tmpPrefs.setDBAccount(serverAcc);
-		tmpPrefs.setDBPassword(serverPwd);
-		tmpPrefs.setDBName(dbName);
+		Configuration tmpConfig = new Configuration(null);
+		tmpConfig.setServerUrl(serverURL);
+		tmpConfig.setWebServicePath(serverPath);
+		tmpConfig.setDBAccount(serverAcc);
+		tmpConfig.setDBPassword(serverPwd);
+		tmpConfig.setDBName(dbName);
 
 		/*-----------------------------------------------------------
 		 *	設定使用的DB種類，如果是Default的話，那就預設是Local DB
 		-------------------------------------------------------------*/
 		if (dbType.contains("Default")) {
-			tmpPrefs.setDBType("Default");
-			tmpPrefs.setDBName(projectName);
+			tmpConfig.setDBType("Default");
+			tmpConfig.setDBName(projectName);
 			// 並且ServerUrl設成Project名稱
-			tmpPrefs.setServerUrl(projectName);
+			tmpConfig.setServerUrl(projectName);
 			// 帳號密碼也用預設的
-			tmpPrefs.setDBAccount(DEFAULT_ACCOUNT);
-			tmpPrefs.setDBPassword(DEFAULT_PASSWORD);
+			tmpConfig.setDBAccount(DEFAULT_ACCOUNT);
+			tmpConfig.setDBPassword(DEFAULT_PASSWORD);
 		} else {
-			tmpPrefs.setDBType(dbType);
+			tmpConfig.setDBType(dbType);
 		}
 
-		return tmpPrefs;
+		return tmpConfig;
 	}
 }

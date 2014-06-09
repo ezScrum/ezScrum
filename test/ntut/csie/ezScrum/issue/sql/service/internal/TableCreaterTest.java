@@ -8,7 +8,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.BUILDRESULT_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_LOG_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_STORY_RELATION_TABLE;
@@ -53,11 +53,11 @@ public class TableCreaterTest extends TestCase {
 		IProject project = this.CP.getProjectList().get(0);
 
 		// create service control info.
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, config.getUserSession());
-		MantisService Service = new MantisService(itsPrefs);
+		Configuration configuration = new Configuration(config.getUserSession(), true);
+		MantisService Service = new MantisService(configuration);
 		this.control = Service.getControl();
-		this.control.setUser(itsPrefs.getDBAccount());
-		this.control.setPassword(itsPrefs.getDBPassword());
+		this.control.setUser(configuration.getDBAccount());
+		this.control.setPassword(configuration.getDBPassword());
 		this.control.connection();
 		
 		this.tc = new TableCreater();
@@ -67,7 +67,7 @@ public class TableCreaterTest extends TestCase {
 		// ============= release ==============
 		ini = null;
 		project = null;
-		itsPrefs = null;
+		configuration = null;
 		Service = null;
 	}
 

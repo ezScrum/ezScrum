@@ -11,8 +11,8 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -32,7 +32,7 @@ public class SprintBacklogMapper {
 	private Date m_startDate;
 	private Date m_endDate;
 	private ITSServiceFactory m_itsFactory;
-	private ITSPrefsStorage m_itsPrefs;
+	private Configuration m_config;
 	private double m_limitedPoint = 0;
 	private IUserSession m_userSession;
 
@@ -144,7 +144,7 @@ public class SprintBacklogMapper {
 	 */
 	private void initITSInformation() {
 		m_itsFactory = ITSServiceFactory.getInstance();
-		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);
+		m_config = new Configuration(m_userSession);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class SprintBacklogMapper {
 	public IIssue[] getStoryInSprint(long sprintID) {
 		// refresh();
 
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		IIssue[] stories = itsService.getIssues(m_project.getName(), ScrumEnum.STORY_ISSUE_TYPE, null, Long.toString(sprintID), null);
 		itsService.closeConnect();
@@ -240,7 +240,7 @@ public class SprintBacklogMapper {
 		if (m_dropedStories == null) m_dropedStories = new ArrayList<IIssue>();
 		else return m_dropedStories.toArray(new IIssue[m_dropedStories.size()]);
 
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		String iter = Integer.toString(m_sprintPlanId);
 		Date startDate = getSprintStartDate();
 		Date endDate = getSprintEndDate();
@@ -281,7 +281,7 @@ public class SprintBacklogMapper {
 	}
 
 	public IIssue getIssue(long issueID) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		IIssue issue = itsService.getIssue(issueID);
 		itsService.closeConnect();
@@ -294,13 +294,13 @@ public class SprintBacklogMapper {
 		// taskID 為不存在的 issue 時，會有 null 的危險
 		if (task != null) {
 			if ((handler != null) && (handler.length() > 0) && (!task.getAssignto().equals(handler))) {
-				IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+				IITSService itsService = m_itsFactory.getService(m_config);
 				itsService.openConnect();
 				itsService.updateHandler(task, handler, modifyDate);
 				itsService.closeConnect();
 			}
 			if (!task.getSummary().equals(Name) && Name != null) {
-				IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+				IITSService itsService = m_itsFactory.getService(m_config);
 				itsService.openConnect();
 				itsService.updateName(task, Name, modifyDate);
 				itsService.closeConnect();
@@ -309,7 +309,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void updateTagValue(IIssue issue) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.updateBugNote(issue);
 
@@ -320,7 +320,7 @@ public class SprintBacklogMapper {
 	}
 
 	public long addTask(String name, String description, long storyID, Date date) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		IIssue task = new Issue();
 
@@ -341,7 +341,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void addExistedTask(long[] taskIDs, long storyID, Date date) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		// 新增關係
 		for (long taskID : taskIDs)
@@ -353,7 +353,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void deleteExistedTask(long[] taskIDs) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		for (long taskID : taskIDs)
 			itsService.deleteTask(taskID);
@@ -362,7 +362,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void removeTask(long taskID, long parentID) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.removeRelationship(parentID, taskID, ITSEnum.PARENT_RELATIONSHIP);
 
@@ -378,7 +378,7 @@ public class SprintBacklogMapper {
 				String current = DateUtil.format(new Date(history.getModifyDate()), DateUtil._16DIGIT_DATE_TIME_MYSQL);
 				String modify = DateUtil.format(date, DateUtil._16DIGIT_DATE_TIME_MYSQL);
 				if (current.equals(modify)) break;
-				IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+				IITSService itsService = m_itsFactory.getService(m_config);
 				itsService.openConnect();
 				itsService.updateHistoryModifiedDate(issueID, historyID, date);
 				itsService.closeConnect();
@@ -428,7 +428,7 @@ public class SprintBacklogMapper {
 	public void doneIssue(long id, String bugNote, String changeDate) {
 		Date closeDate = null;
 		if (changeDate != null && !changeDate.equals("")) closeDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.changeStatusToClosed(id, ITSEnum.FIXED_RESOLUTION, bugNote, closeDate);
 		itsService.closeConnect();
@@ -439,7 +439,7 @@ public class SprintBacklogMapper {
 		if (changeDate != null && !changeDate.equals("")) reopenDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
 
 		IIssue issue = getIssue(id);
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		if (issue.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) itsService.resetStatusToNew(id, name, bugNote, reopenDate);
 		else if (issue.getCategory().equals(ScrumEnum.TASK_ISSUE_TYPE)) itsService.reopenStatusToAssigned(id, name, bugNote, reopenDate);
@@ -450,7 +450,7 @@ public class SprintBacklogMapper {
 		Date reopenDate = null;
 		if (changeDate != null && !changeDate.equals("")) reopenDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
 
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.resetStatusToNew(id, name, bugNote, reopenDate);
 		itsService.closeConnect();
@@ -458,7 +458,7 @@ public class SprintBacklogMapper {
 
 	public void checkOutTask(long id, String bugNote) {
 		if (bugNote != null && !bugNote.equals("")) {
-			IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+			IITSService itsService = m_itsFactory.getService(m_config);
 			itsService.openConnect();
 			itsService.insertBugNote(id, bugNote);
 			itsService.closeConnect();
@@ -466,7 +466,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void addAttachFile(long issueID, String targetPath) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		File attachFile = new File(targetPath);
 		itsService.addAttachFile(issueID, attachFile);
@@ -474,14 +474,14 @@ public class SprintBacklogMapper {
 	}
 
 	public void deleteAttachFile(long fileID) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.deleteAttachFile(fileID);
 		itsService.closeConnect();
 	}
 
 	public void deleteTask(long taskID, long parentID) {
-		IITSService itsService = m_itsFactory.getService(m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
 		itsService.deleteRelationship(parentID, taskID);
 		itsService.deleteTask(taskID);

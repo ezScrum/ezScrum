@@ -18,8 +18,8 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -58,8 +58,8 @@ public class MantisServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(itsPrefs);
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
+		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(config);
 		
 		super.setUp();
 		
@@ -2379,9 +2379,9 @@ public class MantisServiceTest extends TestCase {
 	// test : getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate, Date endDate)
 	public void testGetIssues_Date_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2451,9 +2451,9 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testGetIssue_IssueID_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2526,9 +2526,9 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testUpdateBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2622,15 +2622,15 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		prefs = null;
+		config = null;
 		MNService = null;
 	}
 	
 	public void testUpdateIssueNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2752,15 +2752,15 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		prefs = null;
+		config = null;
 		MNService = null;
 	}
 	
 	public void testInsertBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		TextParserGeneraterForNote noteTextHelper;
 		
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2822,15 +2822,15 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		prefs = null;
+		config = null;
 		MNService = null;
 	}
 	
 	public void testRemoveNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
+		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
 		
 		// new 10 issues
 		int storyCount = 10;
@@ -2886,7 +2886,7 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		prefs = null;
+		config = null;
 		MNService = null;
 		CPB = null;
 	}

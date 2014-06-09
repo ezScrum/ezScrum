@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
@@ -14,7 +15,8 @@ import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 public abstract class AbstractMantisService {
 
 	private ISQLControl m_control;
-	private ITSPrefsStorage m_prefs;
+	//private ITSPrefsStorage m_prefs;
+	private Configuration m_config;
 	
 	protected int getUserID(String userName) {
 //		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -99,12 +101,12 @@ public abstract class AbstractMantisService {
 		return m_control;
 	}
 	
-	protected void setPrefs(ITSPrefsStorage prefs){
-		m_prefs = prefs;
+	protected void setConfig(Configuration config){
+		m_config = config;
 	}
 	
-	protected ITSPrefsStorage getPrefs(){
-		return m_prefs;
+	protected Configuration getConfig(){
+		return m_config;
 	}
 	
 	protected int getProjectID(String projectName) {

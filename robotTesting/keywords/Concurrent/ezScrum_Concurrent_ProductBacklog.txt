@@ -13,7 +13,7 @@ _GetStoryIDx
 
 _CreateStory
     [Arguments]  @{storyInfo}
-    [Documentation]  0: ID, 1:name, 2: value, 3: Estimate, 4: importance, \n5: note, 6: howToDemo, 7: tag
+    [Documentation]  0: ID, 1:name, 2: value, 3: estimate, 4: importance, \n5: note, 6: howToDemo, 7: tag
     Click Element  xpath=//button[text()="Add Story"]  andDontWait
     Wait Until Page Contains  Add New Story
     Run Keyword Unless  "${storyInfo[7]}"=="${EMPTY}"  Click Image  xpath=//label[text()="Tags:"]/.././/img  andDontWait

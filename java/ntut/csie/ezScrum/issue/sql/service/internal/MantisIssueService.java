@@ -12,8 +12,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -37,9 +37,9 @@ public class MantisIssueService extends AbstractMantisService {
 //	private IIssue[] m_issues;
 //	private String m_currentProjectName = "";
 
-	public MantisIssueService(ISQLControl control, ITSPrefsStorage prefs) {
+	public MantisIssueService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 
 	/************************************************************
@@ -71,7 +71,7 @@ public class MantisIssueService extends AbstractMantisService {
 		valueSet.addInsertValue("project_id", Integer.toString(this
 				.getProjectID(issue.getProjectID())));
 		valueSet.addInsertValue("reporter_id", Integer
-				.toString(getUserID(getPrefs().getAccount())));
+				.toString(getUserID(getConfig().getAccount())));
 		valueSet.addInsertValue("category", issue.getCategory());
 
 		// 取得現在時間
