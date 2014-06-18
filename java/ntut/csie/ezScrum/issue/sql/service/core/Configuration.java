@@ -40,7 +40,7 @@ public class Configuration {
 	 * @param isTest ? True : False
 	 */
 	public Configuration(boolean isTest) {
-		isTest = true;
+		this.isTest = true;
 		properties = new Properties();
 		init();
 	}
@@ -52,7 +52,7 @@ public class Configuration {
 	}
 	
 	public Configuration(IUserSession userSession, boolean isTest) {
-		isTest = true;
+		this.isTest = true;
 		m_userSession = userSession;
 		properties = new Properties();
 		init();
