@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-
 public class ReleaseDocxObject {
 	private ReleasePlanObject releasePlanDesc;
-	private List<SprintPlanObject> sprintDescList;
+	private List<SprintObject> sprintDescList;
 	private HashMap<String, List<StoryObject>> stories;
 	private LinkedHashMap<Long, List<TaskObject>> taskMap;
 	private HashMap<String, Float> totalStoryPoints;
@@ -24,11 +21,11 @@ public class ReleaseDocxObject {
 	    this.releasePlanDesc = releasePlanDesc;
     }
 
-	public List<SprintPlanObject> getSprintDescList() {
+	public List<SprintObject> getSprintDescList() {
 	    return sprintDescList;
     }
 
-	public void setSprintDescList(List<SprintPlanObject> sprintDescList) {
+	public void setSprintDescList(List<SprintObject> sprintDescList) {
 	    this.sprintDescList = sprintDescList;
     }
 

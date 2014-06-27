@@ -12,7 +12,7 @@ public class ReleasePlanObject {
 	private String startDate;
 	private String endDate;
 	private String description;
-	private List<SprintPlanObject> sprintPlan;
+	private List<SprintObject> sprintPlan;
 	
 	public ReleasePlanObject(IReleasePlanDesc releasePlanDesc) {
 		setId(releasePlanDesc.getID());
@@ -20,11 +20,11 @@ public class ReleasePlanObject {
 		setStartDate(releasePlanDesc.getStartDate());
 		setEndDate(releasePlanDesc.getEndDate());
 		setDescription(releasePlanDesc.getDescription());
-		setSprintPlan(new LinkedList<SprintPlanObject>());
+		setSprintPlan(new LinkedList<SprintObject>());
 		
 		List<ISprintPlanDesc> sprintDescList = releasePlanDesc.getSprintDescList();
 		for (ISprintPlanDesc sprintDesc : sprintDescList) {
-			getSprintPlan().add(new SprintPlanObject(sprintDesc));
+			getSprintPlan().add(new SprintObject(sprintDesc));
 		}
 			
     }
@@ -69,11 +69,11 @@ public class ReleasePlanObject {
 	    this.description = description;
     }
 
-	public List<SprintPlanObject> getSprintPlan() {
+	public List<SprintObject> getSprintPlan() {
 	    return sprintPlan;
     }
 
-	public void setSprintPlan(List<SprintPlanObject> sprintPlan) {
+	public void setSprintPlan(List<SprintObject> sprintPlan) {
 	    this.sprintPlan = sprintPlan;
     }
 }

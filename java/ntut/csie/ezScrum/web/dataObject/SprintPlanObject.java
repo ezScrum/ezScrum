@@ -140,8 +140,12 @@ public class SprintPlanObject {
 	public void setTaskBoardStageMap(Map<Integer,String> taskBoardStageMap) {
 	    this.taskBoardStageMap = taskBoardStageMap;
     }
-	
+
+	public ArrayList<StoryObject> getStories() {
+	    return stories;
+    }
+
 	public void setStories(ArrayList<StoryObject> stories) {
-		this.stories = stories;
-	}
+	    this.stories = stories;
+    }
 }

@@ -36,15 +36,14 @@ public class PluginManager {
 		File outsidePluginFile = new File(outsidePluginPath);
 
 		String pluginName = FilenameUtils.removeExtension(outsidePluginFile.getName());
-		String unzipDestinationPath = "./WebContent/pluginWorkspace" + "/" + pluginName;
+		String unzipDestinationPath = "./WebContent/pluginWorkspace/" + pluginName;
 		File unzipDestinationDir = new File(unzipDestinationPath);
 
 		AntZip antZip = new AntZip();
 		antZip.unZip(outsidePluginFile.getAbsolutePath(), unzipDestinationDir.getAbsolutePath());
 		
 		// 新增全域的pluginConfig
-		PluginConfigManager pluginConfigManager = new PluginConfigManager();
-		pluginConfigManager.addConfigUI(pluginName);
+		new PluginConfigManager().addConfigUI(pluginName);
 		return true;
 	}
 
