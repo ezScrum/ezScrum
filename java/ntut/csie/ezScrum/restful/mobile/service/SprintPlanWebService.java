@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -70,6 +71,21 @@ public class SprintPlanWebService extends ProjectWebService{
 	public String getSprintWithAllItem(String sprintID) {
 		Gson gson = new Gson();
 		return gson.toJson(mSprintPlanHelper.getSprintWithAllItem(sprintID));
+	}
+	
+	/**
+	 * 取得某個 sprint 包含 story 和 task
+	 * @param sprintID
+	 * @return
+	 */
+	public String getSprintWithAllItem() {
+		Gson gson = new Gson();
+		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
+		List<SprintObject> result = new ArrayList<SprintObject>();
+		for (SprintObject sprint : sprintList) {
+			result.add(mSprintPlanHelper.getSprintWithAllItem(sprint.id));
+		}
+		return gson.toJson(result);
 	}
 	
 	/****

@@ -240,4 +240,39 @@ public class SprintPlanWebServiceController {
 		return sprintJson;
 	}
 	
+	/****
+	 * 取得 project 中所有的 sprint 包含 story 和 task
+	 * http://IP:8080/ezScrum/web-service/{projectID}/sprint/all/all?userName={userName}&password={password}
+	 * @return
+	 */
+	@GET
+	@Path("/all/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAllSprintWithAllItem(@PathParam("projectID") String projectID, 
+			@QueryParam("userName") String username,
+			@QueryParam("password") String password) {
+		String sprintJson = "";
+		InformationDecoder decoder = new InformationDecoder();
+		try {
+			decoder.decode(username, password, projectID);
+			UserObject userObject = new UserObject();
+			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setPassword(decoder.getDecodePwd());
+			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectID());
+			sprintJson = mSprintPlanWebService.getSprintWithAllItem();
+		} catch (IOException e) {
+			System.out.println(	"class: SprintWebServiceController, " +
+					"method: getSprintWithAllItem, " +
+					"api:InformationDecoder, " +
+					"exception: "+ e.toString() );
+			e.printStackTrace();
+		} catch (LogonException e) {
+			System.out.println(	"class: SprintWebServiceController, " + 
+					"method: getSprintWithAllItem, " + 
+					"exception: " + e.toString() );
+			e.printStackTrace();
+		}
+		return sprintJson;
+	}
+	
 }

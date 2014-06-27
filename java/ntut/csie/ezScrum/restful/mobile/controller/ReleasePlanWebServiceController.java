@@ -18,7 +18,7 @@ import ntut.csie.jcis.account.core.LogonException;
 public class ReleasePlanWebServiceController {
 	private ReleasePlanWebService mReleasePlanWebService;
 	/**
-	 * 取得專案底下所有Story Get
+	 * 取release底下所有Story Get
 	 * http://IP:8080/ezScrum/web-service/{projectID}/release-plan/{releaseID}/all?userName={userName}&password={password}
 	 **/
 	@GET
@@ -74,6 +74,36 @@ public class ReleasePlanWebServiceController {
 			System.out.println("class: ReleasePlanWebServiceController, " +
 								"method: getAllReleasePlan, " +
 								"exception: " + e.toString());
+			e.printStackTrace();
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 取得專案底下所有ReleasePlan並帶有所有item
+	 * http://IP:8080/ezScrum/web-service/{projectID}/release-plan/all/all?userName={userName}&password={password}
+	 **/
+	@GET
+	@Path("all/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAllReleasePlanWithAllItem(@QueryParam("userName") String username,
+			@QueryParam("password") String password,
+			@PathParam("projectID") String projectID) {
+		String jsonString = "";
+		try {
+			InformationDecoder decodeAccount = new InformationDecoder();
+			decodeAccount.decode(username, password, projectID);
+			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUserName(), decodeAccount.getDecodePwd(), projectID);
+			jsonString = mReleasePlanWebService.getAllReleasePlanWithAllItem();
+		} catch (LogonException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+					"method: getAllReleasePlan, " +
+					"exception: " + e.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+					"method: getAllReleasePlan, " +
+					"exception: " + e.toString());
 			e.printStackTrace();
 		}
 		return jsonString;

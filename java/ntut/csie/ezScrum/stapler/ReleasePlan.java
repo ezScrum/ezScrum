@@ -23,7 +23,7 @@ public class ReleasePlan {
 	// get data by jsp
 	public String getToolbarPluginStringList() {
 		// get plugin info from pluginConfig.conf in project folder
-		PluginConfigManager pluginConfigManager = new PluginConfigManager(mProjectName);
+		PluginConfigManager pluginConfigManager = new PluginConfigManager();
 
 		StringBuilder pluginStringList = new StringBuilder();
 		for (EzScrumUI ezScrumUI : EzScrumRoot.getLastEzScrumUIList()) {

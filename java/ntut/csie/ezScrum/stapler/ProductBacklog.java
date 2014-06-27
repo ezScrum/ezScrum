@@ -25,13 +25,13 @@ public class ProductBacklog {
 	// get data by jsp
 	public String getToolbarPluginStringList() {
 		// get plugin info from pluginConfig.conf in project folder
-		PluginConfigManager pluginConfigManager = new PluginConfigManager(this.projectName);
 		
 		StringBuilder sb = new StringBuilder();
 		for (EzScrumUI ezScrumUI : EzScrumRoot.getLastEzScrumUIList()) {
 			if (ezScrumUI instanceof ProductBacklogUI) {
-				PluginConfig pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId(ezScrumUI.getPluginUI().getPluginID());
-				if (pluginConfig != null) {
+				PluginConfig projectPluginConfig = new PluginConfigManager(this.projectName).getAvailablePluginConfigByPluginId(ezScrumUI.getPluginUI().getPluginID());
+				PluginConfig ezScrumPluginConfig = new PluginConfigManager().getAvailablePluginConfigByPluginId(ezScrumUI.getPluginUI().getPluginID());
+				if (projectPluginConfig != null && ezScrumPluginConfig != null) {
 					/** todo */
 					List<String> pluginIDList = ((ProductBacklogUI) ezScrumUI).getToolbarPluginIDList();
 					for (String pluginID : pluginIDList) {
