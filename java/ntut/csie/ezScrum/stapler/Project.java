@@ -18,6 +18,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 public class Project {
 	private String mProjectName;
@@ -27,10 +28,28 @@ public class Project {
 	}
 
 	public void doSetProjectPluginConfig(StaplerRequest request, StaplerResponse response) {
-		//get plugin config page string
-		String pluginConfigJSONArrayString = request.getParameter("pluginConfigJSONArrayString");
-		PluginConfigManager pluginConfigModifier = new PluginConfigManager(this.mProjectName);
-		pluginConfigModifier.replaceFileContent(pluginConfigJSONArrayString);
+		String pluginName = request.getParameter("pluginName");
+		String available = request.getParameter("available");
+		PluginConfigManager configManager = new PluginConfigManager(mProjectName);
+		Gson gson = new Gson();
+		List<PluginConfig> pluginConfigList = gson.fromJson(configManager.readFileContent(), new TypeToken<List<PluginConfig>>() {}.getType());
+		boolean isFound = false;
+		for (PluginConfig pluginConfig : pluginConfigList) {
+			if (pluginConfig.getId().contentEquals(pluginName)) {
+				pluginConfig.setAvailable(Boolean.parseBoolean(available));
+				isFound = true;
+				break;
+			}
+		}
+		if (!isFound) {
+			PluginConfig config = new PluginConfig();
+			config.setId(pluginName);
+			config.setAvailable(Boolean.parseBoolean(available));
+			pluginConfigList.add(config);
+		}
+		String content = gson.toJson(pluginConfigList);
+		configManager.replaceFileContent(content);
+
 		try {
 			response.getWriter().write(this.mProjectName);
 			response.getWriter().close();
@@ -73,7 +92,7 @@ public class Project {
 
 		String projectName = project.getProjectDesc().getName();
 
-		if (token.equals("productBacklog")) { //when user enter to project
+		if (token.equals("productBacklog")) { // when user enter to project
 			return new ProductBacklog(projectName);
 		} else if (token.equals("taskBoard")) {
 			return new TaskBoard(projectName);
@@ -84,7 +103,7 @@ public class Project {
 
 	public String getProjectLeftTreePluginString() {
 		// get plugin info from pluginConfig.conf in project folder
-		PluginConfigManager pluginConfigManager = new PluginConfigManager(mProjectName);
+		PluginConfigManager pluginConfigManager = new PluginConfigManager();
 
 		StringBuilder pluginStringList = new StringBuilder();
 		for (EzScrumUI ezScrumUI : EzScrumRoot.getLastEzScrumUIList()) {
@@ -107,7 +126,7 @@ public class Project {
 
 	public String getProjectPagePluginString() {
 		// get plugin info from pluginConfig.conf in project folder
-		PluginConfigManager pluginConfigManager = new PluginConfigManager(mProjectName);
+		PluginConfigManager pluginConfigManager = new PluginConfigManager();
 
 		StringBuilder pluginStringList = new StringBuilder();
 		for (EzScrumUI ezScrumUI : EzScrumRoot.getLastEzScrumUIList()) {

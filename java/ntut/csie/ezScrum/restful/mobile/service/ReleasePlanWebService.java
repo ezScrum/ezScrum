@@ -11,11 +11,13 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
 import ntut.csie.ezScrum.web.dataObject.ReleasePlanObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.SprintPlanObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -27,7 +29,8 @@ public class ReleasePlanWebService extends ProjectWebService {
 	private UserSession mUserSession;
 	private IProject mProject;
 	private ReleasePlanHelper mReleasePlanHelper;
-	
+	private SprintPlanHelper mSprintPlanHelper;
+
 	public ReleasePlanWebService(UserObject user, String projectID) throws LogonException {
 		super(user, projectID);
 		initialize();
@@ -42,18 +45,38 @@ public class ReleasePlanWebService extends ProjectWebService {
 		mUserSession = new UserSession(super.getAccount());
 		mProject = super.getProjectList().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(mProject);
+		mSprintPlanHelper = new SprintPlanHelper(mProject);
 	}
-	
+
 	/**
 	 * 取得專案底下所有的Release plan
 	 * @return
 	 */
-	public String getAllReleasePlan(){
+	public String getAllReleasePlan() {
 		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
 		return new Gson().toJson(releaseDescs);
 	}
 	
-	
+	/**
+	 * 取得專案底下所有的Release plan with all item
+	 * @return
+	 */
+	public String getAllReleasePlanWithAllItem() {
+		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleasePlanObject> releases = new ArrayList<ReleasePlanObject>();
+		for (IReleasePlanDesc releaseDesc : releaseDescs) {
+			ReleasePlanObject releaseObject = new ReleasePlanObject(releaseDesc);
+			List<SprintObject> sprints = releaseObject.getSprintPlan();
+			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
+			for (SprintObject sprint : sprints) {
+				sprintsWithAllItem.add(mSprintPlanHelper.getSprintWithAllItem(sprint.id));
+			}
+			releaseObject.setSprintPlan(sprintsWithAllItem);
+			releases.add(releaseObject);
+		}
+		return new Gson().toJson(releases);
+	}
+
 	/**
 	 * 取得 ReleasePlan
 	 * 
@@ -66,21 +89,21 @@ public class ReleasePlanWebService extends ProjectWebService {
 		LinkedHashMap<Long, List<TaskObject>> taskMap = new LinkedHashMap<Long, List<TaskObject>>();
 		// get sprints information of the release(release id)
 		ReleasePlanObject releasePlan = new ReleasePlanObject(mReleasePlanHelper.getReleasePlan(releaseId));
-		List<SprintPlanObject> sprintPlanList = releasePlan.getSprintPlan();
+		List<SprintObject> sprintPlanList = releasePlan.getSprintPlan();
 		return new Gson().toJson(getReleaseDocObject(releasePlan, sprintPlanList, stories, taskMap, totalStoryPoints));
 	}
-	
 
 	/**
 	 * 將 IIssue 都轉換成 StoryObject, TaskObject 並輸出成ReleaseDocxObject
 	 */
-	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintPlanObject> sprintPlanList, HashMap<String, List<StoryObject>> stories, LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Float> totalStoryPoints) {
+	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintObject> sprintPlanList, HashMap<String, List<StoryObject>> stories,
+	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Float> totalStoryPoints) {
 		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
 		releaseObject.setReleasePlanDesc(releasePlan);
 		releaseObject.setSprintDescList(sprintPlanList);
 		if (sprintPlanList != null) {
-			for (SprintPlanObject desc : sprintPlanList) {	// set story, task, story points to release object
-				String sprintId = desc.getId();
+			for (SprintObject desc : sprintPlanList) {	// set story, task, story points to release object
+				String sprintId = desc.id;
 				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, sprintId);
 				SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 				List<IIssue> issues = sprintBacklogLogic.getStoriesByImp();
@@ -91,7 +114,8 @@ public class ReleasePlanWebService extends ProjectWebService {
 					storyList.add(new StoryObject(issue));
 					IIssue[] taskIssueList = sprintBacklogMapper.getTaskInStory(issue.getIssueID());
 					List<TaskObject> taskList = new LinkedList<TaskObject>();
-					for (IIssue taskIssue : taskIssueList) taskList.add(new TaskObject(taskIssue));
+					for (IIssue taskIssue : taskIssueList)
+						taskList.add(new TaskObject(taskIssue));
 					taskMap.put(issue.getIssueID(), taskList);
 				}
 				stories.put(sprintId, storyList);
@@ -102,5 +126,5 @@ public class ReleasePlanWebService extends ProjectWebService {
 			releaseObject.setTotalStoryPoints(totalStoryPoints);
 		}
 		return releaseObject;
-    }
+	}
 }

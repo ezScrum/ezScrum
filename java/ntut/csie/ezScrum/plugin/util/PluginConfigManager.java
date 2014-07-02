@@ -29,8 +29,7 @@ public class PluginConfigManager {
 	}
 	
 	public PluginConfigManager(String projectName) {
-//		this.filePath = this.workspacePath + "//" + projectName + "/_metadata/" + this.configFileName;
-		this.filePath = this.workspacePath + "/_metadata/" + this.configFileName;
+		this.filePath = this.workspacePath + "//" + projectName + "/_metadata/" + this.configFileName;
 	}
 
 	public PluginConfig getAvailablePluginConfigByPluginId(String pluginId) {

@@ -13,6 +13,7 @@ public class TaskObject {
 	public String actual = "";
 	public String notes = "";
 	public String specificTime = "";
+	public long doneTime;
 	
 	public TaskObject() {}
 	
