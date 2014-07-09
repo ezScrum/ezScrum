@@ -1,10 +1,10 @@
 package ntut.csie.ezScrum.web.control;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -18,14 +18,18 @@ public class ProjectHelperTest extends TestCase {
 	private ProjectLogic helper = null;
 	private ProjectMapper mapper = null;
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public ProjectHelperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -42,11 +46,14 @@ public class ProjectHelperTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();
     	
@@ -55,12 +62,12 @@ public class ProjectHelperTest extends TestCase {
     	copyProject = null;
     	this.CP = null;
     	this.helper = null;
-    	this.config = null;
+    	configuration = null;
     }
     
     // 測試沒有專案存在的錯誤
     public void testgetAllCustomProjectsWrongParameter() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
     	IProject[] ActualProjects = helper.getAllCustomProjects();

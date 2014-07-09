@@ -3,9 +3,9 @@ package ntut.csie.ezScrum.web.action.report;
 import java.io.File;
 import java.io.IOException;
 
-import servletunit.struts.MockStrutsTestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -13,17 +13,17 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
+import servletunit.struts.MockStrutsTestCase;
 
 public class ReopenIssueActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateSprint CS;
 	private AddStoryToSprint ASS;
 	private AddTaskToStory ATS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public ReopenIssueActionTest(String testMethod) {
 		super(testMethod);
@@ -32,7 +32,11 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生1個Project、產生1個Sprint、Sprint產生1個Story、每個Story設定點數1點
 	// 將Story加入到Sprint內、每個 Story 產生1個1點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -49,7 +53,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/reopenIssue");
 
@@ -58,11 +62,14 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -73,6 +80,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		this.CS = null;
 		this.ASS = null;
 		this.ATS = null;
+		configuration = null;
 	}
 
 	// 測試Task ReOpen時的狀況
@@ -81,7 +89,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		IProject project = this.CP.getProjectList().get(0);
 		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
@@ -91,7 +99,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -129,7 +137,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		IProject project = this.CP.getProjectList().get(0);
 		IIssue issue = this.ASS.getIssueList().get(0); // 取得Story資訊
 		Long StoryID = issue.getIssueID();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
@@ -139,7 +147,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 

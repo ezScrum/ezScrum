@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -19,24 +20,19 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IRole;
-import ntut.csie.jcis.account.core.internal.Role;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private CreateProject CP;
 	private CreateAccount CA;
 	private int ProjectCount = 1;
@@ -47,7 +43,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -66,8 +62,12 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		// 新增Project
@@ -85,18 +85,22 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
 		ini = null;
 		projectManager = null;
+		configuration = null;
 	}
 
 	/**
@@ -112,7 +116,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(actionPath_createProject);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set request info ========================
 		//	設定專案資訊
@@ -129,12 +133,12 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		addRequestParameter("from", "createProject");
 
 		//	設定ITS參數資料
-		addRequestParameter("ServerUrl", this.config.SERVER_URL);
-		addRequestParameter("ServicePath", this.config.SERVER_PATH);
-		addRequestParameter("DBAccount", this.config.SERVER_ACCOUNT);
-		addRequestParameter("DBPassword", this.config.SERVER_PASSWORD);
-		addRequestParameter("SQLType", this.config.DATABASE_TYPE);
-		addRequestParameter("DBName", this.config.DATABASE_NAME);
+		addRequestParameter("ServerUrl", configuration.getServerUrl());
+		addRequestParameter("ServicePath", configuration.getWebServicePath());
+		addRequestParameter("DBAccount", configuration.getDBAccount());
+		addRequestParameter("DBPassword", configuration.getDBPassword());
+		addRequestParameter("SQLType", configuration.getDBType());
+		addRequestParameter("DBName", configuration.getDBName());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -178,7 +182,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(pathViewProjectSummary);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set request info ========================
 		addRequestParameter("PID", projectID);
@@ -234,7 +238,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -387,7 +391,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -425,7 +429,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -610,7 +614,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(pathViewProjectSummary);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set request info ========================
 		addRequestParameter("PID", notexistedProjectID);
@@ -633,7 +637,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(pathViewProjectSummary);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set request info ========================
 		addRequestParameter("PID", existedProjectID);

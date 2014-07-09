@@ -2,9 +2,9 @@ package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -22,7 +21,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private AddStoryToSprint ASS;
 	private AddTaskToStory ATS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/showCheckOutIssue";
 
 	public ShowCheckOutIssueTest(String testMethod) {
@@ -30,7 +29,11 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -47,7 +50,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.ACTION_PATH);
 
@@ -55,11 +58,14 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -70,6 +76,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		this.CS = null;
 		this.ASS = null;
 		this.ATS = null;
+		configuration = null;
 	}
 
 	// 測試Issue為Task的CheckOut
@@ -77,14 +84,14 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		long issueID = ATS.getTaskIDList().get(0);
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, config.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 		IIssue item = productBacklogMapper.getIssue(issueID);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
 		addRequestParameter("issueID", String.valueOf(issueID));
@@ -102,7 +109,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(item.getSummary()).append("\",")
 							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
 							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(config.USER_ID).append("\"")
+							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
@@ -113,14 +120,14 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		long issueID = ASS.getIssueList().get(0).getIssueID();
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, config.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 		IIssue item = productBacklogMapper.getIssue(issueID);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
 		addRequestParameter("issueID", String.valueOf(issueID));
@@ -138,7 +145,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(item.getSummary()).append("\",")
 							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
 							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(config.USER_ID).append("\"")
+							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);

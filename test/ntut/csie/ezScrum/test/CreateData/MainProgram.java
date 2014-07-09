@@ -2,11 +2,15 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.Scanner;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+
 public class MainProgram {
 	public static void main(String[] args) throws Exception {
-		ezScrumInfoConfig ezScrumInfo = new ezScrumInfoConfig();
+		Configuration configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
 		
-		InitialSQL ini = new InitialSQL(ezScrumInfo);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();			// 連結到遠端 MySQL 的初始化方法，帳號密碼為擁有 Access SQL 權限的使用者
 		
 		// ----------------------- 自動產生指定的專案 ----------------------------

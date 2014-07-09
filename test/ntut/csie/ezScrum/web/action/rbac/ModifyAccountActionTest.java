@@ -3,12 +3,12 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -24,7 +24,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	private int AccountCount = 1;
 	private final String ActionPath_ModifyAccount = "/modifyAccount";	// defined in "struts-config.xml"
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 
 	public ModifyAccountActionTest(String testMethod) {
@@ -32,7 +32,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -46,7 +46,11 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -62,14 +66,17 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
 
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		super.tearDown();
 
 		// ============= release ==============
@@ -81,6 +88,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	/**
@@ -112,7 +120,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -159,7 +167,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -209,7 +217,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -279,7 +287,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -348,7 +356,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -408,7 +416,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", updateUserIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -499,7 +507,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -556,7 +564,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", updateUserIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session

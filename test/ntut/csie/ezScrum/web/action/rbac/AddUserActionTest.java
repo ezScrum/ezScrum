@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -15,7 +16,6 @@ import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
@@ -32,7 +32,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	private int AccountCount = 1;
 	private String ActionPath_AddUser = "/addUser";	// defined in "struts-config.xml"
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 
 	public AddUserActionTest(String testMethod) {
@@ -40,7 +40,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -54,7 +54,11 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -73,13 +77,16 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -91,6 +98,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	// 以一般使用者身分執行
@@ -109,7 +117,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", Actor);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -167,7 +175,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ set session info ========================
 
 		// ================ set URL parameter ========================    	
@@ -246,7 +254,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + projectName);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -410,7 +418,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -455,7 +463,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -500,7 +508,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//    	addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================    	
 		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session

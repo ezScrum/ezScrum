@@ -26,25 +26,25 @@ import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class TableCreaterTest extends TestCase {
 	private TableCreater tc = null;
 	private ISQLControl control;
-	
 	private CreateProject CP;
-	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public TableCreaterTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		// 新增Project
@@ -53,7 +53,6 @@ public class TableCreaterTest extends TestCase {
 		IProject project = this.CP.getProjectList().get(0);
 
 		// create service control info.
-		Configuration configuration = new Configuration(config.getUserSession(), true);
 		MantisService Service = new MantisService(configuration);
 		this.control = Service.getControl();
 		this.control.setUser(configuration.getDBAccount());
@@ -67,12 +66,11 @@ public class TableCreaterTest extends TestCase {
 		// ============= release ==============
 		ini = null;
 		project = null;
-		configuration = null;
 		Service = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		if (this.control != null) {
@@ -85,6 +83,9 @@ public class TableCreaterTest extends TestCase {
 		
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案	
+		
+		configuration.setTestMode(false);
+		configuration.store();
 	
 		
 		// ============= release ==============
@@ -94,6 +95,7 @@ public class TableCreaterTest extends TestCase {
 		this.control.close();
 		this.control = null;
 		this.CP = null;
+		configuration = null;
 	}
 
 	// test ezScrum

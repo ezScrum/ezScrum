@@ -14,13 +14,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class MantisTagServiceTest extends TestCase {
 	private ISQLControl control;
-	private Configuration config;
 	private MantisTagService tagService;
 	
 	private CreateProject CP;
@@ -30,7 +28,7 @@ public class MantisTagServiceTest extends TestCase {
 	private int StoryCount = 1;
 	private int TagCount = 2;
 	private String TEST_TAG_NAME = "TEST_TAG_";	// Tag Name
-	private ezScrumInfoConfig ezScrumInfoConfig = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 //	ProductBacklog productBacklog = null;
 	ProductBacklogMapper productBacklogMapper = null;
@@ -40,7 +38,11 @@ public class MantisTagServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -57,15 +59,14 @@ public class MantisTagServiceTest extends TestCase {
 		
 		// 建立MantisTagService
 		IProject project = this.CP.getProjectList().get(0);
-		config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
-		MantisService mantisService = new MantisService(config);
+		MantisService mantisService = new MantisService(configuration);
 		control = mantisService.getControl();
-		control.setUser(config.getDBAccount());
-		control.setPassword(config.getDBPassword());
+		control.setUser(configuration.getDBAccount());
+		control.setPassword(configuration.getDBPassword());
 		control.connection();
 		
-		tagService = new MantisTagService(control, config);
-		productBacklogMapper = new ProductBacklogMapper(this.CP.getProjectList().get(0), ezScrumInfoConfig.getUserSession());
+		tagService = new MantisTagService(control, configuration);
+		productBacklogMapper = new ProductBacklogMapper(this.CP.getProjectList().get(0), configuration.getUserSession());
 		
 		super.setUp();
 		
@@ -75,24 +76,27 @@ public class MantisTagServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();										// 初始化 SQL
 		control.close();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.ezScrumInfoConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CPB = null;
     	this.CT = null;
-    	this.ezScrumInfoConfig = null;
     	this.tagService = null;
     	this.productBacklogMapper = null;
     	projectManager = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}

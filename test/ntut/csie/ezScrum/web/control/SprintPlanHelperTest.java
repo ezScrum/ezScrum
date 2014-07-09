@@ -6,12 +6,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 
@@ -21,14 +21,18 @@ public class SprintPlanHelperTest extends TestCase {
 	private CreateSprint CS;
 	private int ProjectCount = 1;
 	private int SprintCount = 3;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public SprintPlanHelperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		this.CP = new CreateProject(this.ProjectCount);
@@ -39,11 +43,18 @@ public class SprintPlanHelperTest extends TestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
+		
+		// release
+		copyProject = null;
+		configuration = null;
     }
     
 //	public void testcurrentSprintID() {
@@ -379,7 +390,7 @@ public class SprintPlanHelperTest extends TestCase {
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		this.CP = new CreateProject(this.ProjectCount);
@@ -410,7 +421,7 @@ public class SprintPlanHelperTest extends TestCase {
     	CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		this.CP = new CreateProject(this.ProjectCount);
@@ -432,7 +443,7 @@ public class SprintPlanHelperTest extends TestCase {
     	CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		this.CP = new CreateProject(this.ProjectCount);

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.service;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -11,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
@@ -29,15 +29,19 @@ public class ReleasePlanWebServiceTest extends TestCase {
 	private IProject project;
 	private ReleasePlanHelper RPhelper;
 	private ReleasePlanWebService rService;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public ReleasePlanWebServiceTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		// 新增一個 Project
@@ -58,13 +62,16 @@ public class ReleasePlanWebServiceTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.setUp();
 
@@ -72,7 +79,7 @@ public class ReleasePlanWebServiceTest extends TestCase {
 		ini = null;
 		this.CP = null;
 		this.CR = null;
-		this.config = null;
+		configuration = null;
 	}
 
 	public void testgetAllReleasePlan() throws LogonException, JSONException {

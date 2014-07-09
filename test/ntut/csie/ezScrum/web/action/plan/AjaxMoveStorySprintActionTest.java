@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -12,7 +13,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
@@ -21,13 +21,17 @@ import servletunit.struts.MockStrutsTestCase;
 public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateRelease CR;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public AjaxMoveStorySprintActionTest(String testMethod) {
 		super(testMethod);
 	}
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -38,7 +42,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/moveStorySprint");
 
@@ -47,17 +51,21 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
 		copyProject = null;
 		this.CP = null;
 		this.CR = null;
+		configuration = null;
 
 		super.tearDown();
 	}
@@ -76,7 +84,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1,
 				SprintCount, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStory_Sprint.exe();
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(config.getUserSession(), project);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(configuration.getUserSession(), project);
 
 		// 取出所有Story
 		IStory[] stories = productBacklogLogic.getStories();
@@ -101,7 +109,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 				addRequestParameter("moveID", "1");
 				addRequestParameter("type", "sprint");
 				// 設定Session資訊
-				request.getSession().setAttribute("UserSession", config.getUserSession());
+				request.getSession().setAttribute("UserSession", configuration.getUserSession());
 				request.getSession().setAttribute("Project", project);
 				actionPerform();
 			}
@@ -131,7 +139,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 				addRequestParameter("moveID", "1");
 				addRequestParameter("type", "release");
 				// 設定Session資訊
-				request.getSession().setAttribute("UserSession", config.getUserSession());
+				request.getSession().setAttribute("UserSession", configuration.getUserSession());
 				request.getSession().setAttribute("Project", project);
 				actionPerform();
 			}

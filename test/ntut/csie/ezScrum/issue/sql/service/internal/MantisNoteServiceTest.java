@@ -17,20 +17,17 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.jdom.Element;
 
 public class MantisNoteServiceTest extends TestCase {
-	private Configuration configuration;
-	
 	private CreateProject CP;
 	private CreateProductBacklog CPB;
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	private MantisService MSservice;
 	private MantisIssueService MISservice;
@@ -42,7 +39,11 @@ public class MantisNoteServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -51,7 +52,6 @@ public class MantisNoteServiceTest extends TestCase {
 		
 		// 建立MantisTagService
 		IProject project = this.CP.getProjectList().get(0);
-		configuration = new Configuration(config.getUserSession(), true);
 		this.MSservice = new MantisService(configuration);
 		MNService = new MantisNoteService(MSservice.getControl(), configuration);
 		MISservice = new MantisIssueService(MSservice.getControl(), configuration);
@@ -64,19 +64,22 @@ public class MantisNoteServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	copyProject = null;
     	this.CP = null;
     	this.CPB = null;
-    	this.config = null;
     	this.MNService = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -110,7 +113,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());// 1, 2 ..
-				assertEquals("administrator", note.getHandler());// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());// default = 1 (administrator)
 				assertEquals(Integer.toString(imp + index), noteTextHelper.getImportance());// 200, 201, 202 ..
 				assertEquals(Integer.toString(est + index), noteTextHelper.getEstimation());// 21, 22 , 23 ..
 				assertEquals(Integer.toString(value + index), noteTextHelper.getValue());// 300, 301, 302 ..

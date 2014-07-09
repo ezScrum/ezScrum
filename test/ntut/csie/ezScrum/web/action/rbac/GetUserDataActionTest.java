@@ -3,19 +3,15 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -28,7 +24,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 	private int AccountCount = 1;
 	private String actionPath = "/getUserData";	// defined in "struts-config.xml"
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 	private IUserSession userSession;
 
@@ -37,7 +33,11 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -49,7 +49,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		super.setUp();
 
 		// 固定行為可抽離
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.actionPath);
 
@@ -58,11 +58,14 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -75,6 +78,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	//

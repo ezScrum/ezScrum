@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -26,14 +26,18 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	private int ProjectCount = 1;
 	private int SprintCount = 1;
 	private int StoryCount = 5;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 
 	public TaskBoardTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		// 新增Project
@@ -49,7 +53,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 				CreateProductBacklog.TYPE_ESTIMATION);
 		this.ASS.exe();
 
-		this.sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), this.config.getUserSession(), null);
+		this.sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), configuration.getUserSession(), null);
 		this.SB = sprintBacklogLogic.getSprintBacklogMapper();
 		
 		this.TB = new TaskBoard(this.sprintBacklogLogic, this.SB);
@@ -62,11 +66,18 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
+		
+		// release
+		copyProject = null;
+		configuration = null;
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試1
@@ -119,7 +130,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 //		isSuccess = helper.edit(stories[4].getIssueID(), stories[4]
 //				.getSummary(), "10", "50", stories[4].getEstimated(),
 //				stories[4].getHowToDemo(), stories[4].getNotes());
-		ProductBacklogHelper helper = new ProductBacklogHelper(this.config.getUserSession(), this.CP.getProjectList().get(0));
+		ProductBacklogHelper helper = new ProductBacklogHelper(configuration.getUserSession(), this.CP.getProjectList().get(0));
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0].getSummary(), "10", "10", stories[0].getEstimated(),
 				stories[0].getHowToDemo(), stories[0].getNotes());
@@ -193,7 +204,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 //		isSuccess = helper.edit(stories[4].getIssueID(), stories[4]
 //				.getSummary(), "10", "40", stories[4].getEstimated(),
 //				stories[4].getHowToDemo(), stories[4].getNotes());
-		ProductBacklogHelper helper = new ProductBacklogHelper(this.config.getUserSession(), this.CP.getProjectList().get(0));
+		ProductBacklogHelper helper = new ProductBacklogHelper(configuration.getUserSession(), this.CP.getProjectList().get(0));
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0]
 				.getSummary(), "10", "40", stories[0].getEstimated(),

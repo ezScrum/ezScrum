@@ -3,12 +3,12 @@ package ntut.csie.ezScrum.web.action.unplanned;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -19,7 +19,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private CreateUnplannedItem CU;
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	private String actionPath = "/removeUnplannedItem";
 	
@@ -28,7 +28,11 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -36,7 +40,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); // 設定讀取的
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
@@ -46,11 +50,14 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -59,6 +66,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		copyProject = null;
 		this.CP = null;
 		this.CS = null;
+		configuration = null;
 	}
 	
 	// case 1: One sprint with 1 Unplanned item
@@ -79,7 +87,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -116,7 +124,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -147,7 +155,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -184,7 +192,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -215,7 +223,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -252,7 +260,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -283,7 +291,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -314,7 +322,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -345,7 +353,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -17,7 +18,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -25,7 +25,7 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/showSprintInformation";
 	private IProject project;
 
@@ -34,8 +34,12 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		//	新增一測試專案
@@ -45,7 +49,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.ACTION_PATH);
 
@@ -55,17 +59,21 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
 		this.CP = null;
+		configuration = null;
 
 		super.tearDown();
 	}
@@ -81,7 +89,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", sprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -108,7 +116,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -180,7 +188,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();

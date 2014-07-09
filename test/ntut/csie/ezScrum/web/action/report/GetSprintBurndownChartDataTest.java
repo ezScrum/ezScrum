@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -16,12 +17,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
-
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
@@ -32,14 +31,18 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private IProject project;
 	private Gson gson;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public GetSprintBurndownChartDataTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		// 新增一測試專案
@@ -54,7 +57,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		gson = new Gson();
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));	// 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));	// 設定讀取的struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/getSprintBurndownChartData");
 
@@ -63,19 +66,23 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); 	// 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
 		this.CP = null;
 		this.CS = null;
 		this.gson = null;
+		configuration = null;
 		super.tearDown();
 	}
 
@@ -89,7 +96,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addStoryToSprint.exe();
 
 		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), CS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
@@ -102,7 +109,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -139,7 +146,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addStoryToSprint.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), CS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
@@ -154,7 +161,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -199,13 +206,13 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
 
 		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), CS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
@@ -248,7 +255,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addTaskToStory.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), CS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
@@ -263,7 +270,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();

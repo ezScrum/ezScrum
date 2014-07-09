@@ -3,27 +3,29 @@ package ntut.csie.ezScrum.web.mapper;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IActor;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountMapperTest extends TestCase {
-	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private AccountMapper mAccountMapper;
+	private Configuration configuration = null;
 
 	public AccountMapperTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		mAccountMapper = new AccountMapper();
 		// ============= release ==============
@@ -32,18 +34,22 @@ public class AccountMapperTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
 
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		// ============= release ==============
 		ini = null;
 		projectManager = null;
 		mAccountMapper = null;
+		configuration = null;
 		AccountFactory.getManager().referesh();	// 等之後scrum role也完成外部toDB即可刪掉
 		super.tearDown();
 	}
