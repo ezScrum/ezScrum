@@ -43,7 +43,6 @@ public class CreateTask {
 	
 	private ArrayList<Long> TaskIDList = new ArrayList<Long>();
 	private List<IIssue> TaskList = new ArrayList<IIssue>();
-	ezScrumInfoConfig config = new ezScrumInfoConfig();
 	
 	public CreateTask(int count, int EstValue, long StoryID, CreateProject CP) {
 		this.TaskCount = count;
@@ -91,7 +90,7 @@ public class CreateTask {
 	}
 	
 	public void exe() throws Exception {
-		IUserSession userSession = (new ezScrumInfoConfig()).getUserSession();
+		IUserSession userSession = (new Configuration()).getUserSession();
 		if (this.AutoSetTask) {
 			initial_Spint_Story();
 			
@@ -155,7 +154,7 @@ public class CreateTask {
 		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
 		
 		//ITSPrefsStorage itsPrefs = new ITSPrefsStorage(p, config.getUserSession());
-		Configuration configuration = new Configuration(config.getUserSession());
+		Configuration configuration = new Configuration();
 		ITSServiceFactory itsFactory = ITSServiceFactory.getInstance();
 
 		IITSService itsService = itsFactory.getService(configuration);

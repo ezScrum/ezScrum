@@ -2,10 +2,14 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+
 public class _CreateData_MainExample {
 
 	public static void main(String[] args) {
-		ezScrumInfoConfig config = new ezScrumInfoConfig();	// 設定初始檔，讀取 config
+		Configuration configuration = new Configuration();	// 設定初始檔，讀取 config
+		configuration.setTestMode(true);
+		configuration.store();
 		
 		// ==================  CreatePrjoect Example  =====================
 		CreateProject cp = new CreateProject(1);	// 建構給一個建立測試專案的個數
@@ -40,6 +44,8 @@ public class _CreateData_MainExample {
 			CP.exeCopy_Delete_Project();			// 刪除並且複製測試專案於桌面上，複製與還原 RoleBase.xml
 //			CP.exeCopy_Project();					// 複製測試專案於桌面上，複製與還原 RoleBase.xml
 //			CP.exeDelete_Project();					// 刪除測試專案於 TestWorkspace，複製與還原 RoleBase.xml
+			configuration.setTestMode(false);
+			configuration.store();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

@@ -7,6 +7,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -18,12 +19,17 @@ public class SprintBacklogTreeStructureTest extends TestCase {
 	private IIssue task;
 	private Element root;
 	private SprintBacklogLogic sprintBacklogLogic;
+	private Configuration configuration = null;
 	
 	public SprintBacklogTreeStructureTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp(){
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		this.story = new Issue();
 		this.story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 		this.task = new Issue();
@@ -33,10 +39,13 @@ public class SprintBacklogTreeStructureTest extends TestCase {
     }
 
     protected void tearDown(){
+    	configuration.setTestMode(false);
+		configuration.store();
     	this.story = null;
     	this.task = null;
     	this.root = null;
     	this.sprintBacklogLogic = null;
+    	configuration = null;
     }
     
     /*-----------------------------------------------------------

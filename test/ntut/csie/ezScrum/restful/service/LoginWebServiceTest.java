@@ -1,23 +1,26 @@
 package ntut.csie.ezScrum.restful.service;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.restful.mobile.service.LoginWebService;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class LoginWebServiceTest extends TestCase {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public LoginWebServiceTest(String testMethod) {
 		super(testMethod);
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		super.setUp();
@@ -28,8 +31,13 @@ public class LoginWebServiceTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
+		
+		configuration.setTestMode(false);
+		configuration.store();
+		
+		configuration = null;
 		
 		super.tearDown();
 		

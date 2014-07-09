@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
@@ -11,7 +12,7 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateUnplannedItem {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	private int itemCount = 1;
 	private CreateProject CP = null;
 	private CreateSprint CS = null;
@@ -42,7 +43,7 @@ public class CreateUnplannedItem {
 	}
 
 	public void exe() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		int projectCount = this.CP.getProjectList().size();
 		int sprintCount = this.CS.getSprintCount();
 

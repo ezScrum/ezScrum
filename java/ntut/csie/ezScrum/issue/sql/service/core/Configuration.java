@@ -12,12 +12,18 @@ import java.util.List;
 import java.util.Properties;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 public class Configuration {
 	private Properties properties;
+	public String USER_ID = "admin";	// user ID
+	private String BASEDIR_PATH = getBaseDirPath();
 	private final String PERFS_FILE_NAME = "ezScrum.ini";
-	private final String PERFS_FILE_PATH = System.getProperty("user.dir") + "/" + PERFS_FILE_NAME;
+	private final String PERFS_FILE_PATH = BASEDIR_PATH + File.separator + PERFS_FILE_NAME;
+	private final String MODE = "Mode";
 	private final String SERVER_URL = "ServerUrl";
 	private final String SERVICE_PATH = "ServicePath";
 	private final String ACCOUNT = "Account";
@@ -26,35 +32,23 @@ public class Configuration {
 	private final String DATABASE_NAME = "DatabaseName";
 	private final String TEST = "test";
 	
-	private boolean isTest = false;
+	private String TestDataPath = BASEDIR_PATH + File.separator + "TestData";	         // 預設的 TestData
+	private String TestWorkspacePath = TestDataPath + File.separator + "TestWorkspace";	 // 預設的 worksapce
+	private String TestInitialSQLPath = TestDataPath + File.separator + "InitialData" + File.separator + "initial_bk.sql";	// 預設的初始SQL檔案位置
+	
 	private ProjectObject mProject;
 	private IUserSession m_userSession;
 
 	public Configuration() {
 		properties = new Properties();
-		init();
-	}
-	
-	/**
-	 * a test Configuration
-	 * @param isTest ? True : False
-	 */
-	public Configuration(boolean isTest) {
-		this.isTest = true;
-		properties = new Properties();
+		init_workspacepath();
 		init();
 	}
 
 	public Configuration(IUserSession userSession) {
 		m_userSession = userSession;
 		properties = new Properties();
-		init();
-	}
-	
-	public Configuration(IUserSession userSession, boolean isTest) {
-		this.isTest = true;
-		m_userSession = userSession;
-		properties = new Properties();
+		init_workspacepath();
 		init();
 	}
 
@@ -62,6 +56,7 @@ public class Configuration {
 		mProject = project;
 		m_userSession = userSession;
 		properties = new Properties();
+		init_workspacepath();
 		init();
 	}
 
@@ -75,6 +70,14 @@ public class Configuration {
 			throw new RuntimeException(e);
 		}
 
+		// initial workspace property
+		System.setProperty("ntut.csie.jcis.resource.WorkspaceRoot", TestWorkspacePath);
+
+		// initial account manager property
+		System.setProperty("ntut.csie.jcis.accountManager", "ntut.csie.jcis.account.core.internal.XMLAccountManager");
+
+		// initial rolebase.xml path
+		System.setProperty("ntut.csie.jcis.accountManager.path", TestWorkspacePath + File.separator + "RoleBase.xml");
 	}
 
 	/**
@@ -117,17 +120,28 @@ public class Configuration {
 			}
 		}
 	}
+	
+	private void init_workspacepath() {
+		// initial test data path
+		TestDataPath = getBaseDirPath() + File.separator + "TestData";
+		
+		// initial test worksapce path
+		TestWorkspacePath = TestDataPath + File.separator + "TestWorkspace";
+		
+		// initial test upload file
+		TestInitialSQLPath = TestDataPath + File.separator + "InitialData" + File.separator + "initial_bk.sql";
+	}
 
 	public String getProjectName() {
 		return mProject.getName();
 	}
 
 	public String getServerUrl() {
-		return isTest ? properties.getProperty(TEST + "." + SERVER_URL) : properties.getProperty(SERVER_URL);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + SERVER_URL) : properties.getProperty(SERVER_URL);
 	}
 
 	public String getWebServicePath() {
-		return isTest ? properties.getProperty(TEST + "." + SERVICE_PATH) : properties.getProperty(SERVICE_PATH);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + SERVICE_PATH) : properties.getProperty(SERVICE_PATH);
 	}
 
 	public String getAccount() {
@@ -137,47 +151,92 @@ public class Configuration {
 	}
 
 	public String getDBAccount() {
-		return isTest ? properties.getProperty(TEST + "." + ACCOUNT) : properties.getProperty(ACCOUNT);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + ACCOUNT) : properties.getProperty(ACCOUNT);
 	}
 
 	public String getDBPassword() {
-		return isTest ? properties.getProperty(TEST + "." + PASSWORD) : properties.getProperty(PASSWORD);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + PASSWORD) : properties.getProperty(PASSWORD);
 	}
 
 	public String getDBType() {
-		return isTest ? properties.getProperty(TEST + "." + DATABASE_TYPE) : properties.getProperty(DATABASE_TYPE);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + DATABASE_TYPE) : properties.getProperty(DATABASE_TYPE);
 	}
 
 	public String getDBName() {
-		return isTest ? properties.getProperty(TEST + "." + DATABASE_NAME) : properties.getProperty(DATABASE_NAME);
+		return isRunningTestMode() ? properties.getProperty(TEST + "." + DATABASE_NAME) : properties.getProperty(DATABASE_NAME);
 	}
 
 	public void setServerUrl(String value) {
-		properties.setProperty(SERVER_URL, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + SERVER_URL : SERVER_URL, value);
 	}
 
 	public void setWebServicePath(String value) {
-		properties.setProperty(SERVICE_PATH, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + SERVICE_PATH : SERVICE_PATH, value);
 	}
 
 	public void setDBAccount(String value) {
-		properties.setProperty(ACCOUNT, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + ACCOUNT : ACCOUNT, value);
 	}
 
 	public void setDBPassword(String value) {
-		properties.setProperty(PASSWORD, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + PASSWORD : PASSWORD, value);
 	}
 
 	public void setDBType(String value) {
-		properties.setProperty(DATABASE_TYPE, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + DATABASE_TYPE : DATABASE_TYPE, value);
 	}
 
 	public void setDBName(String value) {
-		properties.setProperty(DATABASE_NAME, value);
+		properties.setProperty(isRunningTestMode() ? TEST + "." + DATABASE_NAME : DATABASE_NAME, value);
 	}
-
-	public boolean isTest() {
-		return isTest;
+	
+	public void setTestMode(boolean isTest){
+		properties.setProperty(MODE, String.valueOf(isTest));
+	}
+	
+	public boolean isRunningTestMode(){
+		return Boolean.parseBoolean(properties.getProperty(MODE));
+	}
+	
+	/**
+	 * return mock up IUserSession
+	 */
+	public IUserSession getUserSession() {
+		UserObject theAccount = new AccountMapper().getAccount(USER_ID);
+		IUserSession theUserSession = new UserSession(theAccount);
+		return theUserSession;
+	}
+	
+	/**
+	 * return base dir path
+	 */
+	public String getBaseDirPath() {
+		String basedir = System.getProperty("ntut.csie.jcis.resource.BaseDir");
+		if (basedir == null) {
+			basedir = System.getProperty("user.dir");
+		}
+		return basedir;
+	}
+	
+	/**
+	 * return TestWorkspace path
+	 */
+	public String getTestWorkspacePath() {
+		return TestWorkspacePath;
+	}
+	
+	/**
+	 * return TestData path
+	 */
+	public String getTestDataPath() {
+		return TestDataPath;
+	}
+	
+	/**
+	 * return InitialSQL file path
+	 */
+	public String getInitialSQLPath() {
+		return TestInitialSQLPath;
 	}
 
 }

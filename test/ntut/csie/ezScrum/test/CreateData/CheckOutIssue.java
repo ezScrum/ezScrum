@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -18,7 +19,7 @@ public class CheckOutIssue {
 	private List<IIssue> issueList;
 	private CreateProject CP;
 	private Date SetDoneDate = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	private ProjectMapper projectMapper = new ProjectMapper();
 
 //	public CheckOutIssue(ArrayList<Long> list, CreateProject CP) {
@@ -44,7 +45,7 @@ public class CheckOutIssue {
 	}
 
 	public void exeReset_Issues() throws Exception {
-		IUserSession userSession = config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
 			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
@@ -69,7 +70,7 @@ public class CheckOutIssue {
 	}
 
 	public void exeCheckOut_Issues() throws Exception {
-		IUserSession userSession = config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
 			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
@@ -84,9 +85,9 @@ public class CheckOutIssue {
 			for (long ID : this.IssueIDList) {
 				if (this.SetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
-					sprintBacklogLogic.checkOutTask(ID, config.USER_ID, "", "", format.format(this.SetDoneDate), "");
+					sprintBacklogLogic.checkOutTask(ID, configuration.USER_ID, "", "", format.format(this.SetDoneDate), "");
 				} else {
-					sprintBacklogLogic.checkOutTask(ID, config.USER_ID, "", "", "", "");
+					sprintBacklogLogic.checkOutTask(ID, configuration.USER_ID, "", "", "", "");
 				}
 				System.out.println("移動 Issue " + ID + " 到 Check-out 成功");
 			}
@@ -94,7 +95,7 @@ public class CheckOutIssue {
 	}
 
 	public void exeDone_Issues() throws Exception {
-		IUserSession userSession = config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		String handler = userSession.getAccount().getId();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {

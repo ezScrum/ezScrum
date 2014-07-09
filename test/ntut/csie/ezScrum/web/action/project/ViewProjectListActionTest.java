@@ -5,25 +5,29 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		CreateProject CP = new CreateProject(2);
@@ -37,28 +41,32 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 	
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
+		configuration = null;
 	}
 	
 	public void testViewProjectList(){
 		// ================ set action info ========================
-		setContextDirectory( new File(config.getBaseDirPath() + "/WebContent") );
+		setContextDirectory( new File(configuration.getBaseDirPath() + "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/viewProjectList");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

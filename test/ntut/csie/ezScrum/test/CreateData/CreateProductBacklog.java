@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
@@ -42,7 +43,7 @@ public class CreateProductBacklog {
 	private int AssignValue = 1;
 	private boolean AutoSetStory = true;
 	private String Type;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 
 	public CreateProductBacklog() {}
 
@@ -61,7 +62,7 @@ public class CreateProductBacklog {
 	}
 
 	public void exe() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		if (this.AutoSetStory) {
 
 			for (int i = 0; i < this.CP.getProjectList().size(); i++) {
@@ -171,7 +172,7 @@ public class CreateProductBacklog {
 	}
 
 	public void createBacklogStory(IProject project, String value, String importance, String estimation) {
-		IUserSession userSession = config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		this.productBacklogMapper = new ProductBacklogMapper(project, userSession);
 		int index = IssueIDList.size();
 		StoryInformation storyInformation = new StoryInformation

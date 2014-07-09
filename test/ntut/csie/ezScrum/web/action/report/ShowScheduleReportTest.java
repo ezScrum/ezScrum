@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -17,7 +18,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -33,7 +33,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private AddStoryToSprint ASS;
 	private AddTaskToStory ATS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/showScheduleReport";
 
 	public ShowScheduleReportTest(String testMethod) {
@@ -41,7 +41,11 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CP = new CreateProject(1);
@@ -49,7 +53,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(ACTION_PATH);
 
@@ -57,13 +61,16 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -74,6 +81,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		CS = null;
 		ASS = null;
 		ATS = null;
+		configuration = null;
 	}
 
 	/**
@@ -92,7 +100,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = CP.getProjectList().get(0);
 		int SprintID = Integer.parseInt(CS.getSprintIDList().get(0));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), CS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
 
@@ -100,7 +108,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.getSession().setAttribute("sprintID", SprintID);
 
@@ -151,7 +159,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
 		// ================ 執行 action ==============================

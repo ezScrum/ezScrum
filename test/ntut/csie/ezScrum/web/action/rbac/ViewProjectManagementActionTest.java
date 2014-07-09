@@ -3,13 +3,12 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -21,20 +20,24 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
 	private String actionPath = "/viewManagement";	// defined in "struts-config.xml"
 	private IUserSession userSession;
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public ViewProjectManagementActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		super.setUp();
 		
 		// 固定行為可抽離
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo(this.actionPath);
     	
@@ -43,8 +46,11 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
+		
+		configuration.setTestMode(false);
+		configuration.store();
 		
     	super.tearDown();    	
     	
@@ -55,6 +61,7 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
     	this.CA = null;
     	this.config = null;
     	this.userSession = null;
+    	configuration = null;
     }
     
     // 
@@ -69,7 +76,7 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
     	// ================== set parameter info ====================
     	    	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());
+    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
     	// ================ set session info ========================
     	
     	// ================ set URL parameter ========================    	

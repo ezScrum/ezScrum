@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
@@ -13,18 +14,16 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class AccountHelperTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
 //	private MantisAccountMapper helper = null;
 	private ProjectMapper projectMapper = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private IUserSession userSession = null;
 	private ProjectObject project = null;
 	
@@ -33,7 +32,11 @@ public class AccountHelperTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -43,7 +46,7 @@ public class AccountHelperTest extends TestCase {
 		// 建構 helper
 		//this.helper = new MantisAccountMapper(this.CP.getProjectList().get(0), config.getUserSession());
 		this.projectMapper = new ProjectMapper();
-		this.userSession = config.getUserSession();
+		this.userSession = configuration.getUserSession();
 		this.project = this.CP.getProjectObjectList().get(0);
 		
 		super.setUp();
@@ -53,12 +56,15 @@ public class AccountHelperTest extends TestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
 //    	copyProject.exeDelete_Project();					// 刪除測試檔案
     	copyProject.exeCopy_Delete_Project();
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();
     	
@@ -68,7 +74,7 @@ public class AccountHelperTest extends TestCase {
     	this.CP = null;
 //    	this.helper = null;
     	this.projectMapper = null;
-    	this.config = null;
+    	configuration = null;
     }
     
     public void testgetScrumWorkerList() {

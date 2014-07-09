@@ -6,7 +6,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.codehaus.jettison.json.JSONException;
@@ -16,17 +15,20 @@ import servletunit.struts.MockStrutsTestCase;
 public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private final String actionPath = "/saveConfiguration";
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private IProject project;
-	Configuration configuration;
 
 	public SaveConfigurationActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		// 新增一測試專案
@@ -35,8 +37,8 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		project = this.CP.getProjectList().get(0);
 		
 		super.setUp();
-
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));
+		
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 
@@ -45,13 +47,20 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
 		// 刪除測試檔案
 		CopyProject copyProject = new CopyProject(CP);
 		copyProject.exeDelete_Project();
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
@@ -63,8 +72,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	}
 
 	public void testSaveConfigurationAction() throws JSONException {
-		
-		configuration = new Configuration(config.getUserSession());
 		
 		String originServerUrl = configuration.getServerUrl();
 		String originDBAccount = configuration.getDBAccount();
@@ -87,8 +94,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		addRequestParameter("DBName", actualDBName);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		configuration = new Configuration(config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ===============================
 		actionPerform();
@@ -96,6 +102,10 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		// ================ assert ==================================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
+		
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
 		
 		// assert response text
 		String expectServerUrl = configuration.getServerUrl();

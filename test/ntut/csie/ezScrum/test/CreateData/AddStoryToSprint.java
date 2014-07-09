@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -23,7 +24,7 @@ public class AddStoryToSprint {
 	private int ProjectCount = 1;
 	private CreateProject CP;
 	private List<IIssue> IssueList = new LinkedList<IIssue>();
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 
 	public AddStoryToSprint(int count, int EstValue, CreateSprint cs, CreateProject cp, String type) throws Exception {
 		this.EachCount = count;
@@ -87,7 +88,7 @@ public class AddStoryToSprint {
 	}
 
 	private void addStoryToSprint(IProject p, ArrayList<Long> list, String sprintID) {
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, config.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, configuration.getUserSession());
 		
 		for (long issueID : list) {
 			// IIssue issue = pb.getIssue(issueID);

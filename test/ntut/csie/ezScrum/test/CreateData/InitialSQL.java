@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.jcis.core.util.CloseStreamUtil;
 
 import org.apache.commons.logging.Log;
@@ -27,20 +28,20 @@ public class InitialSQL {
 	private String AppServID = "";		// DB access ID
 	private String AppServPWD = "";		// DB access Password
 
-	private ezScrumInfoConfig config = null;
+	private Configuration config = null;
 
 	private String sqlType = MYSQL;
 
 	// 遠端執行，使用 DBBean 下 MySQL 指令清空資料表
-	public InitialSQL(ezScrumInfoConfig ezScrumInfo) {
+	public InitialSQL(Configuration configuration) {
 		// 依照設定檔初始化資料庫
 		// 如果是Default資料庫的話，就不需要特地去清除
 		// 目前只有 MySql 需要連線進行清除資料庫
-		this.config = ezScrumInfo;
+		this.config = configuration;
 		this.reDirFile = this.config.getTestDataPath() + File.separator + "InitialData" + File.separator + "initial_bk.sql";
 
-		if (ezScrumInfo.DATABASE_TYPE.equals("MySQL")) {
-			this.db = new DBBean(ezScrumInfo.SERVER_URL, ezScrumInfo.APPSERV_USERID, ezScrumInfo.APPSERV_PASSWORD, ezScrumInfo.DATABASE_NAME);
+		if (config.getDBType().equals("MySQL")) {
+			this.db = new DBBean(configuration.getServerUrl(), configuration.getDBAccount(), configuration.getDBPassword(), configuration.getDBName());
 			this.log.info("使用 MySQL Database 為測試資料庫");
 		} else {
 			sqlType = LOCALDB;
@@ -65,7 +66,7 @@ public class InitialSQL {
 			}
 		} else if (sqlType != LOCALDB) {
 			Runtime rt = Runtime.getRuntime();
-			String cmdStr = "mysql -u" + this.AppServID + " -p" + this.AppServPWD + " " + this.config.DATABASE_NAME;
+			String cmdStr = "mysql -u" + this.AppServID + " -p" + this.AppServPWD + " " + config.getDBName();
 			Process p = null;
 			try {
 				p = rt.exec(cmdStr);

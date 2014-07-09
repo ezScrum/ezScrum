@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -9,7 +10,7 @@ import ntut.csie.ezScrum.web.mapper.RetrospectiveMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateRetrospective {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	
 	private int GoodCount = 1;
 	private int ImproveCount = 1;
@@ -49,7 +50,7 @@ public class CreateRetrospective {
 	}	
 	
 	public void exe() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		int projectCount = this.CP.getProjectList().size();
 		int sprintCount = this.CS.getSprintCount();
 
@@ -83,7 +84,7 @@ public class CreateRetrospective {
 
 	// 有做刪除動作後必須更新
 	public void update() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		int projectCount = this.CP.getProjectList().size();
 		int sprintCount = this.CS.getSprintCount();
 

@@ -4,34 +4,38 @@ import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.service.CustomIssueType;
 import ntut.csie.ezScrum.service.IssueBacklog;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateCustomIssueType;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 
 public class IssueBacklogTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
 	private IssueBacklog backlog = null;
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public IssueBacklogTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
 		this.CP = new CreateProject(this.ProjectCount);
 		this.CP.exeCreate();
 		
-		this.backlog = new IssueBacklog(this.CP.getProjectList().get(0), config.getUserSession());
+		this.backlog = new IssueBacklog(this.CP.getProjectList().get(0), configuration.getUserSession());
 		
 		super.setUp();
 		
@@ -40,11 +44,14 @@ public class IssueBacklogTest extends TestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();
     	
@@ -53,7 +60,7 @@ public class IssueBacklogTest extends TestCase {
     	copyProject = null;
     	this.CP = null;
     	this.backlog = null;
-    	this.config = null;
+    	configuration = null;
     }
     
     // 測試判斷此專案是否可以被回報

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -21,15 +22,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.LogonException;
-import ntut.csie.jcis.account.core.internal.Account;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -39,7 +36,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private AddStoryToSprint ASS;
 	private AddTaskToStory ATS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public ShowTaskBoardActionTest(String testMethod) {
         super(testMethod);
@@ -48,7 +45,11 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生一個Project、產生兩個Sprint、各個Sprint產生五個Story、每個Story設定點數兩點
 	// 並且已經將Story加入到各個Sprint內、每個 Story 產生兩個一點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -69,7 +70,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); // 設定讀取的
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config
 		// 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
@@ -80,11 +81,14 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -95,6 +99,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		this.CS = null;
 		this.ASS = null;
 		this.ATS = null;
+		configuration = null;
 	}
 
 	// 正常執行
@@ -111,7 +116,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());	
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -252,7 +257,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -404,7 +409,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// =============== set move action ======================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -483,7 +488,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// =============== set move action ======================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
