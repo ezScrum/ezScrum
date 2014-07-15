@@ -40,14 +40,12 @@ public class Configuration {
 	private IUserSession m_userSession;
 
 	public Configuration() {
-		properties = new Properties();
 		init_workspacepath();
 		init();
 	}
 
 	public Configuration(IUserSession userSession) {
 		m_userSession = userSession;
-		properties = new Properties();
 		init_workspacepath();
 		init();
 	}
@@ -55,7 +53,6 @@ public class Configuration {
 	public Configuration(ProjectObject project, IUserSession userSession) {
 		mProject = project;
 		m_userSession = userSession;
-		properties = new Properties();
 		init_workspacepath();
 		init();
 	}
@@ -64,6 +61,7 @@ public class Configuration {
 	 * Initial Configuration
 	 */
 	private void init() {
+		properties = new Properties();
 		try {
 			properties.load(new FileInputStream(PERFS_FILE_PATH));
 		} catch (IOException e) {
