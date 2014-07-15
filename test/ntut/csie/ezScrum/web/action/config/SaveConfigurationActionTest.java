@@ -24,8 +24,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);
@@ -48,7 +46,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws Exception {
 		configuration = new Configuration();
-		configuration.setTestMode(true);
+		configuration.setTestMode(false);
 		configuration.store();
 		
 		// 初始化 SQL
@@ -58,9 +56,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		// 刪除測試檔案
 		CopyProject copyProject = new CopyProject(CP);
 		copyProject.exeDelete_Project();
-		
-		configuration.setTestMode(false);
-		configuration.store();
 
 		// ============= release ==============
 		ini = null;
@@ -104,8 +99,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		
 		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
 		
 		// assert response text
 		String expectServerUrl = configuration.getServerUrl();
