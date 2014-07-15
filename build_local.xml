@@ -318,7 +318,7 @@
 				<include name="TEST-*.xml" />
 			</fileset>
 			<report format="frames" todir="${ProjectTest.Dir}/html" />
-		</junitreport>		
+		</junitreport>
 	</target>
 	
 	<!-- UT entry -->
