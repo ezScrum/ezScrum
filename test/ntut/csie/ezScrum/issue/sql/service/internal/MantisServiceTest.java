@@ -23,12 +23,15 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TextParserGeneraterForNote;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -41,6 +44,7 @@ public class MantisServiceTest extends TestCase {
 	private int ProjectCount = 1;
 	private int StoryCount = 1;
 	private Configuration configuration;
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	
@@ -49,7 +53,7 @@ public class MantisServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
+		configuration = new Configuration(userSession);
 		configuration.setTestMode(true);
 		configuration.store();
 		
@@ -2382,9 +2386,8 @@ public class MantisServiceTest extends TestCase {
 	// test : getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate, Date endDate)
 	public void testGetIssues_Date_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2454,9 +2457,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testGetIssue_IssueID_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2529,9 +2531,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testUpdateBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2625,15 +2626,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testUpdateIssueNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2755,15 +2754,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testInsertBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2825,15 +2822,13 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testRemoveNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(configuration.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		
 		// new 10 issues
 		int storyCount = 10;
@@ -2889,7 +2884,6 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 		CPB = null;
 	}
