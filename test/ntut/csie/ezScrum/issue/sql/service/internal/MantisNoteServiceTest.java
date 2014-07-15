@@ -13,10 +13,13 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -28,6 +31,7 @@ public class MantisNoteServiceTest extends TestCase {
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
 	private Configuration configuration;
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	private MantisIssueService MISservice;
@@ -39,7 +43,7 @@ public class MantisNoteServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
+		configuration = new Configuration(userSession);
 		configuration.setTestMode(true);
 		configuration.store();
 		
@@ -170,7 +174,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -204,7 +208,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32 , 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -271,7 +275,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -320,7 +324,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32, 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -381,7 +385,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
