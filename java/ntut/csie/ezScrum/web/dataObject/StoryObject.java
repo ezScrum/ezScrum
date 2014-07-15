@@ -3,11 +3,12 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
+
+import org.apache.commons.lang.StringUtils;
 
 public class StoryObject {
 	public String id = "";
@@ -24,6 +25,7 @@ public class StoryObject {
 	public List<String> taskIDList = new ArrayList<String>();
 	public List<TagObject> tagList = new ArrayList<TagObject>();
 	public List<TaskObject> taskList = new ArrayList<TaskObject>();
+	public List<HistoryObject> historyList = new ArrayList<HistoryObject>();
 	
 	public StoryObject() {
 		
@@ -68,6 +70,10 @@ public class StoryObject {
 		
 		for (long taskID : story.getChildrenID())
 			taskIDList.add(Long.toString(taskID));
+
+		for (IIssueHistory history : story.getIssueHistories()) {
+			historyList.add(new HistoryObject(history));
+		}
 	}
 	
 	public void addTask(TaskObject task) {
