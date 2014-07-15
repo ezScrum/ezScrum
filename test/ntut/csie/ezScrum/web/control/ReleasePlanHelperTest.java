@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -16,7 +17,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -27,14 +27,18 @@ public class ReleasePlanHelperTest extends TestCase {
 	private CreateRelease CR;
 	private int ReleaseCount = 3;
 	private int ProjectCount = 1;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public ReleasePlanHelperTest(String testMethod) {
         super(testMethod);
     }
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(this.ProjectCount); // 新增一個 Project
@@ -46,11 +50,18 @@ public class ReleasePlanHelperTest extends TestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
+		
+		// release
+		copyProject = null;
+		configuration = null;
 	}
 
 	public void testloadReleasePlans() {
@@ -206,8 +217,8 @@ public class ReleasePlanHelperTest extends TestCase {
 		this.helper = new ReleasePlanHelper(project);
 		List<IReleasePlanDesc> releaseDescs = helper.getReleasePlansByIDs(releases);
 		// 取得SprintBacklog
-		ezScrumInfoConfig config = new ezScrumInfoConfig();
-		IUserSession userSession = config.getUserSession();
+		Configuration configuration = new Configuration();
+		IUserSession userSession = configuration.getUserSession();
 		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project, userSession);
 		// assert no release plan string value
 		String actualTest = helper.getSprintVelocityToJSon(releaseDescs, SBhelper);

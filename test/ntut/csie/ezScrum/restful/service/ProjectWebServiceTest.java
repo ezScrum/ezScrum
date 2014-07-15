@@ -3,10 +3,10 @@ package ntut.csie.ezScrum.restful.service;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.restful.mobile.service.ProjectWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -17,15 +17,19 @@ import org.codehaus.jettison.json.JSONObject;
 public class ProjectWebServiceTest extends TestCase {
 	private CreateProject CP;
 	private ProjectWebService pService = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public ProjectWebServiceTest(String testMethod) {
 		super(testMethod);
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		super.setUp();
@@ -36,13 +40,17 @@ public class ProjectWebServiceTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
+		
+		configuration.setTestMode(false);
+		configuration.store();
 		
 		super.setUp();
 		
 		// release
 		ini = null;
+		configuration = null;
 	}
 	
 	public void testgetProjectList() throws LogonException {

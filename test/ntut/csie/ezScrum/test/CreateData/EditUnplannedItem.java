@@ -3,13 +3,14 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class EditUnplannedItem {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	public CreateUnplannedItem CU;
 	public CreateProject CP;
 	public CreateAccount CA;
@@ -31,7 +32,7 @@ public class EditUnplannedItem {
 	}
 
 	public void exe() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		UnplannedItemMapper uiMapper = new UnplannedItemMapper(project, userSession);
 		long issueID;
 		String name, handler, status, partners, estimated, actualHour, sprintID;
@@ -54,7 +55,7 @@ public class EditUnplannedItem {
 	 * 將unplan itme checkout
 	 */
 	public void exe_CO() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		UnplannedItemMapper uiMapper = new UnplannedItemMapper(project, userSession);
 		long issueID;
 		String name, handler, status, partners, estimated, actualHour, sprintID;
@@ -76,7 +77,7 @@ public class EditUnplannedItem {
 	 * 將unplan itme 拉至done
 	 */
 	public void exe_DONE() {
-		IUserSession userSession = this.config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		UnplannedItemMapper uiMapper = new UnplannedItemMapper(project, userSession);
 		long issueID;
 		String name, handler, status, partners, estimated, actualHour, sprintID;

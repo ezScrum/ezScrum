@@ -4,23 +4,31 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 
 public class SprintBacklogHelperTest extends TestCase {
 	private SprintBacklogLogic sprintBacklogLogic;
+	private Configuration configuration = null;
 	
 	public SprintBacklogHelperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
 //		this.helper = new SprintBacklogHelper();
 		this.sprintBacklogLogic = new SprintBacklogLogic();
     }
 
     protected void tearDown() {
 //    	this.helper = null;
+    	configuration.setTestMode(false);
+		configuration.store();
+		
     	this.sprintBacklogLogic = null;
     }
     

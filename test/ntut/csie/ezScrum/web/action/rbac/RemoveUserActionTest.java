@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -13,7 +14,6 @@ import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
@@ -29,7 +29,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	private String ActionPath_RemoveUser = "/removeUser";	// defined in "struts-config.xml"
 	private AddUserToRole AUTR;
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 
 	public RemoveUserActionTest(String testMethod) {
@@ -37,7 +37,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -51,7 +51,11 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -74,13 +78,16 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -93,6 +100,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	// 測試正常執行
@@ -142,7 +150,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ set session info ========================
 
 		actionPerform();		// 執行 action
@@ -178,7 +186,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ set session info ========================
 
 		actionPerform();		// 執行 action
@@ -214,7 +222,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ set session info ========================
 
 		actionPerform();		// 執行 action
@@ -261,7 +269,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ set session info ========================
 
 		actionPerform();		// 執行 action
@@ -323,7 +331,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		addRequestParameter("operation", op);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		actionPerform();		// 執行 action
 

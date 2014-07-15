@@ -1,13 +1,12 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccountManager;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -19,7 +18,7 @@ public class AddUserToRole {
 	private IProject theProject = null;
 	private ProjectObject projectObject = null;
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 
 	public AddUserToRole(CreateProject cp, CreateAccount ca) {
 		this.CP = cp;
@@ -139,14 +138,14 @@ public class AddUserToRole {
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
 		UserObject account = CA.getAccountList().get(index);
-		AccountHelper helper = new AccountHelper(config.getUserSession());
+		AccountHelper helper = new AccountHelper(configuration.getUserSession());
 		UserInformation user = new UserInformation(account.getId(), account.getAccount(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
 		helper.updateAccount(user);
 	}
 
 	private void updateAccount(String res, String role) {
 		// ezScrum v1.8
-		AccountHelper helper = new AccountHelper(config.getUserSession());
+		AccountHelper helper = new AccountHelper(configuration.getUserSession());
 		try {
 			helper.assignRole_add(theAccount.getId(), res, role);
 		} catch (LogonException e) {

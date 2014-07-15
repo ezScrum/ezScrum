@@ -23,13 +23,15 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TextParserGeneraterForNote;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -41,7 +43,8 @@ public class MantisServiceTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
 	private int StoryCount = 1;
-	private ezScrumInfoConfig ezScrumInfoConfig = new ezScrumInfoConfig();
+	private Configuration configuration;
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	
@@ -50,7 +53,11 @@ public class MantisServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		configuration = new Configuration(userSession);
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -58,8 +65,7 @@ public class MantisServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
-		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(config);
+		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(configuration);
 		
 		super.setUp();
 		
@@ -69,7 +75,7 @@ public class MantisServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		//再一次確認SQL 連線已經關閉
@@ -78,14 +84,16 @@ public class MantisServiceTest extends TestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.ezScrumInfoConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
     	
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
-    	this.ezScrumInfoConfig = null;
     	this.MSservice = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -97,11 +105,11 @@ public class MantisServiceTest extends TestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(this.StoryCount, this.CP);
 		CPB.exe();
 		
-		String Test_File = this.ezScrumInfoConfig.getInitialSQLPath();
+		String Test_File = configuration.getInitialSQLPath();
 		
 		IProject project = this.CP.getProjectList().get(0);
 //		ProductBacklog backlog = new ProductBacklog(project, ezScrumInfoConfig.getUserSession());
-		ProductBacklogMapper backlog = new ProductBacklogMapper(project, ezScrumInfoConfig.getUserSession());
+		ProductBacklogMapper backlog = new ProductBacklogMapper(project, configuration.getUserSession());
 		long issueID = CPB.getIssueList().get(0).getIssueID();
 		
 		backlog.addAttachFile(issueID, Test_File);		// 將 TestData/MyWorkspace/initial_bk.sql 上傳測試
@@ -545,7 +553,6 @@ public class MantisServiceTest extends TestCase {
 		// close connection
 		this.MSservice.closeConnect();
 	}
-	
 	public void testgetStorys() {
 		List<IIssue> issue_list = new LinkedList<IIssue>();
 		
@@ -2246,7 +2253,7 @@ public class MantisServiceTest extends TestCase {
 		//test case : not exit file
 		assertEquals( storyOne.getAttachFile().size() , 0 );
 		//將mock file加進storyOne中
-		String testFilePath = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile = new File( testFilePath );
 		this.MSservice.addAttachFile( storyOne.getIssueID() , expectedFile ) ;
 		storyOne = this.MSservice.getIssue( storyID );//storyOne這裡要refresh一次，因為已經是dirty data
@@ -2269,7 +2276,7 @@ public class MantisServiceTest extends TestCase {
 		assertEquals( story_list.size() , 0 );
 		//製造三筆mock data
 		//第一個測試檔的資料
-		String testFilePath1 = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath1 = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile1 = new File( testFilePath1 );
 		//打開服務連線
 		this.MSservice.openConnect();
@@ -2315,7 +2322,7 @@ public class MantisServiceTest extends TestCase {
 		IProject testProject = this.CP.getProjectList().get(0);
 		//製造三筆mock data
 		//第一個測試檔的資料
-		String testFilePath1 = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath1 = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile1 = new File( testFilePath1 );
 		//打開服務連線
 		this.MSservice.openConnect();
@@ -2360,7 +2367,7 @@ public class MantisServiceTest extends TestCase {
 		story.setIssueID(1);
 		story.setSummary("Story_Name_One");
 		story.setDescription("Story_Desc_One");
-		String testFilePath = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile = new File( testFilePath );
 		this.MSservice.openConnect();
 		this.MSservice.addAttachFile( story.getIssueID() , expectedFile );
@@ -2379,9 +2386,8 @@ public class MantisServiceTest extends TestCase {
 	// test : getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate, Date endDate)
 	public void testGetIssues_Date_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2451,9 +2457,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testGetIssue_IssueID_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2526,9 +2531,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testUpdateBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2622,15 +2626,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testUpdateIssueNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2752,15 +2754,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testInsertBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2822,15 +2822,13 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 	}
 	
 	public void testRemoveNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		Configuration config = new Configuration(ezScrumInfoConfig.getUserSession(), true);
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), config);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		
 		// new 10 issues
 		int storyCount = 10;
@@ -2886,7 +2884,6 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		config = null;
 		MNService = null;
 		CPB = null;
 	}

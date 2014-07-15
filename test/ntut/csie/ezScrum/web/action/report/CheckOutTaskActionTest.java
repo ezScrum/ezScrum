@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -11,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -22,7 +22,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private AddStoryToSprint ASS;
 	private AddTaskToStory ATS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public CheckOutTaskActionTest(String testMethod) {
 		super(testMethod);
@@ -31,7 +31,11 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生一個Project、產生一個Sprint、Sprint產生五個Story、每個Story設定點數兩點
 	// 將Story加入到Sprint內、每個 Story 產生兩個一點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -51,7 +55,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));	// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));	// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/checkOutTask");
 
@@ -60,11 +64,14 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -75,6 +82,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		this.CS = null;
 		this.ASS = null;
 		this.ATS = null;
+		configuration = null;
 	}
 
 	/**
@@ -90,13 +98,13 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
 		addRequestParameter("Name", issue.getSummary());
-		addRequestParameter("Handler", config.USER_ID);
+		addRequestParameter("Handler", configuration.USER_ID);
 		addRequestParameter("Partners", partners);
 		addRequestParameter("Notes", issue.getNotes());
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -105,12 +113,12 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
 		
 		assertEquals(String.valueOf(TaskID), Long.toString(issue.getIssueID()));
-		assertEquals(config.USER_ID, issue.getAssignto());
+		assertEquals(configuration.USER_ID, issue.getAssignto());
 		assertEquals(partners, issue.getPartners());
 		assertEquals("TEST_TASK_NOTES_1", issue.getNotes());
 		assertEquals(0, issue.getCloseDate());
@@ -155,7 +163,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		addRequestParameter("ChangeDate", "");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -164,7 +172,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
 		
@@ -194,13 +202,13 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
 		addRequestParameter("Name", issue.getSummary());
-		addRequestParameter("Handler", config.USER_ID);
+		addRequestParameter("Handler", configuration.USER_ID);
 		addRequestParameter("Partners", partners);
 		addRequestParameter("Notes", issue.getNotes());
 		addRequestParameter("ChangeDate", "XXXX"); // Unparsed date "XXXX"
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -228,13 +236,13 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		
 		// ================== set parameter info ====================
 		addRequestParameter("Id", "1000"); // 超出範圍的 Task
-		addRequestParameter("Handler", config.USER_ID);
+		addRequestParameter("Handler", configuration.USER_ID);
 		addRequestParameter("Partners", partners);
 		addRequestParameter("Notes", "Nothing");
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 

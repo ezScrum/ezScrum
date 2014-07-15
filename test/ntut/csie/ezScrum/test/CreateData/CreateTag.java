@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -21,7 +22,7 @@ public class CreateTag {
 	
 	private IProject m_project;
 	private IUserSession m_userSession;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	
 	private ArrayList<IIssueTag> TagList = new ArrayList<IIssueTag>();
 //	private ProductBacklog m_backlog = null;
@@ -34,7 +35,7 @@ public class CreateTag {
 	
 	//create tag in project
 	public void exe(){
-		m_userSession = config.getUserSession();
+		m_userSession = configuration.getUserSession();
 		for (int projectIndex = 0 ; projectIndex < this.CP.getProjectList().size() ; projectIndex++) {
 			m_project = this.CP.getProjectList().get(projectIndex);		// TEST_PROJECT_X
 //			m_backlog = new ProductBacklog(m_project, m_userSession);

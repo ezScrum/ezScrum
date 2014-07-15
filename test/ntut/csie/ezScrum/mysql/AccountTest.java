@@ -7,35 +7,43 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class AccountTest extends TestCase {
 	private MySQLService mService;
-	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public AccountTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
-		mService = new MySQLService(new Configuration(true));
+		mService = new MySQLService(configuration);
 		mService.openConnect();
 	}
 
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		mService.closeConnect();
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		mService = null;
+		configuration = null;
 		super.tearDown();
 	}
 	

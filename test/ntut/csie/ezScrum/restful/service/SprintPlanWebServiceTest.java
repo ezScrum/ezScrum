@@ -6,7 +6,9 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 
+
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
@@ -19,7 +21,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
@@ -42,7 +43,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 	private IReleasePlanDesc Realease;
 	private SprintPlanHelper SPhelper;
 	private SprintBacklogHelper SPBhelper;
-	private ezScrumInfoConfig config;
+	private Configuration configuration;
 	private AddStoryToSprint ASS;
 
 	public SprintPlanWebServiceTest(String testMethod) {
@@ -52,8 +53,11 @@ public class SprintPlanWebServiceTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		config = new ezScrumInfoConfig();
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CP = new CreateProject(ProjectCount);
@@ -65,7 +69,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 		Realease = CR.getReleaseList().get(0);
 		project = CP.getProjectList().get(0);
 		SPhelper = new SprintPlanHelper(project);
-		SPBhelper = new SprintBacklogHelper(project, config.getUserSession());
+		SPBhelper = new SprintBacklogHelper(project, configuration.getUserSession());
 
 		ini = null;
 	}
@@ -74,17 +78,20 @@ public class SprintPlanWebServiceTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		copyProject = null;
 		CP = null;
 		CR = null;
-		config = null;
 		ini = null;
+		configuration = null;
 	}
 
 	public void testgetAllSprint() throws Exception {

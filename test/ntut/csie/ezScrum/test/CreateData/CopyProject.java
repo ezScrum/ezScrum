@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
@@ -19,7 +20,7 @@ public class CopyProject {
 	private static Log log = LogFactory.getLog(CopyProject.class);
 	
 	private List<IProject> project_list = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	private ProjectMapper projectMapper = new ProjectMapper();
 	
 	public CopyProject(CreateProject CP) {
@@ -190,7 +191,7 @@ public class CopyProject {
 	*/
 	private void init_RoleBase() {
 		// 初始化 RoleBase.xml 為最初的檔案，因為執行過後會對此檔案做修改，這樣會影響到下次的執行
-		File srcRoleBase = new File(this.config.getTestDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
+		File srcRoleBase = new File(configuration.getTestDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
 		File destRoleBase = new File(System.getProperty("ntut.csie.jcis.accountManager.path"));
 		try {
 			copyDirectory(srcRoleBase, destRoleBase);

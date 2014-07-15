@@ -1,11 +1,12 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class DropTask {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	private CreateProject CP;
 	private int sprintID = 0;
 	private int issueID = 0;
@@ -20,7 +21,7 @@ public class DropTask {
 
 	public void exe() {
 		IProject project = this.CP.getProjectList().get(0);
-		IUserSession userSession = config.getUserSession();
+		IUserSession userSession = configuration.getUserSession();
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, sprintID);
 		// remove relation
 		sprintBacklogMapper.removeTask(issueID, parentID);

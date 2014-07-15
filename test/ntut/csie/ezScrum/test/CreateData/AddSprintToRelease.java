@@ -1,12 +1,10 @@
 package ntut.csie.ezScrum.test.CreateData;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
-import ntut.csie.jcis.resource.core.ResourceFacade;
 
 public class AddSprintToRelease {
 	private int EachCount = 1;
@@ -16,7 +14,7 @@ public class AddSprintToRelease {
 	private CreateRelease CR;
 	private ProjectMapper projectMapper = new ProjectMapper();
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	
 	public AddSprintToRelease(int count, CreateRelease cr, CreateProject cp) {
 		this.EachCount = count;

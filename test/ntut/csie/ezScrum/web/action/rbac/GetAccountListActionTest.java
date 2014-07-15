@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -24,7 +24,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 	private int AccountCount = 5;
 	private String actionPath = "/getAccountList";	// defined in "struts-config.xml"
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 
 	public GetAccountListActionTest(String testMethod) {
@@ -32,7 +32,11 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -44,7 +48,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		super.setUp();
 
 		// 固定行為可抽離
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.actionPath);
 
@@ -53,12 +57,15 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
 
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		super.tearDown();
 
 		// ============= release ==============
@@ -70,6 +77,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	// One
@@ -88,7 +96,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		String userEnable = "true";	// default is true
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -122,7 +130,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		String projectId = this.CP.getProjectList().get(0).getName();
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session

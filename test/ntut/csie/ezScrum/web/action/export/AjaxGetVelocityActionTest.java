@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.action.export;
 
 import java.io.File;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -11,14 +12,13 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private String actionPath = "/ajaxGetVelocity";
 	private IUserSession userSession = null;
 	private CreateProject CP;
@@ -31,18 +31,22 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
 		this.CP.exeCreate(); // 新增一測試專案
 		this.project = this.CP.getProjectList().get(0);
 
-		userSession = config.getUserSession();
+		userSession = configuration.getUserSession();
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
 		// 設定讀取的
 		// struts-config
 		// 檔案路徑
@@ -54,11 +58,14 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -69,6 +76,7 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		this.CR = null;
 		this.CS = null;
 		userSession = null;
+		configuration = null;
 
 		super.tearDown();
 	}
@@ -81,7 +89,7 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		addRequestParameter("releases", "");
 
@@ -116,7 +124,7 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		addRequestParameter("releases", "3");
 
@@ -163,7 +171,7 @@ public class AjaxGetVelocityActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		addRequestParameter("releases", "1");
 

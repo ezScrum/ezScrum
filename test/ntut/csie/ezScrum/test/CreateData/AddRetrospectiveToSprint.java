@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -27,7 +28,7 @@ public class AddRetrospectiveToSprint {
 	private int SprintCount = 1;
 	private int ProjectCount = 1;
 	private CreateProject CP;	
-	private ezScrumInfoConfig Config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	
 	// 加入到所指定的sprint
 	public AddRetrospectiveToSprint(int goodCount, int improveCount, CreateSprint cs, CreateProject cp, String type) throws Exception {
@@ -100,7 +101,7 @@ public class AddRetrospectiveToSprint {
 	
 	private void addRetrospectiveToSprint(IProject p, ArrayList<Long> list, String sprintID) {
 //		ProductBacklog pb = new ProductBacklog(p, config.getUserSession());
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, this.Config.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, configuration.getUserSession());
 		
 		for (long issueID : list) {
 //			IIssue issue = pb.getIssue(issueID);

@@ -6,7 +6,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -15,7 +17,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -41,14 +42,18 @@ public class ProductBacklogHelperTest extends TestCase {
 //	private ntut.csie.ezScrum.web.control.ProductBacklogHelper helper1;
 //	private ntut.csie.ezScrum.web.control.ProductBacklogHelper helper2;
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public ProductBacklogHelperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -58,28 +63,30 @@ public class ProductBacklogHelperTest extends TestCase {
 		this.CPB = new CreateProductBacklog(this.StoryCount, this.CP);
 		this.CPB.exe();
 		
-		this.productBacklogHelper =  new ProductBacklogHelper(config.getUserSession(), this.CP.getProjectList().get(0));
-		this.productBacklogHelper1 = new ProductBacklogHelper(config.getUserSession(), this.CP.getProjectList().get(0));
-		this.productBacklogHelper2 = new ProductBacklogHelper(config.getUserSession(), this.CP.getProjectList().get(1));
+		IUserSession userSession = configuration.getUserSession();
+		
+		this.productBacklogHelper =  new ProductBacklogHelper(userSession, this.CP.getProjectList().get(0));
+		this.productBacklogHelper1 = new ProductBacklogHelper(userSession, this.CP.getProjectList().get(0));
+		this.productBacklogHelper2 = new ProductBacklogHelper(userSession, this.CP.getProjectList().get(1));
 		
 //		this.helper =  new ntut.csie.ezScrum.web.control.ProductBacklogHelper(this.CP.getProjectList().get(0), config.getUserSession());
 //		this.helper1 = new ntut.csie.ezScrum.web.control.ProductBacklogHelper(this.CP.getProjectList().get(0), config.getUserSession());
 //		this.helper2 = new ntut.csie.ezScrum.web.control.ProductBacklogHelper(this.CP.getProjectList().get(1), config.getUserSession());
 		
-		this.productBacklogLogic = new ProductBacklogLogic(config.getUserSession(), this.CP.getProjectList().get(0));
-		this.productBacklogLogic1 = new ProductBacklogLogic(config.getUserSession(), this.CP.getProjectList().get(0));
-		this.productBacklogLogic2 = new ProductBacklogLogic(config.getUserSession(), this.CP.getProjectList().get(1));
+		this.productBacklogLogic = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(0));
+		this.productBacklogLogic1 = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(0));
+		this.productBacklogLogic2 = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(1));
 
 //		this.mapper =  new ProductBacklogMapper(this.CP.getProjectList().get(0), config.getUserSession());
-		this.mapper1 = new ProductBacklogMapper(this.CP.getProjectList().get(0), config.getUserSession());
-		this.mapper2 = new ProductBacklogMapper(this.CP.getProjectList().get(1), config.getUserSession());
+		this.mapper1 = new ProductBacklogMapper(this.CP.getProjectList().get(0), userSession);
+		this.mapper2 = new ProductBacklogMapper(this.CP.getProjectList().get(1), userSession);
 		
 		// release
 		ini = null;
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 //		CopyProject copyProject = new CopyProject(this.CP);
@@ -87,8 +94,10 @@ public class ProductBacklogHelperTest extends TestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getTestDataPath());
     	
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// release
     	ini = null;
@@ -97,9 +106,9 @@ public class ProductBacklogHelperTest extends TestCase {
     	this.productBacklogHelper2 = null;
     	this.CP = null;
     	this.CPB = null;
-    	this.config = null;
     	productBacklogLogic1 = null;
     	productBacklogLogic2 = null;
+    	configuration = null;
     }
     
     public void testAddNewTag() {
@@ -548,7 +557,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		CS.exe();		// 新增一 Sprint
 		
 //		SprintBacklogMapper S_backlog = new SprintBacklogMapper(this.CP.getProjectList().get(0), config.getUserSession());
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), configuration.getUserSession(), null);
 		
 		// 將第一筆 Story Done
 		sprintBacklogLogic.doneIssue(this.CPB.getIssueList().get(0).getIssueID(), "Story_"+0, this.CPB.TEST_STORY_NOTES + "1", null, Integer.toString(0));
@@ -749,7 +758,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		
 		// 將剩下不為 Release 亦 不為 Sprint 的 Story 狀態設定為 Done
 //		SprintBacklogMapper S_backlog = new SprintBacklogMapper(this.CP.getProjectList().get(0), config.getUserSession());
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), configuration.getUserSession(), null);
 		
 		// 將第三筆 ~ 九筆 Story Done
 		for (int i=2 ; i<9 ; i++) {
@@ -881,7 +890,7 @@ public class ProductBacklogHelperTest extends TestCase {
     
 	// 資料復原
 	private void initialSQLData() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
