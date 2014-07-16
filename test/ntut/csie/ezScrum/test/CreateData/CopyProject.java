@@ -191,7 +191,7 @@ public class CopyProject {
 	*/
 	private void init_RoleBase() {
 		// 初始化 RoleBase.xml 為最初的檔案，因為執行過後會對此檔案做修改，這樣會影響到下次的執行
-		File srcRoleBase = new File(configuration.getTestDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
+		File srcRoleBase = new File(configuration.getDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
 		File destRoleBase = new File(System.getProperty("ntut.csie.jcis.accountManager.path"));
 		try {
 			copyDirectory(srcRoleBase, destRoleBase);

@@ -53,7 +53,7 @@ public class GetEditStoryInfoActionTest extends MockStrutsTestCase{
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
 		configuration.store();
