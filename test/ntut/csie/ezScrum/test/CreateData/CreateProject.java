@@ -265,7 +265,7 @@ public class CreateProject {
 
 	// 複製 ScrumRole 檔案
 	private void copyScrumRoleSetting(String ectpprojectpathath) {
-		File srcScrumRolePath = new File(configuration.getTestDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
+		File srcScrumRolePath = new File(configuration.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
 		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
 
 		try {

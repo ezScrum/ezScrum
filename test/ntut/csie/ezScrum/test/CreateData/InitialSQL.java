@@ -38,7 +38,7 @@ public class InitialSQL {
 		// 如果是Default資料庫的話，就不需要特地去清除
 		// 目前只有 MySql 需要連線進行清除資料庫
 		this.config = configuration;
-		this.reDirFile = this.config.getTestDataPath() + File.separator + "InitialData" + File.separator + "initial_bk.sql";
+		this.reDirFile = this.config.getDataPath() + File.separator + "InitialData" + File.separator + "initial_bk.sql";
 
 		if (config.getDBType().equals("MySQL")) {
 			this.db = new DBBean(configuration.getServerUrl(), configuration.getDBAccount(), configuration.getDBPassword(), configuration.getDBName());

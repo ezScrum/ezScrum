@@ -57,7 +57,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
 		configuration.store();

@@ -32,29 +32,29 @@ public class Configuration {
 	private final String DATABASE_NAME = "DatabaseName";
 	private final String TEST = "test";
 	
-	private String TestDataPath = BASEDIR_PATH + File.separator + "TestData";	         // 預設的 TestData
-	private String TestWorkspacePath = TestDataPath + File.separator + "TestWorkspace";	 // 預設的 worksapce
-	private String TestInitialSQLPath = TestDataPath + File.separator + "InitialData" + File.separator + "initial_bk.sql";	// 預設的初始SQL檔案位置
+	private String dataPath;	     // 預設的 TestData
+	private String workspacePath;	 // 預設的 worksapce
+	private String initialSQLPath;	 // 預設的初始SQL檔案位置
 	
 	private ProjectObject mProject;
 	private IUserSession m_userSession;
 
 	public Configuration() {
-		init_workspacepath();
 		init();
+		init_workspacepath();
 	}
 
 	public Configuration(IUserSession userSession) {
 		m_userSession = userSession;
-		init_workspacepath();
 		init();
+		init_workspacepath();
 	}
 
 	public Configuration(ProjectObject project, IUserSession userSession) {
 		mProject = project;
 		m_userSession = userSession;
-		init_workspacepath();
 		init();
+		init_workspacepath();
 	}
 
 	/**
@@ -67,15 +67,6 @@ public class Configuration {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
-		// initial workspace property
-		System.setProperty("ntut.csie.jcis.resource.WorkspaceRoot", TestWorkspacePath);
-
-		// initial account manager property
-		System.setProperty("ntut.csie.jcis.accountManager", "ntut.csie.jcis.account.core.internal.XMLAccountManager");
-
-		// initial rolebase.xml path
-		System.setProperty("ntut.csie.jcis.accountManager.path", TestWorkspacePath + File.separator + "RoleBase.xml");
 	}
 
 	/**
@@ -120,14 +111,34 @@ public class Configuration {
 	}
 	
 	private void init_workspacepath() {
-		// initial test data path
-		TestDataPath = getBaseDirPath() + File.separator + "TestData";
-		
-		// initial test worksapce path
-		TestWorkspacePath = TestDataPath + File.separator + "TestWorkspace";
-		
-		// initial test upload file
-		TestInitialSQLPath = TestDataPath + File.separator + "InitialData" + File.separator + "initial_bk.sql";
+		if (isRunningTestMode()) {
+			// initial test data path
+			dataPath = getBaseDirPath() + File.separator + "TestData";
+			
+			// initial test worksapce path
+			workspacePath = dataPath + File.separator + "TestWorkspace";
+			
+			// initial test upload file
+			initialSQLPath = dataPath + File.separator + "InitialData" + File.separator + "initial_bk.sql";
+		} else {
+			// initial test data path
+			dataPath = BASEDIR_PATH + File.separator + "WebContent";
+			
+			// initial test worksapce path
+			workspacePath = dataPath + File.separator + "Workspace";
+			
+			// initial test upload file
+			initialSQLPath = workspacePath + File.separator + "_metadata" + File.separator + "initial_bk.sql";
+		}
+
+		// initial workspace property
+		System.setProperty("ntut.csie.jcis.resource.WorkspaceRoot", workspacePath);
+
+		// initial account manager property
+		System.setProperty("ntut.csie.jcis.accountManager", "ntut.csie.jcis.account.core.internal.XMLAccountManager");
+
+		// initial rolebase.xml path
+		System.setProperty("ntut.csie.jcis.accountManager.path", workspacePath + File.separator + "RoleBase.xml");
 	}
 
 	public String getProjectName() {
@@ -219,22 +230,22 @@ public class Configuration {
 	/**
 	 * return TestWorkspace path
 	 */
-	public String getTestWorkspacePath() {
-		return TestWorkspacePath;
+	public String getWorkspacePath() {
+		return workspacePath;
 	}
 	
 	/**
 	 * return TestData path
 	 */
-	public String getTestDataPath() {
-		return TestDataPath;
+	public String getDataPath() {
+		return dataPath;
 	}
 	
 	/**
 	 * return InitialSQL file path
 	 */
 	public String getInitialSQLPath() {
-		return TestInitialSQLPath;
+		return initialSQLPath;
 	}
 
 }
