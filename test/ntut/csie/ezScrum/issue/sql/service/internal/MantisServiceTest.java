@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -686,7 +687,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -700,9 +701,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issueSet[issueIndex].getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("Test_TAG_"+Integer.toString(tagIndex), actualTag.getTagName());
+				TagObject actualTag = issueSet[issueIndex].getTag().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("Test_TAG_"+Integer.toString(tagIndex), actualTag.getName());
 			}
 		}
 		// close connection
@@ -731,7 +732,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -742,9 +743,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issueSet[issueIndex].getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = issueSet[issueIndex].getTag().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -773,7 +774,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -783,9 +784,9 @@ public class MantisServiceTest extends TestCase {
 			IIssue issue = this.MSservice.getIssue((long)(issueIndex+1));
 			// test method
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issue.getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = issue.getTag().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -814,7 +815,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -825,9 +826,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int storyIndex = 0; storyIndex < storyList.size(); storyIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = storyList.get(storyIndex).getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = storyList.get(storyIndex).getTag().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -856,7 +857,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 
@@ -913,18 +914,18 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		// check tag 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(dataCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(dataCount, tagList.size());
 		
 		// remove tags which attach to story
 		for(int issueIndex = 0; issueIndex < dataCount; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// test method
-				this.MSservice.removeStoryTag(Integer.toString(issueIndex+1), Integer.toString(tagIndex+1));
+				this.MSservice.removeStoryTag(Integer.toString(issueIndex+1), tagIndex+1);
 				// test method
 			}
 		}
@@ -947,8 +948,8 @@ public class MantisServiceTest extends TestCase {
 		String tagName = "TEST_TAG_";
 		this.MSservice.openConnect();
 		// check add tag 之前，tag list 為空
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(0, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(0, tagList.size());
 		
 		// new 10 test tag data
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
@@ -959,12 +960,12 @@ public class MantisServiceTest extends TestCase {
 		
 		// check add tag 之後，tag 筆數正確
 		tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		assertEquals(tagCount, tagList.size());
 		
 		// check tag info. 正確
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals(tagName+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals(tagName+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -982,17 +983,17 @@ public class MantisServiceTest extends TestCase {
 			this.MSservice.addNewTag(tagName+Integer.toString(tagIndex+1), testProject.getName());
 		}
 		// check add tag 之後，tag list 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(tagCount, tagList.size());
 		
 		// delete tag for each
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			// test method
-			this.MSservice.deleteTag(Integer.toString(tagIndex+1), testProject.getName());
+			this.MSservice.deleteTag(tagIndex+1, testProject.getName());
 			// test method
 			tagList = this.MSservice.getTagList(testProject.getName());
 			// check tag list size
-			assertEquals(tagCount-(tagIndex+1), tagList.length);
+			assertEquals(tagCount-(tagIndex+1), tagList.size());
 		}
 		
 		// check resultSet 中找不到 delete 掉的 tag
@@ -1011,9 +1012,9 @@ public class MantisServiceTest extends TestCase {
 		this.MSservice.openConnect();
 		// check add tag 之前, tag 數為0
 		// test method
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
 		// test method
-		assertEquals(0, tagList.length);
+		assertEquals(0, tagList.size());
 
 		// new 10 test tag data
 		int tagCount = 10;
@@ -1026,12 +1027,12 @@ public class MantisServiceTest extends TestCase {
 		// test method
 		tagList = this.MSservice.getTagList(testProject.getName());
 		// test method
-		assertEquals(tagCount, tagList.length);
+		assertEquals(tagCount, tagList.size());
 		
 		// check tag Info. 正確與否
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals(tagName+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals(tagName+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -1059,7 +1060,7 @@ public class MantisServiceTest extends TestCase {
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
 				// test method
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 				// test method
 			}
 		}
@@ -1094,19 +1095,19 @@ public class MantisServiceTest extends TestCase {
 		// update tag name. service 作法為 delete 舊的 tag, 新增一筆update name 的 tag
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			// test method
-			this.MSservice.updateTag(Integer.toString(tagIndex+1), 
+			this.MSservice.updateTag(tagIndex+1, 
 									"UPDATE_TAG_"+Integer.toString(tagIndex+1), testProject.getName());
 			// test method
 		}
 		
 		// check update tag 後, 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(tagCount, tagList.size());
 		
 		// check update tag 後, tag info. correct or not.
 		for(int tagIndex = 10; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals("UPDATE_TAG_"+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals("UPDATE_TAG_"+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -1122,7 +1123,7 @@ public class MantisServiceTest extends TestCase {
 			this.MSservice.addNewTag(tagName+Integer.toString(tagIndex+1), testProject.getName());
 		}
 		
-		IIssueTag issueTag;
+		TagObject issueTag;
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			String expectedTagName = tagName+Integer.toString(tagIndex+1);
 			// test method
@@ -1130,8 +1131,8 @@ public class MantisServiceTest extends TestCase {
 			// test method
 			
 			// check get 的 tag info. 正確與否
-			assertEquals((long)(tagIndex+1), issueTag.getTagId());
-			assertEquals(expectedTagName, issueTag.getTagName());
+			assertEquals((long)(tagIndex+1), issueTag.getId());
+			assertEquals(expectedTagName, issueTag.getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();

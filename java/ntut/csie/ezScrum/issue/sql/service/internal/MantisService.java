@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.StringUtil;
@@ -787,7 +788,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			getControl().execute(query);
 
 			// 刪除跟此issue有關的tag
-			m_tagService.removeStoryTag(ID, "-1");
+			m_tagService.removeStoryTag(ID, -1);
 		}
 	}
 	
@@ -1182,22 +1183,22 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 刪除自訂分類標籤
-	public void deleteTag(String id, String projectName) {
+	public void deleteTag(long id, String projectName) {
 		m_tagService.deleteTag(id, projectName);
 	}
 
 	// 取得自訂分類標籤列表
-	public IIssueTag[] getTagList(String projectName) {
+	public ArrayList<TagObject> getTagList(String projectName) {
 		return m_tagService.getTagList(projectName);
 	}
 
 	// 對Story設定自訂分類標籤
-	public void addStoryTag(String storyID, String tagID) {
+	public void addStoryTag(String storyID, long tagID) {
 		m_tagService.addStoryTag(storyID, tagID);
 	}
 
 	// 移除Story的自訂分類標籤
-	public void removeStoryTag(String storyID, String tagID) {
+	public void removeStoryTag(String storyID, long tagID) {
 		m_tagService.removeStoryTag(storyID, tagID);
 	}
 
@@ -1222,12 +1223,12 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	@Override
-	public void updateTag(String tagId, String tagName, String projectName) {
+	public void updateTag(long tagId, String tagName, String projectName) {
 		m_tagService.updateTag(tagId, tagName, projectName);
 	}
 
 	@Override
-	public IIssueTag getTagByName(String name, String projectName) {
+	public TagObject getTagByName(String name, String projectName) {
 		return m_tagService.getTagByName(name, projectName);
 	}
 

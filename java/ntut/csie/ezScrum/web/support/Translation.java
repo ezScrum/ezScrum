@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class Translation {
 	public Translation() { /* empty */}
@@ -537,13 +538,13 @@ public class Translation {
 		return obj.toString();
 	}
 
-	public String Join(List<IIssueTag> tags, String delimiter) {
+	public String Join(List<TagObject> tags, String delimiter) {
 		if (tags.isEmpty()) return "";
 
 		StringBuilder sb = new StringBuilder();
 
-		for (IIssueTag x : tags)
-			sb.append(x.getTagName() + delimiter);
+		for (TagObject x : tags)
+			sb.append(x.getName() + delimiter);
 
 		sb.delete(sb.length() - delimiter.length(), sb.length());
 

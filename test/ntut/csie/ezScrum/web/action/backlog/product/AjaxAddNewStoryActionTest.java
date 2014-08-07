@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -196,7 +197,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		int tagCount = 2;
 		CreateTag createTag = new CreateTag(tagCount, this.CP);
 		createTag.exe();
-		List<IIssueTag> tagList = createTag.getTagList();
+		List<TagObject> tagList = createTag.getTagList();
 		
 		// ================ set request info ========================
 		String projectName = this.project.getName();
@@ -206,8 +207,8 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryEstimation = "0";
 		String expectedStoryValue = "0";
 		String expectedSprintId = "";
-		String expectedTagIDs = tagList.get(0).getTagId() + "," + tagList.get(1).getTagId();
-		String expectedTagNames = tagList.get(0).getTagName() + "," + tagList.get(1).getTagName();
+		String expectedTagIDs = tagList.get(0).getId() + "," + tagList.get(1).getId();
+		String expectedTagNames = tagList.get(0).getName() + "," + tagList.get(1).getName();
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);
@@ -260,7 +261,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		int tagCount = 2;
 		CreateTag createTag = new CreateTag(tagCount, this.CP);
 		createTag.exe();
-		List<IIssueTag> tagList = createTag.getTagList();
+		List<TagObject> tagList = createTag.getTagList();
 		
 		CreateSprint createSprint = new CreateSprint(1, this.CP);
 		createSprint.exe();
@@ -274,8 +275,8 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryEstimation= "0";
 		String expectedStoryValue= "0";
 		String expectedSprintId= sprintIDList.get(0);
-		String expectedTagIDs = tagList.get(0).getTagId() + "," + tagList.get(1).getTagId();
-		String expectedTagNames = tagList.get(0).getTagName() + "," + tagList.get(1).getTagName();
+		String expectedTagIDs = tagList.get(0).getId() + "," + tagList.get(1).getId();
+		String expectedTagNames = tagList.get(0).getName() + "," + tagList.get(1).getName();
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);

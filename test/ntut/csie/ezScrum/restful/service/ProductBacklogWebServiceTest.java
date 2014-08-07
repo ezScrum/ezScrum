@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -21,6 +22,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -283,14 +285,14 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
 		productBacklogHelper = new ProductBacklogHelper(configuration.getUserSession(), project);
-		IIssueTag[] iIssueTagList = productBacklogHelper.getTagList();
+		ArrayList<TagObject> iIssueTagList = productBacklogHelper.getTagList();
 		// JSON to JSONArray 
 		JSONArray tagJSONArray = new JSONArray(response);
 
 		for (int i = 0; i < tagJSONArray.length(); i++) {
 			JSONObject JSONObject = (JSONObject) tagJSONArray.get(i);
-			assertEquals(String.valueOf(iIssueTagList[i].getTagId()), JSONObject.get("id"));
-			assertEquals(String.valueOf(iIssueTagList[i].getTagName()), JSONObject.get("tagName"));
+			assertEquals(String.valueOf(iIssueTagList.get(i).getId()), JSONObject.get("id"));
+			assertEquals(String.valueOf(iIssueTagList.get(i).getName()), JSONObject.get("tagName"));
 		}
 
 	}

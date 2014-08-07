@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.Story;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapper {
@@ -193,7 +194,7 @@ public class ProductBacklogMapper {
 	}
 
 	// 刪除自訂分類標籤
-	public void deleteTag(String id) {
+	public void deleteTag(long id) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.deleteTag(id, m_project.getName());
@@ -201,17 +202,17 @@ public class ProductBacklogMapper {
 	}
 
 	// 取得自訂分類標籤列表
-	public IIssueTag[] getTagList() {
+	public ArrayList<TagObject> getTagList() {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
-		IIssueTag[] tags = itsService.getTagList(m_project.getName());
+		ArrayList<TagObject> tags = itsService.getTagList(m_project.getName());
 		itsService.closeConnect();
 
 		return tags;
 	}
 
 	// 對Story設定自訂分類標籤
-	public void addStoryTag(String storyID, String tagID) {
+	public void addStoryTag(String storyID, long tagID) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.addStoryTag(storyID, tagID);
@@ -219,14 +220,14 @@ public class ProductBacklogMapper {
 	}
 
 	// 移除Story的自訂分類標籤
-	public void removeStoryTag(String storyID, String tagID) {
+	public void removeStoryTag(String storyID, long tagID) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.removeStoryTag(storyID, tagID);
 		itsService.closeConnect();
 	}
 
-	public void updateTag(String tagId, String tagName) {
+	public void updateTag(long tagId, String tagName) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.updateTag(tagId, tagName, m_project.getName());
@@ -242,10 +243,10 @@ public class ProductBacklogMapper {
 		return result;
 	}
 
-	public IIssueTag getTagByName(String name) {
+	public TagObject getTagByName(String name) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
-		IIssueTag tag = itsService.getTagByName(name, m_project.getName());
+		TagObject tag = itsService.getTagByName(name, m_project.getName());
 		itsService.closeConnect();
 
 		return tag;

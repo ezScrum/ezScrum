@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.issue.sql.service.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public interface IITSService {
 	final static public String JCIS_TAG = "JCIS"; 
@@ -104,13 +106,13 @@ public interface IITSService {
 	//新增自訂分類標籤
 	public void addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
-	public void deleteTag(String id, String projectName);
+	public void deleteTag(long id, String projectName);
 	// 取得自訂分類標籤列表
-	public IIssueTag[] getTagList(String projectName);
+	public ArrayList<TagObject> getTagList(String projectName);
 	// 對Story設定自訂分類標籤
-	public void addStoryTag(String storyID, String tagID);
+	public void addStoryTag(String storyID, long tagID);
 	// 移除Story的自訂分類標籤
-	public void removeStoryTag(String storyID, String tagID);
+	public void removeStoryTag(String storyID, long tagID);
 	// 新增一筆 project 同時也新增到 mantis 上
 	public void createProject(String ProjectName) throws Exception;
 	public void TestConnect() throws Exception;
@@ -118,9 +120,9 @@ public interface IITSService {
 	
 	// 建立Story與Sprint Story與Project之間的關聯關係
 	public void updateStoryRelationTable(String storyID,String projectID,String releaseID,String sprintID,String estimation,String importance,Date date);
-	public void updateTag(String tagId, String tagName, String projectName);
+	public void updateTag(long tagId, String tagName, String projectName);
 	public boolean isTagExist(String name, String projectName);
-	public IIssueTag getTagByName(String name,String projectName);
+	public TagObject getTagByName(String name,String projectName);
 	
 	// 直接取得資料庫的檔案，不透過 mantis, 2010/04/25
 	public File getAttachFile(String fileID);

@@ -63,7 +63,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 	public void addInsertValue(String name, String value) {
 		// format是為了要避免有特殊字元發生
 		this.addInsertValue(new QueryValue(name, format(value)));
-
+		
 	}
 
 	@Override

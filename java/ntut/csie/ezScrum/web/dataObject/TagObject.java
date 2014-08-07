@@ -3,34 +3,44 @@ package ntut.csie.ezScrum.web.dataObject;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 
 public class TagObject {
-	private String tagID = "";
+	private long id, projectId;
+	
 	private String tagName = "";
+	
 
 	public TagObject() {}
 	
 	public TagObject(IIssueTag iIssueTag) {
-		this.tagID = Long.toString(iIssueTag.getTagId());
+		this.id = iIssueTag.getTagId();
 		this.tagName = iIssueTag.getTagName();
 	}
 	
-	public String getTagID() {
-		return tagID;
+	public long getId() {
+		return id;
 	}
 	
-	public void setTagID(String tagID) {
-		this.tagID = tagID;
+	public void setId(long id) {
+		this.id = id;
 	}
 	
-	public String getTagName() {
+	public long getProjectId() {
+		return projectId;
+	}
+	
+	public void setProjectId(long id) {
+		this.projectId = id;
+	}
+	
+	public String getName() {
 		return tagName;
 	}
 	
-	public void setTagName(String tagName) {
+	public void setName(String tagName) {
 		this.tagName = tagName;
 	}
 	
 	public String toString() {
-		String str = "tagID: " + tagID + ", tagName: " + tagName;
+		String str = "tagID: " + id + ", tagName: " + tagName;
 		return str;
 	}
 }

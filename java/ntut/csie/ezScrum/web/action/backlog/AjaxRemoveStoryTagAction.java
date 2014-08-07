@@ -38,7 +38,7 @@ public class AjaxRemoveStoryTagAction extends PermissionAction {
 		
 		// get parameter info
 		String storyId = request.getParameter("storyId");
-		String tagId = request.getParameter("tagId");
+		long tagId = Long.parseLong(request.getParameter("tagId"));
 		
 		
 		StringBuilder result = (new ProductBacklogHelper(session, project)).getRemoveStoryTagResponseText(storyId,tagId);

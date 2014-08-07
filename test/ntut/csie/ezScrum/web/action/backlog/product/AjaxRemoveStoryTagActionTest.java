@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
@@ -93,10 +94,10 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		ArrayList<Long> storyIDList = this.CPB.getIssueIDList();
-		ArrayList<IIssueTag> tags = this.CT.getTagList();
+		ArrayList<TagObject> tags = this.CT.getTagList();
 		
 		request.setHeader("Referer", "?PID=" + this.CP.getProjectList().get(0).getName());
-		addRequestParameter("tagId", String.valueOf(tags.get(0).getTagId()));
+		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIDList.get(0)));
 		String expectedStoryName = CPB.getIssueList().get(0).getSummary();
 		String expectedStoryImportance = CPB.getIssueList().get(0).getImportance();
@@ -126,7 +127,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")	
 							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
 							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")		
-							.append("\"Tag\":\"").append(tags.get(1).getTagName()).append("\",")
+							.append("\"Tag\":\"").append(tags.get(1).getName()).append("\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")

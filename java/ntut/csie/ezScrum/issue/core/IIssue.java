@@ -8,6 +8,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.issue.internal.IssueRelationship;
 import ntut.csie.ezScrum.issue.internal.IssueTypeField;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 import org.jdom.Element;
 
@@ -151,9 +152,9 @@ public interface IIssue extends Serializable{
 	public void addAttachFile(IssueAttachFile attach);
 	
 	// 對Story的自訂分類標籤
-	public List<IIssueTag> getTag();
-	public void setTag(List<IIssueTag> tags);
-	public void addTag(IIssueTag tag);
+	public List<TagObject> getTag();
+	public void setTag(List<TagObject> tags);
+	public void addTag(TagObject tag);
 	
 	public String getProjectName();
 	public void setProjectName(String projectName);
