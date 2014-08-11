@@ -30,7 +30,6 @@ public class MantisTagService extends AbstractMantisService {
 
 		String query = valueSet.getSelectQuery();
 		ArrayList<TagObject> tags = new ArrayList<TagObject>();
-		System.out.println(query);
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
@@ -105,7 +104,6 @@ public class MantisTagService extends AbstractMantisService {
 		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID,
 				String.valueOf(id));
 		String query = valueSet.getDeleteQuery();
-		System.out.println(query);
 		getControl().execute(query);
 
 		// 移除Tag資訊
@@ -114,7 +112,6 @@ public class MantisTagService extends AbstractMantisService {
 		valueSet.addEqualCondition(TagEnum.ID, String.valueOf(id));
 		valueSet.addEqualCondition(TagEnum.PROJECT_ID, Long.toString(projectId));
 		query = valueSet.getDeleteQuery();
-		System.out.println(query);
 		getControl().execute(query);
 	}
 
