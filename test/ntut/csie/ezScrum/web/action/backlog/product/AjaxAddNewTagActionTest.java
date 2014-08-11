@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
@@ -156,12 +156,11 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 			this.response.reset();
 		}
 		
-//		IIssueTag[] tags = PBHelper.getTagList();
-		IIssueTag[] tags = (new ntut.csie.ezScrum.web.helper.ProductBacklogHelper( configuration.getUserSession(), project)).getTagList();
+		ArrayList<TagObject> tags = (new ntut.csie.ezScrum.web.helper.ProductBacklogHelper( configuration.getUserSession(), project)).getTagList();
 		
-		assertEquals(tags.length, tagList.size());
-		for(int i = 0; i < tags.length; i++){
-			assertEquals(tags[i].getTagName(), tagList.get(i));
+		assertEquals(tags.size(), tagList.size());
+		for(int i = 0; i < tags.size(); i++){
+			assertEquals(tags.get(i).getName(), tagList.get(i));
 		}
 		
 	}

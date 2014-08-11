@@ -1251,8 +1251,7 @@ CREATE TABLE `tag` (
   `name` VARCHAR(255) NOT NULL,
   `Project_ID` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+  PRIMARY KEY (`ID`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `story_tag_relation`;

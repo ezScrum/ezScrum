@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -96,7 +97,7 @@ public class ConvertProductBacklog {
 	 * @throws JSONException
 	 */
 	public String updateStory(IStory targetStory ,Long issueID, String storyName, String value, String importance, 
-			String estimation, String howToDemo, String notes, List<IIssueTag> issueTagList) throws JSONException{
+			String estimation, String howToDemo, String notes, List<TagObject> issueTagList) throws JSONException{
 		JSONObject updateStoryResponse = new JSONObject();
 
 		boolean isCorrect = true;
@@ -122,9 +123,9 @@ public class ConvertProductBacklog {
 		if(String.valueOf(targetStory.getNotes()).compareTo(notes) != 0){
 			isCorrect = false;
 		}
-		for (IIssueTag issueTag : targetStory.getTag()) {
-			for (IIssueTag tag : issueTagList) {
-				if (issueTag.getTagName().equals(tag.getTagName())) {
+		for (TagObject issueTag : targetStory.getTags()) {
+			for (TagObject tag : issueTagList) {
+				if (issueTag.getName().equals(tag.getName())) {
 					isCorrect = true;
 					break;
 				} else {

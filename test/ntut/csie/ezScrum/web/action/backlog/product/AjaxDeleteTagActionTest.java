@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
@@ -74,9 +75,9 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 	
 	public void testDeleteTag(){
 		// ================ set request info ========================
-		ArrayList<IIssueTag> tags = this.CT.getTagList();
+		ArrayList<TagObject> tags = this.CT.getTagList();
 		request.setHeader("Referer", "?PID=" + this.CP.getProjectList().get(0).getName());
-		addRequestParameter("tagId", String.valueOf(tags.get(0).getTagId()));
+		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================ 執行 action ======================
@@ -89,7 +90,7 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<TagList><Result>success</Result>");
 		sb.append("<IssueTag>");
-		sb.append("<Id>" + tags.get(0).getTagId() + "</Id>");
+		sb.append("<Id>" + tags.get(0).getId() + "</Id>");
 		sb.append("</IssueTag>");
 		sb.append("</TagList>");
 		

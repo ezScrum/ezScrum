@@ -350,7 +350,7 @@ public class ConvertSprintBacklog {
 			Value = story.getValue();
 			Estimate = story.getEstimated();
 			Importance = story.getImportance();
-			Tag = tr.Join(story.getTag(), ",");
+			Tag = tr.Join(story.getTags(), ",");
 			Status = story.getStatus();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());

@@ -48,7 +48,6 @@ public class ProductBacklogMapperTest extends TestCase {
 		IProject project = this.CP.getProjectList().get(0);
 		this.productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 		
-		
 		// ============= release ==============
 		ini = null;
 		project = null;

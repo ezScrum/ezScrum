@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -86,14 +87,14 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		
 		//	assert response text
-		ArrayList<IIssueTag> tags = this.CT.getTagList();
+		ArrayList<TagObject> tags = this.CT.getTagList();
 		StringBuilder sb = new StringBuilder();
 		sb.append("<TagList><Result>success</Result>");
 
-		for(IIssueTag tag: tags){
+		for(TagObject tag: tags){
 			sb.append("<IssueTag>");
-			sb.append("<Id>" + tag.getTagId() + "</Id>");
-			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getTagName()) + "</Name>");
+			sb.append("<Id>" + tag.getId() + "</Id>");
+			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getName()) + "</Name>");
 			sb.append("</IssueTag>");
 		}
 		sb.append("</TagList>");

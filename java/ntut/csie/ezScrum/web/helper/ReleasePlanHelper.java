@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
@@ -448,7 +449,7 @@ public class ReleasePlanHelper {
 				sb.append("<HowToDemo>" + this.replaceStr(stories[i].getHowToDemo()) + "</HowToDemo>");
 				sb.append("<Release>" + releaseId + "</Release>");
 				sb.append("<Sprint>" + sprintId + "</Sprint>");
-				sb.append("<Tag>" + this.replaceStr(this.joinTagOnStory(stories[i].getTag(), ",")) + "</Tag>");
+				sb.append("<Tag>" + this.replaceStr(this.joinTagOnStory(stories[i].getTags(), ",")) + "</Tag>");
 				sb.append("</Story>");
 			}
 			sb.append("</ExistingStories>");
@@ -476,15 +477,15 @@ public class ReleasePlanHelper {
 		return list.toArray(new IIssue[list.size()]);
 	}
 	
-	private String joinTagOnStory(List<IIssueTag> tags, String delimiter)
+	private String joinTagOnStory(List<TagObject> tags, String delimiter)
 	{
 	    if (tags.isEmpty())
 	    	return "";
 	 
 	    StringBuilder sb = new StringBuilder();
 	 
-	    for (IIssueTag x : tags)
-	    	sb.append(x.getTagName() + delimiter);
+	    for (TagObject x : tags)
+	    	sb.append(x.getName() + delimiter);
 	 
 	    sb.delete(sb.length()-delimiter.length(), sb.length());
 	 

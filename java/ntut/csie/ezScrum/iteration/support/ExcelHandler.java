@@ -15,6 +15,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.FormCheckUtil;
 
@@ -57,7 +58,7 @@ public class ExcelHandler {
 				((WritableSheet) sheet).addCell(new Label(0, index, String
 						.valueOf(story.getIssueID())));
 				// tag is a list, so we translate it to a string
-				String result = Join(story.getTag(), ",");
+				String result = Join(story.getTags(), ",");
 				((WritableSheet) sheet).addCell(new Label(1, index, result));
 				((WritableSheet) sheet).addCell(new Label(2, index, story
 						.getSummary()));
@@ -86,14 +87,14 @@ public class ExcelHandler {
 		}
 	}
 
-	private String Join(List<IIssueTag> tags, String delimiter) {
+	private String Join(List<TagObject> tags, String delimiter) {
 		if (tags.isEmpty())
 			return new String("");
 
 		StringBuilder sb = new StringBuilder();
 
-		for (IIssueTag x : tags)
-			sb.append(x.getTagName() + delimiter);
+		for (TagObject x : tags)
+			sb.append(x.getName() + delimiter);
 
 		sb.delete(sb.length() - delimiter.length(), sb.length());
 

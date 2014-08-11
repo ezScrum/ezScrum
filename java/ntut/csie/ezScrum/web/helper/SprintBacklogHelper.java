@@ -328,7 +328,7 @@ public class SprintBacklogHelper {
 			sb.append("<HowToDemo>" + tsc.TranslateXMLChar(issue.getHowToDemo()) + "</HowToDemo>");
 			sb.append("<Release>" + releaseId + "</Release>");
 			sb.append("<Sprint>" + sprintId + "</Sprint>");
-			sb.append("<Tag>" + tsc.TranslateXMLChar(new Translation().Join(issue.getTag(), ",")) + "</Tag>");
+			sb.append("<Tag>" + tsc.TranslateXMLChar(new Translation().Join(issue.getTags(), ",")) + "</Tag>");
 			sb.append("</Story>");
 		}
 		sb.append("</ExistingStories>");

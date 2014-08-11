@@ -97,7 +97,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 		Long issueID = null;
 		ArrayList<Long> issueIDList = new ArrayList<Long>();
 		IStory targetStory = null;
-		List<IIssueTag> issueTagList = new ArrayList<IIssueTag>();
+		List<TagObject> issueTagList = new ArrayList<TagObject>();
 		try {
 			JSONArray tagArray = storyProperties.getJSONArray(ProductBacklogUtil.TAG_TAGLIST);
 			
@@ -114,15 +114,15 @@ public class ProductBacklogWebService extends ProjectWebService {
 			
 			this.productBacklogHelper.editStory(issueID, storyName, value, importance, estimation, howToDemo, notes);
 			
-			IIssueTag[] tagList = this.productBacklogHelper.getTagList();
-			for(int i = 0;i < tagList.length;i++){
-				this.productBacklogHelper.removeStoryTag(String.valueOf(issueID), String.valueOf(tagList[i].getTagId()));
+			ArrayList<TagObject> tagList = this.productBacklogHelper.getTagList();
+			for(int i = 0;i < tagList.size();i++){
+				this.productBacklogHelper.removeStoryTag(String.valueOf(issueID), tagList.get(i).getId());
 			}
 			
 			for(int i = 0; i < tagArray.length(); i++){
 				if(this.productBacklogHelper.isTagExist(tagArray.getString(i))){
-					IIssueTag issueTag = this.productBacklogHelper.getTagByName(tagArray.getString(i));
-					this.productBacklogHelper.addStoryTag(String.valueOf(issueID), String.valueOf(issueTag.getTagId()));
+					TagObject issueTag = this.productBacklogHelper.getTagByName(tagArray.getString(i));
+					this.productBacklogHelper.addStoryTag(String.valueOf(issueID), issueTag.getId());
 					
 					issueTagList.add(issueTag);//檢查用
 				}
@@ -173,10 +173,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 	 * 取得所有的tag
 	 */
 	public void readAllTags(){
-		IIssueTag[] iIssueTagList = this.productBacklogHelper.getTagList();
-		List<TagObject> tagList = new ArrayList<TagObject>();
-		for(IIssueTag iIssueTag : iIssueTagList)
-			tagList.add(new TagObject(iIssueTag));
+		ArrayList<TagObject> tagList = this.productBacklogHelper.getTagList();
 		responseString = new Gson().toJson(tagList);
 	}
 	

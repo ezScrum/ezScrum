@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class Translation {
 	public Translation() { /* empty */}
@@ -37,7 +38,7 @@ public class Translation {
 			sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(stories[i].getHowToDemo()) + "</HowToDemo>");
 			sb.append("<Release>" + TranslateChar.HandleNullString(stories[i].getReleaseID()) + "</Release>");
 			sb.append("<Sprint>" + TranslateChar.HandleNullString(stories[i].getSprintID()) + "</Sprint>");
-			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTag(), ",")) + "</Tag>");
+			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTags(), ",")) + "</Tag>");
 			if (stories[i].getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
 			else sb.append("<Attach>true</Attach>");
 			sb.append("</Story>");
@@ -67,7 +68,7 @@ public class Translation {
 		sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(story.getHowToDemo()) + "</HowToDemo>");
 		sb.append("<Release>" + TranslateChar.HandleNullString(story.getReleaseID()) + "</Release>");
 		sb.append("<Sprint>" + TranslateChar.HandleNullString(story.getSprintID()) + "</Sprint>");
-		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTag(), ",")) + "</Tag>");
+		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTags(), ",")) + "</Tag>");
 		if (story.getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
 		else sb.append("<Attach>true</Attach>");
 		sb.append("</Story>");
@@ -202,7 +203,7 @@ public class Translation {
 			jsonStory.append("Value", stories[i].getValue());
 			jsonStory.append("Estimate", stories[i].getEstimated());
 			jsonStory.append("Importance", stories[i].getImportance());
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTag(), ",")));
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTags(), ",")));
 			jsonStory.append("Status", stories[i].getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories[i].getNotes()));
 			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories[i].getHowToDemo()));
@@ -344,7 +345,7 @@ public class Translation {
 			jsonStory.append("Estimate", issue.getEstimated());
 			jsonStory.append("Status", issue.getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(issue.getNotes()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTag(), ",")));
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTags(), ",")));
 			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(issue.getHowToDemo()));
 			jsonStory.append("Release", TranslateChar.HandleNullString(issue.getReleaseID()));
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(issue.getSprintID()));
@@ -537,13 +538,13 @@ public class Translation {
 		return obj.toString();
 	}
 
-	public String Join(List<IIssueTag> tags, String delimiter) {
+	public String Join(List<TagObject> tags, String delimiter) {
 		if (tags.isEmpty()) return "";
 
 		StringBuilder sb = new StringBuilder();
 
-		for (IIssueTag x : tags)
-			sb.append(x.getTagName() + delimiter);
+		for (TagObject x : tags)
+			sb.append(x.getName() + delimiter);
 
 		sb.delete(sb.length() - delimiter.length(), sb.length());
 
