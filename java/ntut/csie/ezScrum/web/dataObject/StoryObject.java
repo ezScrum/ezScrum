@@ -43,7 +43,7 @@ public class StoryObject {
 		sprint = story.getSprintID();
 		release = story.getReleaseID();
 		description = story.getDescription();
-		tagList = story.getTag();
+		tagList = story.getTags();
 		
 		for (long taskID : story.getChildrenID())
 			taskIDList.add(Long.toString(taskID));
@@ -61,7 +61,7 @@ public class StoryObject {
 		sprint = story.getSprintID();
 		release = story.getReleaseID();
 		description = story.getDescription();
-		tagList = story.getTag();
+		tagList = story.getTags();
 		
 		for (long taskID : story.getChildrenID())
 			taskIDList.add(Long.toString(taskID));

@@ -701,7 +701,7 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				TagObject actualTag = issueSet[issueIndex].getTag().get(tagIndex);
+				TagObject actualTag = issueSet[issueIndex].getTags().get(tagIndex);
 				assertEquals((long)(tagIndex+1), actualTag.getId());
 				assertEquals("Test_TAG_"+Integer.toString(tagIndex), actualTag.getName());
 			}
@@ -743,7 +743,7 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				TagObject actualTag = issueSet[issueIndex].getTag().get(tagIndex);
+				TagObject actualTag = issueSet[issueIndex].getTags().get(tagIndex);
 				assertEquals((long)(tagIndex+1), actualTag.getId());
 				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
@@ -784,7 +784,7 @@ public class MantisServiceTest extends TestCase {
 			IIssue issue = this.MSservice.getIssue((long)(issueIndex+1));
 			// test method
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				TagObject actualTag = issue.getTag().get(tagIndex);
+				TagObject actualTag = issue.getTags().get(tagIndex);
 				assertEquals((long)(tagIndex+1), actualTag.getId());
 				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
@@ -826,7 +826,7 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int storyIndex = 0; storyIndex < storyList.size(); storyIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				TagObject actualTag = storyList.get(storyIndex).getTag().get(tagIndex);
+				TagObject actualTag = storyList.get(storyIndex).getTags().get(tagIndex);
 				assertEquals((long)(tagIndex+1), actualTag.getId());
 				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}

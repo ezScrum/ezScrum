@@ -449,7 +449,7 @@ public class ReleasePlanHelper {
 				sb.append("<HowToDemo>" + this.replaceStr(stories[i].getHowToDemo()) + "</HowToDemo>");
 				sb.append("<Release>" + releaseId + "</Release>");
 				sb.append("<Sprint>" + sprintId + "</Sprint>");
-				sb.append("<Tag>" + this.replaceStr(this.joinTagOnStory(stories[i].getTag(), ",")) + "</Tag>");
+				sb.append("<Tag>" + this.replaceStr(this.joinTagOnStory(stories[i].getTags(), ",")) + "</Tag>");
 				sb.append("</Story>");
 			}
 			sb.append("</ExistingStories>");

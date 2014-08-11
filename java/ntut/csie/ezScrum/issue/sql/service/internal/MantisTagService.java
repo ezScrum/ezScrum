@@ -40,7 +40,7 @@ public class MantisTagService extends AbstractMantisService {
 
 				tags.add(tag);
 			}
-			issue.setTag(tags);
+			issue.setTags(tags);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

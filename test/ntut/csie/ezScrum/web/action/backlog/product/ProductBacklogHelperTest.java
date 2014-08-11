@@ -21,6 +21,7 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogHelperTest extends TestCase {
 	private ProductBacklogHelper productBacklogHelper1;
@@ -29,7 +30,6 @@ public class ProductBacklogHelperTest extends TestCase {
 	private CreateProductBacklog CPB;
 	private int ProjectCount = 2;
 	private int StoryCount = 1;
-	private ProductBacklogLogic productBacklogLogic;
 	private ProductBacklogLogic productBacklogLogic1;
 	private ProductBacklogLogic productBacklogLogic2;
 	
@@ -59,15 +59,17 @@ public class ProductBacklogHelperTest extends TestCase {
 		
 		IUserSession userSession = configuration.getUserSession();
 		
-		this.productBacklogHelper1 = new ProductBacklogHelper(userSession, this.CP.getProjectList().get(0));
-		this.productBacklogHelper2 = new ProductBacklogHelper(userSession, this.CP.getProjectList().get(1));
+		IProject project1 = this.CP.getProjectList().get(0);
+		IProject project2 = this.CP.getProjectList().get(1);
+		
+		this.productBacklogHelper1 = new ProductBacklogHelper(userSession, project1);
+		this.productBacklogHelper2 = new ProductBacklogHelper(userSession, project2);
 
-		this.productBacklogLogic = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(0));
-		this.productBacklogLogic1 = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(0));
-		this.productBacklogLogic2 = new ProductBacklogLogic(userSession, this.CP.getProjectList().get(1));
+		this.productBacklogLogic1 = new ProductBacklogLogic(userSession, project1);
+		this.productBacklogLogic2 = new ProductBacklogLogic(userSession, project2);
 
-		this.mapper1 = new ProductBacklogMapper(this.CP.getProjectList().get(0), userSession);
-		this.mapper2 = new ProductBacklogMapper(this.CP.getProjectList().get(1), userSession);
+		this.mapper1 = new ProductBacklogMapper(project1, userSession);
+		this.mapper2 = new ProductBacklogMapper(project2, userSession);
 		
 		// release
 		ini = null;
@@ -91,7 +93,6 @@ public class ProductBacklogHelperTest extends TestCase {
     	this.productBacklogHelper2 = null;
     	this.CP = null;
     	this.CPB = null;
-    	productBacklogLogic1 = null;
     	productBacklogLogic2 = null;
     	configuration = null;
     }
@@ -116,13 +117,6 @@ public class ProductBacklogHelperTest extends TestCase {
     	assertEquals( "Tag", productBacklogHelper2.getTagList().get(0).getName());
     	assertEquals( "Project2_Tag1", productBacklogHelper2.getTagList().get(1).getName());
     	assertEquals( "Project2_Tag2", productBacklogHelper2.getTagList().get(2).getName());
-    	
-    	// 確認相同名稱的Tag id 需要一樣
-    	long id1 = productBacklogHelper1.getTagByName("Tag").getId();
-    	long id2 = productBacklogHelper2.getTagByName("Tag").getId();
-    	assertNotNull(id1);
-    	assertNotNull(id2);
-    	assertTrue(id1 == id2);
     }
     
     public void testIsTagExist() {
@@ -205,9 +199,6 @@ public class ProductBacklogHelperTest extends TestCase {
     	// 判斷原本的Tag不存在 修改後的Tag存在
     	assertNull(productBacklogHelper2.getTagByName("Project2_Tag1"));
     	assertNotNull(productBacklogHelper2.getTagByName("Tag"));
-
-    	// 確認兩個名稱相同的Tag id一樣    	
-    	assertEquals(productBacklogHelper1.getTagByName("Tag").getId(), productBacklogHelper2.getTagByName("Tag").getId());
     }
     
     public void testAddStoryTag() {
@@ -227,11 +218,11 @@ public class ProductBacklogHelperTest extends TestCase {
     	
     	productBacklogHelper1.addStoryTag(story1_Id, tagP11_Id);
     	productBacklogHelper1.addStoryTag(story1_Id, tagP12_Id);
-    	productBacklogHelper1.addStoryTag(story2_Id, tagP21_Id);
+    	productBacklogHelper2.addStoryTag(story2_Id, tagP21_Id);
     	
     	// 取得Story的Tag List
-    	List<TagObject> story1_Tags = this.productBacklogLogic1.getStories()[0].getTag();
-    	List<TagObject> story2_Tags = this.productBacklogLogic2.getStories()[0].getTag();
+    	List<TagObject> story1_Tags = this.productBacklogLogic1.getStories()[0].getTags();
+    	List<TagObject> story2_Tags = this.productBacklogLogic2.getStories()[0].getTags();
     	
     	// 確認Tag
     	assertEquals(2, story1_Tags.size());
@@ -266,8 +257,8 @@ public class ProductBacklogHelperTest extends TestCase {
     	productBacklogHelper1.addStoryTag(story2_Id, tagP21_Id);
     	
     	// 取得Story的Tag List
-    	List<TagObject> story1_Tags = this.productBacklogLogic1.getStories()[0].getTag();
-    	List<TagObject> story2_Tags = this.productBacklogLogic2.getStories()[0].getTag();
+    	List<TagObject> story1_Tags = this.productBacklogLogic1.getStories()[0].getTags();
+    	List<TagObject> story2_Tags = this.productBacklogLogic2.getStories()[0].getTags();
     	
     	// 確認Tag
     	assertEquals(2, story1_Tags.size());
@@ -287,9 +278,9 @@ public class ProductBacklogHelperTest extends TestCase {
     	
     	// 取得Story的Tag List
     	story1_Tags.clear();
-    	story1_Tags = this.productBacklogLogic1.getStories()[0].getTag();
+    	story1_Tags = this.productBacklogLogic1.getStories()[0].getTags();
     	story2_Tags.clear();
-    	story2_Tags = this.productBacklogLogic2.getStories()[0].getTag();
+    	story2_Tags = this.productBacklogLogic2.getStories()[0].getTags();
     	
     	// 確認Tag
     	assertEquals(1, story1_Tags.size());
@@ -320,7 +311,7 @@ public class ProductBacklogHelperTest extends TestCase {
     	
     	// 確認Proejct1的Story Tag名稱變更
     	TagObject m_Tag = productBacklogHelper1.getTagByName("ModifyTag");
-    	TagObject story1_Tag = this.productBacklogLogic1.getStories()[0].getTag().get(0);
+    	TagObject story1_Tag = this.productBacklogLogic2.getStories()[0].getTags().get(0);
     	
     	assertFalse(productBacklogHelper1.isTagExist("Tag"));
     	assertTrue(productBacklogHelper1.isTagExist("ModifyTag"));
@@ -329,7 +320,7 @@ public class ProductBacklogHelperTest extends TestCase {
     	assertEquals(m_Tag.getName(), story1_Tag.getName());
     	
     	// 確認Project2的Tag存在且與Story的Tag不會被變更
-    	TagObject story2_Tag = this.productBacklogLogic2.getStories()[0].getTag().get(0);
+    	TagObject story2_Tag = this.productBacklogLogic2.getStories()[0].getTags().get(0);
     	
     	assertTrue(productBacklogHelper2.isTagExist("Tag"));
     	
@@ -345,35 +336,39 @@ public class ProductBacklogHelperTest extends TestCase {
     	productBacklogHelper2.addNewTag("Tag");
     	
     	// 將Story加上Tag
-    	long tag_Id = productBacklogHelper1.getTagByName("Tag").getId();
+    	long tag_Id1 = productBacklogHelper1.getTagByName("Tag").getId();
+    	long tag_Id2 = productBacklogHelper2.getTagByName("Tag").getId();
     	
-    	String story1_Id = Long.toString(this.productBacklogLogic1.getStories()[0].getIssueID());
-    	String story2_Id = Long.toString(this.productBacklogLogic2.getStories()[0].getIssueID());
+    	IStory story1 = this.productBacklogLogic1.getStories()[0];
+    	IStory story2 = this.productBacklogLogic2.getStories()[0];
     	
-    	productBacklogHelper1.addStoryTag(story1_Id, tag_Id);
-    	productBacklogHelper2.addStoryTag(story2_Id, tag_Id);
+    	String story1_Id = Long.toString(story1.getIssueID());
+    	String story2_Id = Long.toString(story2.getIssueID());
+    	
+    	productBacklogHelper1.addStoryTag(story1_Id, tag_Id1);
+    	productBacklogHelper2.addStoryTag(story2_Id, tag_Id2);
     	
     	// 修改Project1的Tag
-    	productBacklogHelper1.deleteTag(tag_Id);
+    	productBacklogHelper1.deleteTag(tag_Id1);
     	
-    	// 確認Proejct1的Tag被移除 Project2的存在
+    	// 確認Proejct1的Tag被移除 Project2的存在 
     	assertFalse(productBacklogHelper1.isTagExist("Tag"));
     	assertTrue(productBacklogHelper2.isTagExist("Tag"));
     	
     	// 確認Project1的Story Tag 被移除
-    	List<TagObject> story1_Tag = this.productBacklogLogic1.getStories()[0].getTag();
+    	List<TagObject> story1_Tag = this.productBacklogLogic1.getStories()[0].getTags();
     	assertEquals(0, story1_Tag.size());
     	
     	// 確認Project2的Story的Tag不會被變更
-    	List<TagObject> story2_Tag = this.productBacklogLogic2.getStories()[0].getTag();
+    	List<TagObject> story2_Tag = this.productBacklogLogic2.getStories()[0].getTags();
     	TagObject Tag = productBacklogHelper2.getTagByName("Tag");
     	
-    	assertEquals(1, story2_Tag.size());
+    	assertEquals(1, story2_Tag.size());	
     	
     	assertEquals(Tag.getId(), story2_Tag.get(0).getId());
     	assertEquals(Tag.getName(), story2_Tag.get(0).getName());
     }
-    
+
     // 驗證 Story 狀態為 Done 時，不顯示
     public void testgetAddableStories1() throws Exception {
     	initialSQLData();
@@ -392,7 +387,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第一筆 Story Done
 		sprintBacklogLogic.doneIssue(this.CPB.getIssueList().get(0).getIssueID(), "Story_"+0, this.CPB.TEST_STORY_NOTES + "1", null, Integer.toString(0));
 		
-		List<IStory> AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
 
 		// 從 ID 第二筆開始驗證
@@ -406,7 +401,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第十筆 Story Done
 		sprintBacklogLogic.doneIssue(this.CPB.getIssueList().get(9).getIssueID(), "Story_"+9, this.CPB.TEST_STORY_NOTES + "10", null, Integer.toString(0));
 		
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(8, AvailabelIssue.size());
 
 		// 從 ID 第二筆開始驗證到第九筆
@@ -434,9 +429,9 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第一筆 Story 加入 Release 1 內
 		ArrayList<Long> StoryID = new ArrayList<Long>();
 		StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
 				
-		List<IStory> AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -452,9 +447,9 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(2).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
 //		this.helper.addRelease(StoryID, Integer.toString(1));
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
 		
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(6, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -483,9 +478,9 @@ public class ProductBacklogHelperTest extends TestCase {
     	ArrayList<Long> StoryID = new ArrayList<Long>();
     	StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
 //    	this.helper.add(StoryID, Integer.toString(1));
-    	this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(1));
+    	this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
     	
-		List<IStory> AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -501,9 +496,9 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(2).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
 //		this.helper.add(StoryID, Integer.toString(1));
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
 		
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(6, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -534,9 +529,9 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第一筆 Story 加入 Sprint 1 內
 		ArrayList<Long> StoryID = new ArrayList<Long>();
 		StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
 		
-		List<IStory> AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -551,8 +546,8 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第二筆 Story 加入 Release 1 內
 		StoryID.remove(0);
 		StoryID.add(this.CPB.getIssueList().get(1).getIssueID());
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(1));
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(8, AvailabelIssue.size());
 		
 		// 從 ID 第三筆開始驗證
@@ -567,9 +562,9 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第十筆 Story 加入 Release 1 & Sprint 1 內
 		StoryID.remove(0);
 		StoryID.add(this.CPB.getIssueList().get(9).getIssueID());
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(1));
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(1));
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(7, AvailabelIssue.size());
 		
 		// 從 ID 第三筆開始驗證到第九筆
@@ -591,7 +586,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		}
 		
 		// 驗證取出 0 筆資料
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(0, AvailabelIssue.size());
     }
     
@@ -619,10 +614,10 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(4).getIssueID());
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
 		
 		// 驗證顯示剩下的 6-10 筆 StoryID
-		List<IStory> AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(5, AvailabelIssue.size());
 		
 		// 從 ID 第六筆開始驗證
@@ -639,10 +634,10 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(6).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(7).getIssueID());
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(2));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(2));
 		
 		// 驗證顯示剩下的 9, 10 筆 StoryID
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(2, AvailabelIssue.size());
 		
 		// 從 ID 第九筆開始驗證
@@ -658,20 +653,20 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(8).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(9).getIssueID());
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(0, AvailabelIssue.size());
 		
 		// 將兩筆 Story (ID = 1, 2, 9, 10) 加入 Release 2
 		StoryID.add((long)1);
 		StoryID.add((long)2);
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addReleaseTagToIssue(StoryID, Integer.toString(2));
+		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(2));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(0, AvailabelIssue.size());
 		
 		
@@ -680,10 +675,10 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add((long)9);
 		StoryID.add((long)10);
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(3));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(3));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(0, AvailabelIssue.size());
 
 		// 將兩筆 Story (ID = 7, 8) 移除 Sprint 2
@@ -691,10 +686,10 @@ public class ProductBacklogHelperTest extends TestCase {
 		StoryID.add((long)7);
 		StoryID.add((long)8);
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic.addIssueToSprint(StoryID, Integer.toString(0));
+		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(0));
 		
 		// 驗證顯示 2 筆資料
-		AvailabelIssue = this.productBacklogLogic.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(2, AvailabelIssue.size());
 		
 		// 從 ID 第七筆開始驗證

@@ -110,10 +110,10 @@ public class MantisTagServiceTest extends TestCase {
 		tagService.initTag(story);
 		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();// 從 sql 取tag list 
 		
-		assertEquals(story.getTag().size(), tagList.size());// TagCount = 2
+		assertEquals(story.getTags().size(), tagList.size());// TagCount = 2
 		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
-			assertEquals(story.getTag().get(listIndex).getId(), tagList.get(listIndex).getId());// TagID = 1,2...
-			assertEquals(story.getTag().get(listIndex).getName(), tagList.get(listIndex).getName());// TagName = TEST_TAG_1,2...
+			assertEquals(story.getTags().get(listIndex).getId(), tagList.get(listIndex).getId());// TagID = 1,2...
+			assertEquals(story.getTags().get(listIndex).getName(), tagList.get(listIndex).getName());// TagName = TEST_TAG_1,2...
 		}
 	}
 	

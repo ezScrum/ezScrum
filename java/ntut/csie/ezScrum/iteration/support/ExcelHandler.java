@@ -58,7 +58,7 @@ public class ExcelHandler {
 				((WritableSheet) sheet).addCell(new Label(0, index, String
 						.valueOf(story.getIssueID())));
 				// tag is a list, so we translate it to a string
-				String result = Join(story.getTag(), ",");
+				String result = Join(story.getTags(), ",");
 				((WritableSheet) sheet).addCell(new Label(1, index, result));
 				((WritableSheet) sheet).addCell(new Label(2, index, story
 						.getSummary()));

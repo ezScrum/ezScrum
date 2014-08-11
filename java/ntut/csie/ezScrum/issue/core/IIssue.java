@@ -152,8 +152,8 @@ public interface IIssue extends Serializable{
 	public void addAttachFile(IssueAttachFile attach);
 	
 	// 對Story的自訂分類標籤
-	public List<TagObject> getTag();
-	public void setTag(List<TagObject> tags);
+	public List<TagObject> getTags();
+	public void setTags(List<TagObject> tags);
 	public void addTag(TagObject tag);
 	
 	public String getProjectName();

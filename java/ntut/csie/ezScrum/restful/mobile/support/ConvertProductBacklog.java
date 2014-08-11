@@ -123,7 +123,7 @@ public class ConvertProductBacklog {
 		if(String.valueOf(targetStory.getNotes()).compareTo(notes) != 0){
 			isCorrect = false;
 		}
-		for (TagObject issueTag : targetStory.getTag()) {
+		for (TagObject issueTag : targetStory.getTags()) {
 			for (TagObject tag : issueTagList) {
 				if (issueTag.getName().equals(tag.getName())) {
 					isCorrect = true;

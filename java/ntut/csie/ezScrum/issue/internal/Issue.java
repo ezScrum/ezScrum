@@ -253,7 +253,7 @@ public class Issue implements IIssue {
 		m_submittedDate = issue.getSubmittedDate();
 		m_issueLink = issue.getIssueLink();
 		attachFile = issue.getAttachFile();
-		m_tag = issue.getTag();
+		m_tag = issue.getTags();
 
 		this.m_histories = issue.getHistory();
 		this.setTagContent(issue.getTagContentRoot());
@@ -823,12 +823,12 @@ public class Issue implements IIssue {
 	}
 
 	@Override
-	public List<TagObject> getTag() {
+	public List<TagObject> getTags() {
 		return m_tag;
 	}
 
 	@Override
-	public void setTag(List<TagObject> tags) {
+	public void setTags(List<TagObject> tags) {
 		this.m_tag = tags;
 	}
 

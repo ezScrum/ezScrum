@@ -49,7 +49,7 @@ public class SprintBacklogTreeStructure {
 		this.Value = story.getValue();
 		this.Estimate = story.getEstimated();
 		this.Importance = story.getImportance();
-		this.Tag = new Translation().Join(story.getTag(), ", ");
+		this.Tag = new Translation().Join(story.getTags(), ", ");
 		this.Status = story.getStatus();
 		this.Notes = HandleSpecialChar(story.getNotes());
 		this.Link = story.getIssueLink();
@@ -114,7 +114,7 @@ public class SprintBacklogTreeStructure {
 				SprintBacklogTreeStructure c = 
 					new SprintBacklogTreeStructure(ScrumEnum.TASK_ISSUE_TYPE,		// type
 												Long.toString(task.getIssueID()),	// ID 
-												new Translation().Join(task.getTag(), ", "),	// tag
+												new Translation().Join(task.getTags(), ", "),	// tag
 												task.getSummary(),					// bane
 												task.getAssignto(),					// handler
 												task.getValue(), 					// value
