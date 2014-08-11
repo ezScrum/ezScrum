@@ -10,11 +10,6 @@ public class TagObject {
 
 	public TagObject() {}
 	
-	public TagObject(IIssueTag iIssueTag) {
-		this.id = iIssueTag.getTagId();
-		this.tagName = iIssueTag.getTagName();
-	}
-	
 	public long getId() {
 		return id;
 	}

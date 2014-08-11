@@ -143,7 +143,7 @@ public class MantisTagServiceTest extends TestCase {
 	public void testAddNewTag() {
 		//============test 新增沒有相同名稱於其他專案之tag=============
 		// setUp 預設 create 2筆 tag，所以新增第3筆來比對
-		long resultID = tagService.addNewTag((TEST_TAG_NAME + 3), this.CP.getProjectList().get(0).getName());
+		long resultID = tagService.addTag((TEST_TAG_NAME + 3), this.CP.getProjectList().get(0).getName());
 		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();
 		assertEquals(resultID, tagList.get(2).getId());// resultID = 3
 		assertEquals(TEST_TAG_NAME + resultID, tagList.get(2).getName());// TEST_TAG_X

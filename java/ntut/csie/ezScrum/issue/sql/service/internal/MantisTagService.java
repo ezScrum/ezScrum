@@ -46,11 +46,11 @@ public class MantisTagService extends AbstractMantisService {
 	}
 
 	// for ezScrum 1.8
-	public void updateTag(long tagId, String tagName, String projectName) {
+	public void updateTag(long tagId, String newName, String projectName) {
 		long projectID = getProjectId(projectName);
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addInsertValue(TagEnum.NAME, tagName);
+		valueSet.addInsertValue(TagEnum.NAME, newName);
 		valueSet.addEqualCondition(TagEnum.ID, String.valueOf(tagId));
 		valueSet.addEqualCondition(TagEnum.PROJECT_ID, Long.toString(projectID));
 		String query = valueSet.getUpdateQuery();
@@ -60,7 +60,7 @@ public class MantisTagService extends AbstractMantisService {
 	// 新增自訂分類標籤
 	// 新增完回傳新增後的tag id
 	// for ezScrum 1.8
-	public long addNewTag(String name, String projectName) {
+	public long addTag(String name, String projectName) {
 		long newId = -1;
 		int projectId = getProjectId(projectName);
 
@@ -72,25 +72,12 @@ public class MantisTagService extends AbstractMantisService {
 				String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 
-		getControl().execute(query);
-
-		valueSet.clear();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.PROJECT_ID,
-				String.valueOf(projectId));
-		valueSet.addTextFieldEqualCondition(TagEnum.NAME, name);
-		valueSet.setOrderBy(TagEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
-		query = valueSet.getSelectQuery();
-
-		ResultSet result = getControl().executeQuery(query);
-		try {
-			if (result.next()) {
-				newId = result.getLong(TagEnum.ID);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		getControl().execute(query, true);
+		
+		// get the new record id
+		String[] keys = getControl().getKeys();
+		newId = Long.parseLong(keys[0]);
+		
 		return newId;
 	}
 
@@ -174,15 +161,15 @@ public class MantisTagService extends AbstractMantisService {
 
 	// 對Story設定自訂分類標籤
 	// for ezScrum 1.8
-	public void addStoryTag(String storyID, long tagID) {
+	public void addStoryTag(String storyId, long tagId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyID);
+		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
 		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID,
-				String.valueOf(tagID));
-		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyID);
+				String.valueOf(tagId));
+		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
 		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID,
-				String.valueOf(tagID));
+				String.valueOf(tagId));
 		String query = valueSet.getSelectQuery();
 
 		// 如果story對tag關係若不存在則新增一筆關係
@@ -199,13 +186,13 @@ public class MantisTagService extends AbstractMantisService {
 
 	// 移除Story的自訂分類標籤
 	// for ezScrum 1.8
-	public void removeStoryTag(String storyID, long tagID) {
+	public void removeStoryTag(String storyId, long tagId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyID);
-		if (tagID != -1)
+		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
+		if (tagId != -1)
 			valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID,
-					String.valueOf(tagID));
+					String.valueOf(tagId));
 		String query = valueSet.getDeleteQuery();
 		getControl().execute(query);
 	}
