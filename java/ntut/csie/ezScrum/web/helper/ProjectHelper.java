@@ -126,91 +126,55 @@ public class ProjectHelper {
 		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
 	}
 
-	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ITSInformation itsInformation, ProjectObject projectInformation) {
+	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ProjectObject projectInformation) {
 		StringBuilder sb = new StringBuilder();
 		ProjectMapper projectMapper = new ProjectMapper();
-//		try {
-			sb.append("<Root>");
+		sb.append("<Root>");
 
-			// create project
-			if (fromPage != null) {
-				if (fromPage.equals("createProject")) {
-					sb.append("<CreateProjectResult>");
+		// create project
+		if (fromPage != null) {
+			if (fromPage.equals("createProject")) {
+				sb.append("<CreateProjectResult>");
 
-					IProject project = null;
-					try {
-						// 轉換格式
-						ProjectInfoForm projectInfoForm = this.convertProjectInfo(projectInformation);
+				IProject project = null;
+				try {
+					// 轉換格式
+					ProjectInfoForm projectInfoForm = this.convertProjectInfo(projectInformation);
 
-						project = projectMapper.createProject(userSession, itsInformation, projectInfoForm);
+					project = projectMapper.createProject(userSession, projectInfoForm);
 
-						// 重新設定權限, 當專案被建立時, 重新讀取此User的權限資訊
-						SessionManager projectSessionManager = new SessionManager(request);
-						projectSessionManager.setProject(project);
-						AccessPermissionManager.setupPermission(request, userSession);
+					// 重新設定權限, 當專案被建立時, 重新讀取此User的權限資訊
+					SessionManager projectSessionManager = new SessionManager(request);
+					projectSessionManager.setProject(project);
+					AccessPermissionManager.setupPermission(request, userSession);
 
-						// 建立專案角色和權限的外部檔案
-						AccountMapper accountMapper = new AccountMapper();
-						accountMapper.createPermission(project);
-						accountMapper.createRole(project);
-						
-						// -- ezScrum v1.8 --
-						projectInformation = projectMapper.createProjectForDb(projectInformation);
-						projectMapper.createScrumRole(projectInformation.getId());
-						
-						sb.append("<Result>Success</Result>");
-						sb.append("<ID>" + projectInformation.getName() + "</ID>");
-						// -- ezScrum v1.8 --
-					} catch (TestConnectException e) {
-						// 連線失敗，告知使用者連線已失敗
-						if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
-							// 如果是Table Error的話，那還是先存入
-							sb.append("<Result>InitDatabase</Result>");
-							sb.append("<IP>" + itsInformation.getServerURL() + "</IP>");
-							sb.append("<DBName>" + itsInformation.getDbName() + "</DBName>");
-						}
-						else if (e.getType().equals(TestConnectException.DATABASE_ERROR)) {
-							sb.append("<Result>CreateDatabase</Result>");
-							sb.append("<IP>" + itsInformation.getServerURL() + "</IP>");
-							sb.append("<DBName>" + itsInformation.getDbName() + "</DBName>");
-						}
-						else if (e.getType().equals(TestConnectException.CONNECT_ERROR)) {
-							sb.append("<Result>Connect_Error</Result>");
-						}
+					// 建立專案角色和權限的外部檔案
+					AccountMapper accountMapper = new AccountMapper();
+					accountMapper.createPermission(project);
+					accountMapper.createRole(project);
+					
+					// -- ezScrum v1.8 --
+					projectInformation = projectMapper.createProjectForDb(projectInformation);
+					projectMapper.createScrumRole(projectInformation.getId());
+					
+					sb.append("<Result>Success</Result>");
+					sb.append("<ID>" + projectInformation.getName() + "</ID>");
+					// -- ezScrum v1.8 --
+				} catch (Exception e) {
+					projectMapper.deleteProject(projectInformation.getName());
+                    e.printStackTrace();
+                }
 
-						else {
-							sb.append("<Result>Failure</Result>");
-						}
-						// 如果project Create失敗，就把目前產生到一半的Project檔案刪除
-						projectMapper.deleteProject(projectInformation.getName());
-					} catch (Exception e) {
-	                    e.printStackTrace();
-                    }
-
-					sb.append("</CreateProjectResult>");
-				}
-
+				sb.append("</CreateProjectResult>");
 			}
 
-			sb.append("</Root>");
-			return sb.toString();
-//		} catch (ConnectException e) {
-//			log.info("TestConnect");
-//			e.printStackTrace();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			log.info("SaveWorkspace");
-//			e.printStackTrace();
-//		}
-//		return sb.toString();
+		}
+
+		sb.append("</Root>");
+		return sb.toString();
 	}
 
 	public List<UserObject> getProjectMemberList(ProjectObject project) {
-//	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
-//		return mProjectMapper.getProjectMemberList(userSession, project);
 		// ezScrum v1.8
 		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}

@@ -47,15 +47,6 @@ public class SaveProjectAction extends Action {
 		//	取得上一頁的資訊
 		String fromPage = request.getParameter("from");
 
-		//	取得所有 ITS 參數資料
-		String serverURL = request.getParameter("ServerUrl");
-		String serverPath = request.getParameter("ServicePath");
-		String dbAccount = request.getParameter("DBAccount");
-		String dbPassword = request.getParameter("DBPassword");
-		String projectName = request.getParameter("Name");
-		String dbType = request.getParameter("SQLType");
-		String dbName = request.getParameter("DBName");
-
 		// 取得所有專案的資訊
 		String pName = request.getParameter("Name");
 		String pDisplayName = request.getParameter("DisplayName");
@@ -68,12 +59,11 @@ public class SaveProjectAction extends Action {
 		if (pManager == null) pManager = "";
 
 		//	將參數物件化
-		ITSInformation itsInformation = new ITSInformation(serverURL, serverPath, dbAccount, dbPassword, projectName, dbType, dbName);
 		ProjectObject projectInformation = new ProjectObject(pName, pDisplayName, pComment, pManager, pAttachFileSize);
 
 		//	透過project helper得到response text
 		ProjectHelper projectHelper = new ProjectHelper();
-		String saveProjectXML = projectHelper.getCreateProjectXML(request, userSession, fromPage, itsInformation, projectInformation);
+		String saveProjectXML = projectHelper.getCreateProjectXML(request, userSession, fromPage, projectInformation);
 
 		//	設定response 內容和型態
 		try {

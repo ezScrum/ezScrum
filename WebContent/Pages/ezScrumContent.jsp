@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
-
-<html>
+<html  lang="en">
 <head>
 	<title>ezScrum, SSLab NTUT</title>
 	<link rel="shortcut icon" href="images/scrum_16.png"/>
@@ -59,9 +58,6 @@
 
 <!-- ezScrum plugin import -->
 <jsp:include page="ImportPluginList.jsp"/>
-
-
-<!-- ezScrum import -->
 
 <!--
     ezScrum shared component, should be imported before all panel or window render.
