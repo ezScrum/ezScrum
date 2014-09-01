@@ -75,11 +75,6 @@ public class SaveProjectAction extends Action {
 			e.printStackTrace();
 		}
 
-		//	reset Project<-->ScrumRole map	
-		//		ScrumRoleManager scrumRoleManager = new ScrumRoleManager();
-		//		scrumRoleManager.setScrumRoles( account );
-//		(new ScrumRoleLogic()).setScrumRoles(account);
-
 		//	刪除Session中關於該使用者的所有專案權限。
 		SessionManager.removeScrumRolesMap(request, account);
 

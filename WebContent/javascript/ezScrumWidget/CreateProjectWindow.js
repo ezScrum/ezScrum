@@ -3,7 +3,7 @@ Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
 /* SaveProjectResult */
-var CreateProjectResult = Ext.data.Record.create( [ 'Result' , 'IP', 'DBName', 'ID']);
+var CreateProjectResult = Ext.data.Record.create( [ 'Result' , 'IP', 'ID']);
 
 var createResultReader = new Ext.data.XmlReader( {
 	record : 'CreateProjectResult'
@@ -17,40 +17,9 @@ var createResultStore = new Ext.data.Store( {
 		name:'IP'
 	},
 	{
-		name:'DBName'
-	},
-	{
 		name:'ID'
 	}],
 	reader : createResultReader
-});
-
-/*-----------------------------------------------------------
- *	顯示DataBase選單  
- -------------------------------------------------------------*/
-//var sqlList = [ [ 'Default(Local Database)' ], [ 'MySQL' ] ]; // Local DB(H2) 未開放，未完整驗證功能性
- var sqlList = [['MySQL']];
-var sqlDataType = new Ext.data.ArrayStore( {
-	// store configs
-	autoDestory : true,
-	storeId : 'sqlDataType',
-	// reader configs
-	idIndex : 0,
-	fields : [ 'SQLName' ],
-	data : sqlList
-});
-
-var sqlCombo = new Ext.form.ComboBox( {
-	store : sqlDataType,
-	displayField : 'SQLName',
-	fieldLabel : 'SQL Type',
-	typeAhead : true,
-	mode : 'local',
-	triggerAction : 'all',
-	emptyText : 'Select a DataBase',
-	selectOnFocus : true,
-	allowBlank : false,
-	name : 'SQLType'
 });
 
 /**
@@ -136,37 +105,7 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 				fieldLabel : 'Attach File Max Size (Default: 2MB)',
 				name : 'AttachFileSize',
 				vtype : 'Number'
-			},
-			sqlCombo, {
-				fieldLabel : 'Server Url',
-				id : 'ServerUrl',
-				name : 'ServerUrl',
-				allowBlank : false,
-				disabled : true
 			}, {
-				fieldLabel : 'Account of DB of ITS',
-				name : 'DBAccount',
-                id : 'DBAccount',
-				allowBlank : false
-			}, {
-				fieldLabel : 'Password of DB of ITS',
-				inputType : 'password',
-				name : 'DBPassword',
-                id:'DBPassword',
-				allowBlank : false
-			}, {
-                fieldLabel : 'Database Name',
-                name : 'DBName',
-                id : 'DBName',
-                originalValue:'ezScrum',
-                //readOnly   : true,
-                allowBlank : false
-            }, {
-				name : 'ServicePath',
-				originalValue : '/mantis/mc/mantisconnect.php',
-				allowBlank : false,
-                hidden:true
-			},{
 				xtype: 'RequireFieldLabel'
 			}],
 			buttons : [{
@@ -183,32 +122,6 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 				}
 			} ]
 		}
-
-		/*-----------------------------------------------------------
-		 *  加入選擇不一樣的SQL類型時，出現不同的設定表格 
-		-------------------------------------------------------------*/
-
-		sqlCombo.on('select', function(sqlcombo, record, index) {
-            var cArray = new Array();
-            cArray.push(this.getComponent('ServerUrl'));
-            cArray.push(this.getComponent('DBAccount'));
-			cArray.push(this.getComponent('DBPassword'));
-            cArray.push(this.getComponent('DBName'));
-
-			var selectValue = record.get('SQLName');
-			if (selectValue == 'Default(Local Database)') {
-				for(var i=0;i<cArray.length;i++)
-                {
-                    cArray[i].disable();
-                }
-			} else {
-				for(var i=0;i<cArray.length;i++)
-                {
-                    cArray[i].enable();
-                }
-			}
-		}, this);
-		
 
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.CreateProjectForm.superclass.initComponent.apply(this,
@@ -228,53 +141,16 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 		var form = this.getForm();
 		var obj = this;
 		
-		if (this.getComponent('ServerUrl').getValue() &&
-			this.getComponent('DBAccount').getValue() &&
-			this.getComponent('DBPassword').getValue()) {
-			// validate database by ajax before submit the form
-			Ext.Ajax.request( {
-				url : 'testConnAction.do',
-				success : function(response) {
-					if (response.responseText == "success")
-						Ext.Ajax.request( {
-							url : 'AjaxCreateProject.do',
-							success : function(response) {
-								obj.onSuccess(response);
-							},
-							failure : function(response) {
-								obj.onFailure(response);
-							},
-							params : form.getValues()
-						});
-					else if (response.responseText == "CommunicationsException") {
-						alert("Server url cannot be resolved.");
-						myMask.hide();
-					}
-					else if (response.responseText == "SQLException") {
-						alert("Account or Password may be wrong.");
-						myMask.hide();
-					}
-					else if (response.responseText == "ClassNotFoundException") {
-						alert("JDBC driver not found.");
-						myMask.hide();
-					}
-					else {
-						alert("Unknown problem.");
-						myMask.hide();
-					}
-				},
-				failure : function(response) {
-					alert("connect db server timeout");
-					myMask.hide();
-				},
-				params : {  
-					sqlurl: this.getComponent('ServerUrl').getValue(),
-					username: this.getComponent('DBAccount').getValue(),
-					password: this.getComponent('DBPassword').getValue()
-				}
-			});
-		}
-
+		Ext.Ajax.request( {
+			url : 'AjaxCreateProject.do',
+			success : function(response) {
+				obj.onSuccess(response);
+			},
+			failure : function(response) {
+				obj.onFailure(response);
+			},
+			params : form.getValues()
+		});
 	},
 	onSuccess : function(response) {
 		var myMask = new Ext.LoadMask(this.getEl(), {

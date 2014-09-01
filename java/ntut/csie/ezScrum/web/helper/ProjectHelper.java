@@ -79,28 +79,6 @@ public class ProjectHelper {
 		sb.append("</Projects>");
 
 		return sb.toString();
-		
-//		// write projects to XML format
-//		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("<Projects>");
-//		TranslateSpecialChar tsc = new TranslateSpecialChar();
-//		for (IProject project : projects) {
-//			if (map.get(project.getName()) == Boolean.TRUE) {
-//				sb.append("<Project>");
-//				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getProjectDesc().getName())).append("</ID>");
-//				sb.append("<Name>").append(tsc.TranslateXMLChar(project.getProjectDesc().getDisplayName())).append("</Name>");
-//				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getProjectDesc().getComment())).append("</Comment>");
-//				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getProjectDesc().getProjectManager())).append("</ProjectManager>");
-//				sb.append("<CreateDate>").append(dateFormat.format(project.getProjectDesc().getCreateDate())).append("</CreateDate>");
-//				sb.append("<DemoDate>").append(hm.get(project.getName())).append("</DemoDate>");
-//				sb.append("</Project>");
-//			}
-//		}
-//		sb.append("</Projects>");
-//
-//		return sb.toString();
-
 	}
 
 	/**
@@ -167,9 +145,7 @@ public class ProjectHelper {
 
 				sb.append("</CreateProjectResult>");
 			}
-
 		}
-
 		sb.append("</Root>");
 		return sb.toString();
 	}

@@ -317,7 +317,6 @@
 		<action path="/showITSPreferenceForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
 			<forward name="success" path="issue.prefs" />
 		</action>
-		<action path="/testConnAction"				type="ntut.csie.ezScrum.web.action.TestConnAction" />
 		
 		
 		<!-- Common Used -->
