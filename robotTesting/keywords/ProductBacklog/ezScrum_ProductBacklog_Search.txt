@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     set the search condition
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 
@@ -13,4 +13,3 @@ Set Product Backlog Search Condition
     Input Text    xpath=//input[@id="searchComboBoxID"]/../../../td[3]/input    ${search_content}
     #目前透過robot需要在輸入條件後再選擇一次才會生效
     DropDownMenu_Select    searchComboBoxID    ${search_condition}
-

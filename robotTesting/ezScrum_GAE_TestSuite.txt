@@ -2,7 +2,7 @@
 Suite Setup       ezScrumGAE Suite Setup
 Suite Teardown    ezScrumGAE Suite Teardown
 Force Tags        GAE
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          keywords/TenantManagement/ezScrumGAE_SetupTeardown.txt
 Resource          keywords/TenantManagement/ezScrumGAE_TenantManagement.txt
 
@@ -13,7 +13,7 @@ Resource          keywords/TenantManagement/ezScrumGAE_TenantManagement.txt
 Test Tenant Management - Add Tenant
     [Tags]    TM
     [Setup]    Test Tenant Management - Add Tenant Setup
-    ${_isCreated} =     Check Tenant Is Create    ${tsTenantInfo[0]}
+    ${_isCreated} =    Check Tenant Is Create    ${tsTenantInfo[0]}
     Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    1
     Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    1
     # assert
@@ -28,7 +28,7 @@ Test Tenant Management - Add Tenant
 Test Tenant Management - Add Tenant With Disable
     [Tags]    TM
     [Setup]    Test Tenant Management - Add Tenant Setup
-    ${_isCreated} =     Check Tenant Is Create    ${tsTenantInfo[0]}
+    ${_isCreated} =    Check Tenant Is Create    ${tsTenantInfo[0]}
     Run Keyword if    ${_isCreated} == 0    Add Tenant    ${tsTenantInfo[0]}    0
     Run Keyword if    ${_isCreated} == 1    Edit Tenant    ${tsTenantInfo[0]}    0
     # assert

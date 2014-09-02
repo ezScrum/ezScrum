@@ -14,7 +14,7 @@ Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
 Library           Collections
-Library           SeleniumLibrary
+Library           Selenium2Library
 
 *** Test Cases ***
 Test Sprint Backlog - Edit Story

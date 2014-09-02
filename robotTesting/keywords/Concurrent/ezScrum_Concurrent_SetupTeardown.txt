@@ -1,25 +1,24 @@
 *** Settings ***
-Library         SeleniumLibrary
-Library         Collections
-Resource        ../../ServerConfig.txt
-Resource        ../../Global Define.txt
-Resource        ../common_resource.txt
-Resource        ../ezScrum_Login.txt
-Resource        ../Project/ezScrum_Project.txt
+Library           Selenium2Library
+Library           Collections
+Resource          ../../ServerConfig.txt
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Test Concurrent Suite Setup
-    Login Page  ${LOGIN_URL}
-    Wait Until Page Contains Element  createProjectBtn
-    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}
-    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project
-    Run Keyword If  "${_IsProjectIDExisted}"=="true"  Select Project  ${PROJECT_NAME}DisplayName
-    Select Node Product  Product Backlog
+    Login Page    ${LOGIN_URL}
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Product Backlog
 
 Test Concurrent Suite Teardown
-    Click Image  images/logout.gif
-    Title Should Be  ezScrum Logon!
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
     Close Browser
     # clean DB
-    Clean DB  ${DB_URL}  ${DB_ACCOUNT}  ${DB_PASSWORD}  ${DB_NAME}
-
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

@@ -1,229 +1,235 @@
 *** Settings ***
-Library         SeleniumLibrary
-Library         Collections
-Resource        ../../Global Define.txt
-Resource        ../../ServerConfig.txt
-Resource        ../common_resource.txt
-Resource        ../ezScrum_Login.txt
-Resource        ezScrum_ScrumRole_Account.txt
-Resource        ezScrum_ScrumRole_Management.txt
+Library           Selenium2Library
+Library           Collections
+Resource          ../../Global Define.txt
+Resource          ../../ServerConfig.txt
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+Resource          ezScrum_ScrumRole_Account.txt
+Resource          ezScrum_ScrumRole_Management.txt
 
 *** Keywords ***
 Test ScrumRole Setup
-    Login Page  ${LOGIN_URL}
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Scrum Role Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Scrum Role Management
 
 Test ScrumRole Teardown
     Exit ezScrum System
 
 Test ScrumRole Setup with Account
-    [Documentation]  以Admin身分登入並建立一個user後登出
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並建立一個user後登出
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
     Exit ezScrum System
 
 Test ScrumRole Teardown with Account
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Guest
-    Login Page  ${LOGIN_URL}
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Guest
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[4]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[4]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for Guest
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest Default
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Guest
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Guest
     # 將 Report 權限移除
-    Set List Value  ${tsPermission_Guest}  7  0
-    LOG  ${tsPermission_Guest}
-    Login Page  ${LOGIN_URL}
+    Set List Value    ${tsPermission_Guest}    7    0
+    LOG    ${tsPermission_Guest}
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[4]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[4]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     # 修改 Permission 設定
-    SwitchToItemLink  False  Scrum Role Management
-    Select ProjectList  ${PROJECT_NAME}
-    Select ScrumRoleList  ${tsAssignRole_Items[4]}
-    Set PermissionCheckList  ${tsAssignRole_Items[4]}
+    SwitchToItemLink    False    Scrum Role Management
+    Select ProjectList    ${PROJECT_NAME}
+    Select ScrumRoleList    ${tsAssignRole_Items[4]}
+    Set PermissionCheckList    ${tsAssignRole_Items[4]}
     Save Permission
     # exit
     Exit ezScrum System
 
 Test ScrumRole Teardown for Guest Default
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Scrum Role Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Scrum Role Management
     # 可直接刪除帳號 ?
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Stakeholder
-    Login Page  ${LOGIN_URL}
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Stakeholder
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[3]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[3]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for Stakeholder
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder Default
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Stakeholder
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Stakeholder
     # 回復成原始權限設定
-    Set List Value  ${tsPermission_Stakeholder}  1  0
-    Set List Value  ${tsPermission_Stakeholder}  6  0
-    LOG  ${tsPermission_Stakeholder}
-    Login Page  ${LOGIN_URL}
+    Set List Value    ${tsPermission_Stakeholder}    1    0
+    Set List Value    ${tsPermission_Stakeholder}    6    0
+    LOG    ${tsPermission_Stakeholder}
+    Login Page    ${LOGIN_URL}
     # 新增帳號
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName  # 假設 Project 已存在
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName    # 假設 Project 已存在
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[3]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[3]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     # 修改 Permission 設定
-    SwitchToItemLink  False  Scrum Role Management
-    Select ProjectList  ${PROJECT_NAME}
-    Select ScrumRoleList  ${tsAssignRole_Items[3]}
-    Set PermissionCheckList  ${tsAssignRole_Items[3]}
+    SwitchToItemLink    False    Scrum Role Management
+    Select ProjectList    ${PROJECT_NAME}
+    Select ScrumRoleList    ${tsAssignRole_Items[3]}
+    Set PermissionCheckList    ${tsAssignRole_Items[3]}
     Save Permission
     # exit
     Exit ezScrum System
 
 Test ScrumRole Teardown for Stakeholder Default
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for ScrumTeam
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Scrum Team
-    Login Page  ${LOGIN_URL}
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Scrum Team
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[2]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[2]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for ScrumTeam
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for ScrumMaster
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Scrum Master
-    Login Page  ${LOGIN_URL}
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Scrum Master
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[1]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[1]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for ScrumMaster
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
 
 Test ScrumRole Setup for ProductOwner
-    [Documentation]  1.以Admin身分登入並建立一個 user 後登出\n2.指派此 user 在專案的 Role 為 Product Owner
-    Login Page  ${LOGIN_URL}
+    [Documentation]    1.以Admin身分登入並建立一個 user 後登出
+    ...    2.指派此 user 在專案的 Role 為 Product Owner
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     Add Account
-    ${role}=  Set Variable  ${tsAssignRole_Items[0]}
-    Assign Role Add  ${tsAccountID}  ${PROJECT_NAME}  ${role}
+    ${role}=    Set Variable    ${tsAssignRole_Items[0]}
+    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for ProductOwner
-    [Documentation]  以Admin身分登入並刪除所建立的user
-    Login Page  ${LOGIN_URL}
+    [Documentation]    以Admin身分登入並刪除所建立的user
+    Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    SwitchToPage  Management
-    SwitchToItemLink  False  Account Management
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Assign Role Remove  ${tsAccountID}  ${PROJECT_NAME}
+    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Delete Account
     Exit ezScrum System
-

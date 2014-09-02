@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 
 *** Keywords ***
 Check Tenant Is Create
