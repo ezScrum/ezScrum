@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 

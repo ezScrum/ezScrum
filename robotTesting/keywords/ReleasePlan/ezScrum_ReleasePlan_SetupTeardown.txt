@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
 Resource          ezScrum_ReleasePlan_Management.txt

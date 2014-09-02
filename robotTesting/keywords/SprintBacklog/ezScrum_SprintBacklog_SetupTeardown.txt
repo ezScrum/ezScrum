@@ -1,34 +1,35 @@
 *** Settings ***
-Library         SeleniumLibrary
-Resource        ../../Global Define.txt
-Resource        ../common_resource.txt
-Resource        ../Project/ezScrum_Project.txt
+Library           Selenium2Library
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Test Sprint Backlog - PreCondition
-    Login Page  ${LOGIN_URL}
+    Login Page    ${LOGIN_URL}
     # 確認專案是否存在
-    Wait Until Page Contains Element  createProjectBtn
-    ${_IsProjectIDExisted}=  Check ProjectID Is Existed  ${PROJECT_NAME}
-    Run Keyword If  "${_IsProjectIDExisted}"=="false"  Create Project
-    Run Keyword If  "${_IsProjectIDExisted}"=="true"  Select Project  ${PROJECT_NAME}DisplayName
-    Select Node Product  Sprint Plan
-    Create Sprint  sprint1 sprint goal  2  4  100  100
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Sprint Plan
+    Create Sprint    sprint1 sprint goal    2    4    100    100
 
 Test Sprint Backlog - PostCondition
     # delete story and tag
-    Select Node Product  Product Backlog
+    Select Node Product    Product Backlog
     Clean All Story
     Clean All Tag
     # delete sprint
-    Select Node Product  Sprint Plan
+    Select Node Product    Sprint Plan
     Clean All Sprint
-    Clean DB  ${DB_URL}  ${DB_ACCOUNT}  ${DB_PASSWORD}  ${DB_NAME}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test Sprint Backlog - Edit Story Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  add story for test edit story  0  0  0  ${EMPTY}  "Note: newStoryNormal"  "HowToDemo: newStoryNormal"
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    add story for test edit story    0    0    0    ${EMPTY}    "Note: newStoryNormal"
+    ...    "HowToDemo: newStoryNormal"
 
 Test Sprint Backlog - Edit Story Teardown
     Test Sprint Backlog - PostCondition
@@ -36,7 +37,7 @@ Test Sprint Backlog - Edit Story Teardown
 
 Test Sprint Backlog - Add Story Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
+    Select Node Product    Sprint Backlog
 
 Test Sprint Backlog - Add Story Teardown
     Test Sprint Backlog - PostCondition
@@ -44,8 +45,9 @@ Test Sprint Backlog - Add Story Teardown
 
 Test Sprint Backlog - Drop Story Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  add story for test drop story  0  0  0  ${EMPTY}  "Note: dropStory"  "HowToDemo: dropStory"
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    add story for test drop story    0    0    0    ${EMPTY}    "Note: dropStory"
+    ...    "HowToDemo: dropStory"
 
 Test Sprint Backlog - Drop Story Teardown
     Test Sprint Backlog - PostCondition
@@ -53,16 +55,17 @@ Test Sprint Backlog - Drop Story Teardown
 
 Test Sprint Backlog - Add Existing Story Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Product Backlog
+    Select Node Product    Product Backlog
     # story information for add
-    ${storyName}=  Set Variable  add story for test add existing story
-    ${value}=  Set Variable  3
-    ${estimate}=  Set Variable  5
-    ${importance}=  Set Variable  8
-    ${notes}=  Set Variable  add story for notes
-    ${howToDemo}=  Set Variable  add story for how to demo
+    ${storyName}=    Set Variable    add story for test add existing story
+    ${value}=    Set Variable    3
+    ${estimate}=    Set Variable    5
+    ${importance}=    Set Variable    8
+    ${notes}=    Set Variable    add story for notes
+    ${howToDemo}=    Set Variable    add story for how to demo
     # add story
-    Create Story With Arguments  ${storyName}  ${value}  ${estimate}  ${importance}  ${EMPTY}  ${notes}  ${howToDemo}
+    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
+    ...    ${howToDemo}
 
 Test Sprint Backlog - Add Existing Story Teardown
     Test Sprint Backlog - PostCondition
@@ -77,9 +80,10 @@ Test Sprint Backlog - Edit Sprint Teardown
 
 Test Sprint Backlog - Add Task Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  story for add task  0  0  0  ${EMPTY}  for add task  display after add task
-    Set Test Variable  ${storyName}  story for add task
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    story for add task    0    0    0    ${EMPTY}    for add task
+    ...    display after add task
+    Set Test Variable    ${storyName}    story for add task
 
 Test Sprint Backlog - Add Task Teardown
     Test Sprint Backlog - PostCondition
@@ -87,9 +91,10 @@ Test Sprint Backlog - Add Task Teardown
 
 Test Sprint Backlog - Edit Task Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  story for edit task  0  0  0  ${EMPTY}  for edit task  display after edit task
-    Set Test Variable  ${storyName}  story for edit task
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    story for edit task    0    0    0    ${EMPTY}    for edit task
+    ...    display after edit task
+    Set Test Variable    ${storyName}    story for edit task
 
 Test Sprint Backlog - Edit Task Teardown
     Test Sprint Backlog - PostCondition
@@ -97,9 +102,10 @@ Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  story for drop task  0  0  0  ${EMPTY}  for drop task  display after drop task
-    Set Test Variable  ${storyName}  story for drop task
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    story for drop task    0    0    0    ${EMPTY}    for drop task
+    ...    display after drop task
+    Set Test Variable    ${storyName}    story for drop task
 
 Test Sprint Backlog - Drop Task Teardown
     Test Sprint Backlog - PostCondition
@@ -107,9 +113,10 @@ Test Sprint Backlog - Drop Task Teardown
 
 Test Sprint Backlog - Add Existing Task Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  story for add existing task  0  0  0  ${EMPTY}  for add existing task  display after add existing task
-    Set Test Variable  ${storyName}  story for add existing task
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    story for add existing task    0    0    0    ${EMPTY}    for add existing task
+    ...    display after add existing task
+    Set Test Variable    ${storyName}    story for add existing task
 
 Test Sprint Backlog - Add Existing Task Teardown
     Test Sprint Backlog - PostCondition
@@ -117,11 +124,11 @@ Test Sprint Backlog - Add Existing Task Teardown
 
 Test Sprint Backlog - Show Task History Setup
     Test Sprint Backlog - PreCondition
-    Select Node Product  Sprint Backlog
-    Create Story With Arguments  story for show task history  0  0  0  ${EMPTY}  for show task history  display after show task history
-    Set Test Variable  ${storyName}  story for show task history
+    Select Node Product    Sprint Backlog
+    Create Story With Arguments    story for show task history    0    0    0    ${EMPTY}    for show task history
+    ...    display after show task history
+    Set Test Variable    ${storyName}    story for show task history
 
 Test Sprint Backlog - Show Task History Teardown
     Test Sprint Backlog - PostCondition
     Exit ezScrum System
-

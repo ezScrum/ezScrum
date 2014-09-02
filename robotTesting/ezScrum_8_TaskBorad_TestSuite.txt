@@ -18,7 +18,7 @@ Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
 Library           Collections
-Library           SeleniumLibrary
+Library           Selenium2Library
 
 *** Test Cases ***
 Test TaskBoard - Sprint Information
@@ -173,7 +173,8 @@ Test TaskBoard - Story ReOpen
     [Teardown]    Test TaskBoard - Story ReOpen Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
-    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
+    ...    但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -195,7 +196,8 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
-    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，\n但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
+    [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
+    ...    但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard

@@ -1,17 +1,15 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Library           BuiltIn
 Library           HttpLibrary.HTTP
 Library           lib/DatabaseHandler.py
 
 *** Keywords ***
 ezScrum Suite Setup
-    Start Selenium Server
-    Wait Until Keyword Succeeds    1min    5s    _SeleniumServerCheck    200
-    Wait Until Keyword Succeeds    1min    5s    _DeployEZScrumServerCheck    200
+    #    Wait Until Keyword Succeeds    1min    5s    _SeleniumServerCheck    200
+    #    Wait Until Keyword Succeeds    1min    5s    _DeployEZScrumServerCheck    200
 
 ezScrum Suite Teardown
-    Stop Selenium Server
 
 _SeleniumServerCheck
     [Arguments]    ${status}
