@@ -142,15 +142,14 @@ public class ProjectMapper {
 	 * @throws Exception
 	 */
 	@Deprecated
-	public IProject createProject(IUserSession userSession, ITSInformation itsInformation, ProjectInfoForm projectInfoForm) throws Exception {
-		Configuration tmpConfig = this.setITSInformation(itsInformation);
-
+	public IProject createProject(IUserSession userSession, ProjectInfoForm projectInfoForm) throws Exception {
+		Configuration config = new Configuration();
 		// save in the workspace，並且建立Project資料夾
 		// 這樣後續的設定檔複製儲存動作才能正常進行
-		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, tmpConfig);
+		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, config);
 
 		// 建立專案資訊 in database
-		this.createProjectDB(tmpConfig, project, userSession);
+		this.createProjectDB(config, project, userSession);
 
 		return project;
 	}
@@ -433,28 +432,6 @@ public class ProjectMapper {
 		cvs.setRepositoryPath(repositoryPath);
 		return project;
 	}
-
-//	/** ezScrum v1.8  不需要
-//	 * 儲存ITS資訊
-//	 * 
-//	 * @param project
-//	 * @param userSession
-//	 * @param tmpPrefs
-//	 */
-//	@Deprecated
-//	private void saveITSConfig(IProject project, IUserSession userSession, ITSPrefsStorage tmpPrefs) {
-//		/*-----------------------------------------------------------
-//		 *	寫入ITS的設定檔
-//		-------------------------------------------------------------*/
-//		ITSPrefsStorage prefs = new ITSPrefsStorage(project, userSession);
-//		prefs.setServerUrl(tmpPrefs.getServerUrl());
-//		prefs.setServicePath(tmpPrefs.getWebServicePath());
-//		prefs.setDBAccount(tmpPrefs.getDBAccount());
-//		prefs.setDBPassword(tmpPrefs.getDBPassword());
-//		prefs.setDBType(tmpPrefs.getDBType());
-//		prefs.setDBName(tmpPrefs.getDBName());
-//		prefs.save();
-//	}
 	
 	@Deprecated
 	private IPath[] convertStringToSourcePath(String[] sourcePathArray) {
@@ -479,54 +456,5 @@ public class ProjectMapper {
 		}
 
 		return ResourceFacade.createPath(outPath);
-	}
-
-	/**
-	 * 設定ITS資訊
-	 * 
-	 * @param itsInformation
-	 * @return
-	 */
-	@Deprecated
-	private Configuration setITSInformation(ITSInformation itsInformation) {
-		final String DEFAULT_ACCOUNT = "ezScrum";
-		final String DEFAULT_PASSWORD = "";
-		String projectName = itsInformation.getProjectName();
-		String serverURL = itsInformation.getServerURL();
-		String serverPath = itsInformation.getServerPath();
-		String serverAcc = itsInformation.getDbAccount();
-		String serverPwd = itsInformation.getDbPassword();
-		String dbName = itsInformation.getDbName();
-		String dbType = itsInformation.getDbType();
-
-		IProject projectTemp = this.getProjectByID(projectName);
-
-		// ProjectMapper projectMapper = new ProjectMapper();
-		// IProject projectTemp = projectMapper.getProjectByID(projectName);
-
-		// 設定ITS資訊
-		Configuration tmpConfig = new Configuration(null);
-		tmpConfig.setServerUrl(serverURL);
-		tmpConfig.setWebServicePath(serverPath);
-		tmpConfig.setDBAccount(serverAcc);
-		tmpConfig.setDBPassword(serverPwd);
-		tmpConfig.setDBName(dbName);
-
-		/*-----------------------------------------------------------
-		 *	設定使用的DB種類，如果是Default的話，那就預設是Local DB
-		-------------------------------------------------------------*/
-		if (dbType.contains("Default")) {
-			tmpConfig.setDBType("Default");
-			tmpConfig.setDBName(projectName);
-			// 並且ServerUrl設成Project名稱
-			tmpConfig.setServerUrl(projectName);
-			// 帳號密碼也用預設的
-			tmpConfig.setDBAccount(DEFAULT_ACCOUNT);
-			tmpConfig.setDBPassword(DEFAULT_PASSWORD);
-		} else {
-			tmpConfig.setDBType(dbType);
-		}
-
-		return tmpConfig;
 	}
 }

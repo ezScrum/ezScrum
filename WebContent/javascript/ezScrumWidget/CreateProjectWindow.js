@@ -3,7 +3,7 @@ Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
 /* SaveProjectResult */
-var CreateProjectResult = Ext.data.Record.create( [ 'Result' , 'IP', 'DBName', 'ID']);
+var CreateProjectResult = Ext.data.Record.create( [ 'Result' , 'IP', 'ID']);
 
 var createResultReader = new Ext.data.XmlReader( {
 	record : 'CreateProjectResult'
@@ -14,8 +14,6 @@ var createResultStore = new Ext.data.Store( {
 		name : 'Result'
 	} ,{
 		name:'IP'
-	} ,{
-		name:'DBName'
 	} ,{
 		name:'ID'
 	}],
@@ -105,12 +103,7 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 				fieldLabel : 'Attach File Max Size (Default: 2MB)',
 				name : 'AttachFileSize',
 				vtype : 'Number'
-            }, {
-				name : 'ServicePath',
-				originalValue : '/mantis/mc/mantisconnect.php',
-				allowBlank : false,
-                hidden:true
-			},{
+			}, {
 				xtype: 'RequireFieldLabel'
 			}],
 			buttons : [{
@@ -146,6 +139,17 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 		myMask.show();
 		var form = this.getForm();
 		var obj = this;
+		
+		Ext.Ajax.request( {
+			url : 'AjaxCreateProject.do',
+			success : function(response) {
+				obj.onSuccess(response);
+			},
+			failure : function(response) {
+				obj.onFailure(response);
+			},
+			params : form.getValues()
+		});
 	},
 	
 	onSuccess : function(response) {
