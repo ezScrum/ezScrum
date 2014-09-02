@@ -25,7 +25,7 @@ _findReleasePlanItem
 
 _selectReleasePlanItem
     [Arguments]    ${_name}
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${_name}")]    andDontWait
+    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${_name}")]
 
 _getReleasePlanFieldnameList
     ${_colCount} =    _getReleaseList_ColCount
@@ -78,7 +78,7 @@ NewReleasePlan
     Set Selenium Speed    ${SELENIUM_SPEED}
     @{_tmp} =    _getReleasePlanFieldnameList
     # click "Add" Button
-    Click Element    xpath=//button[text()="New Release Plan"]    andDontWait
+    Click Element    xpath=//button[text()="New Release Plan"]
     ${releaseID}=    Get Value    xpath=//div[@id="ReleaseDetailForm"]//input[@name="Id"]
     _fillReleasePlanInfo    @{info}
     _saveCreateReleasePlanInfo    Create Release    Submit
@@ -95,13 +95,13 @@ EditReleasePlan
     # update Info
     @{_tmp} =    _getReleasePlanFieldnameList
     _selectReleasePlanItem    ${info[0]}
-    Click Element    xpath=//button[text()="Edit Release Plan"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Release Plan"]
     _editlReleasePlanInfo    @{info}
     _saveReleasePlanInfo    Edit Release    Submit
     Wait Until Page Contains    ${info[0]} update
     # restore Info
     _selectReleasePlanItem    ${info[0]} update
-    Click Element    xpath=//button[text()="Edit Release Plan"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Release Plan"]
     _fillReleasePlanInfo    @{info}
     _saveReleasePlanInfo    Edit Release    Submit
     Wait Until Page Contains    ${info[0]}
@@ -116,9 +116,9 @@ DeleteReleasePlan
     # select
     _selectReleasePlanItem    ${info[0]}
     # click
-    Click Element    xpath=//button[text()="Delete Release Plan"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Release Plan"]
     # confirm
-    Click Element    xpath=//button[text()="Delete"]    andDontWait
+    Click Element    xpath=//button[text()="Delete"]
     # check if deleted
     Comment    ${_itemCount} =    Get Matching Xpath Count    //table[@class='x-treegrid-root-table']/tbody
     Comment    Should Be Equal    ${_itemCount}    0
@@ -129,8 +129,8 @@ ShowReleaseBacklog
     # select
     _selectReleasePlanItem    ${info[0]}
     # click
-    Click Element    xpath=//button[text()="Show Release Backlog"]    andDontWait
-    Click Element    xpath=//button[text()="Close"]    andDontWait    # //div[@class="x-tool x-tool-close "]
+    Click Element    xpath=//button[text()="Show Release Backlog"]
+    Click Element    xpath=//button[text()="Close"]    # //div[@class="x-tool x-tool-close "]
     # Pop Window # 分成上下兩個視窗
     # (I) Story Burndown Chart
     ${_xpathPopUpWin1} =    Set Variable    xpath=//span[.="Story Counts Burndown Chart"]
@@ -157,10 +157,10 @@ Clean Release
     : FOR    ${_index}    IN RANGE    0    ${ReleaseCount}
     # Mouse Down //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
     # Mouse Up //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
-    \    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..    andDontWait
-    \    Click Element    xpath=//button[text()="Delete Release Plan"]    andDontWait
+    \    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
+    \    Click Element    xpath=//button[text()="Delete Release Plan"]
     \    ${xpathDeleteSprint}=    Find Current Window Element    Delete Release    Delete
-    \    Click Element    xpath=${xpathDeleteSprint}    andDontWait
+    \    Click Element    xpath=${xpathDeleteSprint}
 
 Get Start Date
     [Arguments]    ${difference}
@@ -170,7 +170,7 @@ Get Start Date
 
 Create Sprint In Release Plan
     [Arguments]    ${sprintGoal}    ${sprintStartDate}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
-    Click Element    xpath=//div[@id="sprintAction"]//button[text()="New Sprint"]    andDontWait
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="New Sprint"]
     Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//textarea[@name="Goal"]    ${sprintGoal}
     Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="StartDate"]    ${sprintStartDate}
     Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="Interval"]    ${sprintInterval}
@@ -185,11 +185,11 @@ Create Sprint In Release Plan
 
 Edit Sprint In Release Plan
     [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
-    Click Element    xpath=//div[@id="sprintAction"]//table[@id="ReleasePlan_editSprintBtn"]//button[text()="Edit Sprint"]    andDontWait
+    Click Element    xpath=//div[@id="sprintAction"]//table[@id="ReleasePlan_editSprintBtn"]//button[text()="Edit Sprint"]
     ${sprintID}=    Get Value    xpath=//input[@name="Id"]
     Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//textarea[@name="Goal"]    ${sprintGoal}
-    Click Image    xpath=//span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="StartDate"]/../img    andDontWait
-    Click Element    xpath=//button[text()="Today"]    andDontWait
+    Click Image    xpath=//span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
     Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Interval"]    ${sprintInterval}
     Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Members"]    ${sprintMembers}
     Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="AvaliableDays"]    ${sprintAvaliableDays}

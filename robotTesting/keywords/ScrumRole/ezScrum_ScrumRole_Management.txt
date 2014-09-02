@@ -5,14 +5,14 @@ Library           Selenium2Library
 Select ProjectList
     [Arguments]    ${PROJECT_NAME}
     Wait Until Page Contains    ${PROJECT_NAME}
-    Click Element    xpath=//span[.="Project List"]/../..//span[.="${PROJECT_NAME}"]    andDontWait
+    Click Element    xpath=//span[.="Project List"]/../..//span[.="${PROJECT_NAME}"]
 
 Select ScrumRoleList
     [Arguments]    ${scrumRole}
     [Documentation]    若以機器速度執行(< 100ms)的話,讀取資料需要一點時間
     ...    必須等待 loading info 訊息出現才能正常操作
     ...    (簡單的同步機制)
-    Click Element    xpath=//span[.="Scrum Role List"]/../..//li/div/a/span[.="${scrumRole}"]    andDontWait
+    Click Element    xpath=//span[.="Scrum Role List"]/../..//li/div/a/span[.="${scrumRole}"]
     # 同步機制
     ${_speed}=    Convert To Number    ${SELENIUM_SPEED}
     ${_isMachineSpeed} =    Evaluate    ${_speed} <= 0.025
@@ -41,7 +41,7 @@ Set PermissionCheckList
     [Return]    ${setCheckedCount}
 
 Save Permission
-    Click Button    Save Permission    andDontWait
+    Click Button    Save Permission
     Wait Until Page Contains    Save Permission Success.
 
 Check PermissionCheckList

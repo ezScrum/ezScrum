@@ -13,7 +13,7 @@ Verify Story Information With Arguments
     ...    ${storyHowToDemo}
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Story"]
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -51,10 +51,10 @@ Create Story With Arguments
     [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tag}    ${storyNotes}
     ...    ${storyHowToDemo}
     [Documentation]    點選 Add story，建立story。
-    Click Element    xpath=//button[text()="Add Story"]    andDontWait
+    Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
-    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Image    xpath=//label[text()="Tags:"]/.././/img    andDontWait
-    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
+    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
     Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
@@ -70,9 +70,9 @@ Delete Story
     [Documentation]    固定點選表格內的第一個story,透過按下button"Delete Story"來刪除story
     Mouse Down    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
     Mouse Up    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Success.
 
 Delete Story Use StoryID
@@ -80,9 +80,9 @@ Delete Story Use StoryID
     [Documentation]    點選delete story，刪除story，透過 story id。針對特殊字元設計
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStoryDelete}    andDontWait
+    Click Element    xpath=${xpathDeleteStoryDelete}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
     Wait Until Page Contains    Success.
 
@@ -91,9 +91,9 @@ Delete Story With Arguments
     [Documentation]    點選delete story，刪除story，透過 story id。
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStoryDelete}    andDontWait
+    Click Element    xpath=${xpathDeleteStoryDelete}
     Wait Until Page Contains    Delete Story Success.
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]    0
 
@@ -102,9 +102,9 @@ Edit Story With Arguments
     [Documentation]    點選edit story，必須輸入原本的 story name 及 tag name。
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
-    Click Image    xpath=//label[text()="Tags:"]/.././/img    andDontWait
-    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Story"]
+    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
     Focus AND Input Text    //textarea[@name="Name"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     Focus AND Input Text    //input[@name="Value"]    3
     Focus AND Input Text    //input[@name="Estimate"]    5
@@ -266,12 +266,12 @@ Delete Closed Story With StoryID
     # Delete Story
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tcStoryID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tcStoryID}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     Xpath Should Match X Times    //div[@class="ext-mb-content"]/span[text()="The story is closed, are you sure to delete it?"]    1
     ${xpathConfirmDeleteStory}=    Find Current Window Element    Confirm    Yes
-    Click Element    xpath=${xpathConfirmDeleteStory}    andDontWait
+    Click Element    xpath=${xpathConfirmDeleteStory}
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Delete Story Success.
 
 Delete Closed With StoryName
@@ -279,12 +279,12 @@ Delete Closed With StoryName
     # Delete Story
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tcStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tcStoryName}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     Xpath Should Match X Times    //div[@class="ext-mb-content"]/span[text()="The story is closed, are you sure to delete it?"]    1
     ${xpathConfirmDeleteStory}=    Find Current Window Element    Confirm    Yes
-    Click Element    xpath=${xpathConfirmDeleteStory}    andDontWait
+    Click Element    xpath=${xpathConfirmDeleteStory}
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Delete Story Success.
 
 Insert Data

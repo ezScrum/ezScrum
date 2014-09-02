@@ -62,7 +62,7 @@ _InputLoginForm
     Wait Until Page Contains Element    xpath=//img[@src="images/logout.gif"]
     ${isValid} =    Get Matching Xpath Count    //tbody/tr/td[text()="ProjectList"]
     # GAE bug
-    Run Keyword if    ${isValid} == 0    Click Element    xpath=//td[.='Management']    andDontWait
+    Run Keyword if    ${isValid} == 0    Click Element    xpath=//td[.='Management']
     Run Keyword if    ${isValid} == 0    Wait Until Page Loaded
     Run Keyword if    ${isValid} == 0    Wait Until Page Contains    ProjectList
     #
@@ -94,7 +94,7 @@ _GAE Add Tenant
     Submit Form    logonForm
     Wait Until Page Contains    Tenant Management
     Wait Until Page Contains Element    xpath=//button[text()="Add Tenant"]
-    Click Element    xpath=//button[text()="Add Tenant"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tenant"]
     # fill Tenant Info
     Focus AND Input Text    //input[@name="id"]    ${TENANT_ID}
     Focus AND Input Text    //input[@name="name"]    ${TENANT_ID}_name

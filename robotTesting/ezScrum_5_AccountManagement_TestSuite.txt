@@ -41,7 +41,7 @@ Test Account Management - Add Duplicate Account
     Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
     Wait Until Page Contains    is already existed
     # click already exist dialog button
-    Click Button    xpath=//span[text()="ID: [ ${tsAccountId} ] is already existed."]/../../../../..//button[text()="OK"]    andDontWait
+    Click Button    xpath=//span[text()="ID: [ ${tsAccountId} ] is already existed."]/../../../../..//button[text()="OK"]
     # Cancel the add account window
     ${accountCancelBtn}=    Find Current Window Element    Add New Account    Cancel
     Element Enable And Submit    ${accountCancelBtn}
@@ -84,7 +84,7 @@ Test Account Management - Enable Account
     Input Password    password    admin
     Submit Form    logonForm
     Title Should Be    ezScrum, SSLab NTUT
-    click element    xpath=//td[text()="Management"]    andDontWait
+    click element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
     # Enable Account
@@ -104,15 +104,15 @@ Test Account Management - Click Add Account Can Display Correct Information
     [Tags]    Bug
     [Setup]    Test Account Management - Click Add Account Can Display Correct Information Setup
     # 選擇一個已存在的帳號並click edit button
-    Click element    xpath=//td[text()="Management"]    andDontWait
+    Click element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
-    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Information"]
     ${xpathCancelButtonInEditAccount}=    Find Current Window Element    Edit Information    Cancel
     Element Enable And Submit    ${xpathCancelButtonInEditAccount}
     # click add button
-    Click Element    xpath=//button[text()="Add Account"]    andDontWait
+    Click Element    xpath=//button[text()="Add Account"]
     # verify Account Info
     Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="id"]    ${EMPTY}    # User ID
     Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="name"]    ${EMPTY}    # User Name
@@ -193,7 +193,7 @@ Test Account Management - Validate Confirm Password
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountId}")]
     # click "Change Password" Button
-    Click Element    xpath=//button[text()="Change Password"]    andDontWait
+    Click Element    xpath=//button[text()="Change Password"]
     # update Account Info
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${correctPassword}    # Password
     Xpath Should Match X Times    //span[text()="Change Password"]//../../../../..//button[text()="Save"]/../../../../../../table[@class="x-btn${SPACE * 3}x-btn-noicon${SPACE}x-item-disabled"]    1
@@ -213,13 +213,13 @@ Test Account Management - User Edit Information
     # 第一次更新個人資料
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited1    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited1@scrum.tw    # E-mail Address
-    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]    andDontWait
+    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited1)"]    1
     # 第二次更新個人資料
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited2    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited2@scrum.tw    # E-mail Address
-    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]    andDontWait
+    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited2)"]    1
     [Teardown]    Test Account Management - User Modify Personal Information Teardown
@@ -232,7 +232,7 @@ Test Account Management - User Change Password
     ${errorPassword}=    Set Variable    errorPassword
     ${correctPassword}=    Set Variable    ${tsAccountId}EditPasswd
     # 切換至Change Password Tab Panel
-    Click Element    xpath=//span[text()="Change Password"]/../../..    andDontWait
+    Click Element    xpath=//span[text()="Change Password"]/../../..
     # 驗證save button狀態
     # 只輸入password欄位
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="passwd"]    ${correctPassword}    # Password
@@ -244,7 +244,7 @@ Test Account Management - User Change Password
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="reenter"]    ${correctPassword}    # Password
     Xpath Should Match X Times    //div[@id="userChangePasswordTab"]//button[text()="Save"]/../../../../../..//table[@class="x-btn${SPACE * 3}x-btn-noicon${SPACE}"]    1
     # 送出欲修改的密碼
-    Click Element    xpath=//div[@id="userChangePasswordTab"]//button[text()="Save"]/..    andDontWait
+    Click Element    xpath=//div[@id="userChangePasswordTab"]//button[text()="Save"]/..
     Wait Until Page Contains    Success.
     # 登出系統
     Logon ezScrum System
@@ -259,18 +259,18 @@ Test Account Management - User Change Password And Edit Information
     [Setup]    Test Account Management - User Modify Personal Information Setup
     ${correctPassword}=    Set Variable    ${tsAccountId}EditPasswd
     # 切換至Change Password Tab Panel
-    Click Element    xpath=//span[text()="Change Password"]/../../..    andDontWait
+    Click Element    xpath=//span[text()="Change Password"]/../../..
     # 送出欲修改的密碼
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="passwd"]    ${correctPassword}    # Password
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="reenter"]    ${correctPassword}    # Password
     Xpath Should Match X Times    //div[@id="userChangePasswordTab"]//button[text()="Save"]/../../../../../..//table[@class="x-btn${SPACE * 3}x-btn-noicon${SPACE}"]    1
-    Click Element    xpath=//div[@id="userChangePasswordTab"]//button[text()="Save"]/..    andDontWait
+    Click Element    xpath=//div[@id="userChangePasswordTab"]//button[text()="Save"]/..
     Wait Until Page Contains    Success.
     # 切換至Edit Information Tab Panel
-    Click Element    xpath=//span[text()="Edit Information"]/../../..    andDontWait
+    Click Element    xpath=//span[text()="Edit Information"]/../../..
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited@scrum.tw    # E-mail Address
-    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]    andDontWait
+    Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited)"]    1
     # 登出系統
@@ -286,6 +286,6 @@ Test Account Management - Admin's email shouldn't be null
     Input Password    password    admin
     Submit Form    logonForm
     Title Should Be    ezScrum, SSLab NTUT
-    Click element    xpath=//td[text()="Management"]    andDontWait
+    Click element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1

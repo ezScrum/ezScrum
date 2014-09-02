@@ -6,10 +6,10 @@ Resource          ../common_resource.txt
 *** Keywords ***
 Edit Sprint In Sprint Backlog
     [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
-    Click Element    xpath=//table[@id="SprintBacklog_editSprintBtn"]//button[text()="Edit Sprint"]    andDontWait
+    Click Element    xpath=//table[@id="SprintBacklog_editSprintBtn"]//button[text()="Edit Sprint"]
     Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
-    Click Image    xpath=//input[@name="StartDate"]/../img    andDontWait
-    Click Element    xpath=//button[text()="Today"]    andDontWait
+    Click Image    xpath=//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
     Focus AND Input Text    //input[@name="Interval"]    ${sprintInterval}
     Focus AND Input Text    //input[@name="Members"]    ${sprintMembers}
     Focus AND Input Text    //input[@name="AvaliableDays"]    ${sprintAvaliableDays}
