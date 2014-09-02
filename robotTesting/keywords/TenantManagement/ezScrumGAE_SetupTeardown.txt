@@ -34,11 +34,11 @@ _SystemAdmin Logout
 
 delete Tenant
     Select From List    xpath=//select[@id='kind_input']    TenantDataStore
-    Click Button    list_button    andDontWait
+    Click Button    list_button
     # select all
     Wait Until Page Contains Element    xpath=//input[@id='allkeys']
-    Click Element    xpath=//input[@id='allkeys']    andDontWait
-    Click Button    xpath=//input[@id='delete_button']    andDontWait
+    Click Element    xpath=//input[@id='allkeys']
+    Click Button    xpath=//input[@id='delete_button']
     # confirm, click "Yes" Button
     Wait Until Page Contains    deleted.
     Xpath Should Match X Times    //thead/tr[@class='even']    0

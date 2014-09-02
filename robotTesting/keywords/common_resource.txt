@@ -48,7 +48,7 @@ Select Node Product
 Element Enable And Submit
     [Arguments]    ${xpathElement}
     Element Should Be Visible    xpath=${xpathElement}
-    Click Element    xpath=${xpathElement}    andDontWait
+    Click Element    xpath=${xpathElement}
 
 Focus AND Input Text
     [Arguments]    ${xpathElement}    ${text}

@@ -15,7 +15,7 @@ Check Tenant Is Create
 Add Tenant
     [Arguments]    ${tenantId}    ${enable}
     # click "Add" Button
-    Click Element    xpath=//button[text()="Add Tenant"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tenant"]
     ${TenantID}    Set Variable    ${tenantId}
     # fill Tenant Info
     Focus AND Input Text    //input[@name="id"]    ${TenantID}
@@ -38,7 +38,7 @@ Edit Tenant
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     # click "Edit" Button
-    Click Element    xpath=//button[text()="Edit Tenant"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Tenant"]
     Focus AND Input Text    //input[@name="id"]    ${tenantId}    # ID
     Focus AND Input Text    //input[@name="name"]    ${tsTenantInfo[1]}    # Name
     Input Text    xpath=//textarea[@name="description"]    ${tsTenantInfo[2]}    # Description
@@ -58,9 +58,9 @@ Stop Tenant
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     # click "Stop" Button
-    Click Element    xpath=//button[text()="Stop Tenant"]    andDontWait
+    Click Element    xpath=//button[text()="Stop Tenant"]
     # confirm, click "Yes" Button
-    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    Click Element    xpath=//button[text()="Yes"]
 
 Renew Tenant
     [Arguments]    ${tenantId}
@@ -68,6 +68,6 @@ Renew Tenant
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tenantId}")]
     # click "Stop" Button
-    Click Element    xpath=//button[text()="Renew Tenant"]    andDontWait
+    Click Element    xpath=//button[text()="Renew Tenant"]
     # confirm, click "Yes" Button
-    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    Click Element    xpath=//button[text()="Yes"]

@@ -12,7 +12,7 @@ Add Account By Parameter
     Set Selenium Speed    ${SELENIUM_SPEED}
     # check if already existed
     # click "Add" Button
-    Click Element    xpath=//button[text()="Add Account"]    andDontWait
+    Click Element    xpath=//button[text()="Add Account"]
     # fill Account Info
     Focus AND Input Text    //input[@name="id"]    ${accountId}    # User ID
     Focus AND Input Text    //input[@name="name"]    ${name}    # User Name
@@ -31,7 +31,7 @@ Edit Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     # click "Edit Information" Button
-    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Information"]
     # update Account Info
     Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="name"]    ${accountId}NameEdited    # User Name
     Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="mail"]    ${accountId}Edited@scrum.tw    # E-mail Address
@@ -40,7 +40,7 @@ Edit Account
     Element Enable And Submit    ${xpathEditInformationSaveButton}
     Wait Until Page Contains    Success.
     # click "Change Password" Button
-    Click Element    xpath=//button[text()="Change Password"]    andDontWait
+    Click Element    xpath=//button[text()="Change Password"]
     # update Account Info
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${accountId}    # Password
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    ${accountId}    # Re-enter
@@ -56,7 +56,7 @@ Check Account In Edit
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
     # click "Edit" Button
-    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Information"]
     # Check Account Info
     Wait Until Page Contains Element    xpath=//input[@name="id"]
     Compare Field Content    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="id"]    ${accountId}
@@ -74,9 +74,9 @@ Delete Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     # click "Stop" Button
-    Click Element    xpath=//button[text()="Delete Account"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Account"]
     # confirm, click "Yes" Button
-    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    Click Element    xpath=//button[text()="Yes"]
     # check if deleted
     Wait Until Page Contains    Success.
 
@@ -86,8 +86,8 @@ Clean Accounts
     : FOR    ${_index}    IN RANGE    0    ${AccountCount}
     \    Mouse Down    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]
     \    Mouse Up    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]
-    \    Click Element    xpath=//button[text()="Delete Account"]    andDontWait
-    \    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    \    Click Element    xpath=//button[text()="Delete Account"]
+    \    Click Element    xpath=//button[text()="Yes"]
     \    Wait Until Page Contains    Success.
 
 Enable Account
@@ -98,7 +98,7 @@ Enable Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     # click "Edit" Button
-    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Information"]
     Select Checkbox    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="enable"]
     # Save
     ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
@@ -113,7 +113,7 @@ Disable Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     # click "Edit" Button
-    Click Element    xpath=//button[text()="Edit Information"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Information"]
     Unselect Checkbox    xpath=//span[text()="Edit Information"]/../../../../..//input[@name="enable"]
     # Save
     ${xpathSaveButton}=    Find Current Window Element    Edit Information    Save
@@ -138,7 +138,7 @@ Change Account Password
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     # click "Change Password" Button
-    Click Element    xpath=//button[text()="Change Password"]    andDontWait
+    Click Element    xpath=//button[text()="Change Password"]
     # update Account Info
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${newPassword}    # Password
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    ${newPassword}    # Re-enter

@@ -13,8 +13,8 @@ Test Product Backlog v2.0 Suite Setup
     log    111
     Select Node Product    Product Backlog
     log    222
-    Click Element    xpath=//*[@id="ext-gen39"]/div/li[2]/ul/li[1]/div/a    andDontWait
-    Click Element    xpath=//button[text()="New ProductBacklog V2"]    andDontWait
+    Click Element    xpath=//*[@id="ext-gen39"]/div/li[2]/ul/li[1]/div/a
+    Click Element    xpath=//button[text()="New ProductBacklog V2"]
 
 Test Product Backlog v2.0 Suite Teardown
     Close Browser

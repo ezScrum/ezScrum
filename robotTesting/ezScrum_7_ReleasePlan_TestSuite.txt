@@ -85,7 +85,7 @@ Test Release Plan - Edit Sprint
     [Setup]    Test Release Plan - Edit Sprint Setup
     Mouse Down    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Mouse Up    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
-    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]    anddontwait
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]    1
     [Teardown]    Test Release Plan - Edit Sprint Teardown
@@ -103,7 +103,7 @@ Test Release Plan - Session - Contain Sprints
     @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
     CompareList    @{tsReleasePlan}    @{_actualDataList}
     # verify story in sprint
-    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_A}"]    anddontwait
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_A}"]
     ${storyIDInReleasePlanXpath}=    Set Variable    //div[@id="ReleasePlan_StoryGrid"]//div[@class="x-grid3-cell-inner x-grid3-col-0" and text()="${tcStoryID_A}"]
     Xpath Should Match X Times    ${storyIDInReleasePlanXpath}    1
     # Xpath Should Match X Times ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="&nbsp;"] 1 # tag
@@ -117,5 +117,5 @@ Test Release Plan - Session - Contain Sprints
     Select Window    ${tcBrowserAlias_B}
     Select Node Product    Summary
     Select Node Product    Release Plan
-    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_B}"]    anddontwait
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_B}"]
     [Teardown]    Test Release Plan - Session - Contain Sprints Teardown

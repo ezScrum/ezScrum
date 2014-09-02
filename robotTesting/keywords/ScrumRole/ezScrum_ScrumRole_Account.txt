@@ -4,7 +4,7 @@ Resource          ../common_resource.txt
 
 *** Keywords ***
 Add Account
-    Click Element    xpath=//button[text()="Add Account"]    andDontWait
+    Click Element    xpath=//button[text()="Add Account"]
     Wait Until Page Contains    Add New Account
     # fill Account Info
     Focus AND Input Text    //input[@name="id"]    ${tsAccountID}    # User ID
@@ -22,9 +22,9 @@ Delete Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
     # click "Delete" Button
-    Click Element    xpath=//button[text()="Delete Account"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Account"]
     # confirm, click "Yes" Button
-    Click Element    xpath=//button[text()="Yes"]    andDontWait
+    Click Element    xpath=//button[text()="Yes"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]    0
 
@@ -33,7 +33,7 @@ Assign Role Add
     # select Account
     TableGrid3_SelectItem    0    ${accountId}
     # click "Assign Role" button xpath=//button[text()="Assign Role"]
-    Click Button    Assign Role    andDontWait
+    Click Button    Assign Role
     # <User Information>
     # check ID & Name?
     # <Unassigned Projects>
@@ -42,11 +42,11 @@ Assign Role Add
     # item: Role # PO, Master, Team # Stakeholder, Guest
     DropDownMenu_Select    Role    ${role}
     # button: Add Role
-    Click Button    Add Role    andDontWait
+    Click Button    Add Role
     Wait Until Page Contains    Update Role Success.
     # <Assigned Projects>
     # close window
-    Click Button    Close    andDontWait
+    Click Button    Close
 
 Assign Role Remove
     [Arguments]    ${accountId}    ${PROJECT_NAME}
@@ -54,14 +54,14 @@ Assign Role Remove
     # select Account
     TableGrid3_SelectItem    0    ${accountId}
     # click "Assign Role" button xpath=//button[text()="Assign Role"]
-    Click Button    Assign Role    andDontWait
+    Click Button    Assign Role
     # <User Information>
     # check ID & Name?
     # <Unassigned Projects>
     # do nothing
     # <Assigned Projects>
     TableGrid3_SelectItem    0    ${PROJECT_NAME}
-    Click Button    Remove Role    andDontWait
+    Click Button    Remove Role
     Wait Until Page Contains    Update Role Success.
     # close window
-    Click Button    Close    andDontWait
+    Click Button    Close

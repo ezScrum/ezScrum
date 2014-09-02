@@ -26,13 +26,13 @@ _Web Create Project
     Wait Until Page Loaded
 
 _GAE Create Project
-    Click Element    createProjectBtn    andDontWait
+    Click Element    createProjectBtn
     Input Text    xpath=//input[@name="Name"]    ${PROJECT_NAME}
     Input Text    xpath=//input[@name="DisplayName"]    ${PROJECT_NAME}DisplayName
     Input Text    xpath=//textarea[@name="Comment"]    ${PROJECT_COMMENT}
     Input Text    xpath=//input[@name="ProjectManager"]    ${PROJECT_MANAGER}
-    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]    andDontWait
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]    andDontWait
+    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]
+    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]
     Input Text    ServerUrl    dummy
     Input Text    DBAccount    dummy
     Input Text    DBPassword    dummy
@@ -51,38 +51,38 @@ Create Project
 
 _Web Create Project with Arguments
     [Arguments]    ${pName}    ${pDisName}    ${pComment}    ${pManager}
-    Click Element    createProjectBtn    andDontWait
+    Click Element    createProjectBtn
     Input Text    xpath=//input[@name="Name"]    ${pName}
     Input Text    xpath=//input[@name="DisplayName"]    ${pDisName}
     Input Text    xpath=//textarea[@name="Comment"]    ${pComment}
     Input Text    xpath=//input[@name="ProjectManager"]    ${pManager}
-    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]    andDontWait
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]    andDontWait
+    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]
+    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]
     Input Text    ServerUrl    ${DB_URL}
     Input Text    DBAccount    ${DB_ACCOUNT}
     Input Text    DBPassword    ${DB_PASSWORD}
     Run Keyword Unless    "${DB_NAME}"=="ezScrum"    Project With Different DB Name
     Set Selenium Timeout    ${CREATE_PROJECT_TIMEOUT}
-    Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']    andDontWait
+    Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
     Wait Until Page Loaded
 
 _GAE Create Project with Arguments
     [Arguments]    ${pName}    ${pDisName}    ${pComment}    ${pManager}
-    Click Element    createProjectBtn    andDontWait
+    Click Element    createProjectBtn
     Input Text    xpath=//input[@name="Name"]    ${pName}
     Input Text    xpath=//input[@name="DisplayName"]    ${pDisName}
     Input Text    xpath=//textarea[@name="Comment"]    ${pComment}
     Input Text    xpath=//input[@name="ProjectManager"]    ${pManager}
-    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]    andDontWait
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]    andDontWait
+    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]
+    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]
     Input Text    ServerUrl    dummy
     Input Text    DBAccount    dummy
     Input Text    DBPassword    dummy
     Input Text    DBName    dummy
     Comment    Run Keyword Unless    "${DB_NAME}"=="ezScrum"    Project With Different DB Name
     Set Selenium Timeout    ${CREATE_PROJECT_TIMEOUT}
-    Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']    andDontWait
+    Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
     Wait Until Page Loaded
 
@@ -94,11 +94,11 @@ Create Project with Arguments
 Project With Different DB Name
     Input Text    DBPassword    ${DB_PASSWORD}
     Input Text    DBName    ${DB_NAME}
-    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button="Submit" ]    andDontWait
+    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button="Submit" ]
     Wait Until Page Contains Element    xpath=//span[text()="The Database need be created"]    60
-    Click Element    xpath=//span[text()="The Database need be created"]/../../../../.././/button[text()="Yes"]    andDontWait
+    Click Element    xpath=//span[text()="The Database need be created"]/../../../../.././/button[text()="Yes"]
     Wait Until Page Contains Element    xpath=//span[text()="Success!"]
-    Click Element    xpath=//span[text()="Success!"]/../../../../.././/button[text()="OK"]    andDontWait
+    Click Element    xpath=//span[text()="Success!"]/../../../../.././/button[text()="OK"]
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
 
 Check Project Is Create

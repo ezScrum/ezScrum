@@ -11,7 +11,7 @@ Select Retrospective Item
     ...    -> 待找出原因
     Mouse Down    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
     Mouse Up    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
-    Click Element    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]    andDontWait    # both
+    Click Element    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]    # both
 
 New Sprint
     [Arguments]    @{sprintInfo}    # 0 ID, 1 Goal, 2 Interval, 3 Members, 4 AvaliableDays, 5 FocusFactor
@@ -21,12 +21,12 @@ New Sprint
     ${_sprintAvaliableDays} =    Set Variable    ${sprintInfo[4]}
     ${_sprintFocusFactor} =    Set Variable    ${sprintInfo[5]}
     # action
-    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]    andDontWait    # 元件本身已存在,不需等待
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]    # 元件本身已存在,不需等待
     Element Should Be Visible    xpath=//span[.='Add New Sprint']    # for check
     # fill info
     Focus AND Input Text    //textarea[@name="Goal"]    ${_sprintGoal}
-    Click Image    xpath=//input[@name="StartDate"]/../img    andDontWait
-    Click Element    xpath=//button[text()="Today"]    andDontWait
+    Click Image    xpath=//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
     Focus AND Input Text    //input[@name="Interval"]    ${_sprintInterval}
     Focus AND Input Text    //input[@name="Members"]    ${_sprintMembers}
     Focus AND Input Text    //input[@name="AvaliableDays"]    ${_sprintAvaliableDays}
@@ -43,9 +43,9 @@ Delete SprintX
     [Arguments]    ${sprintID}
     Mouse Down    xpath=//div[@class='x-grid3-cell-inner x-grid3-col-0' and (text()='${sprintID}')]
     Mouse Up    xpath=//div[@class='x-grid3-cell-inner x-grid3-col-0' and (text()='${sprintID}')]
-    Click Element    xpath=//button[text()="Delete Sprint"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Sprint"]
     ${_xpathDeleteSprint}=    Find Current Window Element    Delete SprintX    Delete
-    Click Element    xpath=${_xpathDeleteSprint}    andDontWait
+    Click Element    xpath=${_xpathDeleteSprint}
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@class='x-grid3-cell-inner x-grid3-col-0' and (text()='${sprintID}')]    0
 
@@ -56,7 +56,7 @@ Add Retrospective
     ${_type} =    Set Variable    ${retrospectiveInfo[3]}
     ${_description} =    Set Variable    ${retrospectiveInfo[5]}
     # action
-    Click Element    xpath=//button[.='Add Retrospective']    andDontWait    # 元件本身已存在,不需等待
+    Click Element    xpath=//button[.='Add Retrospective']    # 元件本身已存在,不需等待
     Element Should Be Visible    xpath=//span[.='Add New Retrospective']    # for check
     # fill info
     Focus AND Input Text    //input[@name='Name']    ${_name}
@@ -110,7 +110,7 @@ Edit Retrospective
     ${_type} =    Set Variable    ${retrospectiveInfo[3]}
     ${_description} =    Set Variable    ${retrospectiveInfo[5]}
     # action
-    Click Element    xpath=//button[.='Edit Retrospective']    andDontWait    # 元件本身已存在,不需等待
+    Click Element    xpath=//button[.='Edit Retrospective']    # 元件本身已存在,不需等待
     # fill info
     Focus AND Input Text    //input[@name='Name']    ${_name}
     # select SprintID
@@ -124,9 +124,9 @@ Edit Retrospective
 Delete Retrospective
     [Documentation]    必須先點選好後,才能執行動作
     ${_totalItems} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']    # include Good & Improvement
-    Click Element    xpath=//button[text()="Delete Retrospective"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Retrospective"]
     ${_xpathDelete}=    Find Current Window Element    Delete Retrospective    Delete
-    Click Element    xpath=${_xpathDelete}    andDontWait
+    Click Element    xpath=${_xpathDelete}
     Wait Until Page Contains    Success.
     ${_leftItems} =    Evaluate    int(${_totalItems} - 1)
     Xpath Should Match X Times    //div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']    ${_leftItems}
@@ -141,12 +141,12 @@ Delete Retrospective With Argument
     ${_totalItems} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']    # include Good & Improvement
     # action
     TableGrid3_SelectItem    2    ${_name}    # 必須要Mouse Down/Up與Click才能使DeleteButton有作用
-    Click Element    xpath=//div[@class='x-grid3-cell-inner x-grid3-col-2' and (text()='${_name}')]    andDontWait    # both
-    Click Button    xpath=//button[.="Delete Retrospective"]    andDontWait
+    Click Element    xpath=//div[@class='x-grid3-cell-inner x-grid3-col-2' and (text()='${_name}')]    # both
+    Click Button    xpath=//button[.="Delete Retrospective"]
     Wait Until Page Contains Element    xpath=//span[.="Delete Retrospective"]
     # confirm
     ${_xpathDelete} =    Find Current Window Element    Delete Retrospective    Delete
-    Click Element    xpath=${_xpathDelete}    andDontWait
+    Click Element    xpath=${_xpathDelete}
     Wait Until Page Contains    Success.
     ${_leftItems} =    Evaluate    int(${_totalItems} - 1)
     Xpath Should Match X Times    //div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']    ${_leftItems}
