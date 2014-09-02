@@ -11,12 +11,6 @@ _Web Create Project
     Input Text    xpath=//input[@name="DisplayName"]    ${PROJECT_NAME}DisplayName
     Input Text    xpath=//textarea[@name="Comment"]    ${PROJECT_COMMENT}
     Input Text    xpath=//input[@name="ProjectManager"]    ${PROJECT_MANAGER}
-    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]
-    Input Text    ServerUrl    ${DB_URL}
-    Input Text    DBAccount    ${DB_ACCOUNT}
-    Input Text    DBPassword    ${DB_PASSWORD}
-    Run Keyword Unless    "${DB_NAME}"=="ezScrum"    Project With Different DB Name
     Set Selenium Timeout    ${CREATE_PROJECT_TIMEOUT}
     # for Web
     ${xpathCreateProjectSubmit}=    Find Current Window Element    Create New Project    Submit
