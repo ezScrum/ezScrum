@@ -33,7 +33,6 @@ Test Project - Permission Denied
     Select Project    ${PROJECT_NAME}DisplayName_A
     # 透過網址列直接修改PID進入專案
     Go To    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B
-    Wait Until Page Loaded
     # Permission Denied
     Xpath Should Match X Times    //span[text()="Permission Denied"]    1
     Close Browser
@@ -50,18 +49,4 @@ Test Project - Verify ProjectID Is Existed
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Should Be True    "${_IsProjectIDExisted}"=="true"
     Exit ezScrum System
-
-Test Project - Session - Summary of Project And Sprint Information
-    [Documentation]    測試不同分頁的專案資訊是否能正常顯示
-    [Tags]    session
-    [Setup]    Test Project Summary - Project And Sprint Information Setup
-    Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Summary
-    # Verify
-    # 由於project create date當有不一樣的project name or db name時，才會改變。
-    Compare Field Content    xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="Commnet"]    ${PROJECT_COMMENT}_A
-    Compare Field Content    xpath=//div[@id="Summary_Page"]//div[@id="ProjectDesc"]//input[@name="ProjectManager"]    ${PROJECT_MANAGER}_A
-    Compare Field Content    xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="SprintGoal"]    ${tcSprintGoal_A}
-    Compare Field Content    xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Story_Undone_Total_Point"]    ${tcStoryEstimateInA}.0 / ${tcStoryEstimateInA}.0
-    Compare Field Content    xpath=//div[@id="Summary_Page"]//div[@id="TaskBoardDesc"]//input[@name="Current_Task_Undone_Total_Point"]    ${tcTaskEstimateInA}.0 / ${tcTaskEstimateInA}.0
-    [Teardown]    Test Project Summary - Project And Sprint Information Teardown
+    [Teardown]    Test Project Teardown
