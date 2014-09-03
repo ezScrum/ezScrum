@@ -33,17 +33,16 @@ New Tab With Alias
 
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
-    ${testValue}=    Get Value    ${xpath}
+    ${testValue}=    Get Value    xpath=${xpath}
     Should Be Equal    ${correctValue}    ${testValue}
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${PROJECT_NAME}")]
-    Wait Until Page Loaded
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]    andDontWait
+    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}

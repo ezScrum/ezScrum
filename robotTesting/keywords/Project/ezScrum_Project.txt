@@ -97,11 +97,11 @@ Project With Different DB Name
 Check Project Is Create
     Select Node Product    Modify Config
     Wait Until Page Contains Element    xpath=//input[@name="ProjectName"]
-    Compare Field Content    xpath=//input[@name="ProjectName"]    ${PROJECT_NAME}
-    Compare Field Content    xpath=//input[@name="ProjectDisplayName"]    ${PROJECT_NAME}DisplayName
-    Compare Field Content    xpath=//textarea[@name="Commnet"]    ${PROJECT_COMMENT}
-    Compare Field Content    xpath=//input[@name="ProjectManager"]    ${PROJECT_MANAGER}
-    Compare Field Content    xpath=//input[@name="AttachFileSize"]    ${ATTACH_FILE_SIZE}
+    Compare Field Content    //input[@name="ProjectName"]    ${PROJECT_NAME}
+    Compare Field Content    //input[@name="ProjectDisplayName"]    ${PROJECT_NAME}DisplayName
+    Compare Field Content    //textarea[@name="Commnet"]    ${PROJECT_COMMENT}
+    Compare Field Content    //input[@name="ProjectManager"]    ${PROJECT_MANAGER}
+    Compare Field Content    //input[@name="AttachFileSize"]    ${ATTACH_FILE_SIZE}
 
 Check ProjectID Is Existed
     [Arguments]    ${_ProjectID}
