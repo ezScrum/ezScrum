@@ -244,9 +244,9 @@ public class ProductBacklogHelper {
 			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname); 
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>Tag Name : " + newTagName + " already exist</Message></Tags>");
 		} else {
-			this.addNewTag(newTagName);
+			long id = this.addNewTag(newTagName);
 			
-			TagObject tag = this.getTagByName(newTagName);
+			TagObject tag = getTagByName(newTagName);
 			
 			sb.append("<Tags><Result>true</Result>");
 			sb.append("<IssueTag>");
@@ -384,8 +384,8 @@ public class ProductBacklogHelper {
 	 * 新增自訂分類標籤
 	 * @param name
 	 */
-	public void addNewTag(String name) {
-		this.productBacklogMapper.addNewTag(name);
+	public long addNewTag(String name) {
+		return this.productBacklogMapper.addNewTag(name);
 	}
 	
 	/**

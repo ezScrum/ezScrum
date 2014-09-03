@@ -28,22 +28,22 @@ New Tab With Alias
     [Arguments]    ${loginUrl}    ${alias}
     [Documentation]    1. 透過 selenium api 的 openWindow 來完成開分頁的功能
     ...    2. 使用此keyword的限制 : open browser的url domain name必須與欲新增的分頁domain name一致
-    Call Selenium Api    openWindow    ${loginUrl}    ${alias}
+    #    Open Browser    ${loginUrl}
+    #    Call Selenium Api    openWindow    ${loginUrl}    ${alias}
     Select Window    ${alias}
 
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
-    ${testValue}=    Get Value    ${xpath}
+    ${testValue}=    Get Value    xpath=${xpath}
     Should Be Equal    ${correctValue}    ${testValue}
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${PROJECT_NAME}")]
-    Wait Until Page Loaded
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]    andDontWait
+    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}
@@ -79,14 +79,17 @@ Logon ezScrum System
     Wait Until Page Contains Element    userId
     Wait Until Page Contains Element    password
 
+Logout ezScrum System
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+
 SwitchToPage
     [Arguments]    ${pageName}
     [Documentation]    Page Name:
     ...
     ...    ProjectList
     ...    Management
-    Click Element    xpath=//tbody/tr/td[text()="${pageName}"]    andDontWait
-    Wait Until Page Loaded    ${PAGE_LOAD_TIMEOUT}
+    Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
 
 SwitchToItemLink
     [Arguments]    ${isProjectPage}    ${itemName}
@@ -94,15 +97,15 @@ SwitchToItemLink
     ...    預設是ProjectList頁面
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'True'    span    u
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'False'    u    span
-    Click Element    xpath=//li//${_tagName}[.="${itemName}"]    andDontWait
+    Click Element    xpath=//li//${_tagName}[.="${itemName}"]
     # 加入同步機制比較妥當
 
 DropDownMenu_Select
     [Arguments]    ${menuName}    ${itemName}
     # focus on Menu
-    Click Element    xpath=//input[@name="${menuName}"]    andDontWait    # open
+    Click Element    xpath=//input[@name="${menuName}"]
     # select Item
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text() = "${itemName}"]    andDontWait
+    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text() = "${itemName}"]
 
 TableGrid3_SelectItem
     [Arguments]    ${columnIndex}    ${itemName}    # index start from 0

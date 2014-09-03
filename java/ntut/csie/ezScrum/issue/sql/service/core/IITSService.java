@@ -104,7 +104,7 @@ public interface IITSService {
 	//刪除attach file
 	public void deleteAttachFile(long fileId);
 	//新增自訂分類標籤
-	public void addNewTag(String name, String projectName);
+	public long addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
 	public void deleteTag(long id, String projectName);
 	// 取得自訂分類標籤列表

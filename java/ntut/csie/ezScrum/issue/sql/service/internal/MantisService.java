@@ -1178,8 +1178,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 新增自訂分類標籤
-	public void addNewTag(String name, String projectName) {
-		m_tagService.addTag(name, projectName);
+	public long addNewTag(String name, String projectName) {
+		return m_tagService.addTag(name, projectName);
 	}
 
 	// 刪除自訂分類標籤

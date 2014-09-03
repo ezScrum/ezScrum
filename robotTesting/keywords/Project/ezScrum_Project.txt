@@ -16,8 +16,7 @@ _Web Create Project
     ${xpathCreateProjectSubmit}=    Find Current Window Element    Create New Project    Submit
     Element Enable And Submit    ${xpathCreateProjectSubmit}
     #
-    Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
-    Wait Until Page Loaded
+    Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    2    Alert Should Be Present    Create success. Redirect to view project summary.
 
 _GAE Create Project
     Click Element    createProjectBtn
@@ -37,7 +36,6 @@ _GAE Create Project
     Element Enable And Submit    ${xpathCreateProjectSubmit}
     #
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
-    Wait Until Page Loaded
 
 Create Project
     Run Keyword if    "${VERSION}"=="GAE"    _GAE Create Project
@@ -50,16 +48,9 @@ _Web Create Project with Arguments
     Input Text    xpath=//input[@name="DisplayName"]    ${pDisName}
     Input Text    xpath=//textarea[@name="Comment"]    ${pComment}
     Input Text    xpath=//input[@name="ProjectManager"]    ${pManager}
-    Click Image    xpath=//img[@class="x-form-trigger x-form-arrow-trigger"]
-    Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text()="MySQL"]
-    Input Text    ServerUrl    ${DB_URL}
-    Input Text    DBAccount    ${DB_ACCOUNT}
-    Input Text    DBPassword    ${DB_PASSWORD}
-    Run Keyword Unless    "${DB_NAME}"=="ezScrum"    Project With Different DB Name
     Set Selenium Timeout    ${CREATE_PROJECT_TIMEOUT}
     Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
-    Wait Until Page Loaded
 
 _GAE Create Project with Arguments
     [Arguments]    ${pName}    ${pDisName}    ${pComment}    ${pManager}
@@ -78,7 +69,6 @@ _GAE Create Project with Arguments
     Set Selenium Timeout    ${CREATE_PROJECT_TIMEOUT}
     Click Element    xpath=//tbody[@class='x-btn-small x-btn-icon-small-left' and .//button='Submit']
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
-    Wait Until Page Loaded
 
 Create Project with Arguments
     [Arguments]    ${pName}    ${pDisName}    ${pComment}    ${pManager}
@@ -98,11 +88,11 @@ Project With Different DB Name
 Check Project Is Create
     Select Node Product    Modify Config
     Wait Until Page Contains Element    xpath=//input[@name="ProjectName"]
-    Compare Field Content    xpath=//input[@name="ProjectName"]    ${PROJECT_NAME}
-    Compare Field Content    xpath=//input[@name="ProjectDisplayName"]    ${PROJECT_NAME}DisplayName
-    Compare Field Content    xpath=//textarea[@name="Commnet"]    ${PROJECT_COMMENT}
-    Compare Field Content    xpath=//input[@name="ProjectManager"]    ${PROJECT_MANAGER}
-    Compare Field Content    xpath=//input[@name="AttachFileSize"]    ${ATTACH_FILE_SIZE}
+    Compare Field Content    //input[@name="ProjectName"]    ${PROJECT_NAME}
+    Compare Field Content    //input[@name="ProjectDisplayName"]    ${PROJECT_NAME}DisplayName
+    Compare Field Content    //textarea[@name="Commnet"]    ${PROJECT_COMMENT}
+    Compare Field Content    //input[@name="ProjectManager"]    ${PROJECT_MANAGER}
+    Compare Field Content    //input[@name="AttachFileSize"]    ${ATTACH_FILE_SIZE}
 
 Check ProjectID Is Existed
     [Arguments]    ${_ProjectID}

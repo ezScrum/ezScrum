@@ -1,5 +1,6 @@
 *** Settings ***
 Library           Selenium2Library
+Resource          ../common_resource.txt
 
 *** Keywords ***
 Check Tenant Is Create

@@ -122,7 +122,7 @@ public class MantisTagService extends AbstractMantisService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+		
 		return tag;
 	}
 
