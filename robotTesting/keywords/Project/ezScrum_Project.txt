@@ -17,7 +17,6 @@ _Web Create Project
     Element Enable And Submit    ${xpathCreateProjectSubmit}
     #
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
-    Wait Until Page Loaded
 
 _GAE Create Project
     Click Element    createProjectBtn

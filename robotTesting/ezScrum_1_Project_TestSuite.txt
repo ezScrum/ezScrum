@@ -26,7 +26,6 @@ Test Project - Create Project
 
 Test Project - Permission Denied
     [Documentation]    新增A, B兩個專案和一個test帳號, 將test帳號assign到A專案上, 透過test帳號登入進入A專案後, 直接透過網址列改PID存取B專案.    # Speed = 0.05 failed -> 待加入同步機制
-    ...
     [Setup]    Test Project - Test Permission Denied Setup
     # 透過test帳號進入擁有權限的專案
     Login Page With Account    ${LOGIN_URL}    ${tsAccountId}    ${tsAccountId}
