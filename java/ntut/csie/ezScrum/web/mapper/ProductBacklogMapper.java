@@ -186,11 +186,12 @@ public class ProductBacklogMapper {
 	}
 
 	// 新增自訂分類標籤
-	public void addNewTag(String name) {
+	public long addNewTag(String name) {
 		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
-		itsService.addNewTag(name, m_project.getName());
+		long id = itsService.addNewTag(name, m_project.getName());
 		itsService.closeConnect();
+		return id;
 	}
 
 	// 刪除自訂分類標籤

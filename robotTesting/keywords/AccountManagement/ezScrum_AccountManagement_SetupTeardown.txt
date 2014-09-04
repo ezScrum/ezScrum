@@ -1,3 +1,9 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../common_resource.txt
+Resource          ezScrum_AccountManagement_Management.txt
+Resource          ../ezScrum_Login.txt
+
 *** Keywords ***
 Test Account Management - PreCondition
     Login Page    ${LOGIN_URL}
@@ -7,7 +13,7 @@ Test Account Management - PreCondition
     Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
     Clean Accounts
     Logon ezScrum System
-    
+
 Test Account Management - PostCondition
     Login With Admin
     Click Element    xpath=//td[text()="Management"]
@@ -36,7 +42,7 @@ Test Account Management - Add Account Teardown
     Login With Admin
     _ClickManagmentElement    admin
     _Logon
-    
+
 Test Account Management - Add Duplicate Account Setup
     Login With Admin
     _ClickManagmentElement    admin

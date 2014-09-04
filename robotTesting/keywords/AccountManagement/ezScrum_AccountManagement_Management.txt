@@ -1,3 +1,7 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../common_resource.txt
+
 *** Keywords ***
 Check Account
     [Arguments]    ${accountId}
@@ -14,8 +18,8 @@ Add Account By Parameter
     # click "Add" Button
     Click Element    xpath=//button[text()="Add Account"]
     # fill Account Info
-    Focus AND Input Text    //input[@name="id"]    ${accountId}    # User ID
-    Focus AND Input Text    //input[@name="name"]    ${name}    # User Name
+    Focus AND Input Text    //input[@name='account']    ${accountId}    # User ID
+    Focus AND Input Text    //input[@name='name']    ${name}    # User Name
     Focus AND Input Text    //input[@name="passwd"]    ${accountId}    # Password
     Focus AND Input Text    //input[@name="reenter"]    ${accountId}    # Re-enter
     Focus AND Input Text    //input[@name="mail"]    ${mail}    # E-mail Address
@@ -26,7 +30,7 @@ Add Account By Parameter
 
 Edit Account
     [Arguments]    ${accountId}
-    [Documentation]    select from Accounts List\n
+    [Documentation]    select from Accounts List
     Set Selenium Speed    ${SELENIUM_SPEED}
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
@@ -51,7 +55,7 @@ Edit Account
 
 Check Account In Edit
     [Arguments]    ${accountId}    ${name}    ${mail}
-    [Documentation]    select from Accounts List\n
+    [Documentation]    select from Accounts List
     Set Selenium Speed    ${SELENIUM_SPEED}
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and .="${accountId}"]
@@ -146,4 +150,3 @@ Change Account Password
     ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
     Element Enable And Submit    ${xpathEditPasswordSaveButton}
     Wait Until Page Contains    Success.
-
