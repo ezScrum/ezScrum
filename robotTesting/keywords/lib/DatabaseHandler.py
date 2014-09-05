@@ -7,7 +7,7 @@ class DatabaseHandler:
         pass
     
     def is_delete(self, tableName):
-        reservedTableNameList = ["mantis_user_table", "mantis_tokens_table", "mantis_project_table", "mantis_config_table"]
+        reservedTableNameList = ["mantis_user_table", "mantis_tokens_table", "mantis_config_table"]
         isDeleteFlag = 1
         for name in reservedTableNameList:
             isIdentical = cmp(tableName, name)
