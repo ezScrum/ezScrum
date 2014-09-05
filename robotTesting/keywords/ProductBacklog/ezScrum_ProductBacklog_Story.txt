@@ -15,24 +15,24 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
-    Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
-    Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
-    Compare Field Content    xpath=//input[@name="Estimate"]    ${storyEstimate}
-    Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
-    Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
-    Compare Field Content    xpath=//input[@name="Tags"]    ${correctTagText}
-    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    Compare Field Content    //textarea[@name="Name"]    ${storyName}
+    Compare Field Content    //input[@name="Value"]    ${storyValue}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
+    Compare Field Content    //input[@name="Importance"]    ${storyImportance}
+    Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
+    Compare Field Content    //input[@name="Tags"]    ${correctTagText}
+    Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
-    Should Be Equal    ${testNameText}    Name:\n\ ${storyName}
+    Should Be Equal    ${testNameText}    Name:\n${storyName}
     ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..
-    Should Be Equal    ${testNotesText}    Notes:\n\ ${storyNotes}
+    Should Be Equal    ${testNotesText}    Notes:\n${storyNotes}
     ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
-    Should Be Equal    ${testHowToDemoText}    How To Demo:\n\ ${storyHowToDemo}
+    Should Be Equal    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
     ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
     Should Be Equal    ${testTagText}    ${correctTagText}
