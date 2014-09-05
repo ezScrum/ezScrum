@@ -43,7 +43,7 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="${nodeName}"]
+    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}

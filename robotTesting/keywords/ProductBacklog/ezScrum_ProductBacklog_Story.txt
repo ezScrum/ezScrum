@@ -7,6 +7,7 @@ Resource          ../common_resource.txt
 Resource          ../ezScrum_Login.txt
 Resource          ../Project/ezScrum_Project.txt
 Resource          ezScrum_ProductBacklog_Tag.txt
+Library           String
 
 *** Keywords ***
 Verify Story Information With Arguments
@@ -35,7 +36,13 @@ Verify Story Information With Arguments
     ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
     Should Be Equal    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
+    #比對Tag時若為空的長度仍然有1，如果拿到長度為1時則把testTagText設為EMPTY
     ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    #將兩個變數都轉為unicode才能比對
+    ${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
+    ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
+    ${testTagTextLength}=    Get Length    ${testTagText}
+    ${testTagText}=    Set Variable If    ${testTagTextLength}==1    ${EMPTY}
     Should Be Equal    ${testTagText}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal    ${testStoryNameText}    ${storyName}
