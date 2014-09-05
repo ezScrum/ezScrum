@@ -15,6 +15,7 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
+    Set Browser Implicit Wait    5
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -84,8 +85,8 @@ Delete Story Use StoryID
     Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
     Click Element    xpath=${xpathDeleteStoryDelete}
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
     Wait Until Page Contains    Success.
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
 
 Delete Story With Arguments
     [Arguments]    ${targetStoryName}
