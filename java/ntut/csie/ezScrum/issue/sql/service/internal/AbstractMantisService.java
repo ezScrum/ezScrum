@@ -141,12 +141,12 @@ public abstract class AbstractMantisService {
 		return -1;
 	}
 
-	protected int getProjectId(String projectName) {
+	protected int getProjectId(String pid) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(ProjectEnum.NAME, projectName);
+		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, pid);
 		String query = valueSet.getSelectQuery();
-		
+
 		ResultSet result = getControl().executeQuery(query);
 		int projectId = -1;
 		try {
