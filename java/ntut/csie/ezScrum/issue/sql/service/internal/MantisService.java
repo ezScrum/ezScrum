@@ -75,7 +75,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		ISQLControl control = null;
 		if (MANTIS_TABLE_TYPE.equalsIgnoreCase("MySQL")) {
 			control = new MySQLControl(config.getServerUrl(), PORT_SERVICE_MYSQL, MANTIS_DB_NAME);
-
 		} else {
 			/*-----------------------------------------------------------
 			 *	如果是要使用Default SQL的設定，
@@ -168,12 +167,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			if (connection == null) {
 				//如果不能連線的話，那麼先確認Server是否可以連線
 				//如果Server可以連線，那麼就嘗試建立資料庫
-				if(testServerConnect())
-				{
+				if(testServerConnect()) {
 					throw new TestConnectException(TestConnectException.DATABASE_ERROR);
-				}
-				else
-				{
+				} else {
 					throw new TestConnectException(TestConnectException.CONNECT_ERROR);
 				}
 			} 

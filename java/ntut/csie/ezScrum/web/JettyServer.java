@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web;
 
 import java.io.BufferedReader;
-
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -9,7 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import jd.util.Executer;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
+
 import org.mortbay.jetty.Server;
 import org.mortbay.xml.XmlConfiguration;
 
@@ -25,8 +27,6 @@ public class JettyServer {
 		logger = Logger.getLogger(JettyServer.class.getName());
 		FileHandler handler = new FileHandler("JettyServer.log");
 		logger.addHandler(handler);
-		
-
 		
 		try {
 			while (restart == true) {
@@ -44,33 +44,9 @@ public class JettyServer {
 				monitor.start();
 */
 
-				
-				
 				server.start();
 				server.join();
 				
-
-				//System.out.println("*** Server Will be Restarted");
-				//logger.info("Server Restart at " + (new Date()).toString());
-				/**
-				 * 使用外部程式Restart的方式
-				 */
-				//String javaPath = new File(new File(System
-						//.getProperty("sun.boot.library.path")), "javaw.exe")
-						//.getAbsolutePath();
-				//Executer exec;
-				//if (new File(javaPath).exists()) {
-					//exec = new Executer(javaPath);
-				//} else {
-					//exec = new Executer("java");
-				//}
-				//exec.addParameters(new String[] { "-jar", "-Xmx512m",
-						//"updater.jar" });
-				//exec.setRunin(new File(".").getAbsolutePath());
-				//exec.setWaitTimeout(0);
-				//exec.start();
-				//Thread.sleep(1000);
-				//System.exit(0);
 			}
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
