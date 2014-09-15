@@ -115,7 +115,7 @@ public interface IITSService {
 	public void removeStoryTag(String storyID, long tagID);
 	// 新增一筆 project 同時也新增到 mantis 上
 	public void createProject(String ProjectName) throws Exception;
-	public void TestConnect() throws Exception;
+	public void testConnect() throws Exception;
 	public List<IStory> getStorys(String name);
 	
 	// 建立Story與Sprint Story與Project之間的關聯關係

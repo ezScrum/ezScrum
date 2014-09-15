@@ -50,7 +50,7 @@ Test Create Story Teardown
 
 Test Create Story With Invalid Value Setup
     Create Tag With Arguments    testTagName
-    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    ${EMPTY}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    testTagName     Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
 
 Test Create Story With Invalid Value Teardown

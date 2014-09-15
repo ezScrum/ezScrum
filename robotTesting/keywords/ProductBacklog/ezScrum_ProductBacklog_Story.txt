@@ -7,6 +7,7 @@ Resource          ../common_resource.txt
 Resource          ../ezScrum_Login.txt
 Resource          ../Project/ezScrum_Project.txt
 Resource          ezScrum_ProductBacklog_Tag.txt
+Library           String
 
 *** Keywords ***
 Verify Story Information With Arguments
@@ -15,26 +16,33 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
-    Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
-    Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
-    Compare Field Content    xpath=//input[@name="Estimate"]    ${storyEstimate}
-    Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
-    Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
-    Compare Field Content    xpath=//input[@name="Tags"]    ${correctTagText}
-    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    Set Browser Implicit Wait    5
+    Compare Field Content    //textarea[@name="Name"]    ${storyName}
+    Compare Field Content    //input[@name="Value"]    ${storyValue}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
+    Compare Field Content    //input[@name="Importance"]    ${storyImportance}
+    Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
+    Compare Field Content    //input[@name="Tags"]    ${correctTagText}
+    Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
-    Should Be Equal    ${testNameText}    Name:\n\ ${storyName}
+    Should Be Equal    ${testNameText}    Name:\n${storyName}
     ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..
-    Should Be Equal    ${testNotesText}    Notes:\n\ ${storyNotes}
+    Should Be Equal    ${testNotesText}    Notes:\n${storyNotes}
     ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
-    Should Be Equal    ${testHowToDemoText}    How To Demo:\n\ ${storyHowToDemo}
+    Should Be Equal    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
+    #比對Tag時若為空的長度仍然有1，如果拿到長度為1時則把testTagText設為EMPTY
     ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    #將兩個變數都轉為unicode才能比對
+    ${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
+    ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
+    ${testTagTextLength}=    Get Length    ${testTagText}
+    ${testTagText}=    Set Variable If    ${testTagTextLength}==1    ${EMPTY}
     Should Be Equal    ${testTagText}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal    ${testStoryNameText}    ${storyName}
@@ -84,8 +92,8 @@ Delete Story Use StoryID
     Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
     Click Element    xpath=${xpathDeleteStoryDelete}
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
     Wait Until Page Contains    Success.
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
 
 Delete Story With Arguments
     [Arguments]    ${targetStoryName}
@@ -125,7 +133,7 @@ Verify Invalid Value
     Focus    xpath=//textarea[@name="HowToDemo"]
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon x-item-disabled"]    1
+    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
 
 Verify Invalid Value Textarea
     [Arguments]    ${element}    ${value}    ${widgetName}
@@ -134,7 +142,7 @@ Verify Invalid Value Textarea
     Focus    xpath=//textarea[@name="${element}"]
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon x-item-disabled"]    1
+    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
 
 Clean All Story
     # get Story count

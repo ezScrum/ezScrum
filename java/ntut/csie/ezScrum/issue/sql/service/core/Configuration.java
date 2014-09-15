@@ -65,7 +65,12 @@ public class Configuration {
 		try {
 			properties.load(new FileInputStream(PERFS_FILE_PATH));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			System.out.println(
+					"************ ERROR MESSAGE ************\n\n\n" +
+					"Please check \"ezScrum.ini\" file exist.\n\n\n" +
+					"***************************************\n\n\n"
+			);
+			System.exit(0);
 		}
 	}
 

@@ -3,3 +3,4 @@ Suite Setup
 Suite Teardown
 Resource          keywords/common_resource.txt
 Library           Selenium2Library
+Library           String

@@ -166,7 +166,7 @@ public class ProjectMapper {
 	private void createProjectDB(Configuration tmpConfig, IProject project, IUserSession userSession) throws Exception {
 		// 測試連線並且檢查DB內的Table是否正確
 		MantisService mantisService = new MantisService(tmpConfig);
-		mantisService.TestConnect();
+		mantisService.testConnect();
 
 		// Create Project in Mantis 因為確定 ITS 資料正確，所以不用再對
 		// createProject 做一次確認

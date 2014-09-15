@@ -60,9 +60,9 @@ public class MantisTagService extends AbstractMantisService {
 	// 新增自訂分類標籤
 	// 新增完回傳新增後的tag id
 	// for ezScrum 1.8
-	public long addTag(String name, String projectName) {
+	public long addTag(String name, String pid) {
 		long newId = -1;
-		int projectId = getProjectId(projectName);
+		int projectId = getProjectId(pid);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
