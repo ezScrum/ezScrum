@@ -20,20 +20,7 @@ public class WebAppMain implements ServletContextListener {
 		 */
 		Configuration config = new Configuration();
 		MantisService dbService = new MantisService(config);
-		try {
-			log.info("Test DB connection....");
-			dbService.TestConnect();
-			log.info("Create DB....");
-			dbService.createDB();
-			log.info("Create tables....");
-			dbService.initiateDB();
-		} catch (Exception exception) {
-			System.out.println(
-					"************** ERROR MESSAGE **************\n\n\n" +
-					"Database connect fail.\n\n" + 
-					"Please check database setting in ezScrum.ini is correct.\n\n\n" +
-					"*********************************************\n\n\n"
-			);
+		if (!dbService.testAndInitDatabase()) {
 			System.exit(0);
 		}
     }

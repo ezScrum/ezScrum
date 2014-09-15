@@ -19,7 +19,6 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -50,7 +49,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	private static Log log = LogFactory.getLog(MantisService.class);
 	private static String INITIATE_SQL_FILE = "initial_bk.sql";
 	final public static String ROOT_TAG = "root";
-	
+
 	final private String m_id = "Mantis";
 	final private String PORT_SERVICE_MYSQL = "3306";
 	private String MANTIS_TABLE_TYPE = "Default";
@@ -74,7 +73,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		// =========設定要使用的SQLControl============
 		ISQLControl control = null;
 		if (MANTIS_TABLE_TYPE.equalsIgnoreCase("MySQL")) {
-			control = new MySQLControl(config.getServerUrl(), PORT_SERVICE_MYSQL, MANTIS_DB_NAME);
+			control = new MySQLControl(config.getServerUrl(),
+					PORT_SERVICE_MYSQL, MANTIS_DB_NAME);
 		} else {
 			/*-----------------------------------------------------------
 			 *	如果是要使用Default SQL的設定，
@@ -86,12 +86,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 			// 如果是Default SQL的話，那麼DB路徑就會被設定為Project底下的資料夾+Project檔案名稱
 			// ex. WorkspacePath/ProjectName/ProjectName
-			String DBRootPath = new Workspace().getRoot().getProject(projectName).getFullPath().append(projectName)
+			String DBRootPath = new Workspace().getRoot()
+					.getProject(projectName).getFullPath().append(projectName)
 					.getPathString();
 
 			// 然後剩下的路徑啥就不會管他了
 			// ex. ProjectName.h2.db , 所以MANTIS_TABLE_NAME會被完全忽略 ....
-			control = new HSQLControl(DBRootPath, PORT_SERVICE_MYSQL, projectName);
+			control = new HSQLControl(DBRootPath, PORT_SERVICE_MYSQL,
+					projectName);
 		}
 
 		control.setUser(config.getDBAccount());
@@ -100,7 +102,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	}
 
-	
 	/**
 	 * 利用透過MantisConnect及直接access資料庫的方式來實作 因此提供的pm帳號必需要能在Mantis及MySQL上使用
 	 */
@@ -110,7 +111,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		m_noteService = new MantisNoteService(getControl(), getConfig());
 		m_historyService = new MantisHistoryService(getControl(), getConfig());
 		m_issueService = new MantisIssueService(getControl(), getConfig());
-		m_attachFileService = new MantisAttachFileService(getControl(), getConfig());
+		m_attachFileService = new MantisAttachFileService(getControl(),
+				getConfig());
 		m_tagService = new MantisTagService(getControl(), getConfig());
 	}
 
@@ -121,10 +123,12 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().connection();
 		Connection connection = getControl().getconnection();
 
-		String defaultFile = ResourceFacade.getWorkspace().getRoot().getFolder(IProject.METADATA).getFullPath() + "/"
-				+ INITIATE_SQL_FILE;
+		String defaultFile = ResourceFacade.getWorkspace().getRoot()
+				.getFolder(IProject.METADATA).getFullPath()
+				+ "/" + INITIATE_SQL_FILE;
 		try {
-			TableCreater.importSQL(connection, new FileInputStream(defaultFile));
+			TableCreater
+					.importSQL(connection, new FileInputStream(defaultFile));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;
@@ -133,57 +137,76 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 		return true;
 	}
+
 	/**
 	 * 在SQL Server上建立一個資料庫
 	 */
-	public boolean createDB()
-	{
+	public boolean createDB() {
 		ISQLControl controller = getControl();
 		controller.connectionToServer();
-		try
-		{
-			String sql = "CREATE DATABASE "+MANTIS_DB_NAME;
+		try {
+			String sql = "CREATE DATABASE " + MANTIS_DB_NAME;
 			return controller.execute(sql);
-		}
-		finally
-		{
+		} finally {
 			controller.close();
 		}
 	}
+
 	/**
-	 * 檢查連線的順序為:
+	 * Test connection and initialize database
 	 * 
-	 * 1.測試hostname+port+dbname這完整路徑是否可以正確連線
-	 * 2.測試hostname+port 是否可以正確連線
-	 * 3.測試表格內容是否正確
+	 * 1. Test database connection available 
+	 * 2. Create database 
+	 * 3. Check number of table in database 
+	 * 4. Initialize tables in database
 	 * 
 	 */
-	public void TestConnect() throws Exception {
-		getControl().connection();
-		Connection connection = getControl().getconnection();
-		try
-		{
-			//檢查是否能正確連線
-			if (connection == null) {
-				//如果不能連線的話，那麼先確認Server是否可以連線
-				//如果Server可以連線，那麼就嘗試建立資料庫
-				if(testServerConnect()) {
-					throw new TestConnectException(TestConnectException.DATABASE_ERROR);
-				} else {
-					throw new TestConnectException(TestConnectException.CONNECT_ERROR);
-				}
-			} 
-			//檢查表格是否正確
-			else if (!isAllTableExist()) {
-				throw new TestConnectException(TestConnectException.TABLE_ERROR);
-			} 
+	public boolean testAndInitDatabase() {
+		try {
+			System.out.println("Test DB connection...");
+			testConnect();
+
+			try {
+				System.out.println("Create DB...");
+				createDB();
+			} catch (Exception e) {
+			}
+
+			if (!isAllTableExist()) {
+				System.out.println("Create tables...");
+				initiateDB();
+			}
+
+			return true;
+		} catch (Exception exception) {
+			System.out
+					.println("************** ERROR MESSAGE **************\n\n\n"
+							+ "Database connect fail.\n\n"
+							+ "Please check database setting in ezScrum.ini is correct.\n\n\n"
+							+ "*******************************************\n\n\n");
 		}
-		finally
-		{
-			if(connection != null)
-				getControl().close();
-		}
+		return false;
 	}
+
+	/**
+	 * 
+	 * 測試hostname+port 是否可以正確連線
+	 * 
+	 */
+	public void testConnect() throws Exception {
+		try {
+			if (testServerConnect()) {
+				return;
+			} else {
+				throw new TestConnectException(
+						TestConnectException.DATABASE_ERROR);
+			}
+		} catch (SQLException e) {
+			throw new TestConnectException(TestConnectException.CONNECT_ERROR);
+		}
+
+	}
+
 	public boolean isAllTableExist() {
 		/*-----------------------------------------------------------
 		 *	如果是MySql需要檢查Table是否存在
@@ -194,20 +217,17 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 		return true;
 	}
-	private boolean testServerConnect() throws SQLException 
-	{
+
+	private boolean testServerConnect() throws SQLException {
 		getControl().connectionToServer();
-		Connection connection =getControl().getconnection();
-		try
-		{
-			if(connection == null)
+		Connection connection = getControl().getconnection();
+		try {
+			if (connection == null)
 				return false;
 			else
 				return true;
-		}
-		finally
-		{
-			if(connection!=null)
+		} finally {
+			if (connection != null)
 				connection.close();
 		}
 	}
@@ -226,29 +246,35 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public long newIssue(IIssue issue) {
 		long issueID = m_issueService.newIssue(issue);
 		if (issueID > 0) {
-			m_historyService.addMantisActionHistory(issueID, IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.ZERO_OLD_VALUE, IIssueHistory.ZERO_NEW_VALUE, IIssueHistory.ISSUE_NEW_TYPE,
-					IIssueHistory.NOW_MODIFY_DATE);
+			m_historyService
+					.addMantisActionHistory(issueID,
+							IIssueHistory.EMPTY_FIELD_NAME,
+							IIssueHistory.ZERO_OLD_VALUE,
+							IIssueHistory.ZERO_NEW_VALUE,
+							IIssueHistory.ISSUE_NEW_TYPE,
+							IIssueHistory.NOW_MODIFY_DATE);
 		}
 		return issueID;
 	}
-	
+
 	/************************************************************
 	 * 
 	 * 可以針對releaseID與SprintID來搜尋Story與Task，並且只取得最新的資料
 	 * 
 	 *************************************************************/
-	public IIssue[] getIssues(String projectName, String category, String releaseID, String sprintID) {
+	public IIssue[] getIssues(String projectName, String category,
+			String releaseID, String sprintID) {
 		return getIssues(projectName, category, releaseID, sprintID, null);
 	}
 
 	/************************************************************
 	 * 找出期間限定的Issue
 	 *************************************************************/
-	public IIssue[] getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate,
-			Date endDate) {
+	public IIssue[] getIssues(String projectName, String category,
+			String releaseID, String sprintID, Date startDate, Date endDate) {
 
-		IIssue[] issues = m_issueService.getIssues(projectName, category, releaseID, sprintID, startDate, endDate);
+		IIssue[] issues = m_issueService.getIssues(projectName, category,
+				releaseID, sprintID, startDate, endDate);
 
 		for (IIssue issue : issues) {
 			// 建立歷史記錄
@@ -269,8 +295,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * 針對傳入的時間範圍取出這時間的Issue狀態
 	 * 
 	 *************************************************************/
-	public IIssue[] getIssues(String projectName, String category, String releaseID, String sprintID, Date date) {
-		IIssue[] issues = m_issueService.getIssues(projectName, category, releaseID, sprintID, date);
+	public IIssue[] getIssues(String projectName, String category,
+			String releaseID, String sprintID, Date date) {
+		IIssue[] issues = m_issueService.getIssues(projectName, category,
+				releaseID, sprintID, date);
 
 		for (IIssue issue : issues) {
 			// 建立歷史記錄
@@ -351,8 +379,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bugnote_table");
 		valueSet.addTableName("mantis_bugnote_text_table");
-		valueSet.addFieldEqualCondition("mantis_bugnote_text_table.id", "mantis_bugnote_table.bugnote_text_id");
-		valueSet.addFieldEqualCondition("mantis_bugnote_table.bug_id", Long.toString(issue.getIssueID()));
+		valueSet.addFieldEqualCondition("mantis_bugnote_text_table.id",
+				"mantis_bugnote_table.bugnote_text_id");
+		valueSet.addFieldEqualCondition("mantis_bugnote_table.bug_id",
+				Long.toString(issue.getIssueID()));
 		String query = valueSet.getSelectQuery();
 		// String query = "SELECT date_submitted, note,
 		// mantis_bugnote_text_table.id FROM `mantis_bugnote_table` ,
@@ -390,10 +420,13 @@ public class MantisService extends AbstractMantisService implements IITSService 
 				IssueNote issueNote = new IssueNote();
 				issueNote.setIssueID(issue.getIssueID());
 				issueNote.setText(result.getString("note"));
-				issueNote.setHandler(this.getUserName(result.getInt("reporter_id")));
+				issueNote.setHandler(this.getUserName(result
+						.getInt("reporter_id")));
 				issueNote.setNoteID(result.getLong("id"));
-				issueNote.setSubmittedDate(result.getTimestamp("date_submitted").getTime());
-				issueNote.setModifiedDate(result.getTimestamp("last_modified").getTime());
+				issueNote.setSubmittedDate(result
+						.getTimestamp("date_submitted").getTime());
+				issueNote.setModifiedDate(result.getTimestamp("last_modified")
+						.getTime());
 
 				issue.addIssueNote(issueNote);
 			}
@@ -424,7 +457,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		if (projectID > 0) {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName("mantis_project_category_table");
-			valueSet.addEqualCondition("project_id", Integer.toString(projectID));
+			valueSet.addEqualCondition("project_id",
+					Integer.toString(projectID));
 
 			String query = valueSet.getSelectQuery();
 
@@ -464,7 +498,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			if (issue.getStatusUpdated(ITSEnum.CLOSED_STATUS) == null)
 				continue;
 			// 一般而言,date都會包含當天,所以在計算時要多加一天
-			if (issue.getStatusUpdated(ITSEnum.CLOSED_STATUS).getTime() <= (date.getTime() + 24 * 3600 * 1000)) {
+			if (issue.getStatusUpdated(ITSEnum.CLOSED_STATUS).getTime() <= (date
+					.getTime() + 24 * 3600 * 1000)) {
 
 				count++;
 			}
@@ -478,7 +513,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			if (issue.getStatusUpdated(ITSEnum.ASSIGNED_STATUS) == null)
 				continue;
 			// 一般而言,date都會包含當天,所以在計算時要多加一天
-			if (issue.getStatusUpdated(ITSEnum.ASSIGNED_STATUS).getTime() <= (date.getTime() + 24 * 3600 * 1000))
+			if (issue.getStatusUpdated(ITSEnum.ASSIGNED_STATUS).getTime() <= (date
+					.getTime() + 24 * 3600 * 1000))
 				count++;
 		}
 		return count;
@@ -510,12 +546,16 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		m_noteService.updateIssueNote(issue, note);
 	}
 
-	public void addHistory(long issueID, String typeName, String oldValue, String newValue) {
-		m_historyService.addMantisActionHistory(issueID, typeName, oldValue, newValue, IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
+	public void addHistory(long issueID, String typeName, String oldValue,
+			String newValue) {
+		m_historyService.addMantisActionHistory(issueID, typeName, oldValue,
+				newValue, IIssueHistory.OTHER_TYPE,
+				IIssueHistory.NOW_MODIFY_DATE);
 	}
 
 	@Override
-	public void addRelationship(long sourceID, long targetID, int type, Date date) {
+	public void addRelationship(long sourceID, long targetID, int type,
+			Date date) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_relationship_table");
 		valueSet.addInsertValue("source_bug_id", Long.toString(sourceID));
@@ -526,21 +566,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		if (type == ITSEnum.PARENT_RELATIONSHIP) {
-			m_historyService.addMantisActionHistory(
-						sourceID, 
-						IIssueHistory.EMPTY_FIELD_NAME, 
-						IIssueHistory.PARENT_OLD_VALUE,	
-						Long.toString(targetID), 
-						IIssueHistory.RELEATIONSHIP_ADD_TYPE, 
-						date);
-			
-			m_historyService.addMantisActionHistory(
-						targetID, 
-						IIssueHistory.EMPTY_FIELD_NAME,
-						IIssueHistory.CHILD_OLD_VALUE, 
-						Long.toString(sourceID), 
-						IIssueHistory.RELEATIONSHIP_ADD_TYPE, 
-						date);
+			m_historyService.addMantisActionHistory(sourceID,
+					IIssueHistory.EMPTY_FIELD_NAME,
+					IIssueHistory.PARENT_OLD_VALUE, Long.toString(targetID),
+					IIssueHistory.RELEATIONSHIP_ADD_TYPE, date);
+
+			m_historyService.addMantisActionHistory(targetID,
+					IIssueHistory.EMPTY_FIELD_NAME,
+					IIssueHistory.CHILD_OLD_VALUE, Long.toString(sourceID),
+					IIssueHistory.RELEATIONSHIP_ADD_TYPE, date);
 		}
 	}
 
@@ -550,19 +584,22 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName("mantis_bug_relationship_table");
 			valueSet.addEqualCondition("source_bug_id", Long.toString(sourceID));
-			valueSet.addEqualCondition("destination_bug_id", Long.toString(targetID));
+			valueSet.addEqualCondition("destination_bug_id",
+					Long.toString(targetID));
 			String query = valueSet.getDeleteQuery();
 			// String query = "DELETE FROM `mantis_bug_relationship_table` WHERE
 			// source_bug_id = "
 			// + sourceID + " AND destination_bug_id = " + targetID;
 			getControl().execute(query);
 			Date removeTime = new Date();
-			m_historyService.addMantisActionHistory(sourceID, IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.PARENT_OLD_VALUE, Long.toString(targetID), IIssueHistory.RELEATIONSHIP_DELETE_TYPE,
-					removeTime);
-			m_historyService.addMantisActionHistory(targetID, IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.CHILD_OLD_VALUE, Long.toString(sourceID), IIssueHistory.RELEATIONSHIP_DELETE_TYPE,
-					removeTime);
+			m_historyService.addMantisActionHistory(sourceID,
+					IIssueHistory.EMPTY_FIELD_NAME,
+					IIssueHistory.PARENT_OLD_VALUE, Long.toString(targetID),
+					IIssueHistory.RELEATIONSHIP_DELETE_TYPE, removeTime);
+			m_historyService.addMantisActionHistory(targetID,
+					IIssueHistory.EMPTY_FIELD_NAME,
+					IIssueHistory.CHILD_OLD_VALUE, Long.toString(sourceID),
+					IIssueHistory.RELEATIONSHIP_DELETE_TYPE, removeTime);
 		}
 
 	}
@@ -573,12 +610,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
-		valueSet.addInsertValue("handler_id", Integer.toString(getUserID(handler)));
+		valueSet.addInsertValue("handler_id",
+				Integer.toString(getUserID(handler)));
 
 		// 若狀態不為assigned,則改變狀態為assigned
 		int oldStatus = ITSEnum.getStatus(issue.getStatus());
 		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
-			valueSet.addInsertValue("status", Integer.toString(ITSEnum.ASSIGNED_STATUS));
+			valueSet.addInsertValue("status",
+					Integer.toString(ITSEnum.ASSIGNED_STATUS));
 		}
 
 		valueSet.addEqualCondition("id", Long.toString(issue.getIssueID()));
@@ -588,12 +627,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(updateQuery);
 
 		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issue.getIssueID(), IIssueHistory.HANDLER_FIELD_NAME, oldActor,
-				getUserID(handler), IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
+		m_historyService.addMantisActionHistory(issue.getIssueID(),
+				IIssueHistory.HANDLER_FIELD_NAME, oldActor, getUserID(handler),
+				IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
 
 		if (oldStatus != ITSEnum.ASSIGNED_STATUS)
-			m_historyService.addMantisActionHistory(issue.getIssueID(), IIssueHistory.STATUS_FIELD_NAME, oldStatus,
-					ITSEnum.ASSIGNED_STATUS, IIssueHistory.OTHER_TYPE, modifyDate);
+			m_historyService.addMantisActionHistory(issue.getIssueID(),
+					IIssueHistory.STATUS_FIELD_NAME, oldStatus,
+					ITSEnum.ASSIGNED_STATUS, IIssueHistory.OTHER_TYPE,
+					modifyDate);
 
 	}
 
@@ -617,18 +659,21 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(updateQuery);
 
 		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issue.getIssueID(), IIssueHistory.SUMMARY, oldSummary, name,
+		m_historyService.addMantisActionHistory(issue.getIssueID(),
+				IIssueHistory.SUMMARY, oldSummary, name,
 				IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
 	}
 
 	@Override
-	public void changeStatusToClosed(long issueID, int resolution, String bugNote, Date closeDate) {
+	public void changeStatusToClosed(long issueID, int resolution,
+			String bugNote, Date closeDate) {
 		IIssue issue = getIssue(issueID);
 		int oldStatus = issue.getStatusValue();
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
-		valueSet.addInsertValue("status", Integer.toString(ITSEnum.CLOSED_STATUS));
+		valueSet.addInsertValue("status",
+				Integer.toString(ITSEnum.CLOSED_STATUS));
 		valueSet.addInsertValue("resolution", Integer.toString(resolution));
 		valueSet.addEqualCondition("id", Long.toString(issueID));
 
@@ -637,7 +682,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID, IIssueHistory.STATUS_FIELD_NAME, oldStatus,
+		m_historyService.addMantisActionHistory(issueID,
+				IIssueHistory.STATUS_FIELD_NAME, oldStatus,
 				ITSEnum.CLOSED_STATUS, IIssueHistory.OTHER_TYPE, closeDate);
 
 		if (bugNote != null && !bugNote.equals("")) {
@@ -650,12 +696,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		long bugNoteID = m_noteService.insertBugNote(issueID, note);
 
 		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issueID, IIssueHistory.EMPTY_FIELD_NAME, Long.toString(bugNoteID),
-				IIssueHistory.ZERO_NEW_VALUE, IIssueHistory.BUGNOTE_ADD_TYPE, IIssueHistory.NOW_MODIFY_DATE);
+		m_historyService.addMantisActionHistory(issueID,
+				IIssueHistory.EMPTY_FIELD_NAME, Long.toString(bugNoteID),
+				IIssueHistory.ZERO_NEW_VALUE, IIssueHistory.BUGNOTE_ADD_TYPE,
+				IIssueHistory.NOW_MODIFY_DATE);
 	}
 
 	@Override
-	public void reopenStatusToAssigned(long issueID, String name, String bugNote, Date reopenDate) {
+	public void reopenStatusToAssigned(long issueID, String name,
+			String bugNote, Date reopenDate) {
 		IIssue issue = getIssue(issueID);
 		int oldStatus = issue.getStatusValue();
 
@@ -667,20 +716,23 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
 		valueSet.addInsertValue("summary", name);
-		valueSet.addInsertValue("status", Integer.toString(ITSEnum.ASSIGNED_STATUS));
-		valueSet.addInsertValue("resolution", Integer.toString(ITSEnum.OPEN_RESOLUTION));
+		valueSet.addInsertValue("status",
+				Integer.toString(ITSEnum.ASSIGNED_STATUS));
+		valueSet.addInsertValue("resolution",
+				Integer.toString(ITSEnum.OPEN_RESOLUTION));
 		valueSet.addEqualCondition("id", Long.toString(issueID));
 		String query = valueSet.getUpdateQuery();
 
 		getControl().execute(query);
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID, IIssueHistory.STATUS_FIELD_NAME, oldStatus,
+		m_historyService.addMantisActionHistory(issueID,
+				IIssueHistory.STATUS_FIELD_NAME, oldStatus,
 				ITSEnum.ASSIGNED_STATUS, IIssueHistory.OTHER_TYPE, reopenDate);
 
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
-			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(
-					new Date(), DateUtil._16DIGIT_DATE_TIME_2));
+			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR,
+					DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
 
 			Element notesElem = new Element(ScrumEnum.NOTES);
 			notesElem.setText(bugNote);
@@ -696,7 +748,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	@Override
-	public void resetStatusToNew(long issueID, String name, String bugNote, Date resetDate) {
+	public void resetStatusToNew(long issueID, String name, String bugNote,
+			Date resetDate) {
 		IIssue issue = getIssue(issueID);
 		int oldStatus = issue.getStatusValue();
 
@@ -705,14 +758,19 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		// + ITSEnum.OPEN_RESOLUTION
 		// + "', `handler_id` = '0' WHERE `mantis_bug_table`.`id` ="
 		// + issueID;
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();//accept special char ex: / '
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();// accept
+																		// special
+																		// char
+																		// ex: /
+																		// '
 		name = translateChar.TranslateDBChar(name);
-		
+
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
 		valueSet.addInsertValue("summary", name);
 		valueSet.addInsertValue("status", Integer.toString(ITSEnum.NEW_STATUS));
-		valueSet.addInsertValue("resolution", Integer.toString(ITSEnum.OPEN_RESOLUTION));
+		valueSet.addInsertValue("resolution",
+				Integer.toString(ITSEnum.OPEN_RESOLUTION));
 		valueSet.addInsertValue("handler_id", "0");
 		valueSet.addEqualCondition("id", Long.toString(issueID));
 		String query = valueSet.getUpdateQuery();
@@ -720,13 +778,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID, IIssueHistory.STATUS_FIELD_NAME, oldStatus,
-				ITSEnum.NEW_STATUS, IIssueHistory.OTHER_TYPE, resetDate);
+		m_historyService.addMantisActionHistory(issueID,
+				IIssueHistory.STATUS_FIELD_NAME, oldStatus, ITSEnum.NEW_STATUS,
+				IIssueHistory.OTHER_TYPE, resetDate);
 
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
-			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(
-					new Date(), DateUtil._16DIGIT_DATE_TIME_2));
+			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR,
+					DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
 
 			Element notesElem = new Element(ScrumEnum.NOTES);
 			notesElem.setText(bugNote);
@@ -740,11 +799,13 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	public void updateHistoryModifiedDate(long issueID, long historyID, Date date) {
+	public void updateHistoryModifiedDate(long issueID, long historyID,
+			Date date) {
 		if (historyID < Long.parseLong("20000000000000")) {
 			m_historyService.updateHistoryModifiedDate(historyID, date);
 		} else {
-			m_noteService.updateHistoryModifiedDate(this.getIssue(issueID), historyID, date);
+			m_noteService.updateHistoryModifiedDate(this.getIssue(issueID),
+					historyID, date);
 		}
 	}
 
@@ -787,18 +848,18 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			m_tagService.removeStoryTag(ID, -1);
 		}
 	}
-	
+
 	// 刪除 task
 	public void deleteTask(long taskID) {
-			// delete task，分別砍掉issue與history的資料檔
-			String bug_text_id = m_issueService.getBugTextId(taskID);
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName("mantis_bug_text_table");
-			valueSet.addEqualCondition("id", bug_text_id);
-			String query = valueSet.getDeleteQuery();
-			getControl().execute(query);
-			m_issueService.removeIssue(Long.toString(taskID));
-			m_historyService.removeHistory(Long.toString(taskID));
+		// delete task，分別砍掉issue與history的資料檔
+		String bug_text_id = m_issueService.getBugTextId(taskID);
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName("mantis_bug_text_table");
+		valueSet.addEqualCondition("id", bug_text_id);
+		String query = valueSet.getDeleteQuery();
+		getControl().execute(query);
+		m_issueService.removeIssue(Long.toString(taskID));
+		m_historyService.removeHistory(Long.toString(taskID));
 	}
 
 	// 刪除 story 和 task 的關係
@@ -811,17 +872,20 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 		Date removeTime = new Date();
 		// delete task 的訊息記錄在 story 裡面
-		m_historyService.addMantisActionHistory(storyID, IIssueHistory.EMPTY_FIELD_NAME,
-				IIssueHistory.PARENT_OLD_VALUE, Long.toString(taskID), IIssueHistory.TASK_DELETE_TYPE,
+		m_historyService.addMantisActionHistory(storyID,
+				IIssueHistory.EMPTY_FIELD_NAME, IIssueHistory.PARENT_OLD_VALUE,
+				Long.toString(taskID), IIssueHistory.TASK_DELETE_TYPE,
 				removeTime);
 	}
 
 	public void addAttachFile(long issueID, File attachFile) {
 		try {
-			PreparedStatement pstmt = getControl().getconnection().prepareStatement(
-					"INSERT INTO `mantis_bug_file_table` VALUES(?,?,?, ?,?,?, ?,?,?,?,?)");
+			PreparedStatement pstmt = getControl()
+					.getconnection()
+					.prepareStatement(
+							"INSERT INTO `mantis_bug_file_table` VALUES(?,?,?, ?,?,?, ?,?,?,?,?)");
 			InputStream fin = new FileInputStream(attachFile);
-			//pstmt.setInt(1, 0);
+			// pstmt.setInt(1, 0);
 			pstmt.setNull(1, java.sql.Types.INTEGER);
 			pstmt.setLong(2, issueID);
 
@@ -836,7 +900,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			pstmt.setString(7, "");
 			pstmt.setInt(8, (int) attachFile.length());
 			String Type = "";
-			String fileType = attachFile.getName().substring(attachFile.getName().indexOf(".") + 1);
+			String fileType = attachFile.getName().substring(
+					attachFile.getName().indexOf(".") + 1);
 			if (fileType.compareToIgnoreCase("jpg") == 0)
 				Type = "image/jpeg";
 			else if (fileType.compareToIgnoreCase("xml") == 0)
@@ -848,10 +913,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			pstmt.setBinaryStream(11, fin, (int) attachFile.length());
 			pstmt.executeUpdate();
 			fin.close();
-			
+
 			pstmt.clearParameters();
 			pstmt.close();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -860,15 +925,16 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-		}finally{
-//			getControl().close();
+		} finally {
+			// getControl().close();
 		}
 
 	}
 
 	// ezScrum上面新增帳號，新增進mySQL裡
-	public void addUser(String name, String password, String email, String realName, String access_Level,
-			String cookie_string, String createDate, String lastVisitDate) throws Exception {
+	public void addUser(String name, String password, String email,
+			String realName, String access_Level, String cookie_string,
+			String createDate, String lastVisitDate) throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_user_table");
 		valueSet.addLikeCondition("username", name);
@@ -883,10 +949,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 				valueSet.addInsertValue(AccountEnum.ACCOUNT_EMAIL, email);
 				valueSet.addInsertValue(AccountEnum.ACCOUNT_PAASSWORD, password);
 				valueSet.addInsertValue(AccountEnum.ACCOUNT_REALNAME, realName);
-				valueSet.addInsertValue(AccountEnum.ACCOUNT_ACCESS_LEVEL, access_Level);
-				valueSet.addInsertValue(AccountEnum.ACCOUNT_COOKIE_STRING, cookie_string);
-				valueSet.addInsertValue(AccountEnum.ACCOUNT_DATE_CREATED, createDate);
-				valueSet.addInsertValue(AccountEnum.ACCOUNT_LAST_VISIT, lastVisitDate);
+				valueSet.addInsertValue(AccountEnum.ACCOUNT_ACCESS_LEVEL,
+						access_Level);
+				valueSet.addInsertValue(AccountEnum.ACCOUNT_COOKIE_STRING,
+						cookie_string);
+				valueSet.addInsertValue(AccountEnum.ACCOUNT_DATE_CREATED,
+						createDate);
+				valueSet.addInsertValue(AccountEnum.ACCOUNT_LAST_VISIT,
+						lastVisitDate);
 
 				query = valueSet.getInsertQuery();
 				getControl().execute(query);
@@ -919,7 +989,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 新增User和Project之間的關係，新增到MySql裡
-	public void addUserProjectRelation(String projectName, String name, String access_Level) throws Exception {
+	public void addUserProjectRelation(String projectName, String name,
+			String access_Level) throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 
 		try {
@@ -973,7 +1044,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 刪除User和Project之間的關係，刪除MySql裡的資料
-	public void deleteUserProjectRelation(String userName, String projectName) throws Exception {
+	public void deleteUserProjectRelation(String userName, String projectName)
+			throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 
 		try {
@@ -1011,7 +1083,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 刪除Project所有屬於access_level的使用者
-	public void deleteUserProjectRelationByAccessLevel(String projectName, String access_level) throws Exception {
+	public void deleteUserProjectRelationByAccessLevel(String projectName,
+			String access_level) throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 
 		try {
@@ -1033,9 +1106,11 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			valueSet.addLikeCondition("project_id", projectId);
 			// access_level不同，代表的值也不同
 			if (access_level.compareTo(AccountEnum.ACCOUNT_ACTOR_ADMIN) == 0)
-				valueSet.addLikeCondition("access_level", AccountEnum.ACCESS_LEVEL_MANAGER);
+				valueSet.addLikeCondition("access_level",
+						AccountEnum.ACCESS_LEVEL_MANAGER);
 			else
-				valueSet.addLikeCondition("access_level", AccountEnum.ACCESS_LEVEL_VIEWER);
+				valueSet.addLikeCondition("access_level",
+						AccountEnum.ACCESS_LEVEL_VIEWER);
 
 			query = valueSet.getDeleteQuery();
 			getControl().execute(query);
@@ -1046,7 +1121,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 回傳是否User和任何一個Project有關聯
-	public boolean isUserHasRelationByAnyProject(String userName) throws Exception {
+	public boolean isUserHasRelationByAnyProject(String userName)
+			throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 
 		try {
@@ -1075,8 +1151,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	// 更新user的資料
-	public void updateUserProfile(String userID, String realName, String password, String email, String enable)
-			throws Exception {
+	public void updateUserProfile(String userID, String realName,
+			String password, String email, String enable) throws Exception {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName("mantis_user_table");
@@ -1102,8 +1178,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public void deleteAttachFile(long fileId) {
 		// 根據attach id移除附件
 		try {
-			PreparedStatement pstmt = getControl().getconnection().prepareStatement(
-					"DELETE FROM `mantis_bug_file_table` WHERE `mantis_bug_file_table`.`id` = ?");
+			PreparedStatement pstmt = getControl()
+					.getconnection()
+					.prepareStatement(
+							"DELETE FROM `mantis_bug_file_table` WHERE `mantis_bug_file_table`.`id` = ?");
 			pstmt.setLong(1, fileId);
 			pstmt.executeUpdate();
 			pstmt.clearParameters();
@@ -1133,8 +1211,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	public void updateStoryRelationTable(String storyID, String projectName, String releaseID, String sprintID,
-			String estimation, String importance, Date date) {
+	public void updateStoryRelationTable(String storyID, String projectName,
+			String releaseID, String sprintID, String estimation,
+			String importance, Date date) {
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("ezscrum_story_relation");
@@ -1239,7 +1318,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public File getAttachFile(String fileID) {
 		return m_attachFileService.getAttachFile(fileID);
 	}
-	
+
 	/**
 	 * 抓取attach file 不透過 mantis，透過檔名
 	 */

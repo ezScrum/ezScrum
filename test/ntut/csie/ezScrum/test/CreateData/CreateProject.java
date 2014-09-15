@@ -221,7 +221,7 @@ public class CreateProject {
 		Configuration config = new Configuration(configuration.getUserSession());
 		MantisService M_service = new MantisService(config);
 		try {
-			M_service.TestConnect();		// 測試連線
+			M_service.testConnect();		// 測試連線
 		} catch (TestConnectException e) {
 			try {
 				if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
