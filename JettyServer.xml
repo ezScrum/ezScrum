@@ -40,7 +40,7 @@
                             <Set name="contextPath">/ezScrum</Set>  
                             <Set name="war">WebContent</Set>  
                         	<Set name="defaultsDescriptor">WebContent/webdefault.xml</Set> 
-                        </New>  
+                        </New>
                     </Item>
                 </Array>
             </Set>
