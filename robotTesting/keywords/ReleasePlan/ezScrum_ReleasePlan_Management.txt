@@ -1,200 +1,199 @@
 *** Settings ***
-Library         SeleniumLibrary
-Library         Collections
-Resource        ../common_resource.txt
+Library           Selenium2Library
+Library           Collections
+Resource          ../common_resource.txt
 
 *** Variables ***
-@{_ReleaseAndSprintList_FiledName}  ID  Name  Start Date  End Date  Description
-@{_storyList_FieldName}  ID  Tag  Story Name  Value  Estimation  Importance  Status
-...  Release Id  Sprint Id
+@{_ReleaseAndSprintList_FiledName}    ID    Name    Start Date    End Date    Description
+@{_storyList_FieldName}    ID    Tag    Story Name    Value    Estimate    Importance    Status
+...               Release Id    Sprint Id
 @{_tmp}
-@{_tdReleasePlan1}  testReleasePlan update  2012/12/02  2013/02/01  test Release Plan Description update
+@{_tdReleasePlan1}    testReleasePlan update    2012/12/02    2013/02/01    test Release Plan Description update
 
 *** Keywords ***
 _findReleasePlanItem
-    [Arguments]  @{_data}
-    ${_itemCount} =  Get Matching Xpath Count  //table[@class='x-treegrid-root-table']/tbody
-    @{_tmpData}  Create List
-    ${_index} =  Evaluate  0
-    ${_foundIndex} =  Evaluate  0  # -1 : not found
-    : FOR  ${_index}  IN RANGE  0  ${_itemCount}
-    \  @{_tmpData} =  _getReleasePlanDataList  ${_index}
-    \  Run Keyword If  '${_tmpData[0]}' == '${_data[0]}'  Exit For Loop  # compare "Name" field
-    ${_foundIndex} =  Set Variable If  '${_tmpData[0]}' == '${_data[0]}'  ${_index}  -1
-    [Return]  ${_foundIndex}  # start from 0, = -1 : not found
+    [Arguments]    @{_data}
+    ${_itemCount} =    Get Matching Xpath Count    //table[@class='x-treegrid-root-table']/tbody
+    @{_tmpData}    Create List
+    ${_index} =    Evaluate    0
+    ${_foundIndex} =    Evaluate    0    # -1 : not found
+    : FOR    ${_index}    IN RANGE    0    ${_itemCount}
+    \    @{_tmpData} =    _getReleasePlanDataList    ${_index}
+    \    Run Keyword If    '${_tmpData[0]}' == '${_data[0]}'    Exit For Loop    # compare "Name" field
+    ${_foundIndex} =    Set Variable If    '${_tmpData[0]}' == '${_data[0]}'    ${_index}    -1
+    [Return]    ${_foundIndex}    # start from 0, = -1 : not found
 
 _selectReleasePlanItem
-    [Arguments]  ${_name}
-    Click Element  xpath=//div[@class="x-treegrid-text" and (text()="${_name}")]  andDontWait
+    [Arguments]    ${_name}
+    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${_name}")]
 
 _getReleasePlanFieldnameList
-    ${_colCount} =  _getReleaseList_ColCount
-    ${_xpathBodyRow} =  Set Variable  xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[@class="x-treegrid-header-inner"]//thead
-    @{_data}  Create List
-    ${_colIndex} =  Evaluate  0
-    : FOR  ${_colIndex}  IN RANGE  0  ${_colCount}
-    \  ${_name} =  Get Text  ${_xpathBodyRow}//td[${_colIndex}+1]/div
-    \  Append To List  ${_data}  ${_name}
-    [Return]  @{_data}
+    ${_colCount} =    _getReleaseList_ColCount
+    ${_xpathBodyRow} =    Set Variable    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[@class="x-treegrid-header-inner"]//thead
+    @{_data}    Create List
+    ${_colIndex} =    Evaluate    0
+    : FOR    ${_colIndex}    IN RANGE    0    ${_colCount}
+    \    ${_name} =    Get Text    ${_xpathBodyRow}//td[${_colIndex}+1]/div
+    \    Append To List    ${_data}    ${_name}
+    [Return]    @{_data}
 
 _getReleaseList_ColCount
-    ${_columnCount} =  Evaluate  0
-    ${_columnCount} =  Get Matching Xpath Count  //div[@id="ReleasePlan_ReleaseTree"]//div[@class="x-treegrid-header-inner"]//td
-    [Return]  ${_columnCount}
+    ${_columnCount} =    Evaluate    0
+    ${_columnCount} =    Get Matching Xpath Count    //div[@id="ReleasePlan_ReleaseTree"]//div[@class="x-treegrid-header-inner"]//td
+    [Return]    ${_columnCount}
 
 _getReleasePlanDataList
-    [Arguments]  ${_rowIndex}  # start from 0
-    ${_colCount} =  _getReleaseList_ColCount
-    ${_xpathBodyRow} =  Set Variable  xpath=//table[@class='x-treegrid-root-table']/tbody[${_rowIndex}+1]
-    @{_rowDatList}  Create List
-    ${_colIndex} =  Evaluate  1
-    : FOR  ${_colIndex}  IN RANGE  1  ${_colCount}
-    \  ${_name} =  Get Text  ${_xpathBodyRow}//td[${_colIndex}+1]/div
-    \  Append To List  ${_rowDatList}  ${_name}
-    [Return]  @{_rowDatList}
+    [Arguments]    ${_rowIndex}    # start from 0
+    ${_colCount} =    _getReleaseList_ColCount
+    ${_xpathBodyRow} =    Set Variable    xpath=//table[@class='x-treegrid-root-table']/tbody[${_rowIndex}+1]
+    @{_rowDatList}    Create List
+    ${_colIndex} =    Evaluate    1
+    : FOR    ${_colIndex}    IN RANGE    1    ${_colCount}
+    \    ${_name} =    Get Text    ${_xpathBodyRow}//td[${_colIndex}+1]/div
+    \    Append To List    ${_rowDatList}    ${_name}
+    [Return]    @{_rowDatList}
 
 _fillReleasePlanInfo
-    [Arguments]  @{_info}
-    Focus AND Input Text  //div[@id="ReleaseDetailForm"]//input[@name="Name"]  ${_info[0]}  # Name
-    Focus AND Input Text  //div[@id="ReleaseDetailForm"]//input[@name="StartDate"]  ${_info[1]}  # Start Date
-    Focus AND Input Text  //div[@id="ReleaseDetailForm"]//input[@name="EndDate"]  ${_info[2]}  # End Date
-    Focus AND Input Text  //div[@id="ReleaseDetailForm"]//textarea[@name="Description"]  ${_info[3]}  # Description
+    [Arguments]    @{_info}
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="Name"]    ${_info[0]}    # Name
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="StartDate"]    ${_info[1]}    # Start Date
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="EndDate"]    ${_info[2]}    # End Date
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//textarea[@name="Description"]    ${_info[3]}    # Description
 
 _editlReleasePlanInfo
-    [Arguments]  @{_info}
-    Focus AND Input Text  //input[@name="Name"]  ${_info[0]} update  # Name
-    Focus AND Input Text  //input[@name="StartDate"]  ${_info[1]}  # Start Date
-    Focus AND Input Text  //input[@name="EndDate"]  ${_info[2]}  # End Date
-    Focus AND Input Text  //textarea[@name="Description"]  ${_info[3]} update  # Description
+    [Arguments]    @{_info}
+    Focus AND Input Text    //input[@name="Name"]    ${_info[0]} update    # Name
+    Focus AND Input Text    //input[@name="StartDate"]    ${_info[1]}    # Start Date
+    Focus AND Input Text    //input[@name="EndDate"]    ${_info[2]}    # End Date
+    Focus AND Input Text    //textarea[@name="Description"]    ${_info[3]} update    # Description
 
 _saveReleasePlanInfo
-    [Arguments]  ${_titleName}  ${_buttonName}
-    ${releaseID}=  Get Value  xpath=//input[@name="Id"]
-    ${xpathEditReleaseBtn}=  Find Current Window Element  ${_titleName} #${releaseID}  ${_buttonName}
-    Element Enable And Submit  ${xpathEditReleaseBtn}
+    [Arguments]    ${_titleName}    ${_buttonName}
+    ${releaseID}=    Get Value    xpath=//input[@name="Id"]
+    ${xpathEditReleaseBtn}=    Find Current Window Element    ${_titleName} #${releaseID}    ${_buttonName}
+    Element Enable And Submit    ${xpathEditReleaseBtn}
 
 NewReleasePlan
-    [Arguments]  @{info}
-    Set Selenium Speed  ${SELENIUM_SPEED}
-    @{_tmp} =  _getReleasePlanFieldnameList
+    [Arguments]    @{info}
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    @{_tmp} =    _getReleasePlanFieldnameList
     # click "Add" Button
-    Click Element  xpath=//button[text()="New Release Plan"]  andDontWait
-    ${releaseID}=  Get Value  xpath=//div[@id="ReleaseDetailForm"]//input[@name="Id"]
-    _fillReleasePlanInfo  @{info}
-    _saveCreateReleasePlanInfo  Create Release  Submit
-    Wait Until Page Contains  ${info[0]}
+    Click Element    xpath=//button[text()="New Release Plan"]
+    ${releaseID}=    Get Value    xpath=//div[@id="ReleaseDetailForm"]//input[@name="Id"]
+    _fillReleasePlanInfo    @{info}
+    _saveCreateReleasePlanInfo    Create Release    Submit
+    Wait Until Page Contains    ${info[0]}
     #
-    ${_foundIndex} =  _findReleasePlanItem  @{info}
-    @{_actualDataList}  _getReleasePlanDataList  ${_foundIndex}
-    CompareList  @{info}  @{_actualDataList}
-    [Return]  ${releaseID}
+    ${_foundIndex} =    _findReleasePlanItem    @{info}
+    @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
+    CompareList    @{info}    @{_actualDataList}
+    [Return]    ${releaseID}
 
 EditReleasePlan
-    [Arguments]  @{info}
-    Set Selenium Speed  ${SELENIUM_SPEED}
+    [Arguments]    @{info}
+    Set Selenium Speed    ${SELENIUM_SPEED}
     # update Info
-    @{_tmp} =  _getReleasePlanFieldnameList
-    _selectReleasePlanItem  ${info[0]}
-    Click Element  xpath=//button[text()="Edit Release Plan"]  andDontWait
-    _editlReleasePlanInfo  @{info}
-    _saveReleasePlanInfo  Edit Release  Submit
-    Wait Until Page Contains  ${info[0]} update
+    @{_tmp} =    _getReleasePlanFieldnameList
+    _selectReleasePlanItem    ${info[0]}
+    Click Element    xpath=//button[text()="Edit Release Plan"]
+    _editlReleasePlanInfo    @{info}
+    _saveReleasePlanInfo    Edit Release    Submit
+    Wait Until Page Contains    ${info[0]} update
     # restore Info
-    _selectReleasePlanItem  ${info[0]} update
-    Click Element  xpath=//button[text()="Edit Release Plan"]  andDontWait
-    _fillReleasePlanInfo  @{info}
-    _saveReleasePlanInfo  Edit Release  Submit
-    Wait Until Page Contains  ${info[0]}
+    _selectReleasePlanItem    ${info[0]} update
+    Click Element    xpath=//button[text()="Edit Release Plan"]
+    _fillReleasePlanInfo    @{info}
+    _saveReleasePlanInfo    Edit Release    Submit
+    Wait Until Page Contains    ${info[0]}
     # check if added #show "OK' buuton
-    ${_foundIndex} =  _findReleasePlanItem  @{info}
-    @{_actualDataList}  _getReleasePlanDataList  ${_foundIndex}
-    CompareList  @{info}  @{_actualDataList}
+    ${_foundIndex} =    _findReleasePlanItem    @{info}
+    @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
+    CompareList    @{info}    @{_actualDataList}
 
 DeleteReleasePlan
-    [Arguments]  @{info}
-    Set Selenium Speed  ${SELENIUM_SPEED}
+    [Arguments]    @{info}
+    Set Selenium Speed    ${SELENIUM_SPEED}
     # select
-    _selectReleasePlanItem  ${info[0]}
+    _selectReleasePlanItem    ${info[0]}
     # click
-    Click Element  xpath=//button[text()="Delete Release Plan"]  andDontWait
+    Click Element    xpath=//button[text()="Delete Release Plan"]
     # confirm
-    Click Element  xpath=//button[text()="Delete"]  andDontWait
+    Click Element    xpath=//button[text()="Delete"]
     # check if deleted
-    Comment  ${_itemCount} =  Get Matching Xpath Count  //table[@class='x-treegrid-root-table']/tbody
-    Comment  Should Be Equal  ${_itemCount}  0
+    Comment    ${_itemCount} =    Get Matching Xpath Count    //table[@class='x-treegrid-root-table']/tbody
+    Comment    Should Be Equal    ${_itemCount}    0
 
 ShowReleaseBacklog
-    [Arguments]  @{info}
-    Set Selenium Speed  ${SELENIUM_SPEED}
+    [Arguments]    @{info}
+    Set Selenium Speed    ${SELENIUM_SPEED}
     # select
-    _selectReleasePlanItem  ${info[0]}
+    _selectReleasePlanItem    ${info[0]}
     # click
-    Click Element  xpath=//button[text()="Show Release Backlog"]  andDontWait
-    Click Element  xpath=//button[text()="Close"]  andDontWait  # //div[@class="x-tool x-tool-close "]
+    Click Element    xpath=//button[text()="Show Release Backlog"]
+    Click Element    xpath=//button[text()="Close"]    # //div[@class="x-tool x-tool-close "]
     # Pop Window # 分成上下兩個視窗
     # (I) Story Burndown Chart
-    ${_xpathPopUpWin1} =  Set Variable  xpath=//span[.="Story Counts Burndown Chart"]
+    ${_xpathPopUpWin1} =    Set Variable    xpath=//span[.="Story Counts Burndown Chart"]
     # (II) Story List # 下方還有ToolBar可操作
-    ${_xpathPopUpWin2} =  Set Variable  xpath=//div[@id="releaseBacklogGridPanel"]/div[2]
-    ${_xpathStoryListTitle} =  Set Variable  ${_xpathPopUpWin2}//div[@class="x-grid3-header"]//td
-    ${_xpathStoryListBody} =  Set Variable  ${_xpathPopUpWin2}//table[@class="x-grid3-row-table"]//td
+    ${_xpathPopUpWin2} =    Set Variable    xpath=//div[@id="releaseBacklogGridPanel"]/div[2]
+    ${_xpathStoryListTitle} =    Set Variable    ${_xpathPopUpWin2}//div[@class="x-grid3-header"]//td
+    ${_xpathStoryListBody} =    Set Variable    ${_xpathPopUpWin2}//table[@class="x-grid3-row-table"]//td
 
 CompareList
-    [Arguments]  @{_data}
-    ${_length} =  Get Length  ${_data}
-    ${_length} =  Evaluate  ${_length}/2
-    : FOR  ${_index}  IN RANGE  0  ${_length}
-    \  Should Be Equal  ${_data[${_index}]}  ${_data[${_length} + ${_index}]}
+    [Arguments]    @{_data}
+    ${_length} =    Get Length    ${_data}
+    ${_length} =    Evaluate    ${_length}/2
+    : FOR    ${_index}    IN RANGE    0    ${_length}
+    \    Should Be Equal    ${_data[${_index}]}    ${_data[${_length} + ${_index}]}
 
 _saveCreateReleasePlanInfo
-    [Arguments]  ${_titleName}  ${_buttonName}
-    ${xpathEditReleaseBtn}=  Find Current Window Element  ${_titleName}  ${_buttonName}
-    Element Enable And Submit  ${xpathEditReleaseBtn}
+    [Arguments]    ${_titleName}    ${_buttonName}
+    ${xpathEditReleaseBtn}=    Find Current Window Element    ${_titleName}    ${_buttonName}
+    Element Enable And Submit    ${xpathEditReleaseBtn}
 
 Clean Release
-    ${ReleaseCount}=  Get Matching Xpath Count  //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
-    Log  ${ReleaseCount}  info
-    : FOR  ${_index}  IN RANGE  0  ${ReleaseCount}
+    ${ReleaseCount}=    Get Matching Xpath Count    //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
+    Log    ${ReleaseCount}    info
+    : FOR    ${_index}    IN RANGE    0    ${ReleaseCount}
     # Mouse Down //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
     # Mouse Up //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
-    \  Click Element  xpath=//div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..  andDontWait
-    \  Click Element  xpath=//button[text()="Delete Release Plan"]  andDontWait
-    \  ${xpathDeleteSprint}=  Find Current Window Element  Delete Release  Delete
-    \  Click Element  xpath=${xpathDeleteSprint}  andDontWait
+    \    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
+    \    Click Element    xpath=//button[text()="Delete Release Plan"]
+    \    ${xpathDeleteSprint}=    Find Current Window Element    Delete Release    Delete
+    \    Click Element    xpath=${xpathDeleteSprint}
 
 Get Start Date
-    [Arguments]  ${difference}
-    ${startDate}  Get Time  year/month/day  ${difference}
-    ${dateReturn}=  Catenate  SEPARATOR=/  ${startDate[0]}  ${startDate[1]}  ${startDate[2]}
-    [Return]  ${dateReturn}
+    [Arguments]    ${difference}
+    ${startDate}    Get Time    year/month/day    ${difference}
+    ${dateReturn}=    Catenate    SEPARATOR=/    ${startDate[0]}    ${startDate[1]}    ${startDate[2]}
+    [Return]    ${dateReturn}
 
 Create Sprint In Release Plan
-    [Arguments]  ${sprintGoal}  ${sprintStartDate}  ${sprintInterval}  ${sprintMembers}  ${sprintAvaliableDays}  ${sprintFocusFactor}
-    Click Element  xpath=//div[@id="sprintAction"]//button[text()="New Sprint"]  andDontWait
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//textarea[@name="Goal"]  ${sprintGoal}
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="StartDate"]  ${sprintStartDate}
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="Interval"]  ${sprintInterval}
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="Members"]  ${sprintMembers}
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="AvaliableDays"]  ${sprintAvaliableDays}
-    Focus AND Input Text  //span[text()="Add New Sprint"]/../../../../..//input[@name="FocusFactor"]  ${sprintFocusFactor}
-    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
-    ${xpathAddNewSprint}=  Find Current Window Element  Add New Sprint  Submit
-    Element Enable And Submit  ${xpathAddNewSprint}
-    Wait Until Page Contains  Success.
-    Xpath Should Match X Times  //div[@id="ReleasePlan_ReleaseTree"]//div[text()="${sprintGoal}"]  1
+    [Arguments]    ${sprintGoal}    ${sprintStartDate}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="New Sprint"]
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//textarea[@name="Goal"]    ${sprintGoal}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="StartDate"]    ${sprintStartDate}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="Interval"]    ${sprintInterval}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
+    ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
+    Element Enable And Submit    ${xpathAddNewSprint}
+    Wait Until Page Contains    Success.
+    Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="${sprintGoal}"]    1
 
 Edit Sprint In Release Plan
-    [Arguments]  ${sprintGoal}  ${sprintInterval}  ${sprintMembers}  ${sprintAvaliableDays}  ${sprintFocusFactor}
-    Click Element  xpath=//div[@id="sprintAction"]//table[@id="ReleasePlan_editSprintBtn"]//button[text()="Edit Sprint"]  andDontWait
-    ${sprintID}=  Get Value  xpath=//input[@name="Id"]
-    Focus AND Input Text  //span[text()="Edit Sprint #${sprintID}"]/../../../../..//textarea[@name="Goal"]  ${sprintGoal}
-    Click Image  xpath=//span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="StartDate"]/../img  andDontWait
-    Click Element  xpath=//button[text()="Today"]  andDontWait
-    Focus AND Input Text  //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Interval"]  ${sprintInterval}
-    Focus AND Input Text  //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Members"]  ${sprintMembers}
-    Focus AND Input Text  //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="AvaliableDays"]  ${sprintAvaliableDays}
-    Focus AND Input Text  //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="FocusFactor"]  ${sprintFocusFactor}
-    ${xpathEditSprint}=  Find Current Window Element  Edit Sprint #${sprintID}  Submit
-    Element Enable And Submit  ${xpathEditSprint}
-    Wait Until Page Contains  Success.
-
+    [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Click Element    xpath=//div[@id="sprintAction"]//table[@id="ReleasePlan_editSprintBtn"]//button[text()="Edit Sprint"]
+    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
+    Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//textarea[@name="Goal"]    ${sprintGoal}
+    Click Image    xpath=//span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
+    Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Interval"]    ${sprintInterval}
+    Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${xpathEditSprint}=    Find Current Window Element    Edit Sprint #${sprintID}    Submit
+    Element Enable And Submit    ${xpathEditSprint}
+    Wait Until Page Contains    Success.

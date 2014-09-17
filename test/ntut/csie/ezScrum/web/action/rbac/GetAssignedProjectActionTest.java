@@ -2,19 +2,18 @@ package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IPermission;
-import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -30,7 +29,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 	
 	private String actionPath = "/getAssignedProject";	// defined in "struts-config.xml"
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 	
 	public GetAssignedProjectActionTest(String testMethod) {
@@ -38,7 +37,11 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -57,7 +60,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 		super.setUp();
 		
 		// 固定行為可抽離
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo(this.actionPath);
     	
@@ -66,11 +69,14 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();    	
     	
@@ -83,6 +89,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	this.CA = null;
     	this.config = null;
     	this.accountMapper = null;
+    	configuration = null;
     }
     
     // 
@@ -94,7 +101,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	String projectId = this.CP.getProjectList().get(0).getName();
     	// User Information
     	
-    	String userId = this.CA.getAccount_ID(1);
+    	String userId = this.CA.getAccountList().get(0).getId();
     	// ================ set initial data =======================    	
     	
     	// ================== set parameter info ==================== 	    
@@ -102,7 +109,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	// ================== set parameter info ====================
     	    	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());
+    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
     	// ================ set session info ========================
     	
     	// ================ set URL parameter ========================    	
@@ -114,24 +121,25 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	IAccount account = this.accountMapper.getAccountById(userId);
+    	UserObject account = this.accountMapper.getAccountById(userId);
 		
 		assertNotNull(account);
 		
 		// role
-		IRole[] roles = account.getRoles();
+		HashMap<String, ProjectRole> roleMap = account.getRoles();
     	
-		assertEquals(roles.length, 2);		
-		IPermission[] permissons = roles[0].getPermisions();
-		String roleA = permissons[0].getPermissionName();	// actual role
-		permissons = roles[1].getPermisions();
-		String roleB = permissons[0].getPermissionName();	// actual role
-		
-		String res = this.AUTR.getNowProject().getName();	// project
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;	// scrum role
-		String roleE = res + "_" + op;	// expected role		
-		
-		assertEquals("system_read", roleA);	
-		assertEquals(roleE, roleB);	
+		assertEquals(1, roleMap.size());	// PO
+		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(projectId).getScrumRole().getRoleName());	
+//		IPermission[] permissons = roles[0].getPermisions();
+//		String roleA = permissons[0].getPermissionName();	// actual role
+//		permissons = roles[1].getPermisions();
+//		String roleB = permissons[0].getPermissionName();	// actual role
+//		
+//		String res = this.AUTR.getNowProject().getName();	// project
+//		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;	// scrum role
+//		String roleE = res + "_" + op;	// expected role		
+//		
+//		assertEquals("system_read", roleA);	
+//		assertEquals(roleE, roleB);	
     }		
 }

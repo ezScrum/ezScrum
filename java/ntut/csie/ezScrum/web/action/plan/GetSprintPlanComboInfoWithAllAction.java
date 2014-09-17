@@ -12,15 +12,13 @@ import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import com.google.gson.Gson;
 
 public class GetSprintPlanComboInfoWithAllAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(GetSprintPlanComboInfoWithAllAction.class);
+//	private static Log log = LogFactory.getLog(GetSprintPlanComboInfoWithAllAction.class);
 	
 	@Override
 	public boolean isValidAction() {

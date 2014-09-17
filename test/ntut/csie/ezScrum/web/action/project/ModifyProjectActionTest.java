@@ -4,27 +4,30 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import servletunit.struts.MockStrutsTestCase;
-
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
+import servletunit.struts.MockStrutsTestCase;
 
 public class ModifyProjectActionTest extends MockStrutsTestCase{
 	private CreateProject CP;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public ModifyProjectActionTest(String testMethod){
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		this.CP = new CreateProject(1);
@@ -37,23 +40,27 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
+		configuration = null;
 	}
 	
 	public void testModifyProjectInformation(){
 		// ================ set action info ========================
-		setContextDirectory( new File(config.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/ModifyProjectDescription");
 		
@@ -74,7 +81,7 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute( projectName, testProject );
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
 Resource          ezScrum_ReleasePlan_Management.txt
@@ -113,12 +113,12 @@ Test Release Plan - Session - Contain Sprints Setup
     # story information
     Set Test Variable    ${tcStoryName_A}    story 1 in project A
     Set Test Variable    ${tcValue_A}    3
-    Set Test Variable    ${tcEstimation_A}    5
+    Set Test Variable    ${tcEstimate_A}    5
     Set Test Variable    ${tcImportance_A}    8
     Set Test Variable    ${tcNotes_A}    test session for release plan in project A
     Set Test Variable    ${tcHowToDemo_A}    display correctly information in release plan in project A
     # add story
-    Create Story With Arguments    ${tcStoryName_A}    ${tcValue_A}    ${tcEstimation_A}    ${tcImportance_A}    ${EMPTY}    ${tcNotes_A}
+    Create Story With Arguments    ${tcStoryName_A}    ${tcValue_A}    ${tcEstimate_A}    ${tcImportance_A}    ${EMPTY}    ${tcNotes_A}
     ...    ${tcHowToDemo_A}
     ${tcStoryID_A}=    Get Story ID In Sprint Backlog    ${tcStoryName_A}
     Set Test Variable    ${tcStoryID_A}
@@ -147,12 +147,12 @@ Test Release Plan - Session - Contain Sprints Setup
     # story information
     Set Test Variable    ${tcStoryName_B}    story 1 in project B
     Set Test Variable    ${tcValue_B}    1
-    Set Test Variable    ${tcEstimation_B}    2
+    Set Test Variable    ${tcEstimate_B}    2
     Set Test Variable    ${tcImportance_B}    3
     Set Test Variable    ${tcNotes_B}    test session for release plan in project B
     Set Test Variable    ${tcHowToDemo_B}    display correctly information in release plan in project B
     # add story
-    Create Story With Arguments    ${tcStoryName_B}    ${tcValue_B}    ${tcEstimation_B}    ${tcImportance_B}    ${EMPTY}    ${tcNotes_B}
+    Create Story With Arguments    ${tcStoryName_B}    ${tcValue_B}    ${tcEstimate_B}    ${tcImportance_B}    ${EMPTY}    ${tcNotes_B}
     ...    ${tcHowToDemo_B}
     ${tcStoryID_B}=    Get Story ID In Sprint Backlog    ${tcStoryName_B}
     Set Test Variable    ${tcStoryID_B}

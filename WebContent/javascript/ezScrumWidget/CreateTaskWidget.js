@@ -21,8 +21,8 @@ ezScrum.CreateTaskForm = Ext.extend(Ext.form.FormPanel, {
 		            allowBlank: false,
 		            maxLength: 128
 		        }, {
-		            fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		            fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            vtype: 'Number'
 		        }, {
 		        	fieldLabel: 'Notes',

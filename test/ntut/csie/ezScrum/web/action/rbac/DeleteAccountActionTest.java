@@ -3,16 +3,13 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -23,7 +20,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
 	private int AccountCount = 2;
 	private String actionPath = "/deleteAccount";	// defined in "struts-config.xml"
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 	
 	public DeleteAccountActionTest(String testMethod) {
@@ -31,7 +28,11 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -46,7 +47,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
 		
 		super.setUp();
 		
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo(this.actionPath);
 		
@@ -55,11 +56,14 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();
     	
@@ -71,23 +75,24 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     	this.CA = null;
     	this.config = null;
     	this.accountMapper = null;
+    	configuration = null;
     }
     
     // 測試正常執行
     public void testDeleteAccountAction() throws LogonException {
 		
     	// ================ set initial data =======================
-		String userId = this.CA.getAccount_ID(1);
+		String userId = this.CA.getAccountList().get(0).getId();
 		
     	// ================== set parameter info ====================
     	addRequestParameter("id", userId);
     	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());
+    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
     	
     	// 執行 action
     	actionPerform();
-    	IAccount account = this.accountMapper.getAccountById(userId);
+    	UserObject account = this.accountMapper.getAccount(userId);
 		
 		assertNull(account);
     }

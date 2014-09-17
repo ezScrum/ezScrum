@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../common_resource.txt
 Resource          ../Project/ezScrum_Project.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
@@ -26,11 +26,11 @@ Test TaskBoard - Precondition
     Select Node Product    Sprint Backlog
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
-    Set Test Variable    ${tcStoryEstimation}    2
+    Set Test Variable    ${tcStoryEstimate}    2
     Set Test Variable    ${tcStoryImportance}    3
     Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
     Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
-    Create Story With Arguments    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimation}    ${tcStoryImportance}    ${EMPTY}    ${tcStoryNotes}
+    Create Story With Arguments    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}    ${EMPTY}    ${tcStoryNotes}
     ...    ${tcStoryHowToDemo}
     ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
     Set Test Variable    ${tcStoryID}
@@ -50,10 +50,10 @@ Test TaskBoard - Sprint Information Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -64,10 +64,10 @@ Test TaskBoard - Task Checked Out Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Checked Out
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task Checked Out
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -78,10 +78,10 @@ Test TaskBoard - Task Done Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Done
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task Done
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -92,10 +92,10 @@ Test TaskBoard - Task ReOpen Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task ReOpen
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task ReOpen
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -106,10 +106,10 @@ Test TaskBoard - Task ReChecked Out Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -120,10 +120,10 @@ Test TaskBoard - Story Done Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -145,10 +145,10 @@ Test TaskBoard - Story ReOpen Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test story ReOpen
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test story ReOpen
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -159,10 +159,10 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Test TaskBoard - Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test Story Done But All the tasks of Story are not Done
-    Set Test Variable    ${tcTaskEstimation}    3
+    Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test Story Done But All the tasks of Story are not Done
     # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimation}    ${tcTaskNotes}
+    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 

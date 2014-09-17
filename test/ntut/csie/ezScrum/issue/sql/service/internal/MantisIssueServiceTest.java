@@ -8,13 +8,12 @@ import java.util.List;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -23,7 +22,7 @@ import org.jdom.Element;
 public class MantisIssueServiceTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private MantisIssueService MISservice;
 	private MantisService MService;
 	
@@ -32,7 +31,11 @@ public class MantisIssueServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -40,20 +43,18 @@ public class MantisIssueServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, config.getUserSession());
-		this.MService = new MantisService(itsPrefs);
-		this.MISservice = new MantisIssueService(this.MService.getControl(), itsPrefs);
+		this.MService = new MantisService(configuration);
+		this.MISservice = new MantisIssueService(this.MService.getControl(), configuration);
 		
 		super.setUp();
 		
 		// ============= release ==============
 		ini = null;
 		project = null;
-		itsPrefs = null;
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		//再一次關閉SQL連線，以免導致Project無法刪除
@@ -62,13 +63,16 @@ public class MantisIssueServiceTest extends TestCase {
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
+    	configuration.setTestMode(false);
+		configuration.store();
+    	
     	// ============= release ==============
     	ini = null;
     	copyProject = null;
     	this.CP = null;
-    	this.config = null;
     	this.MISservice = null;
     	this.MService = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}		
@@ -438,8 +442,6 @@ public class MantisIssueServiceTest extends TestCase {
 		assertEquals(2, actualIssues.length);
 		assertEquals(8, actualIssues[0].getIssueID());
 		assertEquals(9, actualIssues[1].getIssueID());
-		
-		
 		
 		// close connection
 		this.MService.closeConnect();

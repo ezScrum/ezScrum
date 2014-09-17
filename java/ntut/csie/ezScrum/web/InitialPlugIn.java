@@ -175,16 +175,16 @@ public class InitialPlugIn implements org.apache.struts.action.PlugIn {
 		
 		// 設定基本檔案複製動作
 		ProjectLogic projectLogic = new ProjectLogic();
-		projectLogic.cloneDefaultFile();
+//		projectLogic.cloneDefaultFile(); ezSCrum v1.8不需要
 		
 		// =============================================
 		// 下面的檢查是為了讓 v1.2 可以相容而所做的檢查
 		
 		// 檢查專案的角色是否都正確建立於 RoleBase
-		projectLogic.check_default_role();
+//		projectLogic.check_default_role(); ezSCrum v1.8不需要
 		
 		// 檢查各個專案的 ScrumRole 是否有 guest 角色
-		projectLogic.check_role_guest();
+//		projectLogic.check_role_guest(); ezSCrum v1.8不需要
 		// =============================================
 		
 		/*

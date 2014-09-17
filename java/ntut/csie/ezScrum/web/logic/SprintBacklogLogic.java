@@ -67,7 +67,7 @@ public class SprintBacklogLogic {
 		return sprintBacklogMapper;
 	}
 
-	public long addTask(String name, String description, String estimation,
+	public long addTask(String name, String description, String estimate,
 	        String handler, String partners, String notes, long storyID,
 	        Date date) {
 
@@ -76,12 +76,12 @@ public class SprintBacklogLogic {
 		// 利用edit來增加estimation的tag
 		// 剛新增Task時Remaining = estimation
 		String actualHour = "0";
-		this.editTask(taskID, name, estimation, estimation, handler, partners, actualHour, notes, date);
+		this.editTask(taskID, name, estimate, estimate, handler, partners, actualHour, notes, date);
 
 		return taskID;
 	}
 
-	public boolean editTask(long taskID, String Name, String estimation,
+	public boolean editTask(long taskID, String Name, String estimate,
 	        String remains, String handler, String partners, String actualHour,
 	        String notes, Date modifyDate) {
 		// 先變更handler
@@ -100,10 +100,10 @@ public class SprintBacklogLogic {
 		        (modifyDate == null ? new Date() : modifyDate),
 		        DateUtil._16DIGIT_DATE_TIME_2));
 
-		if (estimation != null && !estimation.equals("")) {
-			if (!task.getEstimated().equals(estimation)) {
+		if (estimate != null && !estimate.equals("")) {
+			if (!task.getEstimated().equals(estimate)) {
 				Element storyPoint = new Element(ScrumEnum.ESTIMATION);
-				storyPoint.setText(estimation);
+				storyPoint.setText(estimate);
 				history.addContent(storyPoint);
 			}
 		}

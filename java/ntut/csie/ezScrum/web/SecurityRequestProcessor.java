@@ -113,6 +113,5 @@ public class SecurityRequestProcessor extends TilesRequestProcessor {
         
         //其它沒有session不準存取
         return false;
-
     }
 }

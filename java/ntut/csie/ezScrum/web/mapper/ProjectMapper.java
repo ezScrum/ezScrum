@@ -6,16 +6,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RoleEnum;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
+import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.project.core.ICVS;
 import ntut.csie.jcis.project.core.IProjectDescription;
@@ -32,7 +38,99 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
 
-	public ProjectMapper() {}
+	//private ITSPrefsStorage mPrefs;
+	private MySQLService mService;
+	
+	private Configuration mConfig;
+
+	public ProjectMapper() {
+		//mPrefs = new ITSPrefsStorage();
+		mConfig = new Configuration();
+		mService = new MySQLService(mConfig);
+	}
+
+	/**
+	 * new mapper function for ezScrum v1.8
+	 */
+	public ProjectObject createProjectForDb(ProjectObject project) {
+		mService.openConnect();
+		mService.createProject(project);
+		project = mService.getProjectByPid(project.getName());
+		mService.closeConnect();
+		return project;
+	}
+
+	public boolean deleteProjectForDb(String id) {
+		mService.openConnect();
+		boolean result = mService.deleteProject(id);
+		mService.closeConnect();
+		return result;
+	}
+
+	public ProjectObject updateProjectForDb(ProjectObject project) {
+		mService.openConnect();
+		mService.updateProject(project);
+		project = mService.getProjectById(project.getId());
+		mService.closeConnect();
+		return project;
+	}
+
+	public List<ProjectObject> getProjectListForDb() {
+		mService.openConnect();
+		List<ProjectObject> result = mService.getProjectList();
+		mService.closeConnect();
+		if (result == null) result = new ArrayList<ProjectObject>();
+		return result;
+	}
+
+	public ProjectObject getProjectByIdForDb(String id) {
+		mService.openConnect();
+		ProjectObject result = mService.getProjectById(id);
+		mService.closeConnect();
+		return result;
+	}
+	
+	public ProjectObject getProjectByPidForDb(String pid) {
+		mService.openConnect();
+		ProjectObject result = mService.getProjectByPid(pid);
+		mService.closeConnect();
+		return result;
+	}
+
+	public List<UserObject> getProjectMemberListForDb(String id) {
+		mService.openConnect();
+		List<UserObject> result = mService.getProjectMemberList(id);
+		mService.closeConnect();
+		return result;
+	}
+
+	public List<UserObject> getProjectScrumWorkerListForDb(String id) {
+		mService.openConnect();
+		List<UserObject> result = mService.getProjectWorkerList(id);
+		mService.closeConnect();
+		return result;
+	}
+	
+	public List<String> getProjectScrumWorkerList(String id) {
+		mService.openConnect();
+		List<UserObject> userList = mService.getProjectWorkerList(id);
+		mService.closeConnect();
+		List<String> result = new ArrayList<String>();
+		for (UserObject user : userList) {
+			result.add(user.getAccount());
+		}
+		return result;
+	}
+
+	public void createScrumRole(String id) {
+		ScrumRole scrumRole;
+		mService.openConnect();
+		for (RoleEnum role : RoleEnum.values()) {
+			scrumRole = new ScrumRole(role);
+			mService.createScrumRole(id, role, scrumRole);
+		}
+		mService.closeConnect();
+    }
 
 	/**
 	 * 建立專案的資料結構及外部檔案
@@ -43,15 +141,15 @@ public class ProjectMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public IProject createProject(IUserSession userSession, ITSInformation itsInformation, ProjectInfoForm projectInfoForm) throws Exception {
-		ITSPrefsStorage tmpPrefs = this.setITSInformation(itsInformation);
-
+	@Deprecated
+	public IProject createProject(IUserSession userSession, ProjectInfoForm projectInfoForm) throws Exception {
+		Configuration config = new Configuration();
 		// save in the workspace，並且建立Project資料夾
 		// 這樣後續的設定檔複製儲存動作才能正常進行
-		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, tmpPrefs);
+		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, config);
 
 		// 建立專案資訊 in database
-		this.createProjectDB(tmpPrefs, project, userSession);
+		this.createProjectDB(config, project, userSession);
 
 		return project;
 	}
@@ -64,10 +162,11 @@ public class ProjectMapper {
 	 * @param userSession
 	 * @throws Exception
 	 */
-	private void createProjectDB(ITSPrefsStorage tmpPrefs, IProject project, IUserSession userSession) throws Exception {
+	@Deprecated
+	private void createProjectDB(Configuration tmpConfig, IProject project, IUserSession userSession) throws Exception {
 		// 測試連線並且檢查DB內的Table是否正確
-		MantisService mantisService = new MantisService(tmpPrefs);
-		mantisService.TestConnect();
+		MantisService mantisService = new MantisService(tmpConfig);
+		mantisService.testConnect();
 
 		// Create Project in Mantis 因為確定 ITS 資料正確，所以不用再對
 		// createProject 做一次確認
@@ -83,7 +182,8 @@ public class ProjectMapper {
 	 * @param tmpPrefs
 	 * @return
 	 */
-	private IProject createProjectWorkspace(IUserSession userSession, ProjectInfoForm saveProjectInfoForm, ITSPrefsStorage tmpPrefs) {
+	@Deprecated
+	private IProject createProjectWorkspace(IUserSession userSession, ProjectInfoForm saveProjectInfoForm, Configuration tmpConfig) {
 		IProject project = null;
 		try {
 			log.info("Save Project Info!");
@@ -94,7 +194,7 @@ public class ProjectMapper {
 		} catch (Exception e) {
 			log.warn("Save Project Error!" + e.getMessage());
 		}
-		this.saveITSConfig(project, userSession, tmpPrefs);
+//		this.saveITSConfig(project, userSession, tmpPrefs); ezScrum v1.8 不需要
 		return project;
 	}
 
@@ -103,6 +203,7 @@ public class ProjectMapper {
 	 * 
 	 * @param projectID
 	 */
+	@Deprecated
 	public void deleteProject(String projectID) {
 		IProject project = this.getProjectByID(projectID);
 		try {
@@ -118,6 +219,7 @@ public class ProjectMapper {
 	 * @param saveProjectInfoForm
 	 * @return
 	 */
+	@Deprecated
 	public IProject updateProject(ProjectInfoForm saveProjectInfoForm) {
 		IProject project = saveProjectInformation(saveProjectInfoForm);
 		if (project.exists()) {
@@ -131,6 +233,7 @@ public class ProjectMapper {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public List<IProject> getAllProjectList() {
 		IWorkspace workspace = ResourceFacade.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -147,6 +250,7 @@ public class ProjectMapper {
 	 * @param projectID
 	 * @return
 	 */
+	@Deprecated
 	public IProject getProjectByID(String projectID) {
 		IWorkspace workspace = ResourceFacade.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -161,6 +265,7 @@ public class ProjectMapper {
 	 * @param projectID
 	 * @return
 	 */
+	@Deprecated
 	public IProject cloneProjectByID(String projectID) {
 		IWorkspace workspace = ResourceFacade.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -175,12 +280,14 @@ public class ProjectMapper {
 	 * @param project
 	 * @return
 	 */
+	@Deprecated
 	public ProjectInfoForm getProjectInfoForm(IProject project) {
 		IProjectDescription desc = project.getProjectDesc();
 
 		ProjectInfoForm form = new ProjectInfoForm();
 		String fileSize = desc.getAttachFileSize();
-		if (fileSize == null || fileSize.compareTo("") == 0) form.setAttachFileSize("2");
+		if (fileSize == null || fileSize.compareTo("") == 0)
+			form.setAttachFileSize("2");
 		else form.setAttachFileSize(desc.getAttachFileSize());
 		form.setName(desc.getName());
 		form.setDisplayName(desc.getDisplayName());
@@ -223,6 +330,7 @@ public class ProjectMapper {
 	 * @param project
 	 * @return
 	 */
+	@Deprecated
 	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
 		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
 		List<IAccount> projectMemberList = mantisAccountManager.getProjectMemberList(project);
@@ -235,12 +343,14 @@ public class ProjectMapper {
 	 * @param userSession
 	 * @param project
 	 */
+	@Deprecated
 	public List<String> getProjectScrumWorkerList(IUserSession userSession, IProject project) {
 		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
 		List<String> scrumWorkerList = mantisAccountManager.getScrumWorkerList(project);
 		return scrumWorkerList;
 	}
 
+	@Deprecated
 	private static String[] getSourceStrings(IPath[] paths) {
 		String[] sourceArray = new String[paths.length];
 
@@ -255,6 +365,7 @@ public class ProjectMapper {
 	 * 檢查 check file path 檔案是否存在，
 	 * 否則依據 clone file path 複製一份檔案過去
 	 */
+	@Deprecated
 	public void checkAndClone(String checkfilepath, String clonefilepath) throws IOException {
 		File checkfile = new File(checkfilepath);
 
@@ -283,6 +394,7 @@ public class ProjectMapper {
 	 * @param form
 	 * @return
 	 */
+	@Deprecated
 	private IProject saveProjectInformation(ProjectInfoForm form) {
 		IProject project = this.getProjectByID(form.getName());
 		IProjectDescription desc = project.getProjectDesc();
@@ -295,7 +407,8 @@ public class ProjectMapper {
 		desc.setSrc(convertStringToSourcePath(form.getSourcePaths()));
 		String fileSize = form.getAttachFileSize();
 		// 如果fileSize沒有填值的話，則自動填入2
-		if (fileSize.compareTo("") == 0) desc.setAttachFileSize("2");
+		if (fileSize.compareTo("") == 0)
+			desc.setAttachFileSize("2");
 		else desc.setAttachFileSize(form.getAttachFileSize());
 		ICVS cvs = desc.getCVS();
 		cvs.setServerType(form.getServerType());
@@ -319,29 +432,8 @@ public class ProjectMapper {
 		cvs.setRepositoryPath(repositoryPath);
 		return project;
 	}
-
-	/**
-	 * 儲存ITS資訊
-	 * 
-	 * @param project
-	 * @param userSession
-	 * @param tmpPrefs
-	 */
-	private void saveITSConfig(IProject project, IUserSession userSession, ITSPrefsStorage tmpPrefs)
-	{
-		/*-----------------------------------------------------------
-		 *	寫入ITS的設定檔
-		-------------------------------------------------------------*/
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, userSession);
-		prefs.setServerUrl(tmpPrefs.getServerUrl());
-		prefs.setServicePath(tmpPrefs.getWebServicePath());
-		prefs.setDBAccount(tmpPrefs.getDBAccount());
-		prefs.setDBPassword(tmpPrefs.getDBPassword());
-		prefs.setDBType(tmpPrefs.getDBType());
-		prefs.setDBName(tmpPrefs.getDBName());
-		prefs.save();
-	}
-
+	
+	@Deprecated
 	private IPath[] convertStringToSourcePath(String[] sourcePathArray) {
 		IPath[] sourcePaths = new IPath[sourcePathArray.length];
 
@@ -356,6 +448,7 @@ public class ProjectMapper {
 		return sourcePaths;
 	}
 
+	@Deprecated
 	private IPath convertStringToOutPath(String outPath) {
 
 		if (outPath.charAt(0) != '\\' && outPath.charAt(0) != '/') {
@@ -363,53 +456,5 @@ public class ProjectMapper {
 		}
 
 		return ResourceFacade.createPath(outPath);
-	}
-
-	/**
-	 * 設定ITS資訊
-	 * 
-	 * @param itsInformation
-	 * @return
-	 */
-	private ITSPrefsStorage setITSInformation(ITSInformation itsInformation) {
-		final String DEFAULT_ACCOUNT = "ezScrum";
-		final String DEFAULT_PASSWORD = "";
-		String projectName = itsInformation.getProjectName();
-		String serverURL = itsInformation.getServerURL();
-		String serverPath = itsInformation.getServerPath();
-		String serverAcc = itsInformation.getDbAccount();
-		String serverPwd = itsInformation.getDbPassword();
-		String dbName = itsInformation.getDbName();
-		String dbType = itsInformation.getDbType();
-
-		IProject projectTemp = this.getProjectByID(projectName);
-
-		// ProjectMapper projectMapper = new ProjectMapper();
-		// IProject projectTemp = projectMapper.getProjectByID(projectName);
-
-		// 設定ITS資訊
-		ITSPrefsStorage tmpPrefs = new ITSPrefsStorage(projectTemp, null);
-		tmpPrefs.setServerUrl(serverURL);
-		tmpPrefs.setServicePath(serverPath);
-		tmpPrefs.setDBAccount(serverAcc);
-		tmpPrefs.setDBPassword(serverPwd);
-		tmpPrefs.setDBName(dbName);
-
-		/*-----------------------------------------------------------
-		 *	設定使用的DB種類，如果是Default的話，那就預設是Local DB
-		-------------------------------------------------------------*/
-		if (dbType.contains("Default")) {
-			tmpPrefs.setDBType("Default");
-			tmpPrefs.setDBName(projectName);
-			// 並且ServerUrl設成Project名稱
-			tmpPrefs.setServerUrl(projectName);
-			// 帳號密碼也用預設的
-			tmpPrefs.setDBAccount(DEFAULT_ACCOUNT);
-			tmpPrefs.setDBPassword(DEFAULT_PASSWORD);
-		} else {
-			tmpPrefs.setDBType(dbType);
-		}
-
-		return tmpPrefs;
 	}
 }

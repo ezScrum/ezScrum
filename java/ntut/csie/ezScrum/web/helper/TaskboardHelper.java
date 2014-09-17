@@ -2,7 +2,7 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class TaskboardHelper {
 	private IProject project;
@@ -117,11 +118,11 @@ public class TaskboardHelper {
 			storyLength = 0;
 		}
 
-		Gson gson = new Gson();
-		HashMap<String, Object> jsonMap = new HashMap<String, Object>();
-		jsonMap.put("success", "true");
-		jsonMap.put("Total", storyLength);
+		Gson gson = new GsonBuilder().disableHtmlEscaping().create();;
+		LinkedHashMap<String, Object> jsonMap = new LinkedHashMap<String, Object>();
 		jsonMap.put("Stories", storyList);
+		jsonMap.put("success", true);
+		jsonMap.put("Total", storyLength);
 		return new StringBuilder(gson.toJson(jsonMap));
 	}
 	
@@ -219,7 +220,7 @@ public class TaskboardHelper {
 		String Link;
 		String Release;
 		String Sprint;
-		String Attach;
+		Boolean Attach;
 		List<TaskBoard_AttachFile> AttachFileList;
 		ArrayList<TaskBoard_Task> Tasks;
 
@@ -229,7 +230,7 @@ public class TaskboardHelper {
 			Value = story.getValue();
 			Estimate = story.getEstimated();
 			Importance = story.getImportance();
-			Tag = tr.Join(story.getTag(), ",");
+			Tag = tr.Join(story.getTags(), ",");
 			Status = story.getStatus();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
@@ -239,8 +240,8 @@ public class TaskboardHelper {
 			Link = story.getIssueLink();
 			AttachFileList = getAttachFilePath(story, story.getAttachFile());
 
-			if (!AttachFileList.isEmpty()) Attach = "true";
-			else Attach = "false";
+			if (!AttachFileList.isEmpty()) Attach = true;
+			else Attach = false;
 
 			Tasks = new ArrayList<TaskBoard_Task>();
 		}
@@ -254,7 +255,7 @@ public class TaskboardHelper {
 		String Handler;
 		String Notes;
 		List<TaskBoard_AttachFile> AttachFileList;
-		String Attach;
+		Boolean Attach;
 		String Status;
 		String Partners;
 		String Link;
@@ -272,8 +273,8 @@ public class TaskboardHelper {
 			Notes = HandleSpecialChar(task.getNotes());
 			Link = task.getIssueLink();
 			AttachFileList = getAttachFilePath(task, task.getAttachFile());
-			if (!AttachFileList.isEmpty()) Attach = "true";
-			else Attach = "false";
+			if (!AttachFileList.isEmpty()) Attach = true;
+			else Attach = false;
 		}
 	}
 

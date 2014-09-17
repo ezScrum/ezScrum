@@ -6,18 +6,18 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleasePlanDescSaverTest extends TestCase {
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	private CreateProject CP = null;
 	private IProject project = null;
 	private ReleasePlanMapper saver = null;
@@ -27,10 +27,13 @@ public class ReleasePlanDescSaverTest extends TestCase {
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
 		super.setUp();
 		
 		// initial SQL
-		InitialSQL init = new InitialSQL(config);
+		InitialSQL init = new InitialSQL(configuration);
 		init.exe();
 		
 		// create project
@@ -47,19 +50,22 @@ public class ReleasePlanDescSaverTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		// initial SQL
-		InitialSQL init = new InitialSQL(config);
+		InitialSQL init = new InitialSQL(configuration);
 		init.exe();
 		
 		// copy and delete test project
 		CopyProject cp = new CopyProject(this.CP);
 		cp.exeDelete_Project();
 		
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		// release
 		init = null;
 		cp = null;
 		this.CP = null;
-		this.config = null;
 		this.project = null;
+		configuration = null;
 		
 		super.tearDown();
 	}

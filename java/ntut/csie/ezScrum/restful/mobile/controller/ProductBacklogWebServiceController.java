@@ -5,11 +5,15 @@ import java.io.IOException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
@@ -18,6 +22,48 @@ import ntut.csie.jcis.account.core.LogonException;
 @Path("{projectID}/product-backlog/")
 public class ProductBacklogWebServiceController {
 	private ProductBacklogWebService pbws;
+	
+	/**
+	 * 建立一個Story
+	 * 需要Post Story JSON 字串
+	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/create?userName={userName}&password={password}
+	 */
+	@POST
+	@Path("create")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String createStory(@PathParam("projectID") String projectID,
+						      @QueryParam("userName") String userName,
+							  @QueryParam("password") String password,
+							  String storyJson) {
+		String storyCreateJsonString = "";
+		InformationDecoder informationDecoder = new InformationDecoder();
+		try {
+			informationDecoder.decode(userName, password, projectID);
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+											    informationDecoder.getDecodePwd(),
+											    informationDecoder.getDecodeProjectID());
+			
+	        pbws.createStory(new JSONObject(storyJson));
+	        storyCreateJsonString = pbws.getRESTFulResponseString();
+		} catch (IOException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+								"method: createStory, " +
+								"exception: "+ e.toString());
+			e.printStackTrace();
+		} catch (LogonException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+								"method: createStory, " +
+								"exception: "+ e.toString());
+			e.printStackTrace();
+		}  catch (JSONException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+					"method: createStory, " +
+					"exception: "+ e.toString());
+            e.printStackTrace();
+        }
+		return storyCreateJsonString;
+	}
+	
 	/**
 	 * 取得專案底下所有Story Get
 	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist?userName={userName}&password={password}
@@ -51,6 +97,48 @@ public class ProductBacklogWebServiceController {
 		}
 		return jsonString;
 	}
+	
+	/**
+	 * update Story
+	 * 需要Post Story JSON 字串
+	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/update?userName={userName}&password={password}
+	 */
+	@POST
+	@Path("update")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateStory(@PathParam("projectID") String projectID,
+						      @QueryParam("userName") String userName,
+							  @QueryParam("password") String password,
+							  String storyJson) {
+		String storyUpdateJsonString = "";
+		InformationDecoder informationDecoder = new InformationDecoder();
+		try {
+			informationDecoder.decode(userName, password, projectID);
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+											    informationDecoder.getDecodePwd(),
+											    informationDecoder.getDecodeProjectID());
+			
+	        pbws.updateStory(new JSONObject(storyJson));
+	        storyUpdateJsonString = pbws.getRESTFulResponseString();
+		} catch (IOException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+								"method: updateStory, " +
+								"exception: "+ e.toString());
+			e.printStackTrace();
+		} catch (LogonException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+								"method: updateStory, " +
+								"exception: "+ e.toString());
+			e.printStackTrace();
+		}  catch (JSONException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+					"method: updateStory, " +
+					"exception: "+ e.toString());
+            e.printStackTrace();
+        }
+		return storyUpdateJsonString;
+	}
+	
 	/**	刪除Story	DELETE
 	 * 	http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist/{storyID}?userName={userName}&password={password}
 	 * **/

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ezScrum_local" default="runEntry" basedir=".">
+<project name="ezScrum_local" default="runEntry" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
 
 	<!-- =================================================================== -->
 	<!-- Variable Declaration -->
@@ -16,7 +16,7 @@
 	<property name="java.runtime.localDir" value="javabootstrap" />
 	<property name="java.runtime.localDir.jre6" value="javabootstrap/jre6" />
 	<property name="java.runtime.localDir.jre7" value="javabootstrap/jre7" />
-	
+
 
 	<!-- =================================================================== -->
 	<!-- Path/Location Declaration -->
@@ -27,11 +27,11 @@
 	<!-- WEB -->
 	<property name="Web.Dir" location="WebContent" />
 	<property name="Web.Inf" location="${Web.Dir}/WEB-INF" />
-	<property name="Web.Class.Dir" location="${Web.Inf}/classes" />	
+	<property name="Web.Class.Dir" location="${Web.Inf}/classes" />
 	<property name="Web.PlugInWorkspace" location="${Web.Dir}/pluginWorkspace" />
-	
+
 	<property name="Target.Dir" location="${Web.Class.Dir}" />
-	<property name="Target.WarFile" location="ezScrum.war"/>	
+	<property name="Target.WarFile" location="ezScrum.war" />
 	<!-- LIB -->
 	<property name="Local.Library.Dir" location="lib" />
 	<property name="Web.Library.Dir" location="${Web.Inf}/lib" />
@@ -46,7 +46,7 @@
 	<property name="RFStest.Dir" location="robotTesting" />
 	<property name="RFSreport.Dir" location="_TestReport" />
 
-	<!--  -->
+	<!-- -->
 	<target name="_______segment_LIB_______" />
 	<!-- =================================================================== -->
 	<!-- Import LIB -->
@@ -61,10 +61,10 @@
 		<!-- Web LIB -->
 		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
 			<filename name="**/*.jar" />
-		</fileset>		
+		</fileset>
 	</path>
 
-	<!-- Jetty Server Library-->
+	<!-- Jetty Server Library -->
 	<path id="jetty.server.classpath">
 		<fileset dir="${Local.Library.Dir}/Jetty" casesensitive="yes">
 			<filename name="*.jar" />
@@ -77,18 +77,18 @@
 			<filename name="**/*.jar" />
 		</fileset>
 	</path>
-	
-	<!-- 目前 Web Lib 目錄下也有放ANT相關的LIB,會造成 run UT crashed,應該要移除!? -->	
+
+	<!-- 目前 Web Lib 目錄下也有放ANT相關的LIB,會造成 run UT crashed,應該要移除!? -->
 	<!-- Library for UT compile -->
 	<path id="ut.library.classpath">
 		<!-- mock struts test 需使用到 servelet API -->
 		<fileset dir="${Local.Library.Dir}/tomcat5.5" casesensitive="yes">
 			<filename name="*.jar" />
-		</fileset>		
+		</fileset>
 		<!-- test LIB -->
 		<fileset dir="${Local.Library.Dir}/test" casesensitive="yes">
 			<filename name="*.jar" />
-		</fileset>		
+		</fileset>
 		<!-- Web LIB -->
 		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
 			<include name="JCIS_*.jar" /><!-- 待移除 -->
@@ -99,61 +99,59 @@
 			<!-- plugin used -->
 			<include name="gson-*.jar" />
 			<include name="jettison-*.jar" />
-		</fileset>	
-	</path>		
-	
-	<!-- Library for running UT -->	
+		</fileset>
+	</path>
+
+	<!-- Library for running UT -->
 	<path id="ut_run.library.classpath">
 		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
-			<!-- web test used-->
-			<include name="commons-lang-*.jar" />		
-			<include name="c3p0-*.jar" />	
-			<include name="commons-collections-*.jar" />			
-			<!-- pluginLoader test used-->
-			<include name="commons-io-*.jar" /><!-- GAE 也有使用到 -->			
-			<!-- 參考GAE --> 
+			<!-- web test used -->
+			<include name="commons-lang-*.jar" />
+			<include name="c3p0-*.jar" />
+			<include name="commons-collections-*.jar" />
+			<!-- pluginLoader test used -->
+			<include name="commons-io-*.jar" /><!-- GAE 也有使用到 -->
+			<!-- 參考GAE -->
 			<include name="commons-beantuils.jar" />
 			<include name="commons-digester.jar" />
 			<include name="commons-fileupload.jar" />
 			<include name="commons-logging-*.jar" />
 			<include name="commons-validator.jar" />
 			<include name="commons-vfs-*.jar" />
-		</fileset>		
-	</path>	
-	
-	<!--  -->
+		</fileset>
+	</path>
+
+	<!-- -->
 	<target name="_______segment_Platform_______" />
 	<!-- =================================================================== -->
 	<!-- Platform Dependency -->
 	<!-- =================================================================== -->
 
-	<!--  -->
-	<target name="os_check"
-	      description="check opearting system">
+	<!-- -->
+	<target name="os_check" description="check opearting system">
 		<echo> OS checking...</echo>
 		<condition property="is.windows">
 			<!-- windows/unix -->
-			<os family="windows"/>
+			<os family="windows" />
 		</condition>
 	</target>
 
-	<!--  -->
-	<target name="checkPlatform"
-	    depends="check.unix, check.windows">
+	<!-- -->
+	<target name="checkPlatform" depends="check.unix, check.windows">
 	</target>
 
 	<!-- UNIX -->
 	<target name="check.unix" depends="os_check" unless="is.windows">
-		<echo message="####### run on UNIX platform #######"/>
-		<property name="target.Dir" location="RobotFramework"/>
+		<echo message="####### run on UNIX platform #######" />
+		<property name="target.Dir" location="RobotFramework" />
 	</target>
 
 	<!-- WINDOWS -->
 	<target name="check.windows" depends="os_check" if="is.windows">
-		<echo message="!!!!!!! run on WINDOWS platform !!!!!!!"/>
+		<echo message="!!!!!!! run on WINDOWS platform !!!!!!!" />
 	</target>
 
-	<!--  -->
+	<!-- -->
 	<target name="_______segment_Project_______" />
 	<!-- =================================================================== -->
 	<!-- ezScrum part -->
@@ -161,138 +159,130 @@
 
 	<target name="checkLIB4Project">
 		<!-- 待DB大改造完成之後將會移除 -->
-		<echo message="JCIS LIB used:"/>
-		<echo message="  _Builder.jar, _Core.jar, _SCM.jar, _Utility.jar, _Workspace.jar"/>
-		<echo message="currently could check if existed"/>
+		<echo message="JCIS LIB used:" />
+		<echo
+			message="  _Builder.jar, _Core.jar, _SCM.jar, _Utility.jar, _Workspace.jar" />
+		<echo message="currently could check if existed" />
 	</target>
 
 	<target name="check_Project_Model">
 		<!-- 待DB大改造完成之後將會移除 -->
-		<echo message="currently could check if existed"/>
+		<echo message="currently could check if existed" />
 	</target>
 
-	<target name="cleanWebClasses" >
+	<target name="cleanWebClasses">
 		<delete includeemptydirs="true">
-			<fileset dir="${Web.Class.Dir}" includes="**/*" excludes="ApplicationResources.properties" />
+			<fileset dir="${Web.Class.Dir}" includes="**/*"
+				excludes="ApplicationResources.properties" />
 		</delete>
 	</target>
 
 	<target name="compileSourceCode"
-			depends="check_Project_Model, checkLIB4Project, cleanWebClasses" 
-			description="編譯Java檔">
+		depends="check_Project_Model, checkLIB4Project, cleanWebClasses"
+		description="編譯Java檔">
 		<!-- compile -->
 		<echo message="Compile All Java File： ${Source.Java.Dir}" />
-		<javac
-				srcdir="${Source.Java.Dir}" 
-				destdir="${Target.Dir}" 
-				source="${javac_target_version}" 
-				target="${javac_target_version}" 
-				bootclasspath="${java.runtime.localDir.jre6}/rt.jar" 
-				deprecation="${javac_deprecation}" 
-				debug="${javac_debug}" 
-				encoding="${javac_encoding}">
+		<javac srcdir="${Source.Java.Dir}" destdir="${Target.Dir}"
+			source="${javac_target_version}" target="${javac_target_version}"
+			bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="${javac_deprecation}"
+			debug="${javac_debug}" encoding="${javac_encoding}">
 			<classpath refid="project.classpath" />
 			<classpath refid="web.library.classpath" />
-			<!-- 移除雲端版本的部分 -->			
-			<exclude name="**/SaaS/**"/>			
+			<!-- 移除雲端版本的部分 -->
+			<exclude name="**/SaaS/**" />
 		</javac>
 
 		<!-- ======= for linux ======= -->
-		<!-- <javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.6" target="1.6" bootclasspath="${`}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
-			<classpath refid="jetty.server.classpath" />
-			<classpath refid="web.library.classpath" />
-		</javac> -->
+		<!-- <javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" 
+			destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.6" 
+			target="1.6" bootclasspath="${`}/rt.jar" deprecation="on" debug="on" encoding="UTF8"> 
+			<classpath refid="jetty.server.classpath" /> <classpath refid="web.library.classpath" 
+			/> </javac> -->
 	</target>
 
 	<target name="warProject" description="目前供做參考">
 		<!-- use for struts, miss this will cause project list can not be view -->
-		<!-- <copy todir="${webDir.webInf.classes}${file.separator}ntut${file.separator}csie${file.separator}jcis${file.separator}web">
-			<fileset dir=".${file.separator}${project.srcfolder}${file.separator}ntut${file.separator}csie${file.separator}jcis${file.separator}web">
-				<include name="ApplicationResources.properties" />
-			</fileset>
-		</copy> -->
+		<!-- <copy todir="${webDir.webInf.classes}${file.separator}ntut${file.separator}csie${file.separator}jcis${file.separator}web"> 
+			<fileset dir=".${file.separator}${project.srcfolder}${file.separator}ntut${file.separator}csie${file.separator}jcis${file.separator}web"> 
+			<include name="ApplicationResources.properties" /> </fileset> </copy> -->
 		<!-- generate WAR file -->
-		<war basedir="${Web.Dir}" destfile="${Target.WarFile}" webxml="${Web.Inf}/web.xml" >
+		<war basedir="${Web.Dir}" destfile="${Target.WarFile}" webxml="${Web.Inf}/web.xml">
 			<classes dir="${Web.Class.Dir}" />
 			<lib dir="${Web.Library.Dir}">
-				<include name="*.jar"/>
+				<include name="*.jar" />
 			</lib>
 			<classes file="${Source.Java.Dir}/commons-logging.properties" />
 			<classes file="${Source.Java.Dir}/java.policy.txt" />
 			<classes file="${Source.Java.Dir}/log4j.properties" />
 		</war>
-	</target>	
-	
+	</target>
+
 	<target name="Build_Project" depends="compileSourceCode" />
 
-	<!--  -->
+	<!-- -->
 	<target name="_______segment_PlugIn_______" />
 	<!-- =================================================================== -->
-	<!-- PlugIn part  -->
+	<!-- PlugIn part -->
 	<!-- =================================================================== -->
 
 	<target name="Build_PlugIn">
-		<echo message="currently only check if existed"/>
+		<echo message="currently only check if existed" />
 	</target>
 
-	<!--  -->
+	<!-- -->
 	<target name="_______segment_UT_______" />
 	<!-- =================================================================== -->
 	<!-- Unit Test: JUnit -->
 	<!-- =================================================================== -->
 
 	<property name="UT.TestClassesDir" location="${ProjectTest.Dir}/test-classes" />
-	<property name="UT.TestResultsDir" location="${ProjectTest.Dir}/test-results" />	
-		
+	<property name="UT.TestResultsDir" location="${ProjectTest.Dir}/test-results" />
+
 	<target name="cleanUT.Dir" description="清除之前所產生的檔案">
 		<delete dir="${ProjectTest.Dir}" />
 		<mkdir dir="${ProjectTest.Dir}" />
-	</target>		
-	
+	</target>
+
 	<target name="compileUTcode" depends="cleanUT.Dir" description="編譯測試程式碼">
 		<echo message="Compile All Java Test File： ${Source.Test.Dir}" />
-		<!-- 清除之前產生的檔案 -->		
+		<!-- 清除之前產生的檔案 -->
 		<delete dir="${UT.TestClassesDir}" />
-		<mkdir dir="${UT.TestClassesDir}" />		
+		<mkdir dir="${UT.TestClassesDir}" />
 		<!-- java compile -->
-		<javac 
-			srcdir="${Source.Test.Dir}" 
-			destdir="${UT.TestClassesDir}"	
-			source="${javac_target_version}" 
-			target="${javac_target_version}" 
+		<javac srcdir="${Source.Test.Dir}" destdir="${UT.TestClassesDir}"
+			source="${javac_target_version}" target="${javac_target_version}"
 			bootclasspath="${java.runtime.localDir.jre6}/rt.jar"
-			includeAntRuntime="false"
-			encoding="${javac_encoding}"> 
+			includeAntRuntime="false" encoding="${javac_encoding}">
 			<classpath>
-				<pathelement location="${UT.TestClassesDir}" />				
-				<pathelement location="${Web.Class.Dir}" />		
+				<pathelement location="${UT.TestClassesDir}" />
+				<pathelement location="${Web.Class.Dir}" />
 				<pathelement location="${Local.Library.Dir}/test/junit.jar" />
 			</classpath>
 			<classpath refid="ut.library.classpath" />
-			<!-- 移除雲端版本的部分 -->			
-			<exclude name="**/SaaS/**"/>
+			<!-- 移除雲端版本的部分 -->
+			<exclude name="**/SaaS/**" />
 			<!-- 從Model搬過來的,尚未知道為何要執行很久且fail -->
-			<exclude name="**/Mantis*"/>
-		</javac>		
-	</target>	
-	
+			<exclude name="**/Mantis*" />
+		</javac>
+	</target>
+
 	<!-- run Unit Test -->
-	<target name="runUT"
-			depends="compileUTcode"	description="MySQL DB schema 請手動用匯入 /TestData/InitialData/initial_bk.sql 的方式建立!">
-		<echo message="run UT..."/>		
-		<echo message="如果 Mock Struts TestCase 測試超過一分鐘,請檢查資料庫的設定是否正確!!"/>		
+	<target name="runUT" depends="compileUTcode"
+		description="MySQL DB schema 請手動用匯入 /TestData/InitialData/initial_bk.sql 的方式建立!">
+		<echo message="run UT..." />
+		<echo message="如果 Mock Struts TestCase 測試超過一分鐘,請檢查資料庫的設定是否正確!!" />
 		<!-- 清除之前產生的檔案 -->
-		<delete dir="${UT.TestResultsDir}" />						
+		<delete dir="${UT.TestResultsDir}" />
 		<mkdir dir="${UT.TestResultsDir}" />
 		<!-- JUnit run -->
 		<junit fork="on" haltonfailure="no" printsummary="on">
- 			<sysproperty key="basedir" value="${basedir}" />	
+			<sysproperty key="basedir" value="${basedir}" />
 			<!-- 指定需要使用到的 LIB -->
 			<classpath>
-				<pathelement location="${UT.TestClassesDir}" />				
+				<pathelement location="${UT.TestClassesDir}" />
 				<pathelement location="${Web.Class.Dir}" />
-				<pathelement location="${Local.Library.Dir}/test/junit.jar" />				
-			</classpath>			
+				<pathelement location="${Local.Library.Dir}/test/junit.jar" />
+			</classpath>
 			<classpath refid="ut.library.classpath" />
 			<classpath refid="ut_run.library.classpath" />
 			<classpath refid="web.library.classpath" />
@@ -300,67 +290,62 @@
 			<formatter type="xml" />
 			<!-- 要測試的 Test Suite or Test Case(較完整) 二選一 -->
 			<!-- 指定要測試的 Test Suite -->
-<!--			
-			<batchtest todir="${UT.TestResultsDir}">
-				<fileset dir="${UT.TestClassesDir}">
-					<include name="**/*TestSuite.class" />
-				</fileset>
-			</batchtest>
--->			
+			<!-- <batchtest todir="${UT.TestResultsDir}"> <fileset dir="${UT.TestClassesDir}"> 
+				<include name="**/*TestSuite.class" /> </fileset> </batchtest> -->
 			<!-- 指定要測試的 Test Case -->
 			<batchtest todir="${UT.TestResultsDir}">
 				<fileset dir="${UT.TestClassesDir}" includes="**/*Test.class" />
-			</batchtest>			
+			</batchtest>
 		</junit>
-		<!-- 若 XML 轉換成 HTML 有錯誤(JAVA版本問題),更改 Runtime JRE 設定可解決此問題 -->	
+		<!-- 若 XML 轉換成 HTML 有錯誤(JAVA版本問題),更改 Runtime JRE 設定可解決此問題 -->
 		<junitreport todir="${UT.TestResultsDir}">
 			<fileset dir="${UT.TestResultsDir}">
 				<include name="TEST-*.xml" />
 			</fileset>
 			<report format="frames" todir="${ProjectTest.Dir}/html" />
-		</junitreport>		
-	</target>
-	
-	<!-- UT entry -->
-	<target name="UnitTest" 
-			depends="checkPlatform, runUT"
-			description="有關資料庫的設定檔案在 /TestData/TestConfig.properties">
-		<echo message="run UT testing done!"/>
+		</junitreport>
 	</target>
 
-	<!--  -->
+	<!-- UT entry -->
+	<target name="UnitTest" depends="checkPlatform, runUT"
+		description="有關資料庫的設定檔案在 /TestData/TestConfig.properties">
+		<echo message="run UT testing done!" />
+	</target>
+
+	<!-- -->
 	<target name="_______segment_AT_______" />
 	<!-- =================================================================== -->
 	<!-- Acceptance Test: RobotFramework + Selenium LIB -->
 	<!-- =================================================================== -->
 
-	<property name="RFS.TestDir" location="${RFStest.Dir}"/>
-	<property name="RFS.TestOutputDir" location="${RFSreport.Dir}"/>	
-	
+	<property name="RFS.TestDir" location="${RFStest.Dir}" />
+	<property name="RFS.TestOutputDir" location="${RFSreport.Dir}" />
+
 	<!-- project information -->
-	<property name="projectName" value="localTest"/>
-	<property name="projectDisplayName" value="localTestCDisplayName"/>	
-	
-	<target name="cleanAT.Dir"
-			description="清除之前所產生的檔案">
+	<property name="projectName" value="localTest" />
+	<property name="projectDisplayName" value="localTestCDisplayName" />
+
+	<target name="cleanAT.Dir" description="清除之前所產生的檔案">
 		<delete dir="${RFS.TestOutputDir}" />
 		<mkdir dir="${RFS.TestOutputDir}" />
-	</target>	
-	
+	</target>
+
 	<!-- test on Windows -->
 	<target name="runAT.Windows" depends="os_check, cleanAT.Dir" if="is.windows">
-		<echo message="run AT on Windows..."/>
-		<echo>  test DIR: ${RFS.TestDir}</echo>		
-		<echo>  output DIR: ${RFS.TestOutputDir}</echo>
+		<echo message="run AT on Windows..." />
+		<echo> test DIR: ${RFS.TestDir}</echo>
+		<echo> output DIR: ${RFS.TestOutputDir}</echo>
 		<!-- no need to clean OutputDir, it will be overwrited -->
 		<exec executable="cmd" spawn="false"><!-- spawn="true" : create new thread -->
 			<arg value="/c" />
-			<arg value="pybot --variable ezScrum_LOGIN_URL:httpZYYlocalhostZ8080YezScrum --variable projectName:${projectName} --variable projectDisplayName:${projectDisplayName} -d ${RFS.TestOutputDir} -E colon:Z -E slash:Y --exclude TaskBoard ${RFS.TestDir}" />			
+			<arg
+				value="pybot --variable ezScrum_LOGIN_URL:httpZYYlocalhostZ8080YezScrum --variable projectName:${projectName} --variable projectDisplayName:${projectDisplayName} -d ${RFS.TestOutputDir} -E colon:Z -E slash:Y --exclude TaskBoard ${RFS.TestDir}" />
 		</exec>
 	</target>
 
 	<!-- test on Unix -->
-	<target name="runAT.Unix" depends="os_check, cleanAT.Dir" unless="is.windows">
+	<target name="runAT.Unix" depends="os_check, cleanAT.Dir"
+		unless="is.windows">
 		<echo message="run AT on Unix..." />
 		<echo> output DIR: ${RFS.TestOutputDir}</echo>
 		<echo> test file: ${RFS.TestFile}</echo>
@@ -372,177 +357,262 @@
 		</exec>
 	</target>
 
-	<!--  -->
+	<!-- -->
 	<target name="runAT" depends="runAT.Unix, runAT.Windows">
 	</target>
 
-	<!--  -->
+	<!-- -->
 	<target name="AcceptanceTest" depends="checkPlatform, runAT">
-		<echo message="run AT testing done!"/>
+		<echo message="run AT testing done!" />
 	</target>
 
-	<!--  -->
+	<!-- -->
 	<target name="_______segment_WebService_______" />
 	<!-- =================================================================== -->
-	<!-- Web Service part  -->
+	<!-- Web Service part -->
 	<!-- =================================================================== -->
-	
-	<property name="WebService.IP" value="127.0.0.1"/>
-	<property name="WebService.Port" value="8080"/>
-	<property name="WebService.WaitForReady" value="5"/>
-	
+
+	<property name="WebService.IP" value="127.0.0.1" />
+	<property name="WebService.Port" value="8080" />
+	<property name="WebService.WaitForReady" value="5" />
+
 	<property name="Jetty.Dir" location="${env.Jetty}" />
 	<property name="Jetty.RunDir" location="." />
-	<property name="JettyStartFile" value="start.jar"/>
-	<property name="JettyRunner" location="${Jetty.RunDir}/${JettyStartFile}"/>
-	<property name="JettyRunnerManiFest" location="${Jetty.RunDir}/MANIFEST.MF"/>		
-	<property name="JettyRunnerConfig" location="${Jetty.RunDir}/JettyServer.xml"/>
-			
-	<property name="main.class" value="ntut.csie.ezScrum.web.JettyServer" />	
+	<property name="JettyStartFile" value="start.jar" />
+	<property name="JettyRunner" location="${Jetty.RunDir}/${JettyStartFile}" />
+	<property name="JettyRunnerManiFest" location="${Jetty.RunDir}/MANIFEST.MF" />
+	<property name="JettyRunnerConfig" location="${Jetty.RunDir}/JettyServer.xml" />
+
+	<property name="main.class" value="ntut.csie.ezScrum.web.JettyServer" />
 	<target name="createManifest" description="創建清單文件">
 		<delete file="${JettyRunnerManiFest}" />
-		<manifestclasspath property="jar.manifest.classpath" jarfile="${Jetty.RunDir}/start.jar">
+		<manifestclasspath property="jar.manifest.classpath"
+			jarfile="${Jetty.RunDir}/start.jar">
 			<classpath refid="project.classpath" />
 		</manifestclasspath>
 		<manifest file="${JettyRunnerManiFest}">
 			<attribute name="Main-Class" value="${main.class}" />
 			<attribute name="Class-Path" value="${jar.manifest.classpath}" />
 		</manifest>
-	</target>	
-	
-	<target name="buildJettyRunner" depends="createManifest" description="建立可執行Jar檔用來啟動Web Service">
+	</target>
+
+	<target name="buildJettyRunner" depends="createManifest"
+		description="建立可執行Jar檔用來啟動Web Service">
 		<jar destfile="${JettyRunner}" manifest="${JettyRunnerManiFest}">
 			<fileset dir="${ProjectBuild.Dir}/classes">
-				<include name="**/Jetty*.class" /><!-- MonitorThread generated by JVM -->
-			</fileset>			
-		</jar>			
-		<delete file="${JettyRunnerManiFest}"/>
-	</target>	
+				<include name="**/Jetty*.class" /><!-- MonitorThread generated 
+					by JVM -->
+			</fileset>
+		</jar>
+		<delete file="${JettyRunnerManiFest}" />
+	</target>
 
-	  <target name="start_WebService.Windows" depends="os_check, buildJettyRunner" if="is.windows">
-	  	<!-- -->
-	  	<echo message="startup Web Service on Windows..."/>
+	<target name="start_WebService.Windows" depends="os_check, buildJettyRunner"
+		if="is.windows">
+		<!-- -->
+		<echo message="startup Web Service on Windows..." />
 		<exec executable="cmd" spawn="true"><!-- spawn="true" : create new thread -->
-				<arg value="/c" />
-			<arg value="java -jar ${JettyRunner} ${JettyRunnerConfig}" />			
-			</exec> 
-			<echo message="http://${WebService.IP}:${WebService.Port}"/>
-			<sleep seconds="${WebService.WaitForReady}"/>
-			<!-- <waitfor maxwait="30" maxwaitunit="second" checkevery="1000">
-				<http url="http://${gae.hostIP}:${gae.port}"/>
-			</waitfor> -->
-	  </target>		
+			<arg value="/c" />
+			<arg value="java -jar ${JettyRunner} ${JettyRunnerConfig}" />
+		</exec>
+		<echo message="http://${WebService.IP}:${WebService.Port}" />
+		<sleep seconds="${WebService.WaitForReady}" />
+		<!-- <waitfor maxwait="30" maxwaitunit="second" checkevery="1000"> <http 
+			url="http://${gae.hostIP}:${gae.port}"/> </waitfor> -->
+	</target>
 
 	<target name="start_WebService.Unix" depends="os_check" unless="is.windows">
-		<echo message="need your support..."/>	
+		<echo message="need your support..." />
 	</target>
 
 	<target name="start_WebService" depends="start_WebService.Unix, start_WebService.Windows">
 	</target>
 
 	<target name="Start_WebService" depends="checkPlatform, start_WebService">
-		<echo message="Start WebService done!"/>
+		<echo message="Start WebService done!" />
 	</target>
 
 	<!-- ========= Stop ========= -->
-	
-	<property name="PID.File" value="pid.out.file"/>
+
+	<property name="PID.File" value="pid.out.file" />
 	<target name="stop_WebService.Windows" depends="os_check" if="is.windows">
 		<!-- 使用JDK提供的工具 JPS 可以顯示目前所有 Java Process 的 PID -->
-		<!-- 直接在命令列下打 "jps" 顯示的內容即為  pid.out.file 的內容 -->
+		<!-- 直接在命令列下打 "jps" 顯示的內容即為 pid.out.file 的內容 -->
 		<exec executable="cmd" output="${PID.File}">
-		  <arg value="/c" />
-		  <arg value="${env.JAVA_HOME}/bin/jps"/>
+			<arg value="/c" />
+			<arg value="${env.JAVA_HOME}/bin/jps" />
 		</exec>
-			<loadfile srcfile="${PID.File}" property="pid.out">
-				<filterchain>
-					<linecontains>
-						<contains value="${JettyStartFile}"/>
-					</linecontains>
-					<tokenfilter>
-						<deletecharacters chars="${JettyStartFile}"/>
-						<trim/>
-						<ignoreblank/>
-					</tokenfilter>
-					<striplinebreaks/>
+		<loadfile srcfile="${PID.File}" property="pid.out">
+			<filterchain>
+				<linecontains>
+					<contains value="${JettyStartFile}" />
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="${JettyStartFile}" />
+					<trim />
+					<ignoreblank />
+				</tokenfilter>
+				<striplinebreaks />
 			</filterchain>
-			</loadfile>
+		</loadfile>
 		<!-- ready to kill -->
-		<echo>Stop Web Serveice instance with PID - "${pid.out}"</echo>		
+		<echo>Stop Web Serveice instance with PID - "${pid.out}"</echo>
 		<exec executable="${Local.Library.Dir}/pskill" output="${PID.File}">
-			<arg value="${pid.out}"/>
+			<arg value="${pid.out}" />
 		</exec>
-		<delete file="${PID.File}"/>	  	
-  	</target>		
-	
-	<target name="stop_WebService.Unix" depends="os_check" unless="is.windows">
-	</target>
-		
-	<target name="stop_WebService"
-			  depends="stop_WebService.Unix, stop_WebService.Windows">
+		<delete file="${PID.File}" />
 	</target>
 
-	<!--  -->
+	<target name="stop_WebService.Unix" depends="os_check" unless="is.windows">
+	</target>
+
+	<target name="stop_WebService" depends="stop_WebService.Unix, stop_WebService.Windows">
+	</target>
+
+	<!-- -->
 	<target name="Stop_WebService" depends="checkPlatform, stop_WebService">
-		<echo message="Stop WebService done!"/>
-	</target>	
-	
-	<!--  -->
+		<echo message="Stop WebService done!" />
+	</target>
+
+	<!-- -->
 	<target name="_______segment_Entry_______" />
 	<!-- =================================================================== -->
 	<!-- run entry -->
 	<!-- =================================================================== -->
 	<target name="runEntry">
-		<antcall target="checkPlatform"/>
-		<antcall target="check_Project_Model"/>
-		<antcall target="Build_Project"/>
-		<antcall target="UnitTest"/>
-		<antcall target="Start_WebService"/>
-		<antcall target="AcceptanceTest"/>
-		<antcall target="Stop_WebService"/>
+		<antcall target="checkPlatform" />
+		<antcall target="check_Project_Model" />
+		<antcall target="Build_Project" />
+		<antcall target="UnitTest" />
+		<antcall target="Start_WebService" />
+		<antcall target="AcceptanceTest" />
+		<antcall target="Stop_WebService" />
 	</target>
-	
-	<target name="runATonly">
-		<antcall target="Start_WebService"/>
-		<antcall target="AcceptanceTest"/>
-		<antcall target="Stop_WebService"/>
-	</target>	
 
-	<target name="clean" 
-			description="清除所有產生的檔案">
+	<target name="runATonly">
+		<antcall target="Start_WebService" />
+		<antcall target="AcceptanceTest" />
+		<antcall target="Stop_WebService" />
+	</target>
+
+	<target name="clean" description="清除所有產生的檔案">
 		<delete includeemptydirs="true">
-			<fileset dir="${Web.Class.Dir}" includes="**/*" excludes="ApplicationResources.properties" />
-		</delete>		
+			<fileset dir="${Web.Class.Dir}" includes="**/*"
+				excludes="ApplicationResources.properties" />
+		</delete>
 		<delete dir="${ProjectTest.Dir}" />
 		<delete dir="${RFS.TestOutputDir}" />
-		<delete> 
-        	<fileset dir=".">
-            	<include name="junit*" />
-        		<include name="*.log" />
-        		<include name="*.log.*" />
-        		<include name="${JettyStartFile}" />
-        	</fileset>
-		</delete> 
-	</target>		
-	
+		<delete>
+			<fileset dir=".">
+				<include name="junit*" />
+				<include name="*.log" />
+				<include name="*.log.*" />
+				<include name="${JettyStartFile}" />
+			</fileset>
+		</delete>
+	</target>
+
 	<!-- =================================================================== -->
 	<!-- debug -->
 	<!-- =================================================================== -->
 	<target name="debug" depends="checkPlatform">
 		<!-- <target name="debug" depends="checkPlatform, deployGAE, unzipProduct"> -->
-		<echo message="debug..."/>
+		<echo message="debug..." />
 
-		<echo>  [Platform and LIB check]</echo>
+		<echo> [Platform and LIB check]</echo>
 		<echo>target.Dir = ${target.Dir}</echo>
 		<echo>winIP.lib = ${winIP.lib}</echo>
 
-		<echo>  [UT config]</echo>
+		<echo> [UT config]</echo>
 
-		<echo>  [AT config]</echo>
+		<echo> [AT config]</echo>
 		<echo>RFS.TestOutputDir = ${RFS.TestOutputDir}</echo>
 		<echo>RFS.TestFile = ${RFS.TestFile}</echo>
 	</target>
 
-	<!-- END  -->
-</project>
+	<!-- ===================================================================
+		  run code coverage
+		 =================================================================== -->
+	<property name="report.dir" value="${basedir}/report" />
+	<property name="report.dir.coverage" value="${report.dir}/jacoco" />
+	<property name="report.dir.junit" value = "${report.dir}/junit" />
+	<property name="lib.dir.junit" value="${basedir}/lib/test" />
+	<property name="lib.dir.jacoco" value="${basedir}/lib/jacoco" />
+	<property name="src.dir.testcode" value="${basedir}/test" />
+	<property name="src.dir.procode" value="${basedir}/java" />
+	<property name="class.dir.test" value="${UT.TestClassesDir}" />
+	<property name="class.dir.pro" value="${Web.Class.Dir}" />
+	<property name="bin.dir.instrumented" value="${basedir}/report/inst" />
+	<property name="result.dir.jacoco" value="${basedir}/report/jacoco/result" />
+	<property name="result.bininstr.dir" value="${result.dir.jacoco}/classes-instr" />
+	<property name="result.exec.file" value="${result.dir.jacoco}/jacoco.exec" />
+	
+	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+		<classpath path="${lib.dir.jacoco}/jacocoant.jar" />
+	</taskdef>
+	
+	<path id="jacoco.lib">
+		<fileset dir="${lib.dir.jacoco}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="junit.lib">
+		<fileset dir="${lib.dir.junit}">
+			<include name="junit.jar" />
+		</fileset>
+	</path>
 
+	<target name="instrument">
+		<mkdir dir="${result.bininstr.dir}" />
+		<jacoco:instrument destdir="${result.bininstr.dir}">
+			<fileset dir="${class.dir.pro}" includes="**/*.class"/>
+		</jacoco:instrument>
+	</target>
+	
+	<target name="test">
+		<mkdir dir="${report.dir.junit}" />
+		<delete dir="${UT.TestResultsDir}" />
+		<mkdir dir="${UT.TestResultsDir}" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<junit fork="on" haltonfailure="no" printsummary="on">
+				<sysproperty key="basedir" value="${basedir}" />
+				<!-- 指定需要使用到的 LIB -->
+				<classpath>
+					<pathelement location="${UT.TestClassesDir}" />
+					<pathelement location="${Web.Class.Dir}" />
+					<pathelement location="${Local.Library.Dir}/test/junit.jar" />
+				</classpath>
+				<classpath refid="ut.library.classpath" />
+				<classpath refid="ut_run.library.classpath" />
+				<classpath refid="web.library.classpath" />
+				<!-- 指定輸出報表的格式 -->
+				<formatter type="xml" />
+				<!-- 指定要測試的 Test Case -->
+				<batchtest todir="${UT.TestResultsDir}">
+					<fileset dir="${UT.TestClassesDir}" includes="**/*Test.class" />
+				</batchtest>
+			</junit>
+		</jacoco:coverage>
+	</target>
+	
+	<target name="jacoco-report">
+		<mkdir dir="${report.dir.coverage}" />
+		<jacoco:report>
+			<executiondata>
+				<file file="${result.exec.file}"/>
+			</executiondata>
+			<structure name="ezScrum test Jacoco report">
+				<classfiles>
+					<fileset dir="${class.dir.pro}"/>
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="java"/>
+				</sourcefiles>
+			</structure>
+			<xml destfile="${report.dir.coverage}/report.xml"/>
+			<html destdir="${report.dir.coverage}"/>
+		</jacoco:report>
+	</target>
+	
+	<!-- END -->
+</project>

@@ -58,8 +58,8 @@ ezScrum.EditTaskForm = Ext.extend(Ext.form.FormPanel, {
 		        	fieldLabel: 'Partners',
 		            name: 'Partners'
 		        }, {
-		            fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		            fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            vtype:'Float'
 		        }, {
 		        	fieldLabel: 'Remains',
@@ -138,7 +138,7 @@ ezScrum.EditTaskForm = Ext.extend(Ext.form.FormPanel, {
 						issueID	: record.data['Id'], 
 						Name	: record.data['Name'], 
 						Partners: record.data['Partners'], 
-						Estimation	: record.data['Estimation'], 
+						Estimate	: record.data['Estimate'], 
 						Actual	: record.data['Actual'],
 						Notes	: record.data['Notes'],
 						Remains	: record.data['Remains']

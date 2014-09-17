@@ -6,28 +6,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 
 public abstract class AbstractMantisService {
 
 	private ISQLControl m_control;
-	private ITSPrefsStorage m_prefs;
-	
+	// private ITSPrefsStorage m_prefs;
+	private Configuration m_config;
+
 	protected int getUserID(String userName) {
+		// IQueryValueSet valueSet = new MySQLQuerySet();
+		// valueSet.addTableName("mantis_user_table");
+		// valueSet.addLikeCondition("username", userName);
+		// String query = valueSet.getSelectQuery();
+		// // String query = "SELECT `id` FROM `mantis_user_table` WHERE
+		// `username`
+		// // LIKE '"
+		// // + userName + "'";
+		// try {
+		// ResultSet result = m_control.executeQuery(query);
+		// int userID = 0;
+		// if (result.next()) {
+		// userID = result.getInt("id");
+		// }
+		// return userID;
+		// } catch (SQLException e) {
+		// e.printStackTrace();
+		// }
+		// return 0;
+		// ezScrum v1.8
+		// 還沒改到這裡的過渡期程式碼，因為user都已經轉移到資料庫，這個mantis_user_table應該不能用了，改用account
+		// table
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_user_table");
-		valueSet.addLikeCondition("username", userName);
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, userName);
 		String query = valueSet.getSelectQuery();
-		// String query = "SELECT `id` FROM `mantis_user_table` WHERE `username`
-		// LIKE '"
-		// + userName + "'";
 		try {
 			ResultSet result = m_control.executeQuery(query);
 			int userID = 0;
 			if (result.next()) {
-				userID = result.getInt("id");
+				userID = result.getInt(AccountEnum.ID);
 			}
 			return userID;
 		} catch (SQLException e) {
@@ -37,18 +59,38 @@ public abstract class AbstractMantisService {
 	}
 
 	protected String getUserName(int userID) {
+		// IQueryValueSet valueSet = new MySQLQuerySet();
+		// valueSet.addTableName("mantis_user_table");
+		// valueSet.addEqualCondition("id", Integer.toString(userID));
+		// String query = valueSet.getSelectQuery();
+		// // String query = "SELECT `username` FROM `mantis_user_table` WHERE
+		// `id`
+		// // ="
+		// // + userID;
+		// try {
+		// ResultSet result = m_control.executeQuery(query);
+		// String userName = "";
+		// if (result.next()) {
+		// userName = result.getString("username");
+		// }
+		// return userName;
+		// } catch (SQLException e) {
+		// e.printStackTrace();
+		// }
+		// return "";
+
+		// ezScrum v1.8
+		// 還沒改到這裡的過渡期程式碼，因為user都已經轉移到資料庫，這個mantis_user_table應該不能用了，改用account
+		// table
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_user_table");
-		valueSet.addEqualCondition("id", Integer.toString(userID));
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, Integer.toString(userID));
 		String query = valueSet.getSelectQuery();
-		// String query = "SELECT `username` FROM `mantis_user_table` WHERE `id`
-		// ="
-		// + userID;
 		try {
 			ResultSet result = m_control.executeQuery(query);
 			String userName = "";
 			if (result.next()) {
-				userName = result.getString("username");
+				userName = result.getString(AccountEnum.ACCOUNT);
 			}
 			return userName;
 		} catch (SQLException e) {
@@ -56,23 +98,23 @@ public abstract class AbstractMantisService {
 		}
 		return "";
 	}
-	
-	protected void setControl(ISQLControl control){
+
+	protected void setControl(ISQLControl control) {
 		m_control = control;
 	}
-	
-	protected ISQLControl getControl(){
+
+	protected ISQLControl getControl() {
 		return m_control;
 	}
-	
-	protected void setPrefs(ITSPrefsStorage prefs){
-		m_prefs = prefs;
+
+	protected void setConfig(Configuration config) {
+		m_config = config;
 	}
-	
-	protected ITSPrefsStorage getPrefs(){
-		return m_prefs;
+
+	protected Configuration getConfig() {
+		return m_config;
 	}
-	
+
 	protected int getProjectID(String projectName) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_project_table");
@@ -98,7 +140,27 @@ public abstract class AbstractMantisService {
 		}
 		return -1;
 	}
-	
+
+	protected int getProjectId(String pid) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ProjectEnum.TABLE_NAME);
+		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, pid);
+		String query = valueSet.getSelectQuery();
+
+		ResultSet result = getControl().executeQuery(query);
+		int projectId = -1;
+		try {
+			if (result.next()) {
+				projectId = result.getInt(ProjectEnum.ID);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectId;
+	}
+
 	protected String getProjectName(int projectID) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_project_table");
@@ -106,7 +168,7 @@ public abstract class AbstractMantisService {
 		String query = valueSet.getSelectQuery();
 		try {
 			ResultSet result = getControl().executeQuery(query);
-			String projectName="";
+			String projectName = "";
 			if (result.next())
 				projectName = result.getString("name");
 			return projectName;
@@ -197,8 +259,9 @@ public abstract class AbstractMantisService {
 		valueSet.addTableName("mantis_user_table");
 		valueSet.addEqualCondition("enabled", "1");
 		String query = valueSet.getSelectQuery();
-		
-		// String query = "SELECT `username` FROM `mantis_user_table` WHERE `enabled` = 1";
+
+		// String query =
+		// "SELECT `username` FROM `mantis_user_table` WHERE `enabled` = 1";
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {

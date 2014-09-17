@@ -6,9 +6,8 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -19,20 +18,23 @@ public class MantisAttachFileServiceTest extends TestCase {
 	private CreateProductBacklog CPB;
 	private int ProjectCount = 1;
 	private int StoryCount = 1;
-	private ezScrumInfoConfig ezScrumInfoConfig = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	private MantisAttachFileService MAFSservice;
 	private long FileID = 0;
 	
 	private ISQLControl control;
-	private ITSPrefsStorage itsPrefs;
 	
 	public MantisAttachFileServiceTest(String testMethod) {
         super(testMethod);
     }
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -45,20 +47,19 @@ public class MantisAttachFileServiceTest extends TestCase {
 		
 		IProject project = this.CP.getProjectList().get(0);
 		
-		this.itsPrefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		MantisService mantisService = new MantisService(this.itsPrefs);
+		MantisService mantisService = new MantisService(configuration);
 		this.control = mantisService.getControl();
-		this.control.setUser(this.itsPrefs.getDBAccount());
-		this.control.setPassword(this.itsPrefs.getDBPassword());
+		this.control.setUser(configuration.getDBAccount());
+		this.control.setPassword(configuration.getDBPassword());
 		this.control.connection();
 		
-		this.MAFSservice = new MantisAttachFileService(control, itsPrefs);
+		this.MAFSservice = new MantisAttachFileService(control, configuration);
 		
 		// ================ set initial data =======================
 		// 新增一筆檔案在一筆 issue - id(1) 
 //		ProductBacklog backlog = new ProductBacklog(project, config.getUserSession());
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, ezScrumInfoConfig.getUserSession());
-		productBacklogMapper.addAttachFile(this.CPB.getIssueList().get(0).getIssueID(), this.ezScrumInfoConfig.getInitialSQLPath());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
+		productBacklogMapper.addAttachFile(this.CPB.getIssueList().get(0).getIssueID(), configuration.getInitialSQLPath());
 		IIssue issue = productBacklogMapper.getIssue(this.CPB.getIssueList().get(0).getIssueID());
 		this.FileID = issue.getAttachFile().get(0).getAttachFileId();
 		// ================ set initial data =======================
@@ -72,7 +73,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		if (this.control != null) {
@@ -86,17 +87,18 @@ public class MantisAttachFileServiceTest extends TestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.ezScrumInfoConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
     	
-    	
+		configuration.setTestMode(false);
+		configuration.store();
+		
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CPB = null;
-    	this.ezScrumInfoConfig = null;
     	this.MAFSservice = null;
-    	this.itsPrefs = null;
     	projectManager = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -106,7 +108,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 	 */
 	public void testgetAttachFile_1() {
 		File ActualFile = this.MAFSservice.getAttachFile(Long.toString(this.FileID));
-		File ExpectedFile = new File(this.ezScrumInfoConfig.getInitialSQLPath());
+		File ExpectedFile = new File(configuration.getInitialSQLPath());
 		
 		assertEquals(ExpectedFile.length(), ActualFile.length());
 		assertEquals(ExpectedFile.isFile(), ActualFile.isFile());

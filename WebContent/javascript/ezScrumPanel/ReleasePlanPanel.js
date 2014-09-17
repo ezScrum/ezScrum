@@ -54,6 +54,64 @@ ezScrum.ReleasePlan_MasterPanel = Ext.extend(Ext.Panel, {
 	frame: false,
 	border: false,
 	initComponent: function() {
+		// for release Action Top bar
+		var releaseTB = new ezScrum.releasnPlan.ButtonGroup({
+			id: 'releaseAction',
+			xtype: 'buttongroup',
+			columns: 3,
+			title: '<u><b>Release Action</b></u>',
+			items: [{
+				id: 'ReleasePlan_addReleaseBtn',
+				text: 'New Release Plan',
+				icon: 'images/add3.png',
+				handler: function() {
+					ModifyReleasePlanWindow.resetForm();
+					ModifyReleasePlanWindow.loadIDForNewRelease();
+					ModifyReleasePlanWindow.showWidget('Create Release');
+				}
+			}, {
+				id: 'ReleasePlan_EditReleaseBtn',
+				disabled: true,
+				text: 'Edit Release Plan',
+				icon: 'images/edit.png',
+				handler: function() {
+					var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
+					ModifyReleasePlanWindow.resetForm();
+					var releaseID = ModifyReleasePlanWindow.loadData(selectedNode);
+					ModifyReleasePlanWindow.showWidget('Edit Release #' + releaseID);
+				}
+			}, {
+				id: 'ReleasePlan_DeReleaseBtn',
+				disabled: true,
+				text: 'Delete Release Plan',
+				icon: 'images/delete.png',
+				handler: function() {
+					var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
+					DeleteReleasePlanWindow.deleteRelease(selectedNode);
+				}
+			}, {
+				id: 'ReleasePlan_showReleaseBacklogBtn',
+				disabled: true,
+				text: 'Show Release Backlog',
+				icon: 'images/clipboard.png',
+				handler: function() {
+					var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
+					var releaseID = selectedNode.attributes['ID'];
+					var releaseTitle = 'Release #' + releaseID + ': ' + selectedNode.attributes['Name'];
+					ShowReleaseBacklog_Window.showWindow(releaseID, releaseTitle);
+				}
+			}, {
+				id: 'ReleasePlan_showPritableBtn',
+				disabled: true,
+				text: 'Show Printable Release',
+				icon: 'images/text.png',
+				handler: function() {
+					var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
+					var releaseID = selectedNode.attributes['ID'];
+					openURLWithCheckSession("showPrintReleaseInformation.do?showtask=true&releaseID=" + releaseID);
+				}
+			}]
+		});
 		var config = {
 			items: [{
 				ref: 'ReleasePlan_ReleaseTreePanel_ID',
@@ -62,63 +120,7 @@ ezScrum.ReleasePlan_MasterPanel = Ext.extend(Ext.Panel, {
 				ref: 'ReleasePlan_StoryPanel_ID',
 				xtype: 'Release_StoryPanel'
 			}],
-			tbar: [{
-				id: 'releaseAction',
-				xtype: 'buttongroup',
-				columns: 3,
-				title: '<u><b>Release Action</b></u>',
-				items: [{
-					id: 'ReleasePlan_addReleaseBtn',
-					text: 'New Release Plan',
-					icon: 'images/add3.png',
-					handler: function() {
-						ModifyReleasePlanWindow.resetForm();
-						ModifyReleasePlanWindow.loadIDForNewRelease();
-						ModifyReleasePlanWindow.showWidget('Create Release');
-					}
-				}, {
-					id: 'ReleasePlan_EditReleaseBtn',
-					disabled: true,
-					text: 'Edit Release Plan',
-					icon: 'images/edit.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						ModifyReleasePlanWindow.resetForm();
-						var releaseID = ModifyReleasePlanWindow.loadData(selectedNode);
-						ModifyReleasePlanWindow.showWidget('Edit Release #' + releaseID);
-					}
-				}, {
-					id: 'ReleasePlan_DeReleaseBtn',
-					disabled: true,
-					text: 'Delete Release Plan',
-					icon: 'images/delete.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						DeleteReleasePlanWindow.deleteRelease(selectedNode);
-					}
-				}, {
-					id: 'ReleasePlan_showReleaseBacklogBtn',
-					disabled: true,
-					text: 'Show Release Backlog',
-					icon: 'images/clipboard.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						var releaseID = selectedNode.attributes['ID'];
-						var releaseTitle = 'Release #' + releaseID + ': ' + selectedNode.attributes['Name'];
-						ShowReleaseBacklog_Window.showWindow(releaseID, releaseTitle);
-					}
-				}, {
-					id: 'ReleasePlan_showPritableBtn',
-					disabled: true,
-					text: 'Show Printable Release',
-					icon: 'images/text.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						var releaseID = selectedNode.attributes['ID'];
-						openURLWithCheckSession("showPrintReleaseInformation.do?showtask=true&releaseID=" + releaseID);
-					}
-				}]
-			}, {
+			tbar: [releaseTB, {
 				id: 'sprintAction',
 				xtype: 'buttongroup',
 				columns: 1,

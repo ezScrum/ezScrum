@@ -29,7 +29,6 @@ ezScrum.TaskBoardSprintForm = Ext.extend(Ext.form.FormPanel, {
     },
 	loadDataModel: function() {
 		var obj = this;
-		
 		Ext.Ajax.request({
 			url : obj.url,
 			params: {SprintID: obj.sprintID},
@@ -64,6 +63,9 @@ ezScrum.TaskBoardSprintForm = Ext.extend(Ext.form.FormPanel, {
 	},
 	setSprintID: function(sID) {
 		this.sprintID = sID;
+	},
+	getSprintID: function() {
+		return this.sprintID;
 	},
 	isCurrentSprint: function() {
 		return TaskBoardSprintStore.getAt(0).get('isCurrentSprint');

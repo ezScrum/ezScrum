@@ -18,18 +18,21 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TextParserGeneraterForNote;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -41,7 +44,8 @@ public class MantisServiceTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
 	private int StoryCount = 1;
-	private ezScrumInfoConfig ezScrumInfoConfig = new ezScrumInfoConfig();
+	private Configuration configuration;
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	
@@ -50,7 +54,11 @@ public class MantisServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		configuration = new Configuration(userSession);
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -58,8 +66,7 @@ public class MantisServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(itsPrefs);
+		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(configuration);
 		
 		super.setUp();
 		
@@ -69,7 +76,7 @@ public class MantisServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		//再一次確認SQL 連線已經關閉
@@ -78,14 +85,16 @@ public class MantisServiceTest extends TestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.ezScrumInfoConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
     	
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
-    	this.ezScrumInfoConfig = null;
     	this.MSservice = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -97,11 +106,11 @@ public class MantisServiceTest extends TestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(this.StoryCount, this.CP);
 		CPB.exe();
 		
-		String Test_File = this.ezScrumInfoConfig.getInitialSQLPath();
+		String Test_File = configuration.getInitialSQLPath();
 		
 		IProject project = this.CP.getProjectList().get(0);
 //		ProductBacklog backlog = new ProductBacklog(project, ezScrumInfoConfig.getUserSession());
-		ProductBacklogMapper backlog = new ProductBacklogMapper(project, ezScrumInfoConfig.getUserSession());
+		ProductBacklogMapper backlog = new ProductBacklogMapper(project, configuration.getUserSession());
 		long issueID = CPB.getIssueList().get(0).getIssueID();
 		
 		backlog.addAttachFile(issueID, Test_File);		// 將 TestData/MyWorkspace/initial_bk.sql 上傳測試
@@ -545,7 +554,6 @@ public class MantisServiceTest extends TestCase {
 		// close connection
 		this.MSservice.closeConnect();
 	}
-	
 	public void testgetStorys() {
 		List<IIssue> issue_list = new LinkedList<IIssue>();
 		
@@ -679,7 +687,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -693,9 +701,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issueSet[issueIndex].getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("Test_TAG_"+Integer.toString(tagIndex), actualTag.getTagName());
+				TagObject actualTag = issueSet[issueIndex].getTags().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("Test_TAG_"+Integer.toString(tagIndex), actualTag.getName());
 			}
 		}
 		// close connection
@@ -724,7 +732,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -735,9 +743,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int issueIndex = 0; issueIndex < issueSet.length; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issueSet[issueIndex].getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = issueSet[issueIndex].getTags().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -766,7 +774,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -776,9 +784,9 @@ public class MantisServiceTest extends TestCase {
 			IIssue issue = this.MSservice.getIssue((long)(issueIndex+1));
 			// test method
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = issue.getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = issue.getTags().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -807,7 +815,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		
@@ -818,9 +826,9 @@ public class MantisServiceTest extends TestCase {
 		// assert the storyTags' id, name correct or not. 
 		for(int storyIndex = 0; storyIndex < storyList.size(); storyIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
-				IIssueTag actualTag = storyList.get(storyIndex).getTag().get(tagIndex);
-				assertEquals((long)(tagIndex+1), actualTag.getTagId());
-				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getTagName());
+				TagObject actualTag = storyList.get(storyIndex).getTags().get(tagIndex);
+				assertEquals((long)(tagIndex+1), actualTag.getId());
+				assertEquals("TEST_TAG_"+Integer.toString(tagIndex+1), actualTag.getName());
 			}
 		}
 		// close connection
@@ -849,7 +857,7 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 
@@ -906,18 +914,18 @@ public class MantisServiceTest extends TestCase {
 			
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 			}
 		}
 		// check tag 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(dataCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(dataCount, tagList.size());
 		
 		// remove tags which attach to story
 		for(int issueIndex = 0; issueIndex < dataCount; issueIndex++){
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// test method
-				this.MSservice.removeStoryTag(Integer.toString(issueIndex+1), Integer.toString(tagIndex+1));
+				this.MSservice.removeStoryTag(Integer.toString(issueIndex+1), tagIndex+1);
 				// test method
 			}
 		}
@@ -940,8 +948,8 @@ public class MantisServiceTest extends TestCase {
 		String tagName = "TEST_TAG_";
 		this.MSservice.openConnect();
 		// check add tag 之前，tag list 為空
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(0, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(0, tagList.size());
 		
 		// new 10 test tag data
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
@@ -952,12 +960,12 @@ public class MantisServiceTest extends TestCase {
 		
 		// check add tag 之後，tag 筆數正確
 		tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		assertEquals(tagCount, tagList.size());
 		
 		// check tag info. 正確
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals(tagName+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals(tagName+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -975,17 +983,17 @@ public class MantisServiceTest extends TestCase {
 			this.MSservice.addNewTag(tagName+Integer.toString(tagIndex+1), testProject.getName());
 		}
 		// check add tag 之後，tag list 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(tagCount, tagList.size());
 		
 		// delete tag for each
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			// test method
-			this.MSservice.deleteTag(Integer.toString(tagIndex+1), testProject.getName());
+			this.MSservice.deleteTag(tagIndex+1, testProject.getName());
 			// test method
 			tagList = this.MSservice.getTagList(testProject.getName());
 			// check tag list size
-			assertEquals(tagCount-(tagIndex+1), tagList.length);
+			assertEquals(tagCount-(tagIndex+1), tagList.size());
 		}
 		
 		// check resultSet 中找不到 delete 掉的 tag
@@ -1004,9 +1012,9 @@ public class MantisServiceTest extends TestCase {
 		this.MSservice.openConnect();
 		// check add tag 之前, tag 數為0
 		// test method
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
 		// test method
-		assertEquals(0, tagList.length);
+		assertEquals(0, tagList.size());
 
 		// new 10 test tag data
 		int tagCount = 10;
@@ -1019,12 +1027,12 @@ public class MantisServiceTest extends TestCase {
 		// test method
 		tagList = this.MSservice.getTagList(testProject.getName());
 		// test method
-		assertEquals(tagCount, tagList.length);
+		assertEquals(tagCount, tagList.size());
 		
 		// check tag Info. 正確與否
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals(tagName+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals(tagName+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -1052,7 +1060,7 @@ public class MantisServiceTest extends TestCase {
 			for(int tagIndex = 0; tagIndex < dataCount; tagIndex++){
 				// attach tag to story
 				// test method
-				this.MSservice.addStoryTag(String.valueOf(listIndex+1), String.valueOf(tagIndex+1));
+				this.MSservice.addStoryTag(String.valueOf(listIndex+1), tagIndex+1);
 				// test method
 			}
 		}
@@ -1087,19 +1095,19 @@ public class MantisServiceTest extends TestCase {
 		// update tag name. service 作法為 delete 舊的 tag, 新增一筆update name 的 tag
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			// test method
-			this.MSservice.updateTag(Integer.toString(tagIndex+1), 
+			this.MSservice.updateTag(tagIndex+1, 
 									"UPDATE_TAG_"+Integer.toString(tagIndex+1), testProject.getName());
 			// test method
 		}
 		
 		// check update tag 後, 筆數正確
-		IIssueTag[] tagList = this.MSservice.getTagList(testProject.getName());
-		assertEquals(tagCount, tagList.length);
+		ArrayList<TagObject> tagList = this.MSservice.getTagList(testProject.getName());
+		assertEquals(tagCount, tagList.size());
 		
 		// check update tag 後, tag info. correct or not.
 		for(int tagIndex = 10; tagIndex < tagCount; tagIndex++){
-			assertEquals((long)(tagIndex+1), tagList[tagIndex].getTagId());
-			assertEquals("UPDATE_TAG_"+Integer.toString(tagIndex+1), tagList[tagIndex].getTagName());
+			assertEquals((long)(tagIndex+1), tagList.get(tagIndex).getId());
+			assertEquals("UPDATE_TAG_"+Integer.toString(tagIndex+1), tagList.get(tagIndex).getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -1115,7 +1123,7 @@ public class MantisServiceTest extends TestCase {
 			this.MSservice.addNewTag(tagName+Integer.toString(tagIndex+1), testProject.getName());
 		}
 		
-		IIssueTag issueTag;
+		TagObject issueTag;
 		for(int tagIndex = 0; tagIndex < tagCount; tagIndex++){
 			String expectedTagName = tagName+Integer.toString(tagIndex+1);
 			// test method
@@ -1123,8 +1131,8 @@ public class MantisServiceTest extends TestCase {
 			// test method
 			
 			// check get 的 tag info. 正確與否
-			assertEquals((long)(tagIndex+1), issueTag.getTagId());
-			assertEquals(expectedTagName, issueTag.getTagName());
+			assertEquals((long)(tagIndex+1), issueTag.getId());
+			assertEquals(expectedTagName, issueTag.getName());
 		}
 		// close connection
 		this.MSservice.closeConnect();
@@ -2246,7 +2254,7 @@ public class MantisServiceTest extends TestCase {
 		//test case : not exit file
 		assertEquals( storyOne.getAttachFile().size() , 0 );
 		//將mock file加進storyOne中
-		String testFilePath = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile = new File( testFilePath );
 		this.MSservice.addAttachFile( storyOne.getIssueID() , expectedFile ) ;
 		storyOne = this.MSservice.getIssue( storyID );//storyOne這裡要refresh一次，因為已經是dirty data
@@ -2269,7 +2277,7 @@ public class MantisServiceTest extends TestCase {
 		assertEquals( story_list.size() , 0 );
 		//製造三筆mock data
 		//第一個測試檔的資料
-		String testFilePath1 = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath1 = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile1 = new File( testFilePath1 );
 		//打開服務連線
 		this.MSservice.openConnect();
@@ -2315,7 +2323,7 @@ public class MantisServiceTest extends TestCase {
 		IProject testProject = this.CP.getProjectList().get(0);
 		//製造三筆mock data
 		//第一個測試檔的資料
-		String testFilePath1 = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath1 = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile1 = new File( testFilePath1 );
 		//打開服務連線
 		this.MSservice.openConnect();
@@ -2360,7 +2368,7 @@ public class MantisServiceTest extends TestCase {
 		story.setIssueID(1);
 		story.setSummary("Story_Name_One");
 		story.setDescription("Story_Desc_One");
-		String testFilePath = this.ezScrumInfoConfig.getInitialSQLPath();//使用的是sql檔測試
+		String testFilePath = configuration.getInitialSQLPath();//使用的是sql檔測試
 		File expectedFile = new File( testFilePath );
 		this.MSservice.openConnect();
 		this.MSservice.addAttachFile( story.getIssueID() , expectedFile );
@@ -2379,9 +2387,8 @@ public class MantisServiceTest extends TestCase {
 	// test : getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate, Date endDate)
 	public void testGetIssues_Date_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2451,9 +2458,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testGetIssue_IssueID_AboutGetIssueNotes(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		List<IIssue> issueList = new LinkedList<IIssue>();
 		
@@ -2526,9 +2532,8 @@ public class MantisServiceTest extends TestCase {
 	
 	public void testUpdateBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2622,15 +2627,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		prefs = null;
 		MNService = null;
 	}
 	
 	public void testUpdateIssueNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2752,15 +2755,13 @@ public class MantisServiceTest extends TestCase {
 		
 		// release 
 		project = null;
-		prefs = null;
 		MNService = null;
 	}
 	
 	public void testInsertBugNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		TextParserGeneraterForNote noteTextHelper;
 		
 		List<IIssue> issueList = new LinkedList<IIssue>();
@@ -2822,15 +2823,13 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		prefs = null;
 		MNService = null;
 	}
 	
 	public void testRemoveNote(){
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
 		this.MSservice.openConnect();
-		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), prefs);
+		MantisNoteService MNService = new MantisNoteService(this.MSservice.getControl(), configuration);
 		
 		// new 10 issues
 		int storyCount = 10;
@@ -2886,7 +2885,6 @@ public class MantisServiceTest extends TestCase {
 
 		// release 
 		project = null;
-		prefs = null;
 		MNService = null;
 		CPB = null;
 	}

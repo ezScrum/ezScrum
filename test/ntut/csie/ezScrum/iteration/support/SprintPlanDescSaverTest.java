@@ -7,19 +7,19 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintPlanDescSaverTest extends TestCase {
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	private CreateProject CP = null;
 	private IProject project = null;
 	private SprintPlanMapper saver = null;
@@ -31,8 +31,12 @@ public class SprintPlanDescSaverTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// initial SQL
-		InitialSQL init = new InitialSQL(config);
+		InitialSQL init = new InitialSQL(configuration);
 		init.exe();
 		
 		// create project
@@ -49,19 +53,22 @@ public class SprintPlanDescSaverTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		// initial SQL
-		InitialSQL init = new InitialSQL(config);
+		InitialSQL init = new InitialSQL(configuration);
 		init.exe();
 		
 		// copy and delete test project
 		CopyProject cp = new CopyProject(this.CP);
 		cp.exeDelete_Project();
 		
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		// release
 		init = null;
 		cp = null;
 		this.CP = null;
-		this.config = null;
 		this.project = null;
+		configuration = null;
 		
 		super.tearDown();
 	}
@@ -1357,15 +1364,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
 		// 將第二筆移動到第五筆
@@ -1377,67 +1384,67 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "1");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "1");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 0));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 1*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 1*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(1);
 		assertEquals(ExpectedDesc.getID(), "2");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "3");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "3");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 1*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 2*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 2*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(2);
 		assertEquals(ExpectedDesc.getID(), "3");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "4");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "4");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 2*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 3*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 3*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(3);
 		assertEquals(ExpectedDesc.getID(), "4");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "5");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "5");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 3*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 4*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 4*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(4);
 		assertEquals(ExpectedDesc.getID(), "5");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "2");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "2");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 4*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 5*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 5*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 	
 	public void testmoveSprint_2() {
@@ -1462,15 +1469,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
 		// 將第二筆移動到第五筆
@@ -1482,67 +1489,67 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "1");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "1");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 0));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 1*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 1*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(1);
 		assertEquals(ExpectedDesc.getID(), "2");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "5");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "5");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 1*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 2*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 2*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(2);
 		assertEquals(ExpectedDesc.getID(), "3");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "2");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "2");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 2*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 3*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 3*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(3);
 		assertEquals(ExpectedDesc.getID(), "4");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "3");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "3");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 3*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 4*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 4*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		
 		ExpectedDesc = descs.get(4);
 		assertEquals(ExpectedDesc.getID(), "5");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "4");
-		assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-		assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-		assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-		assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+		assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+		assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+		assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+		assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 		assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + "4");
 		assertEquals(ExpectedDesc.getStartDate(), getDate(today, 4*2*7));
 		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 5*2*7-1));
 		assertEquals(ExpectedDesc.getDemoDate(), getDate(today, 5*2*7-1));
-		assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 	
 	public void testmoveSprint_3() {
@@ -1567,15 +1574,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
 		// 將第一筆移動到第五筆，可是不能被移動，因為 sprint 已經開始了
@@ -1585,15 +1592,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}	
 	}
 	
@@ -1619,15 +1626,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
 		// 將第一筆移動到第五筆，可是不能被移動，因為 sprint 已經開始了
@@ -1637,15 +1644,15 @@ public class SprintPlanDescSaverTest extends TestCase {
 			ExpectedDesc = descs.get(i);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
-			assertEquals(ExpectedDesc.getInterval(), cs.SPRINT_INTERVAL);
-			assertEquals(ExpectedDesc.getMemberNumber(), cs.SPRINT_MEMBER);
-			assertEquals(ExpectedDesc.getFocusFactor(), cs.SPRINT_FOCUS_FACTOR);
-			assertEquals(ExpectedDesc.getAvailableDays(), cs.SPRINT_AVAILABLE_DAY);
+			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
+			assertEquals(ExpectedDesc.getMemberNumber(), CreateSprint.SPRINT_MEMBER);
+			assertEquals(ExpectedDesc.getFocusFactor(), CreateSprint.SPRINT_FOCUS_FACTOR);
+			assertEquals(ExpectedDesc.getAvailableDays(), CreateSprint.SPRINT_AVAILABLE_DAY);
 			assertEquals(ExpectedDesc.getNotes(), cs.TEST_SPRINT_NOTE + ID);
 			assertEquals(ExpectedDesc.getStartDate(), getDate(today, i*2*7));
 			assertEquals(ExpectedDesc.getEndDate(), getDate(today, (i+1)*2*7-1));
 			assertEquals(ExpectedDesc.getDemoDate(), getDate(today, (i+1)*2*7-1));
-			assertEquals(ExpectedDesc.getDemoPlace(), cs.SPRINT_DEMOPLACE);
+			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}			
 	}
 	

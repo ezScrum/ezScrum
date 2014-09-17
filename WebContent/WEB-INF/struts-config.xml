@@ -56,7 +56,7 @@
 		<action path="/viewManagement"		type="ntut.csie.ezScrum.web.action.ViewProjectManagementAction">
 			<forward name="Admin_ManagementView"		path="project.Management" />
 			<forward name="User_ManagementView"			path="project.Management.user" />
-			<forward name="Tenant_ManagementView" path="project.Management.admin" />
+			<forward name="Tenant_ManagementView" 		path="project.Management.admin" />
 		</action>		
 		
 			<!-- Account Management -->
@@ -71,6 +71,9 @@
     		<!-- Product Backlog -->
     			<!-- common -->
     		<action path="/showProductBacklog2"		type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogAction" />
+    		<action path="/showProductBacklogV2"	type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogV2Action">
+    			<forward name="success" path="/Pages/ShowProductBacklogV2.jsp"></forward>
+    		</action>
     			<!-- Story CRUD -->
     		<action path="/ajaxAddNewStory"			type="ntut.csie.ezScrum.web.action.backlog.AjaxAddNewStoryAction" />
     		<action path="/getEditStoryInfo"		type="ntut.csie.ezScrum.web.action.backlog.GetEditStoryInfoAction" />
@@ -191,13 +194,20 @@
   	  		<action path="/ajaxAddNewRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxAddNewRetrospectiveAction" />
     		<action path="/ajaxDeleteRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxDeleteRetrospectiveAction" />
 
-
     		<!-- Unplanned -->
-
 
     		<!-- Scrum Report -->
 
-
+			<!-- Export -->
+			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />
+			<action path="/ajaxGetVelocity"				type="ntut.csie.ezScrum.web.action.export.AjaxGetVelocityAction" />
+			<action path="/showVelocityChart" 			type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
+				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
+			</action>
+			<action path="/showStoryCountChart" 		type="ntut.csie.ezScrum.web.action.export.ShowStoryCountChartAction">
+				<forward name="success" path="/Pages/ShowStoryCountChart.jsp"></forward>
+			</action>
+			<action path="/ajaxGetStoryCount"			type="ntut.csie.ezScrum.web.action.export.AjaxGetStoryCountAction" />
 
 		<!-- ========================================= -->
 		<!-- 以下待確認 -->
@@ -247,6 +257,9 @@
         <action path="/fileUpload" scope="request"			type="ntut.csie.ezScrum.web.action.FileUploadAction" validate="false">
 			<forward name="success" path="/Error.jsp" />
         </action>
+        
+        <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
+        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">
 			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />
@@ -304,18 +317,17 @@
 		<action path="/showITSPreferenceForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
 			<forward name="success" path="issue.prefs" />
 		</action>
-		<action path="/testConnAction"				type="ntut.csie.ezScrum.web.action.TestConnAction" />
 		
 		
 		<!-- Common Used -->
 		<!-- ntut.csie.ezScrum.web.action -->
-    	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />			
-
+    	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />
     	
-    	<!-- ntut.csie.ezScrum.web.action.itsconfig -->
-    	<action path="/saveITSPreference"			type="ntut.csie.ezScrum.web.action.itsconfig.SaveITSPreferenceAction" />
-    	<action path="/showITSPreference"			type="ntut.csie.ezScrum.web.action.itsconfig.ShowITSPreferenceAction" />
-    	<!-- ntut.csie.ezScrum.web.action.itsconfig -->
+    	
+    	<!-- ntut.csie.ezScrum.web.action.config -->
+    	<action path="/saveConfiguration"			type="ntut.csie.ezScrum.web.action.config.SaveConfigurationAction" />
+    	<action path="/showConfiguration"			type="ntut.csie.ezScrum.web.action.config.ShowConfigurationAction" />
+    	
     	
     	<!-- ntut.csie.ezScrum.web.action.plan -->
     		<!-- release plan -->
@@ -406,6 +418,7 @@
             <forward name="success" path="admin.scrumRoleManage" />
         </action>
         
+            
         <!-- user -->
     	<action path="/getUserData"					type="ntut.csie.ezScrum.web.action.rbac.GetUserDataAction" />
     	<action path="/updateAccount"				type="ntut.csie.ezScrum.web.action.rbac.UpdateAccountAction"/>  
@@ -494,10 +507,9 @@
         <action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
 
         <!--    *********************
-                *		ezTrack		*
+                *		other		*
                 *********************
              -->
-        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         <action path="/showScrumIssue" forward="scrumIssue.show" />
         <action path="/showCustomIssue" forward="customIssue.show" />
 

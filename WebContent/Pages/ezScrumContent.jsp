@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
-
-<html>
+<html  lang="en">
 <head>
 	<title>ezScrum, SSLab NTUT</title>
 	<link rel="shortcut icon" href="images/scrum_16.png"/>
@@ -60,9 +59,6 @@
 <!-- ezScrum plugin import -->
 <jsp:include page="ImportPluginList.jsp"/>
 
-
-<!-- ezScrum import -->
-
 <!--
     ezScrum shared component, should be imported before all panel or window render.
     These componets are created for reuse it.
@@ -109,6 +105,7 @@
 <script type="text/javascript" src="javascript/ezTrackDataModel/ScrumIssue.js"></script>
 <script type="text/javascript" src="javascript/ezTrackDataModel/CustomIssue.js"></script>
 <script type="text/javascript" src="javascript/ezTrackDataModel/CustomIssueType.js"></script>
+
 
 
 
@@ -178,11 +175,12 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/TaskBoardCardFormPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ezScrumReportTabPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ITSConfigFormPanel.js"></script>
-
 <script type="text/javascript" src="javascript/ezScrumPanel/SprintBacklogTreePanel.js"></script>
 
 
 <!--use jsp wrap js content, because ext widget must get plugin info synchronously at initial time  -->
+<jsp:include page="ntut/csie/ezScrum/stapler/ProjectLeftTree.jsp"/>
+<jsp:include page="ntut/csie/ezScrum/stapler/ReleasePlan/ReleasePlanTopToolbar.jsp"/> 
 <jsp:include page="ntut/csie/ezScrum/stapler/ProductBacklog/ProductBacklogTopToolbar.jsp"/> 
 <jsp:include page="ntut/csie/ezScrum/stapler/TaskBoard/TaskBoardCardPanel.jsp"/>
 

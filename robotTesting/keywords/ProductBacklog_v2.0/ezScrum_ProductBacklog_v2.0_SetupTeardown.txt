@@ -1,0 +1,22 @@
+*** Settings ***
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+Resource          ../Project/ezScrum_Project.txt
+
+*** Keywords ***
+Test Product Backlog v2.0 Suite Setup
+    Login Page    ${LOGIN_URL}
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    log    111
+    Select Node Product    Product Backlog
+    log    222
+    Click Element    xpath=//*[@id="ext-gen39"]/div/li[2]/ul/li[1]/div/a
+    Click Element    xpath=//button[text()="New ProductBacklog V2"]
+
+Test Product Backlog v2.0 Suite Teardown
+    Close Browser
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

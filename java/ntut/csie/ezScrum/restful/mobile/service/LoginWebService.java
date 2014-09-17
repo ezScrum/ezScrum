@@ -1,33 +1,40 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
-import ntut.csie.jcis.account.core.internal.Account;
 
 public class LoginWebService {
-	private IAccount Account = null;
-	
+//	private IAccount Account = null;
+	private UserObject Account = null;
+
 	public LoginWebService(String username, String userpwd) throws LogonException {
 		this.Account = getAccount(username, userpwd);
 	}
-	
-	public IAccount getAccount() {
+
+	public UserObject getAccount() {
 		return this.Account;
 	}
 
-	private IAccount getAccount(String id, String Password) throws LogonException {
+	private UserObject getAccount(String id, String password) throws LogonException {
 		String guest = "guest";
-		IAccount theAccount = null;
-		if( !id.equals(guest) && !Password.equals(guest) ){
-			IAccountManager manager = AccountFactory.getManager();
-			manager.confirmAccount(id, Password);
-			theAccount = manager.getAccount(id);
+		//		IAccount theAccount = null;
+		//		if( !id.equals(guest) && !Password.equals(guest) ){
+		//			IAccountManager manager = AccountFactory.getManager();
+		//			manager.confirmAccount(id, Password);
+		//			theAccount = manager.getAccount(id);
+		//		} else {
+		//			theAccount = new Account(id);
+		//		}
+		//		
+		//		return theAccount;
+		// ezScrum v1.8
+		UserObject user = null;
+		if (!id.equals(guest) && !password.equals(guest)) {
+			user = new AccountMapper().confirmAccount(id, password);
 		} else {
-			theAccount = new Account(id);
+			user = new UserObject(id, id, null, null, null);
 		}
-		
-		return theAccount;
+		return user;
 	}
 }

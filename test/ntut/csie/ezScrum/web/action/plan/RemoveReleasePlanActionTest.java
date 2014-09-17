@@ -3,12 +3,12 @@ package ntut.csie.ezScrum.web.action.plan;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -16,14 +16,18 @@ import servletunit.struts.MockStrutsTestCase;
 public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateRelease CR;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public RemoveReleasePlanActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
     	this.CP = new CreateProject(1);
@@ -34,7 +38,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo("/removeReleasePlan");
     	
@@ -44,11 +48,14 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     }
 	
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
     	CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();
     	
@@ -58,6 +65,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	copyProject = null;
     	this.CP = null;
     	this.CR = null;
+    	configuration = null;
     }
     
     // 正常執行
@@ -73,7 +81,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());    	
+    	request.getSession().setAttribute("UserSession", configuration.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session

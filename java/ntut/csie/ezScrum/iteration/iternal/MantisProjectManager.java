@@ -1,8 +1,8 @@
 package ntut.csie.ezScrum.iteration.iternal;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.jcis.resource.core.IProject;
@@ -12,7 +12,7 @@ public class MantisProjectManager {
 	private IUserSession m_userSession;
 	
 	private ITSServiceFactory m_itsFactory;
-	private ITSPrefsStorage m_itsPrefs;
+	private Configuration m_config;
 	
 	public MantisProjectManager(IProject project, IUserSession userSession) {
 		m_project = project;
@@ -20,11 +20,12 @@ public class MantisProjectManager {
 		
 		//初始ITS的設定
 		m_itsFactory = ITSServiceFactory.getInstance();
-		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);		
+		//m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);	
+		m_config = new Configuration(m_userSession);
 	}
 	
 	public void CreateProject(String ProjectName) throws Exception {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID,m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		
 		try {

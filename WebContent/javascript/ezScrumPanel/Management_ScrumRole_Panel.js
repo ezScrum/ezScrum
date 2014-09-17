@@ -26,7 +26,7 @@ ezScrum.Management_ScrumRole_ProjectList_Panel = Ext.extend(Ext.tree.TreePanel, 
 			return;
 		},
 		click: function(node) {
-			Ext.getCmp('ScrumRole_Permission_Check_List_Panel_ID').setProjectID(node.attributes['text']);
+			Ext.getCmp('ScrumRole_Permission_Check_List_Panel_ID').setProjectID(node.attributes['id'], node.attributes['text']);
 		}
 	},
 	loadDataModel: function() {
@@ -92,6 +92,7 @@ ezScrum.Management_ScrumRole_RoleList_Panel = Ext.extend(Ext.tree.TreePanel, {
 Ext.reg('Management_ScrumRole_RoleListPanel', ezScrum.Management_ScrumRole_RoleList_Panel);
 
 ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
+	ID: undefined,
 	ProjectID: undefined,
 	ScrumRole: undefined,
 
@@ -161,7 +162,8 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.Management_ScrumRole_PermissionList_Panel.superclass.initComponent.apply(this, arguments);
 	},
-	setProjectID: function(projectID) {
+	setProjectID: function(id, projectID) {
+		this.ID = id;
 		this.ProjectID = projectID;
 		this.notify_Permisiion_List_Check();
 	},
@@ -170,7 +172,7 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 		this.notify_Permisiion_List_Check();
 	},
 	notify_Permisiion_List_Check: function() {
-		if ((this.ProjectID !== undefined) && (this.ScrumRole !== undefined)) {
+		if ((this.ID !== undefined) && (this.ProjectID !== undefined) && (this.ScrumRole !== undefined)) {
 			Ext.getCmp('Management_ScrumRole_Main_Panel').Management_ScrumRole_SavePermissionBtn.enable();
 
 			var obj = this;
@@ -183,6 +185,7 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 				scope: this,
 				url: 'getScrumRolePermission.do',
 				params: {
+					id: this.ID,
 					projectName: this.ProjectID,
 					scrumRole: this.ScrumRole
 				},
@@ -283,6 +286,7 @@ ezScrum.Management_ScrumRole_Panel = Ext.extend(Ext.Panel, {
 			scope: this,
 			url: 'updateScrumRole.do',
 			params: {
+				ID: PermissionCheckListPanel.ID,
 				ProjectID: PermissionCheckListPanel.ProjectID,
 				RoleName: PermissionCheckListPanel.ScrumRole,
 				PermissionList: PermissionCheckListPanel.getPermissionCheckList()

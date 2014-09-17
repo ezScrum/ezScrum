@@ -15,6 +15,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.jdom.Element;
@@ -48,7 +49,7 @@ public class Issue implements IIssue {
 	protected Element m_tagRoot = new Element(ScrumEnum.ROOT_TAG);
 
 	// 對Story的自訂分類標籤
-	private List<IIssueTag> m_tag = new ArrayList<IIssueTag>();
+	private List<TagObject> m_tag = new ArrayList<TagObject>();
 
 	private List<IIssueNote> m_notes = new ArrayList<IIssueNote>();
 	
@@ -252,7 +253,7 @@ public class Issue implements IIssue {
 		m_submittedDate = issue.getSubmittedDate();
 		m_issueLink = issue.getIssueLink();
 		attachFile = issue.getAttachFile();
-		m_tag = issue.getTag();
+		m_tag = issue.getTags();
 
 		this.m_histories = issue.getHistory();
 		this.setTagContent(issue.getTagContentRoot());
@@ -822,17 +823,17 @@ public class Issue implements IIssue {
 	}
 
 	@Override
-	public List<IIssueTag> getTag() {
+	public List<TagObject> getTags() {
 		return m_tag;
 	}
 
 	@Override
-	public void setTag(List<IIssueTag> tags) {
+	public void setTags(List<TagObject> tags) {
 		this.m_tag = tags;
 	}
 
 	@Override
-	public void addTag(IIssueTag tag) {
+	public void addTag(TagObject tag) {
 		this.m_tag.add(tag);
 	}
 	

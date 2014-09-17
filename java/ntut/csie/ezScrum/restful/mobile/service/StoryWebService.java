@@ -66,18 +66,18 @@ public class StoryWebService extends ProjectWebService{
 			boolean isExist = false;
 			// 判斷舊的 tag 是否還存在
 			for (TagObject editTag : editStoryObj.tagList)
-				if (originTag.getTagName().equals(editTag.getTagName()))
+				if (originTag.getName().equals(editTag.getName()))
 					isExist =  true;
 			// 如果 tag 不存在就刪掉，否則將已經存在的 tag 從待加入的 tag list 中移除
 			if (!isExist) {
-				mProductBacklogHelper.removeStoryTag(newStoryObj.id, originTag.getTagID());
+				mProductBacklogHelper.removeStoryTag(newStoryObj.id, originTag.getId());
 			} else
 				editStoryObj.tagList.remove(originTag);
 		}
 		// 將新的 tag 加入 story
 		for (TagObject editTag : editStoryObj.tagList) {
 			System.out.println("editTag : " + editTag);
-			mProductBacklogHelper.addStoryTag(editStoryObj.id, editTag.getTagID());
+			mProductBacklogHelper.addStoryTag(editStoryObj.id, editTag.getId());
 		}
 		newStoryObj = new StoryObject(mProductBacklogHelper.getIssue(Long.parseLong(newStoryObj.id)));
 		Gson gson = new Gson();

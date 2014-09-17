@@ -3,27 +3,28 @@ package ntut.csie.ezScrum.web.action.project;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
-import ntut.csie.jcis.resource.core.IWorkspace;
-import ntut.csie.jcis.resource.core.IWorkspaceRoot;
-import ntut.csie.jcis.resource.core.ResourceFacade;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveProjectActionTest extends MockStrutsTestCase {
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public SaveProjectActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		super.setUp();
 
@@ -32,18 +33,22 @@ public class SaveProjectActionTest extends MockStrutsTestCase {
 	
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase( this.config.getTestDataPath() );
+		projectManager.initialRoleBase( configuration.getDataPath() );
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
+		configuration = null;
 	}
 	
 //	/**
@@ -65,12 +70,12 @@ public class SaveProjectActionTest extends MockStrutsTestCase {
 	 */
 	public void testCreateProject(){
 		// ================ set action info ========================
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/AjaxCreateProject");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ set request info ========================
 		//	設定專案資訊
@@ -87,12 +92,12 @@ public class SaveProjectActionTest extends MockStrutsTestCase {
 		addRequestParameter("from", "createProject");
 		
 		//	設定ITS參數資料
-		addRequestParameter("ServerUrl", this.config.SERVER_URL);
-		addRequestParameter("ServicePath", this.config.SERVER_PATH);
-		addRequestParameter("DBAccount", this.config.SERVER_ACCOUNT);
-		addRequestParameter("DBPassword", this.config.SERVER_PASSWORD);
-		addRequestParameter("SQLType", this.config.DATABASE_TYPE);
-		addRequestParameter("DBName", this.config.DATABASE_NAME);
+		addRequestParameter("ServerUrl", configuration.getServerUrl());
+		addRequestParameter("ServicePath", configuration.getWebServicePath());
+		addRequestParameter("DBAccount", configuration.getDBAccount());
+		addRequestParameter("DBPassword", configuration.getDBPassword());
+		addRequestParameter("SQLType", configuration.getDBType());
+		addRequestParameter("DBName", configuration.getDBName());
 		
 		// ================ 執行 action ======================
 		actionPerform();

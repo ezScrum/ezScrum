@@ -24,6 +24,7 @@
 // XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_3.9.210/xslt/JavaClass.xsl
 package ntut.csie.ezScrum.web.action;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,6 +32,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
 import ntut.csie.ezScrum.web.dataObject.Person;
 import ntut.csie.ezScrum.web.dataObject.User;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.dataObject.ezScrumAdmin;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -71,6 +73,7 @@ public class LogonSubmitAction extends Action {
 		// 建立User Session
 		IUserSession userSession = ProjectInfoCenter.getInstance().login(userId, password);
 
+		String encodedUsername = new String(Base64.encode(userId.getBytes()));
 		String encodedPassword = new String(Base64.encode(password.getBytes()));
 
 		// 設定權限資訊
@@ -86,12 +89,18 @@ public class LogonSubmitAction extends Action {
 		projectLogic.cloneDefaultFile();
 
 		Person person = this.getPerson(userSession.getAccount());
+		
+		// for web service
+		response.addCookie(new Cookie("username", encodedUsername));
+		response.addCookie(new Cookie("userpwd", encodedPassword));
+		 
 		return mapping.findForward(person.getForwardName());
 	}
 
-	private Person getPerson(IAccount account) {
+	private Person getPerson(UserObject account) {
 		AccountMapper accountMapper = new AccountMapper();
-		if (account.checkPermission(accountMapper.getPermission("system_admin"))) {
+//		if (account.checkPermission(accountMapper.getPermission("system_admin"))) {
+		if (account.getRoles().get("system") != null) {
 			return new ezScrumAdmin();
 		} else {
 			return new User();

@@ -1,86 +1,85 @@
 *** Settings ***
-Library         SeleniumLibrary
-Resource        ../common_resource.txt
+Library           Selenium2Library
+Resource          ../common_resource.txt
 
 *** Keywords ***
 Task Checked Out With Arguments
-    [Arguments]  ${_StoryID}  ${_TaskID}
-    Wait Until Page Contains Element  xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..
-    Wait Until Page Contains Element  xpath=//div[@id="${_StoryID}_assigned"]/div
-    Assign Id To Element  xpath=//div[@id="${_StoryID}_assigned"]/div  checkedOutStageID
-    Drag And Drop  xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..  target=checkedOutStageID
-    Wait Until Page Contains  Check Out Task
-    ${_XpathCheckOutTask}=  Find Current Window Element  Check Out Task  Check Out
-    Element Enable And Submit  ${_XpathCheckOutTask}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}    ${_TaskID}
+    Wait Until Page Contains Element    xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..
+    Wait Until Page Contains Element    xpath=//div[@id="${_StoryID}_assigned"]/div
+    Assign Id To Element    xpath=//div[@id="${_StoryID}_assigned"]/div    checkedOutStageID
+    Drag And Drop    xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=checkedOutStageID
+    Wait Until Page Contains    Check Out Task
+    ${_XpathCheckOutTask}=    Find Current Window Element    Check Out Task    Check Out
+    Element Enable And Submit    ${_XpathCheckOutTask}
+    Wait Until Page Contains    Success.
 
 Task Done With Arguments
-    [Arguments]  ${_StoryID}  ${_TaskID}
-    Select Node Product  Sprint Backlog
-    Select Node Product  TaskBoard
-    Drag And Drop  xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..  target=${_StoryID}_closed
-    Wait Until Page Contains  Done Issue
-    ${_XpathDoneTask}=  Find Current Window Element  Done Issue  Done
-    Element Enable And Submit  ${_XpathDoneTask}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}    ${_TaskID}
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
+    Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_closed
+    Wait Until Page Contains    Done Issue
+    ${_XpathDoneTask}=    Find Current Window Element    Done Issue    Done
+    Element Enable And Submit    ${_XpathDoneTask}
+    Wait Until Page Contains    Success.
 
 Task ReOpen With Arguments
-    [Arguments]  ${_StoryID}  ${_TaskID}
-    Drag And Drop  xpath=//div[@id="${_StoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..  target=${_StoryID}_assigned
-    Wait Until Page Contains  Re Opened Issue
-    ${_XpathReOpenTask}=  Find Current Window Element  Re Opened Issue  Re Open
-    Element Enable And Submit  ${_XpathReOpenTask}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}    ${_TaskID}
+    Drag And Drop    xpath=//div[@id="${_StoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_assigned
+    Wait Until Page Contains    Re Opened Issue
+    ${_XpathReOpenTask}=    Find Current Window Element    Re Opened Issue    Re Open
+    Element Enable And Submit    ${_XpathReOpenTask}
+    Wait Until Page Contains    Success.
 
 Task ReChecked Out With Arguments
-    [Arguments]  ${_StoryID}  ${_TaskID}
-    Drag And Drop  xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..  target=${_StoryID}_new
-    Wait Until Page Contains  Reset Checked Out Task
-    ${_XpathResetCheckOutTask}=  Find Current Window Element  Reset Checked Out Task  Reset Check Out
-    Element Enable And Submit  ${_XpathResetCheckOutTask}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}    ${_TaskID}
+    Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_new
+    Wait Until Page Contains    Reset Checked Out Task
+    ${_XpathResetCheckOutTask}=    Find Current Window Element    Reset Checked Out Task    Reset Check Out
+    Element Enable And Submit    ${_XpathResetCheckOutTask}
+    Wait Until Page Contains    Success.
 
 Story Done With Arguments
-    [Arguments]  ${_StoryID}
-    Drag And Drop  xpath=//div[@id="${_StoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..  target=${_StoryID}_closed
-    Wait Until Page Contains  Done Issue
-    ${_XpathDoneStory}=  Find Current Window Element  Done Issue  Done
-    Element Enable And Submit  ${_XpathDoneStory}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}
+    Drag And Drop    xpath=//div[@id="${_StoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..    target=${_StoryID}_closed
+    Wait Until Page Contains    Done Issue
+    ${_XpathDoneStory}=    Find Current Window Element    Done Issue    Done
+    Element Enable And Submit    ${_XpathDoneStory}
+    Wait Until Page Contains    Success.
 
 Story ReOpen With Arguments
-    [Arguments]  ${_StoryID}
-    Drag And Drop  xpath=//div[@id="${_StoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..  target=${_StoryID}_new
-    Wait Until Page Contains  Re Opened Issue
-    ${_XpathReOpenStory}=  Find Current Window Element  Re Opened Issue  Re Open
-    Element Enable And Submit  ${_XpathReOpenStory}
-    Wait Until Page Contains  Success.
+    [Arguments]    ${_StoryID}
+    Drag And Drop    xpath=//div[@id="${_StoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..    target=${_StoryID}_new
+    Wait Until Page Contains    Re Opened Issue
+    ${_XpathReOpenStory}=    Find Current Window Element    Re Opened Issue    Re Open
+    Element Enable And Submit    ${_XpathReOpenStory}
+    Wait Until Page Contains    Success.
 
 Verify Story Information With Arguments In TaskBoard
-    [Arguments]  ${_StoryID}  ${_StoryName}  ${_StoryValue}  ${_StoryEstimation}  ${_StoryImportance}  ${tagName}  ${_StoryNotes}
-    ...  ${_StoryHowToDemo}
-    Click Element  xpath=//div[@id="TaskBoard_Page"]//div[@id="${_StoryID}_new"]//a[@title="Edit the Story"]  andDontWait
-    Compare Field Content  xpath=//textarea[@name="Name"]  ${_StoryName}
-    Compare Field Content  xpath=//input[@name="Value"]  ${_StoryValue}
-    Compare Field Content  xpath=//input[@name="Estimation"]  ${_StoryEstimation}
-    Compare Field Content  xpath=//input[@name="Importance"]  ${_StoryImportance}
-    Compare Field Content  xpath=//textarea[@name="Notes"]  ${_StoryNotes}
-    Compare Field Content  xpath=//input[@name="Tags"]  ${tagName}
-    Compare Field Content  xpath=//textarea[@name="HowToDemo"]  ${_StoryHowToDemo}
-    ${_XpathEditStoryCancel}=  Find Current Window Element  Edit Story #${_StoryID}  Cancel
-    Element Enable And Submit  ${_XpathEditStoryCancel}
+    [Arguments]    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${tagName}
+    ...    ${_StoryNotes}    ${_StoryHowToDemo}
+    Click Element    xpath=//div[@id="TaskBoard_Page"]//div[@id="${_StoryID}_new"]//a[@title="Edit the Story"]
+    Compare Field Content    xpath=//textarea[@name="Name"]    ${_StoryName}
+    Compare Field Content    xpath=//input[@name="Value"]    ${_StoryValue}
+    Compare Field Content    xpath=//input[@name="Estimate"]    ${_StoryEstimate}
+    Compare Field Content    xpath=//input[@name="Importance"]    ${_StoryImportance}
+    Compare Field Content    xpath=//textarea[@name="Notes"]    ${_StoryNotes}
+    Compare Field Content    xpath=//input[@name="Tags"]    ${tagName}
+    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${_StoryHowToDemo}
+    ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Story #${_StoryID}    Cancel
+    Element Enable And Submit    ${_XpathEditStoryCancel}
 
 Verify Task Information With Arguments In TaskBoard
-    [Arguments]  ${_TaskID}  ${_TaskName}  ${_TaskHandler}  ${_TaskPartners}  ${_TaskEstimation}  ${_TaskRemains}  ${_TaskActual}
-    ...  ${_TaskNotes}
-    Click Element  xpath=//div[@id="TaskBoard_Page"]//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../..//a[@title="Edit the Task"]  andDontWait
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]  ${_TaskName}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]  ${_TaskHandler}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]  ${_TaskPartners}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimation"]  ${_TaskEstimation}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]  ${_TaskRemains}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]  ${_TaskActual}
-    Compare Field Content  xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]  ${_TaskNotes}
-    ${_XpathEditStoryCancel}=  Find Current Window Element  Edit Task #${_TaskID}  Cancel
-    Element Enable And Submit  ${_XpathEditStoryCancel}
-
+    [Arguments]    ${_TaskID}    ${_TaskName}    ${_TaskHandler}    ${_TaskPartners}    ${_TaskEstimate}    ${_TaskRemains}
+    ...    ${_TaskActual}    ${_TaskNotes}
+    Click Element    xpath=//div[@id="TaskBoard_Page"]//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../..//a[@title="Edit the Task"]
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]    ${_TaskName}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]    ${_TaskHandler}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]    ${_TaskPartners}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimate"]    ${_TaskEstimate}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]    ${_TaskRemains}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]    ${_TaskActual}
+    Compare Field Content    xpath=//span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]    ${_TaskNotes}
+    ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Task #${_TaskID}    Cancel
+    Element Enable And Submit    ${_XpathEditStoryCancel}

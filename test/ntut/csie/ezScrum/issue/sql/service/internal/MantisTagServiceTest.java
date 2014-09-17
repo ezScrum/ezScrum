@@ -2,25 +2,24 @@ package ntut.csie.ezScrum.issue.sql.service.internal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class MantisTagServiceTest extends TestCase {
 	private ISQLControl control;
-	private ITSPrefsStorage prefs;
 	private MantisTagService tagService;
 	
 	private CreateProject CP;
@@ -30,9 +29,8 @@ public class MantisTagServiceTest extends TestCase {
 	private int StoryCount = 1;
 	private int TagCount = 2;
 	private String TEST_TAG_NAME = "TEST_TAG_";	// Tag Name
-	private ezScrumInfoConfig ezScrumInfoConfig = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
-//	ProductBacklog productBacklog = null;
 	ProductBacklogMapper productBacklogMapper = null;
 	
 	public MantisTagServiceTest(String testMethod) {
@@ -40,7 +38,11 @@ public class MantisTagServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -56,43 +58,43 @@ public class MantisTagServiceTest extends TestCase {
 		this.CT.exe();
 		
 		// 建立MantisTagService
-		IProject project = this.CP.getProjectList().get(0);
-		prefs = new ITSPrefsStorage(project, ezScrumInfoConfig.getUserSession());
-		MantisService mantisService = new MantisService(prefs);
+		MantisService mantisService = new MantisService(configuration);
 		control = mantisService.getControl();
-		control.setUser(prefs.getDBAccount());
-		control.setPassword(prefs.getDBPassword());
+		control.setUser(configuration.getDBAccount());
+		control.setPassword(configuration.getDBPassword());
 		control.connection();
 		
-		tagService = new MantisTagService(control, prefs);
-		productBacklogMapper = new ProductBacklogMapper(this.CP.getProjectList().get(0), ezScrumInfoConfig.getUserSession());
+		tagService = new MantisTagService(control, configuration);
+		productBacklogMapper = new ProductBacklogMapper(this.CP.getProjectList().get(0), configuration.getUserSession());
 		
 		super.setUp();
 		
 		// ============= release ==============
 		ini = null;
-		project = null;
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(ezScrumInfoConfig);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();										// 初始化 SQL
 		control.close();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.ezScrumInfoConfig.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CPB = null;
     	this.CT = null;
-    	this.ezScrumInfoConfig = null;
     	this.tagService = null;
     	this.productBacklogMapper = null;
     	projectManager = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -106,105 +108,64 @@ public class MantisTagServiceTest extends TestCase {
 		story.setIssueID(this.CPB.getIssueList().get(0).getIssueID());
 		
 		tagService.initTag(story);
-		IIssueTag[] tagList = this.productBacklogMapper.getTagList();// 從 sql 取tag list 
+		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();// 從 sql 取tag list 
 		
-		assertEquals(story.getTag().size(), tagList.length);// TagCount = 2
-		for(int listIndex = 0; listIndex < tagList.length; listIndex++){
-			assertEquals(story.getTag().get(listIndex).getTagId(), tagList[listIndex].getTagId());// TagID = 1,2...
-			assertEquals(story.getTag().get(listIndex).getTagName(), tagList[listIndex].getTagName());// TagName = TEST_TAG_1,2...
+		assertEquals(story.getTags().size(), tagList.size());// TagCount = 2
+		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
+			assertEquals(story.getTags().get(listIndex).getId(), tagList.get(listIndex).getId());// TagID = 1,2...
+			assertEquals(story.getTags().get(listIndex).getName(), tagList.get(listIndex).getName());// TagName = TEST_TAG_1,2...
 		}
 	}
 	
 	public void testUpdateTag(){
 		//=========== check 更新 tag name 後，資料是否正確 ==========
-		IIssueTag[] tagList = this.productBacklogMapper.getTagList();
+		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();
 		// check update 之前的資料正確與否
-		for(int listIndex = 0; listIndex < tagList.length; listIndex++){
-			assertEquals(listIndex+1, tagList[listIndex].getTagId());// TagID = 1,2...
+		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
+			assertEquals(listIndex+1, tagList.get(listIndex).getId());// TagID = 1,2...
 			assertEquals(TEST_TAG_NAME+Integer.toString(listIndex+1),// TagName = TEST_TAG_1,2... 
-						 tagList[listIndex].getTagName());
+					tagList.get(listIndex).getName());
 		}
 		
 		// update tag name
-		for(int listIndex = 0; listIndex < tagList.length; listIndex++){
-			tagService.updateTag(Long.toString(tagList[listIndex].getTagId()),
+		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
+			tagService.updateTag(tagList.get(listIndex).getId(),
 								"TEST_UPDATE_TAG_"+Integer.toString(listIndex+1),this.CP.getProjectList().get(0).getName());
 		}
 
 		// check update 之後 ezscrum_tag_table 的資料正確與否
 		tagList = this.productBacklogMapper.getTagList();
-		for(int listIndex = 0; listIndex < tagList.length; listIndex++){
-			assertEquals("TEST_UPDATE_TAG_"+Integer.toString(listIndex+1), tagList[listIndex].getTagName());
+		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
+			assertEquals("TEST_UPDATE_TAG_"+Integer.toString(listIndex+1), tagList.get(listIndex).getName());
 		}
-		
-		// check update 之後 ezscrum_tag_relation 的資料正確與否
-		checkTagRelationChenged(tagList);
 	}
-	
-	// help testUpdateTag
-	private void checkTagRelationChenged(IIssueTag[] tagList){
-		String query = "SELECT * FROM `ezscrum_tag_relation` WHERE STORY_ID  = " 
-						+ this.CPB.getIssueList().get(0).getIssueID(); 
-		ResultSet result = tagService.getControl().executeQuery(query);
-		
-		int listIndex = 0;
-		try {
-			while (result.next()) {
-				assertEquals(tagList[listIndex].getTagId(), result.getLong("ezscrum_tag_relation.tag_id"));
-				listIndex++;
-			}
-		}catch(SQLException e){e.printStackTrace();}
-	}
-		
-	public void testAddNewTag(){
-		//=============(for MySQL) test 已存在相同tag名稱但不同專案==================
-		//=============(local DB project有各自的DB檔，所以沒差不用測)======
-		String resultID;
-		
-		// 新增TEST_PROJECT_2
-		String query = "INSERT INTO `mantis_project_table` ( `id`, `name`, `status`,`enabled`,`view_state`,`access_min`, `description` ) "+
-															"VALUES ( '2', 'TEST_PROJECT_2', '10', '1', '50', '10', '' )"; 
-		tagService.getControl().execute(query);
-		
-		// 新增與TEST_PROJECT_1同名的TAG到TEST_PROJECT_2
-		resultID = tagService.addNewTag((TEST_TAG_NAME+Integer.toString(1)), "TEST_PROJECT_2");
-		
-		query = "SELECT * FROM `ezscrum_tag_table` WHERE name = '"+TEST_TAG_NAME+Integer.toString(1)+"'";
-		ResultSet result = tagService.getControl().executeQuery(query);
-		int projectID = 1;
-		try {			
-			while (result.next()) {
-				assertEquals(1, result.getLong("ezscrum_tag_table.id"));// 確認tag id相同
-				assertEquals(projectID, result.getLong("ezscrum_tag_table.project_id"));// 確認project id 分別為1, 2
-				projectID++;
-			}
-		}catch(SQLException e){e.printStackTrace();}		
-		//=================================================================
-		
+
+	public void testAddNewTag() {
 		//============test 新增沒有相同名稱於其他專案之tag=============
 		// setUp 預設 create 2筆 tag，所以新增第3筆來比對
-		resultID = tagService.addNewTag((TEST_TAG_NAME+Integer.toString(3)), this.CP.getProjectList().get(0).getName());
-		IIssueTag[] tagList = this.productBacklogMapper.getTagList();
-		assertEquals(resultID, Long.toString(tagList[2].getTagId()));// resultID = 3
-		assertEquals(TEST_TAG_NAME+resultID, tagList[2].getTagName());// TEST_TAG_X
-		
+		long resultID = tagService.addTag((TEST_TAG_NAME + 3), this.CP.getProjectList().get(0).getName());
+		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();
+		assertEquals(resultID, tagList.get(2).getId());// resultID = 3
+		assertEquals(TEST_TAG_NAME + resultID, tagList.get(2).getName());// TEST_TAG_X
 	}
 	
 	public void testDeleteTag(){
 		//=========== (for MySQL) 測試刪除tag ===========
 		//=========== Local DB 不吃tagService.deleteTag的SQL指令，有sytax error 的訊息 =========
 		// check 預設有兩筆 tag
-		IIssueTag[] tagList = this.productBacklogMapper.getTagList();
-		assertEquals(TagCount, tagList.length);//TagCount = 2
-		String deleteTagId = Long.toString(tagList[0].getTagId()); 
+		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();
+		assertEquals(TagCount, tagList.size());//TagCount = 2
+		long deleteTagId = tagList.get(0).getId();
+		
+		tagService.addStoryTag("1", 1);
 		
 		//delete TEST_TAG_1
 		tagService.deleteTag(deleteTagId, this.CP.getProjectList().get(0).getName());
 		tagList = this.productBacklogMapper.getTagList();
-		assertEquals(TagCount-1, tagList.length);//TagCount-1 = 1
+		assertEquals(TagCount-1, tagList.size());//TagCount-1 = 1
 		
 		// QUERY delete 掉的 tag
-		String query = "SELECT * FROM `ezscrum_tag_table` WHERE ID  = "+deleteTagId ;
+		String query = "SELECT * FROM `tag` WHERE ID  = " + deleteTagId ;
 		ResultSet result = tagService.getControl().executeQuery(query);
 		
 		try{// check resultSet 中找不到 delete 掉的 tag 
@@ -216,26 +177,26 @@ public class MantisTagServiceTest extends TestCase {
 		//========== check createTag 的id, name 是否正確 ==========
 		// get tag list from sql
 		String projectName = this.CP.getProjectList().get(0).getName();
-		IIssueTag[] tagList = this.productBacklogMapper.getTagList();
+		ArrayList<TagObject> tagList = this.productBacklogMapper.getTagList();
 		// get single tag from sql by name
-		IIssueTag resultTag;
-		for(int listIndex = 0; listIndex < tagList.length; listIndex++){
-			resultTag = tagService.getTagByName(tagList[listIndex].getTagName(), projectName);
-			assertEquals(tagList[listIndex].getTagId(), resultTag.getTagId());
-			assertEquals(tagList[listIndex].getTagName(), resultTag.getTagName());
+		TagObject resultTag;
+		for(int listIndex = 0; listIndex < tagList.size(); listIndex++){
+			resultTag = tagService.getTagByName(tagList.get(listIndex).getName(), projectName);
+			assertEquals(tagList.get(listIndex).getId(), resultTag.getId());
+			assertEquals(tagList.get(listIndex).getName(), resultTag.getName());
 		}
 	}
-	
+
 	public void testGetTagList(){
 		//========= check createTag 產生的 2個 tag 的id, name 是否正確 =========
 		// get tag list from sql
 		String projectName = this.CP.getProjectList().get(0).getName();
-		IIssueTag[] resultTagList = tagService.getTagList(projectName);
-		assertEquals(TagCount, resultTagList.length);
+		ArrayList<TagObject> resultTagList = tagService.getTagList(projectName);
+		assertEquals(TagCount, resultTagList.size());
 		// check each tag's info. correct or not.
-		for(int listIndex = 0; listIndex < resultTagList.length; listIndex++){
-			assertEquals(Integer.toString(listIndex+1), Long.toString(resultTagList[listIndex].getTagId()));
-			assertEquals(TEST_TAG_NAME+Integer.toString(listIndex+1), resultTagList[listIndex].getTagName());// TEST_TAG_X
+		for(int listIndex = 0; listIndex < resultTagList.size(); listIndex++){
+			assertEquals(Integer.toString(listIndex+1), Long.toString(resultTagList.get(listIndex).getId()));
+			assertEquals(TEST_TAG_NAME+Integer.toString(listIndex+1), resultTagList.get(listIndex).getName());// TEST_TAG_X
 		}
 	}
 	
@@ -260,9 +221,9 @@ public class MantisTagServiceTest extends TestCase {
 	// help testAddStoryTag
 	private void addStoryTagRelation(){
 		String storyID = Long.toString(this.CPB.getIssueList().get(0).getIssueID());
-		String tagID;
+		long tagID;
 		for(int index = 0; index < TagCount; index++){
-			tagID = Long.toString(this.CT.getTagList().get(index).getTagId());
+			tagID = this.CT.getTagList().get(index).getId();
 			// attach tag to story
 			tagService.addStoryTag(storyID, tagID);
 			// check the relation correct or not.
@@ -271,15 +232,15 @@ public class MantisTagServiceTest extends TestCase {
 	}
 	
 	// help testAddStoryTag
-	private void checkAddStoryTagRelation(String storyID, String tagID){
-		String query = "SELECT * FROM `ezscrum_tag_relation` WHERE story_id  = " + storyID + " AND tag_id = " + tagID;
+	private void checkAddStoryTagRelation(String storyID, long tagID){
+		String query = "SELECT * FROM `story_tag_relation` WHERE Story_ID  = " + storyID + " AND Tag_ID = " + tagID;
 		ResultSet result = tagService.getControl().executeQuery(query);
 		// assert the tag id correct or not.
 		try {
 			while (result.next()) {
-				assertEquals(tagID, Long.toString(result.getLong("ezscrum_tag_relation.tag_id")));
+				assertEquals(tagID, result.getLong(StoryTagRelationEnum.TAG_ID));
 			}
-		}catch(SQLException e){e.printStackTrace();}
+		} catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	public void testRemoveStoryTag(){
@@ -288,15 +249,15 @@ public class MantisTagServiceTest extends TestCase {
 		this.CT.attachTagToStory(this.CPB);
 		
 		String storyID = Long.toString(this.CPB.getIssueList().get(0).getIssueID());
-		String tagID, query;
+		String query;
+		long tagID;
 		for(int index = 0; index < TagCount; index++){
-			tagID = Long.toString(this.CT.getTagList().get(index).getTagId());
+			tagID = this.CT.getTagList().get(index).getId();
 			// remove relation between tag and story
 			tagService.removeStoryTag(storyID, tagID);
-			query = "SELECT * FROM `ezscrum_tag_relation` WHERE story_id = " + storyID + " AND tag_id = " + tagID ; 
-			
+			query = "SELECT * FROM `story_tag_relation` WHERE Story_ID = " + storyID + " AND Tag_ID = " + tagID ; 
 			ResultSet result = tagService.getControl().executeQuery(query);
-			try {// check ezscrum_tag_relation table 中 story 與 tag 的 relation 拿掉與否
+			try {// check story_tag_relation table 中 story 與 tag 的 relation 拿掉與否
 				assertTrue(!result.next());
 			}catch(SQLException e){e.printStackTrace();}
 		}

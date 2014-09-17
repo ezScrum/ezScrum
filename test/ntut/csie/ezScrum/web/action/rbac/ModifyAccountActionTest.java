@@ -3,16 +3,15 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -25,7 +24,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	private int AccountCount = 1;
 	private final String ActionPath_ModifyAccount = "/modifyAccount";	// defined in "struts-config.xml"
 
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private AccountMapper accountMapper;
 
 	public ModifyAccountActionTest(String testMethod) {
@@ -33,7 +32,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -47,7 +46,11 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 新增Project
@@ -63,14 +66,17 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
 
+		configuration.setTestMode(false);
+		configuration.store();
+		
 		super.tearDown();
 
 		// ============= release ==============
@@ -82,6 +88,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		this.CA = null;
 		this.config = null;
 		this.accountMapper = null;
+		configuration = null;
 	}
 
 	/**
@@ -95,7 +102,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String projectId = this.CP.getProjectList().get(0).getName();
 		// User Information
-		String userId = "TEST_ACCOUNT_ID";		// 取得第一筆 Account ID
+		String userAccount = "TEST_ACCOUNT_ID";		// 取得第一筆 Account ID
 		String userPw = "TEST_ACCOUNT_PW";
 		String userMail = "TEST_ACCOUNT_MAIL";
 		String userName = "TEST_ACCOUNT_REALNAME";
@@ -104,7 +111,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("passwd", userPw);
 		addRequestParameter("mail", userMail);
 		addRequestParameter("name", userName);
@@ -113,7 +120,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -121,14 +128,14 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// ================ assert ========================
-		IAccount account = this.accountMapper.getAccountById(userId);
+		UserObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));
-		assertEquals(account.getEmail(), userMail);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
+		assertEquals(userMail, account.getEmail());
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());
 	}
 
 	public void testModifyAccountAction_update() throws LogonException {
@@ -141,16 +148,18 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String projectId = this.CP.getProjectList().get(0).getName();
 		// User Information
 		String postfix = "_update";
-
-		String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
-		String userPw = this.CA.getAccount_PWD(1) + postfix;
+		UserObject user = CA.getAccountList().get(0);
+		String userId = user.getId();			// 取得第一筆 ID
+		String userAccount = user.getAccount();	// 取得第一筆 Account ID
+		String userPw = user.getPassword() + postfix;
 		String userMail = "modify@test.com";
-		String userName = this.CA.getAccount_RealName(1) + postfix;
-		String userEnable = "false";	// default is true
+		String userName = user.getName() + postfix;
+		String userEnable = "false";			// default is true
 		String userIsEdit = "true";	// false 代表是新增帳號
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("passwd", userPw);
 		addRequestParameter("mail", userMail);
 		addRequestParameter("name", userName);
@@ -158,7 +167,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -167,14 +176,14 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
-		IAccount account = this.accountMapper.getAccountById(userId);
+		UserObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));
-		assertEquals(account.getEmail(), userMail);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
+		assertEquals(userMail, account.getEmail());
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());
 	}
 
 	/**
@@ -191,21 +200,24 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// User Information
 		String postfix = "_update";
 
-		String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
+		UserObject user = CA.getAccountList().get(0);
+		String userId = user.getId();			// 取得第一筆 ID
+		String userAccount = user.getAccount();	// 取得第一筆 Account ID
 		String userMail = "modify@test.com";
-		String userName = this.CA.getAccount_RealName(1) + postfix;
+		String userName = user.getName() + postfix;
 		String userEnable = "false";	// default is true
 		String userIsEdit = "true";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("mail", userMail);
 		addRequestParameter("name", userName);
 		addRequestParameter("enable", userEnable);
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -215,29 +227,31 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		// assert response text
-		String userScrumRole = "user";
+		//		String userScrumRole = "user";
 		String expectResponseText = "<Accounts>" +
-		        "<Account>" +
+		        "<AccountInfo>" +
 		        "<ID>" + userId + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
 		        "<Name>" + userName + "</Name>" +
 		        "<Mail>" + userMail + "</Mail>" +
-		        "<Roles>" + userScrumRole + "</Roles>" +
+		        //		        "<Roles>" + userScrumRole + "</Roles>" +
+		        "<Roles></Roles>" +
 		        "<Enable>" + userEnable + "</Enable>" +
-		        "</Account>" +
+		        "</AccountInfo>" +
 		        "</Accounts>";
 		String acutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		UserObject account = this.accountMapper.getAccount(userAccount);
 		String expectUserPassword = this.CA.getAccount_PWD(1);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(expectUserPassword));
-		assertEquals(account.getEmail(), userMail);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(expectUserPassword), account.getPassword());
+		assertEquals(userMail, account.getEmail());
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());
 	}
 
 	/**
@@ -254,15 +268,18 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// User Information
 		String postfix = "_update";
 
-		String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
-		String userPw = this.CA.getAccount_PWD(1) + postfix;
-		String userMail = this.CA.getAccount_Mail(1);
-		String userName = this.CA.getAccount_RealName(1);
-		String userEnable = "true";		// default is true
-		String userIsEdit = "true";		// false 代表是新增帳號
+		UserObject user = CA.getAccountList().get(0);
+		String userId = user.getId();			// 取得第一筆 ID
+		String userAccount = user.getAccount();	// 取得第一筆 Account ID
+		String userPw = user.getPassword() + postfix;
+		String userMail = user.getEmail();
+		String userName = user.getName();
+		String userEnable = user.getEnable();	// default is true
+		String userIsEdit = "true";				// false 代表是新增帳號
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("passwd", userPw);
 		addRequestParameter("mail", userMail);
 		addRequestParameter("name", userName);
@@ -270,7 +287,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -280,28 +297,30 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		// assert response text
-		String userScrumRole = "user";
+		//		String userScrumRole = "user";
 		String expectResponseText = "<Accounts>" +
-		        "<Account>" +
+		        "<AccountInfo>" +
 		        "<ID>" + userId + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
 		        "<Name>" + userName + "</Name>" +
 		        "<Mail>" + userMail + "</Mail>" +
-		        "<Roles>" + userScrumRole + "</Roles>" +
+		        //		        "<Roles>" + userScrumRole + "</Roles>" +
+		        "<Roles></Roles>" +
 		        "<Enable>" + userEnable + "</Enable>" +
-		        "</Account>" +
+		        "</AccountInfo>" +
 		        "</Accounts>";
 		String acutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
+		UserObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));
-		assertEquals(account.getEmail(), userMail);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
+		assertEquals(userMail, account.getEmail());
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());
 	}
 
 	/**
@@ -321,7 +340,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================== set initial info ====================
 		String projectId = this.CP.getProjectList().get(0).getName();
-		String userId = "tester";
+		String userAccount = "tester";
 		String userName = "tester";
 		String userPwd = "tester";
 		String userEmail = "tester@mail.com";
@@ -329,7 +348,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String userIsEdit = "false";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("name", userName);
 		addRequestParameter("passwd", userPwd);
 		addRequestParameter("mail", userEmail);
@@ -337,7 +356,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -346,30 +365,30 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
+		UserObject account = this.accountMapper.getAccount(userAccount);
 		// assert response text
-		String userRole = "user";
-		String expectResponseText =
-		        "<Accounts>" +
-		                "<Account>" +
-		                "<ID>" + userId + "</ID>" +
-		                "<Name>" + userName + "</Name>" +
-		                "<Mail>" + userEmail + "</Mail>" +
-		                "<Roles>" + userRole + "</Roles>" +
-		                "<Enable>" + userEnable + "</Enable>" +
-		                "</Account>" +
-		                "</Accounts>";
+		//		String userRole = "user";
+		String expectResponseText = "<Accounts>" +
+		        "<AccountInfo>" +
+		        "<ID>" + account.getId() + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
+		        "<Name>" + userName + "</Name>" +
+		        "<Mail>" + userEmail + "</Mail>" +
+		        "<Roles></Roles>" +
+		        "<Enable>" + userEnable + "</Enable>" +
+		        "</AccountInfo>" +
+		        "</Accounts>";
 		String acutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPwd));
-		assertEquals(account.getEmail(), userEmail);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPwd), account.getPassword());
+		assertEquals(userEmail, account.getEmail());
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());
 
 		/**
 		 * 2. 更新帳號資訊(name, email, password)
@@ -388,7 +407,8 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String updateUserIsEdit = "true";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
+		addRequestParameter("id", account.getId());
+		addRequestParameter("account", account.getAccount());
 		addRequestParameter("name", updateUserName);
 		addRequestParameter("passwd", updateUserPwd);
 		addRequestParameter("mail", updateUserEmail);
@@ -396,7 +416,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", updateUserIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -406,28 +426,28 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		// assert response text
-		String updateExpectResponseText =
-		        "<Accounts>" +
-		                "<Account>" +
-		                "<ID>" + userId + "</ID>" +
-		                "<Name>" + updateUserName + "</Name>" +
-		                "<Mail>" + updateUserEmail + "</Mail>" +
-		                "<Roles>" + userRole + "</Roles>" +
-		                "<Enable>" + updateUserEnable + "</Enable>" +
-		                "</Account>" +
-		                "</Accounts>";
+		String updateExpectResponseText = "<Accounts>" +
+		        "<AccountInfo>" +
+		        "<ID>" + account.getId() + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
+		        "<Name>" + updateUserName + "</Name>" +
+		        "<Mail>" + updateUserEmail + "</Mail>" +
+		        "<Roles></Roles>" +
+		        "<Enable>" + updateUserEnable + "</Enable>" +
+		        "</AccountInfo>" +
+		        "</Accounts>";
 		String updateAcutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		IAccount updateAccount = this.accountMapper.getAccountById(userId);
+		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
-		assertEquals(updateAccount.getID(), userId);
-		assertEquals(updateAccount.getName(), updateUserName);
-		assertEquals(updateAccount.getPassword(), (new TestTool()).getMd5(updateUserPwd));
-		assertEquals(updateAccount.getEmail(), updateUserEmail);
-		assertEquals(updateAccount.getEnable(), updateUserEnable);
+		assertEquals(userAccount, updateAccount.getAccount());
+		assertEquals(updateUserName, updateAccount.getName());
+		assertEquals((new TestTool()).getMd5(updateUserPwd), updateAccount.getPassword());
+		assertEquals(updateUserEmail, updateAccount.getEmail());
+		assertEquals(updateUserEnable, updateAccount.getEnable());
 
 		/**
 		 * 3. 登入
@@ -440,7 +460,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(ActionPath_LogonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = userId;
+		String loginUserID = userAccount;
 		String loginUserPassword = updateUserPwd;
 		LogonForm logonForm = new LogonForm();
 		logonForm.setUserId(loginUserID);
@@ -471,7 +491,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================== set initial info ====================
 		String projectId = this.CP.getProjectList().get(0).getName();
-		String userId = "tester";
+		String userAccount = "tester";
 		String userName = "tester";
 		String userPwd = "tester";
 		String userEmail = "tester@mail.com";
@@ -479,7 +499,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String userIsEdit = "false";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
+		addRequestParameter("account", userAccount);
 		addRequestParameter("name", userName);
 		addRequestParameter("passwd", userPwd);
 		addRequestParameter("mail", userEmail);
@@ -487,7 +507,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", userIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -496,26 +516,26 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
+		UserObject account = this.accountMapper.getAccount(userAccount);
 		// assert response text
-		String userRole = "user";
-		String expectResponseText =
-		        "<Accounts>" +
-		                "<Account>" +
-		                "<ID>" + userId + "</ID>" +
-		                "<Name>" + userName + "</Name>" +
-		                "<Mail>" + userEmail + "</Mail>" +
-		                "<Roles>" + userRole + "</Roles>" +
-		                "<Enable>" + userEnable + "</Enable>" +
-		                "</Account>" +
-		                "</Accounts>";
+//		String userRole = "user";
+		String expectResponseText = "<Accounts>" +
+		        "<AccountInfo>" +
+		        "<ID>" + account.getId() + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
+		        "<Name>" + userName + "</Name>" +
+		        "<Mail>" + userEmail + "</Mail>" +
+		        "<Roles></Roles>" +
+		        "<Enable>" + userEnable + "</Enable>" +
+		        "</AccountInfo>" +
+		        "</Accounts>";
 		String acutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		IAccount account = this.accountMapper.getAccountById(userId);
 
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
+		assertEquals(account.getAccount(), userAccount);
 		assertEquals(account.getName(), userName);
 		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPwd));
 		assertEquals(account.getEmail(), userEmail);
@@ -535,7 +555,8 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String updateUserIsEdit = "true";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
+		addRequestParameter("id", account.getId());
+		addRequestParameter("account", userAccount);
 		addRequestParameter("name", userName);
 		addRequestParameter("passwd", userPwd);
 		addRequestParameter("mail", userEmail);
@@ -543,7 +564,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		addRequestParameter("isEdit", updateUserIsEdit);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -553,28 +574,28 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		// assert response text
-		String updateExpectResponseText =
-		        "<Accounts>" +
-		                "<Account>" +
-		                "<ID>" + userId + "</ID>" +
-		                "<Name>" + userName + "</Name>" +
-		                "<Mail>" + userEmail + "</Mail>" +
-		                "<Roles>" + userRole + "</Roles>" +
-		                "<Enable>" + updateUserEnable + "</Enable>" +
-		                "</Account>" +
-		                "</Accounts>";
+		String updateExpectResponseText = "<Accounts>" +
+		        "<AccountInfo>" +
+		        "<ID>" + account.getId() + "</ID>" +
+		        "<Account>" + userAccount + "</Account>" +
+		        "<Name>" + userName + "</Name>" +
+		        "<Mail>" + userEmail + "</Mail>" +
+		        "<Roles></Roles>" +
+		        "<Enable>" + updateUserEnable + "</Enable>" +
+		        "</AccountInfo>" +
+		        "</Accounts>";
 		String updateAcutalResponseText = response.getWriterBuffer().toString();
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		IAccount updateAccount = this.accountMapper.getAccountById(userId);
+		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
-		assertEquals(updateAccount.getID(), userId);
-		assertEquals(updateAccount.getName(), userName);
-		assertEquals(updateAccount.getPassword(), (new TestTool()).getMd5(userPwd));
-		assertEquals(updateAccount.getEmail(), userEmail);
-		assertEquals(updateAccount.getEnable(), updateUserEnable);
+		assertEquals(userAccount, updateAccount.getAccount());
+		assertEquals((new TestTool()).getMd5(userPwd), updateAccount.getPassword());
+		assertEquals(userEmail, updateAccount.getEmail());
+		assertEquals(userName, updateAccount.getName());
+		assertEquals(updateUserEnable, updateAccount.getEnable());
 
 		/**
 		 * 3. 登入
@@ -587,7 +608,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(ActionPath_LogonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = userId;
+		String loginUserID = userAccount;
 		String loginUserPassword = userPwd;
 		LogonForm logonForm = new LogonForm();
 		logonForm.setUserId(loginUserID);

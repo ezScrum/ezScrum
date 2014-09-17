@@ -1,0 +1,84 @@
+*** Settings ***
+Documentation     test ezScrumn page
+Suite Setup       Test Product Backlog v2.0 Suite Setup
+Suite Teardown    Test Product Backlog v2.0 Suite Teardown
+Force Tags        ProductBacklogv2.0
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Filter.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Search.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_SetupTeardown.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           Selenium2Library
+Resource          keywords/ProductBacklog_v2.0/ezScrum_ProductBacklog_v2.0_SetupTeardown.txt
+
+*** Variables ***
+${tsTag}          testTagName    # 測試正常字元
+${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
+@{tsStoryA}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+@{tsStoryB}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+
+*** Test Cases ***
+Test ProductBacklog v2.0 - Create Story
+    [Documentation]    Add Story(正常資料)。
+    Click Element    xpath=/html/body/div[1]/div/div[2]/ul/li[1]/a
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    100
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    13
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    100
+    Click Element    xpath=/html/body/div[5]/div/div/div[2]/div[6]/button[1]
+    Click Element    xpath=//*[@id="productbacklog"]/div[1]
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    100
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    13
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    100
+
+Test ProductBacklog v2.0 - Update Story
+    Click Element    xpath=/html/body/div[1]/div/div[2]/ul/li[1]/a
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    100
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    13
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    100
+    Click Element    xpath=/html/body/div[5]/div/div/div[2]/div[6]/button[1]
+    Click Element    xpath=//*[@id="productbacklog"]/div[1]
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME2
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO2
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE2
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    50
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    8
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    50
+    Click Element    xpath=/html/body/div[5]/div/div/div[2]/div[6]/button[1]
+    Click Element    xpath=//*[@id="productbacklog"]/div[1]
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME2
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO2
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE2
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    50
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    8
+    Compare Field Content    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    50
+
+Test ProductBacklog v2.0 - Delete Story
+    Click Element    xpath=/html/body/div[1]/div/div[2]/ul/li[1]/a
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[1]/div[2]/textarea    TEST NAME
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[3]/div[2]/textarea    HOW TO DEMO
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[4]/div[2]/textarea    NOTE
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[1]/input    100
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[2]/input    13
+    Focus AND Input Text    /html/body/div[5]/div/div/div[2]/div[5]/div/div[3]/input    100
+    Click Element    xpath=/html/body/div[5]/div/div/div[2]/div[6]/button[1]
+    Open Context Menu    xpath=//*[@id="productbacklog"]/div[1]
+    Click Element    xpath=//*[@id="myMenu"]/ul/li/a
+    Page Should Not Contain Textfield    xpath=//*[@id="productbacklog"]/div[1]/div[2]/span    TEST NAME

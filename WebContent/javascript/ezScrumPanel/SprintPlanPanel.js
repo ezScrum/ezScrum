@@ -151,7 +151,7 @@ ezScrum.SprintPlanPageLayout = Ext.extend(Ext.Panel, {
 		            storyStore.loadData(response.responseXML);
 		            var point = 0;
 		            storyStore.each(function(rec) {
-		            	point += (rec.get('Estimation') - 0);
+		            	point += (rec.get('Estimate') - 0);
 		            });
 
 		            // 改變Story List的title顯示Sprint的名稱與ID

@@ -146,8 +146,8 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Partners'
 		        },
 		        {
-		        	fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		        	fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            xtype: 'numberfield',
 		            allowNegative: false
 		        },
@@ -224,7 +224,7 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 				var record = rs.records[0];
 				if(record)
 				{
-					this.getForm().setValues({issueID : record.data['Id'], Name : record.data['Name'], SprintID : record.data['SprintID'], Estimation : record.data['Estimation'], Status : record.data['Status'], ActualHour : record.data['ActualHour'], Handler : record.data['Handler'], Partners : record.data['Partners'], Notes : record.data['Notes']});
+					this.getForm().setValues({issueID : record.data['Id'], Name : record.data['Name'], SprintID : record.data['SprintID'], Estimate : record.data['Estimate'], Status : record.data['Status'], ActualHour : record.data['ActualHour'], Handler : record.data['Handler'], Partners : record.data['Partners'], Notes : record.data['Notes']});
 					this.fireEvent('LoadSuccess', this, response, record);
 				}
 			}

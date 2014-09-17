@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
@@ -18,7 +18,7 @@ import servletunit.struts.MockStrutsTestCase;
 public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/AjaxAddNewTag";
 	
 	public AjaxAddNewTagActionTest(String testMethod) {
@@ -26,7 +26,11 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -36,7 +40,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		super.setUp();
 		
 		// 設定讀取的struts-config檔案路徑
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); 
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); 
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.ACTION_PATH);
 		
@@ -46,19 +50,23 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 	
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
 		this.CP = null;
+		configuration = null;
 	}
 	
 	//測試 tag 名稱中含 "," ，會不會顯示 not allowed 的訊息
@@ -68,7 +76,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		String compareMsg = "<Message>TagName: \",\" is not allowed</Message>";
 		
 		//設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
@@ -88,14 +96,14 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		String compareMsg = "&amp;  /  &lt;  &gt;  \\  &apos;  &quot;";
 		
 		//設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 //		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project,config.getUserSession());
 //		PBHelper.addNewTag(tagDB);//先在DB中加入tag
 		
-		(new ProductBacklogHelper(config.getUserSession(), project)).addNewTag(tagDB);
+		(new ProductBacklogHelper(configuration.getUserSession(), project)).addNewTag(tagDB);
 		
 		addRequestParameter("newTagName", tag);//增加新的tag
 		
@@ -121,7 +129,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		tagList.add("\"");
 		
 		//設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
@@ -148,12 +156,11 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 			this.response.reset();
 		}
 		
-//		IIssueTag[] tags = PBHelper.getTagList();
-		IIssueTag[] tags = (new ntut.csie.ezScrum.web.helper.ProductBacklogHelper( config.getUserSession(), project)).getTagList();
+		ArrayList<TagObject> tags = (new ntut.csie.ezScrum.web.helper.ProductBacklogHelper( configuration.getUserSession(), project)).getTagList();
 		
-		assertEquals(tags.length, tagList.size());
-		for(int i = 0; i < tags.length; i++){
-			assertEquals(tags[i].getTagName(), tagList.get(i));
+		assertEquals(tags.size(), tagList.size());
+		for(int i = 0; i < tags.size(); i++){
+			assertEquals(tags.get(i).getName(), tagList.get(i));
 		}
 		
 	}

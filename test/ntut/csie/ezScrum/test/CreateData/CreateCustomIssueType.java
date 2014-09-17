@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.service.CustomIssueType;
 import ntut.csie.ezScrum.service.IssueBacklog;
 import ntut.csie.jcis.resource.core.IProject;
@@ -11,7 +12,7 @@ public class CreateCustomIssueType {
 	private List<CustomIssueType> CustomIssueType = null;
 	private IssueBacklog IB = null;
 	private String ProjectName = "";
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 	
 	public CreateCustomIssueType(CreateProject CP, int CreateProject_Index) throws Exception {
 		if (CreateProject_Index < CP.getProjectList().size()) {
@@ -19,7 +20,7 @@ public class CreateCustomIssueType {
 			
 			IProject project = CP.getProjectList().get(CreateProject_Index);
 			this.ProjectName = project.getName();
-			this.IB = new IssueBacklog(project, config.getUserSession());	// 設定 issuebacklog
+			this.IB = new IssueBacklog(project, configuration.getUserSession());	// 設定 issuebacklog
 		}
 	}
 	

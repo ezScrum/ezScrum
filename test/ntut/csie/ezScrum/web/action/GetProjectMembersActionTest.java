@@ -3,108 +3,119 @@ package ntut.csie.ezScrum.web.action;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetProjectMembersActionTest extends MockStrutsTestCase {
-	
+
 	private CreateProject CP;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/getProjectMembers";
 	private IProject project;
-	
+
 	public GetProjectMembersActionTest(String testName) {
 		super(testName);
 	}
-	
+
 	protected void setUp() throws Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
-		ini.exe();
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
 		
+		//	刪除資料庫
+		InitialSQL ini = new InitialSQL(configuration);
+		ini.exe();
+
 		this.CP = new CreateProject(1);
 		this.CP.exeCreate(); // 新增一測試專案
 		this.project = this.CP.getProjectList().get(0);
-		
+
 		super.setUp();
-		
+
 		// ================ set action info ========================
-		setContextDirectory( new File(config.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
-		
+		setRequestPathInfo(this.ACTION_PATH);
+
 		ini = null;
 	}
-	
+
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
-		
+
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
 		
+		configuration.setTestMode(false);
+		configuration.store();
+
 		super.tearDown();
-		
+
 		ini = null;
 		projectManager = null;
 		this.CP = null;
+		configuration = null;
 	}
-	
+
+	private String getExpectedProjectMember(UserObject user) {
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText.append("<Members>")
+		        .append("<Member>")
+		        .append("<ID>").append(user.getId()).append("</ID>")
+		        .append("<Account>").append(user.getAccount()).append("</Account>")
+		        .append("<Name>").append(user.getName()).append("</Name>")
+		        .append("<Role>ScrumMaster</Role>")
+		        .append("<Enable>").append(user.getEnable()).append("</Enable>")
+		        .append("</Member>")
+		        .append("</Members>");
+		return expectedResponseText.toString();
+	}
+
 	/**
 	 * 正常狀態，新增一名帳號至專案
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	public void testGetProjcetMembers1() throws InterruptedException {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
 
-		AddUserToRole addUserToRole  = new AddUserToRole(CP, CA);
+		AddUserToRole addUserToRole = new AddUserToRole(CP, CA);
 		addUserToRole.exe_SM();
 
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
-		
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		
+
 		// assert response text
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText
-			.append("<Members>")
-				.append("<Member>")
-					.append("<ID>TEST_ACCOUNT_ID_1</ID>")
-					.append("<Name>TEST_ACCOUNT_REALNAME_1</Name>")
-					.append("<Role>ScrumMaster</Role>")
-					.append("<Enable>true</Enable>")
-				.append("</Member>")
-			.append("</Members>");
 		String actualResponseText = response.getWriterBuffer().toString();
-		
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		assertEquals(getExpectedProjectMember(CA.getAccountList().get(0)), actualResponseText);
 	}
-	
+
 	/**
 	 * 修改顯示名稱
 	 */
@@ -112,127 +123,98 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
 		CA.setAccount_RealName(1);
-		
-		AddUserToRole addUserToRole  = new AddUserToRole(CP, CA);
+
+		AddUserToRole addUserToRole = new AddUserToRole(CP, CA);
 		addUserToRole.exe_SM();
-		
+
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
-		
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		
-		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		
+
 		// assert response text
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText
-			.append("<Members>")
-				.append("<Member>")
-					.append("<ID>TEST_ACCOUNT_ID_1</ID>")
-					.append("<Name>TEST_ACCOUNT_REALNAME_NEW_1</Name>")
-					.append("<Role>ScrumMaster</Role>")
-					.append("<Enable>true</Enable>")
-				.append("</Member>")
-			.append("</Members>");
 		String actualResponseText = response.getWriterBuffer().toString();
-		
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		assertEquals(getExpectedProjectMember(CA.getAccountList().get(0)), actualResponseText);
 	}
-	
+
 	/**
 	 * 修改Role
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public void testGetProjcetMembers3() throws Exception {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
-		
-		Thread.sleep(200);
-		AddUserToRole addUserToRole  = new AddUserToRole(CP, CA);
+
+		AddUserToRole addUserToRole = new AddUserToRole(CP, CA);
 		addUserToRole.exe_PO();
-		
-		AccountHelper ah = new AccountHelper(config.getUserSession());
-		ah.assignRole_remove(CA.getAccountList().get(0).getID(), CP.getProjectList().get(0).getName(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
-		
-		Thread.sleep(200);
+
+		AccountHelper ah = new AccountHelper(configuration.getUserSession());
+		ah.assignRole_remove(CA.getAccountList().get(0).getId(), CP.getProjectObjectList().get(0).getId(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
+
 		addUserToRole.exe_SM();
-		
+
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
-		
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		
-		// assert response text
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText
-			.append("<Members>")
-				.append("<Member>")
-					.append("<ID>TEST_ACCOUNT_ID_1</ID>")
-					.append("<Name>TEST_ACCOUNT_REALNAME_1</Name>")
-					.append("<Role>ScrumMaster</Role>")
-					.append("<Enable>true</Enable>")
-				.append("</Member>")
-			.append("</Members>");
 
+		// assert response text
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		assertEquals(getExpectedProjectMember(CA.getAccountList().get(0)), actualResponseText);
 	}
-	
+
 	/**
 	 * disable account
 	 */
 	public void testGetProjcetMembers4() throws InterruptedException {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
-		
-		AddUserToRole addUserToRole  = new AddUserToRole(CP, CA);
+
+		AddUserToRole addUserToRole = new AddUserToRole(CP, CA);
 		addUserToRole.exe_SM();
-		
-		Thread.sleep(1000);
+
 		addUserToRole.setEnable(CA, 0, false);
-		
+
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
-		
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		
-		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		
+
 		// assert response text
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText
-			.append("<Members>")
-			.append("</Members>");
+		String expectedResponseText = "<Members></Members>";
 		String actualResponseText = response.getWriterBuffer().toString();
-		
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+
+		assertEquals(expectedResponseText, actualResponseText);
 	}
 }

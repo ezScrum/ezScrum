@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import ntut.csie.ezScrum.restful.mobile.support.ConvertIProject;
@@ -31,7 +32,7 @@ public class ProjectWebService extends LoginWebService {
 	}
 
 	public ProjectWebService(UserObject user, String projectID) throws LogonException {
-		super(user.account, user.password);
+		super(user.getAccount(), user.getPassword());
 		
 		this.Project.add(getProject(projectID));
 	}
@@ -40,17 +41,17 @@ public class ProjectWebService extends LoginWebService {
 		return this.Project;
 	}
 	
-	private List<IProject> getUserProject(IAccount acc) {
+	private List<IProject> getUserProject(UserObject acc) {
 		List<IProject> projectlist = new ArrayList<IProject>();
 		ProjectLogic helper = new ProjectLogic();
 		
         // get the user and projects permission mapping
-        Map map = helper.getProjectPermissionMap(acc);
-        Set set = map.entrySet();
-        Iterator iter = set.iterator();
+        Map<String, Boolean> map = helper.getProjectPermissionMap(acc);
+        Set<Entry<String, Boolean>> set = map.entrySet();
+        Iterator<Entry<String, Boolean>> iter = set.iterator();
         
         while (iter.hasNext()) {
-        	Map.Entry entry = (Map.Entry) iter.next();
+        	Map.Entry<String, Boolean> entry = (Entry<String, Boolean>) iter.next();
         	if (entry.getValue() == Boolean.TRUE) {
         		String projectID = (String) entry.getKey();
         		projectlist.add(getProject(projectID));

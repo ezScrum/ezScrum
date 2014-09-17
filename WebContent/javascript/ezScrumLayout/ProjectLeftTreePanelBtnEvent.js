@@ -1,7 +1,6 @@
 Ext.ns('ezScrum');
 
 ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
-	Page_Index: 0,
 	initComponent: function() {
 
 		ezScrum.ProjectLeftPanel.Event.superclass.initComponent.call(this);
@@ -10,9 +9,11 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 		click: function(node, event) {
 			var obj = this;
 
-			if (node.leaf) {
+			if (node.leaf && !this.Plugin_Clicked) {
 				obj.fireTheEvent(node); // check which node is, and trigger the mapping event
 				obj.notify_Main_Content();
+			} else {
+				this.Plugin_Clicked = false;
 			}
 		},
 		render: function() { // 左邊欄生成後立即將每個頁面中的每個widget註冊監聽session是否過期的事件
@@ -33,13 +34,7 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 		} else if (node.parentNode.id == "PracticeGuide") {
 			// Practice Guide event
 			obj.event_PracticeGuide(node);
-		} else if (node.parentNode.id == "itsconfig") {
-			// ITS configuration event
-			obj.event_ITSConfig(node);
-		} else if (node.parentNode.id == "pluginConfig") {
-			// Plugin configuration
-			obj.event_PluginConfig(node);
-		}
+		} 
 	},
 	event_ProjectConfig: function(node) {
 		if (node.id == "ModifyConfigUrl") {
@@ -84,18 +79,6 @@ ezScrum.ProjectLeftPanel.Event = Ext.extend(ezScrum.ProjectLeftPanel, {
 		} else {
 			// nothing
 			return;
-		}
-	},
-	event_ITSConfig: function(node) {
-		if (node.id == "ITSmodifyUrl") {
-			this.Page_Index = 11;
-		} else {
-			this.Page_Index = 0;
-		}
-	},
-	event_PluginConfig: function(node) {
-		if (node.id == "PluginUrl") {
-			this.Page_Index = 12;
 		}
 	},
 	notify_Main_Content: function() {

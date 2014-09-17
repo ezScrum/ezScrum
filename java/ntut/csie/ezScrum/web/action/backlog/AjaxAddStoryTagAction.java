@@ -38,7 +38,7 @@ public class AjaxAddStoryTagAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		String storyId = request.getParameter("storyId");
-		String tagId = request.getParameter("tagId");
+		long tagId = Long.parseLong(request.getParameter("tagId"));
 		
 		StringBuilder result = new ProductBacklogHelper(session, project).getAddStoryTagResponseText(storyId, tagId);
 		

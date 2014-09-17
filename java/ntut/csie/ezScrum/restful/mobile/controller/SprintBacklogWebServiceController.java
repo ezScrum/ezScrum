@@ -38,8 +38,8 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(userName, password, projectID);
 			UserObject user = new UserObject();
-			user.account = decoder.getDecodeUserName();
-			user.password = decoder.getDecodePwd();
+			user.setAccount(decoder.getDecodeUserName());
+			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());
 			jsonString = this.mSprintPlanWebService.getRESTFulResponseString();
 		} catch (IOException e) {
@@ -127,8 +127,8 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(userName, password, projectID);
 			UserObject user = new UserObject();
-			user.account = decoder.getDecodeUserName();
-			user.password = decoder.getDecodePwd();
+			user.setAccount(decoder.getDecodeUserName());
+			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());
 			jsonString = this.mSprintPlanWebService.getCurrentSprint();
 		} catch (Exception e) {

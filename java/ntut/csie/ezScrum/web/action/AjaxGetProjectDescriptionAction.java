@@ -3,10 +3,9 @@ package ntut.csie.ezScrum.web.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.support.DateUtil;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.project.core.IProjectDescription;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +31,7 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Project Description. In Project Summary Page.");
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		ProjectUI pui = new ProjectUI(project);
 		return new StringBuilder((new Gson()).toJson(pui));
 	}
@@ -46,15 +45,15 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 		private String AttachFileSize = "";
 		private String ProjectCreateDate = "";
 
-		public ProjectUI(IProject p) {
-			if (p != null) {
-				IProjectDescription desc = p.getProjectDesc();
-				this.ProjectName = desc.getName();
-				this.ProjectDisplayName = desc.getDisplayName();
-				this.Commnet = desc.getComment();
-				this.ProjectManager = desc.getProjectManager();
-				this.AttachFileSize = desc.getAttachFileSize();
-				this.ProjectCreateDate = DateUtil.format(desc.getCreateDate(), DateUtil._16DIGIT_DATE_TIME);
+		public ProjectUI(ProjectObject project) {
+			if (project != null) {
+				this.ID = project.getId();
+				this.ProjectName = project.getName();
+				this.ProjectDisplayName = project.getDisplayName();
+				this.Commnet = project.getComment();
+				this.ProjectManager = project.getManager();
+				this.AttachFileSize = project.getAttachFileSize();
+				this.ProjectCreateDate = DateUtil.format(project.getCreateDate(), DateUtil._16DIGIT_DATE_TIME);
 			}
 		}
 	}

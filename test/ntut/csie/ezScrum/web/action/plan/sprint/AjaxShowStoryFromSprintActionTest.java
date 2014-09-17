@@ -3,8 +3,7 @@ package ntut.csie.ezScrum.web.action.plan.sprint;
 import java.io.File;
 import java.io.IOException;
 
-import servletunit.struts.MockStrutsTestCase;
-
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -12,14 +11,14 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
+import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateRelease CR;
 	private CreateSprint CS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/AjaxShowStoryfromSprint";
 	private IProject project;
 	
@@ -28,7 +27,11 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
     	this.CP = new CreateProject(1);
@@ -43,7 +46,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( this.ACTION_PATH );
     	
@@ -53,20 +56,23 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
-    	
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CR = null;
     	this.CS = null;
+    	configuration = null;
     	
     	super.tearDown();
     }
@@ -81,7 +87,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		addRequestParameter("Sid", this.CS.getSprintIDList().get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -107,7 +113,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		addRequestParameter("Sid", this.CS.getSprintIDList().get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -116,38 +122,39 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedResponseText = 
-				"<ExistingStories>" +
-						"<Story>" +
-							"<Id>1</Id>" +
-							"<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>" +
-							"<Name>TEST_STORY_1</Name>" +
-							"<Value>50</Value>" +
-							"<Importance>100</Importance>" +
-							"<Estimation>2</Estimation>" +
-							"<Status>new</Status>" +
-							"<Notes>TEST_STORY_NOTE_1</Notes>" +
-							"<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>" +
-							"<Release>None</Release>" +
-							"<Sprint>1</Sprint>" +
-							"<Tag></Tag>" +
-						"</Story>" +
-						"<Story>" +
-							"<Id>2</Id>" +
-							"<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>" +
-							"<Name>TEST_STORY_2</Name>" +
-							"<Value>50</Value>" +
-							"<Importance>100</Importance>" +
-							"<Estimation>2</Estimation>" +
-							"<Status>new</Status>" +
-							"<Notes>TEST_STORY_NOTE_2</Notes>" +
-							"<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>" +
-							"<Release>None</Release>" +
-							"<Sprint>1</Sprint>" +
-							"<Tag></Tag>" +
-						"</Story>" +
-					"</ExistingStories>";
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText
+					.append("<ExistingStories>")
+						.append("<Story>")
+							.append("<Id>1</Id>")
+							.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
+							.append("<Name>TEST_STORY_1</Name>")
+							.append("<Value>50</Value>")
+							.append("<Importance>100</Importance>")
+							.append("<Estimate>2</Estimate>")
+							.append("<Status>new</Status>")
+							.append("<Notes>TEST_STORY_NOTE_1</Notes>")
+							.append("<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>")
+							.append("<Release>None</Release>")
+							.append("<Sprint>1</Sprint>")
+							.append("<Tag></Tag>")
+						.append("</Story>")
+						.append("<Story>")
+							.append("<Id>2</Id>")
+							.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+							.append("<Name>TEST_STORY_2</Name>")
+							.append("<Value>50</Value>")
+							.append("<Importance>100</Importance>")
+							.append("<Estimate>2</Estimate>")
+							.append("<Status>new</Status>")
+							.append("<Notes>TEST_STORY_NOTE_2</Notes>")
+							.append("<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>")
+							.append("<Release>None</Release>")
+							.append("<Sprint>1</Sprint>")
+							.append("<Tag></Tag>")
+						.append("</Story>")
+					.append("</ExistingStories>");
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText, actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }

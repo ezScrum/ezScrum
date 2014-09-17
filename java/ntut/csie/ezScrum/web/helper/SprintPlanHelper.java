@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -290,8 +291,19 @@ public class SprintPlanHelper {
 			StoryObject story = new StoryObject(storyIssue);
 			// 找出 story 中所有的 task
 			IIssue[] taskIIssues = mSprintBacklogMapper.getTaskInStory(Long.parseLong(story.id));
-			for (IIssue taskIssue : taskIIssues)
-				story.addTask(new TaskObject(taskIssue));
+			for (IIssue taskIssue : taskIIssues) {
+				TaskObject taskObject = new TaskObject(taskIssue);
+				if (taskIssue.getHistory().size() > 0) {
+					for (IIssueHistory history : taskIssue.getIssueHistories()) {
+						if (history.getDescription().length() > 0) {
+							String[] token = history.getDescription().split(":");
+							if (token.length == 2 && token[1].contentEquals(" \"Checked Out\" => \"Done\"")) 
+								taskObject.doneTime = history.getModifyDate();
+						}
+					}
+				}
+				story.addTask(taskObject);
+			}
 			sprint.addStory(story);
 		}
 		return sprint;

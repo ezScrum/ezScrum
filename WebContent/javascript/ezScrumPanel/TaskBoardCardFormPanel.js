@@ -47,7 +47,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     },
     loadData: function(sID, handler) {
     	var obj = this;
-
     	Ext.Ajax.request({
     		url : 'getTaskBoardStoryTaskList.do',
     		params : {
@@ -131,8 +130,8 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			// update Story Card Info
 			var storyId = record.data['Id'];
 			var storyName = record.data['Name'];
-			var storyEstimation = record.data['Estimation'];
-			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimation);
+			var storyEstimate = record.data['Estimate'];
+			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimate);
 
 			// update Sprint Desc. and Burndown Chart
 			var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -141,6 +140,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		} else {
 			Ext.example.msg(title, 'Sorry, please try again.');
 		}
+		this.initialTaskBoard();
 	},
 	notify_EditTask: function(record) {
 		EditTaskWindow.hide();// share component
@@ -158,6 +158,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
 		Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
 		Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
+		this.initialTaskBoard();
 	},
 	notify_AttachFile: function(success, record, msg) {
 		AttachFile_Window.hide();

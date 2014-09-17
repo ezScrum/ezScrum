@@ -1,6 +1,7 @@
 Ext.ns('ezScrum');
 
-ezScrum.ContentPanel = new Ext.Panel({
+//ezScrum.ContentPanel = new Ext.Panel({
+ezScrum.ContentPanel = new ezScrum.projectLeftTree.contentPanel({
 	region		: 'center',		// position
 	id			: 'content_panel',
 	layout		: 'card',
@@ -16,10 +17,6 @@ ezScrum.ContentPanel = new Ext.Panel({
 	    
 	    // Project Management index
 	    // 3,               4,			     5,              6,                 7,             8,                 9,             10,
-	    ProductBacklogPage, ReleasePlanPage, SprintPlanPage, SprintBacklogPage, TaskBoardPage, RetrospectivePage, UnplannedPage, ezScrumReportPage,
-	    
-	    // Issue Action index
-	    // 11, 12
-	    ITSConfigPage, PluginConfigPage
+	    ProductBacklogPage, ReleasePlanPage, SprintPlanPage, SprintBacklogPage, TaskBoardPage, RetrospectivePage, UnplannedPage, ezScrumReportPage
 	]
 });

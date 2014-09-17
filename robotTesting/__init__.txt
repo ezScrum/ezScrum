@@ -1,5 +1,6 @@
 *** Settings ***
-Suite Setup       ezScrum Suite Setup 
-Suite Teardown    ezScrum Suite Teardown
-Resource        keywords/common_resource.txt
-Library           SeleniumLibrary
+Suite Setup
+Suite Teardown
+Resource          keywords/common_resource.txt
+Library           Selenium2Library
+Library           String

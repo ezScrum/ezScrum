@@ -5,13 +5,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -21,14 +21,18 @@ public class TranslationTest extends TestCase {
 	private CreateProductBacklog CPB;
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public TranslationTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -57,20 +61,22 @@ public class TranslationTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-    	
+    	configuration.setTestMode(false);
+		configuration.store();
+		
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CS = null;
     	this.CPB = null;
-    	this.config = null;
     	copyProject = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -118,8 +124,8 @@ public class TranslationTest extends TestCase {
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
 	public void testtranslateStoryToJson2() throws Exception {
 		IProject project = this.CP.getProjectList().get(0);
-		ProductBacklogHelper helper = new ProductBacklogHelper(project, this.config.getUserSession());
-		ntut.csie.ezScrum.web.helper.ProductBacklogHelper productBacklogHelper = new ntut.csie.ezScrum.web.helper.ProductBacklogHelper(this.config.getUserSession(), project);
+		ProductBacklogHelper helper = new ProductBacklogHelper(project, configuration.getUserSession());
+		ntut.csie.ezScrum.web.helper.ProductBacklogHelper productBacklogHelper = new ntut.csie.ezScrum.web.helper.ProductBacklogHelper(configuration.getUserSession(), project);
 		IIssue[] stories = new IIssue[1];
 		
 		// initial data

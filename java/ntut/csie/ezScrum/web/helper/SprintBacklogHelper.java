@@ -322,13 +322,13 @@ public class SprintBacklogHelper {
 			sb.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
 			sb.append("<Value>" + issue.getValue() + "</Value>");
 			sb.append("<Importance>" + issue.getImportance() + "</Importance>");
-			sb.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
+			sb.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
 			sb.append("<Status>" + issue.getStatus() + "</Status>");
 			sb.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes()) + "</Notes>");
 			sb.append("<HowToDemo>" + tsc.TranslateXMLChar(issue.getHowToDemo()) + "</HowToDemo>");
 			sb.append("<Release>" + releaseId + "</Release>");
 			sb.append("<Sprint>" + sprintId + "</Sprint>");
-			sb.append("<Tag>" + tsc.TranslateXMLChar(new Translation().Join(issue.getTag(), ",")) + "</Tag>");
+			sb.append("<Tag>" + tsc.TranslateXMLChar(new Translation().Join(issue.getTags(), ",")) + "</Tag>");
 			sb.append("</Story>");
 		}
 		sb.append("</ExistingStories>");

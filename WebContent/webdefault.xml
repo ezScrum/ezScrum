@@ -346,7 +346,10 @@
     <mime-type>mymime/type</mime-type>
   </mime-mapping>
   -->
-
+  <mime-mapping>
+    <extension>docx</extension>
+    <mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mime-type>
+  </mime-mapping>
   <!-- ==================================================================== -->
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

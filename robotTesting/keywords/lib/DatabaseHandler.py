@@ -7,7 +7,7 @@ class DatabaseHandler:
         pass
     
     def is_delete(self, tableName):
-        reservedTableNameList = ["mantis_user_table", "mantis_tokens_table", "mantis_project_table", "mantis_config_table"]
+        reservedTableNameList = ["mantis_user_table", "mantis_tokens_table", "mantis_config_table"]
         isDeleteFlag = 1
         for name in reservedTableNameList:
             isIdentical = cmp(tableName, name)
@@ -36,6 +36,7 @@ class DatabaseHandler:
 
         print 'Add admin'
         cursor.execute("INSERT INTO `account` VALUES (1, 'admin', 'admin', 'example@ezScrum.tw', '21232f297a57a5a743894a0e4a801fc3', 1, 1379910191599, 1379910191599)")
+        cursor.execute("INSERT INTO `system` VALUES (1, 1)")
         db.commit()
 
         

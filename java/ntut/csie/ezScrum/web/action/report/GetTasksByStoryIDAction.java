@@ -58,7 +58,7 @@ public class GetTasksByStoryIDAction extends Action {
 					sb.append("<Id>" + issues[i].getIssueID() + "</Id>");
 					sb.append("<Link>" + tsc.TranslateXMLChar(issues[i].getIssueLink()) + "</Link>");
 					sb.append("<Name>" + tsc.TranslateXMLChar(issues[i].getSummary()) + "</Name>");
-					sb.append("<Estimation>" + issues[i].getEstimated() + "</Estimation>");
+					sb.append("<Estimate>" + issues[i].getEstimated() + "</Estimate>");
 					sb.append("<Actual>" + issues[i].getActualHour() + "</Actual>");
 					sb.append("<Handler>" + issues[i].getAssignto() + "</Handler>");
 					sb.append("<Partners>" + tsc.TranslateXMLChar(issues[i].getPartners()) + "</Partners>");

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
@@ -21,7 +22,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -35,14 +35,18 @@ public class ReleaseBacklogTest extends TestCase {
 	private ReleaseBacklog releaseBacklog;
 	private IUserSession userSession = null;
 	private IProject project = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 
 	public ReleaseBacklogTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		// 新增一個Project
@@ -52,7 +56,7 @@ public class ReleaseBacklogTest extends TestCase {
 		CR = new CreateRelease(1, this.CP); // 新增一個Release
 		CR.exe();
 
-		userSession = config.getUserSession();
+		userSession = configuration.getUserSession();
 		project = CP.getProjectList().get(0);
 
 		super.setUp();
@@ -62,13 +66,16 @@ public class ReleaseBacklogTest extends TestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		// 初始化 SQL
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 
@@ -77,9 +84,9 @@ public class ReleaseBacklogTest extends TestCase {
 		CP = null;
 		projectManager = null;
 		releaseBacklog = null;
-		config = null;
 		project = null;
 		userSession = null;
+		configuration = null;
 	}
 
 	/**

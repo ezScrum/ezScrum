@@ -8,12 +8,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -22,7 +22,7 @@ import servletunit.struts.MockStrutsTestCase;
 public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateSprint CS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/AjaxGetSprintBacklogDateInfo";
 	private IProject project;
 	private String sprintID;
@@ -33,8 +33,12 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		this.CP = new CreateProject(1);
@@ -45,11 +49,11 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		this.CS.exe();
 		this.sprintID = "1";
 		
-		this.userSession = this.config.getUserSession();
+		userSession = configuration.getUserSession();
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(config.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo( this.ACTION_PATH );
 		
@@ -58,19 +62,23 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
 		this.CP = null;
+		configuration = null;
 	}
 	
 	public void testGetSprintBacklogDateInfoAction(){
@@ -82,7 +90,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		addRequestParameter("SprintID", idList.get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

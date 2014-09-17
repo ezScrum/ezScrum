@@ -143,8 +143,8 @@ ezScrum.EditStoryForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Value',
 		            vtype: 'Number'		
 		        },{
-		            fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		            fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            vtype: 'Float'		
 		        },{
 		            fieldLabel: 'Importance',
@@ -253,7 +253,7 @@ ezScrum.EditStoryForm = Ext.extend(Ext.form.FormPanel, {
 					//確保 record 在 TagStore reload 之前 set 好, setCheck 才不會有問題
 					CreateStoryWidgetTagStore_forEdit.reload();
 					this.record = record;
-					this.getForm().setValues({issueID:record.data['Id'], Name : record.data['Name'],Value : record.data['Value'], Importance : record.data['Importance'], Estimation : record.data['Estimation'], Notes : record.data['Notes'], HowToDemo : record.data['HowToDemo']});
+					this.getForm().setValues({issueID:record.data['Id'], Name : record.data['Name'],Value : record.data['Value'], Importance : record.data['Importance'], Estimate : record.data['Estimate'], Notes : record.data['Notes'], HowToDemo : record.data['HowToDemo']});
 					this.fireEvent('LoadSuccess', this, response, record);
 				}
 			}

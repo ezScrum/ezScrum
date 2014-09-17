@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../../Global Define.txt
 Resource          ../Project/ezScrum_Project.txt
 
@@ -42,7 +42,7 @@ Test Sprint Goal With NewLine Teardown
     Select Node Product    Sprint Plan
     Clean All Sprint
 
-Test Sprint Session Setup  
+Test Sprint Session Setup
     # 開啟第二個新分頁並登入到第二個專案
     Set Test Variable    ${tcBrowserAlias_A}    ${PROJECT_NAME}_A
     New Tab With Alias    ${LOGIN_URL}    ${tcBrowserAlias_A}
@@ -51,7 +51,6 @@ Test Sprint Session Setup
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}_A
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project With Arguments    ${PROJECT_NAME}_A    ${PROJECT_NAME}DisplayName_A    ${PROJECT_COMMENT}_A    ${PROJECT_MANAGER}_A
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_A
-    
     # 開啟第二個新分頁並登入到第二個專案
     Set Test Variable    ${tcBrowserAlias_B}    ${PROJECT_NAME}_B
     New Tab With Alias    ${LOGIN_URL}    ${tcBrowserAlias_B}

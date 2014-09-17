@@ -1,15 +1,16 @@
 var AccountRecord = Ext.data.Record.create([
-	'ID', 'Name', 'Mail', 'Roles', 'Enable', 'Password'
+	'ID', 'Account', 'Name', 'Mail', 'Roles', 'Enable', 'Password'
 ]);
 
 var AccountReader = new Ext.data.XmlReader({
-	record: 'Account',
+	record: 'AccountInfo',
 	idPath : 'ID'
 }, AccountRecord);
 
 var AccountStore = new Ext.data.Store({
 	fields:[
 	    {name : 'ID'},
+		{name : 'Account'},
 		{name : 'Name'},
 		{name : 'Mail'},
 		{name : 'Roles'},
@@ -29,7 +30,7 @@ function checkUser(val) {
 
 var AccountColumnModel = new Ext.grid.ColumnModel({
 	columns: [
- 	     {dataIndex: 'ID',header: 'User ID', width: 150},
+ 	     {dataIndex: 'Account',header: 'User ID', width: 150},
  	     {dataIndex: 'Name',header: 'Name', width: 150},		            
  	     {dataIndex: 'Mail',header: 'E-mail', width: 200},
  	     {dataIndex: 'Roles',header: 'Roles', width: 300},

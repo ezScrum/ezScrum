@@ -1,119 +1,121 @@
 *** Settings ***
-Documentation   test ezScrumn release plan page\n\n# Speed = 0.05 failed -> 待加入同步機制
-Suite Setup     Test Release Plan - PreCondition
-Suite Teardown  Test Release Plan - PostCondition
-Force Tags      ReleasePlan
-Resource        keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
-Resource        keywords/SprintPlan/ezScrum_SprintPlan_SetupTeardown.txt
-Resource        keywords/ReleasePlan/ezScrum_ReleasePlan_SetupTeardown.txt
-Resource        keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
-Resource        keywords/common_resource.txt
-Resource        keywords/ezScrum_Login.txt
-Resource        keywords/Project/ezScrum_Project.txt
-Resource        Global Define.txt
-Resource        ServerConfig.txt
-Library         BuiltIn
-Library         SeleniumLibrary
-Library         Collections
+Documentation     test ezScrumn release plan page
+...
+...               # Speed = 0.05 failed -> 待加入同步機制
+Suite Setup       Test Release Plan - PreCondition
+Suite Teardown    Test Release Plan - PostCondition
+Force Tags        ReleasePlan
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_SetupTeardown.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_SetupTeardown.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           BuiltIn
+Library           Selenium2Library
+Library           Collections
 
 *** Test Cases ***
 Test Release Plan - Add Release
-    [Documentation]  \# 待重構 (assert 應該在 Test Case 內而非 keyword)
+    [Documentation]    \# 待重構 (assert 應該在 Test Case 內而非 keyword)
     [Setup]
-    NewReleasePlan  @{tsReleasePlan}
+    NewReleasePlan    @{tsReleasePlan}
     # assert
-    [Teardown]  Test Release Plan - Add Release Teardown
+    [Teardown]    Test Release Plan - Add Release Teardown
 
 Test Release Plan - Edit Release
-    [Documentation]  \# 待重構 (assert 應該在 Test Case 內而非 keyword)\n# Speed = 0.05 failed -> 待加入同步機制
-    [Setup]  Test Release Plan - Edit Release Setup
-    EditReleasePlan  @{tsReleasePlan}
+    [Documentation]    \# 待重構 (assert 應該在 Test Case 內而非 keyword)
+    ...    # Speed = 0.05 failed -> 待加入同步機制
+    [Setup]    Test Release Plan - Edit Release Setup
+    EditReleasePlan    @{tsReleasePlan}
     # assert
-    [Teardown]  Test Release Plan - Edit Release Teardown
+    [Teardown]    Test Release Plan - Edit Release Teardown
 
 Test Release Plan - Show Release Backlog
-    [Setup]  Test Release Plan - Show Release Backlog Setup
-    ShowReleaseBacklog  @{tsReleasePlan}
+    [Setup]    Test Release Plan - Show Release Backlog Setup
+    ShowReleaseBacklog    @{tsReleasePlan}
     # assert ?
-    [Teardown]  Test Release Plan - Show Release Backlog Teardown
+    [Teardown]    Test Release Plan - Show Release Backlog Teardown
 
 Test Release Plan - Delete Release
-    [Setup]  Test Release Plan - Delete Release Setup
-    DeleteReleasePlan  @{tsReleasePlan}
+    [Setup]    Test Release Plan - Delete Release Setup
+    DeleteReleasePlan    @{tsReleasePlan}
     # assert
-    ${_itemCount} =  Get Matching Xpath Count  //table[@class='x-treegrid-root-table']/tbody
-    Should Be Equal  ${_itemCount}  0
-    [Teardown]  Test Release Plan - Delete Release Teardown
+    ${_itemCount} =    Get Matching Xpath Count    //table[@class='x-treegrid-root-table']/tbody
+    Should Be Equal    ${_itemCount}    0
+    [Teardown]    Test Release Plan - Delete Release Teardown
 
 Test Release Plan - Contain Sprints
-    [Documentation]  建立四個sprint後, 建立一個包含這些sprint的release, 檢查是否有被納入
-    [Setup]  Test Release Plan - Contain Sprints Setup
-    Select Node Product  Sprint Plan
-    ${sprintStartDate}=  Get Start Date  NOW
-    Create Sprint with Date  sprint1 sprint goal  ${sprintStartDate}  2  4  100  100
-    ${sprintStartDate}=  Get Start Date  NOW +14d
-    Create Sprint with Date  sprint2 sprint goal  ${sprintStartDate}  2  4  100  100
-    ${sprintStartDate}=  Get Start Date  NOW +28d
-    Create Sprint with Date  sprint3 sprint goal  ${sprintStartDate}  2  4  100  100
-    ${sprintStartDate}=  Get Start Date  NOW +42d
-    Create Sprint with Date  sprint4 sprint goal  ${sprintStartDate}  2  4  100  100
-    Select Node Product  Release Plan
-    ${startDateFormat}=  Get Start Date  NOW
-    ${endDateFormat}=  Get Start Date  NOW +56d
-    Set List Value  ${tsReleasePlan}  1  ${startDateFormat}
-    Set List Value  ${tsReleasePlan}  2  ${endDateFormat}
-    NewReleasePlan  @{tsReleasePlan}
-    Xpath Should Match X Times  //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint1 sprint goal"]  1
-    Xpath Should Match X Times  //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint2 sprint goal"]  1
-    Xpath Should Match X Times  //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint3 sprint goal"]  1
-    Xpath Should Match X Times  //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint4 sprint goal"]  1
-    [Teardown]  Test Release Plan - Contain Sprints Teardown
+    [Documentation]    建立四個sprint後, 建立一個包含這些sprint的release, 檢查是否有被納入
+    [Setup]    Test Release Plan - Contain Sprints Setup
+    Select Node Product    Sprint Plan
+    ${sprintStartDate}=    Get Start Date    NOW
+    Create Sprint with Date    sprint1 sprint goal    ${sprintStartDate}    2    4    100    100
+    ${sprintStartDate}=    Get Start Date    NOW +14d
+    Create Sprint with Date    sprint2 sprint goal    ${sprintStartDate}    2    4    100    100
+    ${sprintStartDate}=    Get Start Date    NOW +28d
+    Create Sprint with Date    sprint3 sprint goal    ${sprintStartDate}    2    4    100    100
+    ${sprintStartDate}=    Get Start Date    NOW +42d
+    Create Sprint with Date    sprint4 sprint goal    ${sprintStartDate}    2    4    100    100
+    Select Node Product    Release Plan
+    ${startDateFormat}=    Get Start Date    NOW
+    ${endDateFormat}=    Get Start Date    NOW +56d
+    Set List Value    ${tsReleasePlan}    1    ${startDateFormat}
+    Set List Value    ${tsReleasePlan}    2    ${endDateFormat}
+    NewReleasePlan    @{tsReleasePlan}
+    Xpath Should Match X Times    //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint1 sprint goal"]    1
+    Xpath Should Match X Times    //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint2 sprint goal"]    1
+    Xpath Should Match X Times    //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint3 sprint goal"]    1
+    Xpath Should Match X Times    //table[@class='x-treegrid-root-table']/tbody//div[text()="testReleasePlan"]/../../..//div[text()="sprint4 sprint goal"]    1
+    [Teardown]    Test Release Plan - Contain Sprints Teardown
 
 Test Release Plan - New Sprint
-    [Documentation]  建立release後直接在該頁面建立sprint,檢查是否有被納入
-    [Setup]  Test Release Plan - New Sprint Setup
-    ${sprintStartDate}=  Get Start Date  NOW
-    Create Sprint In Release Plan  sprint1 sprint goal  ${sprintStartDate}  2  4  100  100
-    Wait Until Page Contains  sprint1 sprint goal
-    Xpath Should Match X Times  //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]  1
-    [Teardown]  Test Release Plan - New Sprint Teardown
+    [Documentation]    建立release後直接在該頁面建立sprint,檢查是否有被納入
+    [Setup]    Test Release Plan - New Sprint Setup
+    ${sprintStartDate}=    Get Start Date    NOW
+    Create Sprint In Release Plan    sprint1 sprint goal    ${sprintStartDate}    2    4    100    100
+    Wait Until Page Contains    sprint1 sprint goal
+    Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]    1
+    [Teardown]    Test Release Plan - New Sprint Teardown
 
 Test Release Plan - Edit Sprint
-    [Setup]  Test Release Plan - Edit Sprint Setup
-    Mouse Down  xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
-    Mouse Up  xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
-    Click Element  xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]  anddontwait
-    Edit Sprint In Release Plan  sprint1 sprint goal updated  2  5  200  200
-    Xpath Should Match X Times  //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]  1
-    [Teardown]  Test Release Plan - Edit Sprint Teardown
+    [Setup]    Test Release Plan - Edit Sprint Setup
+    Mouse Down    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
+    Mouse Up    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
+    Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200
+    Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]    1
+    [Teardown]    Test Release Plan - Edit Sprint Teardown
 
 Test Release Plan - Session - Contain Sprints
-    [Tags]  session
-    [Setup]  Test Release Plan - Session - Contain Sprints Setup
-    Select Window  ${tcBrowserAlias_A}
-    Select Node Product  Summary
-    Select Node Product  Release Plan
+    [Tags]    session
+    [Setup]    Test Release Plan - Session - Contain Sprints Setup
+    Select Window    ${tcBrowserAlias_A}
+    Select Node Product    Summary
+    Select Node Product    Release Plan
     # verify release plan
-    Set List Value  ${tsReleasePlan}  0  release Plan 1 name in project A
-    Set List Value  ${tsReleasePlan}  3  release Plan 1 Description in project A
-    ${_foundIndex} =  _findReleasePlanItem  @{tsReleasePlan}
-    @{_actualDataList}  _getReleasePlanDataList  ${_foundIndex}
-    CompareList  @{tsReleasePlan}  @{_actualDataList}
+    Set List Value    ${tsReleasePlan}    0    release Plan 1 name in project A
+    Set List Value    ${tsReleasePlan}    3    release Plan 1 Description in project A
+    ${_foundIndex} =    _findReleasePlanItem    @{tsReleasePlan}
+    @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
+    CompareList    @{tsReleasePlan}    @{_actualDataList}
     # verify story in sprint
-    Click Element  xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_A}"]  anddontwait
-    ${storyIDInReleasePlanXpath}=  Set Variable  //div[@id="ReleasePlan_StoryGrid"]//div[@class="x-grid3-cell-inner x-grid3-col-0" and text()="${tcStoryID_A}"]
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}  1
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_A}"]
+    ${storyIDInReleasePlanXpath}=    Set Variable    //div[@id="ReleasePlan_StoryGrid"]//div[@class="x-grid3-cell-inner x-grid3-col-0" and text()="${tcStoryID_A}"]
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}    1
     # Xpath Should Match X Times ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="&nbsp;"] 1 # tag
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-2" and text()="${tcStoryName_A}"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-3" and text()="${tcValue_A}"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-4" and text()="${tcEstimation_A}"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-5" and text()="${tcImportance_A}"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-6" and text()="new"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-7" and text()="${tcReleaseID_A}"]  1
-    Xpath Should Match X Times  ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-8" and text()="${tcSprintID_A}"]  1
-    Select Window  ${tcBrowserAlias_B}
-    Select Node Product  Summary
-    Select Node Product  Release Plan
-    Click Element  xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_B}"]  anddontwait
-    [Teardown]  Test Release Plan - Session - Contain Sprints Teardown
-
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-2" and text()="${tcStoryName_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-3" and text()="${tcValue_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-4" and text()="${tcEstimate_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-5" and text()="${tcImportance_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-6" and text()="new"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-7" and text()="${tcReleaseID_A}"]    1
+    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-8" and text()="${tcSprintID_A}"]    1
+    Select Window    ${tcBrowserAlias_B}
+    Select Node Product    Summary
+    Select Node Product    Release Plan
+    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_B}"]
+    [Teardown]    Test Release Plan - Session - Contain Sprints Teardown

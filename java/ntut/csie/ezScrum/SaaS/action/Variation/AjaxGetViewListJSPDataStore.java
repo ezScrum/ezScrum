@@ -57,7 +57,7 @@ public class AjaxGetViewListJSPDataStore extends Action {
 			"	listeners: {" + "\n"+
 			"		CreateSuccess:function(win, form, projectID){" + "\n"+			
 			"	 		this.hide();" + "\n"+
-			"	 		alert('Create success. Redirect to view project summary.');" + "\n"+
+			"	 		alert('1321312321321Create success. Redirect to view project summary.');" + "\n"+
 			"	 		document.location.href = './viewProject.do?PID=' + projectID;" + "\n"+
 			"		}," + "\n"+
 			"		CreateFailure:function(win, form, response){" + "\n"+

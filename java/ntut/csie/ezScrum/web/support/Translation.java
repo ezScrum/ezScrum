@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class Translation {
 	public Translation() { /* empty */}
@@ -31,13 +32,13 @@ public class Translation {
 			sb.append("<Link>" + TranslateChar.TranslateXMLChar(stories[i].getIssueLink()) + "</Link>");
 			sb.append("<Name>" + TranslateChar.TranslateXMLChar(stories[i].getSummary()) + "</Name>");
 			sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-			sb.append("<Estimation>" + stories[i].getEstimated() + "</Estimation>");
+			sb.append("<Estimate>" + stories[i].getEstimated() + "</Estimate>");
 			sb.append("<Status>" + stories[i].getStatus() + "</Status>");
 			sb.append("<Notes>" + TranslateChar.TranslateXMLChar(stories[i].getNotes()) + "</Notes>");
 			sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(stories[i].getHowToDemo()) + "</HowToDemo>");
 			sb.append("<Release>" + TranslateChar.HandleNullString(stories[i].getReleaseID()) + "</Release>");
 			sb.append("<Sprint>" + TranslateChar.HandleNullString(stories[i].getSprintID()) + "</Sprint>");
-			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTag(), ",")) + "</Tag>");
+			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTags(), ",")) + "</Tag>");
 			if (stories[i].getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
 			else sb.append("<Attach>true</Attach>");
 			sb.append("</Story>");
@@ -61,13 +62,13 @@ public class Translation {
 		sb.append("<Name>" + TranslateChar.TranslateXMLChar(story.getSummary()) + "</Name>");
 		sb.append("<Value>" + story.getValue() + "</Value>");
 		sb.append("<Importance>" + story.getImportance() + "</Importance>");
-		sb.append("<Estimation>" + story.getEstimated() + "</Estimation>");
+		sb.append("<Estimate>" + story.getEstimated() + "</Estimate>");
 		sb.append("<Status>" + story.getStatus() + "</Status>");
 		sb.append("<Notes>" + TranslateChar.TranslateXMLChar(story.getNotes()) + "</Notes>");
 		sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(story.getHowToDemo()) + "</HowToDemo>");
 		sb.append("<Release>" + TranslateChar.HandleNullString(story.getReleaseID()) + "</Release>");
 		sb.append("<Sprint>" + TranslateChar.HandleNullString(story.getSprintID()) + "</Sprint>");
-		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTag(), ",")) + "</Tag>");
+		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTags(), ",")) + "</Tag>");
 		if (story.getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
 		else sb.append("<Attach>true</Attach>");
 		sb.append("</Story>");
@@ -93,7 +94,7 @@ public class Translation {
 			jsonIssue.append("Link", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getIssueLink()));
 			jsonIssue.append("Category", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getCategory()));
 			jsonIssue.append("Name", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getSummary()));
-			jsonIssue.append("Estimation", scrumIssues.get(i).getEstimated());
+			jsonIssue.append("Estimate", scrumIssues.get(i).getEstimated());
 			jsonIssue.append("Status", scrumIssues.get(i).getStatus());
 			jsonIssue.append("Notes", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getNotes()));
 			jsonIssue.append("Sprint", TranslateChar.HandleNullString(scrumIssues.get(i).getSprintID()));
@@ -198,21 +199,21 @@ public class Translation {
 			JsonObject jsonStory = new JsonObject();
 
 			jsonStory.append("Id", stories[i].getIssueID());
-			jsonStory.append("Link", TranslateChar.TranslateJSONChar(stories[i].getIssueLink()));
 			jsonStory.append("Name", TranslateChar.TranslateJSONChar((stories[i].getSummary())));
 			jsonStory.append("Value", stories[i].getValue());
+			jsonStory.append("Estimate", stories[i].getEstimated());
 			jsonStory.append("Importance", stories[i].getImportance());
-			jsonStory.append("Estimation", stories[i].getEstimated());
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTags(), ",")));
 			jsonStory.append("Status", stories[i].getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories[i].getNotes()));
 			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories[i].getHowToDemo()));
+			jsonStory.append("Link", TranslateChar.TranslateJSONChar(stories[i].getIssueLink()));
 			jsonStory.append("Release", TranslateChar.HandleNullString(stories[i].getReleaseID()));
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(stories[i].getSprintID()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTag(), ",")));
 			jsonStory.append("FilterType", getFilterType(stories[i]));
 
-			if (stories[i].getAttachFile().size() == 0) jsonStory.append("Attach", "false");
-			else jsonStory.append("Attach", "true");
+			if (stories[i].getAttachFile().size() == 0) jsonStory.append("Attach", false);
+			else jsonStory.append("Attach", true);
 
 			List<IssueAttachFile> files = stories[i].getAttachFile();
 			JsonArray jsonFiles = new JsonArray();
@@ -341,10 +342,10 @@ public class Translation {
 			jsonStory.append("Name", TranslateChar.TranslateJSONChar(issue.getSummary()));
 			jsonStory.append("Value", issue.getValue());
 			jsonStory.append("Importance", issue.getImportance());
-			jsonStory.append("Estimation", issue.getEstimated());
+			jsonStory.append("Estimate", issue.getEstimated());
 			jsonStory.append("Status", issue.getStatus());
 			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(issue.getNotes()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTag(), ",")));
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTags(), ",")));
 			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(issue.getHowToDemo()));
 			jsonStory.append("Release", TranslateChar.HandleNullString(issue.getReleaseID()));
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(issue.getSprintID()));
@@ -537,13 +538,13 @@ public class Translation {
 		return obj.toString();
 	}
 
-	public String Join(List<IIssueTag> tags, String delimiter) {
+	public String Join(List<TagObject> tags, String delimiter) {
 		if (tags.isEmpty()) return "";
 
 		StringBuilder sb = new StringBuilder();
 
-		for (IIssueTag x : tags)
-			sb.append(x.getTagName() + delimiter);
+		for (TagObject x : tags)
+			sb.append(x.getName() + delimiter);
 
 		sb.delete(sb.length() - delimiter.length(), sb.length());
 

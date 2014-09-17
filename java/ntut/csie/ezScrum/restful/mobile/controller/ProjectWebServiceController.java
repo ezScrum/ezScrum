@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.restful.mobile.service.ProjectWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
@@ -39,6 +40,7 @@ public class ProjectWebServiceController {
 								"method: getProjectList, " +
 								"exception: " + e.toString() );
 			e.printStackTrace();
+			Response.status(410).entity("Parameter error.").build();
 		}catch (JSONException e) {
 			System.out.println( "class: ProjectWebServiceController, " +
 								"method: getRESTFulResponseString, " +
@@ -74,6 +76,7 @@ public class ProjectWebServiceController {
 								"method: getProjectList, " +
 								"exception: " + e.toString() );
 			e.printStackTrace();
+			Response.status(410).entity("Parameter error.").build();
 		} catch (JSONException e) {
 			System.out.println(	"class: ProjectWebServiceController, " +
 								"method: getRESTFulResponseString, " +

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -11,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -21,14 +21,18 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateRelease CR;
 	private CreateProductBacklog CPB;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public AddExistedStoryActionTest(String testMethod) {
         super(testMethod);
     }
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		this.CP = new CreateProject(1);
@@ -42,7 +46,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent")); // 設定讀取的 struts-config檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的 struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/addExistedStory");
 
@@ -61,11 +65,14 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
@@ -73,7 +80,8 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		this.CP = null;
 		this.CR = null;
 		this.CPB = null;
-
+		configuration = null;
+		
 		super.tearDown();
 	}
 
@@ -99,7 +107,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());		
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================    	    	
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -124,8 +132,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 				ReleasePlan.getDescription());
 
 		// 驗證 Story 有被加入 ReleasePlan ID
-		ProductBacklogHelper PBhelper = new ProductBacklogHelper(project,
-				config.getUserSession());		
+		ProductBacklogHelper PBhelper = new ProductBacklogHelper(project, configuration.getUserSession());		
 		
 		for (IIssue issue : this.CPB.getIssueList()) {
 			String releaseID = PBhelper.getIssue(issue.getIssueID()).getReleaseID();
@@ -295,7 +302,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());		
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());		
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -321,8 +328,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 				ReleasePlan.getDescription());
 
 		// 驗證 Story 有被加入 ReleasePlan ID
-		ProductBacklogHelper PBhelper = new ProductBacklogHelper(project,
-				config.getUserSession());		
+		ProductBacklogHelper PBhelper = new ProductBacklogHelper(project, configuration.getUserSession());		
 		
 		for (IIssue issue : this.CPB.getIssueList()) {
 			String releaseID = PBhelper.getIssue(issue.getIssueID()).getReleaseID();

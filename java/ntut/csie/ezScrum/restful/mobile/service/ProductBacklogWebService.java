@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.ProductBacklogUtil;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.account.core.LogonException;
@@ -42,6 +43,25 @@ public class ProductBacklogWebService extends ProjectWebService {
 	
 	public String getRESTFulResponseString() {
 		return responseString;
+	}
+	
+	/**
+	 * 新增一筆Story
+	 * @throws JSONException 
+	 */
+	public void createStory(JSONObject storyProperties) throws JSONException{
+		StoryInformation storyInformation = new StoryInformation();
+		storyInformation.setName(storyProperties.getString("name"));
+		storyInformation.setImportance(storyProperties.getString("importance"));
+		storyInformation.setEstimation(storyProperties.getString("estimation"));
+		storyInformation.setValue(storyProperties.getString("value"));
+		storyInformation.setHowToDemo(storyProperties.getString("howToDemo"));
+		storyInformation.setNotes(storyProperties.getString("notes"));
+		storyInformation.setSprintID(storyProperties.getString("sprintID"));
+		storyInformation.setTagIDs(storyProperties.getString("tagIDs"));
+		
+		IIssue storyIIssue = productBacklogHelper.addNewStory(storyInformation);
+		responseString = cpbForRESTFul.createStory(storyIIssue.getIssueID());
 	}
 	
 	/****
@@ -77,9 +97,9 @@ public class ProductBacklogWebService extends ProjectWebService {
 		Long issueID = null;
 		ArrayList<Long> issueIDList = new ArrayList<Long>();
 		IStory targetStory = null;
-		List<IIssueTag> issueTagList = new ArrayList<IIssueTag>();
+		List<TagObject> issueTagList = new ArrayList<TagObject>();
 		try {
-			JSONArray tagArray = storyProperties.getJSONArray(ProductBacklogUtil.TAG_TAG);
+			JSONArray tagArray = storyProperties.getJSONArray(ProductBacklogUtil.TAG_TAGLIST);
 			
 			String id = storyProperties.getString(ProductBacklogUtil.TAG_ID);//由client端取回的storyID
 		
@@ -94,15 +114,15 @@ public class ProductBacklogWebService extends ProjectWebService {
 			
 			this.productBacklogHelper.editStory(issueID, storyName, value, importance, estimation, howToDemo, notes);
 			
-			IIssueTag[] tagList = this.productBacklogHelper.getTagList();
-			for(int i = 0;i < tagList.length;i++){
-				this.productBacklogHelper.removeStoryTag(String.valueOf(issueID), String.valueOf(tagList[i].getTagId()));
+			ArrayList<TagObject> tagList = this.productBacklogHelper.getTagList();
+			for(int i = 0;i < tagList.size();i++){
+				this.productBacklogHelper.removeStoryTag(String.valueOf(issueID), tagList.get(i).getId());
 			}
 			
 			for(int i = 0; i < tagArray.length(); i++){
 				if(this.productBacklogHelper.isTagExist(tagArray.getString(i))){
-					IIssueTag issueTag = this.productBacklogHelper.getTagByName(tagArray.getString(i));
-					this.productBacklogHelper.addStoryTag(String.valueOf(issueID), String.valueOf(issueTag.getTagId()));
+					TagObject issueTag = this.productBacklogHelper.getTagByName(tagArray.getString(i));
+					this.productBacklogHelper.addStoryTag(String.valueOf(issueID), issueTag.getId());
 					
 					issueTagList.add(issueTag);//檢查用
 				}
@@ -153,10 +173,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 	 * 取得所有的tag
 	 */
 	public void readAllTags(){
-		IIssueTag[] iIssueTagList = this.productBacklogHelper.getTagList();
-		List<TagObject> tagList = new ArrayList<TagObject>();
-		for(IIssueTag iIssueTag : iIssueTagList)
-			tagList.add(new TagObject(iIssueTag));
+		ArrayList<TagObject> tagList = this.productBacklogHelper.getTagList();
 		responseString = new Gson().toJson(tagList);
 	}
 	

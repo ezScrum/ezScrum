@@ -42,7 +42,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 //		String mantisUrl = prefs.getServerUrl();
 		String name = request.getParameter("Name");
 		String importance = request.getParameter("Importance");
-		String estimation = request.getParameter("Estimation");
+		String estimate = request.getParameter("Estimate");
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
@@ -51,7 +51,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		String tagIDs = request.getParameter("TagIDs");
 		String releaseID = "";
 		
-		StoryInformation storyInformation = new StoryInformation(name, importance, estimation, value, howToDemo, notes, description, sprintID, releaseID, tagIDs);
+		StoryInformation storyInformation = new StoryInformation(name, importance, estimate, value, howToDemo, notes, description, sprintID, releaseID, tagIDs);
 		releaseID = new ReleasePlanHelper(project).getReleaseID(storyInformation.getSprintID());
 		if (!releaseID.equals("0")){
 			storyInformation.setReleaseID(releaseID);

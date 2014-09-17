@@ -1,45 +1,53 @@
 *** Settings ***
 Documentation     Create,Delete,Edit story
-Library           SeleniumLibrary
+Library           Selenium2Library
 Library           Collections
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 Resource          ../ezScrum_Login.txt
 Resource          ../Project/ezScrum_Project.txt
 Resource          ezScrum_ProductBacklog_Tag.txt
+Library           String
 
 *** Keywords ***
 Verify Story Information With Arguments
-    [Arguments]    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${storyNotes}
+    [Arguments]    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
     ...    ${storyHowToDemo}
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
-    Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
-    Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
-    Compare Field Content    xpath=//input[@name="Estimation"]    ${storyEstimation}
-    Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
-    Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
-    Compare Field Content    xpath=//input[@name="Tags"]    ${correctTagText}
-    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    Click Element    xpath=//button[text()="Edit Story"]
+    Set Browser Implicit Wait    5
+    Compare Field Content    //textarea[@name="Name"]    ${storyName}
+    Compare Field Content    //input[@name="Value"]    ${storyValue}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
+    Compare Field Content    //input[@name="Importance"]    ${storyImportance}
+    Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
+    Compare Field Content    //input[@name="Tags"]    ${correctTagText}
+    Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
-    Should Be Equal    ${testNameText}    Name:\n\ ${storyName}
+    Should Be Equal    ${testNameText}    Name:\n${storyName}
     ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..
-    Should Be Equal    ${testNotesText}    Notes:\n\ ${storyNotes}
+    Should Be Equal    ${testNotesText}    Notes:\n${storyNotes}
     ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
-    Should Be Equal    ${testHowToDemoText}    How To Demo:\n\ ${storyHowToDemo}
+    Should Be Equal    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
+    #比對Tag時若為空的長度仍然有1，如果拿到長度為1時則把testTagText設為EMPTY
     ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    #將兩個變數都轉為unicode才能比對
+    ${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
+    ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
+    ${testTagTextLength}=    Get Length    ${testTagText}
+    ${testTagText}=    Set Variable If    ${testTagTextLength}==1    ${EMPTY}
     Should Be Equal    ${testTagText}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal    ${testStoryNameText}    ${storyName}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${storyValue}")]    1
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${storyEstimation}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${storyEstimate}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-8" and (text()="${storyImportance}")]    1
 
 Get Story ID
@@ -49,16 +57,16 @@ Get Story ID
     [Return]    ${_StoryID}
 
 Create Story With Arguments
-    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${tag}    ${storyNotes}
+    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tag}    ${storyNotes}
     ...    ${storyHowToDemo}
     [Documentation]    點選 Add story，建立story。
-    Click Element    xpath=//button[text()="Add Story"]    andDontWait
+    Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
-    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Image    xpath=//label[text()="Tags:"]/.././/img    andDontWait
-    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
+    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Run Keyword Unless    "${tag}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
-    Focus AND Input Text    //input[@name="Estimation"]    ${storyEstimation}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
     Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
     Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
@@ -71,9 +79,9 @@ Delete Story
     [Documentation]    固定點選表格內的第一個story,透過按下button"Delete Story"來刪除story
     Mouse Down    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
     Mouse Up    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Success.
 
 Delete Story Use StoryID
@@ -81,20 +89,20 @@ Delete Story Use StoryID
     [Documentation]    點選delete story，刪除story，透過 story id。針對特殊字元設計
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStoryDelete}    andDontWait
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
+    Click Element    xpath=${xpathDeleteStoryDelete}
     Wait Until Page Contains    Success.
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]    0
 
 Delete Story With Arguments
     [Arguments]    ${targetStoryName}
     [Documentation]    點選delete story，刪除story，透過 story id。
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     ${xpathDeleteStoryDelete}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStoryDelete}    andDontWait
+    Click Element    xpath=${xpathDeleteStoryDelete}
     Wait Until Page Contains    Delete Story Success.
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${targetStoryName}")]    0
 
@@ -103,12 +111,12 @@ Edit Story With Arguments
     [Documentation]    點選edit story，必須輸入原本的 story name 及 tag name。
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
-    Click Image    xpath=//label[text()="Tags:"]/.././/img    andDontWait
-    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Story"]
+    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
     Focus AND Input Text    //textarea[@name="Name"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     Focus AND Input Text    //input[@name="Value"]    3
-    Focus AND Input Text    //input[@name="Estimation"]    5
+    Focus AND Input Text    //input[@name="Estimate"]    5
     Focus AND Input Text    //input[@name="Importance"]    8
     Focus AND Input Text    //textarea[@name="Notes"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     Focus AND Input Text    //textarea[@name="HowToDemo"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
@@ -125,16 +133,16 @@ Verify Invalid Value
     Focus    xpath=//textarea[@name="HowToDemo"]
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon x-item-disabled"]    1
+    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
 
 Verify Invalid Value Textarea
     [Arguments]    ${element}    ${value}    ${widgetName}
     [Documentation]    輸入特殊字元及非法字元，驗證 add story 和 edit story widget 內容，判斷submit的disable的xpath路徑數量是否等於一
     Focus AND Input Text    //textarea[@name="${element}"]    ${value}
-    Focus    xpath=//textarea[@name="HowToDemo"]
+    Focus    xpath=//textarea[@name="${element}"]
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon x-item-disabled"]    1
+    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
 
 Clean All Story
     # get Story count
@@ -144,12 +152,12 @@ Clean All Story
     \    Delete Story
 
 _CreateStoryInforamationToList
-    [Arguments]    ${listName}    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}
+    [Arguments]    ${listName}    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}
     ...    ${tagName}    ${storyNotes}    ${storyHowToDemo}
     Set List Value    ${listName}    0    ${storyID}
     Set List Value    ${listName}    1    ${storyName}
     Set List Value    ${listName}    2    ${storyValue}
-    Set List Value    ${listName}    3    ${storyEstimation}
+    Set List Value    ${listName}    3    ${storyEstimate}
     Set List Value    ${listName}    4    ${storyImportance}
     Set List Value    ${listName}    5    ${storyNotes}
     Set List Value    ${listName}    6    ${tagName}
@@ -168,16 +176,16 @@ CreateStoryInA
     Select Node Product    Product Backlog
     ${_StoryName}=    Set Variable    story in project A
     ${_StoryValue}=    Set Variable    1
-    ${_StoryEstimation} =    Set Variable    2
+    ${_StoryEstimate} =    Set Variable    2
     ${_StoryImportance}=    Set Variable    3
     ${_StoryNotes}=    Set Variable    notes in project A
     ${_StoryHowToDemo}=    Set Variable    demo in project A
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    NONE    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryInB
@@ -196,13 +204,13 @@ CreateStoryInB
     ${_StoryImportance}=    Set Variable    8
     ${_StoryNotes}=    Set Variable    notes in project B
     ${_StoryHowToDemo}=    Set Variable    demo in project B
-    ${_StoryEstimation}    Set Variable    13
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
+    ${_StoryEstimate}    Set Variable    13
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${EMPTY}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    NONE    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryWithTagInA
@@ -220,17 +228,17 @@ CreateStoryWithTagInA
     Create Tag With Arguments    ${_tagName}
     ${_StoryName}=    Set Variable    story in project A
     ${_StoryValue}=    Set Variable    1
-    ${_StoryEstimation} =    Set Variable    2
+    ${_StoryEstimate} =    Set Variable    2
     ${_StoryImportance}=    Set Variable    3
     ${_StoryNotes}=    Set Variable    notes in project A
     ${_StoryHowToDemo}=    Set Variable    demo in project A
     # ${EMPTY}
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryA}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    ${_tagName}    ${_StoryNotes}    ${_StoryHowToDemo}
 
 CreateStoryWithTagInB
@@ -251,14 +259,14 @@ CreateStoryWithTagInB
     ${_StoryImportance}=    Set Variable    8
     ${_StoryNotes}=    Set Variable    notes in project B
     ${_StoryHowToDemo}=    Set Variable    demo in project B
-    ${_StoryEstimation}    Set Variable    13
+    ${_StoryEstimate}    Set Variable    13
     # ${EMPTY}
-    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
+    Create Story With Arguments    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}    ${_tagName}    ${_StoryNotes}
     ...    ${_StoryHowToDemo}
     # get ID from Table
     ${_StoryID}=    Get Story ID
     # keep value
-    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimation}    ${_StoryImportance}
+    _CreateStoryInforamationToList    ${tsStoryB}    ${_StoryID}    ${_StoryName}    ${_StoryValue}    ${_StoryEstimate}    ${_StoryImportance}
     ...    ${_tagName}    ${_StoryNotes}    ${_StoryHowToDemo}
 
 Delete Closed Story With StoryID
@@ -267,12 +275,12 @@ Delete Closed Story With StoryID
     # Delete Story
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tcStoryID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${tcStoryID}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     Xpath Should Match X Times    //div[@class="ext-mb-content"]/span[text()="The story is closed, are you sure to delete it?"]    1
     ${xpathConfirmDeleteStory}=    Find Current Window Element    Confirm    Yes
-    Click Element    xpath=${xpathConfirmDeleteStory}    andDontWait
+    Click Element    xpath=${xpathConfirmDeleteStory}
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Delete Story Success.
 
 Delete Closed With StoryName
@@ -280,10 +288,10 @@ Delete Closed With StoryName
     # Delete Story
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tcStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${tcStoryName}")]
-    Click Element    xpath=//button[text()="Delete Story"]    andDontWait
+    Click Element    xpath=//button[text()="Delete Story"]
     Xpath Should Match X Times    //div[@class="ext-mb-content"]/span[text()="The story is closed, are you sure to delete it?"]    1
     ${xpathConfirmDeleteStory}=    Find Current Window Element    Confirm    Yes
-    Click Element    xpath=${xpathConfirmDeleteStory}    andDontWait
+    Click Element    xpath=${xpathConfirmDeleteStory}
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
-    Click Element    xpath=${xpathDeleteStory}    andDontWait
+    Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Delete Story Success.

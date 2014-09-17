@@ -13,6 +13,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 	List<String> _conditionList;
 	List<String> _tableList;
 	List<String> _leftJoinList;
+	List<String> _crossJoinList;
 	List<String> _rowList;
 	String _orderBy = "";
 	String _orderDirection = ASC_ORDER;
@@ -22,6 +23,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 		_conditionList = new ArrayList<String>();
 		_tableList = new ArrayList<String>();
 		_leftJoinList = new ArrayList<String>();
+		_crossJoinList = new ArrayList<String>();
 		_rowList = new ArrayList<String>();
 	}
 
@@ -61,7 +63,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 	public void addInsertValue(String name, String value) {
 		// format是為了要避免有特殊字元發生
 		this.addInsertValue(new QueryValue(name, format(value)));
-
+		
 	}
 
 	@Override
@@ -94,7 +96,14 @@ public class MySQLQuerySet implements IQueryValueSet {
 	@Override
 	public void addLeftJoin(String tableName, String name1, String name2) {
 		this._leftJoinList.add("`" + tableName + "` ON " + name1 + " = " + name2);
-
+	}
+	
+	public void addCrossJoin(String tableName, String name1, String name2) {
+		this._crossJoinList.add("`" + tableName + "` ON " + name1 + " = " + name2);
+	}
+	
+	public void addCrossJoinMultiCondition(String tableName, String name1, String name2, String name3, String name4) {
+		this._crossJoinList.add("`" + tableName + "` ON " + name1 + " = " + name2 + " and " + name3 + " = " + name4);
 	}
 
 	public void addNotNullCondition(String name) {
@@ -208,6 +217,28 @@ public class MySQLQuerySet implements IQueryValueSet {
 		return leftJoins.toString();
 
 	}
+	
+	public String getCrossJoins() {
+		StringBuffer crossJoins = new StringBuffer();
+		
+		// 列出所有Value的Name,因為Name代表欄位
+		Iterator<String> iter = _crossJoinList.iterator();
+		
+		// 判斷是否有元素要取得
+		if (_crossJoinList.size() == 0) {
+			return crossJoins.toString();
+		} else {
+			crossJoins.append(iter.next());
+		}
+		
+		// 如果還有其他的要附加上去 , 就必須在之前加個 "cross Join"
+		while (iter.hasNext()) {
+			crossJoins.append(" cross join " + iter.next());
+		}
+		
+		return crossJoins.toString();
+		
+	}
 
 	@Override
 	public String getColumnsAndValues() {
@@ -254,6 +285,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 		}
 
 		if (this._leftJoinList.size() != 0) query.append(" LEFT JOIN" + getLeftJoins());
+		if (this._crossJoinList.size() != 0) query.append(" CROSS JOIN" + getCrossJoins());
 		if (this._conditionList.size() != 0) query.append(" WHERE " + getConditions());
 		if (!this._orderBy.equals("")) query.append(" ORDER BY `" + this._orderBy + "` " + this._orderDirection);
 		return query.toString();

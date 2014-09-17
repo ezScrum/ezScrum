@@ -38,7 +38,7 @@ public class AjaxDeleteTagAction extends PermissionAction {
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
     	// get parameter info
-    	String tagId = request.getParameter("tagId");
+    	long tagId = Long.parseLong(request.getParameter("tagId"));
     	ProductBacklogHelper PBHelper = new ProductBacklogHelper(session,project);    	
     	StringBuilder result = PBHelper.getDeleteTagReponseText(tagId);
 

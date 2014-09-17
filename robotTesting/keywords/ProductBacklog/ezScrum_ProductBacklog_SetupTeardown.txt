@@ -1,5 +1,5 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Library           Collections
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
@@ -50,7 +50,7 @@ Test Create Story Teardown
 
 Test Create Story With Invalid Value Setup
     Create Tag With Arguments    testTagName
-    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    ${EMPTY}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    testTagName     Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
 
 Test Create Story With Invalid Value Teardown
@@ -88,16 +88,16 @@ Test Mark And UnMark Story Tag Teardown
 Test Create Tag Setup
     [Documentation]    建立兩種Tag: 正常字串 & 特殊字元
     # open Tag Manage window
-    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Manage Tag"]
     # add tagName: \ Normal
-    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tag"]
     Input Text    xpath=//input[@name="newTagName"]    ${tsTag}
     ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
     Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
     Element Enable And Submit    ${xpathAddTag}
     Wait Until Page Contains    ${tsTag}
     # add tagName: \ Special
-    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Add Tag"]
     Input Text    xpath=//input[@name="newTagName"]    ${tsTagX}
     ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
     Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
@@ -111,12 +111,12 @@ Test Create Tag Teardown
     Delete Tag
     # close Tag Manage window
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
-    Click Element    xpath=${xpathTagManageClose}    andDontWait
+    Click Element    xpath=${xpathTagManageClose}
 
 Test Delete Tag Setup
     [Arguments]    ${tagCount}
     # open Tag Manage window
-    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Manage Tag"]
     # add Tag
     : FOR    ${index}    IN RANGE    1    ${tagCount} + 1
     \    Create Tag    ${tsTag}_${index}
@@ -124,7 +124,7 @@ Test Delete Tag Setup
 Test Delete Tag Teardown
     # close Tag Manage window
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
-    Click Element    xpath=${xpathTagManageClose}    andDontWait
+    Click Element    xpath=${xpathTagManageClose}
 
 Test Product Backlog Filter Setup
     # 建立測試資料
@@ -171,18 +171,18 @@ Test Product Backlog Search Setup
     Create Sprint with Date    sprint2 in A    ${sprintStartDate}    2    4    100    100
     # 將story加到sprint
     Select Node Product    Sprint Backlog
-    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]    andDontWait
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]
     Wait Until Page Contains Element    xpath=//div[@id="AddExistedStory_Window"]//span[text()="Select Existed Stories"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFourth")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFourth")]
-    Click Element    xpath=//button[text()="Add Existed Stories"]    andDontWait
+    Click Element    xpath=//button[text()="Add Existed Stories"]
     Wait Until Page Contains    Add Existing Stories
-    Click Element    xpath=//table[@id="SprintBacklog_nextSprintBtn"]//button    andDontWait    # 切換到下一個sprint
-    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]    andDontWait
+    Click Element    xpath=//table[@id="SprintBacklog_nextSprintBtn"]//button    # 切換到下一個sprint
+    Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]
     Wait Until Page Contains Element    xpath=//div[@id="AddExistedStory_Window"]//span[text()="Select Existed Stories"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFifth")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFifth")]
-    Click Element    xpath=//button[text()="Add Existed Stories"]    andDontWait
+    Click Element    xpath=//button[text()="Add Existed Stories"]
     # 新增Release
     Select Node Product    Release Plan
     ${sprintStartDate}=    Get Start Date    NOW

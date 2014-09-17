@@ -5,12 +5,11 @@ import java.io.File;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapperTest extends TestCase {
@@ -21,14 +20,18 @@ public class ProductBacklogMapperTest extends TestCase {
 	private int StoryCount = 1;
 	
 	private ProductBacklogMapper productBacklogMapper = null;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = null;
 	
 	public ProductBacklogMapperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -43,8 +46,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		
 		// 建立 productbacklog 物件
 		IProject project = this.CP.getProjectList().get(0);
-		this.productBacklogMapper = new ProductBacklogMapper(project, config.getUserSession());
-		
+		this.productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 		
 		// ============= release ==============
 		ini = null;
@@ -52,28 +54,31 @@ public class ProductBacklogMapperTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	this.CP = null;
     	this.CPB = null;
     	this.productBacklogMapper = null;
-    	this.config = null;
     	projectManager = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
 	
 	// 測試上傳檔案到一筆 issue 是否成功
 	public void testaddAttachFile() {
-		String Test_File_Path = this.config.getInitialSQLPath();
+		String Test_File_Path = configuration.getInitialSQLPath();
 		
 		IIssue issue = this.CPB.getIssueList().get(0);
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		
@@ -94,7 +99,7 @@ public class ProductBacklogMapperTest extends TestCase {
 	
 	// 測試刪除一筆 Issue 的檔案
 	public void testdeleteAttachFile() {
-		String Test_File_Path = this.config.getInitialSQLPath();
+		String Test_File_Path = configuration.getInitialSQLPath();
 		IIssue issue = this.CPB.getIssueList().get(0);		
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試
 		
@@ -119,7 +124,7 @@ public class ProductBacklogMapperTest extends TestCase {
 	
 	// 測試不用透過 mantis 直接取得檔案的方法
 	public void testgetAttachfile() {
-		String Test_File_Path = this.config.getInitialSQLPath();
+		String Test_File_Path = configuration.getInitialSQLPath();
 		IIssue issue = this.CPB.getIssueList().get(0);
 		
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		

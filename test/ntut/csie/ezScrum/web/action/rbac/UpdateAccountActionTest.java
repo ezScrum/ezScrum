@@ -3,17 +3,14 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -26,14 +23,18 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
 	private int AccountCount = 1;
 	private String actionPath = "/updateAccount";	// defined in "struts-config.xml"
 	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public UpdateAccountActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -43,7 +44,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
 		super.setUp();
 		
 		// 固定行為可抽離
-    	setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo(this.actionPath);
     	
@@ -52,11 +53,14 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     }
 
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	super.tearDown();    	
     	
@@ -67,6 +71,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	this.CP = null;
     	this.CA = null;
     	this.config = null;
+    	configuration = null;
     }
     
     // 
@@ -79,17 +84,19 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	String projectId = this.CP.getProjectList().get(0).getName();
     	// User Information
     	String postfix = "_update";
-    	
-    	String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
-    	String userPw = this.CA.getAccount_PWD(1) + postfix;
+    	UserObject account = CA.getAccountList().get(0);
+    	String userId = account.getId();		// 取得第一筆 Account ID
+    	String userAccount = account.getAccount();		// 取得第一筆 Account ID
+    	String userPw = account.getPassword() + postfix;
     	String userMail = "modify@test.com";
-    	String userName = this.CA.getAccount_RealName(1) + postfix;
+    	String userName = account.getName() + postfix;
     	String userEnable = "false";	// default is true
     	String userIsEdit = "true";	// false 代表是新增帳號
     	// ================ set initial data =======================    	
     	
     	// ================== set parameter info ==================== 	    
     	addRequestParameter("id", userId);
+    	addRequestParameter("account", userAccount);
     	addRequestParameter("passwd", userPw);
     	addRequestParameter("mail", userMail);
     	addRequestParameter("name", userName);
@@ -98,7 +105,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	// ================== set parameter info ====================
     	    	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());
+    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
     	// ================ set session info ========================
     	
     	// ================ set URL parameter ========================    	
@@ -110,14 +117,14 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	IAccount account = (new AccountMapper()).getAccountById(userId);
+    	account = (new AccountMapper()).getAccount(userAccount);
 		
 		assertNotNull(account);
-		assertEquals(account.getID(), userId);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));	
-		assertEquals(account.getEmail(), userMail);		
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getEnable(), userEnable);		
+		assertEquals(userAccount, account.getAccount());
+		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());	
+		assertEquals(userMail, account.getEmail());		
+		assertEquals(userName, account.getName());
+		assertEquals(userEnable, account.getEnable());		
     }		
     
 }

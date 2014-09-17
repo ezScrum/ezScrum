@@ -47,10 +47,10 @@ public class UnplannedItemHelper {
 		return issuelist.toArray(new IIssue[issuelist.size()]);
 	}
 
-	public long addUnplannedItem(String name, String estimation,
+	public long addUnplannedItem(String name, String estimate,
 	        String handler, String partners, String notes, Date date,
 	        String unplanneditemIssueType, String SprintID) {
-		return uiMapper.add(name, estimation, handler, partners, notes, date, unplanneditemIssueType, SprintID);
+		return uiMapper.add(name, estimate, handler, partners, notes, date, unplanneditemIssueType, SprintID);
 	}
 
 	/*
@@ -78,7 +78,7 @@ public class UnplannedItemHelper {
 			result.append("<Link>" + tsc.TranslateXMLChar(unplannedItem.get(i).getIssueLink()) + "</Link>");
 			result.append("<Name>" + tsc.TranslateXMLChar(unplannedItem.get(i).getSummary()) + "</Name>");
 			result.append("<SprintID>" + unplannedItem.get(i).getSprintID() + "</SprintID>");
-			result.append("<Estimation>" + unplannedItem.get(i).getEstimated() + "</Estimation>");
+			result.append("<Estimate>" + unplannedItem.get(i).getEstimated() + "</Estimate>");
 			result.append("<Status>" + unplannedItem.get(i).getStatus() + "</Status>");
 			result.append("<ActualHour>" + unplannedItem.get(i).getActualHour() + "</ActualHour>");
 			result.append("<Handler>" + unplannedItem.get(i).getAssignto() + "</Handler>");

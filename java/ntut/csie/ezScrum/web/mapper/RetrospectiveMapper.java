@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -26,7 +26,7 @@ public class RetrospectiveMapper {
 	
 	private IProject m_project;	
 	private ITSServiceFactory m_itsFactory;
-	private ITSPrefsStorage m_itsPrefs;
+	private Configuration m_config;
 	private IUserSession m_userSession;	
 	
 	public RetrospectiveMapper(IProject project, IUserSession userSession) {
@@ -34,12 +34,12 @@ public class RetrospectiveMapper {
 		m_userSession = userSession;
 		// 初始ITS的設定
 		m_itsFactory = ITSServiceFactory.getInstance();
-		m_itsPrefs = new ITSPrefsStorage(m_project, m_userSession);		
+		m_config = new Configuration(m_userSession);
 	}
 	
 	// from helper: addIssue
 	public long add(String name, String description, String sprintID, String type) {		
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue issue = new Issue();
 
@@ -59,7 +59,7 @@ public class RetrospectiveMapper {
 	
 	// from helper: getIssue
 	public IIssue getById(long id) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue issue = itsService.getIssue(id);
 		itsService.closeConnect();
@@ -72,7 +72,7 @@ public class RetrospectiveMapper {
 
 	// from helper: getRetrospectiveList
 	public List<IScrumIssue> getList(String type) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		IIssue[] issues = itsService.getIssues(m_project.getName(), type);
 		List<IScrumIssue> list = new ArrayList<IScrumIssue>();
@@ -96,7 +96,7 @@ public class RetrospectiveMapper {
 		if(status!=null)
 		issue.setStatus(status);
 
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 
 		itsService.updateIssueContent(issue);
@@ -108,7 +108,7 @@ public class RetrospectiveMapper {
 
 	// from helper: delete
 	public void delete(String issueID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		
 		itsService.openConnect();
 		itsService.removeIssue(issueID);
@@ -157,7 +157,7 @@ public class RetrospectiveMapper {
 	}	
 	
 	private void updateTagValue(IIssue issue, IIssueNote note) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_itsPrefs);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
 		itsService.openConnect();
 		itsService.updateIssueNote(issue, note);
 		itsService.closeConnect();

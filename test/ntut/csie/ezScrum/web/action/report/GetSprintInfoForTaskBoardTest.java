@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.action.report;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -11,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.SprintInfoUIObject;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -23,14 +23,18 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	private CreateSprint CS;
 	private IProject project;
 	private Gson gson;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 
 	public GetSprintInfoForTaskBoardTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
 
 		// 新增一測試專案
@@ -45,7 +49,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		gson = new Gson();
 		super.setUp();
 
-		setContextDirectory(new File(config.getBaseDirPath() + "/WebContent"));	// 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));	// 設定讀取的struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/GetSprintInfoForTaskBoard");
 
@@ -54,19 +58,23 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); 	// 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		// ============= release ==============
 		ini = null;
 		this.CP = null;
 		this.CS = null;
 		this.gson = null;
+		configuration = null;
 		super.tearDown();
 	}
 
@@ -88,7 +96,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", CS.getSprintIDList().get(0));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -122,7 +130,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(TASK_COUNT, TASK_EST, addStoryToSprint, CP);
 		addTaskToStory.exe();
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, config.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		// 將第1個story跟task全都拉到done
 		sprintBacklogLogic.doneIssue(addTaskToStory.getTaskList().get(0).getIssueID(), addTaskToStory.getTaskList().get(0).getSummary(), "", null, null);
 		sprintBacklogLogic.doneIssue(addTaskToStory.getTaskList().get(1).getIssueID(), addTaskToStory.getTaskList().get(1).getSummary(), "", null, null);
@@ -134,7 +142,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", "1");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();

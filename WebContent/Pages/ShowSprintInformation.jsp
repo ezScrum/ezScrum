@@ -52,7 +52,7 @@
 	<td><ul>
 		<li>Sprint period : ${SprintPeriod}</li>
 		<li>Daily Scrum : ${SprintPlan.notes }</li>
-		<li>Sprint demo : ${SprintPlan.demoDate } ${SprintPlan.demoPlace }</li>
+		<li>Sprint Review : ${SprintPlan.demoDate } ${SprintPlan.demoPlace }</li>
 	</ul></td>
 </tr>
 <tr>

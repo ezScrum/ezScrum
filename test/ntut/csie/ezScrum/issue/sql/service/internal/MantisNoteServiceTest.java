@@ -10,27 +10,28 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.jdom.Element;
 
 public class MantisNoteServiceTest extends TestCase {
-	private ITSPrefsStorage prefs;
-	
 	private CreateProject CP;
 	private CreateProductBacklog CPB;
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	private MantisIssueService MISservice;
@@ -42,7 +43,11 @@ public class MantisNoteServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration(userSession);
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -51,10 +56,9 @@ public class MantisNoteServiceTest extends TestCase {
 		
 		// 建立MantisTagService
 		IProject project = this.CP.getProjectList().get(0);
-		prefs = new ITSPrefsStorage(project, config.getUserSession());
-		this.MSservice = new MantisService(prefs);
-		MNService = new MantisNoteService(MSservice.getControl(), prefs);
-		MISservice = new MantisIssueService(MSservice.getControl(), prefs);
+		this.MSservice = new MantisService(configuration);
+		MNService = new MantisNoteService(MSservice.getControl(), configuration);
+		MISservice = new MantisIssueService(MSservice.getControl(), configuration);
 		
 		super.setUp();
 		
@@ -64,19 +68,22 @@ public class MantisNoteServiceTest extends TestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
+    	
+    	configuration.setTestMode(false);
+		configuration.store();
     	
     	// ============= release ==============
     	ini = null;
     	copyProject = null;
     	this.CP = null;
     	this.CPB = null;
-    	this.config = null;
     	this.MNService = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}
@@ -110,7 +117,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());// 1, 2 ..
-				assertEquals("administrator", note.getHandler());// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());// default = 1 (administrator)
 				assertEquals(Integer.toString(imp + index), noteTextHelper.getImportance());// 200, 201, 202 ..
 				assertEquals(Integer.toString(est + index), noteTextHelper.getEstimation());// 21, 22 , 23 ..
 				assertEquals(Integer.toString(value + index), noteTextHelper.getValue());// 300, 301, 302 ..
@@ -167,7 +174,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -201,7 +208,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32 , 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -268,7 +275,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -317,7 +324,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32, 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -378,7 +385,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..

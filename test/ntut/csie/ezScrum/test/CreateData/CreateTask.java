@@ -8,11 +8,13 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -43,7 +45,8 @@ public class CreateTask {
 	
 	private ArrayList<Long> TaskIDList = new ArrayList<Long>();
 	private List<IIssue> TaskList = new ArrayList<IIssue>();
-	ezScrumInfoConfig config = new ezScrumInfoConfig();
+	
+	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	public CreateTask(int count, int EstValue, long StoryID, CreateProject CP) {
 		this.TaskCount = count;
@@ -91,7 +94,6 @@ public class CreateTask {
 	}
 	
 	public void exe() throws Exception {
-		IUserSession userSession = (new ezScrumInfoConfig()).getUserSession();
 		if (this.AutoSetTask) {
 			initial_Spint_Story();
 			
@@ -154,10 +156,11 @@ public class CreateTask {
 		task.setDescription(description);
 		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
 		
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(p, config.getUserSession());
+		Configuration configuration = new Configuration(userSession);
+		
 		ITSServiceFactory itsFactory = ITSServiceFactory.getInstance();
 
-		IITSService itsService = itsFactory.getService(itsPrefs);
+		IITSService itsService = itsFactory.getService(configuration);
 		itsService.openConnect();
 		
 		long taskID = itsService.newIssue(task);

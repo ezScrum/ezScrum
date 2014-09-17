@@ -1,5 +1,5 @@
 *** Setting ***
-Library           RequestsLibrary
+Library           RequestsLibaray
 Library           lib/UploadPlugin.py
 
 *** Test Case ***
@@ -9,4 +9,3 @@ Redmine Plugin Operation
     ${resp}    GET    ezScrum    /getInstalledPluginList
     Should Contain    ${resp.content}    redminePlugin
     GET    ezScrum    /removePlugin?pluginName=redminePlugin
-

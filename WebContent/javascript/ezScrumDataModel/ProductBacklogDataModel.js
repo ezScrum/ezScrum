@@ -11,7 +11,7 @@ var ProductBacklogStore = new Ext.data.Store({
 		name: 'Importance',
 		type: 'int'
 	}, {
-		name: 'Estimation',
+		name: 'Estimate',
 		type: 'float'
 	}, {
 		name: 'Status'
@@ -85,8 +85,8 @@ var ProductBacklogCreateColModel = function() {
 		header: 'Value',
 		width: 70
 	}, {
-		dataIndex: 'Estimation',
-		header: 'Estimation',
+		dataIndex: 'Estimate',
+		header: 'Estimate',
 		width: 70
 	}, {
 		dataIndex: 'Importance',

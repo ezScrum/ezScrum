@@ -4,22 +4,21 @@ import java.io.File;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateSprint CS;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/ajaxRemoveSprintTask";
 	private IProject project;
 	
@@ -28,8 +27,12 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		this.CP = new CreateProject(1);
 		this.CP.exeCreate();// 新增一測試專案
@@ -40,7 +43,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory( new File(config.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo( this.ACTION_PATH );
 		
@@ -48,18 +51,22 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 		
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
 		this.CP = null;
+		configuration = null;
 	}
 	
 	public void testRemoveSprintTask_1() throws Exception {
@@ -84,7 +91,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		addRequestParameter("issueID", issueID);
 		addRequestParameter("parentID", parentID);
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================  執行 action ==============================
 		actionPerform();
 		// ================    assert    =============================
@@ -123,7 +130,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		addRequestParameter("issueID", issueID);
 		addRequestParameter("parentID", expectedStoryID);
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================  執行 action ==============================
 		actionPerform();
 		// ================    assert    =============================
@@ -149,7 +156,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);	
 		
 		addRequestParameter("sprintID", expectedSprintID);
@@ -167,7 +174,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 							.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getIssueID()).append("</Link>")
 							.append("<Name>").append(task.getSummary()).append("</Name>")
 							.append("<Status>").append("new").append("</Status>")
-							.append("<Estimation>").append(task.getEstimated()).append("</Estimation>")
+							.append("<Estimate>").append(task.getEstimated()).append("</Estimate>")
 							.append("<Actual>").append(task.getActualHour()).append("</Actual>")
 							.append("<Handler></Handler>")
 							.append("<Partners></Partners>")

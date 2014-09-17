@@ -33,8 +33,8 @@ ezScrum.TransformToStoryForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Value',
 		            vtype:'Number'
 		        }, {
-		            fieldLabel: 'Estimation',
-		            name: 'Estimation',
+		            fieldLabel: 'Estimate',
+		            name: 'Estimate',
 		            vtype:'Float'
 		        }, {
 		            fieldLabel: 'Importance',

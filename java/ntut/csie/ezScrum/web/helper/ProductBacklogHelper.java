@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -62,7 +63,7 @@ public class ProductBacklogHelper {
 	public IIssue addNewStory(StoryInformation storyInformation){
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
-		String estimation = storyInformation.getEstimation();
+		String estimate = storyInformation.getEstimation();
 		String value = storyInformation.getValue();
 		String howToDemo = storyInformation.getHowToDemo();
 		String notes = storyInformation.getNotes();
@@ -73,7 +74,7 @@ public class ProductBacklogHelper {
 		//	1. 新增story
 		IIssue story = this.productBacklogMapper.addStory(storyInformation);
 		long issueID = story.getIssueID();
-		this.editStory(issueID, name, value, importance, estimation, howToDemo, notes);;
+		this.editStory(issueID, name, value, importance, estimate, howToDemo, notes);;
 		
 		//	2. 新增Tag至Story上面
 		this.addTagToStory(tagIDs, issueID);
@@ -95,7 +96,7 @@ public class ProductBacklogHelper {
 		long issueID = Long.parseLong(storyInformation.getStroyID());
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
-		String estimation = storyInformation.getEstimation();
+		String estimate = storyInformation.getEstimation();
 		String value = storyInformation.getValue();
 		String howToDemo = storyInformation.getHowToDemo();
 		String notes = storyInformation.getNotes();
@@ -106,7 +107,7 @@ public class ProductBacklogHelper {
 			//	如果這個SprintID有Release資訊，那麼也將此Story加入Release
 			this.addStoryToRelease(sprintID, list);
 		}
-		return editStory(issueID, name, value, importance, estimation, howToDemo, notes);
+		return editStory(issueID, name, value, importance, estimate, howToDemo, notes);
 	}
 	
 	/**
@@ -115,15 +116,15 @@ public class ProductBacklogHelper {
 	 * @param name
 	 * @param value
 	 * @param importance
-	 * @param estimation
+	 * @param estimate
 	 * @param howToDemo
 	 * @param note
 	 * @return
 	 */
-	public IIssue editStory(long issueID, String name, String value, String importance, String estimation, String howToDemo, String note) {
+	public IIssue editStory(long issueID, String name, String value, String importance, String estimate, String howToDemo, String note) {
 		this.productBacklogMapper.modifyName(issueID, name, null);
 //		Element history = this.productBacklogLogic.translateIssueToXML(value, importance, estimation, howToDemo, note);
-		Element history = this.translateIssueToXML(value, importance, estimation, howToDemo, note);
+		Element history = this.translateIssueToXML(value, importance, estimate, howToDemo, note);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = this.productBacklogMapper.getIssue(issueID);
 			issue.addTagValue(history);
@@ -137,7 +138,7 @@ public class ProductBacklogHelper {
 		}
 	}
 	
-	private Element translateIssueToXML(String value, String importance, String estimation, String howToDemo, String note) {
+	private Element translateIssueToXML(String value, String importance, String estimate, String howToDemo, String note) {
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
 		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
 
@@ -148,9 +149,9 @@ public class ProductBacklogHelper {
 			history.addContent(importanceElem);
 		}
 
-		if (estimation != null && !estimation.equals("")) {
+		if (estimate != null && !estimate.equals("")) {
 			Element storyPoint = new Element(ScrumEnum.ESTIMATION);
-			storyPoint.setText(estimation);
+			storyPoint.setText(estimate);
 			history.addContent(storyPoint);
 		}
 		
@@ -206,13 +207,13 @@ public class ProductBacklogHelper {
 	public StringBuilder getTagListResponseText(){
 		StringBuilder sb = new StringBuilder();
 		try{
-			IIssueTag[] tags = this.getTagList();
+			ArrayList<TagObject> tags = this.getTagList();
 	
 			sb.append("<TagList><Result>success</Result>");
-			for(int i = 0; i < tags.length; i++){
+			for(int i = 0; i < tags.size(); i++){
 				sb.append("<IssueTag>");
-				sb.append("<Id>" + tags[i].getTagId() + "</Id>");
-				sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tags[i].getTagName()) + "</Name>");
+				sb.append("<Id>" + tags.get(i).getId() + "</Id>");
+				sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tags.get(i).getName()) + "</Name>");
 				sb.append("</IssueTag>");
 			}
 			sb.append("</TagList>");
@@ -243,21 +244,21 @@ public class ProductBacklogHelper {
 			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname); 
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>Tag Name : " + newTagName + " already exist</Message></Tags>");
 		} else {
-			this.addNewTag(newTagName);
+			long id = this.addNewTag(newTagName);
 			
-			IIssueTag tag = this.getTagByName(newTagName);
+			TagObject tag = getTagByName(newTagName);
 			
 			sb.append("<Tags><Result>true</Result>");
 			sb.append("<IssueTag>");
-			sb.append("<Id>" + tag.getTagId() + "</Id>");
-			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getTagName()) + "</Name>");
+			sb.append("<Id>" + tag.getId() + "</Id>");
+			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getName()) + "</Name>");
 			sb.append("</IssueTag>");
 			sb.append("</Tags>");
 		}
 		return sb;
 	}
 	
-	public StringBuilder getDeleteTagReponseText(String tagId){
+	public StringBuilder getDeleteTagReponseText(long tagId){
     	this.productBacklogMapper.deleteTag(tagId);
 
 		StringBuilder result = new StringBuilder("");
@@ -276,7 +277,7 @@ public class ProductBacklogHelper {
 	 * @param tagId
 	 * @return
 	 */
-	public StringBuilder getAddStoryTagResponseText(String storyId, String tagId){
+	public StringBuilder getAddStoryTagResponseText(String storyId, long tagId){
 		this.addStoryTag(storyId, tagId);
 		
 		IIssue issue = this.productBacklogMapper.getIssue(Long.parseLong(storyId));
@@ -292,7 +293,7 @@ public class ProductBacklogHelper {
 	 * @param tagId
 	 * @return
 	 */
-	public StringBuilder getRemoveStoryTagResponseText(String storyId, String tagId){
+	public StringBuilder getRemoveStoryTagResponseText(String storyId, long tagId){
 		
 		this.removeStoryTag(storyId,tagId);
 		IIssue issue = this.productBacklogMapper.getIssue(Long.parseLong(storyId));
@@ -333,7 +334,7 @@ public class ProductBacklogHelper {
 		String[] IDs = tagIDs.split(",");
 		if ( ! (tagIDs.isEmpty()) && IDs.length > 0) {
 			for (String tagId : IDs) {
-				this.productBacklogMapper.addStoryTag(Long.toString(issueID), tagId);
+				this.productBacklogMapper.addStoryTag(Long.toString(issueID), Long.parseLong(tagId));
 			}
 		}
 	}
@@ -366,7 +367,7 @@ public class ProductBacklogHelper {
 	 * 取得自訂分類標籤列表
 	 * @return
 	 */
-	public IIssueTag[] getTagList() {
+	public ArrayList<TagObject> getTagList() {
 		return this.productBacklogMapper.getTagList();
 	}
 
@@ -383,15 +384,15 @@ public class ProductBacklogHelper {
 	 * 新增自訂分類標籤
 	 * @param name
 	 */
-	public void addNewTag(String name) {
-		this.productBacklogMapper.addNewTag(name);
+	public long addNewTag(String name) {
+		return this.productBacklogMapper.addNewTag(name);
 	}
 	
 	/**
 	 * 刪除自訂分類標籤
 	 * @param id
 	 */
-	public void deleteTag(String id) {
+	public void deleteTag(long id) {
 		this.productBacklogMapper.deleteTag(id);
 	}
 	
@@ -400,7 +401,7 @@ public class ProductBacklogHelper {
 	 * @param name
 	 * @return
 	 */
-	public IIssueTag getTagByName(String name){
+	public TagObject getTagByName(String name){
 		return this.productBacklogMapper.getTagByName(name);
 	}
 	
@@ -409,7 +410,7 @@ public class ProductBacklogHelper {
 	 * @param storyID
 	 * @param tagID
 	 */
-	public void addStoryTag(String storyID, String tagID) {
+	public void addStoryTag(String storyID, long tagID) {
 		this.productBacklogMapper.addStoryTag(storyID, tagID);
 	}
 	
@@ -418,7 +419,7 @@ public class ProductBacklogHelper {
 	 * @param storyID
 	 * @param tagID
 	 */
-	public void removeStoryTag(String storyID, String tagID) {
+	public void removeStoryTag(String storyID, long tagID) {
 		this.productBacklogMapper.removeStoryTag(storyID, tagID);
 	}
 

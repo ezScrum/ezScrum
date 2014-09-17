@@ -1,8 +1,8 @@
 package ntut.csie.ezScrum.web.support;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -16,8 +16,8 @@ public class IssueFormCheckUtil {
 		boolean flag = false;
 		IITSService service = null;
 		try {
-			ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
-			service = ITSServiceFactory.getInstance().getService(prefs);
+			Configuration config = new Configuration(session);
+			service = ITSServiceFactory.getInstance().getService(config);
 			service.openConnect();
 			IIssue issue = service.getIssue(issueID);
 			if (issue.getLastUpdate() == null)

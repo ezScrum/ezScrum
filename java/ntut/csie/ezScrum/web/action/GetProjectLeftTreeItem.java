@@ -39,10 +39,6 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	private void appendChildren(List<ParentSideUI> list) {
 		appendProjectConfig(list);
 		appendProjectManagement(list);
-//		appendPracticeGuide(list); 不對外開放
-//		appendezTrackInformation(list); 不對外開放
-		appendITSConfig(list);
-		appendPluginConfig(list);
 	}
 	
 	
@@ -70,7 +66,6 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 		
 		list.add(ProjectConfig);
 	}
-	// Project Configuration Side
 	
 	
 	// Project Management Side
@@ -137,79 +132,8 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 
 		list.add(ProjectManagement);
 	}
-	// Project Management Side
-	
-	
-	// ITS configuration Side
-	private final String Project_ITSConfiguration_ID = "itsconfig";
-	private final String Project_ITSConfiguration_Text = "ITS configuration";
-	private final String Project_ITSConfiguration_ITSConfig_ID = "ITSmodifyUrl";
-	private final String Project_ITSConfiguration_ITSConfig_Text = "ITS configuration";
-	private void appendITSConfig(List<ParentSideUI> list) {
-		if ( super.getScrumRole().getEditProject() || super.getScrumRole().isAdmin() ) {
-			// ITS config page
-			ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_ITSConfiguration_ID, this.Project_ITSConfiguration_Text);
-			ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_ITSConfiguration_ITSConfig_ID, this.Project_ITSConfiguration_ITSConfig_Text));
-			
-			list.add(ITSConfigurration);
-		}
-	}
-	
-	//plugin configuration
-	private final String Project_PluginConfigration_ID = "pluginConfig";
-	private final String Project_PluginConfiguration_Text = "Plugin Configuration";
-	private final String Project_PluginConfiguration_ITSConfig_ID = "PluginUrl";
-	private final String Project_PluginConfiguration_ITSConfig_Text = "Plugin configuration";
-	private void appendPluginConfig(List<ParentSideUI> list){
-		ParentSideUI ITSConfigurration = new ParentSideUI(this.Project_PluginConfigration_ID, this.Project_PluginConfiguration_Text);
-		ITSConfigurration.appendChild(new ChildrenSiidUI(this.Project_PluginConfiguration_ITSConfig_ID, this.Project_PluginConfiguration_ITSConfig_Text));
-		
-		list.add(ITSConfigurration);
-		
-	}
-	// ITS configuration Side
-	
-	/* 不對外開放
-	// Practice Guide Side
-	private final String Project_PracticeGuide_ID = "PracticeGuide";
-	private final String Project_PracticeGuide_Text = "Practice Guide";
-	private final String Project_PracticeGuide_DOD_ID = "DoDUrl";
-	private final String Project_PracticeGuide_DOD_Text = "DoD Info";
-	private final String Project_PracticeGuide_CodeReview_ID = "CodeReviewUrl";
-	private final String Project_PracticeGuide_CodeReview_Text = "Code Review";
-	private void appendPracticeGuide(List<ParentSideUI> list) {
-		// Practice Guide page
-		ParentSideUI PracticeGuide = new ParentSideUI(this.Project_PracticeGuide_ID, this.Project_PracticeGuide_Text);
-		PracticeGuide.appendChild(new ChildrenSiidUI(this.Project_PracticeGuide_DOD_ID, this.Project_PracticeGuide_DOD_Text));
-		PracticeGuide.appendChild(new ChildrenSiidUI(this.Project_PracticeGuide_CodeReview_ID, this.Project_PracticeGuide_CodeReview_Text));
-		
-		list.add(PracticeGuide);
-	}	
-	// Practice Guide Side
-	*/
-	
-	/* 不對外開放
-	// ezTrack Side
-	private final String Project_ezTrack_ID = "ezTrackInfo";
-	private final String Project_ezTrack_Text = "ezTrack Information";
-	private final String Project_ezTrack_ViewIssue_ID = "ViewIssuesUrl";
-	private final String Project_ezTrack_ViewIssue_Text = "View Issues";
-	private final String Project_ezTrack_ManageIssueType_ID = "ManageIssueTypeUrl";
-	private final String Project_ezTrack_ManageIssueType_Text = "Manage Issue Type";
-	private final String Project_ezTrack_Report_ID = "ezTrackReportUrl";
-	private final String Project_ezTrack_Report_Text = "ezTrack Report";
-	private void appendezTrackInformation(List<ParentSideUI> list) {
-		// ezTrack page
-		ParentSideUI ezTrackInformation = new ParentSideUI(this.Project_ezTrack_ID, this.Project_ezTrack_Text);
-		ezTrackInformation.appendChild(new ChildrenSiidUI(this.Project_ezTrack_ViewIssue_ID, this.Project_ezTrack_ViewIssue_Text));
-		ezTrackInformation.appendChild(new ChildrenSiidUI(this.Project_ezTrack_ManageIssueType_ID, this.Project_ezTrack_ManageIssueType_Text));
-		ezTrackInformation.appendChild(new ChildrenSiidUI(this.Project_ezTrack_Report_ID, this.Project_ezTrack_Report_Text));
-		
-		list.add(ezTrackInformation);
-	}	
-	// ezTrack Side
-	*/
 
+	
 	// Parent Side
 	private class ParentSideUI {
 		private String id = "";			// 一定要設定給頁面對應的 ID

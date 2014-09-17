@@ -1,17 +1,17 @@
 *** Settings ***
-Library           SeleniumLibrary
+Library           Selenium2Library
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 
 *** Keywords ***
 Edit Story With Arguments In Sprint Backlog
-    [Arguments]    ${oriTargetStoryName}    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${storyNotes}
+    [Arguments]    ${oriTargetStoryName}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
     ...    ${storyHowToDemo}
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..    andDontWait
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
+    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..
+    Click Element    xpath=//button[text()="Edit Story"]
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
-    Focus AND Input Text    //input[@name="Estimation"]    ${storyEstimation}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
     Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
     Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
@@ -22,14 +22,14 @@ Edit Story With Arguments In Sprint Backlog
     [Return]    ${storyID}
 
 Verify Story Information With Arguments In Sprint Backlog
-    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimation}    ${storyImportance}    ${tagName}    ${storyNotes}
+    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
     # 比對 edit story widget content
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..    andDontWait
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
+    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
+    Click Element    xpath=//button[text()="Edit Story"]
     Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
     Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
-    Compare Field Content    xpath=//input[@name="Estimation"]    ${storyEstimation}
+    Compare Field Content    xpath=//input[@name="Estimate"]    ${storyEstimate}
     Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
     Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    xpath=//input[@name="Tags"]    ${tagName}
@@ -47,8 +47,8 @@ Get Story ID In Sprint Backlog
 Drop Story
     [Arguments]    ${oriTargetStoryName}
     Wait Until Page Contains Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..    # 同步機制
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..    andDontWait
-    Click Element    xpath=//button[text()="Drop Story"]    andDontWait
+    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..
+    Click Element    xpath=//button[text()="Drop Story"]
     ${xpathDropStory}=    Find Current Window Element    Drop Story    Drop
     Element Enable And Submit    ${xpathDropStory}
 
@@ -56,9 +56,9 @@ Add Existing Story
     [Arguments]    ${storyName}
     # click show add existing story window
     Select Node Product    Sprint Backlog
-    Click Element    xpath=//button[text()="Add Existing Stories"]    andDontWait
+    Click Element    xpath=//button[text()="Add Existing Stories"]
     Wait Until Page Contains    Add Existing Stories
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="${storyName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="${storyName}")]
-    Click Element    xpath=//button[text()="Add Existed Stories"]    andDontWait
+    Click Element    xpath=//button[text()="Add Existed Stories"]
     Wait Until Page Contains    Add Existing Stories

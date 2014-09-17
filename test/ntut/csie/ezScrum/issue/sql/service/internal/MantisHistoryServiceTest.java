@@ -6,18 +6,17 @@ import java.util.List;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class MantisHistoryServiceTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private MantisHistoryService MHSservice;
 	private MantisService MService;
 	
@@ -26,7 +25,11 @@ public class MantisHistoryServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
@@ -34,20 +37,18 @@ public class MantisHistoryServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		IProject project = this.CP.getProjectList().get(0);
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, config.getUserSession());
-		this.MService = new MantisService(itsPrefs);
-		this.MHSservice = new MantisHistoryService(this.MService.getControl(), itsPrefs);
+		this.MService = new MantisService(configuration);
+		this.MHSservice = new MantisHistoryService(this.MService.getControl(), configuration);
 		
 		super.setUp();
 		
 		// ============= release ==============
 		ini = null;
 		project = null;
-		itsPrefs = null;
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		//再一次關閉SQL連線，以免導致Project無法刪除
@@ -56,13 +57,16 @@ public class MantisHistoryServiceTest extends TestCase {
 		CopyProject copyProject = new CopyProject(this.CP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
+    	configuration.setTestMode(false);
+		configuration.store();
+    	
     	// ============= release ==============
     	ini = null;
     	copyProject = null;
     	this.CP = null;
-    	this.config = null;
     	this.MHSservice = null;
     	this.MService = null;
+    	configuration = null;
     	
     	super.tearDown();
 	}

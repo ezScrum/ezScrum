@@ -8,11 +8,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.BUILDRESULT_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_LOG_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.COMMIT_STORY_RELATION_TABLE;
-import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZKANBAN_STATISPRDER_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_STORY_RELATION_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_RELATION_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_TABLE;
@@ -27,25 +26,25 @@ import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class TableCreaterTest extends TestCase {
 	private TableCreater tc = null;
 	private ISQLControl control;
-	
 	private CreateProject CP;
-	
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	
 	public TableCreaterTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		// 新增Project
@@ -54,11 +53,10 @@ public class TableCreaterTest extends TestCase {
 		IProject project = this.CP.getProjectList().get(0);
 
 		// create service control info.
-		ITSPrefsStorage itsPrefs = new ITSPrefsStorage(project, config.getUserSession());
-		MantisService Service = new MantisService(itsPrefs);
+		MantisService Service = new MantisService(configuration);
 		this.control = Service.getControl();
-		this.control.setUser(itsPrefs.getDBAccount());
-		this.control.setPassword(itsPrefs.getDBPassword());
+		this.control.setUser(configuration.getDBAccount());
+		this.control.setPassword(configuration.getDBPassword());
 		this.control.connection();
 		
 		this.tc = new TableCreater();
@@ -68,12 +66,11 @@ public class TableCreaterTest extends TestCase {
 		// ============= release ==============
 		ini = null;
 		project = null;
-		itsPrefs = null;
 		Service = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 		
 		if (this.control != null) {
@@ -86,6 +83,9 @@ public class TableCreaterTest extends TestCase {
 		
 		CopyProject copyProject = new CopyProject(this.CP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案	
+		
+		configuration.setTestMode(false);
+		configuration.store();
 	
 		
 		// ============= release ==============
@@ -95,6 +95,7 @@ public class TableCreaterTest extends TestCase {
 		this.control.close();
 		this.control = null;
 		this.CP = null;
+		configuration = null;
 	}
 
 	// test ezScrum
@@ -210,30 +211,6 @@ public class TableCreaterTest extends TestCase {
 		}
 	}
 	
-	// test ezKanban
-	public void testcreateEzKanbanTables() throws SQLException {
-		List<String> tables = new ArrayList<String>();
-		
-		// drop tables
-		DropTable(ITSEnum.EZKANBAN_STATUSORDER);
-		tables = getTableList();
-		// assert tables not exist
-		assertFalse(tables.contains(ITSEnum.EZKANBAN_STATUSORDER));
-		
-		
-		// create table
-		this.tc.createEzKanbanTables(tables, this.control);
-		tables = getTableList();
-		// assert tables exist
-		assertTrue(tables.contains(ITSEnum.EZKANBAN_STATUSORDER));
-		
-		// assert column exist
-		EZKANBAN_STATISPRDER_TABLE STATISPRDER = new EZKANBAN_STATISPRDER_TABLE();
-		for (String col : STATISPRDER.getColumns()) {
-			assertNotNull(assertColumnExist(STATISPRDER.getTableName(), col));
-			assertFalse(assertColumnExist(STATISPRDER.getTableName(), col));
-		}
-	}
 	
 	// test DoD
 	public void testcreateDoDTables() throws SQLException {

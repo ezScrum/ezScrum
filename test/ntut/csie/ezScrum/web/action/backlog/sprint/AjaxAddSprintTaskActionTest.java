@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -10,14 +11,13 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateRelease CR;
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration;
 	private final String ACTION_PATH = "/ajaxAddSprintTask";
 	private IProject project;
 	
@@ -26,8 +26,12 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 	}
 	
 	protected void setUp() throws Exception {
+		configuration = new Configuration();
+		configuration.setTestMode(true);
+		configuration.store();
+		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		this.CP = new CreateProject(1);
@@ -41,7 +45,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory(new File(config.getBaseDirPath().concat("/WebContent")));
+		setContextDirectory(new File(configuration.getBaseDirPath().concat("/WebContent")));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(this.ACTION_PATH);
 		
@@ -50,13 +54,16 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(this.config.getTestDataPath());
+		projectManager.initialRoleBase(configuration.getDataPath());
+		
+		configuration.setTestMode(false);
+		configuration.store();
 
 		super.tearDown();
 		
@@ -64,6 +71,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		projectManager = null;
 		this.CP = null;
 		this.CR = null;
+		configuration = null;
 	}
 
 	/**
@@ -82,7 +90,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);	
 		// 設定新增Task所需的資訊
 		String expectedTaskName = "UT for Add New Task for Name";
@@ -92,7 +100,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String expectedSprintID = "1";
 		String expectedTaskNote = "UT for Add New Task for Notes";
 		addRequestParameter("Name", expectedTaskName);
-		addRequestParameter("Estimation", expectedTaskEstimation);
+		addRequestParameter("Estimate", expectedTaskEstimation);
 		addRequestParameter("Notes", expectedTaskNote);
 		addRequestParameter("SpecificTime", expectedSpecificTime);
 		addRequestParameter("sprintId", expectedSprintID);
@@ -108,8 +116,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
 							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
-							.append("</Name><Estimation>").append(expectedTaskEstimation)
-							.append("</Estimation><Actual>").append(0)
+							.append("</Name><Estimate>").append(expectedTaskEstimation)
+							.append("</Estimate><Actual>").append(0)
 							.append("</Actual><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></AddNewTask>");
 		String actualResponseText = response.getWriterBuffer().toString();
@@ -132,7 +140,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", config.getUserSession());
+		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);	
 		// 設定新增Task所需的資訊
 		String expectedTaskName = "UT for Add New Task for Name";
@@ -142,7 +150,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		String expectedSprintID = "1";
 		String expectedTaskNote = "";
 		addRequestParameter("Name", expectedTaskName);
-		addRequestParameter("Estimation", expectedTaskEstimation);
+		addRequestParameter("Estimate", expectedTaskEstimation);
 		addRequestParameter("Notes", expectedTaskNote);
 		addRequestParameter("SpecificTime", expectedSpecificTime);
 		addRequestParameter("sprintId", expectedSprintID);
@@ -158,8 +166,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
 							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
-							.append("</Name><Estimation>").append(0)
-							.append("</Estimation><Actual>").append("0")
+							.append("</Name><Estimate>").append(0)
+							.append("</Estimate><Actual>").append("0")
 							.append("</Actual><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></AddNewTask>");
 		String actualResponseText = response.getWriterBuffer().toString();

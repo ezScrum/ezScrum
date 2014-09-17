@@ -15,34 +15,35 @@ Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
 Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
 Resource          ServerConfig.txt
 Resource          Global Define.txt
-Library           SeleniumLibrary
+Library           Selenium2Library
 
 *** Variables ***
 ${tsTag}          testTagName    # 測試正常字元
 ${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
-@{tsStoryA}       ID    Name    Value    Estimation    Importance    Notes    Tags
+@{tsStoryA}       ID    Name    Value    Estimate    Importance    Notes    Tags
 ...               How To Demo
-@{tsStoryB}       ID    Name    Value    Estimation    Importance    Notes    Tags
+@{tsStoryB}       ID    Name    Value    Estimate    Importance    Notes    Tags
 ...               How To Demo
 
 *** Test Cases ***
 Test ProductBacklog - Create Story Identify Invalid Value
     [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)
-    Click Element    xpath=//button[text()="Add Story"]    andDontWait
+    Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
     Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Add New Story
+    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Verify Invalid Value    Value    a    Add New Story
     Verify Invalid Value    Value    &    Add New Story
     Verify Invalid Value    Value    \\    Add New Story
-    Verify Invalid Value    Estimation    a    Add New Story
-    Verify Invalid Value    Estimation    &    Add New Story
-    Verify Invalid Value    Estimation    \\    Add New Story
+    Verify Invalid Value    Estimate    a    Add New Story
+    Verify Invalid Value    Estimate    &    Add New Story
+    Verify Invalid Value    Estimate    \\    Add New Story
     Verify Invalid Value    Importance    a    Add New Story
     Verify Invalid Value    Importance    &    Add New Story
     Verify Invalid Value    Importance    \\    Add New Story
     ${xpathCreateStoryCancel}=    Find Current Window Element    Add New Story    Cancel
     Element Should Be Visible    xpath=${xpathCreateStoryCancel}
-    Click Button    xpath=${xpathCreateStoryCancel}    andDontWait
+    Click Element    xpath=${xpathCreateStoryCancel}
 
 Test ProductBacklog - Edit Story Identify Invalid Value
     [Documentation]    Edit Story(長度限制),Edit Story (測試限制數字欄位),Edit Story (測試特殊字元)
@@ -50,15 +51,15 @@ Test ProductBacklog - Edit Story Identify Invalid Value
     Wait Until Page Contains Element    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
-    Click Element    xpath=//button[text()="Edit Story"]    andDontWait
+    Click Element    xpath=//button[text()="Edit Story"]
     Wait Until Page Contains    Edit Story
     Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Edit Story
     Verify Invalid Value    Value    a    Edit Story
     Verify Invalid Value    Value    &    Edit Story
     Verify Invalid Value    Value    \\    Edit Story
-    Verify Invalid Value    Estimation    a    Edit Story
-    Verify Invalid Value    Estimation    &    Edit Story
-    Verify Invalid Value    Estimation    \\    Edit Story
+    Verify Invalid Value    Estimate    a    Edit Story
+    Verify Invalid Value    Estimate    &    Edit Story
+    Verify Invalid Value    Estimate    \\    Edit Story
     Verify Invalid Value    Importance    a    Edit Story
     Verify Invalid Value    Importance    &    Edit Story
     Verify Invalid Value    Importance    \\    Edit Story
@@ -100,7 +101,7 @@ Test ProductBacklog - Story History
     ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
-    Click Element    xpath=//button[text()="Show History"]    andDontWait
+    Click Element    xpath=//button[text()="Show History"]
     ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
     Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
     ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
@@ -213,8 +214,8 @@ Test ProductBacklog - Duplicate Tag
     [Setup]    Create Tag With Arguments    ${tsTagX}
     ${tag}=    Set Variable    ${tsTagX}
     # add already existed Tag
-    Click Element    xpath=//button[text()="Manage Tag"]    andDontWait
-    Click Element    xpath=//button[text()="Add Tag"]    andDontWait
+    Click Element    xpath=//button[text()="Manage Tag"]
+    Click Element    xpath=//button[text()="Add Tag"]
     Input Text    xpath=//input[@name="newTagName"]    ${tag}
     ${xpathAddTag}=    Find Current Window Element    Add Tag    Submit
     Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
@@ -225,14 +226,14 @@ Test ProductBacklog - Duplicate Tag
     Should Be Equal As Strings    ${alertMessage}    ${correctAlertMessage}
     # close Add Tag window
     ${xpathAddTagClose}=    Find Current Window Element    Add Tag    Close
-    Click Element    xpath=${xpathAddTagClose}    andDontWait
+    Click Element    xpath=${xpathAddTagClose}
     # check again
     ${tagCount}=    Count Tag Amount With Arguments    ${tag}
     ${text}=    Get Text    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount}]
     Should Be Equal    ${tag}    ${text}
     # close Tag Manage window
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
-    Click Element    xpath=${xpathTagManageClose}    andDontWait
+    Click Element    xpath=${xpathTagManageClose}
     [Teardown]    Delete Tag With Arguments    ${tsTagX}
 
 Test ProductBacklog - Delete Tag
@@ -247,8 +248,8 @@ Test ProductBacklog - Delete Tag
     : FOR    ${index}    IN RANGE    0    ${tagCount}
     \    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
     \    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
-    \    Click Element    xpath=//button[text()="Remove Tag"]    andDontWait
-    \    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="Yes"] ]    andDontWait
+    \    Click Element    xpath=//button[text()="Remove Tag"]
+    \    Click Element    xpath=//tbody[ @class="x-btn-small x-btn-icon-small-left" and .//button[text()="Yes"] ]
     \    ${expectedCount}=    Evaluate    ${tagCount} - ${index} - 1
     \    ${count}=    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
     \    ${realCount}=    Convert To Integer    ${count}
@@ -272,12 +273,12 @@ Test ProductBacklog - Session - New Story
     ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
     ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
     ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
     ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
     Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
     Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
     Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimate}
     Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
     # assert A project in Window B
     # Notes, Tags, How To Demo 未顯示不做比對
@@ -287,12 +288,12 @@ Test ProductBacklog - Session - New Story
     ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
     ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
     ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
     ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
     Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
     Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
     Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimate}
     Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
     [Teardown]    Test ProductBacklog Session - New Story Teardown
 
@@ -311,12 +312,12 @@ Test ProductBacklog - Session - Read Story With Tag
     ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
     ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
     ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
     ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
     Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
     Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
     Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimate}
     Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
     Should Be Equal    ${tsStoryB[6]}    ${_actualTagName}
     # assert A project in Window B
@@ -328,12 +329,12 @@ Test ProductBacklog - Session - Read Story With Tag
     ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
     ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
     ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimation} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
+    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
     ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
     Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
     Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
     Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimation}
+    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimate}
     Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
     Should Be Equal    ${tsStoryA[6]}    ${_actualTagName}
     [Teardown]    Test ProductBacklog Session - Read Story With Tag Teardown

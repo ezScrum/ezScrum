@@ -10,15 +10,15 @@ import java.sql.SQLException;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 
 public class MantisAttachFileService extends AbstractMantisService {
 
-	public MantisAttachFileService(ISQLControl control, ITSPrefsStorage prefs) {
+	public MantisAttachFileService(ISQLControl control, Configuration config) {
 		setControl(control);
-		setPrefs(prefs);
+		setConfig(config);
 	}
 
 	public void initAttachFile(IIssue issue) {

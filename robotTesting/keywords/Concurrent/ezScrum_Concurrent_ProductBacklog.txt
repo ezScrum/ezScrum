@@ -1,50 +1,50 @@
 *** Settings ***
-Documentation   xxx
-Library         SeleniumLibrary
-Resource        ../../Global Define.txt
-Resource        ../common_resource.txt
-Resource        ../ProductBacklog/ezScrum_ProductBacklog_Tag.txt
-Resource        ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Documentation     xxx
+Library           Selenium2Library
+Resource          ../../Global Define.txt
+Resource          ../common_resource.txt
+Resource          ../ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
 
 *** Keywords ***
 _GetStoryIDx
-    ${id}  Set Variable  ?
-    [Return]  ${id}
+    ${id}    Set Variable    ?
+    [Return]    ${id}
 
 _CreateStory
-    [Arguments]  @{storyInfo}
-    [Documentation]  0: ID, 1:name, 2: value, 3: estimation, 4: importance, \n5: note, 6: howToDemo, 7: tag
-    Click Element  xpath=//button[text()="Add Story"]  andDontWait
-    Wait Until Page Contains  Add New Story
-    Run Keyword Unless  "${storyInfo[7]}"=="${EMPTY}"  Click Image  xpath=//label[text()="Tags:"]/.././/img  andDontWait
-    Run Keyword Unless  "${storyInfo[7]}"=="${EMPTY}"  Click Element  xpath=//span[@class="x-menu-item-text" and text()="${storyInfo[7]}"]  andDontWait
-    Focus AND Input Text  //textarea[@name="Name"]  ${storyInfo[1]}
-    Focus AND Input Text  //input[@name="Value"]  ${storyInfo[2]}
-    Focus AND Input Text  //input[@name="Estimation"]  ${storyInfo[3]}
-    Focus AND Input Text  //input[@name="Importance"]  ${storyInfo[4]}
-    Focus AND Input Text  //textarea[@name="Notes"]  ${storyInfo[5]}
-    Focus AND Input Text  //textarea[@name="HowToDemo"]  ${storyInfo[6]}
-    ${xpathCreateStorySubmit}=  Find Current Window Element  Add New Story  Submit
-    Element Enable And Submit  ${xpathCreateStorySubmit}
-    Set Test Variable  ${correctTagText}  ${storyInfo[7]}
-    Wait Until Page Contains  Success.
+    [Arguments]    @{storyInfo}
+    [Documentation]    0: ID, 1:name, 2: value, 3: estimate, 4: importance,
+    ...    5: note, 6: howToDemo, 7: tag
+    Click Element    xpath=//button[text()="Add Story"]
+    Wait Until Page Contains    Add New Story
+    Run Keyword Unless    "${storyInfo[7]}"=="${EMPTY}"    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Run Keyword Unless    "${storyInfo[7]}"=="${EMPTY}"    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${storyInfo[7]}"]
+    Focus AND Input Text    //textarea[@name="Name"]    ${storyInfo[1]}
+    Focus AND Input Text    //input[@name="Value"]    ${storyInfo[2]}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyInfo[3]}
+    Focus AND Input Text    //input[@name="Importance"]    ${storyInfo[4]}
+    Focus AND Input Text    //textarea[@name="Notes"]    ${storyInfo[5]}
+    Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyInfo[6]}
+    ${xpathCreateStorySubmit}=    Find Current Window Element    Add New Story    Submit
+    Element Enable And Submit    ${xpathCreateStorySubmit}
+    Set Test Variable    ${correctTagText}    ${storyInfo[7]}
+    Wait Until Page Contains    Success.
 
 Create Story With Tag
-    [Arguments]  ${id}
-    ${_time} =  Get Time
-    ${_tagName} =  Set Variable  testTag_from(${TEST_ID})_${id}_${_time}
-    Create Tag With Arguments  ${_tagName}
-    Set List Value  ${tsStory}  1  testStory_from(${TEST_ID})_${id}_${_time}
-    ${random} =  Evaluate  random.randint(0, 100)  random,sys
-    Set List Value  ${tsStory}  2  ${random}
-    ${random} =  Evaluate  random.randint(0, 100)  random,sys
-    Set List Value  ${tsStory}  3  ${random}
-    ${random} =  Evaluate  random.randint(0, 100)  random,sys
-    Set List Value  ${tsStory}  4  ${random}
-    Set List Value  ${tsStory}  5  note_from(${TEST_ID})_${id}
-    Set List Value  ${tsStory}  6  HowToDemo_from(${TEST_ID})_${id}
-    Set List Value  ${tsStory}  7  ${_tagName}
-    _CreateStory  @{tsStory}
-    ${_storyID} =  _GetStoryIDx
-    Set List Value  ${tsStory}  0  ${_storyID}
-
+    [Arguments]    ${id}
+    ${_time} =    Get Time
+    ${_tagName} =    Set Variable    testTag_from(${TEST_ID})_${id}_${_time}
+    Create Tag With Arguments    ${_tagName}
+    Set List Value    ${tsStory}    1    testStory_from(${TEST_ID})_${id}_${_time}
+    ${random} =    Evaluate    random.randint(0, 100)    random,sys
+    Set List Value    ${tsStory}    2    ${random}
+    ${random} =    Evaluate    random.randint(0, 100)    random,sys
+    Set List Value    ${tsStory}    3    ${random}
+    ${random} =    Evaluate    random.randint(0, 100)    random,sys
+    Set List Value    ${tsStory}    4    ${random}
+    Set List Value    ${tsStory}    5    note_from(${TEST_ID})_${id}
+    Set List Value    ${tsStory}    6    HowToDemo_from(${TEST_ID})_${id}
+    Set List Value    ${tsStory}    7    ${_tagName}
+    _CreateStory    @{tsStory}
+    ${_storyID} =    _GetStoryIDx
+    Set List Value    ${tsStory}    0    ${_storyID}

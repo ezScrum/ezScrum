@@ -46,7 +46,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		// 表格的資料
 		TaskObject taskInfomation = new TaskObject();
 		taskInfomation.name = request.getParameter("Name");
-		taskInfomation.estimation = request.getParameter("Estimation");
+		taskInfomation.estimation = request.getParameter("Estimate");
 		taskInfomation.notes = request.getParameter("Notes");
 		taskInfomation.specificTime = request.getParameter("SpecificTime");
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintID);
@@ -59,7 +59,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		sb.append("<Id>" + issue.getIssueID() + "</Id>");
 		sb.append("<Link>" + tsc.TranslateXMLChar(issue.getIssueLink()) + "</Link>");
 		sb.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
-		sb.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
+		sb.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
 		sb.append("<Actual>" + issue.getActualHour() + "</Actual>");
 		sb.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes()) + "</Notes>");
 		sb.append("</Task></AddNewTask>");

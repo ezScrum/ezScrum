@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.ITSPrefsStorage;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.IAccountManager;
@@ -33,10 +34,11 @@ import org.apache.commons.logging.LogFactory;
 
 public class CreateProject {
 	private static Log log = LogFactory.getLog(CreateProject.class);
-	private ezScrumInfoConfig config = new ezScrumInfoConfig();
+	private Configuration configuration = new Configuration();
 
 	private int ProjectCount = 1;
 	private List<IProject> ProjectList;
+	private List<ProjectObject> projectObjectList;
 	public String PJ_NAME = "TEST_PROJECT_";				// TEST_PROJECT_X
 	public String PM_NAME = "Project_Manager_";				// Project_Manager_X
 	public String COMMENT_NAME = "This is Test Project - ";	// This is Test Project - X
@@ -47,13 +49,38 @@ public class CreateProject {
 	public CreateProject(int count) {
 		this.ProjectCount = count;
 		this.ProjectList = new LinkedList<IProject>();
+		this.projectObjectList = new LinkedList<ProjectObject>();
 	}
 
 	public List<IProject> getProjectList() {
 		return this.ProjectList;
 	}
+	
+	// ezScrum v1.8
+	public List<ProjectObject> getProjectObjectList() {
+		return this.projectObjectList;
+	}
 
+	// ezScrum v1.8
+	public void exeCreateForDb() {
+		String projectName = "";
+		String comment = "";
+		String projectManager = "";
+		ProjectMapper projectMapper = new ProjectMapper();
+		ProjectObject project;
+		for (int i = 0; i < this.ProjectCount; i++) {
+			projectName = this.PJ_NAME + Integer.toString((i + 1));	// TEST_PROJECT_X
+			comment = this.COMMENT_NAME + Integer.toString((i + 1));	// This is Test Project - X
+			projectManager = this.PM_NAME + Integer.toString((i + 1));		// Project_Manager_X
+			project = new ProjectObject(projectName, projectName, comment, projectManager, "");
+			project = projectMapper.createProjectForDb(project);
+			projectObjectList.add(project);
+			projectMapper.createScrumRole(project.getId());
+		}
+	}
+	
 	public void exeCreate() {
+		exeCreateForDb();	// 等全部改完後，就可以全部用此method了
 		boolean success = false;
 		String projectName = "";
 		String comment = "";
@@ -147,14 +174,14 @@ public class CreateProject {
 
 	// save project info to ITS_config
 	private void saveITS_config(IProject project) {
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, null);
-		prefs.setServerUrl(this.config.SERVER_URL);
-		prefs.setServicePath(this.config.SERVER_PATH);
-		prefs.setDBAccount(this.config.APPSERV_USERID);
-		prefs.setDBPassword(this.config.APPSERV_PASSWORD);
-		prefs.setDBType(this.config.DATABASE_TYPE);
-		prefs.setDBName(this.config.DATABASE_NAME);
-		prefs.save();
+		Configuration configuration = new Configuration();
+		configuration.setServerUrl(configuration.getServerUrl());
+		configuration.setWebServicePath(configuration.getWebServicePath());
+		configuration.setDBAccount(configuration.getDBAccount());
+		configuration.setDBPassword(configuration.getDBPassword());
+		configuration.setDBType(configuration.getDBType());
+		configuration.setDBName(configuration.getDBName());
+		configuration.store();
 	}
 
 	// 儲存 account permission 資訊
@@ -191,22 +218,22 @@ public class CreateProject {
 
 	// 儲存專案資訊於資料庫
 	private void saveDB(IProject project) {
-		ITSPrefsStorage prefs = new ITSPrefsStorage(project, this.config.getUserSession());
-		MantisService M_service = new MantisService(prefs);
+		Configuration config = new Configuration(configuration.getUserSession());
+		MantisService M_service = new MantisService(config);
 		try {
-			M_service.TestConnect();		// 測試連線
+			M_service.testConnect();		// 測試連線
 		} catch (TestConnectException e) {
 			try {
 				if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
 					// 資料庫尚未建立的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					this.log.info("Create a new DataBase : " + this.config.DATABASE_NAME);
+					this.log.info("Create a new DataBase : " + configuration.getDBName());
 					M_service.initiateDB();
 					this.log.info("Initialize the database from sql file.");
 				} else if (e.getType().equals(TestConnectException.DATABASE_ERROR)) {
 					// 資料表不正確的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					this.log.info("Create a new DataBase : " + this.config.DATABASE_NAME);
+					this.log.info("Create a new DataBase : " + configuration.getDBName());
 					M_service.initiateDB();
 					this.log.info("Initialize the database from sql file.");
 				} else {
@@ -238,7 +265,7 @@ public class CreateProject {
 
 	// 複製 ScrumRole 檔案
 	private void copyScrumRoleSetting(String ectpprojectpathath) {
-		File srcScrumRolePath = new File(this.config.getTestDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
+		File srcScrumRolePath = new File(configuration.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
 		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
 
 		try {
