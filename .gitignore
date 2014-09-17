@@ -14,14 +14,13 @@ _UnitTest
 /TestData/TestConfig.properties
 /ezScrum_FTPServer_Config.txt
 
-/WebContent/RoleBase.xml
 /TestData/TestWorkspace/RoleBase.xml
 /TestData/MyWorkspace_bk/RoleBase.xml
 
 /robotTesting/keywords/lib/*.pyc
 /bin
-/WebContent/RoleBase.xml
 
 /robotTesting/plugin/lib/*.pyc
 
 /ezScrum.ini
+/WebContent/Workspace/RoleBase.xml
