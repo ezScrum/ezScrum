@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/ezScrum/ezScrum/develop/WebContent/images/readme/ezscrum_log_big.png)ezScrum
+![logo](https://raw.githubusercontent.com/ezScrum/ezScrum/master/WebContent/images/readme/ezscrum_log_big.png)ezScrum
 =======
 
 ezScrum is a process management tool for Scrum.
@@ -20,7 +20,7 @@ GPL V2
 
 Snapshot
 ------------
-![Snapshot](https://raw.githubusercontent.com/ezScrum/ezScrum/develop/WebContent/images/readme/snapshot.png)
+![Snapshot](https://raw.githubusercontent.com/ezScrum/ezScrum/master/WebContent/images/readme/snapshot.png)
 
 
 How to start
