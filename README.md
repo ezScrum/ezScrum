@@ -27,7 +27,7 @@ How to start
 ------------
 1. Install JAVA 1.7
 2. Install MySQL server
-3. Download the newest ezScrum from <a href="http://sourceforge.net/projects/ezscrum/?source=directory">HERE</a>.
+3. Download the newest ezScrum from <a href="https://mega.co.nz/#F!2ckB2SZL!RxJB9TAb-2b_u1d194eR_Q">HERE</a>.
 4. Set database configurations in ```ezScrum.ini```.
 
     ```
