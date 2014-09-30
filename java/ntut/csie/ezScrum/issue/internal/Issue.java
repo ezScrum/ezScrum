@@ -11,10 +11,10 @@ import java.util.TreeMap;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -42,7 +42,7 @@ public class Issue implements IIssue {
 	private String m_issueLink = "";
 	private long m_submittedDate = new Date().getTime();
 	private String m_status = "";
-	private List<IssueAttachFile> attachFile = new ArrayList<IssueAttachFile>();
+	private ArrayList<AttachFileObject> attachFile = new ArrayList<AttachFileObject>();
 	private long m_workingDate = 0;
 	private List<IIssueHistory> m_histories = new ArrayList<IIssueHistory>();
 	private List<IIssueHistory> m_tagHistories = new ArrayList<IIssueHistory>();
@@ -809,16 +809,16 @@ public class Issue implements IIssue {
 		this.m_reporter = m_reporter;
 	}
 
-	public List<IssueAttachFile> getAttachFile() {
+	public ArrayList<AttachFileObject> getAttachFile() {
 		return attachFile;
 	}
 
-	public void setAttachFile(List<IssueAttachFile> FileList) {
+	public void setAttachFile(ArrayList<AttachFileObject> FileList) {
 		attachFile = FileList;
 	}
 
 	@Override
-	public void addAttachFile(IssueAttachFile attach) {
+	public void addAttachFile(AttachFileObject attach) {
 		this.attachFile.add(attach);
 	}
 

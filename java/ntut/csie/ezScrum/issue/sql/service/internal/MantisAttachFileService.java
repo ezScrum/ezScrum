@@ -54,22 +54,21 @@ public class MantisAttachFileService extends AbstractMantisService {
 		return newId;
 	}
 
-	/**
-	 * 透過 file id 抓取 File，不透過 mantis
-	 */
+	// for ezScrum v1.8
 	public AttachFileObject getAttachFile(long fileId) {
-		//設定SQL
 		IQueryValueSet valueSet = new MySQLQuerySet();
-
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ID, Long.toString(fileId));
 
-		//取得sql語法
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
 		return getSelectAttachFile(query).get(0);
 	}
 
+	/**
+	 * 用 story id 取得 story 底下的 attach file
+	 * for ezScrum v1.8
+	 */
 	public ArrayList<AttachFileObject> getAttachFileByStoryId(long id) {
 		//設定SQL
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -85,6 +84,10 @@ public class MantisAttachFileService extends AbstractMantisService {
 		return getSelectAttachFile(query);
 	}
 	
+	/**
+	 * 用 task id 取得 task 底下的 attach file
+	 * for ezScrum v1.8
+	 */
 	public ArrayList<AttachFileObject> getAttachFileByTaskId(long id) {
 		//設定SQL
 		IQueryValueSet valueSet = new MySQLQuerySet();

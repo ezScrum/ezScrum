@@ -30,7 +30,9 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.StringUtil;
@@ -58,7 +60,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	private MantisNoteService m_noteService;
 	private MantisHistoryService m_historyService;
 	private MantisIssueService m_issueService;
-	private MantisAttachFileService m_attachFileService;
+	private MantisAttachFileService mAttachFileService;
 	private MantisTagService m_tagService;
 
 	public MantisService(Configuration config) {
@@ -111,7 +113,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		m_noteService = new MantisNoteService(getControl(), getConfig());
 		m_historyService = new MantisHistoryService(getControl(), getConfig());
 		m_issueService = new MantisIssueService(getControl(), getConfig());
-		m_attachFileService = new MantisAttachFileService(getControl(),
+		mAttachFileService = new MantisAttachFileService(getControl(),
 				getConfig());
 		m_tagService = new MantisTagService(getControl(), getConfig());
 	}
@@ -284,7 +286,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 		}
 
 		return issues;
@@ -308,7 +310,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			// 建立tag資料
 			m_tagService.initTag(issue);
 		}
@@ -330,7 +332,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 		}
 
 		return issues;
@@ -346,7 +348,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			setIssueNote(issue);
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			// 建立tag資料
 			m_tagService.initTag(issue);
 		}
@@ -368,7 +370,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			m_tagService.initTag(issue);
 		}
 		return issue;
@@ -1289,7 +1291,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			setIssueNote(story);
 			// 建立bug note
 			// story.setIssueNotes(this.m_noteService.getIssueNotes(story));
-			m_attachFileService.initAttachFile(story);
+			mAttachFileService.initAttachFile(story);
 			// 建立tag資料
 			m_tagService.initTag(story);
 		}
@@ -1313,9 +1315,25 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	/**
-	 * 抓取attach file 不透過 mantis
+	 * 抓取attach file
 	 */
 	public File getAttachFile(String fileId) {
-		return m_attachFileService.getAttachFile(fileId);
+		return mAttachFileService.getAttachFile(fileId);
+	}
+	
+	/**
+	 * 用 story id 取得 story 底下的 attach file
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachFileByStoryId(long id) {
+		return mAttachFileService.getAttachFileByStoryId(id);
+	}
+	
+	/**
+	 * 用 task id 取得 task 底下的 attach file
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachFileByTaskId(long id) {
+		return mAttachFileService.getAttachFileByTaskId(id);
 	}
 }
