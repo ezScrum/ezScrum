@@ -1315,14 +1315,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	/**
 	 * 抓取attach file 不透過 mantis
 	 */
-	public File getAttachFile(String fileID) {
-		return m_attachFileService.getAttachFile(fileID);
-	}
-
-	/**
-	 * 抓取attach file 不透過 mantis，透過檔名
-	 */
-	public File getAttachFileByName(String fileName) {
-		return m_attachFileService.getAttachFileByName(fileName);
+	public File getAttachFile(String fileId) {
+		return m_attachFileService.getAttachFile(fileId);
 	}
 }

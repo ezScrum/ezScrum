@@ -221,8 +221,4 @@ public class ProductBacklogHelper {
 	public File getAttachFile(String fileID) {
 		return this.productBacklogMapper.getAttachfile(fileID);	
 	}
-	
-	public File getAttachFileByName(String fileName) {
-		return this.productBacklogMapper.getAttachfileByName(fileName);	
-	}
 }

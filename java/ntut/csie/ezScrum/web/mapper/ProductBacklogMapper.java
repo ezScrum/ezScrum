@@ -279,17 +279,6 @@ public class ProductBacklogMapper {
 		return file;
 	}
 
-	/**
-	 * 抓取attach file ，不透過 mantis，並且透過檔案名稱
-	 */
-	public File getAttachfileByName(String fileName) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		File file = itsService.getAttachFileByName(fileName);
-		itsService.closeConnect();
-		return file;
-	}
-
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue) {
 		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
