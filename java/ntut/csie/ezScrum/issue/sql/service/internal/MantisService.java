@@ -1270,13 +1270,13 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
 		IIssue issue = getIssue(attachFileInfo.issueId);
 		attachFileInfo.issueType = issue.getCategory().equalsIgnoreCase(ScrumEnum.STORY_ISSUE_TYPE) ? AttachFileObject.TYPE_STORY : AttachFileObject.TYPE_TASK;
-		return m_attachFileService.addAttachFile(attachFileInfo);
+		return mAttachFileService.addAttachFile(attachFileInfo);
 	}
 	
 	/**
 	 * for ezScrum v1.8
 	 */
 	public void deleteAttachFile(long fileId) {
-		m_attachFileService.deleteAttachFile(fileId);
+		mAttachFileService.deleteAttachFile(fileId);
 	}
 }

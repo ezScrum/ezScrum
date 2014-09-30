@@ -106,6 +106,10 @@ public interface IITSService {
 	public void deleteAttachFile(long fileId);
 	//取得attach file
 	public AttachFileObject getAttachFile(long fileID);
+	//用 story id 取得 story 底下的 attach file
+	public ArrayList<AttachFileObject> getAttachFileByStoryId(long id);
+	//用 task id 取得 task 底下的 attach file
+	public ArrayList<AttachFileObject> getAttachFileByTaskId(long id);
 	//新增自訂分類標籤
 	public long addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
