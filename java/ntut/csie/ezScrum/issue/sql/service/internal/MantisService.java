@@ -1260,8 +1260,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * 用 task id 取得 task 底下的 attach file
 	 * for ezScrum v1.8
 	 */
-	public ArrayList<AttachFileObject> getAttachFileByTaskId(long id) {
-		return mAttachFileService.getAttachFileByTaskId(id);
+	public void deleteAttachFile(long fileId) {
+		mAttachFileService.deleteAttachFile(fileId);
 	}
 	
 	/**
