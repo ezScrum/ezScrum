@@ -1,21 +1,22 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
+import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.Story;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.resource.core.IProject;
@@ -26,6 +27,7 @@ public class ProductBacklogMapper {
 	private ITSServiceFactory m_itsFactory;
 	private Configuration m_config;
 	private IUserSession m_userSession;
+	private MantisService mMantisService;
 
 	public ProductBacklogMapper(IProject project, IUserSession userSession) {
 		m_project = project;
@@ -34,7 +36,7 @@ public class ProductBacklogMapper {
 		//初始ITS的設定
 		m_itsFactory = ITSServiceFactory.getInstance();
 		m_config = new Configuration(m_userSession);
-
+		mMantisService = new MantisService(m_config);
 	}
 
 	public List<IStory> getUnclosedIssues(String category) {
@@ -253,31 +255,53 @@ public class ProductBacklogMapper {
 		return tag;
 	} 
 
-	public void addAttachFile(long issueID, String targetPath) {
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
 		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
-		File attachFile = new File(targetPath);
-		itsService.addAttachFile(issueID, attachFile);
+		long id = itsService.addAttachFile(attachFileInfo);
 		itsService.closeConnect();
+		return id;
 	}
 
-	public void deleteAttachFile(long fileID) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		itsService.deleteAttachFile(fileID);
-		itsService.closeConnect();
+	// for ezScrum v1.8
+	public void deleteAttachFile(long fileId) {
+		mMantisService.openConnect();
+		mMantisService.deleteAttachFile(fileId);
+		mMantisService.closeConnect();
 	}
 
 	/**
 	 * 抓取attach file ，不透過 mantis
 	 */
-	public File getAttachfile(String fileID) {
+	public AttachFileObject getAttachfile(long fileId) {
 		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
-		File file = itsService.getAttachFile(fileID);
+		AttachFileObject attachFileObject = itsService.getAttachFile(fileId);
 		itsService.closeConnect();
-		return file;
+		return attachFileObject;
 	}
+
+	/**
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachfileByStoryId(long storyId) {
+		IITSService itsService = m_itsFactory.getService(m_config);
+		itsService.openConnect();
+		ArrayList<AttachFileObject> attachFileObject = itsService.getAttachFileByStoryId(storyId);
+		itsService.closeConnect();
+		return attachFileObject;
+	}
+	
+	/**
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachfileByTaskId(long taskId) {
+		IITSService itsService = m_itsFactory.getService(m_config);
+		itsService.openConnect();
+		ArrayList<AttachFileObject> attachFileObject = itsService.getAttachFileByTaskId(taskId);
+		itsService.closeConnect();
+		return attachFileObject;
+    }
 
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue) {
 		IITSService itsService = m_itsFactory.getService(m_config);
