@@ -35,17 +35,6 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sprintID = request.getParameter("sprintID");
 
-		//		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper(sprintID);
-		////		SprintBacklog backlog = null;
-		////		
-		////		if (sprintID == null || sprintID.equals("")) {
-		////			backlog = new SprintBacklog(project, userSession);
-		////		} else {
-		////			backlog = new SprintBacklog(project, userSession, Integer.parseInt(sprintID));
-		////		}
-		//
-		//		List<IIssue> stories = backlog.getStoriesByImp();
-
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
 
