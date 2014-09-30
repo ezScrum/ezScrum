@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
@@ -137,13 +138,13 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	}
 
 	// 嚙諄抬蕭嚙緻IIssue嚙踝蕭AttachFile嚙踝蕭Path
-	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, List<IssueAttachFile> list) {
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, ArrayList<AttachFileObject> list) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
-		for (IssueAttachFile file : list) {
-			array.add(new TaskBoard_AttachFile(file.getAttachFileId(), file.getFilename(), "fileDownload.do?projectName="
-			        + story.getProjectName() + "&fileID=" + file.getAttachFileId() + "&fileName=" + file.getFilename()
-			        + "&fileType=" + file.getFileType(), new Date(file.getDate_added())));
+		for (AttachFileObject file : list) {
+			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
+			        + story.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName()
+			        , new Date(file.getCreateTime())));
 		}
 		return array;
 	}
