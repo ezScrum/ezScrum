@@ -126,7 +126,6 @@ public interface IITSService {
 	
 	// 直接取得資料庫的檔案，不透過 mantis, 2010/04/25
 	public File getAttachFile(String fileID);
-	public File getAttachFileByName(String fileName);
 	//將修改過的資訊加入至DB的歷史訊息
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue);
 }
