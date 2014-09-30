@@ -7,8 +7,9 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public interface IITSService {
@@ -100,9 +101,11 @@ public interface IITSService {
 	//是否存在這個使用者
 	public boolean existUser(String userID);
 	//上傳attach file
-	public void addAttachFile(long issueID, File attachFile);
+	public long addAttachFile(AttachFileInfo attachFileInfo);
 	//刪除attach file
 	public void deleteAttachFile(long fileId);
+	//取得attach file
+	public AttachFileObject getAttachFile(long fileID);
 	//新增自訂分類標籤
 	public long addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
@@ -124,8 +127,6 @@ public interface IITSService {
 	public boolean isTagExist(String name, String projectName);
 	public TagObject getTagByName(String name,String projectName);
 	
-	// 直接取得資料庫的檔案，不透過 mantis, 2010/04/25
-	public File getAttachFile(String fileID);
 	//將修改過的資訊加入至DB的歷史訊息
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue);
 }

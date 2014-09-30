@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
@@ -51,34 +52,34 @@ public class AjaxAttachFileAction extends Action {
 			int fileMaxSize_int = Integer.parseInt(projectInfo.getAttachFileSize());
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
 
-			String issueID_string = request.getParameter("issueID");
-			long issueID = Long.parseLong(issueID_string);
+			String issueId_string = request.getParameter("issueID");
+			long issueId = Long.parseLong(issueId_string);
 
 			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
 			UploadForm fileForm = (UploadForm) form;
 
-			FormFile file = fileForm.getFile();
-			String fileName = file.getFileName();
-			int file_size = file.getFileSize();
+			FormFile fromfile = fileForm.getFile();
+			File file = new File(fromfile.getFileName());
+			String fileName = file.getName();
+			int file_size = (int) file.length();
 
 			if (file_size > fileMaxSize_int) {
 				result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectInfo.getAttachFileSize() + "Mb\"}");
 			} else if (file_size < 0) {
 				result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
 			} else {
-				IPath fullPath = project.getFullPath();
-				String targetPath = fullPath.getPathString() + File.separator + fileName;
-				copy(file, targetPath);
-				pbHelper.addAttachFile(issueID, targetPath);
-				
-				IIssue issue = pbHelper.getIssue(issueID);
-				result = new StringBuilder(new Translation().translateStoryToJson(issue));
-
+				AttachFileInfo attachFileInfo = new AttachFileInfo();
+	            attachFileInfo.issueId = issueId;
+	            attachFileInfo.name = fileName;
+	            attachFileInfo.projectName = project.getName();
+	            
 				try {
-					FileUtil.delete(targetPath);
+					long id = pbHelper.addAttachFile(attachFileInfo, file);
 				} catch (IOException e) {
-					e.printStackTrace();
 				}
+				
+				IIssue issue = pbHelper.getIssue(issueId);
+				result = new StringBuilder(new Translation().translateStoryToJson(issue));
 			}
 		}
 
