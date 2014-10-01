@@ -326,8 +326,9 @@ public class MySQLQuerySet implements IQueryValueSet {
 
 	private String format(String query) {
 		if (query == null) return query;
-		if (query.contains("\'")) query = query.replaceAll("\'", "\\\'");
-		if (query.contains("\"")) query = query.replaceAll("\"", "\\\"");
+		query = query.replaceAll("\'", "\\\'");
+		query = query.replaceAll("\"", "\\\"");
+		query = query.replaceAll("\\\\", "\\\\\\\\");
 		return query;
 	}
 
