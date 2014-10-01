@@ -87,10 +87,10 @@ public class MantisAttachFileServiceTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testAddAttachFile() throws Exception {
+	public void testAddAttachFile() throws Exception{
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 5, CS, CP, "EST");
 		ASS.exe();
-
+		
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
@@ -98,6 +98,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
 		
 		long id = MAFSservice.addAttachFile(attachFileInfo);
+		assertEquals(1, id);
 		AttachFileObject attachFile = MAFSservice.getAttachFile(id);
 		
 		assertEquals(attachFile.getName(), attachFileInfo.name);

@@ -465,21 +465,6 @@ public class SprintBacklogMapper {
 		}
 	}
 
-	public void addAttachFile(long issueID, String targetPath) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		File attachFile = new File(targetPath);
-		itsService.addAttachFile(issueID, attachFile);
-		itsService.closeConnect();
-	}
-
-	public void deleteAttachFile(long fileID) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		itsService.deleteAttachFile(fileID);
-		itsService.closeConnect();
-	}
-
 	public void deleteTask(long taskID, long parentID) {
 		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
