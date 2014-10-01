@@ -26,9 +26,9 @@ public class MantisAttachFileService extends AbstractMantisService {
 	public void initAttachFile(IIssue issue) {
 		ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
 		if (issue.getCategory().toLowerCase().equals("story")) {
-			attachFiles = getAttachFileByStoryId(issue.getIssueID());
+			attachFiles = getAttachFilesByStoryId(issue.getIssueID());
 		} else if(issue.getCategory().toLowerCase().equals("task")) {
-			attachFiles = getAttachFileByTaskId(issue.getIssueID());
+			attachFiles = getAttachFilesByTaskId(issue.getIssueID());
 		}
 		
 		for (AttachFileObject file: attachFiles) {
@@ -66,48 +66,42 @@ public class MantisAttachFileService extends AbstractMantisService {
 	}
 
 	/**
-	 * 用 story id 取得 story 底下的 attach file
+	 * 用 story id 取得 story 底下所有的 attach file
 	 * for ezScrum v1.8
 	 */
-	public ArrayList<AttachFileObject> getAttachFileByStoryId(long id) {
-		//設定SQL
+	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, "'" + id + "'");
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_STORY + "'");
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, Integer.toString(AttachFileObject.TYPE_STORY));
 		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
 
-		//取得sql語法
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
 		return getSelectAttachFile(query);
 	}
 	
 	/**
-	 * 用 task id 取得 task 底下的 attach file
+	 * 用 task id 取得 task 底下所有的 attach file
 	 * for ezScrum v1.8
 	 */
-	public ArrayList<AttachFileObject> getAttachFileByTaskId(long id) {
-		//設定SQL
+	public ArrayList<AttachFileObject> getAttachFilesByTaskId(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, "'" + id + "'");
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_TASK + "'");
 		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
 
-		//取得sql語法
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
 		return getSelectAttachFile(query);
 	}
 
+	// for ezScrum v1.8
 	private ArrayList<AttachFileObject> getSelectAttachFile(String query) {
 		ArrayList<AttachFileObject> list = new ArrayList<AttachFileObject>();
 		try {
 			ResultSet result = getControl().executeQuery(query);
-			//取得file的資訊
 			while (result.next()) {
 				AttachFileObject.Builder attachfileBuilder = new AttachFileObject.Builder();
 				attachfileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID));

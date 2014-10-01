@@ -12,35 +12,32 @@ import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DownloadAction;
 
 public class FileDownloadAction extends DownloadAction {
-	private static Log log = LogFactory.getLog(FileDownloadAction.class);
-
 	protected StreamInfo getStreamInfo(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// attach file的資訊
-		long fileID = Long.parseLong(request.getParameter("fileID"));
+		long fileId = Long.parseLong(request.getParameter("fileID"));
 		String fileName = request.getParameter("fileName");
 		String fileType = request.getParameter("fileType");
 		String projectName = request.getParameter("projectName");
 
 		// 如果project以及session的資訊是空的 則透過專案名稱抓取資料
 		if (project == null & session == null) {
-			project = ResourceFacade.getProject(projectName);		// 根據專案名稱取得 IProject 物件
+			// 根據專案名稱取得 IProject 物件
+			project = ResourceFacade.getProject(projectName);
 			session = new UserSession(null);
 		}
 
 		// 用file id取得檔案
 		ProductBacklogHelper helper = new ProductBacklogHelper(project, session);
-		AttachFileObject attachFile = helper.getAttachFile(fileID);
+		AttachFileObject attachFile = helper.getAttachFile(fileId);
 		/*
 		 * 將字串的 UTF-8 編碼轉成 response 預設編碼 ISO-8859-1 jetty預設處理getParameter的編碼是UTF-8 tomcat預設處理getParameter的邊碼是ISO-8859-1 也就是 jetty server可以跑 new String( fileName.getBytes("UTF-8"),"ISO-8859-1"); tomcat
 		 * server可以跑 new String( fileName.getBytes("ISO-8859-1"),"ISO-8859-1");
@@ -50,9 +47,11 @@ public class FileDownloadAction extends DownloadAction {
 
 		// 用fileType預設檔案類型
 		String contentType = fileType;
-
+		System.out.println("contentType = " + contentType);
 		File file = new File(attachFile.getPath());
-		return new FileStreamInfo(contentType, file);
+		FileStreamInfo info = new FileStreamInfo(contentType, file);
+		System.out.println("info = " + info.toString());
+		return info;
 
 	}
 }

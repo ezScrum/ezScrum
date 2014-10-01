@@ -1242,29 +1242,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	/**
-	 * 抓取attach file
-	 */
-	public AttachFileObject getAttachFile(long fileId) {
-		return mAttachFileService.getAttachFile(fileId);
-	}
-	
-	/**
-	 * 用 story id 取得 story 底下的 attach file
-	 * for ezScrum v1.8
-	 */
-	public ArrayList<AttachFileObject> getAttachFileByStoryId(long id) {
-		return mAttachFileService.getAttachFileByStoryId(id);
-	}
-	
-	/**
-	 * 用 task id 取得 task 底下的 attach file
-	 * for ezScrum v1.8
-	 */
-	public void deleteAttachFile(long fileId) {
-		mAttachFileService.deleteAttachFile(fileId);
-	}
-	
-	/**
 	 * for ezScrum v1.8
 	 */
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
@@ -1278,5 +1255,26 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 */
 	public void deleteAttachFile(long fileId) {
 		mAttachFileService.deleteAttachFile(fileId);
+	}
+	
+	// 抓取attach file
+	public AttachFileObject getAttachFile(long fileId) {
+		return mAttachFileService.getAttachFile(fileId);
+	}
+	
+	/**
+	 * 用 story id 取得 story 底下所有的 attach file
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id) {
+		return mAttachFileService.getAttachFilesByStoryId(id);
+	}
+	
+	/**
+	 * 用 task id 取得 task 底下所有的 attach file
+	 * for ezScrum v1.8
+	 */
+	public ArrayList<AttachFileObject> getAttachFilesByTaskId(long id) {
+		return mAttachFileService.getAttachFilesByTaskId(id);
 	}
 }

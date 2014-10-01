@@ -25,7 +25,7 @@ public class ProductBacklogMapper {
 
 	private IProject m_project;
 	private ITSServiceFactory m_itsFactory;
-	private Configuration m_config;
+	private Configuration mConfig;
 	private IUserSession m_userSession;
 	private MantisService mMantisService;
 
@@ -35,12 +35,12 @@ public class ProductBacklogMapper {
 
 		//初始ITS的設定
 		m_itsFactory = ITSServiceFactory.getInstance();
-		m_config = new Configuration(m_userSession);
-		mMantisService = new MantisService(m_config);
+		mConfig = new Configuration(m_userSession);
+		mMantisService = new MantisService(mConfig);
 	}
 
 	public List<IStory> getUnclosedIssues(String category) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		IIssue[] issues = itsService.getIssues(m_project.getName(), category);
 		itsService.closeConnect();
@@ -54,7 +54,7 @@ public class ProductBacklogMapper {
 
 	//回傳某種 category的issue
 	public IIssue[] getIssues(String category) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		IIssue[] issues = itsService.getIssues(m_project.getName(), category);
 		itsService.closeConnect();
@@ -62,7 +62,7 @@ public class ProductBacklogMapper {
 	}
 
 	public void updateStoryRelation(String issueID, String releaseID, String sprintID, String estimate, String importance, Date date) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.updateStoryRelationTable(issueID, m_project.getName(), releaseID, sprintID, estimate, importance, date);
 		itsService.closeConnect();
@@ -71,7 +71,7 @@ public class ProductBacklogMapper {
 	//	get all stories
 	public List<IStory> getAllStoriesByProjectName() {
 
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		//找出Category為Story
 		/*
@@ -91,7 +91,7 @@ public class ProductBacklogMapper {
 	//	get all stories by release
 	public List<IStory> connectToGetStoryByRelease(String releaseID, String sprintID) {
 
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		//找出Category為Story
 		IIssue[] issues = itsService.getIssues(m_project.getName(), ScrumEnum.STORY_ISSUE_TYPE, releaseID, sprintID, null);
@@ -106,7 +106,7 @@ public class ProductBacklogMapper {
 	}
 
 	public IIssue getIssue(long id) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		IIssue issue = itsService.getIssue(id);
 		itsService.closeConnect();
@@ -115,7 +115,7 @@ public class ProductBacklogMapper {
 
 	//	public void updateTagValue(IIssue issue) {
 	public void updateIssueValue(IIssue issue) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.updateBugNote(issue);
 		itsService.closeConnect();
@@ -140,7 +140,7 @@ public class ProductBacklogMapper {
 	public IIssue addStory(StoryInformation storyInformation) {
 		String name = storyInformation.getName();
 		String description = storyInformation.getDescription();
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		IIssue story = new Issue();
 
@@ -155,7 +155,7 @@ public class ProductBacklogMapper {
 	}
 
 	public void updateHistoryModifiedDate(long issueID, long historyID, Date date) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.updateHistoryModifiedDate(issueID, historyID, date);
 		itsService.closeConnect();
@@ -165,7 +165,7 @@ public class ProductBacklogMapper {
 		IIssue task = this.getIssue(storyId);
 		if (!task.getSummary().equals(name))
 		{
-			IITSService itsService = m_itsFactory.getService(m_config);
+			IITSService itsService = m_itsFactory.getService(mConfig);
 			itsService.openConnect();
 			itsService.updateName(task, name, modifyDate);
 			itsService.closeConnect();
@@ -174,14 +174,14 @@ public class ProductBacklogMapper {
 
 	//delete story 用
 	public void deleteStory(String ID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.deleteStory(ID);
 		itsService.closeConnect();
 	}
 
 	public void removeTask(long taskID, long parentID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.removeRelationship(parentID, taskID, ITSEnum.PARENT_RELATIONSHIP);
 		itsService.closeConnect();
@@ -189,7 +189,7 @@ public class ProductBacklogMapper {
 
 	// 新增自訂分類標籤
 	public long addNewTag(String name) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		long id = itsService.addNewTag(name, m_project.getName());
 		itsService.closeConnect();
@@ -198,7 +198,7 @@ public class ProductBacklogMapper {
 
 	// 刪除自訂分類標籤
 	public void deleteTag(long id) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.deleteTag(id, m_project.getName());
 		itsService.closeConnect();
@@ -206,7 +206,7 @@ public class ProductBacklogMapper {
 
 	// 取得自訂分類標籤列表
 	public ArrayList<TagObject> getTagList() {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		ArrayList<TagObject> tags = itsService.getTagList(m_project.getName());
 		itsService.closeConnect();
@@ -216,7 +216,7 @@ public class ProductBacklogMapper {
 
 	// 對Story設定自訂分類標籤
 	public void addStoryTag(String storyID, long tagID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.addStoryTag(storyID, tagID);
 		itsService.closeConnect();
@@ -224,21 +224,21 @@ public class ProductBacklogMapper {
 
 	// 移除Story的自訂分類標籤
 	public void removeStoryTag(String storyID, long tagID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.removeStoryTag(storyID, tagID);
 		itsService.closeConnect();
 	}
 
 	public void updateTag(long tagId, String tagName) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		itsService.updateTag(tagId, tagName, m_project.getName());
 		itsService.closeConnect();
 	}
 
 	public boolean isTagExist(String name) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		boolean result = itsService.isTagExist(name, m_project.getName());
 		itsService.closeConnect();
@@ -247,7 +247,7 @@ public class ProductBacklogMapper {
 	}
 
 	public TagObject getTagByName(String name) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfig);
 		itsService.openConnect();
 		TagObject tag = itsService.getTagByName(name, m_project.getName());
 		itsService.closeConnect();
@@ -256,7 +256,7 @@ public class ProductBacklogMapper {
 	} 
 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		IITSService itsService = m_itsFactory.getService(m_config);
+		IITSService itsService = m_itsFactory.getService(mConfig);
 		itsService.openConnect();
 		long id = itsService.addAttachFile(attachFileInfo);
 		itsService.closeConnect();
@@ -271,40 +271,37 @@ public class ProductBacklogMapper {
 	}
 
 	/**
-	 * 抓取attach file ，不透過 mantis
+	 * 抓取attach file
+	 * for ezScrum v1.8
 	 */
 	public AttachFileObject getAttachfile(long fileId) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		AttachFileObject attachFileObject = itsService.getAttachFile(fileId);
-		itsService.closeConnect();
-		return attachFileObject;
+		MantisService mantisService = new MantisService(mConfig);
+		mantisService.openConnect();
+		AttachFileObject attachFileObjects = mantisService.getAttachFile(fileId);
+		mantisService.closeConnect();
+		return attachFileObjects;
 	}
 
-	/**
-	 * for ezScrum v1.8
-	 */
-	public ArrayList<AttachFileObject> getAttachfileByStoryId(long storyId) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		ArrayList<AttachFileObject> attachFileObject = itsService.getAttachFileByStoryId(storyId);
-		itsService.closeConnect();
-		return attachFileObject;
+	// for ezScrum v1.8
+	public ArrayList<AttachFileObject> getAttachfilesByStoryId(long storyId) {
+		MantisService mantisService = new MantisService(mConfig);
+		mantisService.openConnect();
+		ArrayList<AttachFileObject> attachFileObjects = mantisService.getAttachFilesByStoryId(storyId);
+		mantisService.closeConnect();
+		return attachFileObjects;
 	}
 	
-	/**
-	 * for ezScrum v1.8
-	 */
-	public ArrayList<AttachFileObject> getAttachfileByTaskId(long taskId) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		ArrayList<AttachFileObject> attachFileObject = itsService.getAttachFileByTaskId(taskId);
-		itsService.closeConnect();
-		return attachFileObject;
+	// for ezScrum v1.8
+	public ArrayList<AttachFileObject> getAttachfilesByTaskId(long taskId) {
+		MantisService mantisService = new MantisService(mConfig);
+		mantisService.openConnect();
+		ArrayList<AttachFileObject> attachFileObjects = mantisService.getAttachFilesByTaskId(taskId);
+		mantisService.closeConnect();
+		return attachFileObjects;
     }
 
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue) {
-		IITSService itsService = m_itsFactory.getService(m_config);
+		IITSService itsService = m_itsFactory.getService(mConfig);
 		itsService.openConnect();
 		itsService.addHistory(issueID, typeName, oldValue, newValue);
 		itsService.closeConnect();
