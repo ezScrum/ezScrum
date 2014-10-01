@@ -73,6 +73,7 @@ public class AjaxAttachFileAction extends Action {
 					AttachFileInfo attachFileInfo = new AttachFileInfo();
 		            attachFileInfo.issueId = issueId;
 		            attachFileInfo.name = fileName;
+		            attachFileInfo.contentType = formFile.getContentType();
 		            attachFileInfo.projectName = project.getName();
 		            
 					try {

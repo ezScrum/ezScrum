@@ -8,4 +8,5 @@ public class AttachFileInfo {
 	public String projectName = "";
 	public String entryPoint = "";
 	public int issueType = -1;
+	public String contentType = "";
 }

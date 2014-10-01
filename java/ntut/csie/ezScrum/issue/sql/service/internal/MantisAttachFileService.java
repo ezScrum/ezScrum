@@ -44,6 +44,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(attachFileInfo.issueType));
 		valueSet.addInsertValue(AttachFileEnum.NAME, attachFileInfo.name);
 		valueSet.addInsertValue(AttachFileEnum.PATH, attachFileInfo.path);
+		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, attachFileInfo.contentType);
 		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		log.info("[SQL] " + query);
