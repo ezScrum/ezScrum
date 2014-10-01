@@ -98,6 +98,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
 		
 		long id = MAFSservice.addAttachFile(attachFileInfo);
+		assertEquals(1, id);
 		AttachFileObject attachFile = MAFSservice.getAttachFile(id);
 		
 		assertEquals(attachFile.getName(), attachFileInfo.name);
