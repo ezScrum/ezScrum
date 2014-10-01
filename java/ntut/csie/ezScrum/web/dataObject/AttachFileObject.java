@@ -15,6 +15,7 @@ public class AttachFileObject {
 	private String mName;
 	private String mPath;
 	private long mCreateTime;
+	private String mContentType;
 
 	/**
 	 * @param attachFileId
@@ -33,6 +34,7 @@ public class AttachFileObject {
 		this.mCreateTime = builder.mCreateTime;
 		this.mIssueId = builder.mIssueId;
 		this.mIssueType = builder.mIssueType;
+		this.mContentType = builder.mContentType;
 	}
 
 	public long getId() {
@@ -110,6 +112,7 @@ public class AttachFileObject {
 		private int mIssueType;
 		private String mName;
 		private String mPath;
+		private String mContentType;
 		private long mCreateTime;
 		
 		public AttachFileObject build() {
@@ -138,6 +141,11 @@ public class AttachFileObject {
 		
 		public Builder setPath(String filePath) {
 			mPath = filePath;
+			return this;
+		}
+		
+		public Builder setContentType(String contentType) {
+			mContentType = contentType;
 			return this;
 		}
 		
