@@ -144,7 +144,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 		for (AttachFileObject file : list) {
 			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
 			        + story.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName()
-			        , new Date(file.getCreateTime())));
+			        + "&fileType=" + file.getFileType(), new Date(file.getCreateTime())));
 		}
 		return array;
 	}

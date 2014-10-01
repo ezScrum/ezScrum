@@ -47,11 +47,8 @@ public class FileDownloadAction extends DownloadAction {
 
 		// 用fileType預設檔案類型
 		String contentType = fileType;
-		System.out.println("contentType = " + contentType);
 		File file = new File(attachFile.getPath());
-		FileStreamInfo info = new FileStreamInfo(contentType, file);
-		System.out.println("info = " + info.toString());
-		return info;
+		return new FileStreamInfo(contentType, file);
 
 	}
 }
