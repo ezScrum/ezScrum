@@ -232,8 +232,9 @@ public class ProductBacklogHelper {
 		this.productBacklogMapper.deleteAttachFile(fileID);
 	}
 	
-	public AttachFileObject getAttachFile(long fileID) {
-		return this.productBacklogMapper.getAttachfile(fileID);	
+	// for ezScrum v1.8
+	public AttachFileObject getAttachFile(long fileId) {
+		return this.productBacklogMapper.getAttachfile(fileId);	
 	}
 	
 	private void copyFile(File srcFile, File destFile) throws IOException {

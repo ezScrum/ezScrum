@@ -153,7 +153,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		MAFSservice.addAttachFile(attachFileInfo2);
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFileByStoryId(ASS.getIssueList().get(0).getIssueID());
+		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByStoryId(ASS.getIssueList().get(0).getIssueID());
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
 		attachFileArray.add(attachFileInfo2);
@@ -192,7 +192,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		MAFSservice.addAttachFile(attachFileInfo2);
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFileByTaskId(addTaskToStory.getTaskIDList().get(0));
+		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByTaskId(addTaskToStory.getTaskIDList().get(0));
 
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
@@ -223,12 +223,12 @@ public class MantisAttachFileServiceTest extends TestCase {
 			infoList.add(attachFileInfo);
 		}
 
-		actualAttachFileList = MAFSservice.getAttachFileByStoryId(storyId);
+		actualAttachFileList = MAFSservice.getAttachFilesByStoryId(storyId);
 		assertEquals(3, actualAttachFileList.size());
 		// delete one data
 		MAFSservice.deleteAttachFile(infoList.get(0).id);
 		actualAttachFileList.clear();
-		actualAttachFileList = MAFSservice.getAttachFileByStoryId(storyId);
+		actualAttachFileList = MAFSservice.getAttachFilesByStoryId(storyId);
 		assertEquals(2, actualAttachFileList.size());
 	}
 
@@ -249,12 +249,12 @@ public class MantisAttachFileServiceTest extends TestCase {
 			infoList.add(attachFileInfo);
 		}
 
-		actualAttachFileList = MAFSservice.getAttachFileByTaskId(taskId);
+		actualAttachFileList = MAFSservice.getAttachFilesByTaskId(taskId);
 		assertEquals(3, actualAttachFileList.size());
 		// delete one data
 		MAFSservice.deleteAttachFile(infoList.get(0).id);
 		actualAttachFileList.clear();
-		actualAttachFileList = MAFSservice.getAttachFileByTaskId(taskId);
+		actualAttachFileList = MAFSservice.getAttachFilesByTaskId(taskId);
 		assertEquals(2, actualAttachFileList.size());
 	}
 }
