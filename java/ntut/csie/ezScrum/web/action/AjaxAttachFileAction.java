@@ -1,26 +1,26 @@
 package ntut.csie.ezScrum.web.action;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.account.core.internal.Account;
 import ntut.csie.jcis.core.util.FileUtil;
-import ntut.csie.jcis.resource.core.IPath;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -58,28 +58,37 @@ public class AjaxAttachFileAction extends Action {
 			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
 			UploadForm fileForm = (UploadForm) form;
 
-			FormFile fromfile = fileForm.getFile();
-			File file = new File(fromfile.getFileName());
-			String fileName = file.getName();
-			int file_size = (int) file.length();
-
-			if (file_size > fileMaxSize_int) {
-				result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectInfo.getAttachFileSize() + "Mb\"}");
-			} else if (file_size < 0) {
-				result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
-			} else {
-				AttachFileInfo attachFileInfo = new AttachFileInfo();
-	            attachFileInfo.issueId = issueId;
-	            attachFileInfo.name = fileName;
-	            attachFileInfo.projectName = project.getName();
-	            
-				try {
-					long id = pbHelper.addAttachFile(attachFileInfo, file);
-				} catch (IOException e) {
-				}
+			FormFile formFile = fileForm.getFile();
+			File file;
+			try {
+				file = convertToFile(formFile);
+				String fileName = file.getName();
+				int file_size = (int) file.length();
 				
-				IIssue issue = pbHelper.getIssue(issueId);
-				result = new StringBuilder(new Translation().translateStoryToJson(issue));
+				if (file_size > fileMaxSize_int) {
+					result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectInfo.getAttachFileSize() + "Mb\"}");
+				} else if (file_size < 0) {
+					result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
+				} else {
+					AttachFileInfo attachFileInfo = new AttachFileInfo();
+		            attachFileInfo.issueId = issueId;
+		            attachFileInfo.name = fileName;
+		            attachFileInfo.projectName = project.getName();
+		            
+					try {
+						pbHelper.addAttachFile(attachFileInfo, file);
+						FileUtil.delete(file.getAbsolutePath());
+					} catch (IOException e) {
+						System.out.println(e);
+					}
+					
+					IIssue issue = pbHelper.getIssue(issueId);
+					result = new StringBuilder(new Translation().translateStoryToJson(issue));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -92,5 +101,24 @@ public class AjaxAttachFileAction extends Action {
 		}
 
 		return null;
+	}
+	
+	private File convertToFile(FormFile formFile) throws IOException {
+		String tempUploadFolder = "upload_tmp";
+		
+		File folder = new File(tempUploadFolder);
+		folder.mkdirs();
+		File file = new File(tempUploadFolder + File.separator + formFile.getFileName());
+		OutputStream os = new FileOutputStream(file);
+		InputStream is = new BufferedInputStream(formFile.getInputStream());
+		int count;
+		byte[] buffer = new byte[4096];
+		while ((count = is.read(buffer)) > -1) {
+			os.write(buffer, 0, count);
+		}
+		
+		os.close();
+		is.close();
+		return file;
 	}
 }
