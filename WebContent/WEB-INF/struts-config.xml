@@ -236,8 +236,6 @@
 		<action path="/UpdateDownload"						type="ntut.csie.ezScrum.web.action.UpdateDownloadAction" />
 		<action path="/ajaxAttachFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxAttachFileAction" />
 		<action path="/ajaxDeleteFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxDeleteFileAction" />
-		<action path="/attachFile" name="uploadForm"		type="ntut.csie.ezScrum.web.action.AttachFileAction" />
-		<action path="/deleteAttachFile" 					type="ntut.csie.ezScrum.web.action.DeleteAttachFileAction" />
 		<action path="/AjaxFormCheck"						type="ntut.csie.ezScrum.web.action.AjaxFormCheckAction" />
 		<action path="/checkCreateProject"					type="ntut.csie.ezScrum.web.action.CheckCreateProjectAction" />
 		<action path="/checkExcel"							type="ntut.csie.ezScrum.web.action.CheckExcelAction"/>
