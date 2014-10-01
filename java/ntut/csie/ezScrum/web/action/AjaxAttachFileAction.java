@@ -93,21 +93,4 @@ public class AjaxAttachFileAction extends Action {
 
 		return null;
 	}
-
-	/**
-	 * 進行檔案複製
-	 */
-	private void copy(FormFile file, String targetPath) {
-		FileOutputStream fileOutput = null;
-		try {
-			fileOutput = new FileOutputStream(targetPath);
-			fileOutput.write(file.getFileData());
-			fileOutput.flush();
-			fileOutput.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			file.destroy();
-		}
-	}
 }
