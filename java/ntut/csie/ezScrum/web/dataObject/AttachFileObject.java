@@ -80,6 +80,10 @@ public class AttachFileObject {
 	public long getCreateTime() {
 		return mCreateTime;
 	}
+	
+	public String getContentType() {
+		return mContentType;
+	}
 
 	public void setCreateTime(long createTime) {
 		mCreateTime = createTime;
