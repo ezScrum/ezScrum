@@ -1315,6 +1315,7 @@ CREATE TABLE `attach_file` (
   `issue_id` BIGINT UNSIGNED NOT NULL,
   `issue_type` INT NOT NULL,
   `path` TEXT NOT NULL,
+  `content_type` TEXT,
   `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
