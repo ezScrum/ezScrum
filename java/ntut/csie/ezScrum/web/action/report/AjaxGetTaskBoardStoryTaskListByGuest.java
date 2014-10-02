@@ -10,15 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -27,8 +24,6 @@ import org.apache.struts.action.ActionMapping;
 import com.google.gson.Gson;
 
 public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
-	private static Log log = LogFactory.getLog(AjaxGetTaskBoardStoryTaskListByGuest.class);
-
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 
@@ -141,10 +136,10 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, ArrayList<AttachFileObject> list) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
-		for (AttachFileObject file : list) {
-			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
-			        + story.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName()
-			        + "&fileType=" + file.getFileType(), new Date(file.getCreateTime())));
+		for (AttachFileObject attachFile : list) {
+			array.add(new TaskBoard_AttachFile(attachFile.getId(), attachFile.getName(), "fileDownload.do?projectName="
+			        + story.getProjectName() + "&fileId=" + attachFile.getId() + "&fileName=" + attachFile.getName()
+			        , new Date(attachFile.getCreateTime())));
 		}
 		return array;
 	}

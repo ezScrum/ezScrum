@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.TaskBoard;
@@ -303,7 +302,7 @@ public class TaskboardHelper {
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
 		for (AttachFileObject file : list) {
 			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
-			        + story.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName()
+			        + story.getProjectName() + "&fileId=" + file.getId() + "&fileName=" + file.getName()
 			        , new Date(file.getCreateTime())));
 		}
 		return array;

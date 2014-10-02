@@ -282,24 +282,6 @@ public class ProductBacklogMapper {
 		return attachFileObjects;
 	}
 
-	// for ezScrum v1.8
-	public ArrayList<AttachFileObject> getAttachfilesByStoryId(long storyId) {
-		MantisService mantisService = new MantisService(mConfig);
-		mantisService.openConnect();
-		ArrayList<AttachFileObject> attachFileObjects = mantisService.getAttachFilesByStoryId(storyId);
-		mantisService.closeConnect();
-		return attachFileObjects;
-	}
-	
-	// for ezScrum v1.8
-	public ArrayList<AttachFileObject> getAttachfilesByTaskId(long taskId) {
-		MantisService mantisService = new MantisService(mConfig);
-		mantisService.openConnect();
-		ArrayList<AttachFileObject> attachFileObjects = mantisService.getAttachFilesByTaskId(taskId);
-		mantisService.closeConnect();
-		return attachFileObjects;
-    }
-
 	public void addHistory(long issueID, String typeName, String oldValue, String newValue) {
 		IITSService itsService = m_itsFactory.getService(mConfig);
 		itsService.openConnect();

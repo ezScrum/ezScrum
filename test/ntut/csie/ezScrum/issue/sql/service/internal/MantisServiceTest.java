@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -45,6 +46,7 @@ public class MantisServiceTest extends TestCase {
 	private CreateProject CP;
 	private int ProjectCount = 1;
 	private int StoryCount = 1;
+	private IProject project;
 	private Configuration configuration;
 	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 
@@ -66,7 +68,7 @@ public class MantisServiceTest extends TestCase {
 		this.CP = new CreateProject(this.ProjectCount);
 		this.CP.exeCreate();
 
-		IProject project = this.CP.getProjectList().get(0);
+		project = this.CP.getProjectList().get(0);
 		this.MSservice = (MantisService) ITSServiceFactory.getInstance().getService(configuration);
 
 		super.setUp();
@@ -103,33 +105,35 @@ public class MantisServiceTest extends TestCase {
 	// 測試從 file String ID 取得此檔案
 	public void testgetAttachFile() throws LogonException {
 		// ================ set initial data =======================
-		// 新增Story
 		CreateProductBacklog CPB = new CreateProductBacklog(this.StoryCount, this.CP);
 		CPB.exe();
 
-		String Test_File = configuration.getInitialSQLPath();
-
-		IProject project = this.CP.getProjectList().get(0);
-		// ProductBacklog backlog = new ProductBacklog(project, ezScrumInfoConfig.getUserSession());
 		ProductBacklogMapper backlog = new ProductBacklogMapper(project, configuration.getUserSession());
-		long issueID = CPB.getIssueList().get(0).getIssueID();
-
-		backlog.addAttachFile(issueID, Test_File);		// 將 TestData/MyWorkspace/initial_bk.sql 上傳測試
+		long issueId = CPB.getIssueList().get(0).getIssueID();
+		
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+        attachFileInfo.issueId = issueId;
+        attachFileInfo.name = "TESTFILE.txt";
+        attachFileInfo.contentType = "text/html";
+        attachFileInfo.projectName = project.getName();
+		long fileId = backlog.addAttachFile(attachFileInfo);
+		
 		// ================ set initial data =======================
-
 		this.MSservice.openConnect();
-		File ExpectedFile = new File(Test_File);
-		File ActualFile = this.MSservice.getAttachFile(Long.toString(1));
+		AttachFileObject attachFileObject = MSservice.getAttachFile(fileId);
 		this.MSservice.closeConnect();
 
-		assertEquals(ExpectedFile.length(), ActualFile.length());
-		assertEquals(ExpectedFile.isFile(), ActualFile.isFile());
-		assertEquals(ExpectedFile.isAbsolute(), ActualFile.isAbsolute());
+		assertEquals(attachFileObject.getId(), fileId);
+		assertEquals(attachFileObject.getIssueId(), attachFileInfo.issueId);
+		assertEquals(attachFileObject.getName(), attachFileInfo.name);
+		assertEquals(attachFileObject.getName(), attachFileInfo.projectName);
+		assertEquals(attachFileObject.getContentType(), attachFileInfo.contentType);
 
 		// ============= release ==============
 		project = null;
-		ActualFile = null;
-		ExpectedFile = null;
+		backlog = null;
+		attachFileInfo = null;
+		attachFileObject = null;
 	}
 
 	public void testnewIssue() {

@@ -1,14 +1,9 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -33,10 +28,8 @@ import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.core.util.StringUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
@@ -1260,21 +1253,5 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	// 抓取attach file
 	public AttachFileObject getAttachFile(long fileId) {
 		return mAttachFileService.getAttachFile(fileId);
-	}
-	
-	/**
-	 * 用 story id 取得 story 底下所有的 attach file
-	 * for ezScrum v1.8
-	 */
-	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id) {
-		return mAttachFileService.getAttachFilesByStoryId(id);
-	}
-	
-	/**
-	 * 用 task id 取得 task 底下所有的 attach file
-	 * for ezScrum v1.8
-	 */
-	public ArrayList<AttachFileObject> getAttachFilesByTaskId(long id) {
-		return mAttachFileService.getAttachFilesByTaskId(id);
 	}
 }

@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.issue.sql.service.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,10 +105,6 @@ public interface IITSService {
 	public void deleteAttachFile(long fileId);
 	//取得attach file
 	public AttachFileObject getAttachFile(long fileId);
-	//用 story id 取得 story 底下的 attach file
-	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id);
-	//用 task id 取得 task 底下的 attach file
-	public ArrayList<AttachFileObject> getAttachFilesByTaskId(long id);
 	//新增自訂分類標籤
 	public long addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
