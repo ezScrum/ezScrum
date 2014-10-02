@@ -109,7 +109,8 @@ public class Translation {
 				jsonFile.append("IssueId", file.getIssueId());
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + scrumIssues.get(i).getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName());
+				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + scrumIssues.get(i).getProjectName() 
+						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonIssue.append("AttachFileList", jsonFiles);
@@ -165,7 +166,8 @@ public class Translation {
 				jsonFile.append("IssueId", file.getIssueId());
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + customIssues.get(i).getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName());
+				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + customIssues.get(i).getProjectName()
+						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonIssue.append("AttachFileList", jsonFiles);
@@ -225,8 +227,8 @@ public class Translation {
 				Date date = new Date(file.getCreateTime());
 				String attachTime = dateFormat.format(date);
 				jsonFile.append("UploadDate", attachTime);
-
-				jsonFile.append("FilePath", "fileDownload.do?projectName=" + stories[i].getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName());
+				jsonFile.append("FilePath", "fileDownload.do?projectName=" + stories[i].getProjectName() + "&fileId=" + file.getId()
+						+ "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonStory.append("AttachFileList", jsonFiles);
@@ -355,8 +357,8 @@ public class Translation {
 				jsonFile.append("IssueId", file.getIssueId());
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath",
-				        "fileDownload.do?projectName=" + issue.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName());
+				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + issue.getProjectName()
+						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonStory.append("AttachFileList", jsonFiles);
@@ -406,7 +408,8 @@ public class Translation {
 				jsonFile.append("IssueId", file.getIssueId());
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + items.get(i).getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName());
+				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + items.get(i).getProjectName()
+						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonWorkItem.append("AttachFileList", jsonFiles);

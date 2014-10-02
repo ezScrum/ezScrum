@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
 
@@ -21,11 +22,11 @@ public class FileDownloadAction extends DownloadAction {
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		UserObject user = session.getAccount();
 
 		// attach file的資訊
-		long fileId = Long.parseLong(request.getParameter("fileID"));
+		long fileId = Long.parseLong(request.getParameter("fileId"));
 		String fileName = request.getParameter("fileName");
-		String fileType = request.getParameter("fileType");
 		String projectName = request.getParameter("projectName");
 
 		// 如果project以及session的資訊是空的 則透過專案名稱抓取資料
@@ -46,9 +47,8 @@ public class FileDownloadAction extends DownloadAction {
 		response.setHeader("Content-disposition", "inline; filename=\"" + fileName + "\"");
 
 		// 用fileType預設檔案類型
-		String contentType = fileType;
 		File file = new File(attachFile.getPath());
-		return new FileStreamInfo(contentType, file);
+		return new FileStreamInfo(attachFile.getContentType(), file);
 
 	}
 }

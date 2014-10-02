@@ -111,6 +111,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 				attachfileBuilder.setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE));
 				attachfileBuilder.setName(result.getString(AttachFileEnum.NAME));
 				attachfileBuilder.setPath(result.getString(AttachFileEnum.PATH));
+				attachfileBuilder.setContentType(result.getString(AttachFileEnum.CONTENT_TYPE));
 				attachfileBuilder.setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
 				list.add(attachfileBuilder.build());
 			}
