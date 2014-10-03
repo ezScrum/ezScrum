@@ -84,10 +84,10 @@ public class ProductBacklogMapperTest extends TestCase {
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile ActualFile = issue.getAttachFile().get(0);
+		IssueAttachFile ActualFile = issue.getAttachFiles().get(0);
 		File ExpectedFile = new File(Test_File_Path);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(ExpectedFile.getName(), ActualFile.getFilename());
 		assertEquals(ExpectedFile.length(), ActualFile.getFilesize());
 		
@@ -104,17 +104,17 @@ public class ProductBacklogMapperTest extends TestCase {
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile ActualFile = issue.getAttachFile().get(0);
+		IssueAttachFile ActualFile = issue.getAttachFiles().get(0);
 		File ExpectedFile = new File(Test_File_Path);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(ExpectedFile.getName(), ActualFile.getFilename());
 		assertEquals(ExpectedFile.length(), ActualFile.getFilesize());
 		
 		// 刪除此 issue 的檔案
 		this.productBacklogMapper.deleteAttachFile(ActualFile.getAttachFileId());
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		assertEquals(0, issue.getAttachFile().size());
+		assertEquals(0, issue.getAttachFiles().size());
 		
 		// ============= release ==============
 		issue = null;
@@ -130,10 +130,10 @@ public class ProductBacklogMapperTest extends TestCase {
 		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile IssueFile = issue.getAttachFile().get(0);
+		IssueAttachFile IssueFile = issue.getAttachFiles().get(0);
 		File ExpectedFile = new File(Test_File_Path);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(ExpectedFile.getName(), IssueFile.getFilename());
 		assertEquals(ExpectedFile.length(), IssueFile.getFilesize());
 		

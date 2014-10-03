@@ -1239,6 +1239,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 */
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
 		IIssue issue = getIssue(attachFileInfo.issueId);
+		System.out.println("issue id = " + issue.getIssueID());
+		System.out.println(issue.getCategory());
 		attachFileInfo.issueType = issue.getCategory().equalsIgnoreCase(ScrumEnum.STORY_ISSUE_TYPE) ? AttachFileObject.TYPE_STORY : AttachFileObject.TYPE_TASK;
 		return mAttachFileService.addAttachFile(attachFileInfo);
 	}

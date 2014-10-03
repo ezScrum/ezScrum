@@ -148,8 +148,8 @@ public interface IIssue extends Serializable{
 	public long getAssignedDate();
 	public String getCreateBy();
 	
-	public ArrayList<AttachFileObject> getAttachFile();
-	public void setAttachFile(ArrayList<AttachFileObject> fileList);
+	public ArrayList<AttachFileObject> getAttachFiles();
+	public void setAttachFiles(ArrayList<AttachFileObject> fileList);
 	public void addAttachFile(AttachFileObject attach);
 	
 	// 對Story的自訂分類標籤
