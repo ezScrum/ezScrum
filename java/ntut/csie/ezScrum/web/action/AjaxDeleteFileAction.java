@@ -47,10 +47,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		long issueID = Integer.parseInt(request.getParameter("issueId"));
 		long fileID = Long.parseLong(request.getParameter("fileId"));
 		
-		StringBuilder result = new StringBuilder("{\"success\":false}");		
-			
-//		ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
-//		String mantisUrl = prefs.getServerUrl();
+		StringBuilder result = new StringBuilder("{\"success\":false}");
 		
 		// 透過file的 id 刪除attach file
 		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project,session);
@@ -62,11 +59,9 @@ public class AjaxDeleteFileAction extends PermissionAction {
 			IIssue issue = backlog.getIssue(issueID);
 			List<IIssue> list = new ArrayList<IIssue>();
 			list.add(issue);
-//			result = new StringBuilder(new Translation(mantisUrl).translateCustomIssueToJson(list));
 			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
 		} else {
 			IIssue issue = pbHelper.getIssue(issueID);
-//			result = new StringBuilder(new Translation(mantisUrl).translateStoryToJson(issue));
 			result = new StringBuilder(new Translation().translateStoryToJson(issue));
 		}
 
