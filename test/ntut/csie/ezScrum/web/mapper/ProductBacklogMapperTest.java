@@ -10,6 +10,8 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapperTest extends TestCase {
@@ -21,6 +23,9 @@ public class ProductBacklogMapperTest extends TestCase {
 	
 	private ProductBacklogMapper productBacklogMapper = null;
 	private Configuration configuration = null;
+	
+	private final String FILE_NAME = "Initial.sql";
+	private final String FILE_TYPE = "sql/plain";
 	
 	public ProductBacklogMapperTest(String testMethod) {
         super(testMethod);
@@ -78,74 +83,72 @@ public class ProductBacklogMapperTest extends TestCase {
 	
 	// 測試上傳檔案到一筆 issue 是否成功
 	public void testaddAttachFile() {
-		String Test_File_Path = configuration.getInitialSQLPath();
-		
 		IIssue issue = this.CPB.getIssueList().get(0);
-		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		
+		
+		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile ActualFile = issue.getAttachFiles().get(0);
-		File ExpectedFile = new File(Test_File_Path);
+		AttachFileObject ActualFile = issue.getAttachFile().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(ExpectedFile.getName(), ActualFile.getFilename());
-		assertEquals(ExpectedFile.length(), ActualFile.getFilesize());
+		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(FILE_NAME, ActualFile.getName());
+		assertEquals(FILE_TYPE, ActualFile.getContentType());
+		assertEquals(issue.getIssueID(), ActualFile.getId());
 		
 		// ============= release ==============
 		issue = null;
 		ActualFile = null;
-		ExpectedFile = null;
 	}
 	
 	// 測試刪除一筆 Issue 的檔案
 	public void testdeleteAttachFile() {
-		String Test_File_Path = configuration.getInitialSQLPath();
 		IIssue issue = this.CPB.getIssueList().get(0);		
-		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試
+		
+		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile ActualFile = issue.getAttachFiles().get(0);
-		File ExpectedFile = new File(Test_File_Path);
+		AttachFileObject ActualFile = issue.getAttachFile().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(ExpectedFile.getName(), ActualFile.getFilename());
-		assertEquals(ExpectedFile.length(), ActualFile.getFilesize());
+		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(FILE_NAME, ActualFile.getName());
+		assertEquals(FILE_TYPE, ActualFile.getContentType());
+		assertEquals(issue.getIssueID(), ActualFile.getId());
 		
 		// 刪除此 issue 的檔案
-		this.productBacklogMapper.deleteAttachFile(ActualFile.getAttachFileId());
+		this.productBacklogMapper.deleteAttachFile(ActualFile.getId());
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		assertEquals(0, issue.getAttachFiles().size());
+		assertEquals(0, issue.getAttachFile().size());
 		
 		// ============= release ==============
 		issue = null;
-		ActualFile = null;
-		ExpectedFile = null;		
+		ActualFile = null;		
 	}
 	
 	// 測試不用透過 mantis 直接取得檔案的方法
 	public void testgetAttachfile() {
-		String Test_File_Path = configuration.getInitialSQLPath();
 		IIssue issue = this.CPB.getIssueList().get(0);
 		
-		this.productBacklogMapper.addAttachFile(issue.getIssueID(), Test_File_Path);		// 將 InitialData/initial_bk.sql 上傳測試		
+		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		IssueAttachFile IssueFile = issue.getAttachFiles().get(0);
-		File ExpectedFile = new File(Test_File_Path);
+		AttachFileObject IssueFile = issue.getAttachFile().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(ExpectedFile.getName(), IssueFile.getFilename());
-		assertEquals(ExpectedFile.length(), IssueFile.getFilesize());
-		
-		File ActualFile = this.productBacklogMapper.getAttachfile(Long.toString(IssueFile.getIssueID()));
-		
-		assertEquals(ExpectedFile.length(), ActualFile.length());
-		assertEquals(ExpectedFile.isFile(), ActualFile.isFile());
-		assertEquals(ExpectedFile.isAbsolute(), ActualFile.isAbsolute());
-		
+		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(FILE_NAME, IssueFile.getName());
+		assertEquals(FILE_TYPE, IssueFile.getContentType());
+		assertEquals(issue.getIssueID(), IssueFile.getId());
+
 		// ============= release ==============
 		issue = null;
-		ActualFile = null;
-		ExpectedFile = null;		
+	}
+	
+	private void addAttachFile(ProductBacklogMapper mapper, long issueId) {
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+        attachFileInfo.issueId = issueId;
+        attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
+        attachFileInfo.name = FILE_NAME;
+        attachFileInfo.contentType = FILE_TYPE;
+        attachFileInfo.projectName = CP.getProjectList().get(0).getName();
+        mapper.addAttachFile(attachFileInfo);
 	}
 }
