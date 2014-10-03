@@ -88,7 +88,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject ActualFile = issue.getAttachFile().get(0);
+		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, ActualFile.getName());
@@ -107,7 +107,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject ActualFile = issue.getAttachFile().get(0);
+		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, ActualFile.getName());
@@ -131,7 +131,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		addAttachFile(productBacklogMapper, issue.getIssueID());
 		
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject IssueFile = issue.getAttachFile().get(0);
+		AttachFileObject IssueFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, IssueFile.getName());
