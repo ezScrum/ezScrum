@@ -456,8 +456,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(CS.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
 		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) storyList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedStory.getAttachFile().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedStory.getAttachFile().get(0).getName(), attachFile.get("FileName"));
+		assertEquals(expectedStory.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
+		assertEquals(expectedStory.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
 	}
 	
 	/**
@@ -553,7 +553,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(!expectedTask.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
 		
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) taskList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedTask.getAttachFile().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedTask.getAttachFile().get(0).getName(), attachFile.get("FileName"));
+		assertEquals(expectedTask.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
+		assertEquals(expectedTask.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
 	}
 }
