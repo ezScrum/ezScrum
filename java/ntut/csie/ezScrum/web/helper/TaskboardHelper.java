@@ -238,7 +238,7 @@ public class TaskboardHelper {
 			Sprint = story.getSprintID();
 
 			Link = story.getIssueLink();
-			AttachFileList = getAttachFilePath(story, story.getAttachFile());
+			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
 			if (!AttachFileList.isEmpty()) Attach = true;
 			else Attach = false;
@@ -272,7 +272,7 @@ public class TaskboardHelper {
 			Status = task.getStatus();
 			Notes = HandleSpecialChar(task.getNotes());
 			Link = task.getIssueLink();
-			AttachFileList = getAttachFilePath(task, task.getAttachFile());
+			AttachFileList = getAttachFilePath(task, task.getAttachFiles());
 			if (!AttachFileList.isEmpty()) Attach = true;
 			else Attach = false;
 		}

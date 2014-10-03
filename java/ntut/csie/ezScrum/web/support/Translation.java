@@ -40,7 +40,7 @@ public class Translation {
 			sb.append("<Release>" + TranslateChar.HandleNullString(stories[i].getReleaseID()) + "</Release>");
 			sb.append("<Sprint>" + TranslateChar.HandleNullString(stories[i].getSprintID()) + "</Sprint>");
 			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTags(), ",")) + "</Tag>");
-			if (stories[i].getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
+			if (stories[i].getAttachFiles().size() == 0) sb.append("<Attach>false</Attach>");
 			else sb.append("<Attach>true</Attach>");
 			sb.append("</Story>");
 		}
@@ -70,7 +70,7 @@ public class Translation {
 		sb.append("<Release>" + TranslateChar.HandleNullString(story.getReleaseID()) + "</Release>");
 		sb.append("<Sprint>" + TranslateChar.HandleNullString(story.getSprintID()) + "</Sprint>");
 		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTags(), ",")) + "</Tag>");
-		if (story.getAttachFile().size() == 0) sb.append("<Attach>false</Attach>");
+		if (story.getAttachFiles().size() == 0) sb.append("<Attach>false</Attach>");
 		else sb.append("<Attach>true</Attach>");
 		sb.append("</Story>");
 		sb.append("</ProductBacklog>");
@@ -99,10 +99,10 @@ public class Translation {
 			jsonIssue.append("Status", scrumIssues.get(i).getStatus());
 			jsonIssue.append("Notes", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getNotes()));
 			jsonIssue.append("Sprint", TranslateChar.HandleNullString(scrumIssues.get(i).getSprintID()));
-			if (scrumIssues.get(i).getAttachFile().size() == 0) jsonIssue.append("Attach", "false");
+			if (scrumIssues.get(i).getAttachFiles().size() == 0) jsonIssue.append("Attach", "false");
 			else jsonIssue.append("Attach", "true");
 
-			ArrayList<AttachFileObject> files = scrumIssues.get(i).getAttachFile();
+			ArrayList<AttachFileObject> files = scrumIssues.get(i).getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
@@ -156,10 +156,10 @@ public class Translation {
 			jsonIssue.append("Description", TranslateChar.TranslateJSONChar(customIssues.get(i).getDescription()));
 			jsonIssue.append("Handler", customIssues.get(i).getAssignto());
 
-			if (customIssues.get(i).getAttachFile().size() == 0) jsonIssue.append("Attach", "false");
+			if (customIssues.get(i).getAttachFiles().size() == 0) jsonIssue.append("Attach", "false");
 			else jsonIssue.append("Attach", "true");
 
-			ArrayList<AttachFileObject> files = customIssues.get(i).getAttachFile();
+			ArrayList<AttachFileObject> files = customIssues.get(i).getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
@@ -211,10 +211,10 @@ public class Translation {
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(stories[i].getSprintID()));
 			jsonStory.append("FilterType", getFilterType(stories[i]));
 
-			if (stories[i].getAttachFile().size() == 0) jsonStory.append("Attach", false);
+			if (stories[i].getAttachFiles().size() == 0) jsonStory.append("Attach", false);
 			else jsonStory.append("Attach", true);
 
-			ArrayList<AttachFileObject> files = stories[i].getAttachFile();
+			ArrayList<AttachFileObject> files = stories[i].getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
@@ -347,10 +347,10 @@ public class Translation {
 			jsonStory.append("Release", TranslateChar.HandleNullString(issue.getReleaseID()));
 			jsonStory.append("Sprint", TranslateChar.HandleNullString(issue.getSprintID()));
 
-			if (issue.getAttachFile().size() == 0) jsonStory.append("Attach", "false");
+			if (issue.getAttachFiles().size() == 0) jsonStory.append("Attach", "false");
 			else jsonStory.append("Attach", "true");
 
-			ArrayList<AttachFileObject> files = issue.getAttachFile();
+			ArrayList<AttachFileObject> files = issue.getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
@@ -398,10 +398,10 @@ public class Translation {
 			jsonWorkItem.append("Deadline", items.get(i).getFieldValue("Deadline"));
 			jsonWorkItem.append("Description", TranslateChar.TranslateJSONChar(items.get(i).getDescription()));
 
-			if (items.get(i).getAttachFile().size() == 0) jsonWorkItem.append("Attach", "false");
+			if (items.get(i).getAttachFiles().size() == 0) jsonWorkItem.append("Attach", "false");
 			else jsonWorkItem.append("Attach", "true");
 
-			ArrayList<AttachFileObject> files = items.get(i).getAttachFile();
+			ArrayList<AttachFileObject> files = items.get(i).getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();

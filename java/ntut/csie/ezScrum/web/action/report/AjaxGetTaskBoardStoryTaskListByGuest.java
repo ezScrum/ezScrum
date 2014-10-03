@@ -104,7 +104,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			Sprint = story.getSprintID();
 
 			Link = story.getIssueLink();
-			AttachFileList = getAttachFilePath(story, story.getAttachFile());
+			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
 			if (!AttachFileList.isEmpty())
 				Attach = "true";

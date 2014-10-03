@@ -42,7 +42,7 @@ public class Issue implements IIssue {
 	private String m_issueLink = "";
 	private long m_submittedDate = new Date().getTime();
 	private String m_status = "";
-	private ArrayList<AttachFileObject> attachFile = new ArrayList<AttachFileObject>();
+	private ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
 	private long m_workingDate = 0;
 	private List<IIssueHistory> m_histories = new ArrayList<IIssueHistory>();
 	private List<IIssueHistory> m_tagHistories = new ArrayList<IIssueHistory>();
@@ -252,7 +252,7 @@ public class Issue implements IIssue {
 		m_status = issue.getStatus();
 		m_submittedDate = issue.getSubmittedDate();
 		m_issueLink = issue.getIssueLink();
-		attachFile = issue.getAttachFile();
+		attachFiles = issue.getAttachFiles();
 		m_tag = issue.getTags();
 
 		this.m_histories = issue.getHistory();
@@ -809,17 +809,17 @@ public class Issue implements IIssue {
 		this.m_reporter = m_reporter;
 	}
 
-	public ArrayList<AttachFileObject> getAttachFile() {
-		return attachFile;
+	public ArrayList<AttachFileObject> getAttachFiles() {
+		return attachFiles;
 	}
 
-	public void setAttachFile(ArrayList<AttachFileObject> FileList) {
-		attachFile = FileList;
+	public void setAttachFiles(ArrayList<AttachFileObject> FileList) {
+		attachFiles = FileList;
 	}
 
 	@Override
 	public void addAttachFile(AttachFileObject attach) {
-		this.attachFile.add(attach);
+		this.attachFiles.add(attach);
 	}
 
 	@Override

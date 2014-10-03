@@ -51,7 +51,6 @@ public class MantisAttachFileService extends AbstractMantisService {
 		getControl().execute(query, true);
 		
 		String[] keys = getControl().getKeys();
-		System.out.println(keys[0]);
 		long newId = Long.parseLong(keys[0]);
 		return newId;
 	}
@@ -76,7 +75,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, Integer.toString(AttachFileObject.TYPE_STORY));
-		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
+		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
@@ -92,7 +91,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_TASK + "'");
-		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
+		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);

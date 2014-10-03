@@ -459,6 +459,7 @@ public class MantisIssueService extends AbstractMantisService {
 				issue.setIssueID(result.getLong("id"));
 				issue.setIssueLink(MANTIS_VIEW_LINK + ATTRIBURE_ISSUEID + issue.getIssueID());
 				issue.setStatus(ITSEnum.getStatus(result.getInt("status")));
+				issue.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 				issue.setProjectID(projectName);
 				issue.setProjectName(projectName);
 				// 加入列表
