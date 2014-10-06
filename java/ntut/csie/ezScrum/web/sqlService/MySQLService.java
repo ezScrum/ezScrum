@@ -571,6 +571,7 @@ public class MySQLService {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
 			valueSet.addEqualCondition(ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.PROJECT_ID, id);
+			valueSet.addEqualCondition(ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.PROJECT_ID, id);
 			valueSet.addEqualCondition(ScrumRoleEnum.ACCESS_TASKBOARD, "1");
 			valueSet.addCrossJoin(ProjectRoleEnum.TABLE_NAME, ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.ROLE, ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.ROLE);
 			valueSet.addCrossJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
