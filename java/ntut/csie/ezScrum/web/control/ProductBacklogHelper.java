@@ -230,7 +230,7 @@ public class ProductBacklogHelper {
 		String folderPath = System.getProperty("ntut.csie.jcis.resource.WorkspaceRoot") + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
 		new File(folderPath).mkdirs();
 		
-		attachFileInfo.path = folderPath + File.separator + attachFileInfo.name;
+		attachFileInfo.path = folderPath + File.separator + System.currentTimeMillis() + "_" + attachFileInfo.name;
 		File targetFile = new File(attachFileInfo.path);
 		
 		// move file from tmp folder to "AttachFile" folder
@@ -239,8 +239,13 @@ public class ProductBacklogHelper {
 		return this.productBacklogMapper.addAttachFile(attachFileInfo);
 	}
 
-	public void deleteAttachFile(long fileID) {
-		this.productBacklogMapper.deleteAttachFile(fileID);
+	public void deleteAttachFile(long fileId) {
+		AttachFileObject attachFile = getAttachFile(fileId);
+		
+		File file = new File(attachFile.getPath());
+		file.delete();
+		
+		this.productBacklogMapper.deleteAttachFile(fileId);
 	}
 	
 	// for ezScrum v1.8

@@ -98,4 +98,38 @@ public class ProductBacklogHelperTest extends TestCase {
 			assertTrue(false);
 		}
 	}
+	
+	public void testDeleteAttachFile() {
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+		attachFileInfo.name = "initial_bk.sql";
+		attachFileInfo.issueId = CPB.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo.projectName = this.CP.getProjectList().get(0).getName();
+		
+		File sqlFile = new File(configuration.getInitialSQLPath());
+		
+		try {
+			long id = productBacklogHelper.addAttachFile(attachFileInfo, sqlFile);
+			AttachFileObject attachFile = productBacklogHelper.getAttachFile(id);
+			File actualFile = new File(attachFile.getPath());
+			assertEquals(sqlFile.length(), actualFile.length());
+			assertEquals(attachFileInfo.name, attachFile.getName());
+			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());
+			
+			productBacklogHelper.deleteAttachFile(attachFile.getId());
+			
+			try {
+				productBacklogHelper.getAttachFile(id);
+				assertTrue(false);
+			} catch (Exception e) {
+				assertTrue(true);
+				
+				File deletedFile = new File(attachFile.getPath());
+				assertEquals(false, deletedFile.exists());
+			}
+		} catch (IOException e) {
+			System.out.println(e);
+			assertTrue(false);
+		}
+	}
 }
