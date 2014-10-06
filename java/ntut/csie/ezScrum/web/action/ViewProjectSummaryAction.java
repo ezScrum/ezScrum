@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -67,6 +68,8 @@ public class ViewProjectSummaryAction extends Action {
 		// 更新session中的資料
 		m_projectSessionManager.setProject(project);
 		m_projectSessionManager.setProjectInfoForm(projectInfo);
+		// ezScrum v1.8
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 
 		// 取得 TaskBoard資訊
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);

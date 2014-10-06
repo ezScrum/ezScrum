@@ -8,9 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.ITSInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
@@ -149,9 +147,9 @@ public class ProjectHelper {
 		sb.append("</Root>");
 		return sb.toString();
 	}
-
+	
+	// ezScrum v1.8
 	public List<UserObject> getProjectMemberList(ProjectObject project) {
-		// ezScrum v1.8
 		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}
 
