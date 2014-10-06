@@ -216,8 +216,10 @@ public class ProductBacklogHelper {
 	}
 	
 	public boolean checkAccountInProject(List<UserObject> memberList, UserObject userObject) {
+		if(userObject.getAccount().equals("admin")) {
+			return true;
+		}
 		for(UserObject member : memberList) {
-			System.out.println("user = " + member.getName());
 			if(member.getId() == userObject.getId()) {
 				return true;
 			}
