@@ -1,5 +1,10 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 public class ProjectObject {
 	// 取得所有專案的資訊
 	private String id;
@@ -8,6 +13,7 @@ public class ProjectObject {
 	private String comment = "";
 	private String manager = "";
 	private String attachFileSize = "";
+	private String pid = "";
 	private long createDate;
 
 	public ProjectObject(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
@@ -18,10 +24,12 @@ public class ProjectObject {
 		setManager(manager);
 		setAttachFileSize(attachFileSize);
 		setCreateDate(createDate);
+		setPid(name);
 	}
 
 	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
 		setName(name);
+		setPid(name);
 		setDisplayName(displayName);
 		setComment(comment);
 		setManager(manager);
@@ -78,6 +86,14 @@ public class ProjectObject {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getPid() {
+		return pid;
+	}
+	
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
 
 	public long getCreateDate() {
 		return createDate;
@@ -85,5 +101,18 @@ public class ProjectObject {
 
 	public void setCreateDate(long createDate) {
 		this.createDate = createDate;
+	}
+	
+	public JSONObject toJSON() throws JSONException {
+		JSONObject object = new JSONObject();
+		object
+			.put(ProjectEnum.NAME, name)
+			.put(ProjectEnum.ID, id)
+			.put(ProjectEnum.COMMENT, comment)
+			.put(ProjectEnum.PID, pid)
+			.put(ProjectEnum.CREATE_TIME, createDate)
+			.put(ProjectEnum.PRODUCT_OWNER, manager)
+			.put(ProjectEnum.ATTATCH_MAX_SIZE, attachFileSize);
+		return object;
 	}
 }

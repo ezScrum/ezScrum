@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,27 +41,36 @@ public class FileDownloadAction extends DownloadAction {
 			project = ResourceFacade.getProject(projectName);
 			session = new UserSession(null);
 		}
+		
 
 		// 用file id取得檔案
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, session);
 		ProjectHelper projectHelper = new ProjectHelper();
 		AttachFileObject attachFile = productBacklogHelper.getAttachFile(fileId);
-		boolean validDownload = productBacklogHelper.checkAccountInProject(projectHelper.getProjectMemberList(projectObject), userObject);
-		/*
-		 * 將字串的 UTF-8 編碼轉成 response 預設編碼 ISO-8859-1 jetty預設處理getParameter的編碼是UTF-8 tomcat預設處理getParameter的邊碼是ISO-8859-1 也就是 jetty server可以跑 new String( fileName.getBytes("UTF-8"),"ISO-8859-1"); tomcat
-		 * server可以跑 new String( fileName.getBytes("ISO-8859-1"),"ISO-8859-1");
-		 */
-		fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-		response.setHeader("Content-disposition", "inline; filename=\"" + fileName + "\"");
-
-		// 用fileType預設檔案類型
-		File file = new File(attachFile.getPath());
-		StreamInfo fileStream = new FileStreamInfo(attachFile.getContentType(), file);;
-//		if(validDownload) {
-//			fileStream = new FileStreamInfo(attachFile.getContentType(), file);
-//		}
 		
-		return fileStream;
+		
+		boolean validDownload = productBacklogHelper.checkAccountInProject(projectHelper.getProjectMemberList(projectObject), userObject);
+		if(userObject.getAccount().equals("admin")) {
+			validDownload = true;
+		}
+		
+		if(validDownload) {
+			/*
+			 * 將字串的 UTF-8 編碼轉成 response 預設編碼 ISO-8859-1 jetty預設處理getParameter的編碼是UTF-8 tomcat預設處理getParameter的邊碼是ISO-8859-1 也就是 jetty server可以跑 new String( fileName.getBytes("UTF-8"),"ISO-8859-1"); tomcat
+			 * server可以跑 new String( fileName.getBytes("ISO-8859-1"),"ISO-8859-1");
+			 */
+			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			response.setHeader("Content-disposition", "inline; filename=\"" + fileName + "\"");
 
+			// 用fileType預設檔案類型
+			File file = new File(attachFile.getPath());
+			StreamInfo fileStream = new FileStreamInfo(attachFile.getContentType(), file);
+			return fileStream;
+		} else {
+			response.setStatus(403);
+			response.getWriter().write("Can not download this file!");
+			return null;
+		}
+		
 	}
 }

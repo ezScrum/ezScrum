@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jettison.json.JSONException;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -129,6 +131,10 @@ public class SessionManager {
 			if (project == null) {
 				project = new ProjectMapper().getProjectByPidForDb(projectID);
 				if (project != null) {
+					try {
+						System.out.println(project.toJSON().toString());
+					} catch (JSONException e) {
+					}
 					session.setAttribute(projectID + "_new", project);	// 當IProject完全改完，把new拿掉
 				}
 			}
