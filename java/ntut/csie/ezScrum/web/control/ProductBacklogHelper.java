@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -212,6 +213,16 @@ public class ProductBacklogHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean checkAccountInProject(List<UserObject> memberList, UserObject userObject) {
+		for(UserObject member : memberList) {
+			System.out.println("user = " + member.getName());
+			if(member.getId() == userObject.getId()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
