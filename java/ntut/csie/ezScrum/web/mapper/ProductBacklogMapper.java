@@ -256,10 +256,9 @@ public class ProductBacklogMapper {
 	} 
 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		IITSService itsService = m_itsFactory.getService(mConfig);
-		itsService.openConnect();
-		long id = itsService.addAttachFile(attachFileInfo);
-		itsService.closeConnect();
+		mMantisService.openConnect();
+		long id = mMantisService.addAttachFile(attachFileInfo);
+		mMantisService.closeConnect();
 		return id;
 	}
 
@@ -275,10 +274,9 @@ public class ProductBacklogMapper {
 	 * for ezScrum v1.8
 	 */
 	public AttachFileObject getAttachfile(long fileId) {
-		MantisService mantisService = new MantisService(mConfig);
-		mantisService.openConnect();
-		AttachFileObject attachFileObjects = mantisService.getAttachFile(fileId);
-		mantisService.closeConnect();
+		mMantisService.openConnect();
+		AttachFileObject attachFileObjects = mMantisService.getAttachFile(fileId);
+		mMantisService.closeConnect();
 		return attachFileObjects;
 	}
 
