@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.io.File;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,18 +41,12 @@ public class FileDownloadAction extends DownloadAction {
 			session = new UserSession(null);
 		}
 		
-
 		// 用file id取得檔案
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, session);
 		ProjectHelper projectHelper = new ProjectHelper();
 		AttachFileObject attachFile = productBacklogHelper.getAttachFile(fileId);
 		
-		
 		boolean validDownload = productBacklogHelper.checkAccountInProject(projectHelper.getProjectMemberList(projectObject), userObject);
-		if(userObject.getAccount().equals("admin")) {
-			validDownload = true;
-		}
-		
 		if(validDownload) {
 			/*
 			 * 將字串的 UTF-8 編碼轉成 response 預設編碼 ISO-8859-1 jetty預設處理getParameter的編碼是UTF-8 tomcat預設處理getParameter的邊碼是ISO-8859-1 也就是 jetty server可以跑 new String( fileName.getBytes("UTF-8"),"ISO-8859-1"); tomcat
