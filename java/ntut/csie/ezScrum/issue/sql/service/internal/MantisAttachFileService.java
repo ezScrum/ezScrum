@@ -114,11 +114,10 @@ public class MantisAttachFileService extends AbstractMantisService {
 				attachfileBuilder.setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
 				list.add(attachfileBuilder.build());
 			}
-			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return list;
 	}
 	
 	// for ezScrum v1.8
