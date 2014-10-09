@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class UserObject {
 	private String id;

@@ -22,13 +22,19 @@ public class GetProjectMembersAction extends Action {
 	private static Log log = LogFactory.getLog(GetProjectMembersAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+	        HttpServletRequest request, HttpServletResponse response) throws IOException {
 		log.info("Get Project Members in GetProjectMembersAction.java");
-//		IProject project = (IProject) SessionManager.getProject(request);
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
-//		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-
-		List<UserObject> accounts = new ProjectHelper().getProjectMemberList(project);
+		
+		List<UserObject> accounts = null;
+		try {
+			accounts = new ProjectHelper().getProjectMemberList(project);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			response.setStatus(403);
+			response.getWriter().write("Can not access this page!");
+		}
+		
 
 		StringBuilder result = new StringBuilder();
 		result.append("<Members>");
@@ -38,7 +44,6 @@ public class GetProjectMembersAction extends Action {
 				result.append("<ID>").append(acc.getId()).append("</ID>");
 				result.append("<Account>").append(acc.getAccount()).append("</Account>");
 				result.append("<Name>").append(acc.getName()).append("</Name>");
-//				result.append("<Role>").append(splitRole(project, acc.getRoles())).append("</Role>");
 				result.append("<Role>").append(acc.getRoles().get(project.getName()).getScrumRole().getRoleName()).append("</Role>");
 				result.append("<Enable>").append(acc.getEnable()).append("</Enable>");
 				result.append("</Member>");
@@ -56,22 +61,4 @@ public class GetProjectMembersAction extends Action {
 
 		return null;
 	}
-
-//	private String splitRole(IProject project, IRole[] roles) {
-//		String split_role = "";
-//
-//		if (roles.length > 0) {
-//			for (IRole role : roles) {
-//				// 將專案的角色以切字串方式取出
-//				String[] token = role.getRoleId().split(project.getName() + "_");
-//				if ((token.length == 2) && (token[1].length() > 0)) {
-//					// 取得此專案的角色即可
-//					split_role = token[1];
-//					break;
-//				}
-//			}
-//		}
-//
-//		return split_role;
-//	}
 }

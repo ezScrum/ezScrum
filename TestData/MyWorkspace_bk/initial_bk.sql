@@ -1,28 +1,7 @@
--- MySQL dump 10.11
---
--- Host: localhost    Database: bugtracker
--- ------------------------------------------------------
--- Server version	5.0.45-community-nt-log
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `buildresult`
---
-
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (
   `ID` int(11) NOT NULL auto_increment,
-  `PROJECT_ID` int(11) default NULL,
+  `project_id` int(11) default NULL,
   `REVISION` int(11) default NULL,
   `LABEL` varchar(255) NOT NULL default '',
   `BUILDRESULT` tinyint(1) default '0',
@@ -60,7 +39,7 @@ CREATE TABLE `commit_log` (
   `LOG` text,
   `REVISION` int(11) default NULL,
   `COMMITTIME` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `PROJECT_ID` int(11) default NULL,
+  `project_id` int(11) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -829,6 +808,8 @@ CREATE TABLE `mantis_project_table` (
   `access_min` smallint(6) NOT NULL default '10',
   `file_path` varchar(250) NOT NULL default '',
   `description` longtext NOT NULL,
+  `baseLine_velocity` int(10) NOT NULL default '50',
+  `baseLine_cost_per_storyPoint` int(10) NOT NULL default '3',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `idx_project_name` (`name`),
   KEY `idx_project_id` (`id`),
@@ -1035,8 +1016,6 @@ CREATE TABLE `mantis_user_print_pref_table` (
 --
 
 LOCK TABLES `mantis_user_print_pref_table` WRITE;
-/*!40000 ALTER TABLE `mantis_user_print_pref_table` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mantis_user_print_pref_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1083,6 +1062,8 @@ CREATE TABLE `mantis_user_table` (
   `lost_password_request_count` smallint(6) NOT NULL default '0',
   `failed_login_count` smallint(6) NOT NULL default '0',
   `cookie_string` varchar(64) NOT NULL default '',
+  `Baseline_Velocity` int(11) NOT NULL default '50',
+  `Baseline_Cost_Per_StoryPoint` int(11) NOT NULL default '50',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `idx_user_cookie_string` (`cookie_string`),
   UNIQUE KEY `idx_user_username` (`username`),
@@ -1096,7 +1077,7 @@ CREATE TABLE `mantis_user_table` (
 
 LOCK TABLES `mantis_user_table` WRITE;
 /*!40000 ALTER TABLE `mantis_user_table` DISABLE KEYS */;
-INSERT INTO `mantis_user_table` VALUES (1,'administrator','','root@localhost','63a9f0ea7bb98050796b649e85481845','2010-01-19 05:41:23','2010-01-19 05:41:35',1,0,90,4,0,0,'b9bec1c98360692f7ae7baecd9736deaa511ea87cfda0be2ddac035e208e1069');
+INSERT INTO `mantis_user_table` VALUES (1,'admin','','root@localhost','63a9f0ea7bb98050796b649e85481845','2010-01-19 05:41:23','2010-01-19 05:41:35',1,0,90,4,0,0,'b9bec1c98360692f7ae7baecd9736deaa511ea87cfda0be2ddac035e208e1069',50,50);
 /*!40000 ALTER TABLE `mantis_user_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1122,14 +1103,231 @@ LOCK TABLES `query` WRITE;
 /*!40000 ALTER TABLE `query` DISABLE KEYS */;
 /*!40000 ALTER TABLE `query` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/**
+ * the new ezScrum 1.8 table
+ * re design the table because old tables is a shit and isn't easy to maintain
+ */
 
--- Dump completed on 2010-07-16  1:47:31
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account` VARCHAR(255) NOT NULL,
+  `nick_name` VARCHAR(255) NULL,
+  `email` TEXT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `enable` TINYINT NOT NULL DEFAULT 1,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `account_UNIQUE` (`account` ASC))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+LOCK TABLES `account` WRITE;
+INSERT INTO `account` VALUES (1, 'admin', 'admin', 'example@ezScrum.tw', '21232f297a57a5a743894a0e4a801fc3', 1, 1379910191599, 1379910191599);
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `project_role`;
+CREATE TABLE `project_role` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `account_id` BIGINT UNSIGNED NOT NULL,
+  `role` INT NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `scrum_role`;
+CREATE TABLE `scrum_role` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `access_productBacklog` TINYINT NOT NULL DEFAULT 1,
+  `access_sprintPlan` TINYINT NOT NULL DEFAULT 1,
+  `access_taskboard` TINYINT NOT NULL DEFAULT 1,
+  `access_sprintBacklog` TINYINT NOT NULL DEFAULT 1,
+  `access_releasePlan` TINYINT NOT NULL DEFAULT 1,
+  `access_retrospective` TINYINT NOT NULL DEFAULT 1,
+  `access_unplanned` TINYINT NOT NULL DEFAULT 1,
+  `access_report` TINYINT NOT NULL DEFAULT 1,
+  `access_editProject` TINYINT NOT NULL DEFAULT 1,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `role` INT NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `project`;
+CREATE TABLE `project` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `comment` TEXT NULL,
+  `product_owner` VARCHAR(255), 
+  `attach_max_size` BIGINT UNSIGNED NOT NULL DEFAULT 2, 
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `pid_UNIQUE` (`pid` ASC))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `sprint`;
+CREATE TABLE `sprint` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `goal` TEXT NOT NULL,
+  `interval` INT NOT NULL,
+  `membvers` INT NOT NULL,
+  `available_hours` INT NOT NULL,
+  `focus_factor` INT NOT NULL DEFAULT 100,
+  `start_date` DATETIME NOT NULL,
+  `demo_date` DATETIME NOT NULL,
+  `demo_place` TEXT NULL,
+  `daily_info` TEXT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `story`;
+CREATE TABLE `story` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `name` TEXT NOT NULL,
+  `estimation` INT NOT NULL DEFAULT 0,
+  `importance` INT NOT NULL DEFAULT 0,
+  `value` INT NOT NULL DEFAULT 0,
+  `notes` TEXT NULL,
+  `how_to_demo` TEXT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `sprint_id` BIGINT UNSIGNED NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `task`;
+CREATE TABLE `task` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `name` TEXT NOT NULL,
+  `hangler` BIGINT UNSIGNED NULL,
+  `estimation` INT NOT NULL DEFAULT 0,
+  `remain` INT NOT NULL DEFAULT 0,
+  `actual` INT NOT NULL DEFAULT 0,
+  `notes` TEXT NULL,
+  `status` VARCHAR(255) NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `sprint_id` BIGINT UNSIGNED NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `history`;
+CREATE TABLE `history` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `issue_id` BIGINT UNSIGNED NOT NULL,
+  `issue_type` INT NOT NULL,
+  `type` INT NOT NULL,
+  `description` TEXT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `issue_partner_relation`;
+CREATE TABLE `issue_partner_relation` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `issue_id` BIGINT UNSIGNED NOT NULL,
+  `issue_type` INT NOT NULL,
+  `account_id` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `tag`;
+CREATE TABLE `tag` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `story_tag_relation`;
+CREATE TABLE `story_tag_relation` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tag_id` BIGINT UNSIGNED NOT NULL,
+  `story_id` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `release`;
+CREATE TABLE `release` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `start_date` DATETIME NOT NULL,
+  `demo_date` DATETIME NOT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `retrospective`;
+CREATE TABLE `retrospective` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `type` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(255) NOT NULL,
+  `sprint_id` BIGINT UNSIGNED NOT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `unplanned`;
+CREATE TABLE `unplanned` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serial_id` BIGINT UNSIGNED NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `handler` BIGINT UNSIGNED NOT NULL,
+  `estimation` INT NOT NULL,
+  `actual` INT NOT NULL,
+  `notes` TEXT NOT NULL,
+  `status` VARCHAR(255) NOT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `story_id` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `attach_file`;
+CREATE TABLE `attach_file` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` TEXT NOT NULL,
+  `issue_id` BIGINT UNSIGNED NOT NULL,
+  `issue_type` INT NOT NULL,
+  `path` TEXT NOT NULL,
+  `content_type` TEXT,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `system`;
+CREATE TABLE `system` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `account_id_UNIQUE` (`account_id` ASC))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+LOCK TABLES `system` WRITE;
+INSERT INTO `system` VALUES (1, 1);
+UNLOCK TABLES;

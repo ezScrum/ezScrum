@@ -11,10 +11,10 @@ import java.util.TreeMap;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -42,7 +42,7 @@ public class Issue implements IIssue {
 	private String m_issueLink = "";
 	private long m_submittedDate = new Date().getTime();
 	private String m_status = "";
-	private List<IssueAttachFile> attachFile = new ArrayList<IssueAttachFile>();
+	private ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
 	private long m_workingDate = 0;
 	private List<IIssueHistory> m_histories = new ArrayList<IIssueHistory>();
 	private List<IIssueHistory> m_tagHistories = new ArrayList<IIssueHistory>();
@@ -252,7 +252,7 @@ public class Issue implements IIssue {
 		m_status = issue.getStatus();
 		m_submittedDate = issue.getSubmittedDate();
 		m_issueLink = issue.getIssueLink();
-		attachFile = issue.getAttachFile();
+		attachFiles = issue.getAttachFiles();
 		m_tag = issue.getTags();
 
 		this.m_histories = issue.getHistory();
@@ -809,17 +809,17 @@ public class Issue implements IIssue {
 		this.m_reporter = m_reporter;
 	}
 
-	public List<IssueAttachFile> getAttachFile() {
-		return attachFile;
+	public ArrayList<AttachFileObject> getAttachFiles() {
+		return attachFiles;
 	}
 
-	public void setAttachFile(List<IssueAttachFile> FileList) {
-		attachFile = FileList;
+	public void setAttachFiles(ArrayList<AttachFileObject> FileList) {
+		attachFiles = FileList;
 	}
 
 	@Override
-	public void addAttachFile(IssueAttachFile attach) {
-		this.attachFile.add(attach);
+	public void addAttachFile(AttachFileObject attach) {
+		this.attachFiles.add(attach);
 	}
 
 	@Override

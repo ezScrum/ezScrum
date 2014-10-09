@@ -1,13 +1,14 @@
 package ntut.csie.ezScrum.issue.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.issue.internal.IssueRelationship;
 import ntut.csie.ezScrum.issue.internal.IssueTypeField;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 import org.jdom.Element;
@@ -147,9 +148,9 @@ public interface IIssue extends Serializable{
 	public long getAssignedDate();
 	public String getCreateBy();
 	
-	public List<IssueAttachFile> getAttachFile();
-	public void setAttachFile(List<IssueAttachFile> fileList);
-	public void addAttachFile(IssueAttachFile attach);
+	public ArrayList<AttachFileObject> getAttachFiles();
+	public void setAttachFiles(ArrayList<AttachFileObject> fileList);
+	public void addAttachFile(AttachFileObject attach);
 	
 	// 對Story的自訂分類標籤
 	public List<TagObject> getTags();

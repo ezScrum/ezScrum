@@ -30,8 +30,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.store();
-		
-		//	刪除資料庫
+
+		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
@@ -50,15 +50,15 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
+		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 		projectManager.initialRoleBase(configuration.getDataPath());
-		
+
 		configuration.setTestMode(false);
 		configuration.store();
 

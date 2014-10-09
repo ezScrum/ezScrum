@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.web.control;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,6 +16,9 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -210,19 +215,47 @@ public class ProductBacklogHelper {
 		return null;
 	}
 	
-	public void addAttachFile(long issueID, String targetPath) {
-		this.productBacklogMapper.addAttachFile(issueID, targetPath);
+	public boolean checkAccountInProject(List<UserObject> memberList, UserObject userObject) {
+		if(userObject.getAccount().equals("admin")) {
+			return true;
+		}
+		for(UserObject member : memberList) {
+			if(member.getId() == userObject.getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
+		// create folder to put file
+		String folderPath = System.getProperty("ntut.csie.jcis.resource.WorkspaceRoot") + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		new File(folderPath).mkdirs();
+		
+		attachFileInfo.path = folderPath + File.separator + System.currentTimeMillis() + "_" + attachFileInfo.name;
+		File targetFile = new File(attachFileInfo.path);
+		
+		// move file from tmp folder to "AttachFile" folder
+		copyFile(file, targetFile);
+		
+		return this.productBacklogMapper.addAttachFile(attachFileInfo);
 	}
 
-	public void deleteAttachFile(long fileID) {
-		this.productBacklogMapper.deleteAttachFile(fileID);
+	public void deleteAttachFile(long fileId) {
+		AttachFileObject attachFile = getAttachFile(fileId);
+		
+		File file = new File(attachFile.getPath());
+		file.delete();
+		
+		this.productBacklogMapper.deleteAttachFile(fileId);
 	}
 	
-	public File getAttachFile(String fileID) {
-		return this.productBacklogMapper.getAttachfile(fileID);	
+	// for ezScrum v1.8
+	public AttachFileObject getAttachFile(long fileId) {
+		return this.productBacklogMapper.getAttachfile(fileId);	
 	}
 	
-	public File getAttachFileByName(String fileName) {
-		return this.productBacklogMapper.getAttachfileByName(fileName);	
+	private void copyFile(File srcFile, File destFile) throws IOException {
+		Files.copy(srcFile.toPath(), destFile.toPath());
 	}
 }

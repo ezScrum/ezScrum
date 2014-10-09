@@ -22,6 +22,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
 import ntut.csie.jcis.resource.core.IPath;
@@ -195,7 +197,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(expectedStory.getReleaseID(), storyList.get(i).get("Release"));
 			assertEquals(CS.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
-			assertEquals(expectedStory.getAttachFile(), storyList.get(i).get("AttachFileList"));
+			assertEquals(expectedStory.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			assertEquals(new ArrayList<LinkedHashTreeMap>(), storyList.get(i).get("Tasks"));
 		}
 	}
@@ -359,14 +361,14 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(expectedStory.getReleaseID(), storyList.get(i).get("Release"));
 			assertEquals(CS.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
-			assertEquals(expectedStory.getAttachFile(), storyList.get(i).get("AttachFileList"));
+			assertEquals(expectedStory.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			for (int j = 0; j < taskList.size(); j++) {
 				assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(j).get("Id"));
 				assertEquals(expectedTask.getSummary(), taskList.get(j).get("Name"));
 				assertEquals(expectedTask.getEstimated(), taskList.get(j).get("Estimate"));
 				assertEquals(CA.getAccount_ID(1), taskList.get(j).get("Handler"));
 				assertEquals(expectedTask.getNotes(), taskList.get(j).get("Notes"));
-				assertEquals(expectedTask.getAttachFile(), taskList.get(j).get("AttachFileList"));
+				assertEquals(expectedTask.getAttachFiles(), taskList.get(j).get("AttachFileList"));
 				assertEquals(false, taskList.get(j).get("Attach"));
 				if (i == 0) {
 					assertEquals(ITSEnum.CLOSED, taskList.get(j).get("Status"));
@@ -394,19 +396,27 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(STORY_COUNT, 1, CS, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		IIssue story = addStoryToSprint.getIssueList().get(0);
-		long stroyID = story.getIssueID();
+		long storyID = story.getIssueID();
 
 		// attach file
+		final String FILE_NAME = "ezScrumTestFile";
 		IPath fullPath = project.getFullPath();
-		String targetPath = fullPath.getPathString() + File.separator + "ezScrumTestFile";
+		String targetPath = fullPath.getPathString() + File.separator + FILE_NAME;
 		File file = new File(targetPath);
         BufferedWriter output = new BufferedWriter(new FileWriter(file));
         output.write("hello i am test");
         output.close();
         
+        AttachFileInfo attachFileInfo = new AttachFileInfo();
+        attachFileInfo.issueId = storyID;
+        attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+        attachFileInfo.name = FILE_NAME;
+        attachFileInfo.contentType = "text/plain";
+        attachFileInfo.projectName = CP.getProjectList().get(0).getName();
+        
 		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, configuration.getUserSession());
-		pbHelper.addAttachFile(stroyID, targetPath);
-		IIssue expectedStory = pbHelper.getIssue(stroyID);
+		pbHelper.addAttachFile(attachFileInfo, file);
+		IIssue expectedStory = pbHelper.getIssue(storyID);
 
 		try {
 			FileUtil.delete(targetPath);
@@ -444,10 +454,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
 		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
 		assertEquals(CS.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
-		assertEquals(!expectedStory.getAttachFile().isEmpty(), storyList.get(0).get("Attach"));
+		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) storyList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedStory.getAttachFile().get(0).getAttachFileId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedStory.getAttachFile().get(0).getFilename(), attachFile.get("FileName"));
+		assertEquals(expectedStory.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
+		assertEquals(expectedStory.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
 	}
 	
 	/**
@@ -468,9 +478,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(TASK_COUNT, 1, addStoryToSprint, CP);
 		addTaskToStory.exe();
 		IIssue task = addTaskToStory.getTaskList().get(0);
-		long taskID = task.getIssueID();
+		long taskId = task.getIssueID();
 		
 		// attach file
+		final String FILE_NAME = "ezScrumTestFile";
 		IPath fullPath = project.getFullPath();
 		String targetPath = fullPath.getPathString() + File.separator + "ezScrumTestFile";
 		File file = new File(targetPath);
@@ -478,10 +489,17 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		output.write("hello i am test");
 		output.close();
 		
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+        attachFileInfo.issueId = taskId;
+        attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
+        attachFileInfo.name = FILE_NAME;
+        attachFileInfo.contentType = "text/plain";
+        attachFileInfo.projectName = CP.getProjectList().get(0).getName();
+		
 		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, configuration.getUserSession());
-		pbHelper.addAttachFile(taskID, targetPath);
+		pbHelper.addAttachFile(attachFileInfo, file);
 		IIssue expectedStory = pbHelper.getIssue(stroyID);
-		IIssue expectedTask = pbHelper.getIssue(taskID);
+		IIssue expectedTask = pbHelper.getIssue(taskId);
 		
 		try {
 			FileUtil.delete(targetPath);
@@ -519,8 +537,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
 		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
 		assertEquals(CS.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
-		assertEquals(!expectedStory.getAttachFile().isEmpty(), storyList.get(0).get("Attach"));
-		assertEquals(expectedStory.getAttachFile(), storyList.get(0).get("AttachFileList"));
+		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
+		assertEquals(expectedStory.getAttachFiles(), storyList.get(0).get("AttachFileList"));
 		
 		ArrayList<LinkedHashTreeMap<String, Object>> taskList = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("Tasks");
 		assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(0).get("Id"));
@@ -532,10 +550,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedTask.getPartners(), taskList.get(0).get("Partners"));
 		assertEquals(expectedTask.getIssueLink(), taskList.get(0).get("Link"));
 		assertEquals(expectedTask.getActualHour(), taskList.get(0).get("Actual"));
-		assertEquals(!expectedTask.getAttachFile().isEmpty(), taskList.get(0).get("Attach"));
+		assertEquals(!expectedTask.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
 		
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) taskList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedTask.getAttachFile().get(0).getAttachFileId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedTask.getAttachFile().get(0).getFilename(), attachFile.get("FileName"));
+		assertEquals(expectedTask.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
+		assertEquals(expectedTask.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
 	}
 }

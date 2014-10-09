@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -358,7 +359,7 @@ public class ConvertSprintBacklog {
 			Sprint = story.getSprintID();
 			
 			Link = story.getIssueLink();
-			AttachFileList = getAttachFilePath(story, story.getAttachFile());
+			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 			
 			if(!AttachFileList.isEmpty())
 				Attach = "true";
@@ -395,7 +396,7 @@ public class ConvertSprintBacklog {
 			Status = task.getStatus();
 			Notes = HandleSpecialChar(task.getNotes());
 			Link = task.getIssueLink();
-			AttachFileList = getAttachFilePath(task, task.getAttachFile());
+			AttachFileList = getAttachFilePath(task, task.getAttachFiles());
 			if(!AttachFileList.isEmpty())
 				Attach = "true";
 			else
@@ -423,13 +424,13 @@ public class ConvertSprintBacklog {
 	}
 	
 	// 將 attach file的資訊組成有效的連結
-	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, List<IssueAttachFile> list) {
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, ArrayList<AttachFileObject> list) {
 		
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
-		for (IssueAttachFile file : list) {
-			array.add(new TaskBoard_AttachFile(file.getAttachFileId(), file.getFilename(), "fileDownload.do?projectName="
-					+ story.getProjectName() + "&fileID=" + file.getAttachFileId() + "&fileName=" + file.getFilename()
-					+ "&fileType=" + file.getFileType(), new Date(file.getDate_added())));
+		for (AttachFileObject file : list) {
+			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
+					+ story.getProjectName() + "&fileID=" + file.getId() + "&fileName=" + file.getName()
+					, new Date(file.getCreateTime())));
 		}
 		return array;
 	}

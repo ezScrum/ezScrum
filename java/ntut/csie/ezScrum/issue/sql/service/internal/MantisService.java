@@ -1,14 +1,9 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -30,10 +25,11 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.core.util.StringUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.ResourceFacade;
@@ -58,7 +54,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	private MantisNoteService m_noteService;
 	private MantisHistoryService m_historyService;
 	private MantisIssueService m_issueService;
-	private MantisAttachFileService m_attachFileService;
+	private MantisAttachFileService mAttachFileService;
 	private MantisTagService m_tagService;
 
 	public MantisService(Configuration config) {
@@ -111,7 +107,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		m_noteService = new MantisNoteService(getControl(), getConfig());
 		m_historyService = new MantisHistoryService(getControl(), getConfig());
 		m_issueService = new MantisIssueService(getControl(), getConfig());
-		m_attachFileService = new MantisAttachFileService(getControl(),
+		mAttachFileService = new MantisAttachFileService(getControl(),
 				getConfig());
 		m_tagService = new MantisTagService(getControl(), getConfig());
 	}
@@ -284,7 +280,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 		}
 
 		return issues;
@@ -308,7 +304,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			// 建立tag資料
 			m_tagService.initTag(issue);
 		}
@@ -330,7 +326,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
 
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 		}
 
 		return issues;
@@ -346,7 +342,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			setIssueNote(issue);
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			// 建立tag資料
 			m_tagService.initTag(issue);
 		}
@@ -368,7 +364,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 			// 建立bug note
 			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-			m_attachFileService.initAttachFile(issue);
+			mAttachFileService.initAttachFile(issue);
 			m_tagService.initTag(issue);
 		}
 		return issue;
@@ -878,59 +874,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 				removeTime);
 	}
 
-	public void addAttachFile(long issueID, File attachFile) {
-		try {
-			PreparedStatement pstmt = getControl()
-					.getconnection()
-					.prepareStatement(
-							"INSERT INTO `mantis_bug_file_table` VALUES(?,?,?, ?,?,?, ?,?,?,?,?)");
-			InputStream fin = new FileInputStream(attachFile);
-			// pstmt.setInt(1, 0);
-			pstmt.setNull(1, java.sql.Types.INTEGER);
-			pstmt.setLong(2, issueID);
-
-			pstmt.setString(3, "");
-			pstmt.setString(4, "");
-			// 將檔案路徑轉為md5,因為mantis要判斷是否有重覆的檔案
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(attachFile.getPath().getBytes());
-			pstmt.setString(5, StringUtil.toHexString(md.digest()));
-
-			pstmt.setString(6, attachFile.getName());
-			pstmt.setString(7, "");
-			pstmt.setInt(8, (int) attachFile.length());
-			String Type = "";
-			String fileType = attachFile.getName().substring(
-					attachFile.getName().indexOf(".") + 1);
-			if (fileType.compareToIgnoreCase("jpg") == 0)
-				Type = "image/jpeg";
-			else if (fileType.compareToIgnoreCase("xml") == 0)
-				Type = "text/xml";
-			else
-				Type = "application/octet-stream";
-			pstmt.setString(9, Type);
-			pstmt.setString(10, DateUtil.getCurrentTimeInMySqlTime());
-			pstmt.setBinaryStream(11, fin, (int) attachFile.length());
-			pstmt.executeUpdate();
-			fin.close();
-
-			pstmt.clearParameters();
-			pstmt.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} finally {
-			// getControl().close();
-		}
-
-	}
-
 	// ezScrum上面新增帳號，新增進mySQL裡
 	public void addUser(String name, String password, String email,
 			String realName, String access_Level, String cookie_string,
@@ -1170,27 +1113,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	/**
-	 * 移除附件
-	 * 
-	 * @param fileId
-	 */
-	public void deleteAttachFile(long fileId) {
-		// 根據attach id移除附件
-		try {
-			PreparedStatement pstmt = getControl()
-					.getconnection()
-					.prepareStatement(
-							"DELETE FROM `mantis_bug_file_table` WHERE `mantis_bug_file_table`.`id` = ?");
-			pstmt.setLong(1, fileId);
-			pstmt.executeUpdate();
-			pstmt.clearParameters();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
 	public void createProject(String ProjectName) throws Exception {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_project_table");
@@ -1289,7 +1211,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			setIssueNote(story);
 			// 建立bug note
 			// story.setIssueNotes(this.m_noteService.getIssueNotes(story));
-			m_attachFileService.initAttachFile(story);
+			mAttachFileService.initAttachFile(story);
 			// 建立tag資料
 			m_tagService.initTag(story);
 		}
@@ -1313,16 +1235,23 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	/**
-	 * 抓取attach file 不透過 mantis
+	 * for ezScrum v1.8
 	 */
-	public File getAttachFile(String fileID) {
-		return m_attachFileService.getAttachFile(fileID);
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
+		IIssue issue = getIssue(attachFileInfo.issueId);
+		attachFileInfo.issueType = issue.getCategory().equalsIgnoreCase(ScrumEnum.STORY_ISSUE_TYPE) ? AttachFileObject.TYPE_STORY : AttachFileObject.TYPE_TASK;
+		return mAttachFileService.addAttachFile(attachFileInfo);
 	}
-
+	
 	/**
-	 * 抓取attach file 不透過 mantis，透過檔名
+	 * for ezScrum v1.8
 	 */
-	public File getAttachFileByName(String fileName) {
-		return m_attachFileService.getAttachFileByName(fileName);
+	public void deleteAttachFile(long fileId) {
+		mAttachFileService.deleteAttachFile(fileId);
+	}
+	
+	// 抓取attach file
+	public AttachFileObject getAttachFile(long fileId) {
+		return mAttachFileService.getAttachFile(fileId);
 	}
 }

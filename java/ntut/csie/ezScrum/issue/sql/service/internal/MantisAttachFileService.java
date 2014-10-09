@@ -1,20 +1,22 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class MantisAttachFileService extends AbstractMantisService {
+	private static Log log = LogFactory.getLog(MantisAttachFileService.class);
 
 	public MantisAttachFileService(ISQLControl control, Configuration config) {
 		setControl(control);
@@ -22,93 +24,109 @@ public class MantisAttachFileService extends AbstractMantisService {
 	}
 
 	public void initAttachFile(IIssue issue) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_bug_file_table");
-		valueSet.addEqualCondition("bug_id", Long.toString(issue.getIssueID()));
-		valueSet.setOrderBy("date_added", MySQLQuerySet.DESC_ORDER);
-		String query = valueSet.getSelectQuery();
-
-		ResultSet result = getControl().executeQuery(query);
-		try {
-			while (result.next()) {
-				try {
-					IssueAttachFile attach = new IssueAttachFile();
-					attach.setIssueID(issue.getIssueID());
-					attach.setAttachFileId(result.getLong("id"));
-					attach.setDescription(result.getString("description"));
-					attach.setDiskfile(result.getString("diskfile"));
-					attach.setFilesize(result.getInt("filesize"));
-					attach.setFileType(result.getString("file_type"));
-					attach.setFolder(result.getString("folder"));
-					attach.setTitle(result.getString("title"));
-					attach.setFilename(result.getString("filename"));
-					attach.setDate_added(result.getTimestamp("date_added")
-							.getTime());
-					issue.addAttachFile(attach);
-				} catch (Exception e) {
-					// 多一層try只是為了防止取得型態錯誤的值
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
+		if (issue.getCategory().toLowerCase().equals("story")) {
+			attachFiles = getAttachFilesByStoryId(issue.getIssueID());
+		} else if(issue.getCategory().toLowerCase().equals("task")) {
+			attachFiles = getAttachFilesByTaskId(issue.getIssueID());
+		}
+		
+		for (AttachFileObject file: attachFiles) {
+			issue.addAttachFile(file);
 		}
 	}
+	
+	// for ezScrum 1.8
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(attachFileInfo.issueId));
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(attachFileInfo.issueType));
+		valueSet.addInsertValue(AttachFileEnum.NAME, attachFileInfo.name);
+		valueSet.addInsertValue(AttachFileEnum.PATH, attachFileInfo.path);
+		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, attachFileInfo.contentType);
+		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		String query = valueSet.getInsertQuery();
+		log.info("[SQL] " + query);
+		getControl().execute(query, true);
+		
+		String[] keys = getControl().getKeys();
+		long newId = Long.parseLong(keys[0]);
+		return newId;
+	}
+
+	// for ezScrum v1.8
+	public AttachFileObject getAttachFile(long fileId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AttachFileEnum.ID, Long.toString(fileId));
+
+		String query = valueSet.getSelectQuery();
+		log.info("[SQL] " + query);
+		return getSelectAttachFile(query).get(0);
+	}
 
 	/**
-	 * 透過 file id 抓取 File，不透過 mantis
+	 * 用 story id 取得 story 底下所有的 attach file
+	 * for ezScrum v1.8
 	 */
-	public File getAttachFile(String fileID){
-		//設定SQL
+	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		
-		valueSet.addTableName("mantis_bug_file_table");
-		valueSet.addEqualCondition("id", fileID);
-			
-		//取得sql語法
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, Integer.toString(AttachFileObject.TYPE_STORY));
+		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
+
 		String query = valueSet.getSelectQuery();
+		log.info("[SQL] " + query);
 		return getSelectAttachFile(query);
 	}
 	
 	/**
-	 * 透過 file name 抓取 File，不透過 mantis
+	 * 用 task id 取得 task 底下所有的 attach file
+	 * for ezScrum v1.8
 	 */
-	public File getAttachFileByName(String fileName){
-		//設定SQL
+	public ArrayList<AttachFileObject> getAttachFilesByTaskId(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		
-		valueSet.addTableName("mantis_bug_file_table");
-		valueSet.addEqualCondition("filename", "'" + fileName + "'");
-		valueSet.setOrderBy("date_added", MySQLQuerySet.DESC_ORDER);
-			
-		//取得sql語法
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_TASK + "'");
+		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
+
 		String query = valueSet.getSelectQuery();
+		log.info("[SQL] " + query);
 		return getSelectAttachFile(query);
 	}
-	
-	private File getSelectAttachFile(String query) {
+
+	// for ezScrum v1.8
+	private ArrayList<AttachFileObject> getSelectAttachFile(String query) {
+		ArrayList<AttachFileObject> list = new ArrayList<AttachFileObject>();
 		try {
 			ResultSet result = getControl().executeQuery(query);
-			//取得file的資訊
-			if (result.next()) {
-				InputStream stream = result.getBlob("content").getBinaryStream();
-				File temp = null;
-				temp = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
-				OutputStream out = new FileOutputStream(temp);
-			    byte buf[]=new byte[1024];
-			    int len;
-			    while((len=stream.read(buf))>0){
-				    out.write(buf,0,len);
-			    }
-			    out.close();
-			    stream.close();
-
-			    return temp;
+			while (result.next()) {
+				AttachFileObject.Builder attachfileBuilder = new AttachFileObject.Builder();
+				attachfileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID));
+				attachfileBuilder.setIssueId(result.getLong(AttachFileEnum.ISSUE_ID));
+				attachfileBuilder.setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE));
+				attachfileBuilder.setName(result.getString(AttachFileEnum.NAME));
+				attachfileBuilder.setPath(result.getString(AttachFileEnum.PATH));
+				attachfileBuilder.setContentType(result.getString(AttachFileEnum.CONTENT_TYPE));
+				attachfileBuilder.setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
+				list.add(attachfileBuilder.build());
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return list;
+	}
+	
+	// for ezScrum v1.8
+	public void deleteAttachFile(long fileId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AttachFileEnum.ID, Long.toString(fileId));
+		String query = valueSet.getDeleteQuery();
+		log.info("[SQL] " + query);
+		getControl().execute(query);
 	}
 }

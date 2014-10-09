@@ -465,21 +465,6 @@ public class SprintBacklogMapper {
 		}
 	}
 
-	public void addAttachFile(long issueID, String targetPath) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		File attachFile = new File(targetPath);
-		itsService.addAttachFile(issueID, attachFile);
-		itsService.closeConnect();
-	}
-
-	public void deleteAttachFile(long fileID) {
-		IITSService itsService = m_itsFactory.getService(m_config);
-		itsService.openConnect();
-		itsService.deleteAttachFile(fileID);
-		itsService.closeConnect();
-	}
-
 	public void deleteTask(long taskID, long parentID) {
 		IITSService itsService = m_itsFactory.getService(m_config);
 		itsService.openConnect();
@@ -504,20 +489,6 @@ public class SprintBacklogMapper {
 			updateFlag = false;
 		}
 	}
-
-	// private void clearAllIssues(){
-	// if (m_stories == null || m_tasks == null || all_issues == null || map_story_tasks == null) {
-	// m_stories = new ArrayList<IIssue>();
-	// m_tasks = new ArrayList<IIssue>();
-	// all_issues = new ArrayList<IIssue>();
-	// map_story_tasks = new LinkedHashMap<Long, IIssue[]>();
-	// } else {
-	// m_stories.clear();
-	// m_tasks.clear();
-	// all_issues.clear();
-	// map_story_tasks.clear();
-	// }
-	// }
 
 	/**
 	 * 取得目前所有在此Sprint的Story與Task
