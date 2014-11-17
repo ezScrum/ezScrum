@@ -74,7 +74,7 @@ public class ConvertSprintBacklog {
 		for( IIssue item : stroyArray ){
 			JSONObject story = new JSONObject();
 			story.put("id", item.getIssueID());
-			story.put("point", Integer.parseInt(item.getEstimated()));
+			story.put("point", (int) Double.parseDouble(item.getEstimated()));
 			story.put("status", item.getStatus());
 			storyArray.put(story);
 		}

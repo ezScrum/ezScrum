@@ -43,9 +43,9 @@ public class AjaxGetPartnerListAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		result.append("<Partners><Result>success</Result>");
 
-		for (int i = 1, size = users.size(); i < size; i++) {
+		for (int i = 0, size = users.size(); i < size; i++) {
 			result.append("<Partner>")
-			      .append("<Name>").append(users.get(i).getName()).append("</Name>")
+			      .append("<Name>").append(users.get(i).getAccount()).append("</Name>")
 			      .append("</Partner>");
 		}
 		result.append("</Partners>");

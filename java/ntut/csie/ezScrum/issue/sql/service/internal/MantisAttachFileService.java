@@ -63,7 +63,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
-		return getSelectAttachFile(query).get(0);
+		return getSelectAttachFiles(query).get(0);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
-		return getSelectAttachFile(query);
+		return getSelectAttachFiles(query);
 	}
 	
 	/**
@@ -95,11 +95,11 @@ public class MantisAttachFileService extends AbstractMantisService {
 
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
-		return getSelectAttachFile(query);
+		return getSelectAttachFiles(query);
 	}
 
 	// for ezScrum v1.8
-	private ArrayList<AttachFileObject> getSelectAttachFile(String query) {
+	private ArrayList<AttachFileObject> getSelectAttachFiles(String query) {
 		ArrayList<AttachFileObject> list = new ArrayList<AttachFileObject>();
 		try {
 			ResultSet result = getControl().executeQuery(query);
