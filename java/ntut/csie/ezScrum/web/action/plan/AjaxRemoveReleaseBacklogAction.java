@@ -7,8 +7,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -34,28 +33,31 @@ public class AjaxRemoveReleaseBacklogAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info(" Remove Release Backlog. ");
 		
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
 		// get parameter info
-		String issueID = request.getParameter("issueID");
+		long issueId = Long.parseLong(request.getParameter("issueID"));
 		
 		String result = "";
 		try{
-			if (issueID != null) {
-				ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
+			if (issueId != 0) {
+				ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+				IIssue issue = PBHelper.getIssue(issueId);
 				
-				IIssue issue = pbHelper.getIssue(Long.parseLong(issueID));
 				if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
-					 issue.getSprintID().equals("-1")))
-					pbHelper.removeReleaseSprint(issueID);	// remove release, sprint tag to mantis notes
-				else
-//					pbHelper.removeRelease(issueID);	// remove release tag to mantis notes
-					(new ProductBacklogLogic(session, project)).removeReleaseTagFromIssue(issueID);	// remove release tag to mantis notes
+					 issue.getSprintID().equals("-1"))) {
+					// remove release, sprint tag to mantis notes
+					PBHelper.removeReleaseSprint(issueId);
+				}
+				else {
+					// remove release tag to mantis notes
+					PBHelper.removeReleaseTagFromIssue(issueId);
+				}
 				
-				result = "<DropStory><Result>true</Result><Story><Id>" + issueID + "</Id></Story></DropStory>";
+				result = "<DropStory><Result>true</Result><Story><Id>" + issueId + "</Id></Story></DropStory>";
 			} else {
 				result = "<DropStory><Result>false</Result></DropStory>";
 			}

@@ -91,17 +91,14 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 	public void testAddExistTag() throws Exception{
 		IProject project = this.CP.getProjectList().get(0);
 
-		String tagDB = "&  /  <  >  \\\\  \\\'  \"";//add tag in DB
-		String tag = "&  /  <  >  \\  \'  \"";//key in new tag
-		String compareMsg = "&amp;  /  &lt;  &gt;  \\  &apos;  &quot;";
+		String tagDB = "HELLO COOL";
+		String tag = "HELLO COOL";
+		String compareMsg = "already exist";
 		
 		//設定Session資訊
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-//		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project,config.getUserSession());
-//		PBHelper.addNewTag(tagDB);//先在DB中加入tag
 		
 		(new ProductBacklogHelper(configuration.getUserSession(), project)).addNewTag(tagDB);
 		
@@ -124,16 +121,12 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		tagList.add("/");
 		tagList.add("<");
 		tagList.add(">");
-		tagList.add("\\");
-		tagList.add("\'");
-		tagList.add("\"");
+		tagList.add("TEST");
 		
 		//設定Session資訊
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		
-//		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project,config.getUserSession());
 		
 		String expectedResponseText = "";
 		String actualResponseText = "";

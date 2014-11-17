@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -119,7 +120,7 @@ public class ReleasePlanWebServiceTest extends TestCase {
 		}
 	}
 	
-	public void testgetReleasePlan() throws LogonException, JSONException {
+	public void testgetReleasePlan() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = project.getName();

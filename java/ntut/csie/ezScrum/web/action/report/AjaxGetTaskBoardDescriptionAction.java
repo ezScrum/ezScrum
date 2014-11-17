@@ -39,13 +39,6 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
-//		SprintBacklogMapper sprintBacklogMapper = null;
-//		try {
-//			sprintBacklogMapper = new SprintBacklogMapper(project, session);
-//		} catch (Exception e) {
-//			sprintBacklogMapper = null;
-//		}
-		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		
@@ -56,13 +49,7 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 		
 		TaskBoardUI tbui = new TaskBoardUI(board);
 		
-		
 		return new StringBuilder( (new Gson()).toJson(tbui) );
-		
-//		Gson gson = new Gson();
-//		gson.toJson(tbui);
-//		
-//		return new StringBuilder(gson.toJson(tbui));
 	}
 	
 	private class TaskBoardUI {

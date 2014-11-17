@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -205,13 +206,13 @@ public class SprintBacklogWebServiceController {
 				this.mSprintBacklogWebService = new SprintBacklogWebService( decoder.getDecodeUserName(), decoder.getDecodePwd(), decoder.getDecodeProjectID(), Integer.parseInt(sprintID) );
 				taskIDListJsonString = this.mSprintBacklogWebService.getTaskIDList( storyID );
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println( "Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:IOException, " + e.toString());
 				e.printStackTrace();
 			} catch (LogonException e) {
-				// TODO Auto-generated catch block
+				System.out.println( "Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:LogonException, " + e.toString());
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				System.out.println( "Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:JSONException, " + e.toString());
 				e.printStackTrace();
 			} finally{
 			}
@@ -254,6 +255,9 @@ public class SprintBacklogWebServiceController {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			System.out.println( "Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:JSONException, " + e.toString());
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println( "Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:SQLException, " + e.toString());
 			e.printStackTrace();
 		} finally{
 		}

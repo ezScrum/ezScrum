@@ -2,12 +2,17 @@ package ntut.csie.ezScrum.web.action.backlog.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -65,7 +70,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		configuration = null;
 	}
 	
-	public void testDeleteStory(){
+	public void testDeleteStory() throws SQLException{
 		int storyCount = 2;
 		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
 		createProductBacklog.exe();
@@ -90,5 +95,11 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 			"{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":"+ issueID +"}]}";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
+		
+		// assert history should be delete also
+		HistoryDAO historyDAO = HistoryDAO.getInstance();
+		ArrayList<HistoryObject> historyList_1 = new ArrayList<HistoryObject>();
+		historyList_1 = historyDAO.getHistoriesByIssue(createProductBacklog.getIssueIDList().get(1), IssueTypeEnum.TYPE_STORY);
+		assertTrue(historyList_1.size() == 0);
 	}
 }

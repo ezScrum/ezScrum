@@ -1,11 +1,10 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +24,7 @@ public class StoryObject {
 	public List<String> taskIDList = new ArrayList<String>();
 	public List<TagObject> tagList = new ArrayList<TagObject>();
 	public List<TaskObject> taskList = new ArrayList<TaskObject>();
-	public List<HistoryObject> historyList = new ArrayList<HistoryObject>();
+	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
 	
 	public StoryObject() {
 		
@@ -45,11 +44,11 @@ public class StoryObject {
 		description = story.getDescription();
 		tagList = story.getTags();
 		
-		for (long taskID : story.getChildrenID())
+		for (long taskID : story.getChildrenId())
 			taskIDList.add(Long.toString(taskID));
 	}
 	
-	public StoryObject(IIssue story) {
+	public StoryObject(IIssue story) throws SQLException {
 		id = Long.toString(story.getIssueID());
 		name = story.getSummary();
 		notes = story.getNotes();
@@ -63,11 +62,11 @@ public class StoryObject {
 		description = story.getDescription();
 		tagList = story.getTags();
 		
-		for (long taskID : story.getChildrenID())
+		for (long taskID : story.getChildrenId())
 			taskIDList.add(Long.toString(taskID));
 
-		for (IIssueHistory history : story.getIssueHistories()) {
-			historyList.add(new HistoryObject(history));
+		for (HistoryObject history : story.getHistories()) {
+			histories.add(history);
 		}
 	}
 	

@@ -3,12 +3,14 @@ package ntut.csie.ezScrum.web.action.unplanned;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -102,6 +104,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		String expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 	}		
 		
 	// case 2: One sprint with 2 Unplanned item
@@ -139,6 +142,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		String expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 		
 		// (II) ui 2
 		
@@ -169,7 +173,8 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 
 		// 比對資料是否正確
 		expected = genXML(issueID);
-		assertEquals(expected, response.getWriterBuffer().toString());	
+		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 	}			
 	
 	// case 3: Two sprint with 1 Unplanned item
@@ -207,6 +212,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		String expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 		
 		// (II) sprint 2
 		
@@ -237,7 +243,8 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 
 		// 比對資料是否正確
 		expected = genXML(issueID);
-		assertEquals(expected, response.getWriterBuffer().toString());				
+		assertEquals(expected, response.getWriterBuffer().toString());	
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 	}
 
 	// case 4: Two sprint with 2 Unplanned item
@@ -275,6 +282,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		String expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 		
 		// (II) sprint1, ui 2
 		
@@ -306,6 +314,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 		
 		// (III) sprint2, ui 1
 		
@@ -337,6 +346,7 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 		// 比對資料是否正確
 		expected = genXML(issueID);
 		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 		
 		// (IV) sprint2, ui 2
 		
@@ -367,7 +377,8 @@ public class RemoveUnplannedItemActionTest extends MockStrutsTestCase {
 
 		// 比對資料是否正確
 		expected = genXML(issueID);
-		assertEquals(expected, response.getWriterBuffer().toString());			
+		assertEquals(expected, response.getWriterBuffer().toString());
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_UNPLANNED).size());
 	}	
 	
 	private String genXML(String issueID) {

@@ -133,22 +133,22 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		ProductBacklogHelper helper = new ProductBacklogHelper(configuration.getUserSession(), this.CP.getProjectList().get(0));
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0].getSummary(), "10", "10", stories[0].getEstimated(),
-				stories[0].getHowToDemo(), stories[0].getNotes());
+				stories[0].getHowToDemo(), stories[0].getNotes(), true);
 		assertNotNull(issue);
 		issue = helper.editStory(stories[1].getIssueID(), stories[1]
-				.getSummary(), "10", "20", stories[1].getEstimated(), stories[1].getHowToDemo(), stories[1].getNotes());
+				.getSummary(), "10", "20", stories[1].getEstimated(), stories[1].getHowToDemo(), stories[1].getNotes(), true);
 		assertNotNull(issue);
 		issue = helper.editStory(stories[2].getIssueID(), stories[2]
 				.getSummary(), "10", "30", stories[2].getEstimated(),
-				stories[2].getHowToDemo(), stories[2].getNotes());
+				stories[2].getHowToDemo(), stories[2].getNotes(), true);
 		assertNotNull(issue);
 		issue = helper.editStory(stories[3].getIssueID(), stories[3]
 				.getSummary(), "10", "40", stories[3].getEstimated(),
-				stories[3].getHowToDemo(), stories[3].getNotes());
+				stories[3].getHowToDemo(), stories[3].getNotes(), true);
 		assertNotNull(issue);
 		issue = helper.editStory(stories[4].getIssueID(), stories[4]
 				.getSummary(), "10", "50", stories[4].getEstimated(),
-				stories[4].getHowToDemo(), stories[4].getNotes());
+				stories[4].getHowToDemo(), stories[4].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 
@@ -208,27 +208,27 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0]
 				.getSummary(), "10", "40", stories[0].getEstimated(),
-				stories[0].getHowToDemo(), stories[0].getNotes());
+				stories[0].getHowToDemo(), stories[0].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 		issue = helper.editStory(stories[1].getIssueID(), stories[1]
 				.getSummary(), "10", "30", stories[1].getEstimated(),
-				stories[1].getHowToDemo(), stories[1].getNotes());
+				stories[1].getHowToDemo(), stories[1].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 		issue = helper.editStory(stories[2].getIssueID(), stories[2]
 				.getSummary(), "10", "10", stories[2].getEstimated(),
-				stories[2].getHowToDemo(), stories[2].getNotes());
+				stories[2].getHowToDemo(), stories[2].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 		issue = helper.editStory(stories[3].getIssueID(), stories[3]
 				.getSummary(), "10", "30", stories[3].getEstimated(),
-				stories[3].getHowToDemo(), stories[3].getNotes());
+				stories[3].getHowToDemo(), stories[3].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 		issue = helper.editStory(stories[4].getIssueID(), stories[4]
 				.getSummary(), "10", "40", stories[4].getEstimated(),
-				stories[4].getHowToDemo(), stories[4].getNotes());
+				stories[4].getHowToDemo(), stories[4].getNotes(), true);
 		assertNotNull(issue);
 		this.SB.forceRefresh();
 

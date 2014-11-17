@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,6 +53,10 @@ public class ShowUnplannedItemAction extends PermissionAction {
     		}
     	}
     	
-    	return uiHelper.getListXML(sprintID);
+    	try {
+			return uiHelper.getListXML(sprintID);
+		} catch (SQLException e) {
+			return new StringBuilder("error");
+		}
 	}
 }

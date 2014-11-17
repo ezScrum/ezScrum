@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
@@ -165,20 +166,20 @@ public class RemainingWorkReport {
 		}
 
 		boolean flag = false;
-		for (IIssue i : stories) {
-			IIssue[] tasks = taskMap.get(i.getIssueID());
+		for (IIssue story : stories) {
+			IIssue[] tasks = taskMap.get(story.getIssueID());
 			// skip the story that without any task
 			if (tasks == null) {
 				NonCount++; // story count +1
 				continue;
 			}
-			for (IIssue issue : tasks) {
-				if (i.DateStatus(date) == 90) {
+			for (IIssue task : tasks) {
+				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
 					Donecount++;
 					flag = true;
 					break;
-				} else if (issue.DateStatus(date) == 50
-				        || issue.DateStatus(date) == 90) {
+				} else if (task.getDateStatus(date) == ITSEnum.ASSIGNED_STATUS
+				        || task.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
 					AssignCount++;
 					flag = true;
 					break;
@@ -229,19 +230,21 @@ public class RemainingWorkReport {
 			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
 		}
 
-		if (issues != null) for (IIssue issue : issues) {
-			switch (issue.DateStatus(date)) {
-				case ITSEnum.NEW_STATUS:
-					NonCount++;
-					break;
-				case ITSEnum.ASSIGNED_STATUS:
-					AssignCount++;
-					break;
-				case ITSEnum.CLOSED_STATUS:
-					Donecount++;
-					break;
-				default:
-					break;
+		if (issues != null) {
+			for (IIssue issue : issues) {
+				switch (issue.getDateStatus(date)) {
+					case ITSEnum.NEW_STATUS:
+						NonCount++;
+						break;
+					case ITSEnum.ASSIGNED_STATUS:
+						AssignCount++;
+						break;
+					case ITSEnum.CLOSED_STATUS:
+						Donecount++;
+						break;
+					default:
+						break;
+				}
 			}
 		}
 
@@ -379,5 +382,9 @@ public class RemainingWorkReport {
 
 	public int getNonAssignQuantity() {
 		return nonAssignQuantity;
+	}
+	
+	public String toString() {
+		return "assign:" + assignedQuantity + " total:" + totalQuantity + " done:" + doneQuantity + " nonassign:" + nonAssignQuantity;
 	}
 }

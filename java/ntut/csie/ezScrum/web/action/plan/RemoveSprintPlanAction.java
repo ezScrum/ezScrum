@@ -37,19 +37,16 @@ public class RemoveSprintPlanAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info(" Remove SprintPlan. ");
 		
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 
-		// 移除sprint中story的資訊, 以及story與release的關係
-//		int iter = Integer.parseInt(sprintID);
-//		SprintBacklogMapper sb = new SprintBacklogMapper(project, session,iter);
-//		List<IIssue> issues = sb.getStories();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintID);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintId);
 		List<IIssue> issues = sprintBacklogLogic.getStories();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);	
 		for(IIssue issue:issues){
@@ -57,26 +54,14 @@ public class RemoveSprintPlanAction extends PermissionAction {
 			
 			if(!(issue.getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) || 
 				 issue.getReleaseID().equals("-1"))){
-				productBacklogLogic.removeReleaseTagFromIssue(Long.toString(issue.getIssueID()));
+				productBacklogLogic.removeReleaseTagFromIssue(issue.getIssueID());
 			}
 		}
-//		ProductBacklogHelper helper = new ProductBacklogHelper(project, session);	
-//		for(IIssue issue:issues){
-//			helper.remove(issue.getIssueID());
-//			
-//			if(!(issue.getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) || 
-//				 issue.getReleaseID().equals("-1"))){
-//				helper.removeRelease(Long.toString(issue.getIssueID()));
-//			}
-//		}
 		
 		//刪除sprint資訊
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-//		SPhelper.deleteIterationPlan(sprintID);
-		SPhelper.deleteSprint(sprintID);
-		
+		SPhelper.deleteSprint(sprintId);
 		StringBuilder result = new StringBuilder("{\"success\":true}");
-		
 		return result;
 	}
 }

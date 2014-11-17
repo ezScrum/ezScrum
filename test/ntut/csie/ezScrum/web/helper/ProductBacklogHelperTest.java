@@ -2,77 +2,83 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogHelperTest extends TestCase {
-	private CreateProject CP;
-	private CreateProductBacklog CPB;
-	
-	private int ProjectCount = 1;
-	private int StoryCount = 1;
-	
-	private ProductBacklogHelper productBacklogHelper = null;
-	private Configuration configuration = null;
+	private CreateProject mCreateProject;
+	private CreateProductBacklog mCreateProductBacklog;
+	private ProductBacklogHelper mProductBacklogHelper = null;
+	private Configuration mConfig = null;
+	private IProject mProject;
+	private int mProjectCount = 1;
+	private int mStoryCount = 1;
 	
 	public ProductBacklogHelperTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.store();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 		
 		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCreateProject = new CreateProject(mProjectCount);
+		mCreateProject.exeCreate();
 		
 		// 新增Story	
-		this.CPB = new CreateProductBacklog(this.StoryCount, this.CP);
-		this.CPB.exe();
+		mCreateProductBacklog = new CreateProductBacklog(mStoryCount, mCreateProject);
+		mCreateProductBacklog.exe();
 		
 		super.setUp();
 		
 		// 建立 productbacklog 物件
-		IProject project = this.CP.getProjectList().get(0);
-		productBacklogHelper = new ProductBacklogHelper(project, configuration.getUserSession());
+		mProject = mCreateProject.getProjectList().get(0);
+		mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		
+		// 為了使 Story 建立時間與修改時間分開而停下
+		Thread.sleep(1000);
 		// ============= release ==============
 		ini = null;
-		project = null;
+		mProject = null;
 	}
 	
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.store();
     	
     	// ============= release ==============
     	ini = null;
-    	this.CP = null;
-    	this.CPB = null;
+    	mCreateProject = null;
+    	mCreateProductBacklog = null;
     	projectManager = null;
-    	configuration = null;
+    	mConfig = null;
     	
     	super.tearDown();
 	}
@@ -80,15 +86,15 @@ public class ProductBacklogHelperTest extends TestCase {
 	public void testAddAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
-		attachFileInfo.issueId = CPB.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
-		attachFileInfo.projectName = this.CP.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
 		
-		File sqlFile = new File(configuration.getInitialSQLPath());
+		File sqlFile = new File(mConfig.getInitialSQLPath());
 		
 		try {
-			long id = productBacklogHelper.addAttachFile(attachFileInfo, sqlFile);
-			AttachFileObject attachFile = productBacklogHelper.getAttachFile(id);
+			long id = mProductBacklogHelper.addAttachFile(attachFileInfo, sqlFile);
+			AttachFileObject attachFile = mProductBacklogHelper.getAttachFile(id);
 			File actualFile = new File(attachFile.getPath());
 			assertEquals(sqlFile.length(), actualFile.length());
 			assertEquals(attachFileInfo.name, attachFile.getName());
@@ -102,24 +108,24 @@ public class ProductBacklogHelperTest extends TestCase {
 	public void testDeleteAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
-		attachFileInfo.issueId = CPB.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
-		attachFileInfo.projectName = this.CP.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
 		
-		File sqlFile = new File(configuration.getInitialSQLPath());
+		File sqlFile = new File(mConfig.getInitialSQLPath());
 		
 		try {
-			long id = productBacklogHelper.addAttachFile(attachFileInfo, sqlFile);
-			AttachFileObject attachFile = productBacklogHelper.getAttachFile(id);
+			long id = mProductBacklogHelper.addAttachFile(attachFileInfo, sqlFile);
+			AttachFileObject attachFile = mProductBacklogHelper.getAttachFile(id);
 			File actualFile = new File(attachFile.getPath());
 			assertEquals(sqlFile.length(), actualFile.length());
 			assertEquals(attachFileInfo.name, attachFile.getName());
 			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());
 			
-			productBacklogHelper.deleteAttachFile(attachFile.getId());
+			mProductBacklogHelper.deleteAttachFile(attachFile.getId());
 			
 			try {
-				productBacklogHelper.getAttachFile(id);
+				mProductBacklogHelper.getAttachFile(id);
 				assertTrue(false);
 			} catch (Exception e) {
 				assertTrue(true);
@@ -131,5 +137,32 @@ public class ProductBacklogHelperTest extends TestCase {
 			System.out.println(e);
 			assertTrue(false);
 		}
+	}
+	
+	public void testEditStory() {
+		
+	}
+	
+	public void testEditStoryHistory() throws SQLException {
+		long issueId = mCreateProductBacklog.getIssueIDList().get(0);
+		String name = "快接 task 啦";
+		String value = "6";
+		String importance = "6";
+		String estimate = "6";
+		String howToDemo = "QAQ";
+		String notes = "已哭";
+		
+		IIssue issue = mProductBacklogHelper.editStory(issueId, name, value, importance, estimate, howToDemo, notes, true);
+		// assert issue info
+		assertEquals(issueId, issue.getIssueID());
+		assertEquals(name, issue.getSummary());
+		assertEquals(value, issue.getValue());
+		assertEquals(importance, issue.getImportance());
+		assertEquals(estimate, issue.getEstimated());
+		assertEquals(howToDemo, issue.getHowToDemo());
+		assertEquals(notes, issue.getNotes());
+		// assert issue history
+		ArrayList<HistoryObject> histories = issue.getHistories();
+		assertEquals(7, histories.size());
 	}
 }

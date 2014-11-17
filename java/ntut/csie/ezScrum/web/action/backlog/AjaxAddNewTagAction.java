@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +42,7 @@ public class AjaxAddNewTagAction extends PermissionAction {
 		String newTagName = request.getParameter("newTagName");
 		
 		StringBuilder result = (new ProductBacklogHelper(session, project)).getAddNewTagResponsetext(newTagName);
+
 		return result;
 	}
 }

@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.action;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.form.UploadForm;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -51,11 +50,9 @@ public class AjaxAttachFileAction extends Action {
 
 			int fileMaxSize_int = Integer.parseInt(projectInfo.getAttachFileSize());
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
-
-			String issueId_string = request.getParameter("issueID");
-			long issueId = Long.parseLong(issueId_string);
-
-			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
+			
+			long issueId = Long.parseLong(request.getParameter("issueID"));
+			ProductBacklogHelper pbHelper = new ProductBacklogHelper(session, project);
 			UploadForm fileForm = (UploadForm) form;
 
 			FormFile formFile = fileForm.getFile();

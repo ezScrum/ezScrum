@@ -1,17 +1,17 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -177,26 +177,25 @@ public class SprintPlanHelper {
 	/*
 	 * from AjaxMoveSprintAction
 	 */
-	
-	public void moveSprintPlan(IProject project, IUserSession session, int oldID, int newID) {		
+	public void moveSprintPlan(IProject project, IUserSession session, int oldId, int newId) {		
 		List<ISprintPlanDesc> descs = this.loadListPlans();
-		this.moveSprint(oldID, newID);
+		this.moveSprint(oldId, newId);
 				
-		ProductBacklogHelper pb = new ProductBacklogHelper(project, session);
-		Map<String, List<IIssue>> map = pb.getSprintHashMap();
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+		Map<String, ArrayList<IIssue>> map = PBHelper.getSprintHashMap();
 		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		//取出需要修改的sprint ID 
-		if(oldID > newID){
-			for(int i = newID; i<= oldID;i++){
+		if(oldId > newId){
+			for(int i = newId; i<= oldId;i++){
 				if(this.isSprintPlan(descs, i))
 					list.add(i);
 			}
 		}
 		else{
-			for(int i = 0; i<= newID - oldID;i++){
-				if(this.isSprintPlan(descs, newID-i))
-					list.add(newID-i);
+			for(int i = 0; i<= newId - oldId;i++){
+				if(this.isSprintPlan(descs, newId-i))
+					list.add(newId-i);
 			}
 		}
 		
@@ -283,7 +282,7 @@ public class SprintPlanHelper {
 		return ConvertSprint.convertSprintDescToObject(mSprintPlanMapper.getSprintPlanList());
 	}
 	
-	public SprintObject getSprintWithAllItem(String sprintID) {
+	public SprintObject getSprintWithAllItem(String sprintID) throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintID));
 		// 找出 sprint 中所有的 story
 		IIssue[] storyIIssues = mSprintBacklogMapper.getStoryInSprint(Long.parseLong(sprintID));
@@ -293,12 +292,10 @@ public class SprintPlanHelper {
 			IIssue[] taskIIssues = mSprintBacklogMapper.getTaskInStory(Long.parseLong(story.id));
 			for (IIssue taskIssue : taskIIssues) {
 				TaskObject taskObject = new TaskObject(taskIssue);
-				if (taskIssue.getHistory().size() > 0) {
-					for (IIssueHistory history : taskIssue.getIssueHistories()) {
-						if (history.getDescription().length() > 0) {
-							String[] token = history.getDescription().split(":");
-							if (token.length == 2 && token[1].contentEquals(" \"Checked Out\" => \"Done\"")) 
-								taskObject.doneTime = history.getModifyDate();
+				if (taskIssue.getHistories().size() > 0) {
+					for (HistoryObject history : taskIssue.getHistories()) {
+						if (history.getHistoryType() == HistoryObject.TYPE_STATUS && history.getNewValue().equals("90")) {
+							taskObject.doneTime = history.getModifiedTime();
 						}
 					}
 				}

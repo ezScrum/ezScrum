@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,7 +138,6 @@ public class SprintBacklogHelper {
 	}
 
 	public List<IIssue> getStoriesByImportance() {
-		// return this.sprintBacklogMapper.getStoriesByImp();
 		return this.sprintBacklogLogic.getStoriesByImp();
 	}
 
@@ -147,7 +147,7 @@ public class SprintBacklogHelper {
 	 * @param releaseID
 	 * @return
 	 */
-	public List<IStory> getExistedStories(String releaseID) {
+	public List<IStory> getExistedStories(String releaseID) throws SQLException {
 		List<IStory> stories = null;
 		ProductBacklogLogic productBacklogHelper = new ProductBacklogLogic(this.userSession, this.project);
 		if ((sprintID != null) && (!sprintID.isEmpty()) && (!sprintID.equals("-1"))) {

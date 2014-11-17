@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -37,14 +37,13 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
 		StringBuilder result = new StringBuilder("");
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, session);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
 
 		String defaultHandler = session.getAccount().getAccount();
 		try {
-			long issueID = Long.parseLong(request.getParameter("issueID"));
-			IIssue item = productBacklogHelper.getIssue(issueID);
+			long issueId = Long.parseLong(request.getParameter("issueID"));
+			IIssue item = PBHelper.getIssue(issueId);
 			if (item != null) {
 				result.append(getJsonString(item, defaultHandler));
 			} else {
@@ -52,7 +51,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			}
 		} catch (Exception e) {
 			result.append(getJsonString(null, defaultHandler));
-			this.log.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
+			log.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
 		}
 		return result;
 	}

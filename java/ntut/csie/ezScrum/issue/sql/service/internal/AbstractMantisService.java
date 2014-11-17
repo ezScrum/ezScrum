@@ -18,7 +18,7 @@ public abstract class AbstractMantisService {
 	// private ITSPrefsStorage m_prefs;
 	private Configuration m_config;
 
-	protected int getUserID(String userName) {
+	public int getUserID(String userName) {
 		// IQueryValueSet valueSet = new MySQLQuerySet();
 		// valueSet.addTableName("mantis_user_table");
 		// valueSet.addLikeCondition("username", userName);
@@ -125,13 +125,11 @@ public abstract class AbstractMantisService {
 		// + projectName + "'";
 		// Statement stmt;
 		try {
-			// stmt = conn.createStatement();
-			// ResultSet result = stmt.executeQuery(query);
 			ResultSet result = getControl().executeQuery(query);
-			int projectID = -1;
+			int projectId = -1;
 			if (result.next())
-				projectID = result.getInt("id");
-			return projectID;
+				projectId = result.getInt("id");
+			return projectId;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

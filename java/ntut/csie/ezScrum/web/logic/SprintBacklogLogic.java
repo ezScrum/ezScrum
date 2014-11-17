@@ -45,7 +45,7 @@ public class SprintBacklogLogic {
 	/**
 	 * 判斷使用者輸入的sprintID是否為合法
 	 * 
-	 * @param project
+	 * @param mProject
 	 * @param userSession
 	 * @param sprintID
 	 * @return

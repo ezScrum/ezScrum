@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
@@ -36,6 +35,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info(" Delete File. ");
 		
 		// 取得刪除file前需要的資料
 		// get project from session or DB
@@ -44,24 +44,24 @@ public class AjaxDeleteFileAction extends PermissionAction {
 
 		// get parameter info
 		String entryPoint = request.getParameter("entryPoint");
-		long issueID = Integer.parseInt(request.getParameter("issueId"));
-		long fileID = Long.parseLong(request.getParameter("fileId"));
+		long issueId = Integer.parseInt(request.getParameter("issueId"));
+		long fileId = Long.parseLong(request.getParameter("fileId"));
 		
 		StringBuilder result = new StringBuilder("{\"success\":false}");
 		
 		// 透過file的 id 刪除attach file
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project,session);
-		pbHelper.deleteAttachFile(fileID);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+		PBHelper.deleteAttachFile(fileId);
 		
 		// 如果是在CustomIssue的頁面attach file的話，則translate custom issue的json
 		if(entryPoint!=null && entryPoint.equals("CustomIssue")) {
 			IssueBacklog backlog = new IssueBacklog(project, session);
-			IIssue issue = backlog.getIssue(issueID);
-			List<IIssue> list = new ArrayList<IIssue>();
+			IIssue issue = backlog.getIssue(issueId);
+			ArrayList<IIssue> list = new ArrayList<IIssue>();
 			list.add(issue);
 			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
 		} else {
-			IIssue issue = pbHelper.getIssue(issueID);
+			IIssue issue = PBHelper.getIssue(issueId);
 			result = new StringBuilder(new Translation().translateStoryToJson(issue));
 		}
 

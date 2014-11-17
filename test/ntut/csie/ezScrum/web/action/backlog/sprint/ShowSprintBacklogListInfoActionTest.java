@@ -282,8 +282,6 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"cls\":\"file\"}]}]");
 		
 		String actualResponseText = response.getWriterBuffer().toString();
-//		System.out.println("result = " + actualResponseText);
-		System.out.println("expect = " + expectedResponseTest.toString());
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
 	}
 }

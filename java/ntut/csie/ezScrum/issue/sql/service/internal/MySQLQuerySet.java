@@ -63,7 +63,10 @@ public class MySQLQuerySet implements IQueryValueSet {
 	public void addInsertValue(String name, String value) {
 		// format是為了要避免有特殊字元發生
 		this.addInsertValue(new QueryValue(name, format(value)));
-		
+	}
+	
+	public void addInsertValue(String name, long value) {
+		addInsertValue(name, String.valueOf(value));
 	}
 
 	@Override
@@ -115,6 +118,10 @@ public class MySQLQuerySet implements IQueryValueSet {
 	public void addEqualCondition(String name, String value) {
 		if (name.contains(".")) name = name.replace(".", "`.`");
 		this._conditionList.add("`" + name + "` = " + value);
+	}
+	
+	public void addEqualCondition(String name, long value) {
+		addEqualCondition(name, String.valueOf(value));
 	}
 
 	public void addLessCondition(String name, String value) {

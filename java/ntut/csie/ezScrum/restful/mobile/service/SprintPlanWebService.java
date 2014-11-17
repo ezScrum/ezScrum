@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,8 +68,9 @@ public class SprintPlanWebService extends ProjectWebService{
 	 * 取得某個 sprint 包含 story 和 task
 	 * @param sprintID
 	 * @return
+	 * @throws SQLException 
 	 */
-	public String getSprintWithAllItem(String sprintID) {
+	public String getSprintWithAllItem(String sprintID) throws SQLException {
 		Gson gson = new Gson();
 		return gson.toJson(mSprintPlanHelper.getSprintWithAllItem(sprintID));
 	}
@@ -77,8 +79,9 @@ public class SprintPlanWebService extends ProjectWebService{
 	 * 取得某個 sprint 包含 story 和 task
 	 * @param sprintID
 	 * @return
+	 * @throws SQLException 
 	 */
-	public String getSprintWithAllItem() {
+	public String getSprintWithAllItem() throws SQLException {
 		Gson gson = new Gson();
 		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
 		List<SprintObject> result = new ArrayList<SprintObject>();

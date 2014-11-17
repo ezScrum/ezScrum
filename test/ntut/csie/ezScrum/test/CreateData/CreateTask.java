@@ -5,15 +5,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
+import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -116,7 +120,7 @@ public class CreateTask {
 					this.TaskList.add(productBacklogMapper.getIssue(TaskID));
 					this.TaskIDList.add(TaskID);
 					this.log.info("專案 " + project.getName() + " 在 Story ID: " + Default_storyID + " 新增一筆 Task ID: " + TaskID);
-				}	
+				}
 			}
 		} else {
 			for (int j=0 ; j<this.TaskCount ; j++) {
@@ -157,32 +161,29 @@ public class CreateTask {
 		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
 		
 		Configuration configuration = new Configuration(userSession);
+		MantisService mantisService = new MantisService(configuration);
+		mantisService.openConnect();
 		
-		ITSServiceFactory itsFactory = ITSServiceFactory.getInstance();
-
-		IITSService itsService = itsFactory.getService(configuration);
-		itsService.openConnect();
-		
-		long taskID = itsService.newIssue(task);
-		task = itsService.getIssue(taskID);
+		long taskId = mantisService.newIssue(task);
+		task = mantisService.getIssue(taskId);
 		
 		String actualHour = "0";
 
 		// 利用edit來增加estimation的tag
 		// 剛新增Task時Remaining = estimation
-		editTask(itsService, task, name, estimation, estimation, handler,
+		editTask(mantisService, task, name, estimation, estimation, handler,
 				partners, actualHour, notes, date);
 
 		// 新增關係
-		itsService.addRelationship(storyID, task.getIssueID(),
+		mantisService.addRelationship(storyID, task.getIssueID(),
 				ITSEnum.PARENT_RELATIONSHIP, date);
 
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-		itsService.closeConnect();
+		mantisService.closeConnect();
 		return task.getIssueID();
 	}
 	
-	private boolean editTask(IITSService itsService, IIssue task, String Name, String estimation,
+	private boolean editTask(MantisService itsService, IIssue task, String Name, String estimation,
 			String remains, String handler, String partners, String actualHour,
 			String notes, Date modifyDate) {
 		// 先變更handler
@@ -239,14 +240,43 @@ public class CreateTask {
 		return false;
 	}
 	
-	private void modify(IITSService itsService, IIssue task, String Name, String handler,
+	private void modify(MantisService service, IIssue task, String name, String handler,
 			Date modifyDate) {
 		if (!task.getAssignto().equals(handler)) {
-			itsService.updateHandler(task, handler, modifyDate);
+			service.openConnect();
+			
+			int oldHandler = service.getUserID(task.getAssignto());
+			int newHandler = service.getUserID(handler);
+			
+			service.updateHandler(task, handler, modifyDate);
+			service.closeConnect();
+			
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			historyDao.add(new HistoryObject(
+							task.getIssueID(),
+							IssueTypeEnum.TYPE_TASK,
+							HistoryObject.TYPE_HANDLER,
+							String.valueOf(oldHandler),
+							String.valueOf(newHandler),
+							System.currentTimeMillis()));
 		}
 		
-		if (!task.getSummary().equals(Name) && Name != null) {
-			itsService.updateName(task, Name, modifyDate);
+		if (!task.getSummary().equals(name) && name != null) {
+			service.openConnect();
+			
+			String oldName = task.getSummary();
+			
+			service.updateName(task, name, modifyDate);
+			service.closeConnect();
+			
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			historyDao.add(new HistoryObject(
+							task.getIssueID(),
+							IssueTypeEnum.TYPE_TASK,
+							HistoryObject.TYPE_HANDLER,
+							oldName,
+							name,
+							System.currentTimeMillis()));
 		}
 	}
 }

@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -17,7 +16,6 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -562,17 +560,14 @@ public class ReleasePlanHelper {
 	//加入 Release 日期範圍內 Sprint 底下的 Story
 	public void addReleaseSprintStory(IProject project, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
 		List<ISprintPlanDesc> newSprintList =  reDesc.getSprintDescList();
-		
-//		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);
-		
 		ArrayList<Long> storyList;
 		
 		//For deleting old sprint. Taking original SprintList to compare with new SprintList.
 		if(oldSprintList != null){	
-			storyList = this.compareReleaseSprint(oldSprintList, newSprintList, project, session);
+			storyList = compareReleaseSprint(oldSprintList, newSprintList, project, session);
 			for(long story : storyList) {
-				productBacklogLogic.removeReleaseTagFromIssue(String.valueOf(story));
+				productBacklogLogic.removeReleaseTagFromIssue(story);
 			}
 			storyList.clear();
 		}
@@ -628,9 +623,8 @@ public class ReleasePlanHelper {
 	/*
 	 * from GetReleaseBurndownChartDataAction
 	 */
-	
 	public StringBuilder getReleaseBurndownChartData(IProject project, IUserSession session, String releaseId) {
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
+		ProductBacklogHelper pbHelper = new ProductBacklogHelper(session, project);
 		IReleasePlanDesc plan = this.getReleasePlan(releaseId);
 		
 		ReleaseBacklog releaseBacklog = null;

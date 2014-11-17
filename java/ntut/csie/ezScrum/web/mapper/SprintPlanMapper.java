@@ -64,12 +64,8 @@ public class SprintPlanMapper {
 			if (sprint.getAttribute(ScrumEnum.ID_ATTR).getValue().equals(sprintId)) {	
 				// 此 sprint Id 為將要秀出來的
 				return getDescription(sprint);
-			}				
-
+			}
 		}
-		System.out.println("sprints count = " + sprints.size());
-		System.out.println("sprints getAttribute = " + sprints.get(0).getAttribute(ScrumEnum.ID_ATTR).getValue());
-		// ?
 		return new SprintPlanDesc();
 	}	
 

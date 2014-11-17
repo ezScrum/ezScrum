@@ -2,9 +2,7 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -19,12 +17,13 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.EditUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.test.CreateData.IssueHistoryObject;
-import ntut.csie.ezScrum.test.CreateData.IssueHistoryObject.IssueHistoryList;
 import ntut.csie.jcis.resource.core.IProject;
-import servletunit.struts.MockStrutsTestCase;
 
-import com.google.gson.Gson;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import servletunit.struts.MockStrutsTestCase;
 
 public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	private CreateProject CP;
@@ -33,7 +32,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	private final String ACTION_PATH = "/showIssueHistory";
 	private IProject project;
 	private CreateUnplannedItem CU;
-	private static final long TOLERANCE = 30;
 
 	public ShowIssueHistoryTest(String testName) {
 		super(testName);
@@ -106,8 +104,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String expectedTaskName = addTaskToStory.getTaskList().get(0).getSummary();
 		String expectedIssueType = addTaskToStory.getTaskList().get(0).getCategory();
 		String expectedLink = "/ezScrum/showIssueInformation.do?issueID=" + issueID;
-		List<String> expectedDescription = genArrayList("New Issue", "Append to Story 1", " 0 => 2", " 0 => 2");
-		List<String> expectedHistoryType = genArrayList("", "", "Estimation ", "Remains ");
+		List<String> expectedDescription = genArrayList("Create Task #2", "Append to Story #1");
+		List<String> expectedHistoryType = genArrayList("", "");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
@@ -120,14 +118,13 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		// assert response text
 		String actualResponseText = response.getWriterBuffer().toString();
-		Gson gson = new Gson();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
 
-		assertEquals(expectedTaskName, historyObj.Name);
-		assertEquals(expectedIssueType, historyObj.IssueType);
-		assertEquals(expectedLink, historyObj.Link);
+		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", "Append to Story 1", " 0 => 2", " 0 => 2"));
+		assertEquals(expectedTaskName, historyObj.getString("Name"));
+		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
+		assertEquals(expectedLink, historyObj.getString("Link"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -150,8 +147,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增Task所需的資訊
 		String expectedStoryID = String.valueOf(storyID);
 		String expectedSprintID = String.valueOf(sprintID);
-		List<String> expectedDescription = genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Value ", "Sprint ", "Estimation ", "Importance ");
+		List<String> expectedDescription = genArrayList("Create Story #" + storyID, "Append to Sprint #1");
+		List<String> expectedHistoryType = genArrayList("", "");
 
 		addRequestParameter("sprintID", expectedSprintID);
 		addRequestParameter("issueID", expectedStoryID);
@@ -162,14 +159,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		Gson gson = new Gson();
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.Name);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100"));
+		JSONObject historyObj = new JSONObject(actualResponseText);
+
+		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -197,8 +194,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增Task所需的資訊
 		String expectedStoryID = String.valueOf(storyID);
 		String expectedSprintID = String.valueOf(sprintID);
-		List<String> expectedDescription = genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100", "Add Task 2");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Value ", "Sprint ", "Estimation ", "Importance ", "");
+		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #2");
+		List<String> expectedHistoryType = genArrayList("", "", "");
 
 		addRequestParameter("sprintID", expectedSprintID);
 		addRequestParameter("issueID", expectedStoryID);
@@ -209,14 +206,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		Gson gson = new Gson();
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.Name);
+		
+		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -250,8 +247,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增Task所需的資訊
 		String expectedStoryID = String.valueOf(storyID);
 		String expectedSprintID = String.valueOf(sprintID);
-		List<String> expectedDescription = genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100", "Add Task 2", "Drop Task 2");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Value ", "Sprint ", "Estimation ", "Importance ", "", "");
+		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #2", "Drop Task #2");
+		List<String> expectedHistoryType = genArrayList("", "", "", "");
 
 		addRequestParameter("sprintID", expectedSprintID);
 		addRequestParameter("issueID", expectedStoryID);
@@ -262,14 +259,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		Gson gson = new Gson();
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.Name);
+		
+		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " -1 => 1", " 0 => 50", " 0 => 1", " 0 => 1", " 0 => 100"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStory_Sprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -298,16 +295,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForward(null);
 		verifyNoActionErrors();
 
-		List<String> expectedDescription = genArrayList("New Issue", " 0 => 1", " 0 => 2");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Estimation ");
-		Gson gson = new Gson();
+		List<String> expectedDescription = genArrayList("Create Unplanned #1", "Append to Sprint #1");
+		List<String> expectedHistoryType = genArrayList("", "");
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(CU.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(CU.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(CU.getIssueList().get(0).getSummary(), historyObj.Name);
+		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " 0 => 1", " 0 => 2"));
+		assertEquals(CU.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(CU.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(CU.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -348,20 +344,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
-		List<String> expectedDescription = genArrayList("New Issue", " 0 => 1", " 0 => 2", " \"Not Checked Out\" => \"Checked Out\"");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Estimation ", "Status ");
-		Gson gson = new Gson();
+		List<String> expectedDescription = genArrayList("Create Unplanned #1", "Append to Sprint #1", "Not Check Out => Check Out", "TEST_ACCOUNT_ID_1", "TEST_UNPLANNED_NOTES_1 => i am the update one");
+		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note");
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(CU.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(CU.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(CU.getIssueList().get(0).getSummary(), historyObj.Name);
+		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " 0 => 1", " 0 => 2"));
+		assertEquals(CU.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(CU.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(CU.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
-	 * UnplanedItem History的測試 1 unplanedItem with editing to done
+	 * UnplanedItem History 的測試 1 unplanedItem with editing to done
 	 */
 	public void testShowUnplanedItemHistoryTest3() throws Exception {
 		// ================== init ====================
@@ -403,18 +398,17 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
-		verifyForward(null);
+		verifyForward(null); 
 		verifyNoActionErrors();
-		List<String> expectedDescription = genArrayList("New Issue", " 0 => 1", " 0 => 2", " \"Not Checked Out\" => \"Checked Out\"", " \"Checked Out\" => \"Done\"");
-		List<String> expectedHistoryType = genArrayList("", "Sprint ", "Estimation ", "Status ", "Status ");
-		Gson gson = new Gson();
+		List<String> expectedDescription = genArrayList("Create Unplanned #1", "Append to Sprint #1", "Not Check Out => Check Out", "TEST_ACCOUNT_ID_1", "TEST_UNPLANNED_NOTES_1 => i am the update one", "Check Out => Done");
+		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note", "Status");
 		String actualResponseText = response.getWriterBuffer().toString();
-		IssueHistoryObject historyObj = gson.fromJson(actualResponseText, IssueHistoryObject.class);
-		assertEquals(CU.getIssueList().get(0).getCategory(), historyObj.IssueType);
-		assertEquals(CU.getIssueList().get(0).getIssueLink(), historyObj.Link);
-		assertEquals(CU.getIssueList().get(0).getSummary(), historyObj.Name);
-
-		assertData(expectedDescription, expectedHistoryType, historyObj, genArrayList("New Issue", " 0 => 1", " 0 => 2"));
+		JSONObject object = new JSONObject(actualResponseText);
+		
+		assertEquals(CU.getIssueList().get(0).getCategory(), object.get("IssueType"));
+		assertEquals(CU.getIssueList().get(0).getIssueLink(), object.get("Link"));
+		assertEquals(CU.getIssueList().get(0).getSummary(), object.get("Name"));
+		assertData(expectedHistoryType, expectedDescription, object.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -427,69 +421,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		}
 		return arrayList;
 	}
-
-	/**
-	 * Function: 比對期望資料與DB資料是否相符，解決相同時間的資料query排序不同問題，也須通過測試 step 1. 將所有DB data依時間為key建立一個MAP step 2. 將預期資料與DB資料做比對 step 3. step2 比對錯誤時判斷是否有這筆資料但時間相同
-	 * 
-	 * @param expectedDescription
-	 * @param expectedHistoryType
-	 * @param historyObj
-	 */
-	private void assertData(List<String> expectedDescription, List<String> expectedHistoryType, IssueHistoryObject historyObj, List<String>... group) {
-		HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
-		for (int i = 0; i < historyObj.IssueHistories.size(); i++) {
-			IssueHistoryList issueHistory = historyObj.IssueHistories.get(i);
-			if (map.get(issueHistory.ModifiedDate) == null) {
-				ArrayList<String> list = new ArrayList<String>();
-				list.add(issueHistory.Description);
-				map.put(issueHistory.ModifiedDate, list);
-//				System.out.println("new array : " + issueHistory.ModifiedDate + " " + issueHistory.Description);
-			} else {
-				map.get(issueHistory.ModifiedDate).add(issueHistory.Description);
-//				System.out.println("already exist : " + issueHistory.ModifiedDate + " " + issueHistory.Description);
-			}
-		}
-
-		for (int i = 0; i < historyObj.IssueHistories.size(); i++) {
-			IssueHistoryList issueHistory = historyObj.IssueHistories.get(i);
-
-			boolean hitFlag = false;
-			if (expectedDescription.get(i).equals(issueHistory.Description)
-			        && expectedHistoryType.get(i).equals(issueHistory.HistoryType)) {
-				hitFlag = true;
-//				System.out.println("normal hit true");
-			} else {
-//				System.out.println("normal not hit " + issueHistory.Description);
-				Set<String> keySet = map.keySet();
-				for (String key : keySet) {
-					for (String desc : map.get(key)) {
-//						System.out.println("iterate map key:" + key + " value:" + desc);
-						if (desc.equals(expectedDescription.get(i))) {
-//							System.out.println("equal : " + desc + " == " + expectedDescription.get(i));
-							if (map.get(key).size() > 1) {
-//								System.out.println("Hit true and size != 1 ");
-								hitFlag = true;
-								break;
-							} else {
-								if (group.length != 0) {
-									for (int j = 0; j < group.length; j++) {
-										if (group[j].contains(expectedDescription.get(i))) {
-											hitFlag = true;
-											break;
-										}
-									}
-								} else {
-									hitFlag = false;
-								}
-							}
-						}
-					}
-					if (hitFlag) {
-						break;
-					}
-				}
-			}
-			assertEquals(true, hitFlag);
+	
+	private void assertData(List<String> exceptedHistoryType, List<String> exceptedDesc, JSONArray actualData) throws JSONException {
+		for (int i = 0; i < exceptedHistoryType.size(); i++) {
+			JSONObject history = actualData.getJSONObject(i);
+			
+			String exceptType = exceptedHistoryType.get(i);
+			String exceptDesc = exceptedDesc.get(i);
+			
+			assertEquals(exceptType, history.getString("HistoryType"));
+			assertEquals(exceptDesc, history.getString("Description"));
 		}
 	}
 }

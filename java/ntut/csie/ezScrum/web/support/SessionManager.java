@@ -132,7 +132,8 @@ public class SessionManager {
 				project = new ProjectMapper().getProjectByPidForDb(projectID);
 				if (project != null) {
 					try {
-						System.out.println(project.toJSON().toString());
+						project.toJSON().toString();
+//						System.out.println(project.toJSON().toString());
 					} catch (JSONException e) {
 					}
 					session.setAttribute(projectID + "_new", project);	// 當IProject完全改完，把new拿掉

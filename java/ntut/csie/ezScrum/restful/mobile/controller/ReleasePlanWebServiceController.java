@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,6 +44,11 @@ public class ReleasePlanWebServiceController {
 		} catch (IOException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
 								"method: decode, " +
+								"exception: " + e.toString());
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+								"method: getReleasePlan, " +
 								"exception: " + e.toString());
 			e.printStackTrace();
 		}
@@ -97,13 +103,18 @@ public class ReleasePlanWebServiceController {
 			jsonString = mReleasePlanWebService.getAllReleasePlanWithAllItem();
 		} catch (LogonException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
-					"method: getAllReleasePlan, " +
-					"exception: " + e.toString());
+								"method: getAllReleasePlan, " +
+								"exception: " + e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
-					"method: getAllReleasePlan, " +
-					"exception: " + e.toString());
+								"method: getAllReleasePlan, " +
+								"exception: " + e.toString());
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+								"method: getAllReleasePlanWithAllItem, " +
+								"exception: " + e.toString());
 			e.printStackTrace();
 		}
 		return jsonString;

@@ -14,6 +14,9 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.core.RelationEnum;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.apache.commons.logging.Log;
@@ -116,58 +119,77 @@ public class MantisHistoryService extends AbstractMantisService {
 	}
 
 	public void initHistory(IIssue issue) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName("mantis_bug_history_table");
-		valueSet.addEqualCondition("bug_id", Long.toString(issue.getIssueID()));
-		valueSet.setOrderBy("date_modified", IQueryValueSet.ASC_ORDER);
-		String query = valueSet.getSelectQuery();
-		log.info("[SQL] " + query);
-		ResultSet result = getControl().executeQuery(query);
-		try {
-			while (result.next()) {
-				try {
-					IssueHistory history = new IssueHistory();
-					history.setIssueID(issue.getIssueID());
-					history.setHistoryID(result.getLong("id"));
-					history.setModifyDate(result.getTimestamp("date_modified")
-							.getTime());
-					String fieldName = result.getString("field_name");
-					int type = result.getInt("type");
-					if(fieldName == null|| fieldName.equals("null")){
-						if(type == RelationEnum.ISSUE_NEW_TYPE)
-							history.setFieldName("New Issue");
-						else if(type == RelationEnum.DESCRIPTION_UPDATE_VALUE)
-							history.setFieldName("Description Updated");
-						else if(type == RelationEnum.NOTES_UPDATE_VALUE)
-							history.setFieldName("Note Edited");
-						else if(type == RelationEnum.RELEATIONSHIP_ADD_TYPE)
-							history.setFieldName("Relationship added ");
-						else if(type == RelationEnum.RELEATIONSHIP_DELETE_TYPE)
-							history.setFieldName("Relationship deleted ");
-						else{
-							/*讓沒有對應到的fieldName有個預設的對應值
-							 * 否則沒有set fieldName 就是null之後其他程式抓出時要是沒有
-							 * 判斷是否為null就直接拿來比對其他字串就會丟出例外而且很難debug
-							 * by ninja 20101008
-							 */
-							history.setFieldName("");
-						}
-					}
-					else
-						history.setFieldName(fieldName);
-	
-					history.setOldValue(result.getString("old_value"));
-					history.setNewValue(result.getString("new_value"));
-					history.setType(type);
-					issue.addIssueHistory(history);
-				} catch (Exception e) {
-					// 多一層try只是為了防止取得型態錯誤的值
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName("mantis_bug_history_table");
+//		valueSet.addEqualCondition("bug_id", Long.toString(issue.getIssueID()));
+//		valueSet.setOrderBy("date_modified", IQueryValueSet.ASC_ORDER);
+//		String query = valueSet.getSelectQuery();
+//		log.info("[SQL] " + query);
+//		ResultSet result = getControl().executeQuery(query);
+//		try {
+//			while (result.next()) {
+//				try {
+//					IssueHistory history = new IssueHistory();
+//					history.setIssueID(issue.getIssueID());
+//					history.setHistoryID(result.getLong("id"));
+//					history.setModifyDate(result.getTimestamp("date_modified")
+//							.getTime());
+//					String fieldName = result.getString("field_name");
+//					int type = result.getInt("type");
+//					if(fieldName == null|| fieldName.equals("null")){
+//						if(type == RelationEnum.ISSUE_NEW_TYPE)
+//							history.setFieldName("New Issue");
+//						else if(type == RelationEnum.DESCRIPTION_UPDATE_VALUE)
+//							history.setFieldName("Description Updated");
+//						else if(type == RelationEnum.NOTES_UPDATE_VALUE)
+//							history.setFieldName("Note Edited");
+//						else if(type == RelationEnum.RELEATIONSHIP_ADD_TYPE)
+//							history.setFieldName("Relationship added ");
+//						else if(type == RelationEnum.RELEATIONSHIP_DELETE_TYPE)
+//							history.setFieldName("Relationship deleted ");
+//						else{
+//							/**讓沒有對應到的fieldName有個預設的對應值
+//							 * 否則沒有set fieldName 就是null之後其他程式抓出時要是沒有
+//							 * 判斷是否為null就直接拿來比對其他字串就會丟出例外而且很難debug
+//							 * by ninja 20101008
+//							 */
+//							history.setFieldName("");
+//						}
+//					}
+//					else
+//						history.setFieldName(fieldName);
+//	
+//					history.setOldValue(result.getString("old_value"));
+//					history.setNewValue(result.getString("new_value"));
+//					history.setType(type);
+//					issue.addIHistory(history);
+//					if (issue.getIssueType() == IssueTypeEnum.TYPE_STORY) {
+//						issue.setChildrenId(getChildrenId(issue.getIssueID()));
+//					}
+//				} catch (Exception e) {
+//					// 多一層try只是為了防止取得型態錯誤的值
+//				}
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 	}
+	
+	private ArrayList<Long> getChildrenId(long storyId) throws SQLException {
+		ArrayList<Long> childrenId = new ArrayList<Long>();
+		
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName("mantis_bug_relationship_table");
+		valueSet.addEqualCondition("source_bug_id", Long.toString(storyId));
+		String query = valueSet.getSelectQuery();
+		ResultSet result = getControl().executeQuery(query);
+
+		while (result.next()) {
+			childrenId.add(result.getLong("destination_bug_id"));
+		}
+		return childrenId;
+	}
+	
 	//刪除 issue的history
 	public void removeHistory(String id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();

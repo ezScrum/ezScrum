@@ -3,12 +3,14 @@ package ntut.csie.ezScrum.web.action.retrospective;
 import java.io.File;
 import java.io.IOException;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -105,6 +107,7 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	this.CR.update();
     	assertEquals(0, this.CR.getGoodRetrospectiveCount());
     	assertEquals(0, this.CR.getImproveRetrospectiveCount());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
 	}
 	
 	// case2: delete One improvement retrospective
@@ -144,6 +147,7 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	this.CR.update();
     	assertEquals(0, this.CR.getGoodRetrospectiveCount());
     	assertEquals(0, this.CR.getImproveRetrospectiveCount());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
 	}	
 
 	// case3: delete One good & One improvement retrospective
@@ -185,6 +189,7 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	this.CR.update();
     	assertEquals(0, this.CR.getGoodRetrospectiveCount());
     	assertEquals(1, this.CR.getImproveRetrospectiveCount());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
     	
 		// (II) 再刪除improvement
     	
@@ -219,7 +224,8 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	
     	this.CR.update();
     	assertEquals(0, this.CR.getGoodRetrospectiveCount());
-    	assertEquals(0, this.CR.getImproveRetrospectiveCount());    	
+    	assertEquals(0, this.CR.getImproveRetrospectiveCount());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
 	}	
 	
 	// case4: delete One improvement & One good retrospective
@@ -257,6 +263,7 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	// 比對資料是否正確
     	String expected = genXML(sprintID, issueID);
     	assertEquals(expected, response.getWriterBuffer().toString());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
     	
     	this.CR.update();
     	assertEquals(1, this.CR.getGoodRetrospectiveCount());
@@ -292,6 +299,7 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	// 比對資料是否正確
     	expected = genXML(sprintID, issueID);
     	assertEquals(expected, response.getWriterBuffer().toString());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
     	
     	this.CR.update();
     	assertEquals(0, this.CR.getGoodRetrospectiveCount());

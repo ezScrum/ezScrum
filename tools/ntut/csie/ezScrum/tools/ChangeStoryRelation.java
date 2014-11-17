@@ -297,7 +297,7 @@ public class ChangeStoryRelation {
 			valueSet.addEqualCondition("ezscrum_story_relation.sprintID",
 					sprintID);
 
-		System.out.println(valueSet.getSelectQuery());
+//		System.out.println(valueSet.getSelectQuery());
 		return resultIssue;
 	}
 
@@ -420,7 +420,7 @@ public class ChangeStoryRelation {
 
 				valueSet.addInsertValue("updateDate", tmp.toString());
 
-				System.out.println(valueSet.getInsertQuery());
+//				System.out.println(valueSet.getInsertQuery());
 				control.execute(valueSet.getInsertQuery());
 			}
 		}

@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.issue.internal;
 
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,255 +9,269 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.jdom.Element;
 
-
 public class Issue implements IIssue {
-
-	private String m_category = "";
-	private String m_reproducibility = "";
-	private String m_severity = "";
-	private String m_priority = "";
-	private String m_summary = "";
-	private String m_description = "";
-	private String m_additional = "";
-	private String m_viewStatus = "";
-	private String m_assignto = "";
-	private String m_reporter = "";
-	private String m_projectID = "";
-	private String m_projectName = "";
-	private String m_integrationID = "";
-	private String m_builderID = "";
-
-	private long m_issueID = -1;
-	private String m_issueLink = "";
-	private long m_submittedDate = new Date().getTime();
-	private String m_status = "";
-	private ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
-	private long m_workingDate = 0;
-	private List<IIssueHistory> m_histories = new ArrayList<IIssueHistory>();
-	private List<IIssueHistory> m_tagHistories = new ArrayList<IIssueHistory>();
-	protected Element m_tagRoot = new Element(ScrumEnum.ROOT_TAG);
-
-	// 對Story的自訂分類標籤
-	private List<TagObject> m_tag = new ArrayList<TagObject>();
-
-	private List<IIssueNote> m_notes = new ArrayList<IIssueNote>();
+	private String mCategory = "";
+	private String mReproducibility = "";
+	private String mSeverity = "";
+	private String mPriority = "";
+	private String mSummary = "";
+	private String mDescription = "";
+	private String mAdditional = "";
+	private String mViewStatus = "";
+	private String mAssignto = "";
+	private String mReporter = "";
+	private String mProjectId = "";
+	private String mProjectName = "";
+	private String mIntegrationId = "";
+	private String mBuilderId = "";
+	private String mIssueLink = "";
+	private String mStatus = "";
+	private long mId = -1;
+	private long mSubmittedDate = new Date().getTime();
+	private long mWorkingDate = 0;
+	private long mParentId;
 	
-	// 儲存 Issue 客製化欄位(IssueTrac) ID+類型+名稱+數值
-	private List<IssueTypeField> m_listField = new ArrayList<IssueTypeField>();
-	// 儲存 Issue 客製化類型名稱
-	private String m_categoryName = "";
+	private ArrayList<AttachFileObject> mAttachFiles = new ArrayList<AttachFileObject>();
+	private ArrayList<HistoryObject> mHistories = new ArrayList<HistoryObject>();
+	private ArrayList<IIssueHistory> mTagHistories = new ArrayList<IIssueHistory>();
+	private ArrayList<Long> mChildrenId = new ArrayList<Long>();
+	protected Element mTagRoot = new Element(ScrumEnum.ROOT_TAG);
+	// 對 Story 的自訂分類標籤
+	private List<TagObject> mTag = new ArrayList<TagObject>();
+	private List<IIssueNote> mNotes = new ArrayList<IIssueNote>();
 
-	public Issue() {
-	}
+	// 儲存 Issue 客製化欄位(IssueTrac) ID+類型+名稱+數值
+	private List<IssueTypeField> mListField = new ArrayList<IssueTypeField>();
+	// 儲存 Issue 客製化類型名稱
+	private String mCategoryName = "";
+
+	public Issue() {}
 
 	public Date getSubmittedDateDate() {
-		return new Date(this.m_submittedDate);
+		return new Date(this.mSubmittedDate);
 	}
 
 	@Override
 	public String getCategory() {
-		return m_category;
+		return mCategory;
 	}
 
 	@Override
 	public void setCategory(String category) {
-		m_category = category;
+		mCategory = category;
+	}
+
+	public int getIssueType() {
+		if (mCategory.equals("Task")) {
+			return IssueTypeEnum.TYPE_TASK;
+		} else if (mCategory.equals("Story")) {
+			return IssueTypeEnum.TYPE_STORY;
+		} else if (mCategory.equals("UnplannedItem")) {
+			return IssueTypeEnum.TYPE_UNPLANNED;
+		} else if (mCategory.equals("Good") || mCategory.equals("Improvement")) {
+			return IssueTypeEnum.TYPE_RETROSPECTIVE;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public String getReproducibility() {
-		return m_reproducibility;
+		return mReproducibility;
 	}
 
 	@Override
 	public void setReproducibility(String reproducibility) {
-		m_reproducibility = reproducibility;
+		mReproducibility = reproducibility;
 	}
 
 	@Override
 	public String getSeverity() {
-		return m_severity;
+		return mSeverity;
 	}
 
 	@Override
 	public void setSeverity(String severity) {
-		m_severity = severity;
+		mSeverity = severity;
 	}
 
 	@Override
 	public String getPriority() {
-		return m_priority;
+		return mPriority;
 	}
 
 	@Override
 	public void setPriority(String priority) {
-		m_priority = priority;
+		mPriority = priority;
 	}
 
 	@Override
 	public String getSummary() {
-		return m_summary;
+		return mSummary;
 	}
 
 	@Override
 	public void setSummary(String summary) {
-		m_summary = summary;
+		mSummary = summary;
 	}
 
 	@Override
 	public String getDescription() {
-		return m_description;
+		return mDescription;
 	}
 
 	@Override
 	public void setDescription(String description) {
-		m_description = description;
+		mDescription = description;
 	}
 
 	@Override
 	public String getAdditional() {
-		return m_additional;
+		return mAdditional;
 	}
 
 	@Override
 	public void setAdditional(String additional) {
-		m_additional = additional;
+		mAdditional = additional;
 	}
 
 	@Override
 	public String getViewStatus() {
-		return m_viewStatus;
+		return mViewStatus;
 	}
 
 	@Override
 	public void setViewState(String viewStatus) {
-		m_viewStatus = viewStatus;
+		mViewStatus = viewStatus;
 	}
 
 	@Override
 	public String getAssignto() {
-		return m_assignto;
+		return mAssignto;
 	}
 
 	@Override
 	public void setAssignto(String assignto) {
-		m_assignto = assignto;
+		mAssignto = assignto;
 	}
 
 	@Override
 	public String getProjectID() {
-		return m_projectID;
+		return mProjectId;
 	}
 
 	@Override
 	public void setProjectID(String projectID) {
-		m_projectID = projectID;
+		mProjectId = projectID;
 	}
 
 	@Override
 	public String getProjectName() {
-		return m_projectName;
+		return mProjectName;
 	}
 
 	@Override
 	public void setProjectName(String projectName) {
-		this.m_projectName = projectName;
+		this.mProjectName = projectName;
 	}
-	
-	
+
 	@Override
-	public String getIntegrationID() {
-		return m_integrationID;
+	public String getIntegrationId() {
+		return mIntegrationId;
 	}
 
 	@Override
 	public void setIntegrationID(String integrationID) {
-		m_integrationID = integrationID;
+		mIntegrationId = integrationID;
 	}
 
 	@Override
 	public String getBuilderID() {
-		return m_builderID;
+		return mBuilderId;
 	}
 
 	@Override
 	public void setBuilderID(String builderID) {
-		m_builderID = builderID;
+		mBuilderId = builderID;
 	}
 
 	@Override
 	public String getStatus() {
-		return m_status;
+		return mStatus;
 	}
 
 	@Override
 	public long getSubmittedDate() {
-		return m_submittedDate;
+		return mSubmittedDate;
 	}
 
 	@Override
 	public void setStatus(String status) {
-		m_status = status;
+		mStatus = status;
 	}
 
 	@Override
 	public void setSubmittedDate(long submitted) {
-		m_submittedDate = submitted;
+		mSubmittedDate = submitted;
 	}
 
 	@Override
 	public String getIssueLink() {
-		return m_issueLink;
+		return mIssueLink;
 	}
 
 	@Override
 	public void setIssueLink(String issueLink) {
-		m_issueLink = issueLink;
+		mIssueLink = issueLink;
 	}
 
 	@Override
 	public long getIssueID() {
-		return m_issueID;
+		return mId;
 	}
 
 	@Override
-	public void setIssueID(long issueID) {
-		m_issueID = issueID;
+	public void setIssueID(long issueId) {
+		mId = issueId;
 	}
 
 	@Override
-	public void setIssue(IIssue issue) {
-		m_category = issue.getCategory();
-		m_reproducibility = issue.getReproducibility();
-		m_severity = issue.getSeverity();
-		m_priority = issue.getPriority();
-		m_summary = issue.getSummary();
-		m_description = issue.getDescription();
-		m_additional = issue.getAdditional();
-		m_viewStatus = issue.getViewStatus();
-		m_assignto = issue.getAssignto();
+	public void setIssue(IIssue issue) throws SQLException {
+		mCategory = issue.getCategory();
+		mReproducibility = issue.getReproducibility();
+		mSeverity = issue.getSeverity();
+		mPriority = issue.getPriority();
+		mSummary = issue.getSummary();
+		mDescription = issue.getDescription();
+		mAdditional = issue.getAdditional();
+		mViewStatus = issue.getViewStatus();
+		mAssignto = issue.getAssignto();
 
-		m_issueID = issue.getIssueID();
-		m_status = issue.getStatus();
-		m_submittedDate = issue.getSubmittedDate();
-		m_issueLink = issue.getIssueLink();
-		attachFiles = issue.getAttachFiles();
-		m_tag = issue.getTags();
+		mId = issue.getIssueID();
+		mStatus = issue.getStatus();
+		mSubmittedDate = issue.getSubmittedDate();
+		mIssueLink = issue.getIssueLink();
+		mAttachFiles = issue.getAttachFiles();
+		mTag = issue.getTags();
 
-		this.m_histories = issue.getHistory();
-		this.setTagContent(issue.getTagContentRoot());
+		mHistories = issue.getHistories();
+		mChildrenId = issue.getChildrenId();
+		
+		setTagContent(issue.getTagContentRoot());
 	}
 
 	@Override
@@ -268,96 +283,85 @@ public class Issue implements IIssue {
 	public Date getStatusUpdated(Date date, int status) {
 		Date result = null;
 		int lastStatus = 0;
-		for (IIssueHistory history : m_histories) {
-			String fieldName = history.getFieldName();
-			if (fieldName!=null && fieldName.equals(IIssueHistory.STATUS_FIELD_NAME)) {
-				if (history.getModifyDate() <= date.getTime()) {
-					lastStatus = Integer.parseInt(history.getNewValue());
-					if (lastStatus >= status)
-						result = new Date(history.getModifyDate());
-				} else
-					break;
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
+					if (history.getModifiedTime() <= date.getTime()) {
+						lastStatus = Integer.parseInt(history.getNewValue());
+						if (lastStatus >= status) {
+							result = new Date(history.getModifiedTime());
+						} else {
+							break;
+						}
+					}
+				}
 			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
-		if (lastStatus < status)
+		if (lastStatus < status) {
 			return null;
-
+		}
 		return result;
 	}
 
 	@Override
 	public long getWorkingUpdated() {
-		return this.m_workingDate;
+		return mWorkingDate;
 	}
 
 	@Override
 	public void setWorkingUpdated(long workingDate) {
-		this.m_workingDate = workingDate;
+		mWorkingDate = workingDate;
 	}
 
 	@Override
 	public Element getTagContentRoot() {
-		return m_tagRoot;
+		return mTagRoot;
 	}
 
 	@Override
 	public void setTagContent(Element historyRoot) {
-		m_tagRoot = historyRoot;
+		mTagRoot = historyRoot;
 		generateTagReleationHistory();
 	}
 
-	private List<IIssueHistory> getstatusHistory() {
-		List<IIssueHistory> list = new ArrayList<IIssueHistory>();		
-		for (IIssueHistory his : m_histories) {
-			if ( his.getFieldName()!= null && his.getFieldName().compareTo("status") == 0)// history
-				list.add(his);
+	private ArrayList<HistoryObject> getStatusHistories() {
+		ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
+					histories.add(history);
+				}
+			}
+		} catch (SQLException e) {
 		}
-		/*
-		 * //做一個極小值 IIssueHistory min=new IssueHistory(); min=list.get(0);
-		 * min.setModifyDate(1); min.setOldValue(min.getNewValue());
-		 * list.add(0,min);
-		 */
-		// 值一個極大值
-		if (list.size() != 0) {
-			IIssueHistory max = new IssueHistory();
-			max.setFieldName(list.get(list.size() - 1).getFieldName());
-			max.setModifyDate(Long.MAX_VALUE);
-			max.setNewValue(list.get(list.size() - 1).getNewValue());
-			max.setOldValue(list.get(list.size() - 1).getNewValue());
-			list.add(max);
-		}
-		return list;
+		return histories;
 	}
 
-	public int DateStatus(Date date)// 傳入想知道那一天的狀態,ex 07/28的issue 狀態為ASSIGNED
-									// 則回傳ITSEUUM.ASSIGN_STATUS
-	{
-
+	// 傳入想知道那一天的狀態,ex 07/28的issue 狀態為 ASSIGNED
+	// 則回傳ITSEUUM.ASSIGN_STATUS
+	public int getDateStatus(Date date) {
 		long dateTime = date.getTime();
-		List<IIssueHistory> templist = getstatusHistory();
-		if (templist.size() != 0) {
-			for (int i = 0; i < templist.size(); i++) {
-				IIssueHistory his = templist.get(i);
-				if (dateTime < his.getModifyDate()) {
-					int temp = Integer.parseInt(his.getOldValue());
-					switch (temp) {
-					case 10:
-						return ITSEnum.NEW_STATUS;
-					case 50:
-						return ITSEnum.ASSIGNED_STATUS;
-					case 90:
-						return ITSEnum.CLOSED_STATUS;
-					}
+		
+		int status = ITSEnum.NEW_STATUS;
+		ArrayList<HistoryObject> statusHistories = getStatusHistories();
+		if (statusHistories.size() != 0) {
+			for (int i = 0; i < statusHistories.size(); i++) {
+				HistoryObject history = statusHistories.get(i);
+				if (history.getModifiedTime() <= dateTime) {
+					status = Integer.parseInt(history.getNewValue());
 				}
 			}
 		}
-		return 10;
+		return status;
 	}
-
+	
 	private void generateTagReleationHistory() {
 		@SuppressWarnings("unchecked")
-		List<Element> tags = m_tagRoot.getChildren();
+		List<Element> tags = mTagRoot.getChildren();
 		HashMap<String, Map<Date, String>> map = new HashMap<String, Map<Date, String>>();
 		// xpath:/root/JCIS/Iteration/10
 		// xpath:/root/Tag/ChildTag/Text
@@ -384,7 +388,7 @@ public class Issue implements IIssue {
 					if (current == previous)
 						continue;
 					IIssueHistory history = new IssueHistory();
-					history.setIssueID(this.m_issueID);
+					history.setIssueID(mId);
 					history.setHistoryID(Long.parseLong(DateUtil.format(id,
 							DateUtil._16DIGIT_DATE_TIME_2)));
 					history.setModifyDate(id.getTime());
@@ -393,13 +397,12 @@ public class Issue implements IIssue {
 					history.setOldValue(formater.format(previous));
 					history.setNewValue(formater.format(current));
 					history.setType(IIssueHistory.OTHER_TYPE);
-					this.m_tagHistories.add(history);
+					mTagHistories.add(history);
 					previous = current;
 				} catch (Exception e) {
 					break;
 				}
 			}
-
 		}
 	}
 
@@ -411,24 +414,25 @@ public class Issue implements IIssue {
 
 		for (Element subElem : subElems) {
 			String elementName = subElem.getName();
-			if (isSameValueBefore(subElem))
+			if (isSameValueBefore(subElem)) {
 				removeList.add(elementName);
+			}
 		}
 
-		for (String name : removeList)
+		for (String name : removeList) {
 			element.removeChild(name);
+		}
 
-		if (element.getChildren().size() > 0)
-			this.m_tagRoot.addContent(element);
+		if (element.getChildren().size() > 0) {
+			mTagRoot.addContent(element);
+		}
 	}
 
 	private boolean isSameValueBefore(Element subElem) {
 		String value = getTagValue(subElem.getName());
 		String current = subElem.getText();
-		if (value == null && (current != null || !current.equals("")))
-			return false;
-		if (value.equals(subElem.getText()))
-			return true;
+		if (value == null && (current != null || !current.equals(""))) return false;
+		if (value.equals(subElem.getText())) return true;
 		return false;
 	}
 
@@ -438,14 +442,13 @@ public class Issue implements IIssue {
 		Date lastDate = null;
 		String lastValue = null;
 
-		if (m_tagRoot == null)
-			return lastValue;
+		if (mTagRoot == null) return lastValue;
 		@SuppressWarnings("unchecked")
-		List<Element> historyList = this.m_tagRoot.getChildren();
+		List<Element> historyList = mTagRoot.getChildren();
 		for (Element history : historyList) {
 			String value = history.getChildText(name);
-			Date modifyDate = DateUtil.dayFillter(history.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),DateUtil._16DIGIT_DATE_TIME_2);
-			if (value != null&& date.getTime() >= DateUtil.dayFilter(modifyDate).getTime()) {
+			Date modifyDate = DateUtil.dayFillter(history.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR), DateUtil._16DIGIT_DATE_TIME_2);
+			if (value != null && date.getTime() >= DateUtil.dayFilter(modifyDate).getTime()) {
 				if (lastDate == null) {
 					lastDate = modifyDate;
 					lastValue = value;
@@ -471,72 +474,62 @@ public class Issue implements IIssue {
 	// 回傳所有此Tag的Value，並且每個Tag建立的時間附帶時間
 	public Map<Date, String> getTagValueList(String name) {
 		TreeMap<Date, String> map = new TreeMap<Date, String>();
-		List<Element> historyList = this.m_tagRoot.getChildren();
+		List<Element> historyList = mTagRoot.getChildren();
 		for (Element history : historyList) {
 			String value = history.getChildText(name);
 			Date modifyDate = DateUtil.dayFillter(history.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR), DateUtil._16DIGIT_DATE_TIME_2);
-			if(value!=null){
+			if (value != null) {
 				map.put(modifyDate, value);
 			}
 		}
-
 		return map;
 	}
 
 	public String getImportance() {
 		String value = getTagValue(ScrumEnum.IMPORTANCE);
-		if (value == null)
-			return ScrumEnum.DIGITAL_BLANK_VALUE;
+		if (value == null) return ScrumEnum.DIGITAL_BLANK_VALUE;
 		return value;
 	}
-	
+
 	public String getValue() {
 		String value = getTagValue(ScrumEnum.VALUE);
-		if (value == null)
-			return ScrumEnum.DIGITAL_BLANK_VALUE;
+		if (value == null) return ScrumEnum.DIGITAL_BLANK_VALUE;
 		return value;
 	}
 
 	public String getEstimated() {
 		String value = getTagValue(ScrumEnum.ESTIMATION);
-		if (value == null)
-			return ScrumEnum.DIGITAL_BLANK_VALUE;
+		if (value == null) return ScrumEnum.DIGITAL_BLANK_VALUE;
 		return value;
 	}
 
 	public String getRemains() {
 		String value = getTagValue(ScrumEnum.REMAINS);
-		if (value == null)
-			return getEstimated();
+		if (value == null) return getEstimated();
 		return value;
 	}
 
 	public String getSprintID() {
 		String temp = getTagValue(ScrumEnum.SPRINT_ID);
-		if (temp == null || temp.isEmpty())
-			return "-1";
-		else
-			return temp;
+		if (temp == null || temp.isEmpty()) return "-1";
+		else return temp;
 	}
 
 	public String getReleaseID() {
 		String value = getTagValue(ScrumEnum.RELEASE_TAG);
-		if (value == null)
-			return "-1";
+		if (value == null) return "-1";
 		return value;
 	}
 
 	public String getHowToDemo() {
 		String value = getTagValue(ScrumEnum.HOWTODEMO);
-		if (value == null)
-			return ScrumEnum.STRING_BLANK_VALUE;
+		if (value == null) return ScrumEnum.STRING_BLANK_VALUE;
 		return value;
 	}
 
 	public String getNotes() {
 		String value = getTagValue(ScrumEnum.NOTES);
-		if (value == null)
-			return ScrumEnum.STRING_BLANK_VALUE;
+		if (value == null) return ScrumEnum.STRING_BLANK_VALUE;
 		return value;
 	}
 
@@ -544,30 +537,14 @@ public class Issue implements IIssue {
 	@Override
 	public String getPartners() {
 		String value = getTagValue(ScrumEnum.PARTNERS);
-		if (value == null)
-			return ScrumEnum.STRING_BLANK_VALUE;
+		if (value == null) return ScrumEnum.STRING_BLANK_VALUE;
 		return value;
 	}
 
 	public String getActualHour() {
 		String value = getTagValue(ScrumEnum.ACTUALHOUR);
-		if (value == null)
-			return ScrumEnum.DIGITAL_BLANK_VALUE;
+		if (value == null) return ScrumEnum.DIGITAL_BLANK_VALUE;
 		return value;
-	}
-
-	@Deprecated
-	@Override
-	public List<Long> getChildrenID() {
-		// return m_children;
-		return this.getChildrenID(new Date());
-	}
-
-	@Deprecated
-	@Override
-	public List<Long> getParentsID() {
-		// return m_parnets;
-		return this.getParentsID(new Date());
 	}
 
 	@Override
@@ -578,170 +555,126 @@ public class Issue implements IIssue {
 	@Override
 	public Date getLastUpdate() {
 		Date lastUpdate = null;
-		for (IIssueHistory history : this.m_histories) {
-			//if (history.getFieldName().equals(IIssueHistory.STATUS_FIELD_NAME)) {
-				if (lastUpdate == null)
-					lastUpdate = new Date(history.getModifyDate());
-				else if (lastUpdate.getTime() < history.getModifyDate())
-					lastUpdate = new Date(history.getModifyDate());
-			//}
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (lastUpdate == null) {
+					lastUpdate = new Date(history.getModifiedTime());
+				} else if (lastUpdate.getTime() < history.getModifiedTime()) {
+					lastUpdate = new Date(history.getModifiedTime());
+				}
+			}			
+		} catch (SQLException e) {
 		}
 		return lastUpdate;
 	}
 
-	@Override
-	public void addIssueHistory(IIssueHistory history) {
-		this.m_histories.add(history);
-
-	}
-
-	@Override
-	public List<IIssueHistory> getIssueHistories() {
-		ArrayList<IIssueHistory> list = new ArrayList<IIssueHistory>();
-		// 有兩種history,一種為issue的,一種為Scrum Tag的
-		// issue
-		for (IIssueHistory history : this.m_histories) {
-			int index = 0;
-			for (IIssueHistory item : list) {
-				if (item.getModifyDate() > history.getModifyDate())
-					break;
-				index++;
-			}
-			list.add(index, history);
-		}
-
-		// Scrum Tag : 這部份要抽出至Story及Task中實作
-		for (IIssueHistory history : this.m_tagHistories) {
-			int index = 0;
-			for (IIssueHistory item : list) {
-				if (item.getModifyDate() > history.getModifyDate())
-					break;
-				index++;
-			}
-			list.add(index, history);
-		}
-		return list;
-	}
-
-	@Deprecated
-	@Override
-	public List<Long> getChildrenID(Date date) {
-		ArrayList<Long> list = new ArrayList<Long>();
-		for (IIssueHistory history : this.m_histories) {
-			if (history.getModifyDate() > date.getTime())
-				continue;
-			if (history.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.PARENT_OLD_VALUE))
-				list.add(Long.parseLong(history.getNewValue()));
-			else if (history.getType() == IIssueHistory.RELEATIONSHIP_DELETE_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.PARENT_OLD_VALUE))
-				list.remove(Long.parseLong(history.getNewValue()));
-		}
-		return list;
-	}
-
-	@Deprecated
-	@Override
-	public List<Long> getParentsID(Date date) {
-		ArrayList<Long> list = new ArrayList<Long>();
-		for (IIssueHistory history : this.m_histories) {
-			if (history.getModifyDate() > date.getTime())
-				break;
-			if (history.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.CHILD_OLD_VALUE))
-				list.add(Long.parseLong(history.getNewValue()));
-			else if (history.getType() == IIssueHistory.RELEATIONSHIP_DELETE_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.CHILD_OLD_VALUE)) {
-				list.remove(Long.parseLong(history.getNewValue()));
-			}
-		}
-		return list;
-	}
-
-	public List<IIssueHistory> getHistory() {
-		return this.m_histories;
-	}
-
-	public void setHistory(List<IIssueHistory> history) {
-		this.m_histories = history;
+	public void setChildrenId(ArrayList<Long> childrenId) {
+		mChildrenId = childrenId;
 	}
 	
-	/* 抓取Relation的關係 */
-	/* 原本應該建立一個relationship的service來抓取資料
-	 * 但起先Story跟task的關係使用history來取得，故此處也先以history來抓取資料
-	 * */
-	public List<IssueRelationship> getRelationships() {
-		//有關relation新增的歷史資料
-		List<IIssueHistory> addRelations = new ArrayList<IIssueHistory>();
-		for(IIssueHistory history: m_histories){
-			if(history.getType()==RelationEnum.RELEATIONSHIP_ADD_TYPE)
-				addRelations.add(history);
-				
-		}
-		//relation刪除的歷史資料
-		List<IIssueHistory> delRelations = new ArrayList<IIssueHistory>();
-		for(IIssueHistory history: m_histories){
-			if(history.getType()==RelationEnum.RELEATIONSHIP_DELETE_TYPE)
-				delRelations.add(history);
-		}		
+	public ArrayList<Long> getChildrenId() {
+		return mChildrenId;
+	}
 	
-		//兩者相減則可得到目前有關issue的relation資訊
-		for(IIssueHistory history: delRelations){
-			for(IIssueHistory history2: addRelations){
-				if(history.getNewValue().equals(history2.getNewValue())) {
-					addRelations.remove(history2);
-					break;
-				}
-			}
-		}
-		
-		List<IssueRelationship> relations = new ArrayList<IssueRelationship>();
-		// 將history的資訊塞入至issue relation這個物件
-		for(IIssueHistory history: addRelations){
-			long m_issueID = history.getIssueID();
-			String r_issueID = history.getNewValue();
-			String type = history.getOldValue();
-			IssueRelationship re = new IssueRelationship(m_issueID);
-			re.setRelationIssueID(Long.valueOf(r_issueID));
-			
-			if(type.equals(RelationEnum.PARENT_OLD_VALUE))
-				re.setRelationType(RelationEnum.PARENT_OF);
-			else if(type.equals(RelationEnum.CHILD_OLD_VALUE))
-				re.setRelationType(RelationEnum.CHILD_OF);
-			else if(type.equals(RelationEnum.IMPLICATIONOF_OLD_VALUE))
-				re.setRelationType(RelationEnum.IMPLICATIONOF_OF);
-			else if(type.equals(RelationEnum.TRANSFORMBY_OLD_VALUE))
-				re.setRelationType(RelationEnum.TRANSFORMBY_BY);
-			else if(type.equals(RelationEnum.TRANSFORMTO_OLD_VALUE))
-				re.setRelationType(RelationEnum.TRANSFORMTO_TO);
-			relations.add(re);
-		}
-		return relations;
+	public void setParentId(long parentId) {
+		mParentId = parentId;
+	}
+	
+	public long getParentId() {
+		return mParentId;
+	}
+	
+	/**
+	 * for ezScrum v1.8 temp function
+	 */
+	public void addHistory(HistoryObject history) {
+		mHistories.add(history);
+	}
+	
+	/**
+	 * for ezScrum v1.8 temp function
+	 */
+	public ArrayList<HistoryObject> getHistories() throws SQLException {
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		mHistories = historyDao.getHistoriesByIssue(mId, getIssueType());
+		return mHistories;
 	}
 
-	public List<IIssueHistory> getTagHistory() {
-		return this.m_tagHistories;
+	/**
+	 * for ezScrum v1.8 temp function
+	 */
+	public void setHistories(ArrayList<HistoryObject> histories) {
+		mHistories = histories;
 	}
 
-	public void setTagHistory(List<IIssueHistory> history) {
-		this.m_tagHistories = history;
-	}
+//	/* 抓取Relation的關係
+//	 * 原本應該建立一個relationship的service來抓取資料 但起先Story跟task的關係使用history來取得，故此處也先以history來抓取資料
+//	 */
+//	public List<IssueRelationship> getRelationships() {
+//		//有關relation新增的歷史資料
+//		List<IIssueHistory> addRelations = new ArrayList<IIssueHistory>();
+//		for(IIssueHistory history: mIHistories){
+//			if(history.getType()==RelationEnum.RELEATIONSHIP_ADD_TYPE)
+//				addRelations.add(history);
+//		}
+//		//relation刪除的歷史資料
+//		List<IIssueHistory> delRelations = new ArrayList<IIssueHistory>();
+//		for(IIssueHistory history: mIHistories){
+//			if(history.getType()==RelationEnum.RELEATIONSHIP_DELETE_TYPE)
+//				delRelations.add(history);
+//		}		
+//	
+//		//兩者相減則可得到目前有關issue的relation資訊
+//		for(IIssueHistory history: delRelations){
+//			for(IIssueHistory history2: addRelations){
+//				if(history.getNewValue().equals(history2.getNewValue())) {
+//					addRelations.remove(history2);
+//					break;
+//				}
+//			}
+//		}
+//		
+//		List<IssueRelationship> relations = new ArrayList<IssueRelationship>();
+//		// 將history的資訊塞入至issue relation這個物件
+//		for(IIssueHistory history: addRelations){
+//			long issueId = history.getIssueID();
+//			String r_issueID = history.getNewValue();
+//			String type = history.getOldValue();
+//			IssueRelationship re = new IssueRelationship(issueId);
+//			re.setRelationIssueID(Long.valueOf(r_issueID));
+//			
+//			if(type.equals(RelationEnum.PARENT_OLD_VALUE))
+//				re.setRelationType(RelationEnum.PARENT_OF);
+//			else if(type.equals(RelationEnum.CHILD_OLD_VALUE))
+//				re.setRelationType(RelationEnum.CHILD_OF);
+//			else if(type.equals(RelationEnum.IMPLICATIONOF_OLD_VALUE))
+//				re.setRelationType(RelationEnum.IMPLICATIONOF_OF);
+//			else if(type.equals(RelationEnum.TRANSFORMBY_OLD_VALUE))
+//				re.setRelationType(RelationEnum.TRANSFORMBY_BY);
+//			else if(type.equals(RelationEnum.TRANSFORMTO_OLD_VALUE))
+//				re.setRelationType(RelationEnum.TRANSFORMTO_TO);
+//			relations.add(re);
+//		}
+//		return relations;
+//	}
+
+//	public List<IIssueHistory> getTagHistory() {
+//		return mTagHistories;
+//	}
+
+//	public void setTagHistory(ArrayList<IIssueHistory> history) {
+//		mTagHistories = history;
+//	}
 
 	@Override
 	public void addIssueNote(IIssueNote note) {
-		if (note.getIssueID() == 0)
-			m_notes.add(note);
+		if (note.getIssueID() == 0) mNotes.add(note);
 		else {
-			for (int i = 0; i < m_notes.size(); i++) {
-				IIssueNote temp = m_notes.get(i);
-				if (temp.getIssueID() == 0)
-					continue;
+			for (int i = 0; i < mNotes.size(); i++) {
+				IIssueNote temp = mNotes.get(i);
+				if (temp.getIssueID() == 0) continue;
 				if (temp.getIssueID() == note.getIssueID()) {
-					m_notes.add(i, note);
+					mNotes.add(i, note);
 					break;
 				}
 			}
@@ -754,136 +687,171 @@ public class Issue implements IIssue {
 		note.setSubmittedDate(new Date().getTime());
 		note.setModifiedDate(new Date().getTime());
 		note.setText(text);
-		m_notes.add(note);
+		mNotes.add(note);
 	}
 
 	@Override
 	public List<IIssueNote> getIssueNotes() {
-		return m_notes;
+		return mNotes;
 	}
 
 	@Override
 	public void setIssueNotes(List<IIssueNote> notes) {
-		m_notes = notes;
+		mNotes = notes;
 	}
 
 	@Override
-	public long getAssignedDate() {
-		long assignedDate = 0;
-		for (IIssueHistory history : m_histories) {
-			if (history.getOldValue().compareTo("10") == 0
-					&& history.getNewValue().compareTo("50") == 0) {
-				assignedDate = history.getModifyDate();
+	public long getCheckOutDate() {
+		long checkOutDate = 0;
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (Integer.parseInt(history.getOldValue()) == ITSEnum.NEW_STATUS &&
+					Integer.parseInt(history.getNewValue()) == ITSEnum.ASSIGNED_STATUS) {
+					checkOutDate = history.getModifiedTime();
+				}
 			}
-
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
-		return assignedDate;
+		return checkOutDate;
 	}
 
 	@Override
-	public long getCloseDate() {
-
+	public long getDoneDate() {
 		long closeDate = 0;
-		for (IIssueHistory history : m_histories) {
-			if (history.getOldValue().compareTo("50") == 0
-					&& history.getNewValue().compareTo("90") == 0) {
-				closeDate = history.getModifyDate();
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (Integer.parseInt(history.getOldValue()) == ITSEnum.ASSIGNED_STATUS &&
+					Integer.parseInt(history.getNewValue()) == ITSEnum.CLOSED_STATUS) {
+					closeDate = history.getModifiedTime();
+				}
 			}
-
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
 		return closeDate;
 	}
 
 	@Override
 	public String getCreateBy() {
-		return this.m_reporter;
+		return mReporter;
 	}
 
 	public String getReporter() {
-		return m_reporter;
+		return mReporter;
 	}
 
 	public void setReporter(String m_reporter) {
-		this.m_reporter = m_reporter;
+		mReporter = m_reporter;
 	}
 
 	public ArrayList<AttachFileObject> getAttachFiles() {
-		return attachFiles;
+		return mAttachFiles;
 	}
 
 	public void setAttachFiles(ArrayList<AttachFileObject> FileList) {
-		attachFiles = FileList;
+		mAttachFiles = FileList;
 	}
 
 	@Override
 	public void addAttachFile(AttachFileObject attach) {
-		this.attachFiles.add(attach);
+		mAttachFiles.add(attach);
 	}
 
 	@Override
 	public List<TagObject> getTags() {
-		return m_tag;
+		return mTag;
 	}
 
 	@Override
 	public void setTags(List<TagObject> tags) {
-		this.m_tag = tags;
+		mTag = tags;
 	}
 
 	@Override
 	public void addTag(TagObject tag) {
-		this.m_tag.add(tag);
+		mTag.add(tag);
 	}
-	
+
 	public void setCategoryName(String name) {
-		this.m_categoryName = name;
+		mCategoryName = name;
 	}
-	
+
 	public String getCategoryName() {
-		return this.m_categoryName;
+		return mCategoryName;
 	}
-	
-	public void addField(IssueTypeField field)	{
-		this.m_listField.add(field);
+
+	public void addField(IssueTypeField field) {
+		mListField.add(field);
 	}
-	
-	public String getFieldValue(String name)	{
-		for (IssueTypeField field : this.m_listField){
-			if (field.getFieldName().equals(name))
-				return field.getFieldValue();
+
+	public String getFieldValue(String name) {
+		for (IssueTypeField field : mListField) {
+			if (field.getFieldName().equals(name)) return field.getFieldValue();
 		}
 		return "-1";
 	}
-	
-	public IssueTypeField getField(String name)	{
-		for (IssueTypeField field : this.m_listField){
-			if (field.getFieldName().equals(name))
-				return field;
+
+	public IssueTypeField getField(String name) {
+		for (IssueTypeField field : mListField) {
+			if (field.getFieldName().equals(name)) return field;
 		}
 		return null;
 	}
-	
-	public void setFieldValue(int id, String value)	{
-		for (IssueTypeField field : this.m_listField){
-			if (field.getFieldID() == id)
-				field.setFieldValue(value);
+
+	public void setFieldValue(int id, String value) {
+		for (IssueTypeField field : mListField) {
+			if (field.getFieldID() == id) field.setFieldValue(value);
 		}
 	}
-	
-	public void setFieldValue(String name, String value)	{
-		for (IssueTypeField field : this.m_listField){
-			if (field.getFieldName().equals(name))
-				field.setFieldValue(value);
+
+	public void setFieldValue(String name, String value) {
+		for (IssueTypeField field : mListField) {
+			if (field.getFieldName().equals(name)) field.setFieldValue(value);
 		}
 	}
-	
+
 	public void setFields(List<IssueTypeField> fields) {
-		this.m_listField = fields;
+		mListField = fields;
 	}
-	
-	public List<IssueTypeField> getFields()	{
-		return this.m_listField;
+
+	public List<IssueTypeField> getFields() {
+		return mListField;
+	}
+
+	@Override
+	public long getAssignedDate() {
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (history.getHistoryType() == HistoryObject.TYPE_STATUS && 
+					history.getNewValue().equals(String.valueOf(ITSEnum.ASSIGNED_STATUS)) &&
+					history.getOldValue().equals(String.valueOf(ITSEnum.NEW_STATUS))) {
+					return history.getModifiedTime();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long getCloseDate() {
+		try {
+			for (HistoryObject history : getHistories()) {
+				if (history.getHistoryType() == HistoryObject.TYPE_STATUS && 
+					history.getNewValue().equals(String.valueOf(ITSEnum.CLOSED_STATUS)) &&
+					history.getOldValue().equals(String.valueOf(ITSEnum.ASSIGNED_STATUS))) {
+					return history.getModifiedTime();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

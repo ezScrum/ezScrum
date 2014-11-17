@@ -36,13 +36,6 @@ public class ShowTaskBoardAction extends Action {
 
 		// get Account, ScrumRole
 		UserObject account = userSession.getAccount();
-//		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
-//		MantisAccountMapper accountHelper = new MantisAccountMapper(project, session);
-//		
-//		// 檢查帳號不通過，提示錯誤頁面		    // 檢查此帳號是否允許操作  action 的權限
-//		if (!( accountHelper.CheckAccount(request) && sr.getAccessTaskBoard() )) {
-//			return mapping.findForward("permissionDenied");
-//		}
 		
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		AccountLogic accountLogic = new AccountLogic();
@@ -65,18 +58,8 @@ public class ShowTaskBoardAction extends Action {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 		
-//		SprintBacklogMapper backlog = null;
-//		
-//		try {
-//			backlog = new SprintBacklogMapper(project, userSession);
-//		} catch (Exception e) {
-//			System.out.println("class : ShowTaskBoardAction, method : execute, backlog exception : " + e.toString());
-//		}
-		
 		// backlog = null 代表取得 sprintBackLog 發生問題，所以進入防錯處理，塞入假資料
 		if (backlog != null) {
-//			MantisAccountMapper helper = new MantisAccountMapper(project, session);
-//			List<String> ActorList = helper.getScrumWorkerList();
 			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, project);
 			
 			actorList.remove(0);
@@ -98,18 +81,6 @@ public class ShowTaskBoardAction extends Action {
 					if (name.compareTo("ALL") != 0)		board = filterUser(name, board);
 				}
 			}
-//			if (sprintID == null) {
-//				board = new TaskBoard(backlog);
-//			} else {
-//				ISprintPlanDesc desc = spHelper.loadPlan(sprintID);
-//
-//				if ( ! desc.getID().equals("-1")) {
-//					board = new TaskBoard(new SprintBacklogMapper(project, userSession, Integer.parseInt(sprintID)));
-//					
-//					// 判斷名字是不是all,如果不是就處理,是全部都 show
-//					if (name.compareTo("ALL") != 0)		board = filterUser(name, board);
-//				}
-//			}
 
 			request.setAttribute("TaskBoard", board);
 			request.setAttribute("SprintID", board.getSprintID());
@@ -147,7 +118,6 @@ public class ShowTaskBoardAction extends Action {
 			}
 		}
 		board.setM_taskMap(taskMap);
-//		board.setM_stories(Storylist.toArray(new IIssue[0]));
 		board.setM_stories(Storylist);
 		return board;
 	}

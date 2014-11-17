@@ -29,31 +29,12 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sprintID = request.getParameter("sprintID");
-//		ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
-//		String mantisUrl = prefs.getServerUrl();
 		
 		String result = "";
-//		SprintBacklogMapper backlog = null;	
-//		TaskBoard board = null;
 		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintID);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard board = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
-		
-//		try {
-//			// sprint 不存在，回傳最近的一個 sprint 或 空的 sprint
-//			if (sprintID == null || sprintID.equals("")) {
-//				backlog = new SprintBacklogMapper(project, session);
-//				board = new TaskBoard(backlog);
-//			} else {
-//				backlog = new SprintBacklogMapper(project, session, Integer.parseInt(sprintID));
-//				board = new TaskBoard(new SprintBacklogMapper(project, session, Integer.parseInt(sprintID)));
-//			}
-//		} catch (Exception e) {
-//			backlog = null;
-//			// 已經處理過不必輸出 Exception
-//			// System.out.println("class: ShowSprintBacklogAction, method: execute, exception: " + e.toString());
-//		}
 		
 		// 建立 thisSprintStore 的資料
 		int currentSprintID = 0;
@@ -75,11 +56,6 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 			initialHours = sprintBacklogLogic.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
 			currentHours = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
 			
-//			initialPoint = backlog.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
-//			currentPoint = backlog.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
-//			initialHours = backlog.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
-//			currentHours = backlog.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
-				
 			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
 			releaseID = Integer.parseInt(rpHelper.getReleaseID(Integer.toString(currentSprintID)));
 				
@@ -92,9 +68,6 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 				isCurrentSprint = true;
 		} 
 		
-//		result = new Translation(mantisUrl).translateSprintInfoToJson(
-//				currentSprintID, initialPoint, currentPoint, initialHours, currentHours, releaseID, SprintGoal,
-//				StoryChartUrl, TaskChartUrl,isCurrentSprint);
 		result = new Translation().translateSprintInfoToJson(
 				currentSprintID, initialPoint, currentPoint, initialHours, currentHours, releaseID, SprintGoal,
 				StoryChartUrl, TaskChartUrl,isCurrentSprint);

@@ -15,23 +15,24 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
-	private Configuration configuration;
+	private Configuration mConfig;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.store();
 		
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
+		// 新增一測試專案
 		CreateProject CP = new CreateProject(2);
-		CP.exeCreate(); // 新增一測試專案
+		CP.exeCreate();
 		
 		super.setUp();
 
@@ -40,33 +41,33 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 	}
 	
 	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.store();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		configuration = null;
+		mConfig = null;
 	}
 	
 	public void testViewProjectList(){
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath() + "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath() + "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/viewProjectList");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

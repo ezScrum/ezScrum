@@ -9,6 +9,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 
 public class MySQLControl implements ISQLControl {
@@ -17,11 +18,22 @@ public class MySQLControl implements ISQLControl {
 	String mDbName;
 	String mUser;
 	String mPassword;
+	Configuration mConfig = null;
 
 	Connection mConnection = null;
 	DataSource mDatatSource = null;
 
 	String[] mKeys;
+	
+	public MySQLControl(Configuration config) {
+		mConfig = config;
+		mHost = config.getServerUrl();
+		mPort = "3306";
+		mUser = config.getDBAccount();
+		mPassword = config.getDBPassword();
+		mDbName = config.getDBName();
+		loadDriver();
+	}
 
 	public MySQLControl(String host, String port, String dbName) {
 		mHost = host;

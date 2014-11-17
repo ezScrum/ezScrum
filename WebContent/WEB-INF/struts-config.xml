@@ -214,12 +214,7 @@
 		<!-- ========================================= -->
 		
 		<!-- issue action -->
-		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />
-			
-		<action path="/editIssueHistory" name="modifyDateForm" type="ntut.csie.ezScrum.web.action.backlog.EditIssueHistoryAction">
-			<forward name="success" path="/showIssueHistory.do" />
-			<forward name="error" path="/Error.jsp" />
-		</action>		
+		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />	
 				
 		<action path="/showEditIssueHistory" name="modifyDateForm" type="ntut.csie.ezScrum.web.action.backlog.ShowEditIssueHistoryAction">
 			<forward name="success" path="editIssueHistory.show"/>

@@ -57,7 +57,7 @@ public class EditUnplannedItemAction extends PermissionAction {
 		if (specificTime.length() == 0) {
 			specificTime = DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_MYSQL);
 		}
-
+		
 		UnplannedItemHelper helper = new UnplannedItemHelper(project, session);
 		helper.modifyUnplannedItemIssue(id, name, handler, status, partners, estimate, actualHour, notes, sprintID,
 		        DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME_MYSQL));

@@ -8,6 +8,8 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -134,10 +136,10 @@ public class AddRetrospectiveToSprint {
 //						.getReleaseID(), sprintID, null, null, current);
 				
 				// 最後將修改的結果更新至DB
-				productBacklogMapper.updateIssueValue(issue);
-				productBacklogMapper.addHistory(issue.getIssueID(), ScrumEnum.SPRINT_TAG, oldSprintID, sprintID);
+				productBacklogMapper.updateIssueValue(issue, true);
+				productBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintID, sprintID);
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
-				productBacklogMapper.updateStoryRelation(Long.toString(issueID), issue.getReleaseID(), sprintID, null, null, current);
+				productBacklogMapper.updateStoryRelation(issueID, issue.getReleaseID(), sprintID, null, null, current);
 			}
 		}
 	}

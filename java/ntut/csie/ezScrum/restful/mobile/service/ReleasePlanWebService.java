@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -60,8 +61,9 @@ public class ReleasePlanWebService extends ProjectWebService {
 	/**
 	 * 取得專案底下所有的Release plan with all item
 	 * @return
+	 * @throws SQLException 
 	 */
-	public String getAllReleasePlanWithAllItem() {
+	public String getAllReleasePlanWithAllItem() throws SQLException {
 		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
 		List<ReleasePlanObject> releases = new ArrayList<ReleasePlanObject>();
 		for (IReleasePlanDesc releaseDesc : releaseDescs) {
@@ -82,8 +84,9 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * 
 	 * @param releaseId
 	 * @return
+	 * @throws SQLException 
 	 */
-	public String getReleasePlan(String releaseId) {
+	public String getReleasePlan(String releaseId) throws SQLException {
 		HashMap<String, Float> totalStoryPoints = new HashMap<String, Float>();
 		HashMap<String, List<StoryObject>> stories = new HashMap<String, List<StoryObject>>();
 		LinkedHashMap<Long, List<TaskObject>> taskMap = new LinkedHashMap<Long, List<TaskObject>>();
@@ -95,9 +98,10 @@ public class ReleasePlanWebService extends ProjectWebService {
 
 	/**
 	 * 將 IIssue 都轉換成 StoryObject, TaskObject 並輸出成ReleaseDocxObject
+	 * @throws SQLException 
 	 */
 	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintObject> sprintPlanList, HashMap<String, List<StoryObject>> stories,
-	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Float> totalStoryPoints) {
+	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Float> totalStoryPoints) throws SQLException {
 		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
 		releaseObject.setReleasePlanDesc(releasePlan);
 		releaseObject.setSprintDescList(sprintPlanList);
