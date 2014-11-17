@@ -90,7 +90,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, ActualFile.getName());
 		assertEquals(FILE_TYPE, ActualFile.getContentType());
 		assertEquals(issue.getIssueID(), ActualFile.getId());
@@ -109,7 +109,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, ActualFile.getName());
 		assertEquals(FILE_TYPE, ActualFile.getContentType());
 		assertEquals(issue.getIssueID(), ActualFile.getId());
@@ -117,7 +117,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		// 刪除此 issue 的檔案
 		this.productBacklogMapper.deleteAttachFile(ActualFile.getId());
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
-		assertEquals(0, issue.getAttachFile().size());
+		assertEquals(0, issue.getAttachFiles().size());
 		
 		// ============= release ==============
 		issue = null;
@@ -133,7 +133,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		issue = this.productBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject IssueFile = issue.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFile().size());
+		assertEquals(1, issue.getAttachFiles().size());
 		assertEquals(FILE_NAME, IssueFile.getName());
 		assertEquals(FILE_TYPE, IssueFile.getContentType());
 		assertEquals(issue.getIssueID(), IssueFile.getId());
