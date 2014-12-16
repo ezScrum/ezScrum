@@ -16,7 +16,6 @@ import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
-import ntut.csie.ezScrum.web.dataObject.ITSInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RoleEnum;
 import ntut.csie.ezScrum.web.dataObject.UserObject;

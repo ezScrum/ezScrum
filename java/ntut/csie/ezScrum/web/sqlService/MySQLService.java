@@ -244,6 +244,7 @@ public class MySQLService {
 	 */
 	
 	public boolean createProject(ProjectObject project) {
+		String createTime = String.valueOf(System.currentTimeMillis());
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.PID, project.getName());
@@ -253,8 +254,8 @@ public class MySQLService {
 		if (!project.getAttachFileSize().isEmpty()) {
 			valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
 		}
-		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
+		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
 		String query = valueSet.getInsertQuery();
 		return mControl.executeUpdate(query);
 	}

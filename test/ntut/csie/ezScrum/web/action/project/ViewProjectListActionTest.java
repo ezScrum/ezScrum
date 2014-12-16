@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
@@ -75,10 +77,9 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// ================ assert ========================
 		//	assert response text
 		ProjectMapper projectMapper = new ProjectMapper();
-		IProject projectOne = projectMapper.getProjectByID("TEST_PROJECT_1");
-		IProject projectTwo = projectMapper.getProjectByID("TEST_PROJECT_2");
-		IProjectDescription projectOneDesc = projectOne.getProjectDesc();
-		IProjectDescription projectTwoDesc = projectTwo.getProjectDesc();
+		ProjectObject projectOne = projectMapper.getProjectByPidForDb("TEST_PROJECT_1");
+		ProjectObject projectTwo = projectMapper.getProjectByPidForDb("TEST_PROJECT_2");
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String expectResponseText = 
 			"<Projects>" +
@@ -87,7 +88,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 					"<Name>TEST_PROJECT_1</Name>" +
 					"<Comment>This is Test Project - 1</Comment>" +
 					"<ProjectManager>Project_Manager_1</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format( projectOneDesc.getCreateDate() ) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectOne.getCreateDate()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 				"<Project>" +
@@ -95,7 +96,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 					"<Name>TEST_PROJECT_2</Name>" +
 					"<Comment>This is Test Project - 2</Comment>" +
 					"<ProjectManager>Project_Manager_2</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format( projectTwoDesc.getCreateDate() ) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectTwo.getCreateDate()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 			"</Projects>";
