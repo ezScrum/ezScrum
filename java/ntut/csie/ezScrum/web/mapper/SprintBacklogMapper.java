@@ -269,38 +269,13 @@ public class SprintBacklogMapper {
 			if ((handler != null) && (handler.length() > 0) && (!task.getAssignto().equals(handler))) {
 				MantisService service = new MantisService(mConfig);
 				service.openConnect();
-				
-				int oldHandler = service.getUserID(task.getAssignto());
-				int newHandler = service.getUserID(handler);
-				
 				service.updateHandler(task, handler, modifyDate);
 				service.closeConnect();
-				
-				HistoryDAO historyDao = HistoryDAO.getInstance();
-				historyDao.add(new HistoryObject(
-								taskId,
-								IssueTypeEnum.TYPE_TASK,
-								HistoryObject.TYPE_HANDLER,
-								String.valueOf(oldHandler),
-								String.valueOf(newHandler),
-								System.currentTimeMillis()));
 			}
 			if (!task.getSummary().equals(name) && name != null) {
 				mMantisService.openConnect();
-				
-				String oldName = task.getSummary();
-				
 				mMantisService.updateName(task, name, modifyDate);
 				mMantisService.closeConnect();
-				
-				HistoryDAO historyDao = HistoryDAO.getInstance();
-				historyDao.add(new HistoryObject(
-								taskId,
-								IssueTypeEnum.TYPE_TASK,
-								HistoryObject.TYPE_HANDLER,
-								oldName,
-								name,
-								System.currentTimeMillis()));
 			}
 		}
 	}

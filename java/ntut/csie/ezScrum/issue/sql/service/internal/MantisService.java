@@ -654,13 +654,17 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		HistoryDAO historyDao = HistoryDAO.getInstance();
 		String newActor = getUserID(handler) + "";
+		String oldActorString = "";
+		if (oldActor > 0) {
+			oldActorString = String.valueOf(oldActor);
+		}
 		historyDao.add(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_HANDLER,
 							// issue 沒有 actor 會回傳 0, 如果 actor == 0 則存入空字串
-							oldActor == 0 ? "" : String.valueOf(oldActor),
-									newActor,
+							oldActorString,
+							newActor,
 							System.currentTimeMillis()));
 
 		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
