@@ -7,12 +7,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -105,6 +108,14 @@ public class SprintBacklogLogic {
 				Element storyPoint = new Element(ScrumEnum.ESTIMATION);
 				storyPoint.setText(estimate);
 				history.addContent(storyPoint);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskID,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_ESTIMATE,
+						String.valueOf(task.getEstimated()),
+						String.valueOf(estimate),
+						System.currentTimeMillis()));
 			}
 		}
 		if (remains != null && !remains.equals("")) {
@@ -112,18 +123,42 @@ public class SprintBacklogLogic {
 				Element remainingPoints = new Element(ScrumEnum.REMAINS);
 				remainingPoints.setText(remains);
 				history.addContent(remainingPoints);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskID,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_REMAIMS,
+						String.valueOf(task.getRemains()),
+						String.valueOf(remains),
+						System.currentTimeMillis()));
 			}
 		}
 		if (!task.getPartners().equals(partners)) {
 			Element element = new Element(ScrumEnum.PARTNERS);
 			element.setText(partners.replaceAll("'", "''"));
 			history.addContent(element);
+			
+			HistoryDAO.getInstance().add(new HistoryObject(
+					taskID,
+					IssueTypeEnum.TYPE_TASK,
+					HistoryObject.TYPE_PARTNERS,
+					String.valueOf(task.getPartners()),
+					String.valueOf(partners),
+					System.currentTimeMillis()));
 		}
 		if (notes != null) {
 			if (!task.getNotes().equals(notes)) {
 				Element element = new Element(ScrumEnum.NOTES);
 				element.setText(notes.replaceAll("'", "''"));
 				history.addContent(element);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskID,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_NOTE,
+						String.valueOf(task.getNotes()),
+						String.valueOf(notes),
+						System.currentTimeMillis()));
 			}
 		}
 		if (actualHour != null && !actualHour.equals("")) {
@@ -131,6 +166,14 @@ public class SprintBacklogLogic {
 				Element element = new Element(ScrumEnum.ACTUALHOUR);
 				element.setText(actualHour);
 				history.addContent(element);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskID,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_ACTUAL,
+						String.valueOf(task.getActualHour()),
+						String.valueOf(actualHour),
+						System.currentTimeMillis()));
 			}
 		}
 
