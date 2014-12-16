@@ -740,6 +740,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public void insertBugNote(long issueId, String note) {
 		IIssue issue = getIssue(issueId);
 		long bugNoteID = mNoteService.insertBugNote(issueId, note);
+		
+		HistoryDAO.getInstance().add(new HistoryObject(
+										issueId,
+										issue.getIssueType(),
+										HistoryObject.TYPE_STATUS,
+										String.valueOf(ITSEnum.NEW_STATUS),
+										String.valueOf(ITSEnum.ASSIGNED_STATUS),
+										System.currentTimeMillis()));
+		
 		// 新增歷史記錄
 		//TODO 不確定用途的 history, 暫時沒有補上新的 history
 //		mHistoryService.addMantisActionHistory(issueId,
