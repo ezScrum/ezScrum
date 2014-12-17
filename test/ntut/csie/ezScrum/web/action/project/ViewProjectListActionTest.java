@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -12,8 +11,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.project.core.IProjectDescription;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
