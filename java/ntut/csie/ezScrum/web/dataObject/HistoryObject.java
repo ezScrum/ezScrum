@@ -118,7 +118,7 @@ public class HistoryObject {
 		case TYPE_CREATE:
 			return getCreateDesc();
 		case TYPE_NAME:
-			return getNameDesc();
+			return getQuoteDesc();
 		case TYPE_ESTIMATE:
 			return getNormalDesc();
 		case TYPE_REMAIMS:
@@ -138,7 +138,7 @@ public class HistoryObject {
 		case TYPE_SPECIFIC_TIME:
 			return getNormalDesc();
 		case TYPE_NOTE:
-			return getNormalDesc();
+			return getQuoteDesc();
 		case TYPE_ADD:
 			return getAddChildDesc();
 		case TYPE_APPEND:
@@ -189,7 +189,7 @@ public class HistoryObject {
 		return String.format("%s => %s", mOldValue, mNewValue);
 	}
 	
-	private String getNameDesc() {
+	private String getQuoteDesc() {
 		return String.format("\"%s\" => \"%s\"", mOldValue, mNewValue);
 	}
 	

@@ -383,8 +383,4 @@ public class RemainingWorkReport {
 	public int getNonAssignQuantity() {
 		return nonAssignQuantity;
 	}
-	
-	public String toString() {
-		return "assign:" + assignedQuantity + " total:" + totalQuantity + " done:" + doneQuantity + " nonassign:" + nonAssignQuantity;
-	}
 }
