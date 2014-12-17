@@ -1,13 +1,11 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
@@ -16,8 +14,6 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -75,12 +71,12 @@ public class SprintBacklogMapper {
 	 * @param userSession
 	 * @param sprintId
 	 */
-	public SprintBacklogMapper(IProject project, IUserSession userSession, int sprintId) {
+	public SprintBacklogMapper(IProject project, IUserSession userSession, long sprintId) {
 		mProject = project;
 		mUserSession = userSession;
 
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
-		mIterPlanDesc = mapper.getSprintPlan(Integer.toString(sprintId));
+		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
 
 		initSprintInformation();

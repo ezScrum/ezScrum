@@ -50,18 +50,18 @@ public class SprintBacklogLogic {
 	 * 
 	 * @param mProject
 	 * @param userSession
-	 * @param sprintID
+	 * @param sprintId
 	 * @return
 	 */
-	private SprintBacklogMapper createSprintBacklogMapper(String sprintID) {
+	private SprintBacklogMapper createSprintBacklogMapper(String sprintId) {
 		SprintBacklogMapper sprintBacklogMapper = null;
 
 		try {
 			// sprint 不存在，回傳最近的一個 sprint 或 空的 sprint
-			if (sprintID == null || sprintID.equals("") || sprintID.equals("0") || sprintID.equals("-1")) {
+			if (sprintId == null || sprintId.equals("") || sprintId.equals("0") || sprintId.equals("-1")) {
 				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession);
 			} else {
-				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession, Integer.parseInt(sprintID));
+				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession, Long.parseLong(sprintId));
 			}
 		} catch (Exception e) {
 			// 已經處理過不必輸出 Exception

@@ -80,9 +80,9 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 	 */
 	public void testAddExistedTask() throws Exception {
 		// 加入1個Sprint
-		int sprintID = Integer.valueOf(this.CS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(this.CS.getSprintIDList().get(0));
 		// Sprint加入1個Story
-		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, sprintID, CP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, (int)sprintId, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStory_Sprint.exe();
 		int storyID = (int) addStory_Sprint.getIssueList().get(0).getIssueID();
 		// Story加入1個Task
@@ -90,7 +90,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		addTask_Story.exe();
 		int taskID = addTask_Story.getTaskIDList().get(0).intValue();
 		// drop Task from story
-		DropTask dropTask = new DropTask(CP, sprintID, storyID, taskID);
+		DropTask dropTask = new DropTask(CP, sprintId, storyID, taskID);
 		dropTask.exe();
 		
 		// ================ set request info ========================
@@ -101,7 +101,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);	
 		// 設定新增Task所需的資訊
 		String expectedStoryID = String.valueOf(storyID);
-		String expectedSprintID = String.valueOf(sprintID);
+		String expectedSprintID = String.valueOf(sprintId);
 		String expectedTaskID = String.valueOf(taskID);
 
 		addRequestParameter("sprintID", expectedSprintID);
@@ -115,7 +115,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, configuration.getUserSession(), sprintID);
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, configuration.getUserSession(), sprintId);
 		IIssue[] tasks = sprintBacklogMapper.getTaskInStory(storyID);
 		assertEquals(expectedTaskID, String.valueOf(tasks[0].getIssueID()));
 	}

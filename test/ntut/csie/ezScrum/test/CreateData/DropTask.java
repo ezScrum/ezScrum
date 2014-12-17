@@ -6,24 +6,24 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class DropTask {
-	private Configuration configuration = new Configuration();
-	private CreateProject CP;
-	private int sprintID = 0;
-	private int issueID = 0;
-	private int parentID = 0;
+	private Configuration mConfig = new Configuration();
+	private CreateProject mCreateProject;
+	private long mSprintId = 0;
+	private long mIssueId = 0;
+	private long mParentId = 0;
 	
-	public DropTask(CreateProject CP, int sprintID, int parentID, int issueID) {
-		this.CP = CP;
-		this.sprintID = sprintID;
-		this.issueID = issueID;
-		this.parentID = parentID;
+	public DropTask(CreateProject createProject, long sprintId, long parentId, long issueId) {
+		mCreateProject = createProject;
+		mSprintId = sprintId;
+		mIssueId = issueId;
+		mParentId = parentId;
 	}
 
 	public void exe() {
-		IProject project = this.CP.getProjectList().get(0);
-		IUserSession userSession = configuration.getUserSession();
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, sprintID);
+		IProject project = mCreateProject.getProjectList().get(0);
+		IUserSession userSession = mConfig.getUserSession();
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, mSprintId);
 		// remove relation
-		sprintBacklogMapper.removeTask(issueID, parentID);
+		sprintBacklogMapper.removeTask(mIssueId, mParentId);
 	}
 }
