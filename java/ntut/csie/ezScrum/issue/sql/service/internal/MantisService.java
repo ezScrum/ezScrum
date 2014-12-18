@@ -253,7 +253,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 		
 		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issueId, 
 							issueType, 
 							HistoryObject.TYPE_CREATE,
@@ -262,7 +262,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 							System.currentTimeMillis()));
 		
 		if (issue.getParentId() > 0) {
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 								issueId, 
 								issueType, 
 								HistoryObject.TYPE_APPEND,
@@ -577,7 +577,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		if (type == ITSEnum.PARENT_RELATIONSHIP) {
 			HistoryDAO historyDao = HistoryDAO.getInstance();
 			
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 								sourceId, 
 								IssueTypeEnum.TYPE_STORY, 
 								HistoryObject.TYPE_ADD,
@@ -585,7 +585,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 								String.valueOf(targetId),
 								date.getTime()));
 			
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 								targetId, 
 								IssueTypeEnum.TYPE_TASK, 
 								HistoryObject.TYPE_APPEND,
@@ -612,7 +612,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			long time = System.currentTimeMillis();
 			HistoryDAO historyDao = HistoryDAO.getInstance();
 			
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 								sourceId, 
 								IssueTypeEnum.TYPE_STORY, 
 								HistoryObject.TYPE_DROP,
@@ -620,7 +620,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 								String.valueOf(targetId),
 								time));
 			
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 								targetId, 
 								IssueTypeEnum.TYPE_TASK, 
 								HistoryObject.TYPE_REMOVE,
@@ -658,7 +658,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		if (oldActor > 0) {
 			oldActorString = String.valueOf(oldActor);
 		}
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_HANDLER,
@@ -699,7 +699,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		// 新增歷史記錄
 		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_NAME,
@@ -727,7 +727,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
 		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_STATUS,
@@ -745,7 +745,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		IIssue issue = getIssue(issueId);
 		mNoteService.insertBugNote(issueId, note);
 		
-		HistoryDAO.getInstance().add(new HistoryObject(
+		HistoryDAO.getInstance().create(new HistoryObject(
 										issueId,
 										issue.getIssueType(),
 										HistoryObject.TYPE_STATUS,
@@ -778,7 +778,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
 		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_STATUS,
@@ -836,7 +836,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		// 新增歷史記錄,還有一個 resolution 的 history ,因為不是很重要,就暫時沒加入
 		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(
+		historyDao.create(new HistoryObject(
 							issue.getIssueID(), 
 							issue.getIssueType(), 
 							HistoryObject.TYPE_STATUS,

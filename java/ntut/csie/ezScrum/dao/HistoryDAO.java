@@ -19,7 +19,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 	}  
 
 	@Override
-	public long add(HistoryObject objectInfo) {
+	public long create(HistoryObject objectInfo) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(HistoryEnum.TABLE_NAME);
 		valueSet.addInsertValue(HistoryEnum.ISSUE_ID, objectInfo.getIssueId());
@@ -57,7 +57,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 	}
 
 	@Override
-	public boolean edit(HistoryObject object) {
+	public boolean update(HistoryObject object) {
 		return false;
 	}
 

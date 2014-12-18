@@ -252,7 +252,7 @@ public class CreateTask {
 			service.closeConnect();
 			
 			HistoryDAO historyDao = HistoryDAO.getInstance();
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 							task.getIssueID(),
 							IssueTypeEnum.TYPE_TASK,
 							HistoryObject.TYPE_HANDLER,
@@ -270,7 +270,7 @@ public class CreateTask {
 			service.closeConnect();
 			
 			HistoryDAO historyDao = HistoryDAO.getInstance();
-			historyDao.add(new HistoryObject(
+			historyDao.create(new HistoryObject(
 							task.getIssueID(),
 							IssueTypeEnum.TYPE_TASK,
 							HistoryObject.TYPE_HANDLER,

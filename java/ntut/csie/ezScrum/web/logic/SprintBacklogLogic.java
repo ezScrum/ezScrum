@@ -109,7 +109,7 @@ public class SprintBacklogLogic {
 				storyPoint.setText(estimate);
 				history.addContent(storyPoint);
 				
-				HistoryDAO.getInstance().add(new HistoryObject(
+				HistoryDAO.getInstance().create(new HistoryObject(
 						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_ESTIMATE,
@@ -124,7 +124,7 @@ public class SprintBacklogLogic {
 				remainingPoints.setText(remains);
 				history.addContent(remainingPoints);
 				
-				HistoryDAO.getInstance().add(new HistoryObject(
+				HistoryDAO.getInstance().create(new HistoryObject(
 						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_REMAIMS,
@@ -138,7 +138,7 @@ public class SprintBacklogLogic {
 			element.setText(partners.replaceAll("'", "''"));
 			history.addContent(element);
 			
-			HistoryDAO.getInstance().add(new HistoryObject(
+			HistoryDAO.getInstance().create(new HistoryObject(
 					taskId,
 					IssueTypeEnum.TYPE_TASK,
 					HistoryObject.TYPE_PARTNERS,
@@ -152,7 +152,7 @@ public class SprintBacklogLogic {
 				element.setText(notes.replaceAll("'", "''"));
 				history.addContent(element);
 				
-				HistoryDAO.getInstance().add(new HistoryObject(
+				HistoryDAO.getInstance().create(new HistoryObject(
 						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_NOTE,
@@ -167,7 +167,7 @@ public class SprintBacklogLogic {
 				element.setText(actualHour);
 				history.addContent(element);
 				
-				HistoryDAO.getInstance().add(new HistoryObject(
+				HistoryDAO.getInstance().create(new HistoryObject(
 						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_ACTUAL,

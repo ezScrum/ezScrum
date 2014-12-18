@@ -77,7 +77,7 @@ public class HistoryDAOTest extends TestCase {
 				.setModifiedTime(modifiedTime)
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setIssueId(1);
 
-		long id = historyDao.add(history);
+		long id = historyDao.create(history);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(HistoryEnum.TABLE_NAME);

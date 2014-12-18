@@ -14,7 +14,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	}
 	
 	@Override
-    public long add(StoryObject infoObject) {
+    public long create(StoryObject infoObject) {
 	    return 0;
     }
 
@@ -24,7 +24,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
     }
 
 	@Override
-    public boolean edit(StoryObject dataObject) {
+    public boolean update(StoryObject dataObject) {
 	    return false;
     }
 
