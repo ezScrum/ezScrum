@@ -22,7 +22,6 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisHistoryService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisIssueService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
@@ -42,7 +41,6 @@ import org.jdom.JDOMException;
 
 public class ChangeStoryRelation {
 	private MantisIssueService m_issueService;
-	private MantisHistoryService m_historyService;
 
 	private String MANTIS_TABLE_MYSQL = "bugtracker";
 	private String PORT_SERVICE_MYSQL = "3306";
@@ -132,8 +130,6 @@ public class ChangeStoryRelation {
 				ISQLControl control = new MySQLControl(form.getServerUrl(), PORT_SERVICE_MYSQL, MANTIS_TABLE_MYSQL);
 				control.setUser(form.getDBAccount());
 				control.setPassword(form.getDBPassword());
-				
-				m_historyService = new MantisHistoryService(control, form);
 				
 				control.connection();
 				
@@ -305,7 +301,6 @@ public class ChangeStoryRelation {
 		IIssue[] issues = queryIssues(projectName,control);
 		// 建立歷史紀錄
 		for (IIssue issue : issues) {
-			m_historyService.initHistory(issue);
 			setIssueTag(issue,control);
 			issue.setIssueNotes(getIssueNotes(issue,control));
 			// System.out.println("ID="+issue.getIssueID()+"Sprint="+issue.getSprintID());

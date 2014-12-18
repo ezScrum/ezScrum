@@ -6,7 +6,6 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.AbstractMantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisAttachFileService;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisHistoryService;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.HSQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
@@ -24,7 +23,6 @@ public class EzTrackService extends AbstractMantisService {
 	
 	private EzTrackIssueService m_issueService;
 	private MantisAttachFileService m_attachFileService;
-	private MantisHistoryService m_historyService;
 	
 	public EzTrackService(Configuration config) {
 		setConfig(config);
@@ -77,7 +75,6 @@ public class EzTrackService extends AbstractMantisService {
 		getControl().connection();
 		m_issueService = new EzTrackIssueService(getControl(), getConfig());
 		m_attachFileService =  new MantisAttachFileService(getControl(), getConfig());
-		m_historyService = new MantisHistoryService(getControl(), getConfig());
 	}
 	
 	/**
@@ -98,8 +95,6 @@ public class EzTrackService extends AbstractMantisService {
 		IIssue issue = m_issueService.getIssue(issueID);
 		//設定attach file的資訊
 		m_attachFileService.initAttachFile(issue);
-		//設定issue 的history資訊
-		m_historyService.initHistory(issue);
 		return issue;
 	}
 	
