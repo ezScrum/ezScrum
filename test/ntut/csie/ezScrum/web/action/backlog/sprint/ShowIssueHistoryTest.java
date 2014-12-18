@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.EditUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
@@ -363,14 +364,13 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		List<String> expectedDescription = genArrayList("Create Task #2",
 												        "Append to Story #1",
 												        "admin",
-												        "Not Check Out => Check Out",
 												        "\"TEST_TASK_1\" => \"崩潰啦\"",
 												        "1 => 13",
 												        "1 => 13",
 												        "\"TEST_TASK_NOTES_1\" => \"煩死啦\"",
 												        "0 => 13");
-		List<String> expectedHistoryType = genArrayList("", "", "Handler", "Status", "Name",
-													"Estimate", "Remains", "Note", "Actual Hour");
+		List<String> expectedHistoryType = genArrayList("", "", "Handler", "Name", "Estimate",
+				"Remains", "Note", "Actual Hour");
 
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
@@ -397,7 +397,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
 		IIssue task = SBHelper.getIssue(taskId);
-		SBHelper.checkOutTask(taskId, task.getSummary(), task.getAssignto(), task.getPartners(), task.getNotes(), "");
+		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
 		// task Check Out -> Done
 		task = SBHelper.getIssue(taskId);
 		SBHelper.doneIssue(taskId, task.getSummary(), task.getNotes(), "", task.getActualHour());
@@ -428,13 +428,79 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		List<String> expectedDescription = genArrayList("Create Task #2",
 												        "Append to Story #1",
 												        "Not Check Out => Check Out",
+												        "admin",
 												        "1 => 0",
-												        "Not Check Out => Done",
+												        "Check Out => Done",
 												        "Done => Check Out",
 												        "Check Out => Not Check Out");
-		List<String> expectedHistoryType = genArrayList("", "", "Status", "Remains", "Status", "Status", "Status");
+		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler",
+				"Remains", "Status", "Status", "Status");
+		
+		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
+	}
+	
+	/**
+	 * change task handler
+	 */
+	public void testShowTaskHistoryTest4() throws Exception {
+		long sprintId = Long.valueOf(mCreateSprint.getSprintIDList().get(0));
+		
+		// Sprint 加入1個 Story
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		addStoryToSprint.exe();
+		Thread.sleep(1000);
+		
+		// 新增1個 account
+		CreateAccount createAccount = new CreateAccount(1);
+		createAccount.exe();
+		Thread.sleep(1000);
+		
+		// assign role to account
+		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
+		addUserToRole.exe_ST();
+		Thread.sleep(1000);
+		
+		// Story 加入1個 Task
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		addTaskToStory.exe();
+		Thread.sleep(1000);
 
-//		System.out.println("=> " + historyObj.getJSONArray("IssueHistories").toString());
+		String projectName = mProject.getName();
+		long taskId = addTaskToStory.getTaskIDList().get(0);
+
+		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		// task Not Check Out -> Check Out
+		IIssue task = SBHelper.getIssue(taskId);
+		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
+		// change task handler
+		task.setAssignto(createAccount.getAccountList().get(0).getAccount());
+		SBHelper.editTask(new TaskObject(task));
+		
+		// ================ set request info ========================
+		// 設定 Session 資訊
+		request.setHeader("Referer", "?PID=" + projectName);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
+
+		// 先 assert story 的 history
+		addRequestParameter("sprintID", String.valueOf(sprintId));
+		addRequestParameter("issueID", String.valueOf(taskId));
+
+		// 執行 action
+		actionPerform();
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+
+		// get assert data
+		String actualResponseText = response.getWriterBuffer().toString();
+		JSONObject historyObj = new JSONObject(actualResponseText);
+		List<String> expectedDescription = genArrayList("Create Task #2",
+												        "Append to Story #1",
+												        "Not Check Out => Check Out",
+												        "admin",
+												        "admin => TEST_ACCOUNT_ID_1");
+		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Handler");
+
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -485,12 +551,10 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-
 		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
 		addUserToRole.exe_ST();
-
 		Thread.sleep(1000);
 
 		// 新增一個 UnplannedItem
@@ -519,8 +583,11 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
-		List<String> expectedDescription = genArrayList("Create Unplanned #1", "Append to Sprint #1", "Not Check Out => Check Out", "TEST_ACCOUNT_ID_1",
-		        "\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"");
+		List<String> expectedDescription = genArrayList("Create Unplanned #1",
+														"Append to Sprint #1",
+														"Not Check Out => Check Out",
+														"TEST_ACCOUNT_ID_1",
+														"\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"");
 		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note");
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
@@ -538,17 +605,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-
 		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
 		addUserToRole.exe_ST();
-
 		Thread.sleep(1000);
-
+		
+		// 新增一個UnplannedItem
 		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe(); // 新增一個UnplannedItem
-
+		mCreateUnplanned.exe();
 		Thread.sleep(1000);
 
 		EditUnplannedItem EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);

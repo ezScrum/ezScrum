@@ -639,7 +639,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		valueSet.addInsertValue("handler_id",
 				Integer.toString(getUserID(handler)));
 
-		// 若狀態不為assigned,則改變狀態為assigned
+		// 若狀態不為 assigned，則改變狀態為 assigned
 		int oldStatus = ITSEnum.getStatus(issue.getStatus());
 		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
 			valueSet.addInsertValue("status",
@@ -667,15 +667,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 							newActor,
 							System.currentTimeMillis()));
 
-		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
-			historyDao.add(new HistoryObject(
-								issue.getIssueID(), 
-								issue.getIssueType(),
-								HistoryObject.TYPE_STATUS,
-								String.valueOf(oldStatus),
-								"50",
-								System.currentTimeMillis()));
-		}
+//		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
+//			historyDao.add(new HistoryObject(
+//								issue.getIssueID(), 
+//								issue.getIssueType(),
+//								HistoryObject.TYPE_STATUS,
+//								String.valueOf(oldStatus),
+//								"50",
+//								System.currentTimeMillis()));
+//		}
 	}
 
 	@Override
@@ -743,7 +743,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	public void insertBugNote(long issueId, String note) {
 		IIssue issue = getIssue(issueId);
-		long bugNoteID = mNoteService.insertBugNote(issueId, note);
+		mNoteService.insertBugNote(issueId, note);
 		
 		HistoryDAO.getInstance().add(new HistoryObject(
 										issueId,
@@ -752,13 +752,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 										String.valueOf(ITSEnum.NEW_STATUS),
 										String.valueOf(ITSEnum.ASSIGNED_STATUS),
 										System.currentTimeMillis()));
-		
-		// 新增歷史記錄
-		//TODO 不確定用途的 history, 暫時沒有補上新的 history
-//		mHistoryService.addMantisActionHistory(issueId,
-//				IIssueHistory.EMPTY_FIELD_NAME, Long.toString(bugNoteID),
-//				IIssueHistory.ZERO_NEW_VALUE, IIssueHistory.BUGNOTE_ADD_TYPE,
-//				IIssueHistory.NOW_MODIFY_DATE);
 	}
 
 	@Override

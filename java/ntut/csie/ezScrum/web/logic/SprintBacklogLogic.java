@@ -84,14 +84,14 @@ public class SprintBacklogLogic {
 		return taskID;
 	}
 
-	public boolean editTask(long taskID, String Name, String estimate,
+	public boolean editTask(long taskId, String name, String estimate,
 	        String remains, String handler, String partners, String actualHour,
 	        String notes, Date modifyDate) {
 		// 先變更handler
-		this.sprintBacklogMapper.modifyTaskInformation(taskID, Name, handler, modifyDate);
+		this.sprintBacklogMapper.modifyTaskInformation(taskId, name, handler, modifyDate);
 
 		// 建立tag (這邊的tag是指Mantis紀錄Note的地方）
-		IIssue task = this.sprintBacklogMapper.getIssue(taskID);
+		IIssue task = this.sprintBacklogMapper.getIssue(taskId);
 		if (task == null) {
 			return false;
 		}
@@ -110,7 +110,7 @@ public class SprintBacklogLogic {
 				history.addContent(storyPoint);
 				
 				HistoryDAO.getInstance().add(new HistoryObject(
-						taskID,
+						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_ESTIMATE,
 						String.valueOf(task.getEstimated()),
@@ -125,7 +125,7 @@ public class SprintBacklogLogic {
 				history.addContent(remainingPoints);
 				
 				HistoryDAO.getInstance().add(new HistoryObject(
-						taskID,
+						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_REMAIMS,
 						String.valueOf(task.getRemains()),
@@ -139,7 +139,7 @@ public class SprintBacklogLogic {
 			history.addContent(element);
 			
 			HistoryDAO.getInstance().add(new HistoryObject(
-					taskID,
+					taskId,
 					IssueTypeEnum.TYPE_TASK,
 					HistoryObject.TYPE_PARTNERS,
 					String.valueOf(task.getPartners()),
@@ -153,7 +153,7 @@ public class SprintBacklogLogic {
 				history.addContent(element);
 				
 				HistoryDAO.getInstance().add(new HistoryObject(
-						taskID,
+						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_NOTE,
 						String.valueOf(task.getNotes()),
@@ -168,7 +168,7 @@ public class SprintBacklogLogic {
 				history.addContent(element);
 				
 				HistoryDAO.getInstance().add(new HistoryObject(
-						taskID,
+						taskId,
 						IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_ACTUAL,
 						String.valueOf(task.getActualHour()),
@@ -192,10 +192,10 @@ public class SprintBacklogLogic {
 		if (changeDate != null && !changeDate.equals("")) {
 			closeDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
 		}
+		
+		this.sprintBacklogMapper.checkOutTask(id, bugNote);
 		// checkoutTask 時,actual hour 的值必為0
 		this.editTask(id, name, null, null, handler, partners, "0", bugNote, closeDate);
-
-		this.sprintBacklogMapper.checkOutTask(id, bugNote);
 	}
 
 	public void doneIssue(long id, String name, String bugNote, String changeDate, String actualHour) {

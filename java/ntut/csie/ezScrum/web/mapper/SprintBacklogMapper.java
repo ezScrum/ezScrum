@@ -260,7 +260,7 @@ public class SprintBacklogMapper {
 	public void modifyTaskInformation(long taskId, String name, String handler, Date modifyDate) {
 		IIssue task = this.getIssue(taskId);
 
-		// taskID 為不存在的 issue 時，會有 null 的危險
+		// taskId 為不存在的 issue 時，會有 null 的危險
 		if (task != null) {
 			if ((handler != null) && (handler.length() > 0) && (!task.getAssignto().equals(handler))) {
 				MantisService service = new MantisService(mConfig);
