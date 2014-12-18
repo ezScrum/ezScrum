@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.retrospective;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,6 +53,10 @@ public class ShowRetrospectiveAction extends PermissionAction {
     		}
     	}   	
 		
-		return (new RetrospectiveHelper(project,session)).getListXML(sprintID);
+		try {
+			return (new RetrospectiveHelper(project,session)).getListXML(sprintID);
+		} catch (SQLException e) {
+			return new StringBuilder("error");
+		}
 	}
 }

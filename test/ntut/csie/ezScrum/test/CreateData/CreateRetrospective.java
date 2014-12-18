@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -49,7 +50,7 @@ public class CreateRetrospective {
 		return this.ImproveRetrospectiveList;
 	}	
 	
-	public void exe() {
+	public void exe() throws SQLException {
 		IUserSession userSession = configuration.getUserSession();
 		int projectCount = this.CP.getProjectList().size();
 		int sprintCount = this.CS.getSprintCount();
@@ -83,7 +84,7 @@ public class CreateRetrospective {
 	}
 
 	// 有做刪除動作後必須更新
-	public void update() {
+	public void update() throws SQLException {
 		IUserSession userSession = configuration.getUserSession();
 		int projectCount = this.CP.getProjectList().size();
 		int sprintCount = this.CS.getSprintCount();

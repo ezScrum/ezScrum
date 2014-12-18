@@ -181,6 +181,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		verifyForward("success");
 		verifyNoActionErrors();
 		RemainingWorkReport report = (RemainingWorkReport) request.getAttribute("RemainingWorkReport");
+		System.out.println(report.toString());
 		// 觀看回來的NonCheckOut, CheckOut, Done數量是否正確
 		assertEquals(STORY_COUNT * TASK_COUNT, report.getTotalQuantity());
 		assertEquals(STORY_COUNT * TASK_COUNT - 2, report.getNonAssignQuantity());

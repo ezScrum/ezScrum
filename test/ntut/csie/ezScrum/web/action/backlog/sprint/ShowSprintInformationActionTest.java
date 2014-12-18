@@ -79,12 +79,13 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 專案沒有一個Sprint
+	 * 專案沒有一個 Sprint
 	 */
 	public void testShowInformationAction_1() {
 		// ================ set request info ========================
 		String sprintID = "1";
 		String projectName = this.project.getName();
+		
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintID);
 

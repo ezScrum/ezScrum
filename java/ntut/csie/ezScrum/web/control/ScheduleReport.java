@@ -147,6 +147,7 @@ public class ScheduleReport {
 			long openDate = 0;
 			long doneDate = 0;
 			for(IIssue task: tasks){
+				task.getActualHour();
 				long assignedDate = task.getAssignedDate();
 				long closedDate = task.getCloseDate();
 				if(closedDate ==0){

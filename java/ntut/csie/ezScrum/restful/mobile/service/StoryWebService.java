@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,9 +58,10 @@ public class StoryWebService extends ProjectWebService{
 	 * 修改 story 並回傳修改後的 story
 	 * @param storyJson
 	 * @return
+	 * @throws SQLException 
 	 * @throws JSONException
 	 */
-	public String updateStory(String storyJson) {
+	public String updateStory(String storyJson) throws SQLException {
 		StoryObject editStoryObj = new Gson().fromJson(storyJson, StoryObject.class);
 		StoryObject newStoryObj = new StoryObject(mProductBacklogHelper.editStory(editStoryObj.toStoryInformation()));
 		for (TagObject originTag : newStoryObj.tagList) {

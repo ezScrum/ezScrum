@@ -7,12 +7,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -45,20 +48,20 @@ public class SprintBacklogLogic {
 	/**
 	 * 判斷使用者輸入的sprintID是否為合法
 	 * 
-	 * @param project
+	 * @param mProject
 	 * @param userSession
-	 * @param sprintID
+	 * @param sprintId
 	 * @return
 	 */
-	private SprintBacklogMapper createSprintBacklogMapper(String sprintID) {
+	private SprintBacklogMapper createSprintBacklogMapper(String sprintId) {
 		SprintBacklogMapper sprintBacklogMapper = null;
 
 		try {
 			// sprint 不存在，回傳最近的一個 sprint 或 空的 sprint
-			if (sprintID == null || sprintID.equals("") || sprintID.equals("0") || sprintID.equals("-1")) {
+			if (sprintId == null || sprintId.equals("") || sprintId.equals("0") || sprintId.equals("-1")) {
 				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession);
 			} else {
-				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession, Integer.parseInt(sprintID));
+				sprintBacklogMapper = new SprintBacklogMapper(this.project, this.userSession, Long.parseLong(sprintId));
 			}
 		} catch (Exception e) {
 			// 已經處理過不必輸出 Exception
@@ -81,14 +84,14 @@ public class SprintBacklogLogic {
 		return taskID;
 	}
 
-	public boolean editTask(long taskID, String Name, String estimate,
+	public boolean editTask(long taskId, String name, String estimate,
 	        String remains, String handler, String partners, String actualHour,
 	        String notes, Date modifyDate) {
 		// 先變更handler
-		this.sprintBacklogMapper.modifyTaskInformation(taskID, Name, handler, modifyDate);
+		this.sprintBacklogMapper.modifyTaskInformation(taskId, name, handler, modifyDate);
 
 		// 建立tag (這邊的tag是指Mantis紀錄Note的地方）
-		IIssue task = this.sprintBacklogMapper.getIssue(taskID);
+		IIssue task = this.sprintBacklogMapper.getIssue(taskId);
 		if (task == null) {
 			return false;
 		}
@@ -105,6 +108,14 @@ public class SprintBacklogLogic {
 				Element storyPoint = new Element(ScrumEnum.ESTIMATION);
 				storyPoint.setText(estimate);
 				history.addContent(storyPoint);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskId,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_ESTIMATE,
+						String.valueOf(task.getEstimated()),
+						String.valueOf(estimate),
+						System.currentTimeMillis()));
 			}
 		}
 		if (remains != null && !remains.equals("")) {
@@ -112,18 +123,42 @@ public class SprintBacklogLogic {
 				Element remainingPoints = new Element(ScrumEnum.REMAINS);
 				remainingPoints.setText(remains);
 				history.addContent(remainingPoints);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskId,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_REMAIMS,
+						String.valueOf(task.getRemains()),
+						String.valueOf(remains),
+						System.currentTimeMillis()));
 			}
 		}
 		if (!task.getPartners().equals(partners)) {
 			Element element = new Element(ScrumEnum.PARTNERS);
 			element.setText(partners.replaceAll("'", "''"));
 			history.addContent(element);
+			
+			HistoryDAO.getInstance().add(new HistoryObject(
+					taskId,
+					IssueTypeEnum.TYPE_TASK,
+					HistoryObject.TYPE_PARTNERS,
+					String.valueOf(task.getPartners()),
+					String.valueOf(partners),
+					System.currentTimeMillis()));
 		}
 		if (notes != null) {
 			if (!task.getNotes().equals(notes)) {
 				Element element = new Element(ScrumEnum.NOTES);
 				element.setText(notes.replaceAll("'", "''"));
 				history.addContent(element);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskId,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_NOTE,
+						String.valueOf(task.getNotes()),
+						String.valueOf(notes),
+						System.currentTimeMillis()));
 			}
 		}
 		if (actualHour != null && !actualHour.equals("")) {
@@ -131,6 +166,14 @@ public class SprintBacklogLogic {
 				Element element = new Element(ScrumEnum.ACTUALHOUR);
 				element.setText(actualHour);
 				history.addContent(element);
+				
+				HistoryDAO.getInstance().add(new HistoryObject(
+						taskId,
+						IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_ACTUAL,
+						String.valueOf(task.getActualHour()),
+						String.valueOf(actualHour),
+						System.currentTimeMillis()));
 			}
 		}
 
@@ -149,10 +192,10 @@ public class SprintBacklogLogic {
 		if (changeDate != null && !changeDate.equals("")) {
 			closeDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
 		}
+		
+		this.sprintBacklogMapper.checkOutTask(id, bugNote);
 		// checkoutTask 時,actual hour 的值必為0
 		this.editTask(id, name, null, null, handler, partners, "0", bugNote, closeDate);
-
-		this.sprintBacklogMapper.checkOutTask(id, bugNote);
 	}
 
 	public void doneIssue(long id, String name, String bugNote, String changeDate, String actualHour) {

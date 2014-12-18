@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.iteration.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,10 +16,6 @@ public interface IScrumIssue extends IIssue{
 	//支援Scrum的欄位
 	public String getName();
 	public String getSprintID();
-	
-	//擴充支援Scrum的tag history
-	public List<IIssueHistory> getIssueHistories();
-	public void addIssueHistory(IIssueHistory history);
 
 	//支援scrum但需要修改的操作
 	public void setTagContent(Element history);

@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
@@ -72,7 +73,7 @@ public class RetrospectiveHelper {
 	}		
 	
 	// 前端XML格式定義在: ShowRetrospective.jsp 之 變數 retrospectiveStore
-	public StringBuilder getListXML(String sprintID) {
+	public StringBuilder getListXML(String sprintID) throws SQLException {
     	TranslateSpecialChar tsc = new TranslateSpecialChar();
     	//Good Retrospective 封裝成 XML 給 Ext 使用
     	List<IScrumIssue> goodRes = this.retrospectiveMapper.getList(ScrumEnum.GOOD_ISSUE_TYPE);

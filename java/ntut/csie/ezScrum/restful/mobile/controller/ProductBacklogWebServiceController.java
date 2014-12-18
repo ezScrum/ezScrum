@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -12,12 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
 import ntut.csie.jcis.account.core.LogonException;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @Path("{projectID}/product-backlog/")
 public class ProductBacklogWebServiceController {
@@ -154,10 +155,6 @@ public class ProductBacklogWebServiceController {
 		try{
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectID);
-//			this.pbws = new ProductBacklogWebService(
-//					decodeAccount.getDecodeUserName(),
-//					decodeAccount.getDecodePwd(), 
-//					decodeAccount.getDecodeProjectID(), null);
 			this.pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
@@ -190,17 +187,17 @@ public class ProductBacklogWebServiceController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String retrieveStory(@QueryParam("userName") String username, 
 								@QueryParam("password") String password, 
-								@PathParam("projectID") String projectID, 
-								@PathParam("storyID") String storyID) {
+								@PathParam("projectID") String projectId, 
+								@PathParam("storyID") long storyId) {
 		String jsonString = "";
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
-			decodeAccount.decode(username, password, projectID);
+			decodeAccount.decode(username, password, projectId);
 			this.pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.readStoryByID(storyID);
+			this.pbws.readStoryById(storyId);
 			jsonString = this.pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -223,13 +220,13 @@ public class ProductBacklogWebServiceController {
 	@GET
 	@Path("taglist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTagList(@PathParam("projectID") String projectID,
+	public String getTagList(@PathParam("projectID") String projectId,
 							 @QueryParam("userName") String userName,
 							 @QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectID);
+			informationDecoder.decode(userName, password, projectId);
 			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
@@ -256,18 +253,18 @@ public class ProductBacklogWebServiceController {
 	@GET
 	@Path("{storyID}/history")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getStoryHistory(@PathParam("projectID") String projectID,
+	public String getStoryHistory(@PathParam("projectID") String projectId,
 								  @QueryParam("userName") String userName,
 								  @QueryParam("password") String password,
-								  @PathParam("storyID") String storyID) {
+								  @PathParam("storyID") long storyId) {
 		String storyHistoryJsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectID);
+			informationDecoder.decode(userName, password, projectId);
 			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
-			this.pbws.readStoryHistory(storyID);
+			this.pbws.readStoryHistory(storyId);
 			storyHistoryJsonString = this.pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -275,6 +272,11 @@ public class ProductBacklogWebServiceController {
 								"exception: "+ e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
+			System.out.println("class: ProductBacklogWebServiceController, " +
+								"method: getStoryHistory, " +
+								"exception: "+ e.toString());
+			e.printStackTrace();
+		} catch (SQLException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: getStoryHistory, " +
 								"exception: "+ e.toString());

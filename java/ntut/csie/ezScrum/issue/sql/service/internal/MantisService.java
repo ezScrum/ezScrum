@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueNote;
@@ -27,7 +27,9 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
@@ -51,11 +53,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	private String MANTIS_TABLE_TYPE = "Default";
 	private String MANTIS_DB_NAME = "bugtracker";
 
-	private MantisNoteService m_noteService;
-	private MantisHistoryService m_historyService;
-	private MantisIssueService m_issueService;
+	private MantisNoteService mNoteService;
+	private MantisIssueService mIssueService;
 	private MantisAttachFileService mAttachFileService;
-	private MantisTagService m_tagService;
+	private MantisTagService mTagService;
 
 	public MantisService(Configuration config) {
 		setConfig(config);
@@ -104,12 +105,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public void openConnect() {
 		getControl().connection();
 
-		m_noteService = new MantisNoteService(getControl(), getConfig());
-		m_historyService = new MantisHistoryService(getControl(), getConfig());
-		m_issueService = new MantisIssueService(getControl(), getConfig());
-		mAttachFileService = new MantisAttachFileService(getControl(),
-				getConfig());
-		m_tagService = new MantisTagService(getControl(), getConfig());
+		mNoteService = new MantisNoteService(getControl(), getConfig());
+		mIssueService = new MantisIssueService(getControl(), getConfig());
+		mAttachFileService = new MantisAttachFileService(getControl(), getConfig());
+		mTagService = new MantisTagService(getControl(), getConfig());
 	}
 
 	/************************************************************
@@ -240,134 +239,158 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	public long newIssue(IIssue issue) {
-		long issueID = m_issueService.newIssue(issue);
-		if (issueID > 0) {
-			m_historyService
-					.addMantisActionHistory(issueID,
-							IIssueHistory.EMPTY_FIELD_NAME,
-							IIssueHistory.ZERO_OLD_VALUE,
-							IIssueHistory.ZERO_NEW_VALUE,
-							IIssueHistory.ISSUE_NEW_TYPE,
-							IIssueHistory.NOW_MODIFY_DATE);
+		long issueId = mIssueService.newIssue(issue);
+		
+		int issueType = -1;
+		if (issue.getIssueType() == IssueTypeEnum.TYPE_UNPLANNED) {
+			issueType = IssueTypeEnum.TYPE_UNPLANNED;
+		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_STORY) {
+			issueType = IssueTypeEnum.TYPE_STORY;
+		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_TASK) {
+			issueType = IssueTypeEnum.TYPE_TASK;
+		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_RETROSPECTIVE) {
+			issueType = IssueTypeEnum.TYPE_RETROSPECTIVE;
 		}
-		return issueID;
+		
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.add(new HistoryObject(
+							issueId, 
+							issueType, 
+							HistoryObject.TYPE_CREATE,
+							"",
+							"",
+							System.currentTimeMillis()));
+		
+		if (issue.getParentId() > 0) {
+			historyDao.add(new HistoryObject(
+								issueId, 
+								issueType, 
+								HistoryObject.TYPE_APPEND,
+								"",
+								String.valueOf(issue.getParentId()),
+								System.currentTimeMillis()));
+		}
+		
+		return issueId;
 	}
 
-	/************************************************************
-	 * 
-	 * 可以針對releaseID與SprintID來搜尋Story與Task，並且只取得最新的資料
-	 * 
-	 *************************************************************/
-	public IIssue[] getIssues(String projectName, String category,
-			String releaseID, String sprintID) {
-		return getIssues(projectName, category, releaseID, sprintID, null);
-	}
+//	/************************************************************
+//	 * 可以針對 releaseID 與 SprintID 來搜尋 Story 與 Task，並且只取得最新的資料
+//	 *************************************************************/
+//	public IIssue[] getIssues(String projectName, String category,
+//			String releaseId, String sprintId) {
+//		return getIssues(projectName, category, releaseId, sprintId, null);
+//	}
 
 	/************************************************************
 	 * 找出期間限定的Issue
 	 *************************************************************/
 	public IIssue[] getIssues(String projectName, String category,
-			String releaseID, String sprintID, Date startDate, Date endDate) {
+			String releaseId, String sprintId, Date startDate, Date endDate) {
 
-		IIssue[] issues = m_issueService.getIssues(projectName, category,
-				releaseID, sprintID, startDate, endDate);
+		IIssue[] issues = mIssueService.getIssues(projectName, category,
+				releaseId, sprintId, startDate, endDate);
 
 		for (IIssue issue : issues) {
-			// 建立歷史記錄
-			m_historyService.initHistory(issue);
-			// 設定在mantis上tag的資料
 			setIssueNote(issue);
-			// 建立bug note
-			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-
+			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
 			mAttachFileService.initAttachFile(issue);
+			setChildParentRelation(issue);
 		}
-
 		return issues;
 	}
 
 	/************************************************************
-	 * 
-	 * 針對傳入的時間範圍取出這時間的Issue狀態
-	 * 
+	 * 針對傳入的時間範圍取出這時間的Issue狀態 (for story)
 	 *************************************************************/
 	public IIssue[] getIssues(String projectName, String category,
-			String releaseID, String sprintID, Date date) {
-		IIssue[] issues = m_issueService.getIssues(projectName, category,
-				releaseID, sprintID, date);
-
+			String releaseId, String sprintId, Date date) {
+		
+		IIssue[] issues = mIssueService.getIssues(projectName, category,
+				releaseId, sprintId, date);
+		
 		for (IIssue issue : issues) {
-			// 建立歷史記錄
-			m_historyService.initHistory(issue);
-			// 設定在mantis上tag的資料
 			setIssueNote(issue);
-			// 建立bug note
-			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-
+			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
 			mAttachFileService.initAttachFile(issue);
-			// 建立tag資料
-			m_tagService.initTag(issue);
+			mTagService.initTag(issue);
+			setChildParentRelation(issue);
 		}
-
 		return issues;
 	}
 
-	// 當有更新時,若沒有重新建立Service的話,連續取得同一個專案會造成只能取到舊資料
+	// 當有更新時,若沒有重新建立 Service 的話,連續取得同一個專案會造成只能取到舊資料
 	public IIssue[] getIssues(String projectName) {
-		IIssue[] issues = m_issueService.getIssues(projectName);
-
+		IIssue[] issues = mIssueService.getIssues(projectName);
+		
 		for (IIssue issue : issues) {
-			// 建立歷史記錄
-			m_historyService.initHistory(issue);
-
-			// 設定在mantis上tag的資料
 			setIssueNote(issue);
-
-			// 建立bug note
-			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-
+			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
 			mAttachFileService.initAttachFile(issue);
-		}
-
-		return issues;
-	}
-
-	public IIssue[] getIssues(String projectName, String category) {
-		IIssue[] issues = m_issueService.getIssues(projectName, category);
-
-		for (IIssue issue : issues) {
-			// 建立歷史記錄
-			m_historyService.initHistory(issue);
-			// 設定在mantis上note的資料
-			setIssueNote(issue);
-			// 建立bug note
-			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
-			mAttachFileService.initAttachFile(issue);
-			// 建立tag資料
-			m_tagService.initTag(issue);
+			setChildParentRelation(issue);
 		}
 		return issues;
 	}
 
-	public IIssue getIssue(long issueID) {
-		IIssue issue = m_issueService.getIssue(issueID);
+	public IIssue[] getIssues(String projectName, String category) throws SQLException {
+		IIssue[] issues = mIssueService.getIssues(projectName, category);
+		
+		for (IIssue issue : issues) {
+			setIssueNote(issue);
+			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
+			mAttachFileService.initAttachFile(issue);
+			mTagService.initTag(issue);
+			setChildParentRelation(issue);
+		}
+		return issues;
+	}
 
+	public IIssue getIssue(long issueId) {
+		IIssue issue = mIssueService.getIssue(issueId);
+		
 		if (issue != null) {
-			// 建立歷史記錄
-			m_historyService.initHistory(issue);
-
-			// 設定在mantis上tag的資料
 			setIssueNote(issue);
-
-			// 設定child issue id
-			// setRelationShipID(issue);
-
-			// 建立bug note
-			issue.setIssueNotes(this.m_noteService.getIssueNotes(issue));
+			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
 			mAttachFileService.initAttachFile(issue);
-			m_tagService.initTag(issue);
+			mTagService.initTag(issue);
+			setChildParentRelation(issue);
 		}
 		return issue;
+	}
+	
+	private void setChildParentRelation(IIssue issue) {
+		ArrayList<Long> childrenId = new ArrayList<Long>();
+		long parentId = 0;
+		
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName("mantis_bug_relationship_table");
+		valueSet.addEqualCondition("source_bug_id", issue.getIssueID());
+		String query = valueSet.getSelectQuery();
+		
+		ResultSet result = getControl().executeQuery(query);
+
+		try {
+			while (result.next()) {
+				childrenId.add(result.getLong("destination_bug_id"));
+			}
+		} catch (SQLException e) {
+		}
+		
+		valueSet.clear();
+		valueSet.addTableName("mantis_bug_relationship_table");
+		valueSet.addEqualCondition("destination_bug_id", issue.getIssueID());
+		query = valueSet.getSelectQuery();
+		
+		result = getControl().executeQuery(query);
+		try {
+			while (result.next()) {
+				parentId = result.getLong("source_bug_id");
+			}
+		} catch (SQLException e) {
+		}
+		
+		issue.setChildrenId(childrenId);
+		issue.setParentId(parentId);
 	}
 
 	// =====================有新增標籤時,在這必需要存入Issue Tag中============
@@ -388,8 +411,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		// + issue.getIssueID();
 		// Statement stmt;
 		try {
-			// stmt = conn.createStatement();
-			// ResultSet result = stmt.executeQuery(query);
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
 				String note = result.getString("note");
@@ -534,70 +555,79 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	@Override
 	public void updateBugNote(IIssue issue) {
-		m_noteService.updateBugNote(issue);
+		mNoteService.updateBugNote(issue);
 	}
 
 	@Override
 	public void updateIssueNote(IIssue issue, IIssueNote note) {
-		m_noteService.updateIssueNote(issue, note);
-	}
-
-	public void addHistory(long issueID, String typeName, String oldValue,
-			String newValue) {
-		m_historyService.addMantisActionHistory(issueID, typeName, oldValue,
-				newValue, IIssueHistory.OTHER_TYPE,
-				IIssueHistory.NOW_MODIFY_DATE);
+		mNoteService.updateIssueNote(issue, note);
 	}
 
 	@Override
-	public void addRelationship(long sourceID, long targetID, int type,
+	public void addRelationship(long sourceId, long targetId, int type,
 			Date date) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_relationship_table");
-		valueSet.addInsertValue("source_bug_id", Long.toString(sourceID));
-		valueSet.addInsertValue("destination_bug_id", Long.toString(targetID));
+		valueSet.addInsertValue("source_bug_id", Long.toString(sourceId));
+		valueSet.addInsertValue("destination_bug_id", Long.toString(targetId));
 		valueSet.addInsertValue("relationship_type", Integer.toString(type));
-
 		String query = valueSet.getInsertQuery();
 		getControl().execute(query);
-
+		
 		if (type == ITSEnum.PARENT_RELATIONSHIP) {
-			m_historyService.addMantisActionHistory(sourceID,
-					IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.PARENT_OLD_VALUE, Long.toString(targetID),
-					IIssueHistory.RELEATIONSHIP_ADD_TYPE, date);
-
-			m_historyService.addMantisActionHistory(targetID,
-					IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.CHILD_OLD_VALUE, Long.toString(sourceID),
-					IIssueHistory.RELEATIONSHIP_ADD_TYPE, date);
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			
+			historyDao.add(new HistoryObject(
+								sourceId, 
+								IssueTypeEnum.TYPE_STORY, 
+								HistoryObject.TYPE_ADD,
+								"",
+								String.valueOf(targetId),
+								date.getTime()));
+			
+			historyDao.add(new HistoryObject(
+								targetId, 
+								IssueTypeEnum.TYPE_TASK, 
+								HistoryObject.TYPE_APPEND,
+								"",
+								String.valueOf(sourceId),
+								date.getTime()));
 		}
 	}
 
 	@Override
-	public void removeRelationship(long sourceID, long targetID, int type) {
+	public void removeRelationship(long sourceId, long targetId, int type) {
 		if (type == ITSEnum.PARENT_RELATIONSHIP) {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName("mantis_bug_relationship_table");
-			valueSet.addEqualCondition("source_bug_id", Long.toString(sourceID));
+			valueSet.addEqualCondition("source_bug_id", Long.toString(sourceId));
 			valueSet.addEqualCondition("destination_bug_id",
-					Long.toString(targetID));
+					Long.toString(targetId));
 			String query = valueSet.getDeleteQuery();
 			// String query = "DELETE FROM `mantis_bug_relationship_table` WHERE
 			// source_bug_id = "
 			// + sourceID + " AND destination_bug_id = " + targetID;
 			getControl().execute(query);
-			Date removeTime = new Date();
-			m_historyService.addMantisActionHistory(sourceID,
-					IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.PARENT_OLD_VALUE, Long.toString(targetID),
-					IIssueHistory.RELEATIONSHIP_DELETE_TYPE, removeTime);
-			m_historyService.addMantisActionHistory(targetID,
-					IIssueHistory.EMPTY_FIELD_NAME,
-					IIssueHistory.CHILD_OLD_VALUE, Long.toString(sourceID),
-					IIssueHistory.RELEATIONSHIP_DELETE_TYPE, removeTime);
+			
+			long time = System.currentTimeMillis();
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			
+			historyDao.add(new HistoryObject(
+								sourceId, 
+								IssueTypeEnum.TYPE_STORY, 
+								HistoryObject.TYPE_DROP,
+								"",
+								String.valueOf(targetId),
+								time));
+			
+			historyDao.add(new HistoryObject(
+								targetId, 
+								IssueTypeEnum.TYPE_TASK, 
+								HistoryObject.TYPE_REMOVE,
+								"",
+								String.valueOf(sourceId),
+								time));
 		}
-
 	}
 
 	public void updateHandler(IIssue issue, String handler, Date modifyDate) {
@@ -609,7 +639,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		valueSet.addInsertValue("handler_id",
 				Integer.toString(getUserID(handler)));
 
-		// 若狀態不為assigned,則改變狀態為assigned
+		// 若狀態不為 assigned，則改變狀態為 assigned
 		int oldStatus = ITSEnum.getStatus(issue.getStatus());
 		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
 			valueSet.addInsertValue("status",
@@ -622,17 +652,30 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		getControl().execute(updateQuery);
 
-		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issue.getIssueID(),
-				IIssueHistory.HANDLER_FIELD_NAME, oldActor, getUserID(handler),
-				IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		String newActor = getUserID(handler) + "";
+		String oldActorString = "";
+		if (oldActor > 0) {
+			oldActorString = String.valueOf(oldActor);
+		}
+		historyDao.add(new HistoryObject(
+							issue.getIssueID(), 
+							issue.getIssueType(), 
+							HistoryObject.TYPE_HANDLER,
+							// issue 沒有 actor 會回傳 0, 如果 actor == 0 則存入空字串
+							oldActorString,
+							newActor,
+							System.currentTimeMillis()));
 
-		if (oldStatus != ITSEnum.ASSIGNED_STATUS)
-			m_historyService.addMantisActionHistory(issue.getIssueID(),
-					IIssueHistory.STATUS_FIELD_NAME, oldStatus,
-					ITSEnum.ASSIGNED_STATUS, IIssueHistory.OTHER_TYPE,
-					modifyDate);
-
+//		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
+//			historyDao.add(new HistoryObject(
+//								issue.getIssueID(), 
+//								issue.getIssueType(),
+//								HistoryObject.TYPE_STATUS,
+//								String.valueOf(oldStatus),
+//								"50",
+//								System.currentTimeMillis()));
+//		}
 	}
 
 	@Override
@@ -655,9 +698,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(updateQuery);
 
 		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issue.getIssueID(),
-				IIssueHistory.SUMMARY, oldSummary, name,
-				IIssueHistory.OTHER_TYPE, IIssueHistory.NOW_MODIFY_DATE);
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.add(new HistoryObject(
+							issue.getIssueID(), 
+							issue.getIssueType(), 
+							HistoryObject.TYPE_NAME,
+							oldSummary,
+							name,
+							System.currentTimeMillis()));
 	}
 
 	@Override
@@ -678,9 +726,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID,
-				IIssueHistory.STATUS_FIELD_NAME, oldStatus,
-				ITSEnum.CLOSED_STATUS, IIssueHistory.OTHER_TYPE, closeDate);
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.add(new HistoryObject(
+							issue.getIssueID(), 
+							issue.getIssueType(), 
+							HistoryObject.TYPE_STATUS,
+							String.valueOf(oldStatus),
+							String.valueOf(ITSEnum.CLOSED_STATUS),
+							System.currentTimeMillis()));
 
 		if (bugNote != null && !bugNote.equals("")) {
 			issue.addIssueNote(bugNote);
@@ -688,14 +741,17 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	public void insertBugNote(long issueID, String note) {
-		long bugNoteID = m_noteService.insertBugNote(issueID, note);
-
-		// 新增歷史記錄
-		m_historyService.addMantisActionHistory(issueID,
-				IIssueHistory.EMPTY_FIELD_NAME, Long.toString(bugNoteID),
-				IIssueHistory.ZERO_NEW_VALUE, IIssueHistory.BUGNOTE_ADD_TYPE,
-				IIssueHistory.NOW_MODIFY_DATE);
+	public void insertBugNote(long issueId, String note) {
+		IIssue issue = getIssue(issueId);
+		mNoteService.insertBugNote(issueId, note);
+		
+		HistoryDAO.getInstance().add(new HistoryObject(
+										issueId,
+										issue.getIssueType(),
+										HistoryObject.TYPE_STATUS,
+										String.valueOf(ITSEnum.NEW_STATUS),
+										String.valueOf(ITSEnum.ASSIGNED_STATUS),
+										System.currentTimeMillis()));
 	}
 
 	@Override
@@ -721,9 +777,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		getControl().execute(query);
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID,
-				IIssueHistory.STATUS_FIELD_NAME, oldStatus,
-				ITSEnum.ASSIGNED_STATUS, IIssueHistory.OTHER_TYPE, reopenDate);
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.add(new HistoryObject(
+							issue.getIssueID(), 
+							issue.getIssueType(), 
+							HistoryObject.TYPE_STATUS,
+							String.valueOf(oldStatus),
+							String.valueOf(ITSEnum.ASSIGNED_STATUS),
+							reopenDate.getTime()));
 
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -744,9 +805,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	@Override
-	public void resetStatusToNew(long issueID, String name, String bugNote,
+	public void resetStatusToNew(long issueId, String name, String bugNote,
 			Date resetDate) {
-		IIssue issue = getIssue(issueID);
+		IIssue issue = getIssue(issueId);
 		int oldStatus = issue.getStatusValue();
 
 		// String updateQuery = "UPDATE `mantis_bug_table` SET `status` = '"
@@ -768,15 +829,20 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		valueSet.addInsertValue("resolution",
 				Integer.toString(ITSEnum.OPEN_RESOLUTION));
 		valueSet.addInsertValue("handler_id", "0");
-		valueSet.addEqualCondition("id", Long.toString(issueID));
+		valueSet.addEqualCondition("id", Long.toString(issueId));
 		String query = valueSet.getUpdateQuery();
 
 		getControl().execute(query);
 
-		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		m_historyService.addMantisActionHistory(issueID,
-				IIssueHistory.STATUS_FIELD_NAME, oldStatus, ITSEnum.NEW_STATUS,
-				IIssueHistory.OTHER_TYPE, resetDate);
+		// 新增歷史記錄,還有一個 resolution 的 history ,因為不是很重要,就暫時沒加入
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.add(new HistoryObject(
+							issue.getIssueID(), 
+							issue.getIssueType(), 
+							HistoryObject.TYPE_STATUS,
+							String.valueOf(oldStatus),
+							String.valueOf(ITSEnum.NEW_STATUS),
+							resetDate.getTime()));
 
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -795,29 +861,33 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	public void updateHistoryModifiedDate(long issueID, long historyID,
-			Date date) {
-		if (historyID < Long.parseLong("20000000000000")) {
-			m_historyService.updateHistoryModifiedDate(historyID, date);
-		} else {
-			m_noteService.updateHistoryModifiedDate(this.getIssue(issueID),
-					historyID, date);
-		}
-	}
+//	public void updateHistoryModifiedDate(long issueID, long historyID,
+//			Date date) {
+//		if (historyID < Long.parseLong("20000000000000")) {
+//			mHistoryService.updateHistoryModifiedDate(historyID, date);
+//		} else {
+//			mNoteService.updateHistoryModifiedDate(this.getIssue(issueID),
+//					historyID, date);
+//		}
+//	}
 
 	@Override
 	public void updateIssueContent(IIssue modifiedIssue) {
-		m_issueService.updateIssueContent(modifiedIssue);
+		mIssueService.updateIssueContent(modifiedIssue);
 		// m_noteService.insertBugNote(modifiedIssue.getIssueID(), modifiedIssue
 		// .getIssueNotes().get(0).getText());
 		// 未修改與修改後的issue比較,更新history
 	}
 
 	public void removeIssue(String ID) {
+		IIssue issue = getIssue(Long.parseLong(ID));
+		
 		// 刪除retrospective issue，分別砍掉issue與note的資料檔
-		m_issueService.removeIssue(ID);
-		m_noteService.removeNote(ID);
-		m_historyService.removeHistory(ID);
+		mIssueService.removeIssue(ID);
+		mNoteService.removeNote(ID);
+		
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.deleteByIssue(Long.parseLong(ID), issue.getIssueType());
 
 		// 刪除此Story與其他Sprint or Release的關係
 		deleteStoryRelationTable(ID);
@@ -841,37 +911,39 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			getControl().execute(query);
 
 			// 刪除跟此issue有關的tag
-			m_tagService.removeStoryTag(ID, -1);
+			mTagService.removeStoryTag(ID, -1);
+			
+			// 刪除History
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			historyDao.deleteByIssue(Long.parseLong(ID), issue.getIssueType());
 		}
 	}
 
 	// 刪除 task
 	public void deleteTask(long taskID) {
+		IIssue issue = getIssue(taskID);
+		
 		// delete task，分別砍掉issue與history的資料檔
-		String bug_text_id = m_issueService.getBugTextId(taskID);
+		String bug_text_id = mIssueService.getBugTextId(taskID);
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_text_table");
 		valueSet.addEqualCondition("id", bug_text_id);
 		String query = valueSet.getDeleteQuery();
 		getControl().execute(query);
-		m_issueService.removeIssue(Long.toString(taskID));
-		m_historyService.removeHistory(Long.toString(taskID));
+		mIssueService.removeIssue(Long.toString(taskID));
+		
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.deleteByIssue(taskID, issue.getIssueType());
 	}
 
 	// 刪除 story 和 task 的關係
-	public void deleteRelationship(long storyID, long taskID) {
+	public void deleteRelationship(long storyId, long taskId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_relationship_table");
-		valueSet.addEqualCondition("source_bug_id", Long.toString(storyID));
-		valueSet.addEqualCondition("destination_bug_id", Long.toString(taskID));
+		valueSet.addEqualCondition("source_bug_id", Long.toString(storyId));
+		valueSet.addEqualCondition("destination_bug_id", Long.toString(taskId));
 		String query = valueSet.getDeleteQuery();
 		getControl().execute(query);
-		Date removeTime = new Date();
-		// delete task 的訊息記錄在 story 裡面
-		m_historyService.addMantisActionHistory(storyID,
-				IIssueHistory.EMPTY_FIELD_NAME, IIssueHistory.PARENT_OLD_VALUE,
-				Long.toString(taskID), IIssueHistory.TASK_DELETE_TYPE,
-				removeTime);
 	}
 
 	// ezScrum上面新增帳號，新增進mySQL裡
@@ -1133,23 +1205,23 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		}
 	}
 
-	public void updateStoryRelationTable(String storyID, String projectName,
-			String releaseID, String sprintID, String estimation,
+	public void updateStoryRelationTable(long storyId, String projectName,
+			String releaseId, String sprintId, String estimation,
 			String importance, Date date) {
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("ezscrum_story_relation");
 
-		valueSet.addInsertValue("storyID", storyID);
-		int projectID = getProjectID(projectName);
+		valueSet.addInsertValue("storyID", Long.toString(storyId));
+		int projectId = getProjectID(projectName);
 
-		valueSet.addInsertValue("projectID", Integer.toString(projectID));
+		valueSet.addInsertValue("projectID", Integer.toString(projectId));
 
-		if (releaseID != null)
-			valueSet.addInsertValue("releaseID", releaseID);
+		if (releaseId != null)
+			valueSet.addInsertValue("releaseID", releaseId);
 
-		if (sprintID != null)
-			valueSet.addInsertValue("sprintID", sprintID);
+		if (sprintId != null)
+			valueSet.addInsertValue("sprintID", sprintId);
 
 		if (estimation != null)
 			valueSet.addInsertValue("estimation", estimation);
@@ -1176,44 +1248,38 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	// 新增自訂分類標籤
 	public long addNewTag(String name, String projectName) {
-		return m_tagService.addTag(name, projectName);
+		return mTagService.addTag(name, projectName);
 	}
 
 	// 刪除自訂分類標籤
 	public void deleteTag(long id, String projectName) {
-		m_tagService.deleteTag(id, projectName);
+		mTagService.deleteTag(id, projectName);
 	}
 
 	// 取得自訂分類標籤列表
 	public ArrayList<TagObject> getTagList(String projectName) {
-		return m_tagService.getTagList(projectName);
+		return mTagService.getTagList(projectName);
 	}
 
 	// 對Story設定自訂分類標籤
 	public void addStoryTag(String storyID, long tagID) {
-		m_tagService.addStoryTag(storyID, tagID);
+		mTagService.addStoryTag(storyID, tagID);
 	}
 
 	// 移除Story的自訂分類標籤
 	public void removeStoryTag(String storyID, long tagID) {
-		m_tagService.removeStoryTag(storyID, tagID);
+		mTagService.removeStoryTag(storyID, tagID);
 	}
 
 	@Override
-	public List<IStory> getStorys(String projectName) {
-		List<IStory> result = new ArrayList<IStory>();
-		result = m_issueService.getStorys(projectName);
+	public ArrayList<IStory> getStorys(String projectName) {
+		ArrayList<IStory> result = new ArrayList<IStory>();
+		result = mIssueService.getStorys(projectName);
 
 		for (IStory story : result) {
-			// 建立歷史記錄
-			// m_historyService.initHistory(issue);
-			// 設定在mantis上note的資料
 			setIssueNote(story);
-			// 建立bug note
-			// story.setIssueNotes(this.m_noteService.getIssueNotes(story));
 			mAttachFileService.initAttachFile(story);
-			// 建立tag資料
-			m_tagService.initTag(story);
+			mTagService.initTag(story);
 		}
 
 		return result;
@@ -1221,17 +1287,17 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	@Override
 	public void updateTag(long tagId, String tagName, String projectName) {
-		m_tagService.updateTag(tagId, tagName, projectName);
+		mTagService.updateTag(tagId, tagName, projectName);
 	}
 
 	@Override
 	public TagObject getTagByName(String name, String projectName) {
-		return m_tagService.getTagByName(name, projectName);
+		return mTagService.getTagByName(name, projectName);
 	}
 
 	@Override
 	public boolean isTagExist(String name, String projectName) {
-		return m_tagService.isTagExist(name, projectName);
+		return mTagService.isTagExist(name, projectName);
 	}
 
 	/**

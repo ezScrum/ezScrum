@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,9 @@ import com.google.gson.Gson;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -17,28 +18,29 @@ public class TaskWebService extends ProjectWebService{
 	SprintBacklogHelper mSprintBacklogHelper;
 	ProductBacklogHelper mProductBacklogHelper;
 	
-	public TaskWebService(UserObject user, String projectID) throws LogonException {
-		super(user, projectID);
+	public TaskWebService(UserObject user, String projectId) throws LogonException {
+		super(user, projectId);
 		initialize();
 	}
 	
-	public TaskWebService(String username, String userpwd, String projectID) throws LogonException {
-		super(username, userpwd, projectID);
+	public TaskWebService(String username, String userpwd, String projectId) throws LogonException {
+		super(username, userpwd, projectId);
 		initialize();
 	}
 	
 	private void initialize() {
 		UserSession userSession = new UserSession(super.getAccount());
 		mSprintBacklogHelper = new SprintBacklogHelper(super.getProjectList().get(0), userSession);
-		mProductBacklogHelper = new ProductBacklogHelper(super.getProjectList().get(0), userSession);
+		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
 	}
 	
 	/**
 	 * 取得可以被加到 story 的已存在 task
 	 * @return
+	 * @throws SQLException 
 	 */
-	public String getExistedTask() {
-		IIssue[] existedTask = mProductBacklogHelper.getAddableTasks();
+	public String getExistedTask() throws SQLException {
+		IIssue[] existedTask = mProductBacklogHelper.getWildedTasks();
 		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
 		for (IIssue task : existedTask)
 			existedTaskList.add(new TaskObject(task));
@@ -48,30 +50,30 @@ public class TaskWebService extends ProjectWebService{
 	
 	/**
 	 * 在 story 中加入新的 task
-	 * @param storyID
+	 * @param storyId
 	 * @param task
 	 * @return
 	 */
-	public String createTaskInStory(String storyID, TaskObject task) {
-		return Long.toString(mSprintBacklogHelper.createTaskInStory(storyID, task).getIssueID());
+	public String createTaskInStory(String storyId, TaskObject task) {
+		return Long.toString(mSprintBacklogHelper.createTaskInStory(storyId, task).getIssueID());
 	}
 	
 	/**
 	 * 刪除 task
-	 * @param taskID
+	 * @param taskId
 	 * @return
 	 */
-	public void deleteTask(String taskID, String storyID) {
-		mSprintBacklogHelper.deleteTask(taskID, storyID);
+	public void deleteTask(String taskId, String storyId) {
+		mSprintBacklogHelper.deleteTask(taskId, storyId);
 	}
 	
 	/**
 	 * 將 task 從 story 中移除
-	 * @param taskID
-	 * @param storyID
+	 * @param taskId
+	 * @param storyId
 	 */
-	public void dropTask(String taskID, String storyID) {
-		mSprintBacklogHelper.dropTask(taskID, storyID);
+	public void dropTask(String taskId, String storyId) {
+		mSprintBacklogHelper.dropTask(taskId, storyId);
 	}
 	
 	/**

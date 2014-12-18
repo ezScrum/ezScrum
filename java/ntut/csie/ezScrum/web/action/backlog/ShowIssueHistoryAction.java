@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -9,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -40,22 +41,26 @@ public class ShowIssueHistoryAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
-
+		log.info(" Show Issue History. ");
+		
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
 		// get parameter info
-		String issueID = request.getParameter("issueID");
+		String issueId = request.getParameter("issueID");
 		Long id = -1L;
-		if ((issueID != null) && (!issueID.equals("-1"))) {
-			id = Long.parseLong(issueID);
+		if ((issueId != null) && (!issueId.equals("-1"))) {
+			id = Long.parseLong(issueId);
 		}
 
 		// 用Gson轉換issue為json格式傳出
-		ProductBacklogHelper helper = new ProductBacklogHelper(project, session);
-		IIssue issue = helper.getIssue(id);
-		IssueHistoryUI ihui = new IssueHistoryUI(issue);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+		IIssue issue = PBHelper.getIssue(id);
+		IssueHistoryUI ihui = null;
+		try {
+			ihui = new IssueHistoryUI(issue);
+		} catch (SQLException e) {
+		}
 		Gson gson = new Gson();
 		return new StringBuilder(gson.toJson(ihui));
 	}
@@ -68,15 +73,15 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
 
-		public IssueHistoryUI(IIssue issue) {
+		public IssueHistoryUI(IIssue issue) throws SQLException {
 			if (issue != null) {
 				this.Id = issue.getIssueID();
 				this.Link = issue.getIssueLink();
 				this.Name = issue.getSummary();
 				this.IssueType = issue.getCategory();
 
-				if (issue.getHistory().size() > 0) {
-					for (IIssueHistory history : issue.getIssueHistories()) {
+				if (issue.getHistories().size() > 0) {
+					for (HistoryObject history : issue.getHistories()) {
 						if (history.getDescription().length() > 0) {
 							this.IssueHistories.add(new IssueHistoryList(history));
 						}
@@ -91,26 +96,16 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		private String HistoryType = "";
 		private String ModifiedDate = "";
 
-		public IssueHistoryList(IIssueHistory history) {
-			parseDate(history.getModifyDate());
-			parseType_Desc(history.getDescription());
-		}
-
-		private void parseType_Desc(String desc) {
-			String[] token = desc.split(":");
-			if (token.length == 2) {
-				this.HistoryType = token[0];
-				this.Description = token[1];
-			} else {
-				this.HistoryType = "";
-				this.Description = desc;
-			}
+		public IssueHistoryList(HistoryObject history) {
+			parseDate(history.getModifiedTime());
+			Description = history.getDescription();
+			HistoryType = history.getHistoryTypeString();
 		}
 
 		private void parseDate(long date) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
 			Date d = new Date(date);
-			this.ModifiedDate = sdf.format(d);
+			ModifiedDate = sdf.format(d);
 		}
 	}
 }

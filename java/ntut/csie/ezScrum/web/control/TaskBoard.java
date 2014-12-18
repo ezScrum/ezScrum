@@ -23,78 +23,77 @@ public class TaskBoard {
 	private final String TASK_CHART_FILE = "TaskBurnDown.png";
 	private final String NAME = "TaskBoard";
 
-	private SprintBacklogMapper sprintBacklogMapper;
-	private List<IIssue> m_stories;
-	private Map<Long, IIssue[]> m_taskMap;
-	private IIssue[] m_dropedStories;
-	private Map<Long, IIssue[]> m_dropedTaskMap;
-	private LinkedHashMap<Date, Double> m_storyIdealPointMap;
-	private LinkedHashMap<Date, Double> m_storyRealPointMap;
-	private LinkedHashMap<Date, Double> m_taskIdealPointMap;
-	private LinkedHashMap<Date, Double> m_taskRealPointMap;
-	private Date m_currentDate = new Date();
-	private Date m_generatedTime = new Date();
-	private String iteration = "0";
-	final private long OneDay = ScrumEnum.DAY_MILLISECOND;
-
-	private SprintBacklogLogic sprintBacklogLogic;
+	private SprintBacklogMapper mSprintBacklogMapper;
+	private SprintBacklogLogic mSprintBacklogLogic;
+	private List<IIssue> mStories;
+	private Map<Long, IIssue[]> mTaskMap;
+	private IIssue[] mDropedStories;
+	private Map<Long, IIssue[]> mDropedTaskMap;
+	private LinkedHashMap<Date, Double> mStoryIdealPointMap;
+	private LinkedHashMap<Date, Double> mStoryRealPointMap;
+	private LinkedHashMap<Date, Double> mTaskIdealPointMap;
+	private LinkedHashMap<Date, Double> mTaskRealPointMap;
+	private Date mCurrentDate = new Date();
+	private Date mGeneratedTime = new Date();
+	private String mIteration = "0";
+	final private long mOneDay = ScrumEnum.DAY_MILLISECOND;
 
 	public TaskBoard(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sprintBacklogMapper) {
-		this.sprintBacklogLogic = sprintBacklogLogic;
-		this.sprintBacklogMapper = sprintBacklogMapper;
-		this.iteration = Integer.toString(sprintBacklogMapper.getSprintPlanId());
+		mSprintBacklogLogic = sprintBacklogLogic;
+		mSprintBacklogMapper = sprintBacklogMapper;
+		mIteration = Integer.toString(sprintBacklogMapper.getSprintPlanId());
 		init();
 	}
 
 	// ======================= for unit test ===========================
 	public LinkedHashMap<Date, Double> getstoryRealPointMap() {
-		return this.m_storyRealPointMap;
+		return mStoryRealPointMap;
 	}
 
 	public LinkedHashMap<Date, Double> gettaskRealPointMap() {
-		return this.m_taskRealPointMap;
+		return mTaskRealPointMap;
 	}
 
 	public LinkedHashMap<Date, Double> getstoryIdealPointMap() {
-		return this.m_storyIdealPointMap;
+		return mStoryIdealPointMap;
 	}
 
 	public LinkedHashMap<Date, Double> gettaskIdealPointMap() {
-		return this.m_taskIdealPointMap;
+		return mTaskIdealPointMap;
 	}
 
 	// ======================= for unit test ===========================
 
 	private void init() {
 		// 取得目前最新的Story與Task狀態
-		m_stories = sprintBacklogLogic.getStoriesByImp();
-		m_taskMap = sprintBacklogMapper.getTasksMap();
+		mStories = mSprintBacklogLogic.getStoriesByImp();
+		mTaskMap = mSprintBacklogMapper.getTasksMap();
 		// 取得從經被drop掉的Story與其底下的Task
-		m_dropedStories = sprintBacklogMapper.getDropedStory();
-		m_dropedTaskMap = sprintBacklogMapper.getDropedTaskMap();
+		mDropedStories = mSprintBacklogMapper.getDropedStory();
+		mDropedTaskMap = mSprintBacklogMapper.getDropedTaskMap();
 
-		if (sprintBacklogMapper != null) {
+		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
-			Date iter_Start_Work_Date = this.sprintBacklogLogic.getSprintStartWorkDate();
-			Date iter_End_Work_Date = this.sprintBacklogLogic.getSprintEndWorkDate();
-			Date iter_End_Date = sprintBacklogMapper.getSprintEndDate();
+			Date iter_Start_Work_Date = mSprintBacklogLogic.getSprintStartWorkDate();
+			Date iter_End_Work_Date = mSprintBacklogLogic.getSprintEndWorkDate();
+			Date iter_End_Date = mSprintBacklogMapper.getSprintEndDate();
 
 			Calendar indexDate = Calendar.getInstance();
 			indexDate.setTime(iter_Start_Work_Date);
 			long endTime = iter_End_Work_Date.getTime();
 
-			m_storyIdealPointMap = new LinkedHashMap<Date, Double>();	// Story的理想線
-			m_taskIdealPointMap = new LinkedHashMap<Date, Double>();	// Task的理想線
-			m_storyRealPointMap = new LinkedHashMap<Date, Double>();	// Story的真實線
-			m_taskRealPointMap = new LinkedHashMap<Date, Double>();		// Task的真實線
+			mStoryIdealPointMap = new LinkedHashMap<Date, Double>();	// Story的理想線
+			mTaskIdealPointMap = new LinkedHashMap<Date, Double>();	// Task的理想線
+			mStoryRealPointMap = new LinkedHashMap<Date, Double>();	// Story的真實線
+			mTaskRealPointMap = new LinkedHashMap<Date, Double>();		// Task的真實線
 			double[] initPoint = getPointByDate(iter_Start_Work_Date);	// 第一天Story與Task的點數
-			int dayOfSprint = this.sprintBacklogLogic.getSprintWorkDays();	// 扣除假日後，Sprint的總天數
+			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays();	// 扣除假日後，Sprint的總天數
 			int num = 0;	// Sprint中第幾天的Counter
-			long today = m_currentDate.getTime();	// 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
+			long today = mCurrentDate.getTime();	// 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
 
-			if (m_currentDate.getTime() > iter_End_Date.getTime()) {
+			if (mCurrentDate.getTime() > iter_End_Date.getTime()) {
 				// enddate為當日的 00:00:00 ，所以還要加入OneDay，這樣時間才會是 00:00:00 - 23:59:59
-				today = iter_End_Date.getTime() + OneDay;
+				today = iter_End_Date.getTime() + mOneDay;
 			}
 			// 每一天的理想與真實點數
 			while (!(indexDate.getTimeInMillis() > endTime) || indexDate.getTimeInMillis() == endTime) {
@@ -103,18 +102,18 @@ public class TaskBoard {
 				if (!DateUtil.isHoliday(key)) {
 					// 記錄Story與Task理想線的點數
 					// 理想線直線方程式 y = - (起始點數 / 總天數) * 第幾天 + 起始點數
-					m_storyIdealPointMap.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
-					m_taskIdealPointMap.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
+					mStoryIdealPointMap.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
+					mTaskIdealPointMap.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
 
 					// 記錄Story與Task實際線的點數
 					// 只取出今天以前的資料
 					if (indexDate.getTimeInMillis() < today) {
 						double point[] = getPointByDate(key);
-						m_storyRealPointMap.put(key, point[0]);
-						m_taskRealPointMap.put(key, point[1]);
+						mStoryRealPointMap.put(key, point[0]);
+						mTaskRealPointMap.put(key, point[1]);
 					} else {
-						m_storyRealPointMap.put(key, null);
-						m_taskRealPointMap.put(key, null);
+						mStoryRealPointMap.put(key, null);
+						mTaskRealPointMap.put(key, null);
 					}
 					num++;
 				}
@@ -127,7 +126,7 @@ public class TaskBoard {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
 		String issue_iter = issue.getTagValue("Iteration", date);
-		if (issue_iter != null && issue_iter.equals(iteration)) {
+		if (issue_iter != null && issue_iter.equals(mIteration)) {
 			try {
 				point = Double.parseDouble(issue.getTagValue(
 				        ScrumEnum.ESTIMATION, date));
@@ -169,10 +168,10 @@ public class TaskBoard {
 		 * 依照Type取出當天的Story或者是Task來進行計算
 		 *************************************************************/
 		// 因為輸入的日期為當日的0:0:0,但在23:59:59之前也算當日，所以必需多加一日做為當天的計算
-		Date dueDate = new Date(date.getTime() + OneDay);
+		Date dueDate = new Date(date.getTime() + mOneDay);
 
 		// 尋訪現有的所有Story
-		for (IIssue issue : m_stories) {
+		for (IIssue issue : mStories) {
 			double estimation;
 
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
@@ -190,7 +189,7 @@ public class TaskBoard {
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				IIssue[] tmpTasks = m_taskMap.get(issue.getIssueID());
+				IIssue[] tmpTasks = mTaskMap.get(issue.getIssueID());
 				for (IIssue task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
 					if (task.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) continue;
@@ -204,7 +203,7 @@ public class TaskBoard {
 		}
 
 		// 尋訪現有的所有Droped Story
-		for (IIssue issue : m_dropedStories) {
+		for (IIssue issue : mDropedStories) {
 			double estimation;
 
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
@@ -220,7 +219,7 @@ public class TaskBoard {
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				IIssue[] tmpTasks = m_dropedTaskMap.get(issue.getIssueID());
+				IIssue[] tmpTasks = mDropedTaskMap.get(issue.getIssueID());
 				for (IIssue task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
 					if (task.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) continue;
@@ -237,79 +236,79 @@ public class TaskBoard {
 	}
 
 	public String getSprintGoal() {
-		return sprintBacklogMapper.getSprintGoal();
+		return mSprintBacklogMapper.getSprintGoal();
 	}
 
 	public int getSprintID() {
-		return sprintBacklogMapper.getSprintPlanId();
+		return mSprintBacklogMapper.getSprintPlanId();
 	}
 
 	public String getStoryPoint() {
-		return this.sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
+		return mSprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
 		        + " / "
-		        + this.sprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
-		// return this.sprintBacklogMapper
+		        + mSprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
+		// return sprintBacklogMapper
 		// .getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
 		// + " / "
-		// + this.sprintBacklogMapper.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
+		// + sprintBacklogMapper.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
 	}
 
 	public String getTaskPoint() {
-		return this.sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
+		return mSprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
 		        + " / "
-		        + this.sprintBacklogLogic.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
-		// return this.sprintBacklogMapper.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
+		        + mSprintBacklogLogic.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
+		// return sprintBacklogMapper.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
 		// + " / "
-		// + this.sprintBacklogMapper.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
+		// + sprintBacklogMapper.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
 	}
 
 	public String getInitialStoryPoint() {
-		return (getPointByDate(sprintBacklogMapper.getSprintStartDate())[0]) + " / "
-		        + this.sprintBacklogMapper.getLimitedPoint();
+		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[0]) + " / "
+		        + mSprintBacklogMapper.getLimitedPoint();
 	}
 
 	public String getInitialTaskPoint() {
-		return (getPointByDate(sprintBacklogMapper.getSprintStartDate())[1]) + " / -";
+		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[1]) + " / -";
 	}
 
 	public List<IIssue> getStories() {
-		return m_stories;
+		return mStories;
 	}
 
 	public Map<Long, IIssue[]> getTaskMap() {
-		return m_taskMap;
+		return mTaskMap;
 	}
 
 	public String getStoryChartLink() {
-		IProject project = sprintBacklogMapper.getProject();
+		IProject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
 		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + this.NAME + File.separator + "Sprint"
-		        + this.getSprintID() + File.separator + STORY_CHART_FILE;
+		        + File.separator + NAME + File.separator + "Sprint"
+		        + getSprintID() + File.separator + STORY_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.STORY_ISSUE_TYPE, chartPath, "Story Points");
 
 		String link = "./Workspace/" + project.getName() + "/"
 		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + this.getSprintID() + "/" + STORY_CHART_FILE;
+		        + getSprintID() + "/" + STORY_CHART_FILE;
 
 		return link;
 	}
 
 	public String getTaskChartLink() {
-		IProject project = sprintBacklogMapper.getProject();
+		IProject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/Sprint1/ChartLink
 		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + this.NAME + File.separator + "Sprint"
-		        + this.getSprintID() + File.separator + TASK_CHART_FILE;
+		        + File.separator + NAME + File.separator + "Sprint"
+		        + getSprintID() + File.separator + TASK_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.TASK_ISSUE_TYPE, chartPath, "Remaining Hours");
 
 		String link = "./Workspace/" + project.getName() + "/"
 		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + this.getSprintID() + "/" + TASK_CHART_FILE;
+		        + getSprintID() + "/" + TASK_CHART_FILE;
 
 		return link;
 	}
@@ -318,19 +317,19 @@ public class TaskBoard {
 		// 設定圖表內容
 		ChartUtil chartUtil = new ChartUtil((type
 		        .equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories")
-		        + " Burndown Chart in Sprint #" + sprintBacklogMapper.getSprintPlanId(),
-		        this.sprintBacklogMapper.getSprintStartDate(), new Date(this.sprintBacklogMapper
+		        + " Burndown Chart in Sprint #" + mSprintBacklogMapper.getSprintPlanId(),
+		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper
 		                .getSprintEndDate().getTime() + 24 * 3600 * 1000));
 
 		chartUtil.setChartType(ChartUtil.LINECHART);
 
 		// TODO:要新增的data set
 		if (type.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			chartUtil.addDataSet("current", m_taskRealPointMap);
-			chartUtil.addDataSet("ideal", m_taskIdealPointMap);
+			chartUtil.addDataSet("current", mTaskRealPointMap);
+			chartUtil.addDataSet("ideal", mTaskIdealPointMap);
 		} else {
-			chartUtil.addDataSet("current", m_storyRealPointMap);
-			chartUtil.addDataSet("ideal", m_storyIdealPointMap);
+			chartUtil.addDataSet("current", mStoryRealPointMap);
+			chartUtil.addDataSet("ideal", mStoryIdealPointMap);
 		}
 		chartUtil.setInterval(1);
 		chartUtil.setValueAxisLabel(Y_axis_value);
@@ -351,12 +350,12 @@ public class TaskBoard {
 
 	public IIssue getItem(long id) {
 
-		List<IIssue> items = this.getStories();
+		List<IIssue> items = getStories();
 		for (IIssue item : items) {
 			if (item.getIssueID() == id) return item;
 		}
 
-		items = sprintBacklogMapper.getTasks();
+		items = mSprintBacklogMapper.getTasks();
 		for (IIssue item : items) {
 			if (item.getIssueID() == id) return item;
 		}
@@ -377,18 +376,18 @@ public class TaskBoard {
 	}
 
 	public String getGeneratedTime() {
-		return DateUtil.format(m_generatedTime, DateUtil._16DIGIT_DATE_TIME);
+		return DateUtil.format(mGeneratedTime, DateUtil._16DIGIT_DATE_TIME);
 	}
 
 	public List<IIssue> getM_stories() {
-		return m_stories;
+		return mStories;
 	}
 
 	public void setM_stories(List<IIssue> storylist) {
-		this.m_stories = storylist;
+		mStories = storylist;
 	}
 
 	public void setM_taskMap(Map<Long, IIssue[]> map) {
-		m_taskMap = map;
+		mTaskMap = map;
 	}
 }

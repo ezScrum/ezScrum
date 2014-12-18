@@ -164,7 +164,7 @@ public class CreateProject {
 
 		// project 不存在，建立專案資訊後再存入
 		if (project.exists()) {
-			project.save();
+//			project.save();
 		} else {
 			project.create();
 		}

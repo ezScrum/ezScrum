@@ -116,7 +116,6 @@ public class ReleasePlanMapper {
 	}		
 	
 	private String getUsrMetadataPath() {
-		System.out.println(m_project);
 		String theUsrFile = m_project.getFolder(IProject.METADATA).getFullPath().toString();
 		return theUsrFile;
 	}	

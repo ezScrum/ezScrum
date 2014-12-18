@@ -85,23 +85,6 @@ public class ViewProjectSummaryAction extends Action {
 			request.setAttribute("SprintID", "null");
 		}
 
-		// setting ScrumRole
-		//		UserObject account = userSession.getAccount();
-		//		ScrumRoleLogic scrumRoleLogic = new ScrumRoleLogic();
-		//		scrumRoleLogic.setScrumRoles(account);//reset Project<-->ScrumRole map
-		//		Map<String, ScrumRole> sr_map = scrumRoleLogic.getScrumRoles(account);
-		//		ScrumRole sr = sr_map.get(project.getName());
-		//		
-		//		if (sr.isGuest()) {
-		//			request.getSession().setAttribute("isGuest", "true");
-		//			log.info(account.getID() + " is a guest, view project: " + project.getName());
-		//			
-		//			return mapping.findForward("GuestOnly");
-		//		} else {
-		//			request.getSession().setAttribute("isGuest", "false");
-		//			log.info(account.getID() + " is not a guest, view project: " + project.getName());
-		//		}
-
 		// ezScrum v1.8
 		UserObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);

@@ -6,8 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -22,24 +21,24 @@ public class RemoveReleaseBacklogAction extends Action{
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-	
+		log.info(" Remove ReleaseBacklog. ");
+		
 		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		String issueId = request.getParameter("issueID");
 		
-		String issueID = request.getParameter("issueID");
-		
-		if (issueID != null) {
-			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
+		if (issueId != null) {
+			ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+			IIssue issue = PBHelper.getIssue(Long.parseLong(issueId));
 			
-			IIssue issue = pbHelper.getIssue(Long.parseLong(issueID));
 			if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE)) ||
 				 issue.getSprintID().equals("-1")) {
-//				pbHelper.removeRelease(issueID);	// remove release tag to mantis notes
-				(new ProductBacklogLogic(session, project)).removeReleaseTagFromIssue(issueID);	// remove release tag to mantis notes
+				// remove release tag to mantis notes
+				PBHelper.removeReleaseTagFromIssue(Long.parseLong(issueId));
 			} else {
-				pbHelper.removeReleaseSprint(issueID);	// remove release, sprint tag to mantis notes
+				// remove release, sprint tag to mantis notes
+				PBHelper.removeReleaseSprint(Long.parseLong(issueId));
 			}
-			
 			return mapping.findForward("success");
 		} else {
 			return mapping.findForward("error");

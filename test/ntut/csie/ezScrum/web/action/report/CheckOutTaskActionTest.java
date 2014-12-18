@@ -121,7 +121,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		assertEquals(configuration.USER_ID, issue.getAssignto());
 		assertEquals(partners, issue.getPartners());
 		assertEquals("TEST_TASK_NOTES_1", issue.getNotes());
-		assertEquals(0, issue.getCloseDate());
+		assertEquals(0, issue.getDoneDate());
 
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
@@ -181,7 +181,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		assertEquals("", issue.getAssignto());					// 因為 Handler 參數有誤，不應該寫入資訊
 		assertEquals(partners, issue.getPartners());
 		assertEquals("TEST_TASK_NOTES_1", issue.getNotes());	// ============= 無法更正 note ============
-		assertEquals(0, issue.getCloseDate());
+		assertEquals(0, issue.getDoneDate());
 		
 		// ============= release ==============
 		project = null;

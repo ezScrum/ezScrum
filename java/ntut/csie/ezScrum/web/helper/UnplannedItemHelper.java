@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,29 +13,29 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class UnplannedItemHelper {
 
-	private UnplannedItemMapper uiMapper;
+	private UnplannedItemMapper mUnplannedMapper;
 
 	public UnplannedItemHelper(IProject project, IUserSession userSession) {
-		this.uiMapper = new UnplannedItemMapper(project, userSession);
+		mUnplannedMapper = new UnplannedItemMapper(project, userSession);
 	}
 
-	public void modifyUnplannedItemIssue(long issueID, String name,
+	public void modifyUnplannedItemIssue(long issueId, String name,
 	        String handler, String status, String partners, String estimated,
-	        String actualHour, String notes, String sprintID, Date date) {
-		uiMapper.update(issueID, name, handler, status, partners, estimated, actualHour, notes, sprintID, date);
+	        String actualHour, String notes, String sprintId, Date date) {
+		mUnplannedMapper.update(issueId, name, handler, status, partners, estimated, actualHour, notes, sprintId, date);
 	}
 
 	public IIssue getIssue(long id) {
-		return uiMapper.getById(id);
+		return mUnplannedMapper.getById(id);
 	}
 
-	public void delete(String issueID) {
-		uiMapper.delete(issueID);
+	public void delete(String issueId) {
+		mUnplannedMapper.delete(issueId);
 	}
 
 	// 待修正:回傳統一為List
-	public IIssue[] getAllUnplannedItem() {
-		List<IIssue> issues = uiMapper.getAll();
+	public IIssue[] getAllUnplannedItem() throws SQLException {
+		List<IIssue> issues = mUnplannedMapper.getAll();
 		for (IIssue issue : issues)
 		{
 			issues.add(issue);
@@ -42,28 +44,28 @@ public class UnplannedItemHelper {
 	}
 
 	// 待修正:回傳統一為List
-	public IIssue[] getUnplannedItemIssue(int iteration) {
-		List<IIssue> issuelist = uiMapper.getList(Integer.toString(iteration));
+	public IIssue[] getUnplannedItemIssue(int iteration) throws SQLException {
+		List<IIssue> issuelist = mUnplannedMapper.getList(Integer.toString(iteration));
 		return issuelist.toArray(new IIssue[issuelist.size()]);
 	}
 
 	public long addUnplannedItem(String name, String estimate,
 	        String handler, String partners, String notes, Date date,
-	        String unplanneditemIssueType, String SprintID) {
-		return uiMapper.add(name, estimate, handler, partners, notes, date, unplanneditemIssueType, SprintID);
+	        String unplanneditemIssueType, String SprintId) {
+		return mUnplannedMapper.add(name, estimate, handler, partners, notes, date, unplanneditemIssueType, SprintId);
 	}
 
 	/*
 	 * 以下為Response給前端之資料格式轉換函式
 	 */
 
-	public StringBuilder getListXML(String sprintId) {
-		List<IIssue> unplannedItem = null;
+	public StringBuilder getListXML(String sprintId) throws SQLException {
+		ArrayList<IIssue> unplannedItem = null;
 
 		if (sprintId.equalsIgnoreCase("All")) {
-			unplannedItem = this.uiMapper.getAll();
+			unplannedItem = mUnplannedMapper.getAll();
 		} else {
-			unplannedItem = this.uiMapper.getList(sprintId);
+			unplannedItem = mUnplannedMapper.getList(sprintId);
 		}
 
 		TranslateSpecialChar tsc = new TranslateSpecialChar();

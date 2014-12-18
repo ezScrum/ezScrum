@@ -1,12 +1,14 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -39,13 +41,15 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-//		String issueID = request.getParameter("issueID");
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 		
-		IIssue[] issues = (new ProductBacklogHelper(project, session)).getAddableTasks();
+		IIssue[] issues = null;
+		try {
+			issues = (new ProductBacklogHelper(session, project)).getWildedTasks();
+		} catch (SQLException e) {
+		}
 		
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, sprintID)).getSprintBacklogMapper();
-//		NumberFormat formater =  NumberFormat.getInstance();
+		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, sprintId)).getSprintBacklogMapper();
 		
 		// 封裝 Task 成 XML
     	StringBuilder sb = new StringBuilder();
@@ -57,8 +61,6 @@ public class ShowAddExistedTaskAction extends PermissionAction {
     		 * @author Zam, Alex
     		 * @time 2013/2/6
     		 */
-//    		sb.append("<TaskPointMsg>" + formater.format(backlog.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE)) + "</TaskPointMsg>");
-//    		sb.append("<TaskStoryPointMsg>" + formater.format(backlog.getCurrentPoint(Long.parseLong(issueID))) + "</TaskStoryPointMsg>");
     		if (issues != null)
     		{
 	    		for(int i = 0; i < issues.length; i++){			

@@ -8,6 +8,7 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -90,9 +91,8 @@ public class AddStoryToSprint {
 	private void addStoryToSprint(IProject p, ArrayList<Long> list, String sprintID) {
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, configuration.getUserSession());
 		
-		for (long issueID : list) {
-			// IIssue issue = pb.getIssue(issueID);
-			IIssue issue = productBacklogMapper.getIssue(issueID);
+		for (long issueId : list) {
+			IIssue issue = productBacklogMapper.getIssue(issueId);
 			String oldSprintID = issue.getSprintID();
 			if (sprintID != null && !sprintID.equals("") && Integer.parseInt(sprintID) >= 0) {
 
@@ -110,10 +110,12 @@ public class AddStoryToSprint {
 				issue.addTagValue(history);
 
 				// 最後將修改的結果更新至DB
-				productBacklogMapper.updateIssueValue(issue);
-				productBacklogMapper.addHistory(issue.getIssueID(), ScrumEnum.SPRINT_TAG, oldSprintID, sprintID);
+				productBacklogMapper.updateIssueValue(issue, false);
+				if (sprintID != "0") {
+					productBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintID, sprintID);	
+				}
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
-				productBacklogMapper.updateStoryRelation(Long.toString(issueID), issue.getReleaseID(), sprintID, null, null, current);
+				productBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), sprintID, null, null, current);
 				
 			}
 		}

@@ -16,44 +16,44 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class DeleteExistedTaskTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private AddStoryToSprint addStoryToSprint;
-	private Configuration configuration;
+	private CreateProject mCreateProject;
+	private CreateSprint mCreateSprint;
+	private AddStoryToSprint mAddStoryToSprint;
+	private Configuration mConfig;
 	private final String ACTION_PATH = "/deleteExistedTask";
-	private IProject project;
-	private String sprintID;
-	private String storyID;
+	private IProject mProject;
+	private long mSprintId;
+	private long mStoryId;
 	
 	public DeleteExistedTaskTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.store();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	新增一個測試專案
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();
-    	this.project = this.CP.getProjectList().get(0);
+		// 新增一個測試專案
+    	mCreateProject = new CreateProject(1);
+    	mCreateProject.exeCreate();
+    	mProject = mCreateProject.getProjectList().get(0);
     	
-    	//	新增一個Sprint
+    	// 新增一個 Sprint
     	int sprintCount = 1;
-		this.CS = new CreateSprint(sprintCount , this.CP);
-    	this.CS.exe();
-    	this.sprintID = this.CS.getSprintIDList().get(0);
+		mCreateSprint = new CreateSprint(sprintCount , mCreateProject);
+    	mCreateSprint.exe();
+    	mSprintId = Long.parseLong(mCreateSprint.getSprintIDList().get(0));
     	
-		//	Sprint加入1個Story
+		// Sprint 加入1個 Story
 		int storyCount = 1;
-		this.addStoryToSprint = new AddStoryToSprint(storyCount, 1, Integer.valueOf(sprintID), CP, CreateProductBacklog.TYPE_ESTIMATION);
-		this.addStoryToSprint.exe();
-		this.storyID = String.valueOf(addStoryToSprint.getIssueList().get(storyCount-1).getIssueID());
+		mAddStoryToSprint = new AddStoryToSprint(storyCount, 1, (int)mSprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		mAddStoryToSprint.exe();
+		mStoryId = mAddStoryToSprint.getIssueList().get(storyCount-1).getIssueID();
     	
     	super.setUp();
     	
@@ -63,21 +63,21 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
     	
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.store();
     	
     	// ============= release ==============
     	ini = null;
-    	this.CP = null;
-    	configuration = null;
+    	mCreateProject = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
@@ -88,22 +88,22 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
      */
     public void testDeleteExistedTask_1() throws Exception{
 		int taskCount = 1;
-		String[] taskIDs = this.createTasks(taskCount);
+		String[] taskIDs = createTasks(taskCount);
 		// drop Task from story
-		DropTask dropTask_1 = new DropTask(this.CP, Integer.valueOf(sprintID), Integer.valueOf(storyID), Integer.valueOf(taskIDs[0]));
-		dropTask_1.exe();
+		DropTask dropTaskOne = new DropTask(mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[0]));
+		dropTaskOne.exe();
     	
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = this.mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
+		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", taskIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( this.ACTION_PATH );
 		actionPerform();
@@ -126,22 +126,22 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		int taskCount = 2;
 		String[] taskIDs = this.createTasks(taskCount);
 		// drop Task from story
-		DropTask dropTask_1 = new DropTask(this.CP, Integer.valueOf(sprintID), Integer.valueOf(storyID), Integer.valueOf(taskIDs[0]));
+		DropTask dropTask_1 = new DropTask(this.mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[0]));
 		dropTask_1.exe();
-		DropTask dropTask_2 = new DropTask(this.CP, Integer.valueOf(sprintID), Integer.valueOf(storyID), Integer.valueOf(taskIDs[1]));
+		DropTask dropTask_2 = new DropTask(this.mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[1]));
 		dropTask_2.exe();
     	
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = this.mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
+		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", taskIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( this.ACTION_PATH );
 		actionPerform();
@@ -158,7 +158,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
     
     private String[] createTasks(int taskCount) throws NumberFormatException, Exception{
 		// Story加入1個Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, this.addStoryToSprint, CP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, this.mAddStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
 		String[] taskIDs = new String[addTaskToStory.getTaskIDList().size()];
 		for(int i = 0; i < addTaskToStory.getTaskIDList().size(); i++ ){
@@ -177,11 +177,11 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		this.response.reset();
     	
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = this.mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);	
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);	
 		// 設定新增Task所需的資訊
 		String expectedStoryID = "1";
 		String expectedSprintID = "1";
@@ -191,7 +191,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 
 		// ================ 執行 action ======================
 		String path = "/showAddExistedTask2";
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( path );
 		

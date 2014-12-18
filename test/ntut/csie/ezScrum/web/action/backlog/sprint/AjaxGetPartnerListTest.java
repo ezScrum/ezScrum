@@ -103,7 +103,6 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		expectedResponseTest.append("<Partners><Result>success</Result></Partners>");
 		
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println("result = " + actualResponseText);
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
 	}
 }

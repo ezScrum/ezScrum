@@ -1,17 +1,12 @@
 package ntut.csie.ezScrum.restful.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import com.google.gson.Gson;
-
+import junit.framework.TestCase;
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
@@ -20,15 +15,22 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
-import junit.framework.TestCase;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import com.google.gson.Gson;
 
 public class ProductBacklogWebServiceTest extends TestCase {
 	private int ProjectCount = 1;
@@ -161,7 +163,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 
 	}
 
-	public void testupdateStory() throws LogonException, JSONException{
+	public void testupdateStory() throws LogonException, JSONException, SQLException{
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = project.getName();
@@ -200,7 +202,8 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		        TEST_STORY_IMP,
 		        TEST_STORY_EST,
 		        TEST_STORY_HOW_TO_DEMO + "1",
-		        TEST_STORY_NOTES + "1");
+		        TEST_STORY_NOTES + "1",
+		        true);
 		
 		story = productBacklogMapper.getIssue(story.getIssueID());
 		
@@ -216,7 +219,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		assertEquals(TEST_STORY_NAME + "1", storyArray[0].getName());
 	}
 
-	public void testdeleteStory() throws LogonException {
+	public void testdeleteStory() throws LogonException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = project.getName();
@@ -233,6 +236,15 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		IStory[] storyList = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
 		// assert
 		assertTrue(storyList.length == StoryCount - 1);
+		
+		// get History
+		HistoryDAO historyDAO = HistoryDAO.getInstance();
+		ArrayList<HistoryObject> historyList = new ArrayList<HistoryObject>();
+		historyList = historyDAO.getHistoriesByIssue(CPB.getIssueIDList().get(0), IssueTypeEnum.TYPE_STORY);
+
+		// assert
+		assertTrue(storyList.length == StoryCount - 1);
+		assertTrue(historyList.size() == 0);
 	}
 
 	public void testreadStoryByID() throws LogonException, JSONException {
@@ -247,8 +259,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		CPB.exe();
 
 		// call RESTFUL method
-		productBacklogWebService.readStoryByID(String.valueOf(CPB.getIssueIDList().get(0)));
-		;
+		productBacklogWebService.readStoryById(CPB.getIssueIDList().get(0));
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
@@ -297,7 +308,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 
 	}
 
-	public void testgetStoryHistory() throws LogonException, JSONException {
+	public void testGetStoryHistory() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = project.getName();
@@ -310,24 +321,24 @@ public class ProductBacklogWebServiceTest extends TestCase {
 
 		for (int i = 0; i < StoryCount; i++) {
 			// call RESTFUL method
-			productBacklogWebService.readStoryHistory(CPB.getIssueIDList().get(i).toString());
+			productBacklogWebService.readStoryHistory(CPB.getIssueIDList().get(i));
 			// get JSON 
 			String response = productBacklogWebService.getRESTFulResponseString();
+//			System.out.println(response);
 			// call local method
 			productBacklogHelper = new ProductBacklogHelper(configuration.getUserSession(), project);
-			List<IIssueHistory> iIssuehistorys = productBacklogHelper.getIssue(CPB.getIssueIDList().get(i)).getHistory();
+			List<HistoryObject> iIssuehistorys = productBacklogHelper.getIssue(CPB.getIssueIDList().get(i)).getHistories();
 
 			// JSON to JSONObject
 			JSONObject historyJSONObject = new JSONObject(response);
 			// JSON to JSONArray 
-			JSONArray historyJSONArray = new JSONArray();
-			historyJSONObject.toJSONArray(historyJSONArray);
+			JSONArray historyJSONArray = historyJSONObject.getJSONArray("storyHistoryList");
 
 			for (int j = 0; j < historyJSONArray.length(); j++) {
-				JSONObject JSONObject = (JSONObject) historyJSONArray.getJSONObject(j);
-				assertEquals(String.valueOf(iIssuehistorys.get(j).getModifyDate()), JSONObject.get("modifyDate"));
-				assertEquals(String.valueOf(iIssuehistorys.get(j).getType()), JSONObject.get("historyType"));
-				assertEquals(String.valueOf(iIssuehistorys.get(j).getDescription()), JSONObject.get("description"));
+				JSONObject JSONObject = historyJSONArray.getJSONObject(j);
+				assertEquals(String.valueOf(iIssuehistorys.get(j).getFormattedModifiedTime()), JSONObject.getString("modifyDate"));
+				assertEquals(String.valueOf(iIssuehistorys.get(j).getHistoryTypeString()), JSONObject.getString("historyType"));
+				assertEquals(String.valueOf(iIssuehistorys.get(j).getDescription()), JSONObject.getString("description"));
 			}
 		}
 

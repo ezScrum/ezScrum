@@ -13,229 +13,232 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowExistedStoryActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
+	private CreateProject mCreateProject;
+	private CreateSprint mCreateSprint;
+	private Configuration mConfig;
 	private final String ACTION_PATH = "/showExistedStory";
-	private IProject project;
-	
+	private IProject mProject;
+
 	public ShowExistedStoryActionTest(String testName) {
 		super(testName);
 	}
-	
+
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.store();
+
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
+
+		// 新增 Project
+		mCreateProject = new CreateProject(1);
+		mCreateProject.exeCreate();
+
+		// 新增 Sprint
+		mCreateSprint = new CreateSprint(2, mCreateProject);
+		mCreateSprint.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
-		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
-		
+		mProject = mCreateProject.getProjectList().get(0);
+
 		super.setUp();
-		
+
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
-		
+		setRequestPathInfo(ACTION_PATH);
+
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		//	刪除外部檔案
+
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
-		
-		configuration.setTestMode(false);
-		configuration.store();
+		projectManager.initialRoleBase(mConfig.getDataPath());
+
+		mConfig.setTestMode(false);
+		mConfig.store();
 
 		super.tearDown();
-		
+
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCreateProject = null;
+		mConfig = null;
 	}
-	
+
 	/**
 	 * no story
 	 */
-	public void testShowExistedStory_1(){
-		String sprintID = this.CS.getSprintIDList().get(0);
-		String releaseID = "-1";
+	public void testShowExistedStory_1() {
+		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String releaseId = "-1";
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
-		addRequestParameter("releaseID", releaseID);
-		
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("releaseID", releaseId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
+		// assert response text
 		String expectedResponseText = "<ExistingStories></ExistingStories>";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}
-	
+
 	/**
-	 * 至少存在兩個story以上
+	 * 至少存在兩個 story 以上
 	 */
-	public void testShowExistedStory_2(){
+	public void testShowExistedStory_2() {
 		int storycount = 2;
-		CreateProductBacklog CPB = new CreateProductBacklog(storycount, this.CP);
+		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCreateProject);
 		CPB.exe();
-		
-		String sprintID = this.CS.getSprintIDList().get(0);
-		String releaseID = "-1";
+
+		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String releaseId = "-1";
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
-		addRequestParameter("releaseID", releaseID);
-		
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("releaseID", releaseId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
-		String releaseIDAndSprintID = "None";
+		// assert response text
+		String releaseIdAndSprintId = "None";
 		String storyStatus = "new";
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("<ExistingStories>")
-							.append("<Story>")
-							.append("<Id>" + 1 + "</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 1 + "</Link>")
-							.append("<Name>" + CPB.TEST_STORY_NAME + 1 + "</Name>")
-							.append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
-							.append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
-							.append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
-							.append("<Status>" + storyStatus + "</Status>")
-							.append("<Notes>" + CPB.TEST_STORY_NOTES + 1 + "</Notes>")
-							.append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 1 + "</HowToDemo>")
-							.append("<Release>" + releaseIDAndSprintID + "</Release>")
-							.append("<Sprint>" + releaseIDAndSprintID + "</Sprint>")
-							.append("<Tag>" + "" + "</Tag>")
-							.append("</Story>")
-							.append("<Story>")
-							.append("<Id>" + 2 + "</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 2 + "</Link>")
-							.append("<Name>" + CPB.TEST_STORY_NAME + 2 + "</Name>")
-							.append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
-							.append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
-							.append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
-							.append("<Status>" + storyStatus + "</Status>")
-							.append("<Notes>" + CPB.TEST_STORY_NOTES + 2 + "</Notes>")
-							.append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 2 + "</HowToDemo>")
-							.append("<Release>" + releaseIDAndSprintID + "</Release>")
-							.append("<Sprint>" + releaseIDAndSprintID + "</Sprint>")
-							.append("<Tag>" + "" + "</Tag>")
-							.append("</Story>")
-							.append("</ExistingStories>");
+		        .append("<Story>")
+		        .append("<Id>" + 1 + "</Id>")
+		        .append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 1 + "</Link>")
+		        .append("<Name>" + CPB.TEST_STORY_NAME + 1 + "</Name>")
+		        .append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
+		        .append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
+		        .append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
+		        .append("<Status>" + storyStatus + "</Status>")
+		        .append("<Notes>" + CPB.TEST_STORY_NOTES + 1 + "</Notes>")
+		        .append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 1 + "</HowToDemo>")
+		        .append("<Release>" + releaseIdAndSprintId + "</Release>")
+		        .append("<Sprint>" + releaseIdAndSprintId + "</Sprint>")
+		        .append("<Tag>" + "" + "</Tag>")
+		        .append("</Story>")
+		        .append("<Story>")
+		        .append("<Id>" + 2 + "</Id>")
+		        .append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 2 + "</Link>")
+		        .append("<Name>" + CPB.TEST_STORY_NAME + 2 + "</Name>")
+		        .append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
+		        .append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
+		        .append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
+		        .append("<Status>" + storyStatus + "</Status>")
+		        .append("<Notes>" + CPB.TEST_STORY_NOTES + 2 + "</Notes>")
+		        .append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 2 + "</HowToDemo>")
+		        .append("<Release>" + releaseIdAndSprintId + "</Release>")
+		        .append("<Sprint>" + releaseIdAndSprintId + "</Sprint>")
+		        .append("<Tag>" + "" + "</Tag>")
+		        .append("</Story>")
+		        .append("</ExistingStories>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
-	
+
 	/**
-	 * test sprintID NumberFormatException exception 
+	 * test sprintId NumberFormatException exception
 	 */
-	public void testShowExistedStory_3(){
-		String sprintID = "SprintIDNumberFormatException";
-		String releaseID = "-1";
+	public void testShowExistedStory_3() {
+		String sprintId = "SprintIDNumberFormatException";
+		String releaseId = "-1";
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
-		addRequestParameter("releaseID", releaseID);
-		
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("releaseID", releaseId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
+		// assert response text
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}
-	
+
 	/**
-	 * test releaseID NumberFormatException exception 
+	 * test releaseID NumberFormatException exception
 	 */
-	public void testShowExistedStory_4(){
-		String sprintID = "";
-		String releaseID = "ReleaseNumberFormatException";
+	public void testShowExistedStory_4() {
+		String sprintId = "";
+		String releaseId = "ReleaseNumberFormatException";
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
-		addRequestParameter("releaseID", releaseID);
-		
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("releaseID", releaseId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
+		// assert response text
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}
-	
+
 	/**
-	 * test releaseID NumberFormatException exception 
+	 * test releaseId NumberFormatException exception
 	 */
-	public void testShowExistedStory_5(){
-		String sprintID = "";
-		String releaseID = "";
+	public void testShowExistedStory_5() {
+		String sprintId = "";
+		String releaseId = "";
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = this.mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
-		addRequestParameter("releaseID", releaseID);
-		
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("releaseID", releaseId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
+		// assert response text
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);

@@ -815,7 +815,7 @@ public class MantisIssueServiceTest extends TestCase {
 		issue.addTagValue(history);
 		
 		this.MService.updateBugNote(issue);
-		this.MService.updateStoryRelationTable(Long.toString(issue.getIssueID()), p.getName(), releaseID, sprintID, "100", "100", new Date());
+		this.MService.updateStoryRelationTable(issue.getIssueID(), p.getName(), releaseID, sprintID, "100", "100", new Date());
 	}
 	
 	private void addTagElement(IIssue issue, String imp, String est, String value, String howtodemo, String notes) {

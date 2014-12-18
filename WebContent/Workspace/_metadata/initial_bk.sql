@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE `buildresult` (
   `ID` int(11) NOT NULL auto_increment,
-  `project_id` int(11) default NULL,
+  `PROJECT_ID` int(11) default NULL,
   `REVISION` int(11) default NULL,
   `LABEL` varchar(255) NOT NULL default '',
   `BUILDRESULT` tinyint(1) default '0',
@@ -39,7 +39,7 @@ CREATE TABLE `commit_log` (
   `LOG` text,
   `REVISION` int(11) default NULL,
   `COMMITTIME` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `project_id` int(11) default NULL,
+  `PROJECT_ID` int(11) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1230,9 +1230,10 @@ CREATE TABLE `history` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `issue_id` BIGINT UNSIGNED NOT NULL,
   `issue_type` INT NOT NULL,
-  `type` INT NOT NULL,
-  `description` TEXT NULL,
-  `create_time` BIGINT UNSIGNED NOT NULL,
+  `type` INT NULL,
+  `old_value` TEXT NULL,
+  `new_value` TEXT NULL,
+  `modified_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

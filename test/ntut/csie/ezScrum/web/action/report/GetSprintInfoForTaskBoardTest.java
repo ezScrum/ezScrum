@@ -151,7 +151,6 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
-		System.out.println(result);
 		SprintInfoUIObject sprintInfo = gson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;

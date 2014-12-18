@@ -89,7 +89,8 @@ public class CreateProductBacklog {
 					        this.TEST_STORY_IMP,
 					        this.TEST_STORY_EST,
 					        this.TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
-					        this.TEST_STORY_NOTES + Integer.toString(j + 1));
+					        this.TEST_STORY_NOTES + Integer.toString(j + 1),
+					        false);
 					// 重新拿出更新過的story
 					story = this.productBacklogMapper.getIssue(story.getIssueID());
 					this.IssueList.add(story);
@@ -123,7 +124,8 @@ public class CreateProductBacklog {
 						        this.TEST_STORY_IMP,
 						        Integer.toString(this.AssignValue),
 						        this.TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
-						        this.TEST_STORY_NOTES + Integer.toString(j + 1));
+						        this.TEST_STORY_NOTES + Integer.toString(j + 1),
+						        false);
 						// 重新拿出更新過的story
 						story = this.productBacklogMapper.getIssue(story.getIssueID());
 						this.IssueList.add(story);
@@ -155,7 +157,8 @@ public class CreateProductBacklog {
 						        this.TEST_STORY_IMP,
 						        this.TEST_STORY_EST,
 						        this.TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
-						        this.TEST_STORY_NOTES + Integer.toString(j + 1));
+						        this.TEST_STORY_NOTES + Integer.toString(j + 1),
+						        false);
 						// 重新拿出更新過的story
 						story = this.productBacklogMapper.getIssue(story.getIssueID());
 						this.IssueList.add(story);	// add to list
@@ -191,7 +194,8 @@ public class CreateProductBacklog {
 		        importance,
 		        estimation,
 		        this.TEST_STORY_HOW_TO_DEMO + Integer.toString(index + 1),
-		        this.TEST_STORY_NOTES + Integer.toString(index + 1));
+		        this.TEST_STORY_NOTES + Integer.toString(index + 1),
+		        false);
 		story = productBacklogMapper.getIssue(story.getIssueID());
 		this.IssueList.add(story);	// add to list
 		this.IssueIDList.add(story.getIssueID());
@@ -229,14 +233,14 @@ public class CreateProductBacklog {
 
 	// set story column value of IMP, EST, HowToDemo, Note
 	public void editStory(long issueID, String name, String value, String importance,
-	        String estimation, String howToDemo, String note) {
+	        String estimation, String howToDemo, String note, boolean addHistory) {
 		this.productBacklogMapper.modifyName(issueID, name, null);
 		Element history = this.translateIssueToXML(value, importance, estimation, howToDemo, note);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = this.productBacklogMapper.getIssue(issueID);
 			issue.addTagValue(history);
 			issue.setSummary(name);
-			this.productBacklogMapper.updateIssueValue(issue);
+			this.productBacklogMapper.updateIssueValue(issue, addHistory);
 		}
 	}
 
