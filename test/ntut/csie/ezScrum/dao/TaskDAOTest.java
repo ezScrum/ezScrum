@@ -58,6 +58,9 @@ public class TaskDAOTest extends TestCase {
 	}
 	
 	public void testAdd() {
+		
 		TaskObject task = new TaskObject();
+//		task.setSerialId(serialId)
+//			.set
 	}
 }
