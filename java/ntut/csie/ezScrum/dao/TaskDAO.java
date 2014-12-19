@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
@@ -152,6 +153,21 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			tasks.add(convert(result));
 		}
 		return tasks;
+	}
+	
+	public ArrayList<Long> getPartnersId(long taskId) throws SQLException {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID,
+				Long.toString(taskId));
+		String query = valueSet.getSelectQuery();
+
+		ArrayList<Long> partnerIdList = new ArrayList<Long>();
+		ResultSet result = mControl.executeQuery(query);
+		while (result.next()) {
+			partnerIdList.add(result.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
+		}
+		return partnerIdList;
 	}
 
 	private TaskObject convert(ResultSet result) throws SQLException {

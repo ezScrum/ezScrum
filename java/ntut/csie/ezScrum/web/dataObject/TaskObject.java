@@ -238,7 +238,11 @@ public class TaskObject implements IBaseObject {
 
 	public ArrayList<Long> getPartnersId() {
 		if (mPartnersId == null) {
-			mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
+			try {
+				mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return mPartnersId;
 	}
