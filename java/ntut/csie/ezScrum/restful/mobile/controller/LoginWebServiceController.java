@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import ntut.csie.ezScrum.restful.mobile.service.LoginWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 import com.google.gson.Gson;
@@ -32,7 +32,7 @@ public class LoginWebServiceController {
 			InformationDecoder decodeInfo = new InformationDecoder();
 			decodeInfo.decode(userName, password);
 			this.service = new LoginWebService(decodeInfo.getDecodeUserName(), decodeInfo.getDecodePwd());
-			UserObject theAccount = service.getAccount();
+			AccountObject theAccount = service.getAccount();
 			Gson gson = new Gson();
 			if (theAccount != null) {
 				response = gson.toJson(Boolean.TRUE);

@@ -13,7 +13,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -50,7 +50,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	 * @param account
 	 * @return
 	 */
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}
@@ -139,7 +139,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	 */
 	public void testUserAjaxGetProjectDescriptionAction_NotInProject() {
 		String projectID = this.CP.getProjectList().get(0).getName();
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 
 		// ================ set URL parameter ========================
 		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -165,7 +165,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	public void testUserAjaxGetProjectDescriptionAction_InProject() {
 		ProjectObject project = this.CP.getProjectObjectList().get(0);
 		String projectID = project.getName();
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 
 		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
 		addUserToRole.exe_ST();

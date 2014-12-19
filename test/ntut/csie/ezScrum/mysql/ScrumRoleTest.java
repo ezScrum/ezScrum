@@ -8,8 +8,8 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class ScrumRoleTest extends TestCase {
@@ -82,7 +82,7 @@ public class ScrumRoleTest extends TestCase {
 			scrumRole = new ScrumRole(role);
 			mService.createScrumRole(mProject.getId(), role, scrumRole);
 		}
-		List<UserObject> userList = mService.getProjectWorkerList(mProject.getId());
+		List<AccountObject> userList = mService.getProjectWorkerList(mProject.getId());
 		
 		assertEquals(1, userList.size());
 	}

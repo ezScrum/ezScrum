@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -73,7 +73,7 @@ public class CreateProductBacklog {
 				this.TEST_STORY_EST = Integer.toString(this.Min_EST);
 
 				for (int j = 0; j < this.StoryCount; j++) {
-					StoryInformation storyInformation = new StoryInformation
+					StoryInfo storyInformation = new StoryInfo
 					        (this.TEST_STORY_NAME + Integer.toString(j + 1),
 					                this.TEST_STORY_IMP,
 					                this.TEST_STORY_EST,
@@ -109,7 +109,7 @@ public class CreateProductBacklog {
 					this.TEST_STORY_EST = Integer.toString(this.Min_EST);
 
 					for (int j = 0; j < this.StoryCount; j++) {
-						StoryInformation storyInformation = new StoryInformation
+						StoryInfo storyInformation = new StoryInfo
 						        (this.TEST_STORY_NAME + Integer.toString(j + 1),
 						                this.TEST_STORY_IMP,
 						                Integer.toString(this.AssignValue),
@@ -140,7 +140,7 @@ public class CreateProductBacklog {
 					this.TEST_STORY_EST = Integer.toString(this.Min_EST);
 
 					for (int j = 0; j < this.StoryCount; j++) {
-						StoryInformation storyInformation = new StoryInformation
+						StoryInfo storyInformation = new StoryInfo
 						        (this.TEST_STORY_NAME + Integer.toString(j + 1),
 						                this.TEST_STORY_IMP,
 						                this.TEST_STORY_EST,
@@ -178,7 +178,7 @@ public class CreateProductBacklog {
 		IUserSession userSession = configuration.getUserSession();
 		this.productBacklogMapper = new ProductBacklogMapper(project, userSession);
 		int index = IssueIDList.size();
-		StoryInformation storyInformation = new StoryInformation
+		StoryInfo storyInformation = new StoryInfo
 		        (this.TEST_STORY_NAME + Integer.toString(index + 1),
 		                importance,
 		                estimation,

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -44,7 +44,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		String storyID = request.getParameter("issueID");
 
 		// 表格的資料
-		TaskObject taskInfomation = new TaskObject();
+		TaskInfo taskInfomation = new TaskInfo();
 		taskInfomation.name = request.getParameter("Name");
 		taskInfomation.estimation = request.getParameter("Estimate");
 		taskInfomation.notes = request.getParameter("Notes");

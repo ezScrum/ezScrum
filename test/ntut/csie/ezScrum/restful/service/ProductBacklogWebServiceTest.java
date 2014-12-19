@@ -15,8 +15,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -108,7 +108,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		String TEST_STORY_HOW_TO_DEMO = "TEST_STORY_DEMO_";	// How to demo
 		String TEST_STORY_NOTES = "TEST_STORY_NOTE_";	    // Story notes
 
-		StoryInformation storyInformation = new StoryInformation
+		StoryInfo storyInformation = new StoryInfo
 		        (TEST_STORY_NAME,
 		         TEST_STORY_IMP,
 		         TEST_STORY_EST,
@@ -185,7 +185,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 
-		StoryInformation storyInformation = new StoryInformation
+		StoryInfo storyInformation = new StoryInfo
 		               (TEST_STORY_NAME,
 		                TEST_STORY_IMP,
 		                TEST_STORY_EST,

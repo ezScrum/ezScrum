@@ -14,14 +14,14 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.ScrumRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.SystemEnum;
 
@@ -80,7 +80,7 @@ public class MySQLService {
 	 * ------------------------------------------
 	 */
 
-	public boolean createAccount(UserInformation user) {
+	public boolean createAccount(AccountInfo user) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addInsertValue(AccountEnum.ACCOUNT, user.getAccount());
@@ -94,7 +94,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 
-	public boolean updateAccount(UserInformation user) {
+	public boolean updateAccount(AccountInfo user) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AccountEnum.ID, user.getId());
@@ -117,7 +117,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 
-	public UserObject getAccount(String account) {
+	public AccountObject getAccount(String account) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(AccountEnum.TABLE_NAME);
@@ -135,7 +135,7 @@ public class MySQLService {
 		}
 	}
 	
-	public UserObject getAccountById(String id) {
+	public AccountObject getAccountById(String id) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(AccountEnum.TABLE_NAME);
@@ -153,7 +153,7 @@ public class MySQLService {
 		}
 	}
 
-	public UserObject confirmAccount(String account, String password) {
+	public AccountObject confirmAccount(String account, String password) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(AccountEnum.TABLE_NAME);
@@ -173,13 +173,13 @@ public class MySQLService {
 		}
 	}
 
-	public List<UserObject> getAccountList() {
+	public List<AccountObject> getAccountList() {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(AccountEnum.TABLE_NAME);
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
-			List<UserObject> list = new ArrayList<UserObject>();
+			List<AccountObject> list = new ArrayList<AccountObject>();
 			if (result.next()) {
 				do {
 					list.add(getAccount(result));
@@ -194,7 +194,7 @@ public class MySQLService {
 		}
 	}
 
-	private UserObject getAccount(ResultSet result) throws SQLException {
+	private AccountObject getAccount(ResultSet result) throws SQLException {
 		String id;
 		try {
 			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);
@@ -207,7 +207,7 @@ public class MySQLService {
 		String email = result.getString(AccountEnum.EMAIL);
 		String enable = result.getString(AccountEnum.ENABLE).equals("1") ? "true" : "false";
 		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
-		return new UserObject(id, account, name, password, email, enable, roles);
+		return new AccountObject(id, account, name, password, email, enable, roles);
 	}
 
 	private String getMd5(String str) {
@@ -377,7 +377,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public List<UserObject> getProjectMemberList(String id) {
+	public List<AccountObject> getProjectMemberList(String id) {
 		try {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
@@ -385,7 +385,7 @@ public class MySQLService {
 			valueSet.addCrossJoinMultiCondition(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID, AccountEnum.ENABLE, "1");
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
-			List<UserObject> list = new ArrayList<UserObject>();
+			List<AccountObject> list = new ArrayList<AccountObject>();
 			if (result.next()) {
 				do {
 					list.add(getAccount(result));
@@ -567,7 +567,7 @@ public class MySQLService {
 		return scrumRole;
 	}
 	
-	public List<UserObject> getProjectWorkerList(String id) {
+	public List<AccountObject> getProjectWorkerList(String id) {
 		try {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
@@ -578,7 +578,7 @@ public class MySQLService {
 			valueSet.addCrossJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
-			List<UserObject> list = new ArrayList<UserObject>();
+			List<AccountObject> list = new ArrayList<AccountObject>();
 			while (result.next()) {
 				list.add(getAccount(result));
 			}

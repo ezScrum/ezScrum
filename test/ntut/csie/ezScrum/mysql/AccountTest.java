@@ -7,8 +7,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class AccountTest extends TestCase {
@@ -54,7 +54,7 @@ public class AccountTest extends TestCase {
 		String email = "iaccount@mail.com";
 		String enable = "true";
 		
-		UserInformation user = new UserInformation(id, name, password, email, enable);
+		AccountInfo user = new AccountInfo(id, name, password, email, enable);
 		boolean result = mService.createAccount(user);
 		
 		assertTrue(result);
@@ -70,7 +70,7 @@ public class AccountTest extends TestCase {
 		String email = "update@mail.com";
 		String enable = "true";
 		
-		UserInformation user = new UserInformation(id, account, name, password, email, enable);
+		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
 		boolean result = mService.updateAccount(user);
 		
 		assertTrue(result);
@@ -91,7 +91,7 @@ public class AccountTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 		
-		UserObject result = mService.getAccount(id);
+		AccountObject result = mService.getAccount(id);
 		
 		assertEquals(id, result.getAccount());
 	}
@@ -100,7 +100,7 @@ public class AccountTest extends TestCase {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<UserObject> result = mService.getAccountList();
+		List<AccountObject> result = mService.getAccountList();
 		
 		assertEquals(2, result.size());	// include admin
 	}
@@ -111,7 +111,7 @@ public class AccountTest extends TestCase {
 		String id = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
 		
-		UserObject result = mService.confirmAccount(id, password);
+		AccountObject result = mService.confirmAccount(id, password);
 		
 		assertEquals(id, result.getAccount());
 	}

@@ -16,7 +16,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -214,7 +214,7 @@ public class SessionManager {
 	 * @author SPARK
 	 * @return ScrumRole
 	 */
-	public static ScrumRole getScrumRole(HttpServletRequest request, IProject project, UserObject account) {
+	public static ScrumRole getScrumRole(HttpServletRequest request, IProject project, AccountObject account) {
 //		// printAllSessionAttribute(request);
 //		String userID = account.getAccount();
 //		HttpSession session = request.getSession();
@@ -233,7 +233,7 @@ public class SessionManager {
 		return scrumRole;
 	}
 	
-	public static ScrumRole getScrumRole(HttpServletRequest request, ProjectObject project, UserObject account) {
+	public static ScrumRole getScrumRole(HttpServletRequest request, ProjectObject project, AccountObject account) {
 		// ezScrum v1.8
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		return scrumRole;
@@ -246,7 +246,7 @@ public class SessionManager {
 	 * @param account
 	 * @author SPARK
 	 */
-	public static void removeScrumRolesMap(HttpServletRequest request, UserObject account) {
+	public static void removeScrumRolesMap(HttpServletRequest request, AccountObject account) {
 		String userPermessionNameForSession = account.getAccount() + sessionAttributeNameForPermession;
 
 		List<HttpSession> sessionList = HttpSessionCollector.getSessionList(userPermessionNameForSession);
@@ -284,7 +284,7 @@ public class SessionManager {
 		for (Entry<String, HttpSession> entry : allSessions.entrySet()) {
 			HttpSession session = entry.getValue();
 			IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
-			UserObject account = userSession.getAccount();
+			AccountObject account = userSession.getAccount();
 			HashMap<String, ProjectRole> roles = account.getRoles();
 			ProjectRole role = roles.get("system");
 			if (role != null) {

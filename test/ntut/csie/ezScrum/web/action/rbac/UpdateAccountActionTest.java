@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
@@ -84,7 +84,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	String projectId = this.CP.getProjectList().get(0).getName();
     	// User Information
     	String postfix = "_update";
-    	UserObject account = CA.getAccountList().get(0);
+    	AccountObject account = CA.getAccountList().get(0);
     	String userId = account.getId();		// 取得第一筆 Account ID
     	String userAccount = account.getAccount();		// 取得第一筆 Account ID
     	String userPw = account.getPassword() + postfix;

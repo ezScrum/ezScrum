@@ -16,7 +16,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 			sInstance = new HistoryDAO();
 		}
 		return (HistoryDAO) sInstance;
-	}  
+	}
 
 	@Override
 	public long create(HistoryObject objectInfo) {

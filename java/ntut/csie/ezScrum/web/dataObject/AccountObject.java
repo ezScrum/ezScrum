@@ -2,7 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
 
-public class UserObject {
+public class AccountObject {
 	private String id;
 	private String account;
 	private String password;
@@ -11,9 +11,9 @@ public class UserObject {
 	private String enable;
 	private HashMap<String, ProjectRole> roles;
 	
-	public UserObject() {}
+	public AccountObject() {}
 	
-	public UserObject(String id, String account, String name, String password, String email, String enable, HashMap<String, ProjectRole> roles) {
+	public AccountObject(String id, String account, String name, String password, String email, String enable, HashMap<String, ProjectRole> roles) {
 		setId(id);
 		setAccount(account);
 		setPassword(password);
@@ -23,7 +23,7 @@ public class UserObject {
 		setRoles(roles);
 	}
 	
-	public UserObject(String id, String account, String name, String password, String email, String enable) {
+	public AccountObject(String id, String account, String name, String password, String email, String enable) {
 		setId(id);
 		setAccount(account);
 		setPassword(password);
@@ -32,7 +32,7 @@ public class UserObject {
 		setEnable(enable);
 	}
 	
-	public UserObject(String account, String name, String password, String email, String enable) {
+	public AccountObject(String account, String name, String password, String email, String enable) {
 		setAccount(account);
 		setPassword(password);
 		setName(name);

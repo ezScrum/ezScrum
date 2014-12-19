@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -70,7 +70,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		configuration = null;
 	}
 
-	private String getExpectedProjectMember(UserObject user) {
+	private String getExpectedProjectMember(AccountObject user) {
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("<Members>")
 		        .append("<Member>")

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -37,7 +37,7 @@ public class ProjectHelper {
 		return mProjectMapper.getProjectInfoForm(project);
 	}
 
-	public String getProjectListXML(UserObject account) {
+	public String getProjectListXML(AccountObject account) {
 		log.info(" handle project list xml format");
 
 		// get all projects
@@ -98,7 +98,7 @@ public class ProjectHelper {
 	 * @param userSession
 	 * @param project
 	 */
-	public List<UserObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
+	public List<AccountObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
 	}
@@ -150,7 +150,7 @@ public class ProjectHelper {
 	}
 	
 	// ezScrum v1.8
-	public List<UserObject> getProjectMemberList(ProjectObject project) {
+	public List<AccountObject> getProjectMemberList(ProjectObject project) {
 		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}
 

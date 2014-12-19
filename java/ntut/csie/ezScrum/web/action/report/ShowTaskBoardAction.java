@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -35,7 +35,7 @@ public class ShowTaskBoardAction extends Action {
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get Account, ScrumRole
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		AccountLogic accountLogic = new AccountLogic();

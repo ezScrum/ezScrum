@@ -29,7 +29,7 @@ import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
 import ntut.csie.jcis.account.core.internal.Account;
@@ -113,7 +113,7 @@ public class ProjectLogic {
 //		return existedInProject;
 		
 		// ezScrum v1.8
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		if (scrumRole != null) {
 			return true;
@@ -148,7 +148,7 @@ public class ProjectLogic {
 	 * @param account
 	 * @return
 	 */
-	public Map<String, Boolean> getProjectPermissionMap(UserObject account) {
+	public Map<String, Boolean> getProjectPermissionMap(AccountObject account) {
 //		Map<String, Boolean> map = new HashMap<String, Boolean>();
 //
 //		// IAccount account = userSession.getAccount();

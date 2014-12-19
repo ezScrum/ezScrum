@@ -22,7 +22,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -95,7 +95,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 	}
 
 	public void testgetAllSprint() throws Exception {
-		UserObject userObject = new UserObject();
+		AccountObject userObject = new AccountObject();
 		userObject.setAccount("admin");
 		userObject.setPassword("admin");
 		String projectID = project.getName();
@@ -132,7 +132,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 	@SuppressWarnings("deprecation")
     public void testgetSprintWithAllItem() throws Exception {
 		// User Object
-		UserObject userObject = new UserObject();
+		AccountObject userObject = new AccountObject();
 		userObject.setAccount("admin");
 		userObject.setPassword("admin");
 

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.account.core.IAccount;
@@ -30,7 +30,7 @@ public class AddUserAction extends Action {
 		if ((id != null) && (resource != null) && (operation != null) && (session != null)) {
 			try {
 				AccountHelper ah = new AccountHelper(session);
-				UserObject account = ah.assignRole_add(id, resource, operation);
+				AccountObject account = ah.assignRole_add(id, resource, operation);
 
 				// 刪除Session中關於該使用者的所有專案權限。
 //				SessionManager.removeScrumRolesMap(request, account);

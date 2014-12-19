@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
@@ -48,7 +48,7 @@ public class SprintPlanWebServiceController {
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(userName, password, projectID);
 			// 使用者帳號
-			UserObject userObject = new UserObject();
+			AccountObject userObject = new AccountObject();
 			userObject.setAccount(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
@@ -91,7 +91,7 @@ public class SprintPlanWebServiceController {
 		try {
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(userName, password, projectID);
-			UserObject userObject = new UserObject();
+			AccountObject userObject = new AccountObject();
 			userObject.setAccount(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
@@ -135,7 +135,7 @@ public class SprintPlanWebServiceController {
 			SprintObject sprint = gson.fromJson(sprintJson, SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(userName, password, projectID);
-			UserObject userObject = new UserObject();
+			AccountObject userObject = new AccountObject();
 			userObject.setAccount(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
@@ -177,7 +177,7 @@ public class SprintPlanWebServiceController {
 			@QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
-		UserObject userObject = new UserObject();
+		AccountObject userObject = new AccountObject();
 		try {
 			decoder.decode(userName, password, projectID);
 			userObject.setAccount(decoder.getDecodeUserName());
@@ -222,7 +222,7 @@ public class SprintPlanWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectID);
-			UserObject userObject = new UserObject();
+			AccountObject userObject = new AccountObject();
 			userObject.setAccount(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
@@ -267,7 +267,7 @@ public class SprintPlanWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectID);
-			UserObject userObject = new UserObject();
+			AccountObject userObject = new AccountObject();
 			userObject.setAccount(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,

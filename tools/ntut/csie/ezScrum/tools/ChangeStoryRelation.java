@@ -28,7 +28,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.core.util.XmlFileUtil;
@@ -338,7 +338,7 @@ public class ChangeStoryRelation {
 
 //		return theUserSession;
 		// ezScrum v1.8
-		UserObject user = new UserObject();
+		AccountObject user = new AccountObject();
 		user.setAccount("admin");
 		return new UserSession(user);
 	}

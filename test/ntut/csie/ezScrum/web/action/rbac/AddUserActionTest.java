@@ -18,8 +18,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -129,7 +129,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		 * Verify:
 		 */
 
-		UserObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccountById(id);
 		assertNotNull(account);
 		assertEquals(this.CA.getAccount_ID(1), account.getAccount());
 		assertEquals(this.CA.getAccount_RealName(1), account.getName());
@@ -187,7 +187,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		UserObject account = this.accountMapper.getAccount(accountId);
+		AccountObject account = this.accountMapper.getAccount(accountId);
 
 		assertNotNull(account);
 		assertEquals(accountId, account.getAccount());
@@ -232,7 +232,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_IntegrationTest() throws InterruptedException {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();		// 取得第一筆 Account ID
 		String projectID = this.CP.getProjectObjectList().get(0).getId();
@@ -289,7 +289,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
 
 		//	assert database information
-		UserObject actualAccount = this.accountMapper.getAccountById(userId);
+		AccountObject actualAccount = this.accountMapper.getAccountById(userId);
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
@@ -400,7 +400,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_NullID_RequestParameter() {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		String projectID = this.CP.getProjectObjectList().get(0).getId();
 		String pid = this.CP.getProjectObjectList().get(0).getName();
 		String scrumRole = "ProductOwner";
@@ -445,7 +445,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_NullResource_RequestParameter() {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		String userId = this.CA.getAccount_ID(1);
 		String projectID = this.CP.getProjectList().get(0).getName();
 		String scrumRole = "ProductOwner";
@@ -490,7 +490,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_NullOperation_RequestParameter() {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		String userId = this.CA.getAccount_ID(1);
 		String projectID = this.CP.getProjectObjectList().get(0).getId();
 		String pid = this.CP.getProjectObjectList().get(0).getName();
@@ -527,7 +527,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//		assertEquals("user", roles[0].getRoleId());
 	}
 
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}

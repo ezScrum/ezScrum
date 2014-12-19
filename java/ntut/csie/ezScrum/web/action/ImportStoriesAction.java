@@ -15,7 +15,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.ExcelHandler;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.core.util.FileUtil;
@@ -94,7 +94,7 @@ public class ImportStoriesAction extends PermissionAction {
 						String sprintID = stories.get(i).getSprintID();
 						String tagIDs = "";
 						String releaseID = "";
-						StoryInformation storyInformation = new StoryInformation(summary, imp, estimate, value, howToDemo, notes, des, sprintID, releaseID, tagIDs);
+						StoryInfo storyInformation = new StoryInfo(summary, imp, estimate, value, howToDemo, notes, des, sprintID, releaseID, tagIDs);
 //						productBacklogHelper.addStory(storyInformation);
 						productBacklogHelper.addNewStory(storyInformation);
 					}

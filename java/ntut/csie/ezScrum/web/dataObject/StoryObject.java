@@ -6,6 +6,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -74,9 +75,9 @@ public class StoryObject {
 		taskList.add(task);
 	}
 	
-	public StoryInformation toStoryInformation() {
+	public StoryInfo toStoryInformation() {
 		String tagIDs = StringUtils.join(tagList.toArray(), ",");
-		return new StoryInformation(id, name, importance, estimation, value, howToDemo, notes, description, sprint, release, "");
+		return new StoryInfo(id, name, importance, estimation, value, howToDemo, notes, description, sprint, release, "");
 	}
 	
 	public String toString() {

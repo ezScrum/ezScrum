@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 
@@ -40,7 +40,7 @@ public class AccessPermissionManager {
 		
 		// ezScrum v1.8
         //check create project permission
-        UserObject account = userSession.getAccount();
+        AccountObject account = userSession.getAccount();
         HashMap<String, ProjectRole> roleMap = account.getRoles();
         ProjectRole role = roleMap.get("system");
 //        AccountMapper accountMapper = new AccountMapper();

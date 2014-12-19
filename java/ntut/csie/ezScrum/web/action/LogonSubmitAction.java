@@ -32,7 +32,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
 import ntut.csie.ezScrum.web.dataObject.Person;
 import ntut.csie.ezScrum.web.dataObject.User;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ezScrumAdmin;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -97,7 +97,7 @@ public class LogonSubmitAction extends Action {
 		return mapping.findForward(person.getForwardName());
 	}
 
-	private Person getPerson(UserObject account) {
+	private Person getPerson(AccountObject account) {
 		AccountMapper accountMapper = new AccountMapper();
 //		if (account.checkPermission(accountMapper.getPermission("system_admin"))) {
 		if (account.getRoles().get("system") != null) {

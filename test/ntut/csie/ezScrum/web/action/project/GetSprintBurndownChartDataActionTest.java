@@ -16,7 +16,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -52,7 +52,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * @param account
 	 * @return
 	 */
-    private IUserSession getUserSession(UserObject account){
+    private IUserSession getUserSession(AccountObject account){
     	IUserSession userSession = new UserSession(account);
     	return userSession;
     }
@@ -242,7 +242,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	public void testUserGetSprintBurndownChartDataAction_StoryAndInformation() throws Exception{
 		IProject project = this.CP.getProjectList().get(0); 
 		String projectID = project.getName();
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		
 		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
 		addUserToRole.exe_ST();
@@ -312,7 +312,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	public void testUserGetSprintBurndownChartDataAction_TaskAndInformation() throws Exception{
 		IProject project = this.CP.getProjectList().get(0); 
 		String projectID = project.getName();
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		
 		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
 		addUserToRole.exe_ST();

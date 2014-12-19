@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
@@ -92,7 +92,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     	
     	// 執行 action
     	actionPerform();
-    	UserObject account = this.accountMapper.getAccount(userId);
+    	AccountObject account = this.accountMapper.getAccount(userId);
 		
 		assertNull(account);
     }

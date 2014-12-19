@@ -2,9 +2,9 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -14,7 +14,7 @@ public class AddUserToRole {
 	private CreateProject CP;
 	private CreateAccount CA;
 
-	private UserObject theAccount = null;
+	private AccountObject theAccount = null;
 	private IProject theProject = null;
 	private ProjectObject projectObject = null;
 
@@ -64,7 +64,7 @@ public class AddUserToRole {
 	/**
 	 * 取得目前指定的 Account
 	 */
-	public UserObject getNowAccount() {
+	public AccountObject getNowAccount() {
 		return this.theAccount;
 	}
 
@@ -137,9 +137,9 @@ public class AddUserToRole {
 	 */
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
-		UserObject account = CA.getAccountList().get(index);
+		AccountObject account = CA.getAccountList().get(index);
 		AccountHelper helper = new AccountHelper(configuration.getUserSession());
-		UserInformation user = new UserInformation(account.getId(), account.getAccount(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
+		AccountInfo user = new AccountInfo(account.getId(), account.getAccount(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
 		helper.updateAccount(user);
 	}
 

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.account.core.IAccount;
@@ -54,12 +54,12 @@ public class GetRemainingProjectMembersAction extends Action {
 		
 		// ezScrum v1.8
 		// get total member list
-		List<UserObject> accounts = new ProjectMapper().getProjectMemberListForDb(project.getName());
-		List<UserObject> accountList = (new AccountMapper()).getAccountList();
+		List<AccountObject> accounts = new ProjectMapper().getProjectMemberListForDb(project.getName());
+		List<AccountObject> accountList = (new AccountMapper()).getAccountList();
 		StringBuilder result = new StringBuilder();
 		result.append("<Members>");
 //		for (UserObject total_member_list : accountList) {
-		for (UserObject member : accountList) {
+		for (AccountObject member : accountList) {
 			if (!accounts.contains(member) && !member.getAccount().equals("admin")) {
 //				UserObject member = (UserObject) total_member_list;
 				result.append("<Member>");

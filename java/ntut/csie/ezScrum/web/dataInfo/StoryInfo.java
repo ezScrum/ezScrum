@@ -1,8 +1,8 @@
-package ntut.csie.ezScrum.web.dataObject;
+package ntut.csie.ezScrum.web.dataInfo;
 
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 
-public class StoryInformation {
+public class StoryInfo {
 	
 	private String stroyID;
 	private String name;
@@ -15,9 +15,9 @@ public class StoryInformation {
 	private String sprintID;
 	private String tagIDs;
 	private String releaseID;
-	public StoryInformation(){
+	public StoryInfo(){
 	}
-	public StoryInformation(String name, String importance, String estimation,
+	public StoryInfo(String name, String importance, String estimation,
 			String value, String howToDemo, String notes, String description,
 			String sprintID, String releaseID, String tagIDs) {
 		this.setName(name);
@@ -32,7 +32,7 @@ public class StoryInformation {
 		this.setReleaseID(releaseID);
 	}
 	
-	public StoryInformation(String storyID, String name, String importance, String estimation,
+	public StoryInfo(String storyID, String name, String importance, String estimation,
 			String value, String howToDemo, String notes, String description,
 			String sprintID, String releaseID, String tagIDs) {
 		this.setStroyID(storyID);

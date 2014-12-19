@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.dataObject;
+package ntut.csie.ezScrum.web.dataInfo;
 
-public class UserInformation {
+public class AccountInfo {
 	private String id = "";
 	private String account = "";
 	private String password = "";
@@ -8,7 +8,7 @@ public class UserInformation {
 	private String name = "";
 	private String enable = "";
 
-	public UserInformation(String account, String name, String password, String email, String enable) {
+	public AccountInfo(String account, String name, String password, String email, String enable) {
 		this.setAccount(account);
 		this.setName(name);
 		this.setPassword(password);
@@ -16,7 +16,7 @@ public class UserInformation {
 		this.setEnable(enable);
 	}
 	
-	public UserInformation(String id, String account, String name, String password, String email, String enable) {
+	public AccountInfo(String id, String account, String name, String password, String email, String enable) {
 		this.setId(id);
 		this.setAccount(account);
 		this.setName(name);

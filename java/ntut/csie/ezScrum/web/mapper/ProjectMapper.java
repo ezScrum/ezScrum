@@ -17,8 +17,8 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.account.core.IAccount;
@@ -96,26 +96,26 @@ public class ProjectMapper {
 		return result;
 	}
 
-	public List<UserObject> getProjectMemberListForDb(String id) {
+	public List<AccountObject> getProjectMemberListForDb(String id) {
 		mService.openConnect();
-		List<UserObject> result = mService.getProjectMemberList(id);
+		List<AccountObject> result = mService.getProjectMemberList(id);
 		mService.closeConnect();
 		return result;
 	}
 
-	public List<UserObject> getProjectScrumWorkerListForDb(String id) {
+	public List<AccountObject> getProjectScrumWorkerListForDb(String id) {
 		mService.openConnect();
-		List<UserObject> result = mService.getProjectWorkerList(id);
+		List<AccountObject> result = mService.getProjectWorkerList(id);
 		mService.closeConnect();
 		return result;
 	}
 	
 	public List<String> getProjectScrumWorkerList(String id) {
 		mService.openConnect();
-		List<UserObject> userList = mService.getProjectWorkerList(id);
+		List<AccountObject> userList = mService.getProjectWorkerList(id);
 		mService.closeConnect();
 		List<String> result = new ArrayList<String>();
-		for (UserObject user : userList) {
+		for (AccountObject user : userList) {
 			result.add(user.getAccount());
 		}
 		return result;

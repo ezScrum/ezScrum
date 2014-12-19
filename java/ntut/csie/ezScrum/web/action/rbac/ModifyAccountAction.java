@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -38,10 +38,10 @@ public class ModifyAccountAction extends Action {
 
 		String roles = "user";
 
-		UserInformation user = new UserInformation(id, account, realName, password, email, enable);
+		AccountInfo user = new AccountInfo(id, account, realName, password, email, enable);
 
 		AccountHelper ah = new AccountHelper(session);
-		UserObject newAccount = null;
+		AccountObject newAccount = null;
 
 		// 更新使用者資訊
 		if (Boolean.valueOf(isEdit)) {

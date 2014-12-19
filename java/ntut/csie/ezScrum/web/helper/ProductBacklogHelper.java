@@ -17,10 +17,10 @@ import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -62,7 +62,7 @@ public class ProductBacklogHelper {
 	 * @param storyInformation
 	 * @return IIssue
 	 */
-	public IIssue addNewStory(StoryInformation storyInformation) {
+	public IIssue addNewStory(StoryInfo storyInformation) {
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
 		String estimate = storyInformation.getEstimation();
@@ -113,7 +113,7 @@ public class ProductBacklogHelper {
 		return new IStory[0];
 	}
 
-	public IIssue editStory(StoryInformation storyInformation) {
+	public IIssue editStory(StoryInfo storyInformation) {
 		long issueId = Long.parseLong(storyInformation.getStroyID());
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
@@ -592,11 +592,11 @@ public class ProductBacklogHelper {
 		Files.copy(srcFile.toPath(), destFile.toPath());
 	}
 	
-	public boolean checkAccountInProject(List<UserObject> memberList, UserObject userObject) {
+	public boolean checkAccountInProject(List<AccountObject> memberList, AccountObject userObject) {
 		if(userObject.getAccount().equals("admin")) {
 			return true;
 		}
-		for(UserObject member : memberList) {
+		for(AccountObject member : memberList) {
 			if(member.getId() == userObject.getId()) {
 				return true;
 			}

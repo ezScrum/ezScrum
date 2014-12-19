@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -57,7 +57,7 @@ public class ShowScheduleReportAction extends Action {
 		Collections.reverse(plans);  // 資料反轉、倒序
 		request.setAttribute("SprintPlans", plans);  // set sprint combo
 
-		UserObject account = session.getAccount();
+		AccountObject account = session.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr.getReadReport()) {
 			return mapping.findForward("success");

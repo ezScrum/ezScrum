@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -26,7 +26,7 @@ public class GetProjectMembersAction extends Action {
 		log.info("Get Project Members in GetProjectMembersAction.java");
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		
-		List<UserObject> accounts = null;
+		List<AccountObject> accounts = null;
 		try {
 			accounts = new ProjectHelper().getProjectMemberList(project);
 		} catch (NullPointerException e) {
@@ -39,7 +39,7 @@ public class GetProjectMembersAction extends Action {
 		StringBuilder result = new StringBuilder();
 		result.append("<Members>");
 		if (accounts != null && accounts.size() > 0) {
-			for (UserObject acc : accounts) {
+			for (AccountObject acc : accounts) {
 				result.append("<Member>");
 				result.append("<ID>").append(acc.getId()).append("</ID>");
 				result.append("<Account>").append(acc.getAccount()).append("</Account>");

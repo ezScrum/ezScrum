@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -21,7 +21,7 @@ public class AccountLogic {
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		if (!account.getEnable().equals("true")) {
 			return false;
 		}

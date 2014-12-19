@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.restful.mobile.service.LoginWebService;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class LoginWebServiceTest extends TestCase {
@@ -47,7 +47,7 @@ public class LoginWebServiceTest extends TestCase {
 	
 	// IAccountManager.confirmAccount() input不在DB中的account會跳exception(待解決)
 	public void testgetAccount() throws LogonException {
-		UserObject account;
+		AccountObject account;
 		String username = "guest";
 		String userpwd = "guest";
 		LoginWebService login;

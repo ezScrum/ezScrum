@@ -7,8 +7,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -61,8 +61,8 @@ public class AccountMapperTest extends TestCase {
 		String email = "account@mail.com";
 		String enable = "true";
 		
-		UserInformation user = new UserInformation(id, name, password, email, enable);
-		UserObject account = mAccountMapper.createAccount(user);
+		AccountInfo user = new AccountInfo(id, name, password, email, enable);
+		AccountObject account = mAccountMapper.createAccount(user);
 		
 		assertEquals(id, account.getAccount());
 		assertEquals(name, account.getName());
@@ -80,8 +80,8 @@ public class AccountMapperTest extends TestCase {
 		String email = "update@mail.com";
 		String enable = "true";
 		
-		UserInformation user = new UserInformation(id, account, name, password, email, enable);
-		UserObject userObject = mAccountMapper.updateAccount(user);
+		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
+		AccountObject userObject = mAccountMapper.updateAccount(user);
 		
 		assertEquals(account, userObject.getAccount());
 		assertEquals(name, userObject.getName());
@@ -104,7 +104,7 @@ public class AccountMapperTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccountList().get(0).getId();
 
-		UserObject account = mAccountMapper.getAccountById(id);
+		AccountObject account = mAccountMapper.getAccountById(id);
 		
 		assertEquals(id, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
@@ -116,7 +116,7 @@ public class AccountMapperTest extends TestCase {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<UserObject> accountList = mAccountMapper.getAccountList();
+		List<AccountObject> accountList = mAccountMapper.getAccountList();
 		
 		assertEquals(2, accountList.size());
 	}
@@ -126,7 +126,7 @@ public class AccountMapperTest extends TestCase {
 		createAccount.exe();
 		String id = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
-		UserObject account = null;
+		AccountObject account = null;
 		
         account = mAccountMapper.confirmAccount(id, password);
         

@@ -5,7 +5,7 @@ import java.io.File;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.core.util.XmlFileUtil;

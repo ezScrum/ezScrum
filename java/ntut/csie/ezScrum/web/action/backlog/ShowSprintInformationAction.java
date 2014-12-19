@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -76,7 +76,7 @@ public class ShowSprintInformationAction extends Action {
 
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr != null && sr.getAccessSprintBacklog()) {
 			return mapping.findForward("success");

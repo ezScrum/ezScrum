@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 
 import org.apache.struts.action.Action;
@@ -20,7 +20,7 @@ public class GetUserDataAction extends Action {
 			throws Exception {
 
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		UserObject account = session.getAccount();
+		AccountObject account = session.getAccount();
 		try {
 			// 取得使用者帳號列表
 			response.setContentType("text/xml; charset=utf-8");

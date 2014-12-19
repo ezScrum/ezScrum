@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -24,7 +24,7 @@ public class StoryWebService extends ProjectWebService{
 	private ProductBacklogHelper mProductBacklogHelper;
 	private SprintBacklogHelper mSprintBacklogHelper;
 	
-	public StoryWebService(UserObject user, String projectID) throws LogonException {
+	public StoryWebService(AccountObject user, String projectID) throws LogonException {
 		super(user, projectID);
 		initialize();
 	}

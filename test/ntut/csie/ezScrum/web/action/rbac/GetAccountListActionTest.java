@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
@@ -107,10 +107,10 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		List<UserObject> accountList = this.accountMapper.getAccountList();
+		List<AccountObject> accountList = this.accountMapper.getAccountList();
 		assertEquals(2, accountList.size());	// + admin
 
-		UserObject account = this.accountMapper.getAccount(userId);
+		AccountObject account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
 		assertEquals(account.getAccount(), userId);
@@ -141,12 +141,12 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		List<UserObject> accountList = this.accountMapper.getAccountList();
+		List<AccountObject> accountList = this.accountMapper.getAccountList();
 
 		assertEquals(this.AccountCount + 1, accountList.size());	// + admin
 
 		for (int i = 1; i < this.AccountCount + 1; i++) {
-			UserObject account = this.accountMapper.getAccount(CA.getAccount_ID(i));
+			AccountObject account = this.accountMapper.getAccount(CA.getAccount_ID(i));
 
 			assertNotNull(account);
 			assertEquals(account.getAccount(), this.CA.getAccount_ID(i));

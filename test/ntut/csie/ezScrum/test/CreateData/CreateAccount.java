@@ -3,8 +3,8 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.jcis.account.core.IAccount;
 
@@ -20,12 +20,12 @@ public class CreateAccount {
 	private String Account_PWD = "TEST_ACCOUNT_PWD_";
 	private String Account_Mail = "TEST_ACCOUNT_MAIL_";
 
-	private List<UserObject> mAccountList;
+	private List<AccountObject> mAccountList;
 	private AccountHelper mAccountHelper;
 
 	public CreateAccount(int ACcount) {
 		AccountCount = ACcount;
-		mAccountList = new ArrayList<UserObject>();
+		mAccountList = new ArrayList<AccountObject>();
 		mAccountHelper = new AccountHelper();
 	}
 
@@ -33,15 +33,15 @@ public class CreateAccount {
 	 * 自動產生建構時給的 count 個數
 	 */
 	public void exe() {
-		UserInformation user;
+		AccountInfo user;
 		for (int i = 0; i < AccountCount; i++) {	// ID = 1 為預設 admin 
 			String ID = Integer.toString(i + 1);
 			String Acc_ID = Account_ID + ID;
 			String Acc_RLNAME = Account_NAME + ID;
 			String Acc_PWD = Account_PWD + ID;
 			String Acc_Mail = Account_Mail + ID;
-			user = new UserInformation(Acc_ID, Acc_RLNAME, Acc_PWD, Acc_Mail, "true");
-			UserObject account = mAccountHelper.createAccount(user);
+			user = new AccountInfo(Acc_ID, Acc_RLNAME, Acc_PWD, Acc_Mail, "true");
+			AccountObject account = mAccountHelper.createAccount(user);
 			mAccountList.add(account);
 			log.info("Create " + AccountCount + " accounts success.");
 		}
@@ -79,7 +79,7 @@ public class CreateAccount {
 	/**
 	 * return the added account Object
 	 */
-	public List<UserObject> getAccountList() {
+	public List<AccountObject> getAccountList() {
 		return mAccountList;
 	}
 
@@ -95,13 +95,13 @@ public class CreateAccount {
 	 * @param accountIndex
 	 */
 	public void setAccount_RealName(int accountIndex) {
-		UserObject userObject = mAccountList.get(accountIndex - 1);
+		AccountObject userObject = mAccountList.get(accountIndex - 1);
 		String id = userObject.getId();
 		String account = userObject.getAccount();
 		String password = userObject.getPassword();
 		String mail = userObject.getEmail();
 		String name = Account_NAME + "NEW_" + id;
-		UserInformation user = new UserInformation(id, account, name, password, mail, "true");
+		AccountInfo user = new AccountInfo(id, account, name, password, mail, "true");
 		mAccountList.set(accountIndex - 1, mAccountHelper.updateAccount(user));
 	}
 }

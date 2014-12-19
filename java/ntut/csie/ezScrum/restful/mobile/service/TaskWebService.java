@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -18,7 +18,7 @@ public class TaskWebService extends ProjectWebService{
 	SprintBacklogHelper mSprintBacklogHelper;
 	ProductBacklogHelper mProductBacklogHelper;
 	
-	public TaskWebService(UserObject user, String projectId) throws LogonException {
+	public TaskWebService(AccountObject user, String projectId) throws LogonException {
 		super(user, projectId);
 		initialize();
 	}

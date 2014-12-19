@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.restful.mobile.service.SprintBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
@@ -38,7 +38,7 @@ public class SprintBacklogWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(userName, password, projectID);
-			UserObject user = new UserObject();
+			AccountObject user = new AccountObject();
 			user.setAccount(decoder.getDecodeUserName());
 			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());
@@ -127,7 +127,7 @@ public class SprintBacklogWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(userName, password, projectID);
-			UserObject user = new UserObject();
+			AccountObject user = new AccountObject();
 			user.setAccount(decoder.getDecodeUserName());
 			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -28,7 +28,7 @@ public class RemoveUserAction extends Action {
 		
 		if (id != null && resource != null && operation != null) {
 			try {
-				UserObject account = ah.assignRole_remove(id, resource, operation);
+				AccountObject account = ah.assignRole_remove(id, resource, operation);
 				
 				// 刪除Session中關於該使用者的所有專案權限。
 				SessionManager.removeScrumRolesMap(request, account);

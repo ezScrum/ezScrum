@@ -1,14 +1,21 @@
 package ntut.csie.ezScrum.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
-public class TaskDAO extends AbstractDAO<TaskObject, TaskInfo> {
+public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
+	
+	public static TaskDAO getInstance() {
+		if (sInstance == null) {
+			sInstance = new TaskDAO();
+		}
+		return (TaskDAO) sInstance;
+	}
 
 	@Override
-	public long create(TaskInfo infoObject) {
+	public long create(TaskObject infoObject) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -29,6 +36,10 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskInfo> {
 	public boolean delete(long id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public ArrayList<Long> getPartnersId(long taskId) {
+		return null;
 	}
 
 }

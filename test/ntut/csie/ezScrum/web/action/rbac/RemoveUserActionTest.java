@@ -15,7 +15,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -110,8 +110,8 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// 先加入 PO 角色
 		this.AUTR.exe_PO();
 
-		UserObject acc = this.AUTR.getNowAccount();
-		UserObject account = this.accountMapper.getAccount(acc.getAccount());
+		AccountObject acc = this.AUTR.getNowAccount();
+		AccountObject account = this.accountMapper.getAccount(acc.getAccount());
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		assertEquals(1, roleMap.size());
@@ -191,7 +191,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		actionPerform();		// 執行 action
 
-		UserObject account = this.accountMapper.getAccount(accountId);
+		AccountObject account = this.accountMapper.getAccount(accountId);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
@@ -228,7 +228,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccountById(id);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
@@ -275,7 +275,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccountById(id);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
@@ -305,7 +305,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testexecuteAdmin_Remove_IntegrationTest() throws LogonException {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();			// 取得第一筆  ID
 		String userAccount = account.getAccount();	// 取得第一筆 Account ID
@@ -336,7 +336,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject actualAccount = this.accountMapper.getAccount(userAccount);
+		AccountObject actualAccount = this.accountMapper.getAccount(userAccount);
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 
 		// 測試是否正確移除 System 角色
@@ -404,7 +404,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		return res + "_" + op;
 	}
 
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}

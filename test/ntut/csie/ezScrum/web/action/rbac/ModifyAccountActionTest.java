@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -128,7 +128,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
 		assertEquals(userAccount, account.getAccount());
@@ -148,7 +148,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String projectId = this.CP.getProjectList().get(0).getName();
 		// User Information
 		String postfix = "_update";
-		UserObject user = CA.getAccountList().get(0);
+		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
 		String userAccount = user.getAccount();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
@@ -176,7 +176,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
 		assertEquals(userAccount, account.getAccount());
@@ -200,7 +200,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// User Information
 		String postfix = "_update";
 
-		UserObject user = CA.getAccountList().get(0);
+		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
 		String userAccount = user.getAccount();	// 取得第一筆 Account ID
 		String userMail = "modify@test.com";
@@ -243,7 +243,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 		String expectUserPassword = this.CA.getAccount_PWD(1);
 
 		assertNotNull(account);
@@ -268,7 +268,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// User Information
 		String postfix = "_update";
 
-		UserObject user = CA.getAccountList().get(0);
+		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
 		String userAccount = user.getAccount();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
@@ -313,7 +313,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(expectResponseText, acutalResponseText);
 
 		// assert database information
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
 		assertEquals(userAccount, account.getAccount());
@@ -365,7 +365,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 		// assert response text
 		//		String userRole = "user";
 		String expectResponseText = "<Accounts>" +
@@ -440,7 +440,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
+		AccountObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
 		assertEquals(userAccount, updateAccount.getAccount());
@@ -516,7 +516,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = this.accountMapper.getAccount(userAccount);
 		// assert response text
 //		String userRole = "user";
 		String expectResponseText = "<Accounts>" +
@@ -588,7 +588,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(updateExpectResponseText, updateAcutalResponseText);
 
 		// assert database information
-		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
+		AccountObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
 		assertEquals(userAccount, updateAccount.getAccount());

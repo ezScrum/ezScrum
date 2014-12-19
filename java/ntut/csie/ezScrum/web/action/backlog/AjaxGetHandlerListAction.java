@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -39,7 +39,7 @@ public class AjaxGetHandlerListAction extends PermissionAction {
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		List<UserObject> users = (new ProjectHelper()).getProjectScrumWorkerListForDb(userSession, project);
+		List<AccountObject> users = (new ProjectHelper()).getProjectScrumWorkerListForDb(userSession, project);
 
 		StringBuilder result = new StringBuilder();
 		result.append("<Handlers><Result>success</Result>");

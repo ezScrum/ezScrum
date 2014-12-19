@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
@@ -121,7 +121,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	/*
     	 * Verify:
     	 */
-    	UserObject account = this.accountMapper.getAccountById(userId);
+    	AccountObject account = this.accountMapper.getAccountById(userId);
 		
 		assertNotNull(account);
 		

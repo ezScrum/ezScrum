@@ -456,4 +456,18 @@ public class SprintBacklogLogic {
 		}
 		return null;
 	}
+	
+	private class SprintBacklogDateColumn {
+		private String Id;
+		private String Name;
+		
+		public SprintBacklogDateColumn(String ID, String name) {
+			this.Id = ID;
+			this.Name = name;
+		}
+		
+		public String GetColumnName(){
+			return this.Name;
+		}
+	}
 }

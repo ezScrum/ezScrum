@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -84,7 +84,7 @@ public class ValidateUserEventAction extends Action {
 		IProject project = (IProject) session.getAttribute("Project");
 		IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
-		UserObject acc = userSession.getAccount();
+		AccountObject acc = userSession.getAccount();
 		if (!acc.getEnable().equals("true")) {
 			return false;
 		}

@@ -16,7 +16,7 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.SprintPlanObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -32,7 +32,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 	private ReleasePlanHelper mReleasePlanHelper;
 	private SprintPlanHelper mSprintPlanHelper;
 
-	public ReleasePlanWebService(UserObject user, String projectID) throws LogonException {
+	public ReleasePlanWebService(AccountObject user, String projectID) throws LogonException {
 		super(user, projectID);
 		initialize();
 	}

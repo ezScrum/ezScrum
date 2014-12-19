@@ -8,18 +8,18 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class ProjectRoleTest extends TestCase {
 	private MySQLService mService;
 	private Configuration configuration;
 	private ProjectObject mProject;
-	private UserObject mUser;
+	private AccountObject mUser;
 	private String mUserId;
 	
 	public ProjectRoleTest(String testMethod) {
@@ -42,7 +42,7 @@ public class ProjectRoleTest extends TestCase {
 		ProjectObject project = new ProjectObject("name", "name", "comment", "PO_YC", "2");
 		mService.createProject(project);
 		mProject = mService.getProjectByPid(project.getName());
-		UserInformation user = new UserInformation("account", "user name", "password", "email", "true");
+		AccountInfo user = new AccountInfo("account", "user name", "password", "email", "true");
 		mService.createAccount(user);
 		mUser = mService.getAccount(user.getAccount());
 		mUserId = mUser.getId();
@@ -80,7 +80,7 @@ public class ProjectRoleTest extends TestCase {
 	
 	public void testGetProjectMemberList() {
 		mService.createProjectRole(mProject.getId(), mUserId, RoleEnum.ProductOwner);
-		List<UserObject> userList = mService.getProjectMemberList(mProject.getId());
+		List<AccountObject> userList = mService.getProjectMemberList(mProject.getId());
 		
 		assertEquals(1, userList.size());
 	}

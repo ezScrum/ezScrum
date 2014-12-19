@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -72,13 +72,13 @@ public class AccountHelper {
 	/**
 	 * 進行帳號建立的動作, 並且將帳號 Assign Roles, 建立完畢執行儲存檔案
 	 */
-	public UserObject createAccount(UserInformation user) {
-		UserObject account = mAccountMapper.createAccount(user);
+	public AccountObject createAccount(AccountInfo user) {
+		AccountObject account = mAccountMapper.createAccount(user);
 		return account;
 	}
 
-	public UserObject updateAccount(UserInformation user) {
-		UserObject updateAccount = mAccountMapper.updateAccount(user);
+	public AccountObject updateAccount(AccountInfo user) {
+		AccountObject updateAccount = mAccountMapper.updateAccount(user);
 		return updateAccount;
 	}
 
@@ -149,7 +149,7 @@ public class AccountHelper {
 //		return sb.toString();
 		
 		// ezScrum v1.8
-		UserObject account = mAccountMapper.getAccountById(id);
+		AccountObject account = mAccountMapper.getAccountById(id);
 		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(id);
 		List<String> assignedProject = new ArrayList<String>();
 		StringBuilder assignRoleInfo = new StringBuilder();
@@ -199,7 +199,7 @@ public class AccountHelper {
 		
 		return assignRoleInfo.toString();
 	}
-	public UserObject assignRole_add(String id, String res, String op) throws Exception {
+	public AccountObject assignRole_add(String id, String res, String op) throws Exception {
 //		IAccount account = mAccountMapper.getAccountById(id);
 //		IRole[] roles = account.getRoles();
 //		String role = "";
@@ -216,7 +216,7 @@ public class AccountHelper {
 //		return account;
 		
 		// ezScrum v1.8
-		UserObject account = null;
+		AccountObject account = null;
 		if (op.equals("admin")) {
 			account = mAccountMapper.addRoleToDb(id);
 		} else {
@@ -225,7 +225,7 @@ public class AccountHelper {
 		return account;
 	}
 
-	public UserObject assignRole_remove(String id, String res, String op) throws Exception {
+	public AccountObject assignRole_remove(String id, String res, String op) throws Exception {
 //		IAccount account = mAccountMapper.getAccountById(id);
 //		IRole[] roles = account.getRoles();
 //
@@ -244,7 +244,7 @@ public class AccountHelper {
 //		return account;
 		
 		// ezScrum v1.8
-		UserObject account = null;
+		AccountObject account = null;
 		if (op.equals("admin")) {
 			account = mAccountMapper.removeRoleToDb(id);
 		} else {
@@ -253,19 +253,19 @@ public class AccountHelper {
 		return account;
 	}
 
-	public String getAccountXML(UserObject account) {
-		List<UserObject> accountList = new LinkedList<UserObject>();
+	public String getAccountXML(AccountObject account) {
+		List<AccountObject> accountList = new LinkedList<AccountObject>();
 		accountList.add(account);
 		return this.getXmlstring(accountList);
 	}
 
 	public String getAccountListXML() {
 		AccountMapper am = new AccountMapper();
-		List<UserObject> accountList = am.getAccountList();
+		List<AccountObject> accountList = am.getAccountList();
 		return this.getXmlstring(accountList);
 	}
 
-	public String getManagementView(UserObject account) {
+	public String getManagementView(AccountObject account) {
 		String result = "";
 //		IPermission permAdmin = mAccountMapper.getPermission("system", "admin");
 
@@ -335,12 +335,12 @@ public class AccountHelper {
 //	}
 	
 	// ezScrum v1.8
-	private String getXmlstring(List<UserObject> users) {
-		Iterator<UserObject> iter = users.iterator();
+	private String getXmlstring(List<AccountObject> users) {
+		Iterator<AccountObject> iter = users.iterator();
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Accounts>");
 		while (iter.hasNext()) {
-			UserObject account = (UserObject) iter.next();
+			AccountObject account = (AccountObject) iter.next();
 			sb.append("<AccountInfo>");
 			sb.append("<ID>").append(account.getId()).append("</ID>");
 			sb.append("<Account>").append(account.getAccount()).append("</Account>");

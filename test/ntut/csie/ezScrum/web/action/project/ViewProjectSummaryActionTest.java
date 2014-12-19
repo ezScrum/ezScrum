@@ -23,7 +23,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -56,7 +56,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		this.response.reset();
 	}
 
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}
@@ -215,7 +215,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	 */
 	public void testUserViewProjectSummary() throws Exception {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();		// 取得第一筆 Account ID
 		String projectId = this.CP.getProjectObjectList().get(0).getId();
@@ -275,7 +275,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
 
 		//	assert database information
-		UserObject actualAccount = new AccountMapper().getAccountById(userId);
+		AccountObject actualAccount = new AccountMapper().getAccountById(userId);
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
 		assertEquals(expectedUserAccount, actualAccount.getAccount());
@@ -698,7 +698,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(pathViewProjectSummary);
 
 		// ================ set session info ========================
-		UserObject account = new AccountMapper().getAccount(CA.getAccountList().get(0).getAccount());
+		AccountObject account = new AccountMapper().getAccount(CA.getAccountList().get(0).getAccount());
 		userSession = getUserSession(account);
 		request.getSession().setAttribute("UserSession", userSession);
 

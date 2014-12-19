@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 
 import org.apache.struts.action.Action;
@@ -29,10 +29,10 @@ public class UpdateAccountAction extends Action {
 		String name = request.getParameter("name");
 		String enable = request.getParameter("enable");
 
-		UserInformation userInformation = new UserInformation(id, account, name, password, email, enable);
+		AccountInfo userInformation = new AccountInfo(id, account, name, password, email, enable);
 
 		AccountHelper ah = new AccountHelper(session);
-		UserObject newAccInfo = ah.updateAccount(userInformation);
+		AccountObject newAccInfo = ah.updateAccount(userInformation);
 
 		//	no password, use the default password
 		if ((password == null) || (password.length() == 0) || password.equals("")) {
@@ -47,7 +47,7 @@ public class UpdateAccountAction extends Action {
 		}
 
 		//	目前改了密碼之後並未強制使用者登出,可改良以避免一些問題
-		UserObject sessionAccount = session.getAccount();
+		AccountObject sessionAccount = session.getAccount();
 
 		sessionAccount.setName(newAccInfo.getName());
 		sessionAccount.setEmail(newAccInfo.getEmail());

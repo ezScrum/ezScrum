@@ -14,7 +14,7 @@ import java.util.Properties;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 public class Configuration {
@@ -216,7 +216,7 @@ public class Configuration {
 	 * return mock up IUserSession
 	 */
 	public IUserSession getUserSession() {
-		UserObject theAccount = new AccountMapper().getAccount(USER_ID);
+		AccountObject theAccount = new AccountMapper().getAccount(USER_ID);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}

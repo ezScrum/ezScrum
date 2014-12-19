@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
@@ -112,8 +112,8 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		/*
 		 * Verify:
 		 */
-		UserObject account = this.accountMapper.getAccount(userId);		// actual
-		UserObject accountE = this.userSession.getAccount();				// excepted
+		AccountObject account = this.accountMapper.getAccount(userId);		// actual
+		AccountObject accountE = this.userSession.getAccount();				// excepted
 
 		assertNotNull(account);
 		assertEquals(account.getAccount(), accountE.getAccount());

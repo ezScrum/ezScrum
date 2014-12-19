@@ -6,7 +6,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ScrumRoleLogic {
@@ -23,7 +23,7 @@ public class ScrumRoleLogic {
 //			return sr;
 //		}
 //	}
-	public ScrumRole getScrumRole(IProject project, UserObject account) {
+	public ScrumRole getScrumRole(IProject project, AccountObject account) {
 		synchronized (this) {
 			HashMap<String, ProjectRole> roles = account.getRoles();
 			ScrumRole scrumRole = null;
@@ -39,7 +39,7 @@ public class ScrumRoleLogic {
 		}
 	}
 	
-	public ScrumRole getScrumRole(ProjectObject project, UserObject account) {
+	public ScrumRole getScrumRole(ProjectObject project, AccountObject account) {
 		synchronized (this) {
 			HashMap<String, ProjectRole> roles = account.getRoles();
 			ScrumRole scrumRole = null;

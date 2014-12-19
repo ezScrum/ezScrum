@@ -13,9 +13,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -91,7 +91,7 @@ public class ProductBacklogMapperTest extends TestCase {
 	}
 	
 	public void testAddStory() throws SQLException {
-		StoryInformation storyInfo = new StoryInformation();
+		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.setName("TEST_STORY");
 		storyInfo.setDescription("TEST_STORY_DESC");
 		

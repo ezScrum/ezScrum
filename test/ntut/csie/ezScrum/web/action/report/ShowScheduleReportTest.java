@@ -19,7 +19,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -193,7 +193,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 //		IAccount theAccount = null;
 //		IAccountManager manager = AccountFactory.getManager();
 //		theAccount = manager.getAccount(testAccount.getAccount_ID(1));
-		UserObject theAccount = new AccountMapper().getAccount(testAccount.getAccount_ID(1));
+		AccountObject theAccount = new AccountMapper().getAccount(testAccount.getAccount_ID(1));
 		IUserSession theUserSession = new UserSession(theAccount);
 
 		StringBuilder expectedResponseTest = new StringBuilder();

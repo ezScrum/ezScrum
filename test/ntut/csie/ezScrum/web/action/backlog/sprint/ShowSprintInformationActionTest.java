@@ -18,7 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -273,7 +273,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		UserObject account = createAccount.getAccountList().get(0);
+		AccountObject account = createAccount.getAccountList().get(0);
 		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
 		request.getSession().setAttribute("UserSession", newUser);
 
@@ -316,7 +316,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		UserObject account = createAccount.getAccountList().get(0);
+		AccountObject account = createAccount.getAccountList().get(0);
 		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
 		request.getSession().setAttribute("UserSession", newUser);
 

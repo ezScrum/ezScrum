@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ITSInformation;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -43,7 +43,7 @@ public class SaveProjectAction extends Action {
 		log.info("save Project!");
 		//	取得使用者登入資料
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		//	取得上一頁的資訊
 		String fromPage = request.getParameter("from");
 
