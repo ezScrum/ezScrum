@@ -54,11 +54,11 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
+		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 		projectManager.initialRoleBase(configuration.getDataPath());

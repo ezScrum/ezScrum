@@ -50,68 +50,84 @@ public class TaskObject implements IBaseObject {
 		mName = name;
 	}
 
-	public void setId(long id) {
-		this.mId = id;
+	public TaskObject setId(long id) {
+		mId = id;
+		return this;
 	}
 
-	public void setSerialId(long serialId) {
-		this.mSerialId = serialId;
+	public TaskObject setSerialId(long serialId) {
+		mSerialId = serialId;
+		return this;
 	}
 
-	public void setName(String name) {
-		this.mName = name;
+	public TaskObject setName(String name) {
+		mName = name;
+		return this;
 	}
 
-	public void setHandlerId(long handlerId) {
-		this.mHandlerId = handlerId;
+	public TaskObject setHandlerId(long handlerId) {
+		mHandlerId = handlerId;
+		return this;
 	}
 
-	public void setEstimate(int estimate) {
-		this.mEstimate = estimate;
+	public TaskObject setEstimate(int estimate) {
+		mEstimate = estimate;
+		return this;
 	}
 
-	public void setRemains(int remains) {
-		this.mRemains = remains;
+	public TaskObject setRemains(int remains) {
+		mRemains = remains;
+		return this;
 	}
 
-	public void setActual(int actual) {
-		this.mActual = actual;
+	public TaskObject setActual(int actual) {
+		mActual = actual;
+		return this;
 	}
 
-	public void setNotes(String notes) {
-		this.mNotes = notes;
+	public TaskObject setNotes(String notes) {
+		mNotes = notes;
+		return this;
 	}
 
-	public void setStatus(int status) {
-		this.mStatus = status;
+	public TaskObject setStatus(int status) {
+		mStatus = status;
+		return this;
 	}
 
-	public void setProjectId(long projectId) {
-		this.mProjectId = projectId;
+	public TaskObject setProjectId(long projectId) {
+		mProjectId = projectId;
+		return this;
 	}
 
-	public void setStoryId(long storyId) {
-		this.mStoryId = storyId;
+	public TaskObject setStoryId(long storyId) {
+		mStoryId = storyId;
+		return this;
 	}
 
-	public void setCreateTime(long createtime) {
-		this.mCreateTime = createtime;
+	public TaskObject setCreateTime(long createtime) {
+		mCreateTime = createtime;
+		return this;
 	}
 
-	public void setUpdateTime(long updatetime) {
-		this.mUpdateTime = updatetime;
+	public TaskObject setUpdateTime(long updatetime) {
+		mUpdateTime = updatetime;
+		return this;
 	}
 
-	public void setPartnersId(ArrayList<Long> partnersId) {
-		this.mPartnersId = partnersId;
+	public TaskObject setPartnersId(ArrayList<Long> partnersId) {
+		mPartnersId = partnersId;
+		return this;
 	}
 
-	public void setAttachFiles(ArrayList<AttachFileObject> attachFiles) {
-		this.mAttachFiles = attachFiles;
+	public TaskObject setAttachFiles(ArrayList<AttachFileObject> attachFiles) {
+		mAttachFiles = attachFiles;
+		return this;
 	}
 
-	public void setHistories(ArrayList<HistoryObject> histories) {
-		this.mHistories = histories;
+	public TaskObject setHistories(ArrayList<HistoryObject> histories) {
+		mHistories = histories;
+		return this;
 	}
 
 	public void addPartner(long partnerId) {
