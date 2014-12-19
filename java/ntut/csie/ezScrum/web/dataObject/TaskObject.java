@@ -26,39 +26,18 @@ public class TaskObject {
 	private int mRemains = 0;
 	private int mActual = 0;
 	private int mStatus = -1;
+	private long mCreateTime = -1;
+	private long mUpdateTime = -1;
 	private ArrayList<Long> mPartnersId = new ArrayList<Long>();
 	private ArrayList<AttachFileObject> mAttachFiles = new ArrayList<AttachFileObject>();
 	private ArrayList<HistoryObject> mHistories = new ArrayList<HistoryObject>();
-	private long mCreateTime = -1;
-	private long mUpdateTime = -1;
 	
-	private TaskObject(TaskObject.Builder builder) {
-		this.mId = builder.mId;
-		this.mSerialId = builder.mSerialId;
-		this.mProjectId = builder.mProjectId;
-		this.mStoryId = builder.mStoryId;
-		this.mHandlerId = builder.mHandlerId;
-		this.mName = builder.mName;
-		this.mNotes = builder.mNotes;
-		this.mEstimate = builder.mEstimate;
-		this.mRemains = builder.mRemains;
-		this.mActual = builder.mActual;
-		this.mStatus = builder.mStatus;
-		this.mPartnersId = builder.mPartnersId;
-		this.mAttachFiles = builder.mAttachFiles;
-		this.mHistories = builder.mHistories;
-		this.mCreateTime = builder.mCreateTime;
-		this.mUpdateTime = builder.mUpdateTime;
+	public TaskObject() {}
+	
+	public TaskObject(String name) {
+		mName = name;
 	}
-
-	public String toString() {
-		try {
-			return toJSON().toString();
-		} catch (JSONException e) {
-			return "JSON Exception";
-		}
-	}
-
+	
 	public void setId(long id) {
 		this.mId = id;
 	}
@@ -302,107 +281,12 @@ public class TaskObject {
 		
 		return task;
 	}
-
-	public static class Builder {
-		private long mId = -1;
-		private long mSerialId = -1;
-		private long mProjectId = -1;
-		private long mStoryId = -1;
-		private long mHandlerId = -1;
-		private String mName = "";
-		private String mNotes = "";
-		private int mEstimate = 0;
-		private int mRemains = 0;
-		private int mActual = 0;
-		private int mStatus = -1;
-		private ArrayList<Long> mPartnersId = new ArrayList<Long>();
-		private ArrayList<AttachFileObject> mAttachFiles = new ArrayList<AttachFileObject>();
-		private ArrayList<HistoryObject> mHistories = new ArrayList<HistoryObject>();
-		private long mCreateTime;
-		private long mUpdateTime;
-		
-		public TaskObject build() {
-			return new TaskObject(this);
-		}
-
-		public Builder setId(long id) {
-			this.mId = id;
-			return this;
-		}
-
-		public Builder setSerialId(long serialId) {
-			this.mSerialId = serialId;
-			return this;
-		}
-
-		public Builder setProjectId(long projectId) {
-			this.mProjectId = projectId;
-			return this;
-		}
-
-		public Builder setStoryId(long storyId) {
-			this.mStoryId = storyId;
-			return this;
-		}
-
-		public Builder setHandlerId(long handlerId) {
-			this.mHandlerId = handlerId;
-			return this;
-		}
-
-		public Builder setName(String name) {
-			this.mName = name;
-			return this;
-		}
-
-		public Builder setNotes(String notes) {
-			this.mNotes = notes;
-			return this;
-		}
-
-		public Builder setEstimate(int estimate) {
-			this.mEstimate = estimate;
-			return this;
-		}
-
-		public Builder setRemains(int remains) {
-			this.mRemains = remains;
-			return this;
-		}
-
-		public Builder setActual(int actual) {
-			this.mActual = actual;
-			return this;
-		}
-
-		public Builder setStatus(int status) {
-			this.mStatus = status;
-			return this;
-		}
-
-		public Builder setPartnersId(ArrayList<Long> partnersId) {
-			this.mPartnersId = partnersId;
-			return this;
-		}
-		
-		public Builder setAttachFiles(ArrayList<AttachFileObject> attachFiles) {
-			this.mAttachFiles = attachFiles;
-			return this;
-		}
-
-		public Builder setHistories(ArrayList<HistoryObject> histories) {
-			this.mHistories = histories;
-			return this;
-		}
-		
-		public Builder setCreateTime(long createTime) {
-			this.mCreateTime = createTime;
-			return this;
-		}
-		
-		public Builder setUpdateTime(long updateTime) {
-			this.mUpdateTime = updateTime;
-			return this;
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
 		}
 	}
 }
