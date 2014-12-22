@@ -1,13 +1,16 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 
 public class SerialNumberObject {
+	private long mId = -1;
 	private long mProjectId = -1;
 	private HashMap<String, Long> mIdMap = new HashMap<String, Long>();
 	
@@ -22,6 +25,11 @@ public class SerialNumberObject {
 		mIdMap.put(SerialNumberEnum.TASK, taskId);
 		mIdMap.put(SerialNumberEnum.UNPLANNED, unplannedId);
 		mIdMap.put(SerialNumberEnum.RETROSPECTIVE, retrospectiveId);
+	}
+	
+	public SerialNumberObject setId(long id) {
+		mId = id;
+		return this;
 	}
 	
 	public SerialNumberObject setProjectId(long projectId) {
@@ -111,5 +119,36 @@ public class SerialNumberObject {
 			.put(SerialNumberEnum.UNPLANNED, getId(SerialNumberEnum.UNPLANNED))
 			.put(SerialNumberEnum.RETROSPECTIVE, getId(SerialNumberEnum.RETROSPECTIVE));
 		return object;
+	}
+	
+	public void save() {
+		if (isDataExists()) {
+			SerialNumberDAO.getInstance().create(this);
+		} else {
+			SerialNumberDAO.getInstance().update(this);
+		}
+	}
+	
+	public void reload() {
+		if (isDataExists()) {
+			try {
+				SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
+				updateData(serialNumber);
+			} catch (SQLException e) {
+				
+			}
+		}
+	}
+	
+	private boolean isDataExists() {
+		if (mId > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	private void updateData(SerialNumberObject serialNumber) {
+		setProjectId(serialNumber.getProjectId());
+		setIdMap(SerialNumberEnum.RELEASE, serialNumber.getReleaseId());
 	}
 }
