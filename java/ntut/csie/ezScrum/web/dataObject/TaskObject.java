@@ -347,8 +347,40 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public void save() {
+		long currentTime = System.currentTimeMillis();
+		
 		if (isDataExists()) {
 			TaskDAO.getInstance().create(this);
+			
+			// add create task history
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			historyDao.create(new HistoryObject(
+								getId(),
+								IssueTypeEnum.TYPE_TASK,
+								HistoryObject.TYPE_CREATE,
+								"",
+								"",
+								currentTime));
+			// add task parent history
+			if (getStoryId() > 0) {
+				// task append history
+				historyDao.create(new HistoryObject(
+									getId(),
+									IssueTypeEnum.TYPE_TASK, 
+									HistoryObject.TYPE_APPEND,
+									"",
+									String.valueOf(getStoryId()),
+									currentTime));
+				
+				// task parent add child history
+				historyDao.create(new HistoryObject(
+									getStoryId(),
+									IssueTypeEnum.TYPE_STORY, 
+									HistoryObject.TYPE_ADD,
+									"",
+									String.valueOf(getId()),
+									currentTime));
+			}
 		} else {
 			TaskDAO.getInstance().update(this);
 		}

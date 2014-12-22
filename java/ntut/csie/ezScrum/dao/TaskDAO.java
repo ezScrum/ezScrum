@@ -6,10 +6,8 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
@@ -45,36 +43,6 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		
 		String[] keys = mControl.getKeys();
 		long id = Long.parseLong(keys[0]);
-		
-		// add create task history
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							task.getId(),
-							IssueTypeEnum.TYPE_TASK,
-							HistoryObject.TYPE_CREATE,
-							"",
-							"",
-							currentTime));
-		// add task parent history
-		if (task.getStoryId() > 0) {
-			// task append history
-			historyDao.create(new HistoryObject(
-								task.getId(),
-								IssueTypeEnum.TYPE_TASK, 
-								HistoryObject.TYPE_APPEND,
-								"",
-								String.valueOf(task.getStoryId()),
-								currentTime));
-			
-			// task parent add child history
-			historyDao.create(new HistoryObject(
-								task.getStoryId(),
-								IssueTypeEnum.TYPE_STORY, 
-								HistoryObject.TYPE_ADD,
-								"",
-								String.valueOf(task.getId()),
-								currentTime));
-		}
 		
 		return id;
 	}
