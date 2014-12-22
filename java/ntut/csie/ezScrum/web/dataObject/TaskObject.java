@@ -49,16 +49,21 @@ public class TaskObject implements IBaseObject {
 	public TaskObject(String name) {
 		mName = name;
 	}
-
-	public TaskObject setId(long id) {
+	
+	public TaskObject(long id, long serialId) {
 		mId = id;
-		return this;
+		mSerialId = serialId;
 	}
 
-	public TaskObject setSerialId(long serialId) {
-		mSerialId = serialId;
-		return this;
-	}
+//	public TaskObject setId(long id) {
+//		mId = id;
+//		return this;
+//	}
+
+//	public TaskObject setSerialId(long serialId) {
+//		mSerialId = serialId;
+//		return this;
+//	}
 
 	public TaskObject setName(String name) {
 		mName = name;
@@ -350,7 +355,7 @@ public class TaskObject implements IBaseObject {
 		long currentTime = System.currentTimeMillis();
 		
 		if (isDataExists()) {
-			TaskDAO.getInstance().create(this);
+			create();
 			
 			// add create task history
 			HistoryDAO historyDao = HistoryDAO.getInstance();
@@ -382,8 +387,41 @@ public class TaskObject implements IBaseObject {
 									currentTime));
 			}
 		} else {
-			TaskDAO.getInstance().update(this);
+			update();
 		}
+	}
+	
+	private void create() {
+		mId = TaskDAO.getInstance().create(this);
+		try {
+			reload();
+		} catch (Exception e) {
+		}
+		
+		HistoryDAO historyDao = HistoryDAO.getInstance();
+		historyDao.create(new HistoryObject(
+							mId, IssueTypeEnum.TYPE_TASK,
+							HistoryObject.TYPE_CREATE,
+							"", "", mCreateTime));
+		
+		// add task parent history
+		if (mStoryId > 0) {
+			// task append history
+			historyDao.create(new HistoryObject(
+								mId, IssueTypeEnum.TYPE_TASK, 
+								HistoryObject.TYPE_APPEND,
+								"", String.valueOf(mStoryId), mCreateTime));
+			
+			// task parent add child history
+			historyDao.create(new HistoryObject(
+								mStoryId, IssueTypeEnum.TYPE_STORY, 
+								HistoryObject.TYPE_ADD, "",
+								String.valueOf(mId), mCreateTime));
+		}
+	}
+	
+	private void update() {
+		TaskDAO.getInstance().update(this);
 	}
 
 	@Override
@@ -393,12 +431,10 @@ public class TaskObject implements IBaseObject {
 				TaskObject task = TaskDAO.getInstance().get(mId);
 				updateData(task);
 			} catch (SQLException e) {
-				System.out.println(TaskObject.class.getName() + ", reload(), "
-						+ e.toString());
 				e.printStackTrace();
 			}
 		} else {
-			throw new Exception("Record not exists");
+			throw new Exception("Task does not exist");
 		}
 	}
 
@@ -406,7 +442,7 @@ public class TaskObject implements IBaseObject {
 	public boolean delete() {
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
-			mId = -1;			
+			mId = -1;
 		}
 		return success;
 	}
@@ -419,7 +455,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void updateData(TaskObject task) {
-		setSerialId(task.getSerialId());
+		mId = task.getId();
+		mSerialId = task.getSerialId();
 		setName(task.getName());
 		setNotes(task.getNotes());
 		setProjectId(task.getProjectId());

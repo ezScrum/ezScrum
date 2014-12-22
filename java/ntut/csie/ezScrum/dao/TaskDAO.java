@@ -139,10 +139,8 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	}
 
 	private TaskObject convert(ResultSet result) throws SQLException {
-		TaskObject task = new TaskObject();
-		task.setId(result.getLong(TaskEnum.ID))
-			.setSerialId(result.getLong(TaskEnum.SERIAL_ID))
-			.setName(result.getString(TaskEnum.NAME))
+		TaskObject task = new TaskObject(result.getLong(TaskEnum.ID), result.getLong(TaskEnum.SERIAL_ID));
+		task.setName(result.getString(TaskEnum.NAME))
 			.setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
 			.setEstimate(result.getInt(TaskEnum.ESTIMATE))
 			.setRemains(result.getInt(TaskEnum.REMAIN))
