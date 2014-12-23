@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.dao;
 
+import java.sql.SQLException;
+
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
@@ -13,7 +15,6 @@ public class TaskDAOTest extends TestCase {
 	private Configuration mConfig;
 	private CreateProject mCreateProject;
 	private int mProjectCount = 2;
-	private TaskDAO mTaskDao = null;
 	private long projectId;
 
 	public TaskDAOTest(String testMethod) {
@@ -31,7 +32,6 @@ public class TaskDAOTest extends TestCase {
 		mCreateProject = new CreateProject(mProjectCount);
 		mCreateProject.exeCreate();
 
-		mTaskDao = TaskDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 		
@@ -54,13 +54,12 @@ public class TaskDAOTest extends TestCase {
 		ini = null;
 		mCreateProject = null;
 		mConfig = null;
-		mTaskDao = null;
 		mControl = null;
 
 		super.tearDown();
 	}
 	
-	public void testAdd() {
+	public void testCreate() {
 		TaskObject task = new TaskObject();
 		task.setName("TEST_TASK_1")
 			.setNotes("TEST_NOTE_1")
@@ -71,5 +70,22 @@ public class TaskDAOTest extends TestCase {
 			.setActual(5);
 		long taskId = TaskDAO.getInstance().create(task);
 		assertNotSame(-1, taskId);
+	}
+	
+	public void testGet() throws SQLException {
+		// create one task
+		TaskObject task = new TaskObject();
+		task.setName("TEST_TASK_1")
+			.setNotes("TEST_NOTE_1")
+			.setProjectId(projectId)
+			.setStoryId(1)
+			.setEstimate(13)
+			.setRemains(8)
+			.setActual(5);
+		long taskId = TaskDAO.getInstance().create(task);
+		
+		// get task
+		TaskObject theTask = TaskDAO.getInstance().get(taskId);
+		assertEquals(task.getName(), theTask.getName());
 	}
 }
