@@ -66,10 +66,9 @@ public class TaskDAOTest extends TestCase {
 	
 	public void testCreate() throws SQLException {
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject();
+			TaskObject task = new TaskObject(projectId);
 			task.setName("TEST_TASK_" + i+1)
 				.setNotes("TEST_NOTE_" + i+1)
-				.setProjectId(projectId)
 				.setEstimate(i*2)
 				.setRemains(i*2)
 				.setActual(i*2);
