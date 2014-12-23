@@ -371,9 +371,9 @@ public class TaskObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (recordExists()) {
-			doCreate();
+			doUpdate();			
 		} else {
-			doUpdate();
+			doCreate();
 		}
 	}
 
