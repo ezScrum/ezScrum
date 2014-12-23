@@ -73,7 +73,7 @@ public class TaskDAOTest extends TestCase {
 	}
 	
 	public void testGet() throws SQLException {
-		// create one task
+		// create three task
 		TaskObject task = new TaskObject();
 		task.setName("TEST_TASK_1")
 			.setNotes("TEST_NOTE_1")
