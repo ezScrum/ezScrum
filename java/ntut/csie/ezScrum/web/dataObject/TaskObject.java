@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
@@ -49,21 +48,11 @@ public class TaskObject implements IBaseObject {
 	public TaskObject(String name) {
 		mName = name;
 	}
-	
+
 	public TaskObject(long id, long serialId) {
 		mId = id;
 		mSerialId = serialId;
 	}
-
-//	public TaskObject setId(long id) {
-//		mId = id;
-//		return this;
-//	}
-
-//	public TaskObject setSerialId(long serialId) {
-//		mSerialId = serialId;
-//		return this;
-//	}
 
 	public TaskObject setName(String name) {
 		mName = name;
@@ -166,6 +155,17 @@ public class TaskObject implements IBaseObject {
 	public long getHandlerId() {
 		return mHandlerId;
 	}
+	
+	public AccountObject getHandler() {
+		if (mHandlerId > 0) {
+			try {
+				return AccountDAO.getInstance().get(mHandlerId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 
 	public int getEstimate() {
 		return mEstimate;
@@ -187,43 +187,79 @@ public class TaskObject implements IBaseObject {
 		return mStatus;
 	}
 
-	public int getStatus(Date date) {
-		long time = date.getTime();
-		time += 1000 * 60 * 60 * 24 - 1;
-		date = new Date(time);
-
-		int status = TaskObject.STATUS_UNCHECK;
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-					&& (new Date(history.getModifiedTime()).before(date))) {
-				if (history.getNewValue().equals("\"Checked Out\"")) {
-					status = TaskObject.STATUS_CHECK;
-				} else if (history.getNewValue().equals("\"Done\"")) {
-					status = TaskObject.STATUS_DONE;
-				}
-			}
-		}
-		return status;
-	}
-
-	public int getRemainsByDate(Date date) {
-		return searchValue(HistoryObject.TYPE_REMAIMS, date);
-	}
-
-	public int getEstimateByDate(Date date) {
-		return searchValue(HistoryObject.TYPE_ESTIMATE, date);
-	}
-
-	private int searchValue(int searchType, Date date) {
-		int value = -1;
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == searchType
-					&& (new Date(history.getModifiedTime()).before(date))) {
-				value = Integer.parseInt(history.getNewValue());
-			}
-		}
-		return value;
-	}
+	// public int getStatus(Date date) {
+	// long time = date.getTime();
+	// time += 1000 * 60 * 60 * 24 - 1;
+	// date = new Date(time);
+	//
+	// int status = TaskObject.STATUS_UNCHECK;
+	// for (HistoryObject history : mHistories) {
+	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+	// && (new Date(history.getModifiedTime()).before(date))) {
+	// if (history.getNewValue().equals("\"Checked Out\"")) {
+	// status = TaskObject.STATUS_CHECK;
+	// } else if (history.getNewValue().equals("\"Done\"")) {
+	// status = TaskObject.STATUS_DONE;
+	// }
+	// }
+	// }
+	// return status;
+	// }
+	//
+	// public int getRemainsByDate(Date date) {
+	// return searchValue(HistoryObject.TYPE_REMAIMS, date);
+	// }
+	//
+	// public int getEstimateByDate(Date date) {
+	// return searchValue(HistoryObject.TYPE_ESTIMATE, date);
+	// }
+	//
+	// private int searchValue(int searchType, Date date) {
+	// int value = -1;
+	// for (HistoryObject history : mHistories) {
+	// if (history.getHistoryType() == searchType
+	// && (new Date(history.getModifiedTime()).before(date))) {
+	// value = Integer.parseInt(history.getNewValue());
+	// }
+	// }
+	// return value;
+	// }
+	//
+	// public int getDateStatus(Date date) {
+	// int status = -1;
+	// for (HistoryObject history : mHistories) {
+	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
+	// status = Integer.parseInt(history.getOldValue());
+	// }
+	// }
+	// return status;
+	// }
+	//
+	// public long getAssignedTime() {
+	// long assignedTime = 0;
+	// for (HistoryObject history : mHistories) {
+	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+	// && history.getNewValue().equals("\"Checked Out\"")) {
+	// if (assignedTime < history.getModifiedTime()) {
+	// assignedTime = history.getModifiedTime();
+	// }
+	// }
+	// }
+	// return assignedTime;
+	// }
+	//
+	// public long getDoneTime() {
+	// long doneTime = 0;
+	// for (HistoryObject history : mHistories) {
+	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+	// && history.getNewValue().equals("\"Done\"")) {
+	// if (doneTime < history.getModifiedTime()) {
+	// doneTime = history.getModifiedTime();
+	// }
+	// }
+	// }
+	// return doneTime;
+	// }
 
 	public long getProjectId() {
 		return mProjectId;
@@ -251,13 +287,14 @@ public class TaskObject implements IBaseObject {
 		}
 		return mPartnersId;
 	}
-	
+
 	public ArrayList<AccountObject> getPartners() {
 		if (mPartners == null) {
 			mPartners = new ArrayList<AccountObject>();
 			for (long partnerId : mPartnersId) {
 				try {
-					AccountObject partner = AccountDAO.getInstance().get(partnerId);
+					AccountObject partner = AccountDAO.getInstance().get(
+							partnerId);
 					mPartners.add(partner);
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -270,7 +307,8 @@ public class TaskObject implements IBaseObject {
 	public ArrayList<HistoryObject> getHistories() {
 		if (mHistories == null) {
 			try {
-				mHistories = HistoryDAO.getInstance().getHistoriesByIssue(mId, IssueTypeEnum.TYPE_TASK);
+				mHistories = HistoryDAO.getInstance().getHistoriesByIssue(mId,
+						IssueTypeEnum.TYPE_TASK);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -280,45 +318,10 @@ public class TaskObject implements IBaseObject {
 
 	public ArrayList<AttachFileObject> getAttachFiles() {
 		if (mAttachFiles == null) {
-			mAttachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(mId);
+			mAttachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(
+					mId);
 		}
 		return mAttachFiles;
-	}
-
-	public int getDateStatus(Date date) {
-		int status = -1;
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
-				status = Integer.parseInt(history.getOldValue());
-			}
-		}
-		return status;
-	}
-
-	public long getAssignedTime() {
-		long assignedTime = 0;
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-					&& history.getNewValue().equals("\"Checked Out\"")) {
-				if (assignedTime < history.getModifiedTime()) {
-					assignedTime = history.getModifiedTime();
-				}
-			}
-		}
-		return assignedTime;
-	}
-
-	public long getDoneTime() {
-		long doneTime = 0;
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-					&& history.getNewValue().equals("\"Done\"")) {
-				if (doneTime < history.getModifiedTime()) {
-					doneTime = history.getModifiedTime();
-				}
-			}
-		}
-		return doneTime;
 	}
 
 	public JSONObject toJSON() throws JSONException {
@@ -350,86 +353,36 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
+	public void checkOut() {
+		mStatus = TaskObject.STATUS_CHECK;
+		save();
+	}
+
+	public void done() {
+		mStatus = TaskObject.STATUS_DONE;
+		save();
+	}
+
+	public void renew() {
+		mStatus = TaskObject.STATUS_UNCHECK;
+		save();
+	}
+
 	@Override
 	public void save() {
-		long currentTime = System.currentTimeMillis();
-		
-		if (isDataExists()) {
-			create();
-			
-			// add create task history
-			HistoryDAO historyDao = HistoryDAO.getInstance();
-			historyDao.create(new HistoryObject(
-								getId(),
-								IssueTypeEnum.TYPE_TASK,
-								HistoryObject.TYPE_CREATE,
-								"",
-								"",
-								currentTime));
-			// add task parent history
-			if (getStoryId() > 0) {
-				// task append history
-				historyDao.create(new HistoryObject(
-									getId(),
-									IssueTypeEnum.TYPE_TASK, 
-									HistoryObject.TYPE_APPEND,
-									"",
-									String.valueOf(getStoryId()),
-									currentTime));
-				
-				// task parent add child history
-				historyDao.create(new HistoryObject(
-									getStoryId(),
-									IssueTypeEnum.TYPE_STORY, 
-									HistoryObject.TYPE_ADD,
-									"",
-									String.valueOf(getId()),
-									currentTime));
-			}
+		if (recordExists()) {
+			doCreate();
 		} else {
-			update();
+			doUpdate();
 		}
-	}
-	
-	private void create() {
-		mId = TaskDAO.getInstance().create(this);
-		try {
-			reload();
-		} catch (Exception e) {
-		}
-		
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							mId, IssueTypeEnum.TYPE_TASK,
-							HistoryObject.TYPE_CREATE,
-							"", "", mCreateTime));
-		
-		// add task parent history
-		if (mStoryId > 0) {
-			// task append history
-			historyDao.create(new HistoryObject(
-								mId, IssueTypeEnum.TYPE_TASK, 
-								HistoryObject.TYPE_APPEND,
-								"", String.valueOf(mStoryId), mCreateTime));
-			
-			// task parent add child history
-			historyDao.create(new HistoryObject(
-								mStoryId, IssueTypeEnum.TYPE_STORY, 
-								HistoryObject.TYPE_ADD, "",
-								String.valueOf(mId), mCreateTime));
-		}
-	}
-	
-	private void update() {
-		TaskDAO.getInstance().update(this);
 	}
 
 	@Override
 	public void reload() throws Exception {
-		if (isDataExists()) {
+		if (recordExists()) {
 			try {
 				TaskObject task = TaskDAO.getInstance().get(mId);
-				updateData(task);
+				resetData(task);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -443,18 +396,16 @@ public class TaskObject implements IBaseObject {
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
 			mId = -1;
+			mSerialId = -1;
 		}
 		return success;
 	}
 
-	private boolean isDataExists() {
-		if (mId > 0) {
-			return true;
-		}
-		return false;
+	private boolean recordExists() {
+		return mId > 0;
 	}
 
-	private void updateData(TaskObject task) {
+	private void resetData(TaskObject task) {
 		mId = task.getId();
 		mSerialId = task.getSerialId();
 		setName(task.getName());
@@ -468,11 +419,94 @@ public class TaskObject implements IBaseObject {
 		setStatus(task.getStatus());
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
-//		setHistories(task.getHistories());
-//		setPartnersId(task.getPartnersId());
-//		setAttachFiles(task.getAttachFiles());
 		mHistories = null;
 		mPartnersId = null;
 		mAttachFiles = null;
+	}
+
+	private void doCreate() {
+		mId = TaskDAO.getInstance().create(this);
+		try {
+			reload();
+
+			HistoryDAO historyDao = HistoryDAO.getInstance();
+			historyDao.create(new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+					HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+
+			// add task relation history
+			if (mStoryId > 0) {
+				addHistoryOfAddRelation(mStoryId, mId);
+			}
+		} catch (Exception e) {
+		}
+	}
+
+	private void doUpdate() {
+		try {
+			TaskObject oldTask = TaskObject.get(mId);
+			TaskDAO.getInstance().update(this);
+
+			if (!mName.equals(oldTask.getName())) {
+				addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
+			}
+			if (!mNotes.equals(oldTask.getNotes())) {
+				addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
+			}
+			if (mEstimate != oldTask.getEstimate()) {
+				addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
+						mEstimate);
+			}
+			if (mActual != oldTask.getActual()) {
+				addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(),
+						mActual);
+			}
+			if (mRemains != oldTask.getRemains()) {
+				addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
+						mRemains);
+			}
+			if (mStatus != oldTask.getStatus()) {
+				addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(),
+						mStatus);
+			}
+			if (mStoryId != oldTask.getStoryId()) {
+				if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
+					addHistoryOfAddRelation(mStoryId, mId);
+				} else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
+					addHistoryOfRemoveRelation(mStoryId, mId);
+				}
+			}
+			if (mHandlerId != oldTask.getHandlerId()) {
+				addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
+						mHandlerId);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void addHistoryOfAddRelation(long storyId, long taskId) {
+		addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mStoryId));
+		HistoryObject history = new HistoryObject(mStoryId,
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
+				String.valueOf(mId), System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+
+	private void addHistoryOfRemoveRelation(long storyId, long taskId) {
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId));
+		HistoryObject history = new HistoryObject(mStoryId,
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
+				String.valueOf(mId), System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+
+	private void addHistory(int type, long oldValue, long newValue) {
+		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
+	}
+
+	private void addHistory(int type, String oldValue, String newValue) {
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+				type, oldValue, newValue, System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
 	}
 }
