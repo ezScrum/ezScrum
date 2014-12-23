@@ -72,6 +72,10 @@ public class SerialNumberObject {
 		return this;
 	}
 	
+	public long getId() {
+		return mId;
+	}
+	
 	public long getProjectId() {
 		return mProjectId;
 	}
@@ -123,7 +127,7 @@ public class SerialNumberObject {
 	
 	public void save() {
 		if (isDataExists()) {
-			SerialNumberDAO.getInstance().create(this);
+			mId = SerialNumberDAO.getInstance().create(this);
 		} else {
 			SerialNumberDAO.getInstance().update(this);
 		}

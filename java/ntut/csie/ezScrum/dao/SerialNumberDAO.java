@@ -80,10 +80,10 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 	}
 
 	@Override
-    public boolean delete(long id) {
+    public boolean delete(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
-		valueSet.addEqualCondition(SerialNumberEnum.ID, id);
+		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, projectId);
 		String query = valueSet.getDeleteQuery();
 		return mControl.execute(query);
     }
