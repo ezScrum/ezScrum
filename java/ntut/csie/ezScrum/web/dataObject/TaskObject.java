@@ -42,16 +42,14 @@ public class TaskObject implements IBaseObject {
 		return TaskDAO.getInstance().get(id);
 	}
 
-	public TaskObject() {
+	public TaskObject(long projectId) {
+		mProjectId = projectId;
 	}
 
-	public TaskObject(String name) {
-		mName = name;
-	}
-
-	public TaskObject(long id, long serialId) {
+	public TaskObject(long id, long serialId, long projectId) {
 		mId = id;
 		mSerialId = serialId;
+		mProjectId = projectId;
 	}
 
 	public TaskObject setName(String name) {
@@ -86,11 +84,6 @@ public class TaskObject implements IBaseObject {
 
 	public TaskObject setStatus(int status) {
 		mStatus = status;
-		return this;
-	}
-
-	public TaskObject setProjectId(long projectId) {
-		mProjectId = projectId;
 		return this;
 	}
 
@@ -408,9 +401,9 @@ public class TaskObject implements IBaseObject {
 	private void resetData(TaskObject task) {
 		mId = task.getId();
 		mSerialId = task.getSerialId();
+		mProjectId = task.getProjectId();
 		setName(task.getName());
 		setNotes(task.getNotes());
-		setProjectId(task.getProjectId());
 		setStoryId(task.getStoryId());
 		setEstimate(task.getEstimate());
 		setRemains(task.getRemains());

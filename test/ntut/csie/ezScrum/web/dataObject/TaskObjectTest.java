@@ -36,7 +36,7 @@ public class TaskObjectTest extends TestCase{
 	}
 
 	public void testSave() {
-		TaskObject task = new TaskObject();
+		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
 			.setNotes("TEST_NOTES")
 			.setEstimate(10)
