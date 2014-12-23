@@ -1,12 +1,18 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -14,15 +20,15 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
  * 2014/12/23
  *
  */
-public class TaskObjectTest extends TestCase{
+public class TaskObjectTest {
 	
 	private Configuration mConfig = null;
 	private CreateProject CP = null;
 	
 	private final static int PROJECT_COUNT = 1;
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.store();
@@ -32,21 +38,19 @@ public class TaskObjectTest extends TestCase{
 		
 		CP = new CreateProject(PROJECT_COUNT);
 		CP.exeCreate();
-		
-		super.setUp();
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		mConfig = null;
-		super.tearDown();
 	}
 
 	/**
 	 * 測試新增一個 task
 	 */
+	@Test
 	public void testSave_newTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
@@ -69,6 +73,7 @@ public class TaskObjectTest extends TestCase{
 	/**
 	 * 測試一個已存在的 task
 	 */
+	@Test
 	public void testSave_updateTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
@@ -104,7 +109,8 @@ public class TaskObjectTest extends TestCase{
 		assertEquals(1, task.getActual());
 	}
 	
-	public void testDelete() {
+	@Test(expected=SQLException.class)
+	public void testDelete() throws SQLException {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
 			.setNotes("TEST_NOTES")
@@ -127,11 +133,6 @@ public class TaskObjectTest extends TestCase{
 		assertTrue(deleteSuccess);
 		assertEquals(-1, task.getId());
 		assertEquals(-1, task.getSerialId());
-		try {
-			TaskDAO.getInstance().get(1);
-			assertTrue(false);
-		} catch (SQLException e) {
-			assertTrue(true);
-		}
+		TaskDAO.getInstance().get(1);
 	}
 }
