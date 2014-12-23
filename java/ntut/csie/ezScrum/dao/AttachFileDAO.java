@@ -11,11 +11,13 @@ import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
 
 public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObject>{
 
+	private static AttachFileDAO sInstance = null;
+	
 	public static AttachFileDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new AttachFileDAO();
 		}
-		return (AttachFileDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override

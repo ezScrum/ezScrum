@@ -17,7 +17,6 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
  */
 public abstract class AbstractDAO<T, K> {
 	protected Configuration mConfig;
-	protected static Object sInstance = null;
 	protected MySQLControl mControl;
 
 	protected AbstractDAO() {

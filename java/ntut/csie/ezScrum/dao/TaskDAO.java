@@ -13,11 +13,13 @@ import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 
+	private static TaskDAO sInstance = null;
+	
 	public static TaskDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new TaskDAO();
 		}
-		return (TaskDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override

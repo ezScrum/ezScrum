@@ -11,11 +11,13 @@ import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 
 public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 
+	private static HistoryDAO sInstance = null;
+	
 	public static HistoryDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new HistoryDAO();
 		}
-		return (HistoryDAO) sInstance;
+		return sInstance;
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class TaskDAOTest extends TestCase {
 			.setEstimate(13)
 			.setRemains(8)
 			.setActual(5);
-		long taskId = mTaskDao.create(task);
+		long taskId = TaskDAO.getInstance().create(task);
 		assertNotSame(-1, taskId);
 	}
 }

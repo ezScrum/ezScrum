@@ -10,11 +10,13 @@ import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 
 public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumberObject> {
 
+	private static SerialNumberDAO sInstance = null;
+	
 	public static SerialNumberDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new SerialNumberDAO();
 		}
-		return (SerialNumberDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override

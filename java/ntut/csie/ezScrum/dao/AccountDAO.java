@@ -20,11 +20,13 @@ import ntut.csie.ezScrum.web.databasEnum.SystemEnum;
 
 public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 
+	private static AccountDAO sInstance = null;
+	
 	public static AccountDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new AccountDAO();
 		}
-		return (AccountDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override

@@ -6,11 +6,13 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 
+	private static StoryDAO sInstance = null;
+	
 	public static StoryDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new StoryDAO();
 		}
-		return (StoryDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override
