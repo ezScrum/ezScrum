@@ -131,10 +131,10 @@ public class SerialNumberObject {
 	}
 	
 	public void save() {
-		if (isDataExists()) {
-			mId = SerialNumberDAO.getInstance().create(this);
-		} else {
+		if (recordExists()) {
 			SerialNumberDAO.getInstance().update(this);
+		} else {
+			mId = SerialNumberDAO.getInstance().create(this);
 		}
 	}
 	
@@ -148,7 +148,7 @@ public class SerialNumberObject {
 	}
 	
 	public void reload() throws Exception {
-		if (isDataExists()) {
+		if (recordExists()) {
 			try {
 				SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
 				resetData(serialNumber);
@@ -170,11 +170,8 @@ public class SerialNumberObject {
 		return success;
 	}
 	
-	private boolean isDataExists() {
-		if (mId > 0) {
-			return true;
-		}
-		return false;
+	private boolean recordExists() {
+		return mId > 0;
 	}
 	
 	private void resetData(SerialNumberObject serialNumber) {

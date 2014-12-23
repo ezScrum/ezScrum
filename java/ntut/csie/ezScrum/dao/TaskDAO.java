@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
@@ -49,6 +50,9 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			
 			String[] keys = mControl.getKeys();
 			id = Long.parseLong(keys[0]);
+			
+			serialNumber.setId(SerialNumberEnum.TASK, serialNumber.getTaskId() + 1);
+			serialNumber.save();
         } catch (SQLException e) {
 	        e.printStackTrace();
         }

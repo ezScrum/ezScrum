@@ -65,6 +65,7 @@ public class TaskDAOTest extends TestCase {
 	}
 	
 	public void testCreate() throws SQLException {
+		// create three test data
 		for (int i = 0; i < 3; i++) {
 			TaskObject task = new TaskObject(projectId);
 			task.setName("TEST_TASK_" + i+1)
@@ -103,32 +104,46 @@ public class TaskDAOTest extends TestCase {
 		}
 	}
 	
-//	public void testGet() throws SQLException {
-//		// create three task
-//		TaskObject task = new TaskObject();
-//		task.setName("TEST_TASK_1")
-//			.setNotes("TEST_NOTE_1")
-//			.setProjectId(projectId)
-//			.setStoryId(1)
-//			.setEstimate(13)
-//			.setRemains(8)
-//			.setActual(5);
-//		long taskId = TaskDAO.getInstance().create(task);
-//		
-//		// get task
-//		TaskObject theTask = TaskDAO.getInstance().get(taskId);
-//		assertEquals(task.getName(), theTask.getName());
-//	}
+	public void testGet() throws SQLException {
+		// create three test data
+		for (int i = 0; i < 3; i++) {
+			TaskObject task = new TaskObject(projectId);
+			task.setName("TEST_TASK_" + i+1)
+				.setNotes("TEST_NOTE_" + i+1)
+				.setEstimate(i*2)
+				.setRemains(i*2)
+				.setActual(i*2);
+			long taskId = TaskDAO.getInstance().create(task);
+			assertNotSame(-1, taskId);
+		}
+		
+		// get task
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		assertEquals(3, tasks.size());
+		
+		for (int i = 0; i < 3; i++) {
+			TaskObject task = new TaskObject(projectId);
+			task.setName("TEST_TASK_" + i+1)
+				.setNotes("TEST_NOTE_" + i+1)
+				.setEstimate(i*2)
+				.setRemains(i*2)
+				.setActual(i*2);
+			long taskId = TaskDAO.getInstance().create(task);
+			assertNotSame(-1, taskId);
+		}
+	}
 	
 	private TaskObject convert(ResultSet result) throws SQLException {
-		TaskObject task = new TaskObject(result.getLong(TaskEnum.ID), result.getLong(TaskEnum.SERIAL_ID));
+		TaskObject task = new TaskObject(
+				result.getLong(TaskEnum.ID), 
+				result.getLong(TaskEnum.SERIAL_ID),
+				result.getLong(TaskEnum.PROJECT_ID));
 		task.setName(result.getString(TaskEnum.NAME))
 			.setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
 			.setEstimate(result.getInt(TaskEnum.ESTIMATE))
 			.setRemains(result.getInt(TaskEnum.REMAIN))
 			.setActual(result.getInt(TaskEnum.ACTUAL))
 			.setNotes(result.getString(TaskEnum.NOTES))
-			.setProjectId(result.getLong(TaskEnum.PROJECT_ID))
 			.setStoryId(result.getLong(TaskEnum.STORY_ID))
 			.setCreateTime(result.getLong(TaskEnum.CREATE_TIME))
 			.setUpdateTime(result.getLong(TaskEnum.UPDATE_TIME));
