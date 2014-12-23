@@ -129,15 +129,36 @@ public class SerialNumberObject {
 		}
 	}
 	
-	public void reload() {
+	/**
+	 * Using projectId to get serial number
+	 * @param projectId
+	 * @throws SQLException
+	 */
+	public static SerialNumberObject get(long projectId) throws SQLException {
+		return SerialNumberDAO.getInstance().get(projectId);
+	}
+	
+	public void reload() throws Exception {
 		if (isDataExists()) {
 			try {
 				SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
-				updateData(serialNumber);
+				resetData(serialNumber);
 			} catch (SQLException e) {
-				
+				System.out.println(SerialNumberObject.class.getName() + ", reload(), "
+						+ e.toString());
+				e.printStackTrace();
 			}
+		} else {
+			throw new Exception("Record not exists");
 		}
+	}
+	
+	public boolean dalete() {
+		boolean success = SerialNumberDAO.getInstance().delete(mId);
+		if (success) {
+			mId = -1;
+		}
+		return success;
 	}
 	
 	private boolean isDataExists() {
@@ -147,8 +168,13 @@ public class SerialNumberObject {
 		return false;
 	}
 	
-	private void updateData(SerialNumberObject serialNumber) {
+	private void resetData(SerialNumberObject serialNumber) {
 		setProjectId(serialNumber.getProjectId());
 		setIdMap(SerialNumberEnum.RELEASE, serialNumber.getReleaseId());
+		setIdMap(SerialNumberEnum.SPRINT, serialNumber.getSprintId());
+		setIdMap(SerialNumberEnum.STORY, serialNumber.getStoryId());
+		setIdMap(SerialNumberEnum.TASK, serialNumber.getTaskId());
+		setIdMap(SerialNumberEnum.UNPLANNED, serialNumber.getReleaseId());
+		setIdMap(SerialNumberEnum.RETROSPECTIVE, serialNumber.getReleaseId());
 	}
 }
