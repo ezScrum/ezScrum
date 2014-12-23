@@ -30,7 +30,7 @@ public class TaskObject implements IBaseObject {
 	private int mEstimate = 0;
 	private int mRemains = 0;
 	private int mActual = 0;
-	private int mStatus = -1;
+	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = -1;
 	private long mUpdateTime = -1;
 	private ArrayList<Long> mPartnersId = null;

@@ -6,6 +6,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class TaskDAOTest extends TestCase {
@@ -14,6 +15,8 @@ public class TaskDAOTest extends TestCase {
 	private CreateProject mCreateProject;
 	private int mProjectCount = 2;
 	private TaskDAO mTaskDao = null;
+	private SerialNumberObject mSerialNumber;
+	private long projectId;
 
 	public TaskDAOTest(String testMethod) {
 		super(testMethod);
@@ -33,7 +36,10 @@ public class TaskDAOTest extends TestCase {
 		mTaskDao = TaskDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
-
+		
+		projectId = Long.parseLong(mCreateProject.getProjectObjectList().get(0).getId());
+		mSerialNumber = SerialNumberDAO.getInstance().get(projectId);
+		
 		super.setUp();
 	}
 
@@ -52,15 +58,22 @@ public class TaskDAOTest extends TestCase {
 		mCreateProject = null;
 		mConfig = null;
 		mTaskDao = null;
+		mSerialNumber = null;
 		mControl = null;
 
 		super.tearDown();
 	}
 	
 	public void testAdd() {
-		
 		TaskObject task = new TaskObject();
-//		task.setSerialId(serialId)
-//			.set
+		task.setName("TEST_TASK_1")
+			.setNotes("TEST_NOTE_1")
+			.setProjectId(projectId)
+			.setStoryId(1)
+			.setEstimate(13)
+			.setRemains(8)
+			.setActual(5);
+		long taskId = mTaskDao.create(task);
+		assertNotSame(-1, taskId);
 	}
 }

@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
@@ -16,8 +15,6 @@ public class SerialNumberDAOTest extends TestCase {
 	private Configuration mConfig;
 	private SerialNumberDAO mSerialNumberDao = null;
 	private MySQLControl mControl = null;
-	private CreateProject mCreateProject;
-	private int mProjectCount = 1;
 
 	public SerialNumberDAOTest(String testMethod) {
 		super(testMethod);
@@ -31,9 +28,6 @@ public class SerialNumberDAOTest extends TestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
 
 		mSerialNumberDao = SerialNumberDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
@@ -60,22 +54,19 @@ public class SerialNumberDAOTest extends TestCase {
 		mConfig = null;
 		mSerialNumberDao = null;
 		mControl = null;
-		mCreateProject = null;
 
 		super.tearDown();
 	}
 
 	public void testCreate() {
-		long projectId = Long.parseLong(mCreateProject.getProjectObjectList()
-		        .get(0).getId());
+		long projectId = 1;
 		long id = mSerialNumberDao.create(new SerialNumberObject(projectId,
 		        1, 1, 1, 1, 1, 1));
 		assertNotSame(-1, id);
 	}
 
 	public void testGet() throws SQLException {
-		long projectId = Long.parseLong(mCreateProject.getProjectObjectList()
-		        .get(0).getId());
+		long projectId = 1;
 
 		// 新增三筆測試資料
 		for (int i = 1; i <= 3; i++) {

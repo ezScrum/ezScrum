@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
@@ -18,6 +19,7 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
@@ -37,13 +39,10 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
 
-	//private ITSPrefsStorage mPrefs;
 	private MySQLService mService;
-	
 	private Configuration mConfig;
 
 	public ProjectMapper() {
-		//mPrefs = new ITSPrefsStorage();
 		mConfig = new Configuration();
 		mService = new MySQLService(mConfig);
 	}
@@ -55,6 +54,13 @@ public class ProjectMapper {
 		mService.openConnect();
 		mService.createProject(project);
 		project = mService.getProjectByPid(project.getName());
+		
+		// 新建 project，也把 serial number 建起來
+		long projectId = Long.parseLong(project.getId());
+		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
+		serialnumberDAO.create(new SerialNumberObject(projectId
+				, 0, 0, 0, 0, 0, 0));
+
 		mService.closeConnect();
 		return project;
 	}
@@ -88,7 +94,7 @@ public class ProjectMapper {
 		mService.closeConnect();
 		return result;
 	}
-	
+
 	public ProjectObject getProjectByPidForDb(String pid) {
 		mService.openConnect();
 		ProjectObject result = mService.getProjectByPid(pid);
@@ -109,7 +115,7 @@ public class ProjectMapper {
 		mService.closeConnect();
 		return result;
 	}
-	
+
 	public List<String> getProjectScrumWorkerList(String id) {
 		mService.openConnect();
 		List<AccountObject> userList = mService.getProjectWorkerList(id);
@@ -129,14 +135,15 @@ public class ProjectMapper {
 			mService.createScrumRole(id, role, scrumRole);
 		}
 		mService.closeConnect();
-    }
+	}
 
 	/**
 	 * 建立專案的資料結構及外部檔案
 	 * 
 	 * @param userSession
 	 * @param tmpPrefs
-	 * @param ProjectInfoForm projectInfoForm
+	 * @param ProjectInfoForm
+	 *            projectInfoForm
 	 * @return
 	 * @throws Exception
 	 */
@@ -193,7 +200,7 @@ public class ProjectMapper {
 		} catch (Exception e) {
 			log.warn("Save Project Error!" + e.getMessage());
 		}
-//		this.saveITSConfig(project, userSession, tmpPrefs); ezScrum v1.8 不需要
+		// this.saveITSConfig(project, userSession, tmpPrefs); ezScrum v1.8 不需要
 		return project;
 	}
 
@@ -285,8 +292,7 @@ public class ProjectMapper {
 
 		ProjectInfoForm form = new ProjectInfoForm();
 		String fileSize = desc.getAttachFileSize();
-		if (fileSize == null || fileSize.compareTo("") == 0)
-			form.setAttachFileSize("2");
+		if (fileSize == null || fileSize.compareTo("") == 0) form.setAttachFileSize("2");
 		else form.setAttachFileSize(desc.getAttachFileSize());
 		form.setName(desc.getName());
 		form.setDisplayName(desc.getDisplayName());
@@ -361,8 +367,7 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 檢查 check file path 檔案是否存在，
-	 * 否則依據 clone file path 複製一份檔案過去
+	 * 檢查 check file path 檔案是否存在， 否則依據 clone file path 複製一份檔案過去
 	 */
 	@Deprecated
 	public void checkAndClone(String checkfilepath, String clonefilepath) throws IOException {
@@ -406,8 +411,7 @@ public class ProjectMapper {
 		desc.setSrc(convertStringToSourcePath(form.getSourcePaths()));
 		String fileSize = form.getAttachFileSize();
 		// 如果fileSize沒有填值的話，則自動填入2
-		if (fileSize.compareTo("") == 0)
-			desc.setAttachFileSize("2");
+		if (fileSize.compareTo("") == 0) desc.setAttachFileSize("2");
 		else desc.setAttachFileSize(form.getAttachFileSize());
 		ICVS cvs = desc.getCVS();
 		cvs.setServerType(form.getServerType());
@@ -431,7 +435,7 @@ public class ProjectMapper {
 		cvs.setRepositoryPath(repositoryPath);
 		return project;
 	}
-	
+
 	@Deprecated
 	private IPath[] convertStringToSourcePath(String[] sourcePathArray) {
 		IPath[] sourcePaths = new IPath[sourcePathArray.length];

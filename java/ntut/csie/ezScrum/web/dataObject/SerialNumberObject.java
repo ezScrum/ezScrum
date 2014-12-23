@@ -9,6 +9,11 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 
+/**
+ * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
+ * 預設為 0, 為當下物件的數量, 若要拿 serialId 必須加 1
+ * @author cutecool
+ */
 public class SerialNumberObject {
 	private long mId = -1;
 	private long mProjectId = -1;
