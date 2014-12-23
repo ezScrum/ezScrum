@@ -69,7 +69,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, serialNumber.getProjectId());
 		String query = valueSet.getUpdateQuery();
 		
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
     }
 	
 	public boolean updateByColumn(String updateColumn, SerialNumberObject serialnumber) {
@@ -78,7 +78,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 		valueSet.addInsertValue(updateColumn, serialnumber.getId(updateColumn));
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, Long.toString(serialnumber.getProjectId()));
 		String query = valueSet.getUpdateQuery();
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, projectId);
 		String query = valueSet.getDeleteQuery();
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
     }
 
 	private SerialNumberObject convert(ResultSet result) throws SQLException {

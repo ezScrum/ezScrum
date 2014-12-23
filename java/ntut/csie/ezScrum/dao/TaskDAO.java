@@ -95,7 +95,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addEqualCondition(TaskEnum.ID, task.getId());
 		String query = valueSet.getUpdateQuery();
 		
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
 	}
 	
 	public ArrayList<TaskObject> getTasksByStory(long storyId) throws SQLException {

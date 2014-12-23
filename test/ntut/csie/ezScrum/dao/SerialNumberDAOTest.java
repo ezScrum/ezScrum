@@ -99,7 +99,8 @@ public class SerialNumberDAOTest extends TestCase {
 		serialNumber.setUnplannedId(7);
 		serialNumber.setRetrospectiveId(8);
 
-		mSerialNumberDao.update(serialNumber);
+		boolean result = mSerialNumberDao.update(serialNumber);
+		assertEquals(true, result);
 
 		// 取出第二筆資料並 assert data
 		SerialNumberObject editSerialNumber = mSerialNumberDao.get(projectId);
@@ -161,8 +162,11 @@ public class SerialNumberDAOTest extends TestCase {
 		// clear serialnumberList data
 		serialnumberList = null;
 		serialnumberList = new ArrayList<SerialNumberObject>();
+		
 		// delete one serial number and assert list remain two data
-		mSerialNumberDao.delete(projectId);
+		boolean result = mSerialNumberDao.delete(projectId);
+		assertEquals(true, result);
+		
 		for(int i = 1; i <= projectCount; i++) {
 			if(i == projectId) {
 				assertNull(mSerialNumberDao.get(i));
