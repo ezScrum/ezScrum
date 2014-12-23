@@ -1212,7 +1212,7 @@ CREATE TABLE `task` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
-  `story_id` BIGINT UNSIGNED NULL,
+  `story_id` BIGINT NULL,
   `name` TEXT NOT NULL,
   `handler_id` BIGINT,
   `status` VARCHAR(255) NULL,
