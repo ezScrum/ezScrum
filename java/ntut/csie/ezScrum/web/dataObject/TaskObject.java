@@ -19,20 +19,22 @@ public class TaskObject implements IBaseObject {
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
 	public final static int WILD = -1;
+	
+	private final static int DEFAULT_VALUE = -1;
 
-	private long mId = -1;
-	private long mSerialId = -1;
-	private long mProjectId = -1;
-	private long mStoryId = -1;
-	private long mHandlerId = -1;
+	private long mId = DEFAULT_VALUE;
+	private long mSerialId = DEFAULT_VALUE;
+	private long mProjectId = DEFAULT_VALUE;
+	private long mStoryId = DEFAULT_VALUE;
+	private long mHandlerId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mNotes = "";
 	private int mEstimate = 0;
 	private int mRemains = 0;
 	private int mActual = 0;
 	private int mStatus = STATUS_UNCHECK;
-	private long mCreateTime = -1;
-	private long mUpdateTime = -1;
+	private long mCreateTime = DEFAULT_VALUE;
+	private long mUpdateTime = DEFAULT_VALUE;
 	private ArrayList<Long> mPartnersId = null;
 	private ArrayList<AccountObject> mPartners = null;
 	private ArrayList<AttachFileObject> mAttachFiles = null;
@@ -371,16 +373,12 @@ public class TaskObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() throws Exception {
+	public void reload() {
 		if (recordExists()) {
-			try {
-				TaskObject task = TaskDAO.getInstance().get(mId);
-				resetData(task);
-			} catch (SQLException e) {
-				e.printStackTrace();
+			TaskObject task = TaskDAO.getInstance().get(mId);
+			if (task != null) {
+				resetData(task);					
 			}
-		} else {
-			throw new Exception("Task does not exist");
 		}
 	}
 
@@ -388,8 +386,8 @@ public class TaskObject implements IBaseObject {
 	public boolean delete() {
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
-			mId = -1;
-			mSerialId = -1;
+			mId = DEFAULT_VALUE;
+			mSerialId = DEFAULT_VALUE;
 		}
 		return success;
 	}

@@ -26,42 +26,38 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	@Override
 	public long create(TaskObject task) {
 		long id = -1;
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			long currentTime = System.currentTimeMillis();
-	        SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(task.getProjectId());
-	        
-	        valueSet.addTableName(TaskEnum.TABLE_NAME);
-			valueSet.addInsertValue(TaskEnum.SERIAL_ID, serialNumber.getTaskId() + 1);
-			valueSet.addInsertValue(TaskEnum.NAME, task.getName());
-			valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
-			valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
-			valueSet.addInsertValue(TaskEnum.REMAIN, task.getRemains());
-			valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
-			valueSet.addInsertValue(TaskEnum.NOTES, task.getNotes());
-			valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
-			valueSet.addInsertValue(TaskEnum.PROJECT_ID, task.getProjectId());
-			valueSet.addInsertValue(TaskEnum.STORY_ID, task.getStoryId());
-			valueSet.addInsertValue(TaskEnum.CREATE_TIME, currentTime);
-			valueSet.addInsertValue(TaskEnum.UPDATE_TIME, currentTime);
-			String query = valueSet.getInsertQuery();
-			
-			mControl.execute(query, true);
-			
-			String[] keys = mControl.getKeys();
-			id = Long.parseLong(keys[0]);
-			
-			serialNumber.setId(SerialNumberEnum.TASK, serialNumber.getTaskId() + 1);
-			serialNumber.save();
-        } catch (SQLException e) {
-	        e.printStackTrace();
-        }
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		long currentTime = System.currentTimeMillis();
+        SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(task.getProjectId());
+        
+        valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addInsertValue(TaskEnum.SERIAL_ID, serialNumber.getTaskId() + 1);
+		valueSet.addInsertValue(TaskEnum.NAME, task.getName());
+		valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
+		valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
+		valueSet.addInsertValue(TaskEnum.REMAIN, task.getRemains());
+		valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
+		valueSet.addInsertValue(TaskEnum.NOTES, task.getNotes());
+		valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
+		valueSet.addInsertValue(TaskEnum.PROJECT_ID, task.getProjectId());
+		valueSet.addInsertValue(TaskEnum.STORY_ID, task.getStoryId());
+		valueSet.addInsertValue(TaskEnum.CREATE_TIME, currentTime);
+		valueSet.addInsertValue(TaskEnum.UPDATE_TIME, currentTime);
+		String query = valueSet.getInsertQuery();
 		
+		mControl.execute(query, true);
+		
+		String[] keys = mControl.getKeys();
+		id = Long.parseLong(keys[0]);
+		
+		serialNumber.setId(SerialNumberEnum.TASK, serialNumber.getTaskId() + 1);
+		serialNumber.save();
+
 		return id;
 	}
 
 	@Override
-	public TaskObject get(long id) throws SQLException {
+	public TaskObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.ID, id);
@@ -70,8 +66,11 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		ResultSet result = mControl.executeQuery(query);
 		
 		TaskObject task = null;
-		if (result.next()) {
-			task = convert(result);
+		try {
+			if (result.next()) {
+				task = convert(result);
+			}							
+		} catch (SQLException e) {
 		}
 		return task;
 	}

@@ -29,7 +29,7 @@ public abstract class AbstractDAO<T, K> {
 	abstract public long create(K infoObject);
 
 	// read
-	abstract public T get(long id) throws SQLException;
+	abstract public T get(long id);
 
 	// update
 	abstract public boolean update(T dataObject);

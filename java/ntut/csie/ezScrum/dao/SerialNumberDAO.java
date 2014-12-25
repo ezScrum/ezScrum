@@ -41,7 +41,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
     }
 
 	@Override
-    public SerialNumberObject get(long projectId) throws SQLException {
+    public SerialNumberObject get(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, projectId);
@@ -50,8 +50,11 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 		ResultSet result = mControl.executeQuery(query);
 		
 		SerialNumberObject serialNumber = null;
-		if (result.next()) {
-			serialNumber = convert(result);
+		try {
+			if (result.next()) {
+				serialNumber = convert(result);
+			}
+		} catch (SQLException e) {
 		}
 		return serialNumber;
     }

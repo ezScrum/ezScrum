@@ -51,7 +51,7 @@ public class TaskObjectTest {
 	 * 測試新增一個 task
 	 */
 	@Test
-	public void testSave_newTask() {
+	public void testSave_createANewTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
 			.setNotes("TEST_NOTES")
@@ -109,7 +109,7 @@ public class TaskObjectTest {
 		assertEquals(1, task.getActual());
 	}
 	
-	@Test(expected=SQLException.class)
+	@Test
 	public void testDelete() throws SQLException {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME")
@@ -133,6 +133,53 @@ public class TaskObjectTest {
 		assertTrue(deleteSuccess);
 		assertEquals(-1, task.getId());
 		assertEquals(-1, task.getSerialId());
-		TaskDAO.getInstance().get(1);
+		assertEquals(null, TaskDAO.getInstance().get(1));
+	}
+	
+	@Test
+	public void testReload() {
+		TaskObject task = new TaskObject(1);
+		task.setName("TEST_NAME")
+			.setNotes("TEST_NOTES")
+			.setEstimate(10)
+			.setRemains(8)
+			.setActual(0);
+		
+		task.save();
+		
+		assertEquals(1, task.getId());
+		assertEquals(1, task.getSerialId());
+		assertEquals("TEST_NAME", task.getName());
+		assertEquals("TEST_NOTES", task.getNotes());
+		assertEquals(10, task.getEstimate());
+		assertEquals(8, task.getRemains());
+		assertEquals(0, task.getActual());
+		
+		task.setName("TEST_NAME2")
+			.setNotes("TEST_NOTES2")
+			.setEstimate(5)
+			.setRemains(3)
+			.setActual(1);
+		
+		assertEquals(1, task.getId());
+		assertEquals(1, task.getSerialId());
+		assertEquals("TEST_NAME2", task.getName());
+		assertEquals("TEST_NOTES2", task.getNotes());
+		assertEquals(5, task.getEstimate());
+		assertEquals(3, task.getRemains());
+		assertEquals(1, task.getActual());
+		
+		try {
+			task.reload();
+			
+			assertEquals(1, task.getId());
+			assertEquals(1, task.getSerialId());
+			assertEquals("TEST_NAME", task.getName());
+			assertEquals("TEST_NOTES", task.getNotes());
+			assertEquals(10, task.getEstimate());
+			assertEquals(8, task.getRemains());
+			assertEquals(0, task.getActual());
+		} catch (Exception e) {
+		}
 	}
 }
