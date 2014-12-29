@@ -78,6 +78,11 @@
 			<filename name="**/*.jar" />
 		</fileset>
 	</path>
+	
+	<target name="print-version"> 
+		<echo>Java/JVM version: ${ant.java.version}</echo>
+		<echo>Java/JVM detail version: ${java.version}</echo> 
+	</target>
 
 
 	<!-- ================================= 
@@ -114,7 +119,6 @@
          ================================= -->
 	<target name="CompileALLSrc" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<echo message="Using Java version is ${ant.version.java}"/>
 		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
@@ -383,7 +387,7 @@
 	
 	<target name="default" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
 	<target name="build" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
-	<target name="quickbuild" depends="cleanProduction,MakeDir,CompileALLSrc,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
+	<target name="quickbuild" depends="print-version,cleanProduction,MakeDir,CompileALLSrc,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
 	<target name="deployPlugin" depends="cleanPlugins, downloadPlugin, unZip, movePlugin, cleanTempFolder" />
 	<target name="release" description="Release ezScrum and upload to FTP" depends="deployPlugin, cleanProduction, MakeDir, CompileALLSrc, CopyDir, create.manifest, BuildJar, BuildUpdaterJar, Zip, GZIP, Clean, ZipSourceCode, uploadArtifactToFtp"/>
 </project>
