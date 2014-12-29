@@ -163,7 +163,7 @@
 		</copydir>
 		<copyfile dest="${Output.Dir}/JettyServer.xml" src="JettyServer.xml" />
 		<copyfile dest="${Output.Dir}/ezScrum.ini" src="ezScrum_default.ini" />
--		<copyfile dest="${Output.Dir}/README.md" src="README.md" />
+		<copyfile dest="${Output.Dir}/README.md" src="README.md" />
 		<copydir dest="${Output.Dir}" src="${Service.Wrapper.x86}" />
 
 		<!-- ======= for linux ======= -->
