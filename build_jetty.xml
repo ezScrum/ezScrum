@@ -114,7 +114,7 @@
          ================================= -->
 	<target name="CompileALLSrc" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" includeantruntime="false" bootclasspath="rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -122,7 +122,7 @@
 		</javac>
 
 		<!-- ======= for linux ======= -->
-		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" includeantruntime="false" bootclasspath="rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -169,7 +169,8 @@
 		<!-- ======= for linux ======= -->
 		<copydir dest="${Output.Dir.Linux.Ubuntu}/lib/" src="${Local.Library.Dir}" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/JettyServer.xml" src="JettyServer.xml" />
-		<copyfile dest="${Output.Dir.Linux.Ubuntu}/ezScrum_default.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/ezScrum.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/README.md" src="README.md" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/launch" src="launch.sh" />
 		<copydir dest="${Output.Dir.Linux.Ubuntu}" src="${Service.Wrapper.Linux.Ubuntu}" />
 	</target>
