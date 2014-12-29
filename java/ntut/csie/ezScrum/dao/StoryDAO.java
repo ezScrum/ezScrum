@@ -17,11 +17,11 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	
 	@Override
     public long create(StoryObject infoObject) {
-	    return 0;
+	    return new Long(0);
     }
 
 	@Override
-    public StoryObject get(long id) throws SQLException {
+    public StoryObject get(long id) {
 	    return null;
     }
 

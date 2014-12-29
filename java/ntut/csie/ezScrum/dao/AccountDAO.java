@@ -138,7 +138,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
     }
 
 	@Override
-	public AccountObject get(long id) throws SQLException {
+	public AccountObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AccountEnum.ID, id);
@@ -146,8 +146,12 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		ResultSet result = mControl.executeQuery(query);
 		
 		AccountObject account = null;
-		if (result.next()) {
-			account = convert(result);
+		try {
+			if (result.next()) {
+				account = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return account;
 	}

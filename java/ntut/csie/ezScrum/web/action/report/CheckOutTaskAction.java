@@ -44,7 +44,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		String name = request.getParameter("Name");
 		String handler = request.getParameter("Handler");
 		String partners = request.getParameter("Partners");
-		String bugNote = request.getParameter("Notes");
+		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 		DateFormat df = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME); // 設定changeDate正確的時間格式
 		StringBuilder result = new StringBuilder("");
@@ -53,7 +53,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
 				df.parse(changeDate);
-			sprintBacklogHelper.checkOutTask(issueID, name, handler, partners, bugNote, changeDate);
+			sprintBacklogHelper.checkOutTask(issueID, name, handler, partners, notes, changeDate);
 			IIssue issue = sprintBacklogHelper.getIssue(issueID);	// return checkout的issue的相關資訊
 			result.append(new Translation().translateTaskboardIssueToJson(issue));
 		} catch (ParseException e) {								// ChangeDate格式錯誤

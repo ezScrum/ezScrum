@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
@@ -10,6 +11,7 @@ import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -40,7 +42,7 @@ public class TaskObject implements IBaseObject {
 	private ArrayList<AttachFileObject> mAttachFiles = null;
 	private ArrayList<HistoryObject> mHistories = null;
 
-	public static TaskObject get(long id) throws SQLException {
+	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
 
@@ -104,7 +106,20 @@ public class TaskObject implements IBaseObject {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public TaskObject setPartnersId(ArrayList<Long> partnersId) {
+		getPartnersId();
+		
+		List<Long> intersection = (List<Long>) CollectionUtils.intersection(mPartnersId, partnersId);
+		List<Long> removeList = (List<Long>) CollectionUtils.subtract(mPartnersId, intersection);
+		List<Long> addList = (List<Long>) CollectionUtils.subtract(partnersId, intersection);
+		for (long partnerId : removeList) {
+			TaskDAO.getInstance().removePartner(mId, partnerId);
+		}
+		for (long partnerId : addList) {
+			TaskDAO.getInstance().addPartner(mId, partnerId);
+		}
+		
 		mPartnersId = partnersId;
 		return this;
 	}
@@ -120,7 +135,10 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public void addPartner(long partnerId) {
-		this.mPartnersId.add(partnerId);
+		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
+			TaskDAO.getInstance().addPartner(mId, partnerId);
+			this.mPartnersId.add(partnerId);
+		}
 	}
 
 	public void addAttachFile(AttachFileObject attachFile) {
@@ -153,10 +171,9 @@ public class TaskObject implements IBaseObject {
 	
 	public AccountObject getHandler() {
 		if (mHandlerId > 0) {
-			try {
-				return AccountDAO.getInstance().get(mHandlerId);
-			} catch (SQLException e) {
-				e.printStackTrace();
+			AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
+			if (handler != null) {
+				return handler;
 			}
 		}
 		return null;
@@ -287,12 +304,9 @@ public class TaskObject implements IBaseObject {
 		if (mPartners == null) {
 			mPartners = new ArrayList<AccountObject>();
 			for (long partnerId : mPartnersId) {
-				try {
-					AccountObject partner = AccountDAO.getInstance().get(
-							partnerId);
-					mPartners.add(partner);
-				} catch (SQLException e) {
-					e.printStackTrace();
+				AccountObject partner = AccountDAO.getInstance().get(partnerId);
+				if (partner != null) {
+					mPartners.add(partner);					
 				}
 			}
 		}
@@ -350,6 +364,7 @@ public class TaskObject implements IBaseObject {
 
 	public void checkOut() {
 		mStatus = TaskObject.STATUS_CHECK;
+		mActual = 0; // Check Out 時, Actual Hour 必須設成 0
 		save();
 	}
 
@@ -433,45 +448,41 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
-		try {
-			TaskObject oldTask = TaskObject.get(mId);
-			TaskDAO.getInstance().update(this);
+		TaskObject oldTask = TaskObject.get(mId);
+		TaskDAO.getInstance().update(this);
 
-			if (!mName.equals(oldTask.getName())) {
-				addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
+		if (!mName.equals(oldTask.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
+		}
+		if (!mNotes.equals(oldTask.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
+		}
+		if (mEstimate != oldTask.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
+					mEstimate);
+		}
+		if (mActual != oldTask.getActual()) {
+			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(),
+					mActual);
+		}
+		if (mRemains != oldTask.getRemains()) {
+			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
+					mRemains);
+		}
+		if (mStatus != oldTask.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(),
+					mStatus);
+		}
+		if (mStoryId != oldTask.getStoryId()) {
+			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
+				addHistoryOfAddRelation(mStoryId, mId);
+			} else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
+				addHistoryOfRemoveRelation(mStoryId, mId);
 			}
-			if (!mNotes.equals(oldTask.getNotes())) {
-				addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
-			}
-			if (mEstimate != oldTask.getEstimate()) {
-				addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
-						mEstimate);
-			}
-			if (mActual != oldTask.getActual()) {
-				addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(),
-						mActual);
-			}
-			if (mRemains != oldTask.getRemains()) {
-				addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-						mRemains);
-			}
-			if (mStatus != oldTask.getStatus()) {
-				addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(),
-						mStatus);
-			}
-			if (mStoryId != oldTask.getStoryId()) {
-				if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-					addHistoryOfAddRelation(mStoryId, mId);
-				} else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-					addHistoryOfRemoveRelation(mStoryId, mId);
-				}
-			}
-			if (mHandlerId != oldTask.getHandlerId()) {
-				addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
-						mHandlerId);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}
+		if (mHandlerId != oldTask.getHandlerId()) {
+			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
+					mHandlerId);
 		}
 	}
 

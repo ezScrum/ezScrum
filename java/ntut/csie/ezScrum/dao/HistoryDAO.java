@@ -34,16 +34,12 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 		valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
 				objectInfo.getModifiedTime());
 		String query = valueSet.getInsertQuery();
-		
-		mControl.execute(query, true);
-		
-		String[] keys = mControl.getKeys();
-		long id = Long.parseLong(keys[0]);
-		return id;
+
+		return mControl.executeInsert(query);
 	}
 
 	@Override
-	public HistoryObject get(long id) throws SQLException {
+	public HistoryObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(HistoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(HistoryEnum.ID, id);
@@ -52,8 +48,12 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 		ResultSet result = mControl.executeQuery(query);
 
 		HistoryObject history = null;
-		if (result.next()) {
-			history = convert(result);
+		try {
+			if (result.next()) {
+				history = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return history;
 	}

@@ -333,8 +333,8 @@ public class SprintBacklogHelper {
 	 * class: CheckOutTaskAction
 	 * Test class: CheckOutTaskActionTest
 	 */
-	public void checkOutTask(long issueId, String name, String handler, String partners, String bugNote, String changeDate) {
-		mSprintBacklogLogic.checkOutTask(issueId, name, handler, partners, bugNote, changeDate);
+	public void checkOutTask(long issueId, String name, String handler, String partners, String notes, String changeDate) {
+		mSprintBacklogLogic.checkOutTask(issueId, name, handler, partners, notes, changeDate);
 	}
 	
 	/**

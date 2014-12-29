@@ -99,7 +99,12 @@ public class MySQLControl implements ISQLControl {
 			mKeys = new String[0];
 		}
 	}
-
+	
+	public Long executeInsert(String query) {
+		execute(query, true);
+		return Long.parseLong(mKeys[0]);			
+	}
+ 
 	public boolean execute(String query) {
 		return execute(query, false);
 	}

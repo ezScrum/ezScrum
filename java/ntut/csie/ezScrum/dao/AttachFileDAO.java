@@ -31,15 +31,12 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, attachFile.getContentType());
 		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
-		mControl.execute(query, true);
-		
-		String[] keys = mControl.getKeys();
-		long newId = Long.parseLong(keys[0]);
-		return newId;
+
+		return mControl.executeInsert(query);
 	}
 
 	@Override
-	public AttachFileObject get(long id) throws SQLException {
+	public AttachFileObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ID, id);

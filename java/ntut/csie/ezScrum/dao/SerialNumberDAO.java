@@ -32,12 +32,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 		valueSet.addInsertValue(SerialNumberEnum.RETROSPECTIVE, serialNumber.getRetrospectiveId());
 		String query = valueSet.getInsertQuery();
 		
-		mControl.execute(query, true);
-		
-		String[] keys = mControl.getKeys();
-		long id = Long.parseLong(keys[0]);
-		
-	    return id;
+	    return mControl.executeInsert(query);
     }
 
 	@Override
@@ -55,6 +50,7 @@ public class SerialNumberDAO extends AbstractDAO<SerialNumberObject, SerialNumbe
 				serialNumber = convert(result);
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return serialNumber;
     }
