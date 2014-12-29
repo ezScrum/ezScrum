@@ -114,7 +114,7 @@
          ================================= -->
 	<target name="CompileALLSrc" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" deprecation="on" debug="on" encoding="UTF8">
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" includeantruntime="false" bootclasspath="rt.jar" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -122,7 +122,7 @@
 		</javac>
 
 		<!-- ======= for linux ======= -->
-		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" deprecation="on" debug="on" encoding="UTF8">
+		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -135,7 +135,7 @@
 	     ================================= -->
 	<target name="CompileForTest" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${build.classes}" includeantruntime="false" bootclasspath="rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${build.classes}" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
