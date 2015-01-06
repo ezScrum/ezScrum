@@ -53,7 +53,7 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 				this.Commnet = project.getComment();
 				this.ProjectManager = project.getManager();
 				this.AttachFileSize = project.getAttachFileSize();
-				this.ProjectCreateDate = DateUtil.format(project.getCreateDate(), DateUtil._16DIGIT_DATE_TIME);
+				this.ProjectCreateDate = DateUtil.format(project.getCreateTime(), DateUtil._16DIGIT_DATE_TIME);
 			}
 		}
 	}

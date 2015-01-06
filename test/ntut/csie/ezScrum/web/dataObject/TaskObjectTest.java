@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -181,5 +182,71 @@ public class TaskObjectTest {
 			assertEquals(0, task.getActual());
 		} catch (Exception e) {
 		}
+	}
+	
+	@Test
+	public void testGetWildedTasks() throws SQLException {
+		long projectId = 1;
+		// 新增三筆 task 但只有兩筆是野生 task
+		for (int i = 1; i <= 3; i++) {
+			TaskObject task = new TaskObject(projectId);
+			task.setName("TEST_NAME_" + i)
+				.setNotes("TEST_NOTES_" + i)
+				.setEstimate(10)
+				.setRemains(8)
+				.setActual(0);
+			if (i == 2) {
+				task.setStoryId(1);
+			}
+			task.save();
+		}
+		
+		ArrayList<TaskObject> tasks = TaskObject.getWildTasks(projectId);
+		assertEquals(2, tasks.size());
+		
+		assertEquals("TEST_NAME_1", tasks.get(0).getName());
+		assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
+		assertEquals(10, tasks.get(0).getEstimate());
+		assertEquals(8, tasks.get(0).getRemains());
+		assertEquals(0, tasks.get(0).getActual());
+		
+		assertEquals("TEST_NAME_3", tasks.get(1).getName());
+		assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
+		assertEquals(10, tasks.get(1).getEstimate());
+		assertEquals(8, tasks.get(1).getRemains());
+		assertEquals(0, tasks.get(1).getActual());
+	}
+	
+	@Test
+	public void testGetTasksByStory() throws SQLException {
+		long storyId = 1;
+		// 新增三筆 task 但有兩筆在 story 下
+		for (int i = 1; i <= 3; i++) {
+			TaskObject task = new TaskObject(1);
+			task.setName("TEST_NAME_" + i)
+				.setNotes("TEST_NOTES_" + i)
+				.setEstimate(10)
+				.setRemains(8)
+				.setActual(0);
+			if (i != 2) {
+				task.setStoryId(storyId);
+			}
+			task.save();
+		}
+		
+		ArrayList<TaskObject> tasks = TaskObject.getTasksByStory(storyId);
+		assertEquals(2, tasks.size());
+		
+		assertEquals("TEST_NAME_1", tasks.get(0).getName());
+		assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
+		assertEquals(10, tasks.get(0).getEstimate());
+		assertEquals(8, tasks.get(0).getRemains());
+		assertEquals(0, tasks.get(0).getActual());
+		
+		assertEquals("TEST_NAME_3", tasks.get(1).getName());
+		assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
+		assertEquals(10, tasks.get(1).getEstimate());
+		assertEquals(8, tasks.get(1).getRemains());
+		assertEquals(0, tasks.get(1).getActual());
 	}
 }

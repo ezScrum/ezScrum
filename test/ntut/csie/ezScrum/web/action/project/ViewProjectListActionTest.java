@@ -85,7 +85,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 					"<Name>TEST_PROJECT_1</Name>" +
 					"<Comment>This is Test Project - 1</Comment>" +
 					"<ProjectManager>Project_Manager_1</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format(projectOne.getCreateDate()) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectOne.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 				"<Project>" +
@@ -93,7 +93,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 					"<Name>TEST_PROJECT_2</Name>" +
 					"<Comment>This is Test Project - 2</Comment>" +
 					"<ProjectManager>Project_Manager_2</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format(projectTwo.getCreateDate()) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectTwo.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 			"</Projects>";

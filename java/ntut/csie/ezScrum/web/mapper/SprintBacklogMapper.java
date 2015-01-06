@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -53,7 +55,7 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
-
+		
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
@@ -297,6 +299,11 @@ public class SprintBacklogMapper {
 
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		mUpdateFlag = true;
+	}
+	
+	public ArrayList<TaskObject> getWildTasks(long projectId)
+			throws SQLException {
+		return TaskObject.getWildTasks(projectId);
 	}
 
 	public void deleteExistedTask(long[] taskIds) {

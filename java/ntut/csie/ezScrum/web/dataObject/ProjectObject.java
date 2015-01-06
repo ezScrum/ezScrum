@@ -1,118 +1,145 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
+
+import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * 舊的 table 中的 pid 即為新的 table 的 name
+ * 舊的 table 中的 name 即為新的 table 的 displayname
+ * 
+ * @author cutecool
+ * 
+ */
 public class ProjectObject {
-	// 取得所有專案的資訊
-	private String id;
-	private String name = "";
-	private String displayName = "";
-	private String comment = "";
-	private String manager = "";
-	private String attachFileSize = "";
-	private String pid = "";
-	private long createDate;
+	private final static int DEFAULT_VALUE = -1;
 
-	public ProjectObject(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
-		setId(id);
+	// 取得所有專案的資訊
+	private long mId = DEFAULT_VALUE;
+	private String mName = "";
+	private String mDisplayName = "";
+	private String mComment = "";
+	private String mManager = "";
+	private String mAttachFileSize = "";
+	private long mCreateTime = DEFAULT_VALUE;
+	private long mUpdateTime = DEFAULT_VALUE;
+
+	public ProjectObject(long id, String name, String displayName, String comment,
+			String manager, String attachFileSize, long createDate, long updateTime) {
+		mId = id;
 		setName(name);
 		setDisplayName(displayName);
 		setComment(comment);
 		setManager(manager);
 		setAttachFileSize(attachFileSize);
-		setCreateDate(createDate);
-		setPid(name);
+		setCreateTime(createDate);
+		setUpdateTime(updateTime);
 	}
 
 	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
 		setName(name);
-		setPid(name);
 		setDisplayName(displayName);
 		setComment(comment);
 		setManager(manager);
 		setAttachFileSize(attachFileSize);
 	}
 
-	public ProjectObject() {
-    }
+	public ProjectObject() {}
 
-	public void setName(String name) {
-		this.name = name;
+	public ProjectObject setName(String name) {
+		mName = name;
+		return this;
 	}
 
 	public String getName() {
-		return name;
+		return mName;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	public ProjectObject setDisplayName(String displayName) {
+		mDisplayName = displayName;
+		return this;
 	}
 
 	public String getDisplayName() {
-		return displayName;
+		return mDisplayName;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public ProjectObject setComment(String comment) {
+		mComment = comment;
+		return this;
 	}
 
 	public String getComment() {
-		return comment;
+		return mComment;
 	}
 
-	public void setManager(String manager) {
-		this.manager = manager;
+	public ProjectObject setManager(String manager) {
+		mManager = manager;
+		return this;
 	}
 
 	public String getManager() {
-		return manager;
+		return mManager;
 	}
 
-	public void setAttachFileSize(String attachFileSize) {
-		this.attachFileSize = attachFileSize;
+	public ProjectObject setAttachFileSize(String attachFileSize) {
+		mAttachFileSize = attachFileSize;
+		return this;
 	}
 
 	public String getAttachFileSize() {
-		return attachFileSize;
+		return mAttachFileSize;
 	}
 
-	public String getId() {
-		return id;
+	public long getId() {
+		return mId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getPid() {
-		return pid;
-	}
-	
-	public void setPid(String pid) {
-		this.pid = pid;
+	public long getCreateTime() {
+		return mCreateTime;
 	}
 
-	public long getCreateDate() {
-		return createDate;
+	public ProjectObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
+		return this;
 	}
 
-	public void setCreateDate(long createDate) {
-		this.createDate = createDate;
+	public long getUpdateTime() {
+		return mUpdateTime;
 	}
-	
+
+	public ProjectObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
+	}
+
 	public JSONObject toJSON() throws JSONException {
 		JSONObject object = new JSONObject();
 		object
-			.put(ProjectEnum.NAME, name)
-			.put(ProjectEnum.ID, id)
-			.put(ProjectEnum.COMMENT, comment)
-			.put(ProjectEnum.PID, pid)
-			.put(ProjectEnum.CREATE_TIME, createDate)
-			.put(ProjectEnum.PRODUCT_OWNER, manager)
-			.put(ProjectEnum.ATTATCH_MAX_SIZE, attachFileSize);
+		        .put(ProjectEnum.ID, mId)
+		        .put(ProjectEnum.NAME, mName)
+		        .put(ProjectEnum.DISPLAY_NAME, mDisplayName)
+		        .put(ProjectEnum.COMMENT, mComment)
+		        .put(ProjectEnum.PRODUCT_OWNER, mManager)
+		        .put(ProjectEnum.ATTATCH_MAX_SIZE, mAttachFileSize)
+		        .put(ProjectEnum.CREATE_TIME, mCreateTime)
+		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
 		return object;
+	}
+
+	public static ProjectObject get(long id) {
+		return ProjectDAO.getInstance().get(id);
+	}
+
+	public static ProjectObject getProjectByName(String name) {
+		return ProjectDAO.getInstance().getProjectByName(name);
+	}
+
+	public static ArrayList<ProjectObject> getProjects() {
+		return ProjectDAO.getInstance().getProjects();
 	}
 }

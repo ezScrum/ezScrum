@@ -45,6 +45,16 @@ public class TaskObject implements IBaseObject {
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
+	
+	public static ArrayList<TaskObject> getWildTasks(long projectId)
+			throws SQLException {
+		return TaskDAO.getInstance().getWildTasks(projectId);
+	}
+	
+	public static ArrayList<TaskObject> getTasksByStory(long storyId)
+			throws SQLException {
+		return TaskDAO.getInstance().getTasksByStory(storyId);
+	}
 
 	public TaskObject(long projectId) {
 		mProjectId = projectId;
@@ -198,6 +208,16 @@ public class TaskObject implements IBaseObject {
 	public int getStatus() {
 		return mStatus;
 	}
+	
+	public String getStatusString() {
+		if (mStatus == STATUS_UNCHECK) {
+			return "new";
+		} else if (mStatus == STATUS_CHECK) {
+			return "assigned";
+		} else {
+			return "closed";
+		}
+	}
 
 	// public int getStatus(Date date) {
 	// long time = date.getTime();
@@ -311,6 +331,16 @@ public class TaskObject implements IBaseObject {
 			}
 		}
 		return mPartners;
+	}
+	
+	public String getPartnersName() {
+		StringBuilder partnersName = new StringBuilder();
+		ArrayList<AccountObject> partners = getPartners();
+		for (AccountObject partner : partners) {
+			partnersName.append(partner.getAccount()).append(";");
+		}
+		partnersName.deleteCharAt(partnersName.length()-1);
+		return partnersName.toString();
 	}
 
 	public ArrayList<HistoryObject> getHistories() {

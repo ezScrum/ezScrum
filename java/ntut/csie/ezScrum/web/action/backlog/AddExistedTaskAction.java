@@ -31,18 +31,19 @@ public class AddExistedTaskAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info("Add wild tasks in AddExistedTaskAction");
 		
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		String[] selectedTaskIDs = request.getParameterValues("selected");
-		String sprintID = request.getParameter("sprintID");
-		String storyID = request.getParameter("issueID");
+		String[] selectedTaskIds = request.getParameterValues("selected");
+		String sprintId = request.getParameter("sprintID");
+		String storyId = request.getParameter("issueID");
 
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintID);
-		sprintBacklogHelper.addExistedTask(storyID, selectedTaskIDs);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintId);
+		sprintBacklogHelper.addExistedTask(storyId, selectedTaskIds);
 		return new StringBuilder("");
 	}
 }

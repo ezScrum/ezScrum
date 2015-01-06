@@ -62,6 +62,11 @@ public class SprintBacklogHelper {
 		}
 		return null;
 	}
+	
+	public ArrayList<TaskObject> getWildTasks(long projectId)
+			throws SQLException {
+		return mSprintBacklogMapper.getWildTasks(projectId);
+	}
 
 	public void addExistedTask(String storyId, String[] selectedTaskIds) {
 		long[] taskIds = new long[selectedTaskIds.length];

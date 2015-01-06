@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -70,7 +69,7 @@ public class ProjectHelper {
 				sb.append("<Name>").append(tsc.TranslateXMLChar(project.getDisplayName())).append("</Name>");
 				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getComment())).append("</Comment>");
 				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getManager())).append("</ProjectManager>");
-				sb.append("<CreateDate>").append(dateFormat.format(project.getCreateDate())).append("</CreateDate>");
+				sb.append("<CreateDate>").append(dateFormat.format(project.getCreateTime())).append("</CreateDate>");
 				sb.append("<DemoDate>").append(hm.get(project.getName())).append("</DemoDate>");
 				sb.append("</Project>");
 			}
@@ -179,6 +178,10 @@ public class ProjectHelper {
 		log.info("saveProjectInfoForm.getSourcePaths().length=" + saveProjectInfoForm.getSourcePaths().length);
 
 		return saveProjectInfoForm;
+	}
+	
+	public ProjectObject getProjectById(String id) {
+		return mProjectMapper.getProjectByIdForDb(id);
 	}
 	
 	// ezScrum v1.8

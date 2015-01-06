@@ -362,7 +362,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		        .append("<Name>").append(expectedProject.getDisplayName()).append("</Name>")
 		        .append("<Comment>").append(expectedProject.getComment()).append("</Comment>")
 		        .append("<ProjectManager>").append(expectedProject.getManager()).append("</ProjectManager>")
-		        .append("<CreateDate>").append(dateFormat.format(expectedProject.getCreateDate())).append("</CreateDate>")
+		        .append("<CreateDate>").append(dateFormat.format(expectedProject.getCreateTime())).append("</CreateDate>")
 		        .append("<DemoDate>").append(expectedProjectDemoDate).append("</DemoDate>")
 		        .append("</Project>")
 		        .append("</Projects>");

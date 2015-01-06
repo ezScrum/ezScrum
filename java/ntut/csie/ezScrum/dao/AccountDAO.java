@@ -71,7 +71,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			if (systemRole != null)	map.put("system", systemRole);
 			if (result.next()) {
 				do {
-					map.put(result.getString(ProjectEnum.PID), getProjectWithScrumRole(result));
+					map.put(result.getString(ProjectEnum.NAME), getProjectWithScrumRole(result));
 				} while (result.next());
 			}
 			return map;
@@ -124,7 +124,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	
 	private ProjectRole getProjectWithScrumRole(ResultSet result) throws SQLException {
 		String id = result.getString(ProjectRoleEnum.PROJECT_ID);
-		String pid = result.getString(ProjectEnum.PID);
+		String pid = result.getString(ProjectEnum.NAME);
 		String name = result.getString(ProjectEnum.NAME);
 		String comment = result.getString(ProjectEnum.COMMENT);
 		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);

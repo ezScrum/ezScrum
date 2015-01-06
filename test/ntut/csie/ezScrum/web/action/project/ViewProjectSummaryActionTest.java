@@ -359,7 +359,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		String expectedProjectDisplayName = projectObject.getDisplayName();
 		String expectedProjectComment = projectObject.getComment();
 		String expectedProjectManager = projectObject.getManager();
-		String expectedProjectCreateDate = dateFormat.format(projectObject.getCreateDate());
+		String expectedProjectCreateDate = dateFormat.format(projectObject.getCreateTime());
 		String expectedProjectDemoDate = "No Plan!";
 		//	assert response text
 		StringBuilder viewProjectListExpectedResponseText = new StringBuilder();
@@ -400,7 +400,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		//	assert response text
 		dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 		String expectAttachFileSize = "2";
-		String expectProjectCreateDate = dateFormat.format(projectObject.getCreateDate());
+		String expectProjectCreateDate = dateFormat.format(projectObject.getCreateTime());
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 		        .append("\"ID\":\"").append(expectedProjectID).append("\",")

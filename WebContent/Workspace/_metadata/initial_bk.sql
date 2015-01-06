@@ -1160,15 +1160,15 @@ ENGINE = InnoDB DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
+  `display_name` VARCHAR(255) NOT NULL,
   `comment` TEXT NULL,
   `product_owner` VARCHAR(255), 
   `attach_max_size` BIGINT UNSIGNED NOT NULL DEFAULT 2, 
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `pid_UNIQUE` (`pid` ASC))
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `sprint`;

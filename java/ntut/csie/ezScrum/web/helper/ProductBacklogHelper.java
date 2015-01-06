@@ -21,6 +21,7 @@ import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -416,8 +417,8 @@ public class ProductBacklogHelper {
 		}
 	}
 
-	public IIssue[] getWildedTasks() throws SQLException {
-		IIssue[] issues = this.mProductBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
+	public IIssue[] getWildTasks() throws SQLException {
+		IIssue[] issues = mProductBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必需要使用ArrayList
 		ArrayList<IIssue> list = new ArrayList<IIssue>();
@@ -428,6 +429,13 @@ public class ProductBacklogHelper {
 			if (parentsID > 0) list.remove(i);
 		}
 		return list.toArray(new IIssue[list.size()]);
+	}
+	
+	public ArrayList<TaskObject> getwildedTasks() {
+		ArrayList<TaskObject> wildedTasks = new ArrayList<TaskObject>();
+		
+		
+		return wildedTasks;
 	}
 
 	/**

@@ -129,7 +129,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		        .append("\"Commnet\":\"").append(project.getComment()).append("\",")
 		        .append("\"ProjectManager\":\"").append(project.getManager()).append("\",")
 		        .append("\"AttachFileSize\":\"").append(project.getAttachFileSize()).append("\",")
-		        .append("\"ProjectCreateDate\":\"").append(dateFormat.format(project.getCreateDate())).append("\"")
+		        .append("\"ProjectCreateDate\":\"").append(dateFormat.format(project.getCreateTime())).append("\"")
 		        .append("}");
 		assertEquals(expectResponseText.toString(), actualResponseText);
 	}
@@ -191,7 +191,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		        .append("\"Commnet\":\"").append(project.getComment()).append("\",")
 		        .append("\"ProjectManager\":\"").append(project.getManager()).append("\",")
 		        .append("\"AttachFileSize\":\"").append(project.getAttachFileSize()).append("\",")
-		        .append("\"ProjectCreateDate\":\"").append(dateFormat.format(project.getCreateDate())).append("\"")
+		        .append("\"ProjectCreateDate\":\"").append(dateFormat.format(project.getCreateTime())).append("\"")
 		        .append("}");
 		assertEquals(expectResponseText.toString(), actualResponseText);
 	}

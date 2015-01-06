@@ -149,14 +149,8 @@ public class SerialNumberObject {
 	
 	public void reload() throws Exception {
 		if (recordExists()) {
-			try {
-				SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
-				resetData(serialNumber);
-			} catch (SQLException e) {
-				System.out.println(SerialNumberObject.class.getName() + ", reload(), "
-						+ e.toString());
-				e.printStackTrace();
-			}
+			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
+			resetData(serialNumber);
 		} else {
 			throw new Exception("Record not exists");
 		}

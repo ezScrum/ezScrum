@@ -124,7 +124,7 @@ public class UnplannedItemMapperTest extends TestCase {
 						"",
 						"2 => 6",
 						"0 => 6",
-						"TEST_UNPLANNED_NOTES_1 => 已哭"));
+						"\"TEST_UNPLANNED_NOTES_1\" => \"已哭\""));
 		
 		for (int i = 0; i < histories.size(); i++) {
 			assertEquals(issueId, histories.get(i).getIssueId());

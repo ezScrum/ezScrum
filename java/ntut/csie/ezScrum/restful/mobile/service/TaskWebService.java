@@ -4,34 +4,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
+import com.google.gson.Gson;
+
 public class TaskWebService extends ProjectWebService{
-	SprintBacklogHelper mSprintBacklogHelper;
-	ProductBacklogHelper mProductBacklogHelper;
+	private SprintBacklogHelper mSprintBacklogHelper;
+	private ProductBacklogHelper mProductBacklogHelper;
+	private ProjectHelper mProjectHelper;
+	private ProjectObject mProject;
 	
 	public TaskWebService(AccountObject user, String projectId) throws LogonException {
 		super(user, projectId);
-		initialize();
+		initialize(projectId);
 	}
 	
 	public TaskWebService(String username, String userpwd, String projectId) throws LogonException {
 		super(username, userpwd, projectId);
-		initialize();
+		initialize(projectId);
 	}
 	
-	private void initialize() {
+	private void initialize(String projectId) {
 		UserSession userSession = new UserSession(super.getAccount());
 		mSprintBacklogHelper = new SprintBacklogHelper(super.getProjectList().get(0), userSession);
 		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
+		mProjectHelper = new ProjectHelper();
+		mProject = mProjectHelper.getProjectById(projectId);
 	}
 	
 	/**
@@ -39,13 +45,18 @@ public class TaskWebService extends ProjectWebService{
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getExistedTask() throws SQLException {
-		IIssue[] existedTask = mProductBacklogHelper.getWildedTasks();
+	public String getWildTasks() throws SQLException {
+		IIssue[] existedTask = mProductBacklogHelper.getWildTasks();
 		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
 		for (IIssue task : existedTask)
 			existedTaskList.add(new TaskObject(task));
 		Gson gson = new Gson();
 		return gson.toJson(existedTaskList);
+	}
+	
+	public String getWildTask() throws NumberFormatException, SQLException {
+		return mSprintBacklogHelper.getWildTasks(
+				Long.parseLong(mProject.getId()));
 	}
 	
 	/**

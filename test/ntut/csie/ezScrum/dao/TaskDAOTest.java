@@ -40,7 +40,7 @@ public class TaskDAOTest extends TestCase {
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 		
-		projectId = Long.parseLong(mCreateProject.getProjectObjectList().get(0).getId());
+		projectId = mCreateProject.getProjectObjectList().get(0).getId();
 		
 		super.setUp();
 	}
@@ -195,7 +195,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(true, result);
 		
 		// reload tasks
-		tasks.clear();;
+		tasks.clear();
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);

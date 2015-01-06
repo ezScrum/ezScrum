@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.backlog.sprint;
+package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +15,14 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowAddExistedTask2Test extends MockStrutsTestCase {
+public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	private CreateProject CP;
 	private CreateSprint CS;
 	private Configuration configuration;
 	private final String ACTION_PATH = "/showAddExistedTask2";
 	private IProject project;
 	
-	public ShowAddExistedTask2Test(String testName) {
+	public ShowAddExistedTaskTest(String testName) {
 		super(testName);
 	}
 	
