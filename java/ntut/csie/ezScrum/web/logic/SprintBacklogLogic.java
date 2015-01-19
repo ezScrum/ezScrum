@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -69,6 +70,7 @@ public class SprintBacklogLogic {
 		return sprintBacklogMapper;
 	}
 
+	// for ezScrum 1.8
 	public long addTask(long projectId, String name, String notes,
 			int estimate, long handler, ArrayList<Long> partners, long storyId,
 			Date date) {
@@ -79,6 +81,7 @@ public class SprintBacklogLogic {
 		return taskId;
 	}
 
+	// for ezScrum 1.8
 	public boolean editTask(long taskId, String name, int estimate,
 			int remains, long handler, ArrayList<Long> partners,
 			int actualHour, String notes, Date modifyDate) {
@@ -89,6 +92,7 @@ public class SprintBacklogLogic {
 		return false;
 	}
 
+	// for ezScrum 1.8
 	public void checkOutTask(long id, String name, long handler,
 			ArrayList<Long> partners, String notes, String changeDate) {
 		Date closeDate = null;
@@ -103,35 +107,28 @@ public class SprintBacklogLogic {
 				closeDate);
 	}
 
-	public void doneTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date changeDate) {
-		
+	// for ezScrum 1.8
+	private void doneTask(long id, String name, String notes, int actualHour, Date changeDate) {
+		mSprintBacklogMapper.doneTask(id, name, notes, changeDate);
 	}
 
-	public void doneIssue(long id, String name, String notes,
+	// for ezScrum 1.8
+	public void doneIssue(long id, int issueType, String name, String notes,
 			String changeDate, String actualHour) {
-		IIssue task = this.mSprintBacklogMapper.getIssue(id);
+		
 		Date closeDate = null;
 		if (changeDate != null && !changeDate.equals("")) {
 			closeDate = DateUtil.dayFillter(changeDate,
 					DateUtil._16DIGIT_DATE_TIME);
-		}
-		// 如果issue的type為Task時則將Remians設定為空值，否則reopen時由於Remains為0
-		// 圖表將不會有任何變動
-		if (task.getCategory().equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			this.editTask(id, name, null, "0", task.getAssignto(),
-					task.getPartners(), actualHour, notes, closeDate);
 		} else {
-			this .editTask(id, name, null, null, task.getAssignto(),
-					task.getPartners(), actualHour, notes, closeDate);
+			closeDate = new Date();
 		}
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		
+		if (issueType == IssueTypeEnum.TYPE_TASK) { // Done Task
+			doneTask(id, name, notes, Integer.parseInt(actualHour), closeDate);
+		} else { // Done Story
+			mSprintBacklogMapper.doneIssue(id, notes, changeDate);
 		}
-		this.mSprintBacklogMapper.doneIssue(id, notes, changeDate);
 	}
 
 	/**

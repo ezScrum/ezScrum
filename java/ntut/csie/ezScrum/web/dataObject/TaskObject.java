@@ -21,6 +21,7 @@ public class TaskObject implements IBaseObject {
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
 	public final static int WILD = -1;
+	public final static int NO_PARENT = -1;
 	
 	private final static int DEFAULT_VALUE = -1;
 

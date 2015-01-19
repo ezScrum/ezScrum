@@ -3,17 +3,16 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
@@ -36,6 +35,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
@@ -44,28 +44,29 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		String storyId = request.getParameter("issueID");
 
 		// 表格的資料
-		TaskInfo taskInfomation = new TaskInfo();
-		taskInfomation.name = request.getParameter("Name");
-		taskInfomation.estiamte = Integer.parseInt(request.getParameter("Estimate"));
-		taskInfomation.notes = request.getParameter("Notes");
-		taskInfomation.specificTime = Long.parseLong(request.getParameter("SpecificTime"));
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.name = request.getParameter("Name");
+		taskInfo.projectId = Long.parseLong(projectObject.getId());
+		taskInfo.storyId = Long.parseLong(storyId);
+		taskInfo.estiamte = Integer.parseInt(request.getParameter("Estimate"));
+		taskInfo.notes = request.getParameter("Notes");
+		taskInfo.specificTime = Long.parseLong(request.getParameter("SpecificTime"));
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project, session, sprintId);
-		IIssue issue = sprintBacklogHelper.createTaskInStory(storyId,
-				taskInfomation);
+		TaskObject task = sprintBacklogHelper.createTaskInStory(taskInfo);
 
 		// 組出回傳資訊
 		StringBuilder sb = new StringBuilder();
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		sb.append("<AddNewTask><Result>true</Result><Task>");
-		sb.append("<Id>" + issue.getIssueID() + "</Id>");
-		sb.append("<Link>" + tsc.TranslateXMLChar(issue.getIssueLink())
+		sb.append("<Id>" + task.getId() + "</Id>");
+		sb.append("<Link>/ezScrum/showIssueInformation.do?issueID=" + task.getId()
 				+ "</Link>");
-		sb.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary())
+		sb.append("<Name>" + tsc.TranslateXMLChar(task.getName())
 				+ "</Name>");
-		sb.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
-		sb.append("<Actual>" + issue.getActualHour() + "</Actual>");
-		sb.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes())
+		sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
+		sb.append("<Actual>" + task.getActual() + "</Actual>");
+		sb.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes())
 				+ "</Notes>");
 		sb.append("</Task></AddNewTask>");
 		return sb;

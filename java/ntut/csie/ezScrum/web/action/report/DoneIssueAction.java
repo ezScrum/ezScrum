@@ -39,17 +39,18 @@ public class DoneIssueAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("Id"));
+		long issueId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String bugNote = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 		String ActualHour = request.getParameter("Actualhour");
+		int issueType = Integer.parseInt(request.getParameter("IssueType"));
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
-		sprintBacklogHelper.doneIssue(issueID, name, bugNote, changeDate, ActualHour);
+		sprintBacklogHelper.doneIssue(issueId, issueType, name, bugNote, changeDate, ActualHour);
 
 		// return done issue 相關相關資訊
-		IIssue issue = sprintBacklogHelper.getIssue(issueID);
+		IIssue issue = sprintBacklogHelper.getIssue(issueId);
 		StringBuilder result = new StringBuilder("");
 		result.append(new Translation().translateTaskboardIssueToJson(issue));
 
