@@ -1,5 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from Selenium2Library import Selenium2Library
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 
@@ -25,10 +26,17 @@ class Selenium2Improved(Selenium2Library):
         ActionChains(self._current_browser()).move_to_element(
             element).move_by_offset(coordx, coordy).release().perform()
 
-    def open_tab(self, url=''):
+    def open_tab(self, url, alias):
+        """
+        Selenium1 的 Open Window 功能已被移除
+        所以 Selenium2Improved 改由自己實作
+        以執行 JS 的方式來實作開新 Tab 的功能
+        開完新 Tab 後會將舊有的 Tab Title 重新命名成 Original Tab
+        借此區別新舊 Tab
+        """
         driver = self._current_browser()
-        print 'Open tab start'
-        ActionChains(driver).send_keys(Keys.COMMAND, 't').perform()
-        print 'Open tab end'
-        # body = driver.find_element_by_tag_name("body")
-        # body.send_keys(Keys.CONTROL + 't')
+        driver.execute_script("window.open('" + url + "');")
+
+        driver.implicitly_wait(1)
+        driver.execute_script(
+            "document.title = 'Original Tab';")
