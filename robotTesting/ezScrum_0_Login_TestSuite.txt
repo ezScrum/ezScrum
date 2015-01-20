@@ -1,10 +1,10 @@
 *** Settings ***
 Documentation     test ezScrumn page
 Force Tags        Login
-Library           Selenium2Library
 Resource          ServerConfig.txt
 Resource          Global Define.txt
 Resource          keywords/ezScrum_Login.txt
+Library           keywords/lib/Selenium2Improved.py
 
 *** Test Cases ***
 Test Login - ezScrum Identify Invalid Value

@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     set the search condition
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 

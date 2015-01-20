@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     建立多Story後點選按鈕Filter, 測試 Backlogged, Detailed, Done, Default。
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt

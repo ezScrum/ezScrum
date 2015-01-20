@@ -1,8 +1,8 @@
 *** Settings ***
-Library           Selenium2Library
 Library           BuiltIn
 Library           HttpLibrary.HTTP
 Library           lib/DatabaseHandler.py
+Library           lib/Selenium2Improved.py
 
 *** Keywords ***
 ezScrum Suite Setup
@@ -30,6 +30,7 @@ New Tab With Alias
     ...    2. 使用此keyword的限制 : open browser的url domain name必須與欲新增的分頁domain name一致
     #    Open Browser    ${loginUrl}
     #    Call Selenium Api    openWindow    ${loginUrl}    ${alias}
+    Open Tab
     Select Window    ${alias}
 
 Compare Field Content

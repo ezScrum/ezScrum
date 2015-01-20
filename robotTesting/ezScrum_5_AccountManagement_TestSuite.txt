@@ -11,7 +11,7 @@ Resource          keywords/Project/ezScrum_Project.txt
 Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
-Library           Selenium2Library
+Library           keywords/lib/Selenium2Improved.py
 
 *** Variables ***
 ${tsAccountId}    TestAccountID

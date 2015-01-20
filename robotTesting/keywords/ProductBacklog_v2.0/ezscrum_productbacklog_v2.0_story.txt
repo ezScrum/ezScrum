@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     Create,Delete,Edit story
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Library           Collections
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt

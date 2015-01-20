@@ -15,7 +15,7 @@ Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
 Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
 Resource          ServerConfig.txt
 Resource          Global Define.txt
-Library           Selenium2Library
+Library           keywords/lib/Selenium2Improved.py
 
 *** Variables ***
 ${tsTag}          testTagName    # 測試正常字元

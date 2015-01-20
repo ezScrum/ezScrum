@@ -10,7 +10,7 @@ Resource          keywords/ezScrum_Login.txt
 Resource          keywords/common_resource.txt
 Resource          ServerConfig.txt
 Resource          Global Define.txt
-Library           SeleniumLibrary
+Library           keywords/lib/Selenium2Improved.py
 Library           BuiltIn
 
 *** Test Cases ***
@@ -41,11 +41,9 @@ Test Sprint Plan - Session - Read Sprint Plan
     Wait Until Page Contains Element    xpath=//span[text()="Sprint Plan List"]
     Create Sprint    create sprint in projetc A    2    4    100    100
     Xpath Should Match X Times    //div[@id="SprintPlan_Page"]//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="create sprint in projetc A"]    1
-    
     # 切換到第二個分頁並進入 sprint plan 檢查, 應沒有 sprint plan 存在
     Select Window    ${tcBrowserAlias_B}
     Select Node Product    Sprint Plan
     Wait Until Page Contains Element    xpath=//span[text()="Sprint Plan List"]
     Xpath Should Match X Times    //div[@id="SprintPlan_Page"]//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="create sprint in projetc A"]    0
-    
     [Teardown]    Test Sprint Session Teardown
