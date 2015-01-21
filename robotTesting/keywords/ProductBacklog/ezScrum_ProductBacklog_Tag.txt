@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     Create,Delete,Duplicate Tag
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 

@@ -18,7 +18,7 @@ Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
 Library           Collections
-Library           Selenium2Library
+Library           keywords/lib/Selenium2Improved.py
 
 *** Test Cases ***
 Test TaskBoard - Sprint Information

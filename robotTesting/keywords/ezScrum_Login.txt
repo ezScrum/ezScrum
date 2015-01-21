@@ -1,7 +1,7 @@
 *** Settings ***
-Library           Selenium2Library
 Resource          common_resource.txt
 Resource          ../Global Define.txt
+Library           lib/Selenium2Improved.py
 
 *** Variables ***
 ${userName}       admin
