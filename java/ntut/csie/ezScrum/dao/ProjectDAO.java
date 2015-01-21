@@ -30,9 +30,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		valueSet.addInsertValue(ProjectEnum.DISPLAY_NAME, project.getDisplayName());
 		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
 		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
-		if (!project.getAttachFileSize().isEmpty()) {
-			valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		}
+		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
 		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
 		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
 		String query = valueSet.getInsertQuery();
@@ -88,7 +86,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 	public ProjectObject getProjectByName(String name) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addEqualCondition(ProjectEnum.NAME, name);
+		valueSet.addTextFieldEqualCondition(ProjectEnum.NAME, name);
 		String query = valueSet.getSelectQuery();
 		
 		ResultSet result = mControl.executeQuery(query);
@@ -123,17 +121,15 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 	}
 
 	private ProjectObject convert(ResultSet result) throws SQLException {
-		long id = result.getLong(ProjectEnum.ID);
-		String name = result.getString(ProjectEnum.NAME);
-		String displayName = result.getString(ProjectEnum.DISPLAY_NAME);
-		String comment = result.getString(ProjectEnum.COMMENT);
-		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
-		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
-		long createDate = result.getLong(ProjectEnum.CREATE_TIME);
-		long updateTime = result.getLong(ProjectEnum.UPDATE_TIME);
-		
-		ProjectObject project = new ProjectObject(id, name, displayName, comment,
-				productOwner, maxSize, createDate, updateTime);
+		ProjectObject project = new ProjectObject(result.getLong(ProjectEnum.ID),
+				result.getString(ProjectEnum.NAME));
+		project
+			.setDisplayName(result.getString(ProjectEnum.DISPLAY_NAME))
+			.setComment(result.getString(ProjectEnum.COMMENT))
+			.setManager(result.getString(ProjectEnum.PRODUCT_OWNER))
+			.setAttachFileSize(result.getLong(ProjectEnum.ATTATCH_MAX_SIZE))
+			.setCreateTime(result.getLong(ProjectEnum.CREATE_TIME))
+			.setUpdateTime(result.getLong(ProjectEnum.UPDATE_TIME));
 		return project;
 	}
 }

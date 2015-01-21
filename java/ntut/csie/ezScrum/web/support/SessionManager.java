@@ -30,11 +30,11 @@ import ntut.csie.jcis.resource.core.IProject;
  */
 public class SessionManager {
 
-	private HttpSession m_session = null;
+	private HttpSession mSession = null;
 	private final static String sessionAttributeNameForPermession = "Permession";
 
 	public SessionManager(HttpServletRequest request) {
-		m_session = request.getSession();
+		mSession = request.getSession();
 	}
 
 	// IProjectSummaryEnum.PROJECT 和 IProjectSummaryEnum.PROJECT_INFO_FORM use in TaskBoardCardPanel.jsp
@@ -44,8 +44,8 @@ public class SessionManager {
 	 * @param project
 	 */
 	public void setProject(IProject project) {
-		m_session.removeAttribute(IProjectSummaryEnum.PROJECT);
-		m_session.setAttribute(IProjectSummaryEnum.PROJECT, project);
+		mSession.removeAttribute(IProjectSummaryEnum.PROJECT);
+		mSession.setAttribute(IProjectSummaryEnum.PROJECT, project);
 	}
 
 	/**
@@ -54,28 +54,9 @@ public class SessionManager {
 	 * @param infoForm
 	 */
 	public void setProjectInfoForm(ProjectInfoForm infoForm) {
-		m_session.removeAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM);
-		m_session.setAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM, infoForm);
+		mSession.removeAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM);
+		mSession.setAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM, infoForm);
 	}
-
-	/**
-	 * 從session中取得project info form的instance
-	 * 
-	 * @return
-	 */
-	// public ProjectInfoForm getProjectInfoForm(){
-	// return (ProjectInfoForm) m_session.getAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM);
-	// }
-
-	// /**
-	// * 從session中取得project的instance
-	// *
-	// * @param projectName
-	// * @return
-	// */
-	// public IProject getProject(){
-	// return (IProject)m_session.getAttribute(IProjectSummaryEnum.PROJECT);
-	// }
 
 	/**
 	 * 從session中取得project的instance 如果session中沒有的話，則從底層撈出project資料放置session cache起來
@@ -120,23 +101,23 @@ public class SessionManager {
 	 */
 	public static final ProjectObject getProjectObject(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		// 拿到request header的URL parameter
-		String projectID = getURLParameter(request, "PID");
-		if (projectID != null) {
-			// 拿session裡的project資料
-			ProjectObject project = (ProjectObject) session.getAttribute(projectID + "_new");	// 當IProject完全改完，把new拿掉
+		// 拿到 request header 的 URL parameter
+		String projectName = getURLParameter(request, "PID");
+		if (projectName != null) {
+			// 拿 session 裡的 project 資料
+			ProjectObject project = (ProjectObject) session.getAttribute(projectName + "_new");	// 當IProject完全改完，把new拿掉
 			/**
-			 * 如果session拿不到project的資料，則往DB找
+			 * 如果 session 拿不到 project 的資料，則往 DB 找
 			 */
 			if (project == null) {
-				project = new ProjectMapper().getProjectByPidForDb(projectID);
+				project = new ProjectMapper().getProjectByPidForDb(projectName);
 				if (project != null) {
 					try {
 						project.toJSON().toString();
 //						System.out.println(project.toJSON().toString());
 					} catch (JSONException e) {
 					}
-					session.setAttribute(projectID + "_new", project);	// 當IProject完全改完，把new拿掉
+					session.setAttribute(projectName + "_new", project);	// 當IProject完全改完，把new拿掉
 				}
 			}
 			return project;
@@ -215,19 +196,6 @@ public class SessionManager {
 	 * @return ScrumRole
 	 */
 	public static ScrumRole getScrumRole(HttpServletRequest request, IProject project, AccountObject account) {
-//		// printAllSessionAttribute(request);
-//		String userID = account.getAccount();
-//		HttpSession session = request.getSession();
-//		String userPermessionNameForSession = userID + sessionAttributeNameForPermession;
-//		Map<String, ScrumRole> scrumRolesMap = (Map<String, ScrumRole>) session.getAttribute(userPermessionNameForSession);
-//		if (scrumRolesMap == null) {
-//			// scrumRolesMap = new ScrumRoleManager().getScrumRoles(account);
-//			scrumRolesMap = (new ScrumRoleLogic()).getScrumRoles(account);
-//			session.setAttribute(userPermessionNameForSession, scrumRolesMap);
-//		}
-//		ScrumRole scrumRole = scrumRolesMap.get(project.getName());
-//		return scrumRole;
-		
 		// ezScrum v1.8
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		return scrumRole;

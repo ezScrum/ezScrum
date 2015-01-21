@@ -27,7 +27,7 @@ public class AddSprintToRelease {
 	public void exe() throws Exception {
 		
 		for (int i=0 ; i<this.ProjectCount ; i++) {
-			String projectName = this.CP.PJ_NAME + Integer.toString((i+1));	// TEST_PROJECT_X
+			String projectName = this.CP.mProjectName + Integer.toString((i+1));	// TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
 			IProject project = this.projectMapper.getProjectByID(projectName);
 			// 此路徑為開發端的   TestData/MyWorkspace/

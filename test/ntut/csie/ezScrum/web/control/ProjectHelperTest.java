@@ -76,7 +76,7 @@ public class ProjectHelperTest extends TestCase {
     
     // 測試根據專案名稱取得專案
     public void testgetProject() {
-    	String name = this.CP.PJ_NAME + Integer.toString(this.CP.getProjectList().size());
+    	String name = this.CP.mProjectName + Integer.toString(this.CP.getProjectList().size());
 //    	IProject Expected = this.helper.getProjectByID(name);
     	IProject Expected = this.mapper.getProjectByID(name);
     	

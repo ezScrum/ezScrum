@@ -22,8 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.ITSInformation;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -48,24 +47,30 @@ public class SaveProjectAction extends Action {
 		String fromPage = request.getParameter("from");
 
 		// 取得所有專案的資訊
-		String pName = request.getParameter("Name");
-		String pDisplayName = request.getParameter("DisplayName");
-		String pComment = request.getParameter("Comment");
-		String pManager = request.getParameter("ProjectManager");
-		String pAttachFileSize = request.getParameter("AttachFileSize");
+		String name = request.getParameter("Name");
+		String displayName = request.getParameter("DisplayName");
+		String comment = request.getParameter("Comment");
+		String manager = request.getParameter("ProjectManager");
+		long attachFileSize = Long.parseLong(request.getParameter("AttachFileSize"));
 
-		if (pAttachFileSize == null) pAttachFileSize = "2";
-		if (pComment == null) pComment = "";
-		if (pManager == null) pManager = "";
+		if (attachFileSize == 0) attachFileSize = 2;
+		if (comment == null) comment = "";
+		if (manager == null) manager = "";
 
-		//	將參數物件化
-		ProjectObject projectInformation = new ProjectObject(pName, pDisplayName, pComment, pManager, pAttachFileSize);
-
-		//	透過project helper得到response text
+		// 將參數物件化
+		ProjectInfo projectInfo = new ProjectInfo();
+		projectInfo.name = name;
+		projectInfo.displayName = displayName;
+		projectInfo.common = comment;
+		projectInfo.manager = manager;
+		projectInfo.attachFileSize = attachFileSize;
+		
+		// 透過 project helper 得到 response text
 		ProjectHelper projectHelper = new ProjectHelper();
-		String saveProjectXML = projectHelper.getCreateProjectXML(request, userSession, fromPage, projectInformation);
+		String saveProjectXML = projectHelper.getCreateProjectXML(request,
+				userSession, fromPage, projectInfo);
 
-		//	設定response 內容和型態
+		// 設定 response 內容和型態
 		try {
 			response.setContentType("text/xml; charset=utf-8");
 			response.getWriter().write(saveProjectXML);
@@ -75,7 +80,7 @@ public class SaveProjectAction extends Action {
 			e.printStackTrace();
 		}
 
-		//	刪除Session中關於該使用者的所有專案權限。
+		// 刪除 Session 中關於該使用者的所有專案權限。
 		SessionManager.removeScrumRolesMap(request, account);
 
 		return null;

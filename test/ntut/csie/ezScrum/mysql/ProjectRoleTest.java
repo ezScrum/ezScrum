@@ -9,15 +9,15 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class ProjectRoleTest extends TestCase {
 	private MySQLService mService;
-	private Configuration configuration;
+	private Configuration mConfig;
 	private ProjectObject mProject;
 	private AccountObject mUser;
 	private String mUserId;
@@ -27,21 +27,25 @@ public class ProjectRoleTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.store();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mService = new MySQLService(configuration);
+		mService = new MySQLService(mConfig);
 		mService.openConnect();
 		
 		/**
 		 * set up a project and a user
 		 */
-		ProjectObject project = new ProjectObject("name", "name", "comment", "PO_YC", "2");
-		mService.createProject(project);
-		mProject = mService.getProjectByPid(project.getName());
+		ProjectObject project = new ProjectObject("name");
+		project.setDisplayName("name")
+			.setComment("comment")
+			.setManager("PO_YC")
+			.setAttachFileSize(2)
+			.save();
+		project.reload();
 		AccountInfo user = new AccountInfo("account", "user name", "password", "email", "true");
 		mService.createAccount(user);
 		mUser = mService.getAccount(user.getAccount());
@@ -49,19 +53,19 @@ public class ProjectRoleTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		mService.closeConnect();
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.store();
 		
 		mService = null;
-		configuration = null;
+		mConfig = null;
 		super.tearDown(); 
 	}
 	

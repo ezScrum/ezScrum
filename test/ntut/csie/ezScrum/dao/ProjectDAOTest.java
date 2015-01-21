@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -22,6 +26,7 @@ public class ProjectDAOTest extends TestCase {
 		super(testMethod);
 	}
 
+	@Before
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -36,6 +41,7 @@ public class ProjectDAOTest extends TestCase {
 		super.setUp();
 	}
 
+	@After
 	protected void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -54,12 +60,12 @@ public class ProjectDAOTest extends TestCase {
 		super.tearDown();
 	}
 
+	@Test
 	public void testCreate() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			ProjectObject project = new ProjectObject();
+			ProjectObject project = new ProjectObject("TEST_PROJECT_" + i + 1);
 			project
-			        .setName("TEST_PROJECT_" + i + 1)
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER");
@@ -89,12 +95,12 @@ public class ProjectDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGet() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			ProjectObject project = new ProjectObject();
+			ProjectObject project = new ProjectObject("TEST_PROJECT_" + i + 1);
 			project
-			        .setName("TEST_PROJECT_" + i + 1)
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER");
@@ -120,10 +126,10 @@ public class ProjectDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testUpdate() throws SQLException {
-		ProjectObject project = new ProjectObject();
+		ProjectObject project = new ProjectObject("TEST_PROJECT_1");
 		project
-		        .setName("TEST_PROJECT_1")
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER");
@@ -132,7 +138,6 @@ public class ProjectDAOTest extends TestCase {
 
 		project = ProjectDAO.getInstance().get(projectId);
 		project
-		        .setName("崩潰惹")
 		        .setDisplayName("含淚寫測試")
 		        .setComment("崩潰底霸格")
 		        .setManager("QAQ");
@@ -141,6 +146,7 @@ public class ProjectDAOTest extends TestCase {
 
 		ProjectObject theProject = ProjectDAO.getInstance().get(projectId);
 		assertEquals(theProject.getId(), project.getId());
+		assertEquals(theProject.getName(), project.getName());
 		assertEquals(theProject.getDisplayName(), project.getDisplayName());
 		assertEquals(theProject.getComment(), project.getComment());
 		assertEquals(theProject.getManager(), project.getManager());
@@ -148,12 +154,12 @@ public class ProjectDAOTest extends TestCase {
 		assertNotNull(theProject.getUpdateTime());
 	}
 
+	@Test
 	public void testDelete() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			ProjectObject project = new ProjectObject();
+			ProjectObject project = new ProjectObject("TEST_PROJECT_" + i + 1);
 			project
-			        .setName("TEST_PROJECT_" + i + 1)
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER");
@@ -184,18 +190,55 @@ public class ProjectDAOTest extends TestCase {
 		assertEquals(2, projects.size());
 	}
 
-	private ProjectObject convert(ResultSet result) throws SQLException {
-		long id = result.getLong(ProjectEnum.ID);
-		String name = result.getString(ProjectEnum.NAME);
-		String displayName = result.getString(ProjectEnum.DISPLAY_NAME);
-		String comment = result.getString(ProjectEnum.COMMENT);
-		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
-		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
-		long createDate = result.getLong(ProjectEnum.CREATE_TIME);
-		long updateTime = result.getLong(ProjectEnum.UPDATE_TIME);
+	@Test
+	public void testGetProjectByName() {
+		// create three test data
+		for (int i = 0; i < 3; i++) {
+			ProjectObject project = new ProjectObject("TEST_PROJECT_" + (i+1));
+			project
+			        .setDisplayName("TEST_DISPLATNAME_" + (i+1))
+			        .setComment("TEST_COMMON_" + (i+1))
+			        .setManager("TEST_MANAGER");
+			long projectId = ProjectDAO.getInstance().create(project);
+			assertNotSame(-1, projectId);
+		}
 
-		ProjectObject project = new ProjectObject(id, name, displayName, comment,
-		        productOwner, maxSize, createDate, updateTime);
+		// get project by name
+		ProjectObject theProject = ProjectDAO.getInstance().getProjectByName("TEST_PROJECT_1");
+
+		assertEquals(1, theProject.getId());
+		assertEquals("TEST_DISPLATNAME_1", theProject.getDisplayName());
+		assertEquals("TEST_COMMON_1", theProject.getComment());
+	}
+
+	@Test
+	public void testGetProjects() {
+		// create three test data
+		for (int i = 0; i < 3; i++) {
+			ProjectObject project = new ProjectObject("TEST_PROJECT_" + i + 1);
+			project
+			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
+			        .setComment("TEST_COMMON_" + i + 1)
+			        .setManager("TEST_MANAGER");
+			long projectId = ProjectDAO.getInstance().create(project);
+			assertNotSame(-1, projectId);
+		}
+		
+		ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getProjects();
+		
+		assertEquals(3, projects.size());
+	}
+
+	private ProjectObject convert(ResultSet result) throws SQLException {
+		ProjectObject project = new ProjectObject(result.getLong(ProjectEnum.ID),
+				result.getString(ProjectEnum.NAME));
+		project
+			.setDisplayName(result.getString(ProjectEnum.DISPLAY_NAME))
+			.setComment(result.getString(ProjectEnum.COMMENT))
+			.setManager(result.getString(ProjectEnum.PRODUCT_OWNER))
+			.setAttachFileSize(result.getLong(ProjectEnum.ATTATCH_MAX_SIZE))
+			.setCreateTime(result.getLong(ProjectEnum.CREATE_TIME))
+			.setUpdateTime(result.getLong(ProjectEnum.UPDATE_TIME));
 		return project;
 	}
 }

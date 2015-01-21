@@ -105,7 +105,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	 * ,"AttachFileSize":"2","ProjectCreateDate":"2013/04/15-21:55:19"}
 	 */
 	public void testAdminAjaxGetProjectDescriptionAction() {
-		ProjectObject project = this.CP.getProjectObjectList().get(0);
+		ProjectObject project = this.CP.getProjects().get(0);
 		String projectID = project.getName();
 
 		// ================ set URL parameter ========================
@@ -163,7 +163,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	 * ,"AttachFileSize":"2","ProjectCreateDate":"2013/04/15-21:55:19"}
 	 */
 	public void testUserAjaxGetProjectDescriptionAction_InProject() {
-		ProjectObject project = this.CP.getProjectObjectList().get(0);
+		ProjectObject project = this.CP.getProjects().get(0);
 		String projectID = project.getName();
 		AccountObject account = this.CA.getAccountList().get(0);
 

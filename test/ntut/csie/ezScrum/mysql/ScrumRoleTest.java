@@ -7,8 +7,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
@@ -34,9 +34,15 @@ public class ScrumRoleTest extends TestCase {
 		/**
 		 * set up a project
 		 */
-		ProjectObject project = new ProjectObject("name", "name", "comment", "PO_YC", "2");
-		mService.createProject(project);
-		mProject = mService.getProjectByPid(project.getName());
+		ProjectObject project = new ProjectObject("name");
+		project.setDisplayName("name")
+			.setComment("comment")
+			.setManager("PO_YC")
+			.setAttachFileSize(2)
+			.save();
+		project.reload();
+		
+		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
@@ -53,6 +59,7 @@ public class ScrumRoleTest extends TestCase {
 		
 		mService = null;
 		configuration = null;
+		
 		super.tearDown(); 
 	}
 	
@@ -67,9 +74,9 @@ public class ScrumRoleTest extends TestCase {
 	public void testUpdateScrumRole() {
 		RoleEnum role = RoleEnum.ProductOwner;
 		ScrumRole scrumRole = new ScrumRole(role);
-		String id = mProject.getId();
-		mService.createScrumRole(id, role, scrumRole);
-		boolean result = mService.updateScrumRole(id, role, scrumRole);
+		long projectId = mProject.getId();
+		mService.createScrumRole(projectId, role, scrumRole);
+		boolean result = mService.updateScrumRole(projectId, role, scrumRole);
 		
 		assertTrue(result);
 	}

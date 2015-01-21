@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
+import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
@@ -56,13 +57,40 @@ public class ProjectMapper {
 		project = mService.getProjectByPid(project.getName());
 		
 		// 新建 project，也把 serial number 建起來
-		long projectId = Long.parseLong(project.getId());
+		long projectId = project.getId();
 		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
 		serialnumberDAO.create(new SerialNumberObject(projectId
 				, 0, 0, 0, 0, 0, 0));
 
 		mService.closeConnect();
 		return project;
+	}
+	
+	public long createProject(ProjectInfo projectInfo) {
+		ProjectObject project = new ProjectObject(projectInfo.name);
+		project
+			.setDisplayName(projectInfo.displayName)
+			.setComment(projectInfo.common)
+			.setManager(projectInfo.manager)
+			.setAttachFileSize(projectInfo.attachFileSize)
+			.save();
+		project.reload();
+		
+		// 新建 project，也把 serial number 建起來
+		long projectId = project.getId();
+		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
+		serialnumberDAO.create(new SerialNumberObject(projectId
+				, 0, 0, 0, 0, 0, 0));
+				
+		return projectId;
+	}
+	
+	public ArrayList<ProjectObject> getProjects() {
+		return ProjectObject.getProjects();
+	}
+	
+	public boolean updateProject() {
+		
 	}
 
 	public boolean deleteProjectForDb(String id) {
@@ -87,7 +115,7 @@ public class ProjectMapper {
 		if (result == null) result = new ArrayList<ProjectObject>();
 		return result;
 	}
-
+	
 	public ProjectObject getProjectByIdForDb(String id) {
 		mService.openConnect();
 		ProjectObject result = mService.getProjectById(id);
@@ -127,7 +155,7 @@ public class ProjectMapper {
 		return result;
 	}
 
-	public void createScrumRole(String id) {
+	public void createScrumRole(long id) {
 		ScrumRole scrumRole;
 		mService.openConnect();
 		for (RoleEnum role : RoleEnum.values()) {

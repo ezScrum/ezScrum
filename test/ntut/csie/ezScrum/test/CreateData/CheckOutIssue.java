@@ -48,7 +48,7 @@ public class CheckOutIssue {
 		IUserSession userSession = configuration.getUserSession();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
+			String projectName = this.CP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
 			IProject project = this.projectMapper.getProjectByID(projectName);
 
@@ -73,7 +73,7 @@ public class CheckOutIssue {
 		IUserSession userSession = configuration.getUserSession();
 
 		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
+			String projectName = this.CP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
 			IProject project = this.projectMapper.getProjectByID(projectName);
 

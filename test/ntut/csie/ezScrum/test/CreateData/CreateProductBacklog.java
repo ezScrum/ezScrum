@@ -135,7 +135,7 @@ public class CreateProductBacklog {
 				}
 			} else if (this.Type.equals(TYPE_IMPORTANCE)) {
 				for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-					String projectName = this.CP.PJ_NAME + Integer.toString((i + 1));	// TEST_PROJECT_X
+					String projectName = this.CP.mProjectName + Integer.toString((i + 1));	// TEST_PROJECT_X
 					this.TEST_STORY_IMP = Integer.toString(this.Max_IMP);
 					this.TEST_STORY_EST = Integer.toString(this.Min_EST);
 

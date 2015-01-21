@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
@@ -102,7 +103,8 @@ public class ProjectHelper {
 		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
 	}
 
-	public String getCreateProjectXML(HttpServletRequest request, IUserSession userSession, String fromPage, ProjectObject projectInformation) {
+	public String getCreateProjectXML(HttpServletRequest request,
+			IUserSession userSession, String fromPage, ProjectInfo projectInfo) {
 		StringBuilder sb = new StringBuilder();
 		ProjectMapper projectMapper = new ProjectMapper();
 		sb.append("<Root>");
@@ -115,7 +117,7 @@ public class ProjectHelper {
 				IProject project = null;
 				try {
 					// 轉換格式
-					ProjectInfoForm projectInfoForm = this.convertProjectInfo(projectInformation);
+					ProjectInfoForm projectInfoForm = convertProjectInfo(projectInfo);
 
 					project = projectMapper.createProject(userSession, projectInfoForm);
 
@@ -153,12 +155,12 @@ public class ProjectHelper {
 		return mProjectMapper.getProjectMemberListForDb(project.getId());
 	}
 
-	private ProjectInfoForm convertProjectInfo(ProjectObject projectInformation) {
-		String name = projectInformation.getName();
-		String displayName = projectInformation.getDisplayName();
-		String comment = projectInformation.getComment();
-		String manager = projectInformation.getManager();
-		String attachFileSize = projectInformation.getAttachFileSize();
+	private ProjectInfoForm convertProjectInfo(ProjectInfo projectInfo) {
+		String name = projectInfo.name;
+		String displayName = projectInfo.displayName;
+		String comment = projectInfo.common;
+		String manager = projectInfo.manager;
+		long attachFileSize = projectInfo.attachFileSize;
 
 		ProjectInfoForm saveProjectInfoForm = new ProjectInfoForm();
 		// 塞入假資料

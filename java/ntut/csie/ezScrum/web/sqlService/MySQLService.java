@@ -243,22 +243,22 @@ public class MySQLService {
 	 * -------------------------------------------
 	 */
 	
-	public boolean createProject(ProjectObject project) {
-		String createTime = String.valueOf(System.currentTimeMillis());
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addInsertValue(ProjectEnum.PID, project.getName());
-		valueSet.addInsertValue(ProjectEnum.NAME, project.getDisplayName());
-		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
-		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
-		if (!project.getAttachFileSize().isEmpty()) {
-			valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		}
-		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
-		String query = valueSet.getInsertQuery();
-		return mControl.executeUpdate(query);
-	}
+//	public boolean createProject(ProjectObject project) {
+//		String createTime = String.valueOf(System.currentTimeMillis());
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//		valueSet.addInsertValue(ProjectEnum.PID, project.getName());
+//		valueSet.addInsertValue(ProjectEnum.NAME, project.getDisplayName());
+//		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
+//		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
+//		if (!project.getAttachFileSize().isEmpty()) {
+//			valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
+//		}
+//		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
+//		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
+//		String query = valueSet.getInsertQuery();
+//		return mControl.executeUpdate(query);
+//	}
 	
 	public boolean deleteProject(String id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -355,7 +355,7 @@ public class MySQLService {
 	 * -------------------------------------------
 	 */
 	
-	public boolean createProjectRole(String projectId, String accountId, RoleEnum role) {
+	public boolean createProjectRole(long projectId, String accountId, RoleEnum role) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectRoleEnum.PROJECT_ID, projectId);
@@ -367,7 +367,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public boolean deleteProjectRole(String projectId, String accountId, RoleEnum role) {
+	public boolean deleteProjectRole(long projectId, String accountId, RoleEnum role) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
 		valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, projectId);
@@ -377,7 +377,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public List<AccountObject> getProjectMemberList(String id) {
+	public List<AccountObject> getProjectMemberList(long id) {
 		try {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
@@ -496,7 +496,7 @@ public class MySQLService {
 	 * -------------------------------------------
 	 */
 	
-	public boolean createScrumRole(String projectId, RoleEnum role, ScrumRole scrumRole) {
+	public boolean createScrumRole(long projectId, RoleEnum role, ScrumRole scrumRole) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
 		valueSet.addInsertValue(ScrumRoleEnum.PROJECT_ID, projectId);
@@ -516,7 +516,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public boolean updateScrumRole(String projectId, RoleEnum role, ScrumRole scrumRole) {
+	public boolean updateScrumRole(long projectId, RoleEnum role, ScrumRole scrumRole) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
 		valueSet.addEqualCondition(ScrumRoleEnum.PROJECT_ID, projectId);
@@ -535,7 +535,7 @@ public class MySQLService {
 		return mControl.executeUpdate(query);
 	}
 	
-	public ScrumRole getScrumRole(String id, String projectId, RoleEnum role) {
+	public ScrumRole getScrumRole(long id, long projectId, RoleEnum role) {
 		try {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
@@ -552,7 +552,7 @@ public class MySQLService {
 		return null;
 	}
 	
-	private ScrumRole getScrumRole(String projectId, String role, ResultSet result) throws SQLException {
+	private ScrumRole getScrumRole(long projectId, String role, ResultSet result) throws SQLException {
 		ScrumRole scrumRole = new ScrumRole(projectId, role);
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
 		scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
@@ -567,7 +567,7 @@ public class MySQLService {
 		return scrumRole;
 	}
 	
-	public List<AccountObject> getProjectWorkerList(String id) {
+	public List<AccountObject> getProjectWorkerList(long id) {
 		try {
 			MySQLQuerySet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);

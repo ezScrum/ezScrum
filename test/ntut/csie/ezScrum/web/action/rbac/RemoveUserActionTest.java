@@ -309,7 +309,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();			// 取得第一筆  ID
 		String userAccount = account.getAccount();	// 取得第一筆 Account ID
-		String projectID = this.CP.getProjectObjectList().get(0).getId();
+		String projectID = this.CP.getProjects().get(0).getId();
 
 		/**
 		 * 3. admin 指定 user 到專案中擔任 PO (將 user 加入測試專案一的 PO)

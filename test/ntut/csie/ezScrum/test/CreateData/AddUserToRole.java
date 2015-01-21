@@ -26,7 +26,7 @@ public class AddUserToRole {
 
 		this.theAccount = this.CA.getAccountList().get(0);
 		this.theProject = this.CP.getProjectList().get(0);
-		this.projectObject = this.CP.getProjectObjectList().get(0);
+		this.projectObject = this.CP.getProjects().get(0);
 	}
 
 	/**

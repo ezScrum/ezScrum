@@ -218,8 +218,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();		// 取得第一筆 Account ID
-		String projectId = this.CP.getProjectObjectList().get(0).getId();
-		String pid = this.CP.getProjectObjectList().get(0).getName();
+		String projectId = this.CP.getProjects().get(0).getId();
+		String pid = this.CP.getProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project
@@ -339,7 +339,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		userSession = getUserSession(new AccountMapper().getAccountById(userId));
 		// ================ clean previous action info ========================
 		cleanActionInformation();
-		ProjectObject projectObject = this.CP.getProjectObjectList().get(0);
+		ProjectObject projectObject = this.CP.getProjects().get(0);
 		IProject project = this.CP.getProjectList().get(0);
 
 		// ================ set action info ========================

@@ -15,7 +15,7 @@ import org.codehaus.jettison.json.JSONObject;
  * @author cutecool
  * 
  */
-public class ProjectObject {
+public class ProjectObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 
 	// 取得所有專案的資訊
@@ -24,37 +24,42 @@ public class ProjectObject {
 	private String mDisplayName = "";
 	private String mComment = "";
 	private String mManager = "";
-	private String mAttachFileSize = "";
+	private long mAttachFileSize = DEFAULT_VALUE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
 
-	public ProjectObject(long id, String name, String displayName, String comment,
-			String manager, String attachFileSize, long createDate, long updateTime) {
-		mId = id;
-		setName(name);
-		setDisplayName(displayName);
-		setComment(comment);
-		setManager(manager);
-		setAttachFileSize(attachFileSize);
-		setCreateTime(createDate);
-		setUpdateTime(updateTime);
-	}
-
-	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
-		setName(name);
-		setDisplayName(displayName);
-		setComment(comment);
-		setManager(manager);
-		setAttachFileSize(attachFileSize);
-	}
-
-	public ProjectObject() {}
-
-	public ProjectObject setName(String name) {
+//	public ProjectObject(long id, String name, String displayName, String comment,
+//			String manager, String attachFileSize, long createDate, long updateTime) {
+//		mId = id;
+//		mName = name;
+//		setDisplayName(displayName);
+//		setComment(comment);
+//		setManager(manager);
+//		setAttachFileSize(attachFileSize);
+//		setCreateTime(createDate);
+//		setUpdateTime(updateTime);
+//	}
+//
+//	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
+//		mName = name;
+//		setDisplayName(displayName);
+//		setComment(comment);
+//		setManager(manager);
+//		setAttachFileSize(attachFileSize);
+//	}
+//
+//	public ProjectObject() {
+//	}
+	
+	public ProjectObject(String name) {
 		mName = name;
-		return this;
 	}
-
+	
+	public ProjectObject(long id, String name) {
+		mId = id;
+		mName = name;
+	}
+	
 	public String getName() {
 		return mName;
 	}
@@ -86,12 +91,12 @@ public class ProjectObject {
 		return mManager;
 	}
 
-	public ProjectObject setAttachFileSize(String attachFileSize) {
+	public ProjectObject setAttachFileSize(long attachFileSize) {
 		mAttachFileSize = attachFileSize;
 		return this;
 	}
 
-	public String getAttachFileSize() {
+	public long getAttachFileSize() {
 		return mAttachFileSize;
 	}
 
@@ -141,5 +146,60 @@ public class ProjectObject {
 
 	public static ArrayList<ProjectObject> getProjects() {
 		return ProjectDAO.getInstance().getProjects();
+	}
+
+	@Override
+    public void save() {
+		if (recordExists()) {
+			doUpdate();			
+		} else {
+			doCreate();
+		}
+    }
+
+	@Override
+    public void reload() {
+		if (recordExists()) {
+			ProjectObject project = ProjectDAO.getInstance().get(mId);
+			if (project != null) {
+				resetData(project);
+			}
+		}
+    }
+
+	@Override
+    public boolean delete() {
+		boolean success = ProjectDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+		}
+		return success;
+    }
+	
+	private boolean recordExists() {
+		return mId > 0;
+	}
+	
+	private void resetData(ProjectObject project) {
+		mId = project.getId();
+		mName = project.getName();
+		mDisplayName = project.getDisplayName();
+		mComment = project.getComment();
+		mAttachFileSize = project.getAttachFileSize();
+		mManager = project.getManager();
+		mCreateTime = project.getCreateTime();
+		mUpdateTime = project.getUpdateTime();
+	}
+	
+	private void doCreate() {
+		mId = ProjectDAO.getInstance().create(this);
+		try {
+	        reload();
+        } catch (Exception e) {
+        }
+	}
+	
+	private void doUpdate() {
+		ProjectDAO.getInstance().update(this);
 	}
 }
