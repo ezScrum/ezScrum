@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from Selenium2Library import Selenium2Library
-from selenium.webdriver.common.action_chains import ActionChains
 
 
 class Selenium2Improved(Selenium2Library):
@@ -12,20 +11,6 @@ class Selenium2Improved(Selenium2Library):
                  run_on_failure='Capture Page Screenshot'):
         super(Selenium2Improved, self).__init__()
 
-    def mouse_down_at(self, locator, coordx, coordy):
-        element = self._element_find(locator, True, False)
-        if element is None:
-            raise AssertionError("ERROR: Element %s not found." % (locator))
-        ActionChains(self._current_browser()).move_to_element(
-            element).move_by_offset(coordx, coordy).click_and_hold().perform()
-
-    def mouse_up_at(self, locator, coordx, coordy):
-        element = self._element_find(locator, True, False)
-        if element is None:
-            raise AssertionError("ERROR: Element %s not found." % (locator))
-        ActionChains(self._current_browser()).move_to_element(
-            element).move_by_offset(coordx, coordy).release().perform()
-
     def open_tab(self, url, alias):
         """
         Selenium1 的 Open Window 功能已被移除
@@ -35,8 +20,4 @@ class Selenium2Improved(Selenium2Library):
         借此區別新舊 Tab
         """
         driver = self._current_browser()
-        driver.execute_script("window.open('" + url + "');")
-
-        driver.implicitly_wait(1)
-        driver.execute_script(
-            "document.title = 'Original Tab';")
+        driver.execute_script("window.open('" + url + "', '_blank');")
