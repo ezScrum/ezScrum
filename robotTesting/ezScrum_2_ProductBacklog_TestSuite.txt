@@ -73,7 +73,7 @@ Test ProductBacklog - Create Story
     [Setup]    Test Create Story Setup
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
-    ...    HowToDemo: newStory
+    ...    HowToDemo: newStory    testTagName
     [Teardown]    Test Create Story Teardown
 
 Test ProductBacklog - Create Story With Invalid Value
