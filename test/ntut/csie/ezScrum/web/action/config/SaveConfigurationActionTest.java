@@ -47,7 +47,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	protected void tearDown() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);

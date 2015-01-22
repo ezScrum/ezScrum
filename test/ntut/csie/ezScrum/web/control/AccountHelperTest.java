@@ -34,7 +34,7 @@ public class AccountHelperTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
@@ -64,7 +64,7 @@ public class AccountHelperTest extends TestCase {
     	copyProject.exeCopy_Delete_Project();
     	
     	configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
     	
     	super.tearDown();
     	

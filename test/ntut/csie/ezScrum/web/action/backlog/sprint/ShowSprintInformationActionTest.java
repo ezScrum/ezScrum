@@ -36,7 +36,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);
@@ -68,7 +68,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 
 		// ============= release ==============
 		ini = null;

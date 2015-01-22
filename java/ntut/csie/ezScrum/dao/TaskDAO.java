@@ -168,6 +168,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
 					IssueTypeEnum.TYPE_TASK);
 			String query = valueSet.getInsertQuery();
+			System.out.println(query);
 			id = mControl.executeInsert(query);
 		}
 

@@ -26,7 +26,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -63,7 +63,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 
 		super.tearDown();
 

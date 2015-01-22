@@ -35,7 +35,7 @@ public class UnplannedItemMapperTest extends TestCase {
 	protected void setUp() throws InterruptedException {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
@@ -76,7 +76,7 @@ public class UnplannedItemMapperTest extends TestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;

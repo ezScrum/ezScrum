@@ -34,7 +34,7 @@ public class AjaxGetStoryCountActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		super.setUp();
 		
@@ -70,7 +70,7 @@ public class AjaxGetStoryCountActionTest extends MockStrutsTestCase {
 		copyProject.exeDelete_Project(); // 刪除測試檔案
 
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 
 		// ============= release ==============
 		ini = null;

@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
@@ -36,13 +37,13 @@ public class SprintBacklogMapper {
 	private double mLimitedPoint = 0;
 
 	private ArrayList<IIssue> mStories = null;
-	private List<TaskObject> mTasks = null;
+	private ArrayList<TaskObject> mTasks = null;
 	private ArrayList<IIssue> mDropedStories = null;
 	private ArrayList<IIssue> mAllIssues = null;
 
 	// 用於紀錄Story與Task之間的Mapping
 	LinkedHashMap<Long, ArrayList<TaskObject>> mMapStoryTasks = null;
-	LinkedHashMap<Long, IIssue[]> mMapDropedStoryTasks = null;
+	LinkedHashMap<Long, ArrayList<TaskObject>> mMapDropedStoryTasks = null;
 	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 	private boolean mUpdateFlag = true;
 
@@ -63,7 +64,7 @@ public class SprintBacklogMapper {
 		}
 
 		initSprintInformation();
-		initITSInformation();
+		initConfig();
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class SprintBacklogMapper {
 		mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
 
 		initSprintInformation();
-		initITSInformation();
+		initConfig();
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class SprintBacklogMapper {
 	/**
 	 * 初始 mMantisService 的設定
 	 */
-	private void initITSInformation() {
+	private void initConfig() {
 		mConfig = new Configuration(mUserSession);
 		mMantisService = new MantisService(mConfig);
 	}
@@ -141,12 +142,12 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	public List<TaskObject> getTasks() {
+	public ArrayList<TaskObject> getTasks() {
 		refresh();
 		return mTasks;
 	}
 
-	public Map<Long, IIssue[]> getDropedTaskMap() {
+	public Map<Long, ArrayList<TaskObject>> getDropedTaskMap() {
 		if (mMapDropedStoryTasks == null) {
 			getDropedStory();
 		}
@@ -245,20 +246,19 @@ public class SprintBacklogMapper {
 		}
 
 		// 取得這些被 Dropped Story 的 Task
-		mMapDropedStoryTasks = new LinkedHashMap<Long, IIssue[]>();
-		ArrayList<IIssue> tmpList = new ArrayList<IIssue>();
+		mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
+		ArrayList<TaskObject> tmpList = new ArrayList<TaskObject>();
 		for (IIssue issue : mDropedStories) {
 			tmpList.clear();
 
 			List<Long> childList = issue.getChildrenId();
 
 			for (Long id : childList) {
-				IIssue tmp = mMantisService.getIssue(id);
+				TaskObject tmp = TaskObject.get(id);
 				if (tmp != null)
 					tmpList.add(tmp);
 			}
-			mMapDropedStoryTasks.put(issue.getIssueID(),
-					tmpList.toArray(new IIssue[tmpList.size()]));
+			mMapDropedStoryTasks.put(issue.getIssueID(), tmpList);
 		}
 
 		mMantisService.closeConnect();
@@ -273,26 +273,22 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void updateTask(long taskId, String name, int estimate, int remains,
-			long handlerId, ArrayList<Long> partners, int actualHour,
-			String notes, Date modifyDate) {
+	public void updateTask(long taskId, TaskInfo taskInfo) {
 
 		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setEstimate(estimate)
-					.setRemains(remains).setActual(actualHour).setNotes(notes)
-					.setPartnersId(partners).save();
+			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate)
+					.setRemains(taskInfo.remains).setActual(taskInfo.actualHour).setNotes(taskInfo.notes)
+					.setPartnersId(taskInfo.partnersId).save();
 		}
 	}
 
 	// for ezScrum 1.8
-	public long addTask(long projectId, String name, String notes,
-			int estimate, long handlerId, ArrayList<Long> partners,
-			long storyId, Date date) {
+	public long addTask(long projectId, TaskInfo taskInfo) {
 		TaskObject task = new TaskObject(projectId);
-		task.setName(name).setNotes(notes).setStoryId(storyId)
-				.setHandlerId(handlerId).setEstimate(estimate).setActual(0)
-				.setPartnersId(partners).setCreateTime(date.getTime()).save();
+		task.setName(taskInfo.name).setNotes(taskInfo.notes).setStoryId(taskInfo.storyId)
+				.setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate).setActual(0)
+				.setPartnersId(taskInfo.partnersId).setCreateTime(taskInfo.specificTime).save();
 		mUpdateFlag = true;
 		return task.getId();
 	}
@@ -379,6 +375,7 @@ public class SprintBacklogMapper {
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
+	// for ezScrum 1.8
 	public void doneTask(long id, String name, String notes, Date changeDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
@@ -388,6 +385,7 @@ public class SprintBacklogMapper {
 		}
 	}
 
+	// for ezScrum 1.8
 	public void resetTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
@@ -396,6 +394,7 @@ public class SprintBacklogMapper {
 		}
 	}
 
+	// for ezScrum 1.8
 	public void checkOutTask(long id, String name, long handlerId,
 			ArrayList<Long> partners, String notes, Date changeDate) {
 		TaskObject task = TaskObject.get(id);
@@ -406,6 +405,7 @@ public class SprintBacklogMapper {
 		}
 	}
 
+	// for ezScrum 1.8
 	public void deleteTask(long id, long parentId) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {

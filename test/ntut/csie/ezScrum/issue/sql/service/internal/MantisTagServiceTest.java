@@ -40,7 +40,7 @@ public class MantisTagServiceTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
@@ -84,7 +84,7 @@ public class MantisTagServiceTest extends TestCase {
 		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
     	
     	// ============= release ==============
     	ini = null;

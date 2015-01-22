@@ -28,7 +28,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(configuration);
@@ -63,7 +63,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 
 		super.tearDown();
 		

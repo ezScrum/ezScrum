@@ -41,7 +41,7 @@ public class TableCreaterTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);
@@ -85,7 +85,7 @@ public class TableCreaterTest extends TestCase {
 		copyProject.exeDelete_Project();					// 刪除測試檔案	
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 	
 		
 		// ============= release ==============

@@ -14,7 +14,7 @@ public class ConfigurationTest extends TestCase{
     protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		super.setUp();
     }
@@ -24,7 +24,7 @@ public class ConfigurationTest extends TestCase{
 	    super.tearDown();
 	    
 	    configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		// ============= release ==============
 		configuration = null;
@@ -48,7 +48,7 @@ public class ConfigurationTest extends TestCase{
 		configuration.setDBAccount(expectDBAccount);
 		configuration.setDBType(expectDBType);
 		configuration.setDBName(expectDBName);
-		configuration.store();
+		configuration.save();
 		
 		// assertions
 		assertEquals(expectServerUrl, configuration.getServerUrl());
@@ -61,6 +61,6 @@ public class ConfigurationTest extends TestCase{
 		configuration.setDBAccount(originalDBAccount);
 		configuration.setDBType(originalDBType);
 		configuration.setDBName(originalDBName);
-		configuration.store();
+		configuration.save();
 	}
 }

@@ -77,7 +77,7 @@ public class Configuration {
 	/**
 	 * save changes to ini file
 	 */
-	public void store() {
+	public void save() {
 		List<String> list = new ArrayList<String>();
 		BufferedReader bufferedReader = null;
 		BufferedWriter bufferedWriter = null;

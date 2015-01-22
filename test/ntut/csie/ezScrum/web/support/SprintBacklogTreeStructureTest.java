@@ -28,7 +28,7 @@ public class SprintBacklogTreeStructureTest extends TestCase {
 	protected void setUp(){
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		this.story = new Issue();
 		this.story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
@@ -40,7 +40,7 @@ public class SprintBacklogTreeStructureTest extends TestCase {
 
     protected void tearDown(){
     	configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
     	this.story = null;
     	this.task = null;
     	this.root = null;

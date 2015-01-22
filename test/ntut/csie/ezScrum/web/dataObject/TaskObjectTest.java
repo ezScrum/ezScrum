@@ -32,7 +32,7 @@ public class TaskObjectTest {
 	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();

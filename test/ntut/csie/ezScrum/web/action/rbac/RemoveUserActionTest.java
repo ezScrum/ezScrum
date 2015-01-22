@@ -53,7 +53,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
@@ -87,7 +87,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 
 		super.tearDown();
 

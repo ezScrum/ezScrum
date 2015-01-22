@@ -29,7 +29,7 @@ public class TaskDAOTest extends TestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();

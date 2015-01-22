@@ -29,7 +29,7 @@ public class ProjectRoleTest extends TestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -62,7 +62,7 @@ public class ProjectRoleTest extends TestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 		
 		mService = null;
 		mConfig = null;

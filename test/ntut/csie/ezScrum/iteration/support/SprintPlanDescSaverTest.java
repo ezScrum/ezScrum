@@ -33,7 +33,7 @@ public class SprintPlanDescSaverTest extends TestCase {
 		
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		// initial SQL
 		InitialSQL init = new InitialSQL(configuration);
@@ -61,7 +61,7 @@ public class SprintPlanDescSaverTest extends TestCase {
 		cp.exeDelete_Project();
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		// release
 		init = null;

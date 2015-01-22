@@ -17,7 +17,7 @@ public class LoginWebServiceTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);
@@ -35,7 +35,7 @@ public class LoginWebServiceTest extends TestCase {
 		ini.exe();
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		configuration = null;
 		

@@ -38,7 +38,7 @@ public class ProductBacklogMapperTest extends TestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
@@ -77,7 +77,7 @@ public class ProductBacklogMapperTest extends TestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;

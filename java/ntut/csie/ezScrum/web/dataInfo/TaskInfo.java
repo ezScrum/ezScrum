@@ -1,9 +1,17 @@
 package ntut.csie.ezScrum.web.dataInfo;
 
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class TaskInfo {
-	public long serialId, handlerId = -1, projectId, storyId, specificTime = 0;
+	private long projectId = -1;
+	public long serialId, handlerId = -1, storyId, specificTime = 0;
 	public String name, notes;
-	public int estiamte, remains, actual, status = TaskObject.STATUS_UNCHECK;
+	public int estimate, remains, actualHour, status = TaskObject.STATUS_UNCHECK;
+	public ArrayList<Long> partnersId;
+	
+	public TaskInfo(long projectId) {
+		this.projectId = projectId;
+	}
 }

@@ -36,7 +36,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -69,7 +69,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 
 		super.tearDown();
 

@@ -24,7 +24,7 @@ public class ScrumRoleTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
@@ -55,7 +55,7 @@ public class ScrumRoleTest extends TestCase {
 		projectManager.initialRoleBase(configuration.getDataPath());
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		mService = null;
 		configuration = null;

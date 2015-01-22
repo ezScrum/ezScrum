@@ -19,7 +19,7 @@ public class SprintBacklogHelperTest extends TestCase {
 	protected void setUp() {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 //		this.helper = new SprintBacklogHelper();
 		this.sprintBacklogLogic = new SprintBacklogLogic();
     }
@@ -27,7 +27,7 @@ public class SprintBacklogHelperTest extends TestCase {
     protected void tearDown() {
 //    	this.helper = null;
     	configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
     	this.sprintBacklogLogic = null;
     }

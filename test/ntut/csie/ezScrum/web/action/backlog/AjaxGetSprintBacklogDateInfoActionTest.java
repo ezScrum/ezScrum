@@ -23,7 +23,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL
@@ -52,7 +52,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		copyProject.exeDelete_Project(); // 刪除測試檔案
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 
 		// ============= release ==============
 		ini = null;

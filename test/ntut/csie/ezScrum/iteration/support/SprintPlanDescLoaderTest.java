@@ -31,7 +31,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 	protected void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		super.setUp();
 		
 		// initial SQL
@@ -60,7 +60,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		cp.exeDelete_Project();
 		
 		configuration.setTestMode(false);
-		configuration.store();
+		configuration.save();
 		
 		// release
 		init = null;
