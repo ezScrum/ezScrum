@@ -260,94 +260,94 @@ public class MySQLService {
 //		return mControl.executeUpdate(query);
 //	}
 	
-	public boolean deleteProject(String id) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, id);
-		String query = valueSet.getDeleteQuery();
-		return mControl.executeUpdate(query);
-	}
+//	public boolean deleteProject(String id) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, id);
+//		String query = valueSet.getDeleteQuery();
+//		return mControl.executeUpdate(query);
+//	}
 	
-	public boolean updateProject(ProjectObject project) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, project.getName());
-		valueSet.addInsertValue(ProjectEnum.NAME, project.getDisplayName());
-		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
-		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
-		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getUpdateQuery();
-		return mControl.executeUpdate(query);
-	}
+//	public boolean updateProject(ProjectObject project) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, project.getName());
+//		valueSet.addInsertValue(ProjectEnum.NAME, project.getDisplayName());
+//		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
+//		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
+//		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
+//		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+//		String query = valueSet.getUpdateQuery();
+//		return mControl.executeUpdate(query);
+//	}
 	
-	public List<ProjectObject> getProjectList() {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(ProjectEnum.TABLE_NAME);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			List<ProjectObject> list = new ArrayList<ProjectObject>();
-			if (result.next()) {
-				do {
-					list.add(getProject(result));
-				} while (result.next());
-				return list;
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public List<ProjectObject> getProjectList() {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			List<ProjectObject> list = new ArrayList<ProjectObject>();
+//			if (result.next()) {
+//				do {
+//					list.add(getProject(result));
+//				} while (result.next());
+//				return list;
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
-	public ProjectObject getProjectById(String id) {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(ProjectEnum.TABLE_NAME);
-			valueSet.addEqualCondition(ProjectEnum.ID, id);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			if (result.first()) {
-				return getProject(result);
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public ProjectObject getProjectById(String id) {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//			valueSet.addEqualCondition(ProjectEnum.ID, id);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			if (result.first()) {
+//				return getProject(result);
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
-	public ProjectObject getProjectByPid(String pid) {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(ProjectEnum.TABLE_NAME);
-			valueSet.addTextFieldEqualCondition(ProjectEnum.PID, pid);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			if (result.first()) {
-				return getProject(result);
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public ProjectObject getProjectByPid(String pid) {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(ProjectEnum.TABLE_NAME);
+//			valueSet.addTextFieldEqualCondition(ProjectEnum.PID, pid);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			if (result.first()) {
+//				return getProject(result);
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
-	private ProjectObject getProject(ResultSet result) throws SQLException {
-		String id = result.getString(ProjectEnum.ID);
-		String pid = result.getString(ProjectEnum.PID);
-		String name = result.getString(ProjectEnum.NAME);
-		String comment = result.getString(ProjectEnum.COMMENT);
-		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
-		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
-		long createDate = result.getLong(ProjectEnum.CREATE_TIME);
-		return new ProjectObject(id, pid, name, comment, productOwner, maxSize, createDate);
-	}
+//	private ProjectObject getProject(ResultSet result) throws SQLException {
+//		String id = result.getString(ProjectEnum.ID);
+//		String pid = result.getString(ProjectEnum.PID);
+//		String name = result.getString(ProjectEnum.NAME);
+//		String comment = result.getString(ProjectEnum.COMMENT);
+//		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
+//		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
+//		long createDate = result.getLong(ProjectEnum.CREATE_TIME);
+//		return new ProjectObject(id, pid, name, comment, productOwner, maxSize, createDate);
+//	}
 	
 	/**
 	 * -------------------------------------------

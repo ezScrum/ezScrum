@@ -9,50 +9,31 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
-import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IActor;
-import ntut.csie.jcis.account.core.IPermission;
 import ntut.csie.jcis.account.core.IRole;
 
 public class AccountHelper {
-
-	// from GetAssignedProjectAction
 	private final String SYSTEM = "system";
 	private AccountMapper mAccountMapper;
 	private IUserSession mUserSession;
-//	private HashMap<String, RoleEnum> mRoleMap;
 	public AccountHelper() {
 		mAccountMapper = new AccountMapper();
-//		initRoleMap();
 	}
 	
 	public AccountHelper(IUserSession userSession) {
 		mUserSession = userSession;
 		mAccountMapper = new AccountMapper(null, mUserSession);
-//		initRoleMap();
 	}
 
-//	private void initRoleMap() {
-//		mRoleMap = new HashMap<String, RoleEnum>();
-//		mRoleMap.put("ProductOwner", RoleEnum.ProductOwner);
-//		mRoleMap.put("ScrumMaster", RoleEnum.ScrumMaster);
-//		mRoleMap.put("ScrumTeam", RoleEnum.ScrumTeam);
-//		mRoleMap.put("Stakeholder", RoleEnum.Stakeholder);
-//		mRoleMap.put("Guest", RoleEnum.Guest);
-//	}
-	
 	public String validateAccountID(String id) {
 
 		// 判斷帳號是否符合只有英文+數字的格式
@@ -92,62 +73,6 @@ public class AccountHelper {
 	 * @return
 	 */
 	public String getAssignedProject(String id) {
-//		IAccount account = mAccountMapper.getAccountById(id);
-//		IRole[] roleList = account.getRoles();
-//		List<String> assignedProject = new ArrayList<String>();
-//
-//		StringBuilder sb = new StringBuilder();
-//
-//		// 取得帳號的Assign資訊
-//		sb.append("<AssignRoleInfo>");
-//		sb.append("<Account>");
-//		// Account Info
-//		sb.append("<ID>" + account.getID() + "</ID>");
-//		sb.append("<Name>" + account.getName() + "</Name>");
-//
-//		// Assign Roles
-//		sb.append("<Roles>");
-//		for (IRole role : roleList) {
-//			IPermission[] permissions = role.getPermisions();
-//			if (permissions != null) {
-//				for (IPermission permission : permissions) {
-//					String resource = permission.getResourceName();
-//					String operation = permission.getOperation();
-//					if (resource.equals("system") && (operation.equals("read") || operation.equals("createProject"))) continue;
-//					sb.append("<Assigned>");
-//					sb.append("<Resource>" + resource + "</Resource>");
-//					sb.append("<Operation>" + operation + "</Operation>");
-//					sb.append("</Assigned>");
-//					// 記錄此project為assigned
-//					assignedProject.add(resource);
-//				}
-//			}
-//		}
-//		sb.append("</Roles>");
-//
-//		// 取得尚未被Assign的專案資訊
-//		ProjectLogic projectLogic = new ProjectLogic();
-//		List<ProjectInformation> projects = projectLogic.getAllProjectsForDb();
-//
-//		for (ProjectInformation project : projects) {
-//			String resource = project.getName();
-//			// 如果project沒有被assigned權限，則代表為unassigned的project
-//			if (!assignedProject.contains(resource)) {
-//				sb.append("<Unassigned><ResourceId>")
-//				.append(project.getId())
-//				.append("</ResourceId><Resource>")
-//				.append(resource)
-//				.append("</Resource></Unassigned>");
-//			}
-//		}
-//		// 判斷是否為administrator
-//		if (!assignedProject.contains(this.SYSTEM)) sb.append("<Unassigned><Resource>" + this.SYSTEM + "</Resource></Unassigned>");
-//
-//		sb.append("</Account>");
-//		sb.append("</AssignRoleInfo>");
-//
-//		return sb.toString();
-		
 		// ezScrum v1.8
 		AccountObject account = mAccountMapper.getAccountById(id);
 		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(id);
@@ -168,7 +93,6 @@ public class AccountHelper {
 			ProjectObject project = entry.getValue().getProject();
 			String resource = permission.getProjectName();
 			String operation = permission.getRoleName();
-//			if (resource.equals("system") && (operation.equals("read") || operation.equals("createProject"))) continue;
 			assignRoleInfo.append("<Assigned>")
 			  			  .append("<ResourceId>").append(project.getId()).append("</ResourceId>")
 						  .append("<Resource>").append(resource).append("</Resource>")
@@ -180,7 +104,7 @@ public class AccountHelper {
 		
 		// UnAssign Roles
 		ProjectLogic projectLogic = new ProjectLogic();
-		List<ProjectObject> projects = projectLogic.getAllProjectsForDb();
+		ArrayList<ProjectObject> projects = projectLogic.getProjects();
 		for (ProjectObject project : projects) {
 			String resource = project.getName();
 			// 如果project沒有被assigned權限，則代表為unassigned的project
@@ -200,21 +124,6 @@ public class AccountHelper {
 		return assignRoleInfo.toString();
 	}
 	public AccountObject assignRole_add(String id, String res, String op) throws Exception {
-//		IAccount account = mAccountMapper.getAccountById(id);
-//		IRole[] roles = account.getRoles();
-//		String role = "";
-//		if (res.equals(ScrumEnum.SYSTEM)) role = op;
-//		else role = res + "_" + op;
-//		List<String> roleList = this.translateRoleString(roles, role);
-//
-//		// 進行帳號更新的動作, 並且將帳號 Assign Roles
-//		mAccountMapper.addRole(mUserSession, account, roleList, id, res, op);
-//
-//		account = mAccountMapper.getAccountById(id);
-//		(new ScrumRoleLogic()).setScrumRoles(mUserSession.getAccount());// reset Project<-->ScrumRole map
-//
-//		return account;
-		
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
@@ -226,23 +135,6 @@ public class AccountHelper {
 	}
 
 	public AccountObject assignRole_remove(String id, String res, String op) throws Exception {
-//		IAccount account = mAccountMapper.getAccountById(id);
-//		IRole[] roles = account.getRoles();
-//
-//		String role = "";
-//		if (res.equals(ScrumEnum.SYSTEM)) role = op;
-//		else role = res + "_" + op;
-//
-//		List<String> roleList = this.translateRoleStringWithCheck(roles, role);
-//
-//		// 進行帳號更新的動作, 並且將帳號 Remove Roles
-//		mAccountMapper.removeRole(mUserSession, account, id, roleList, res);
-//
-//		account = mAccountMapper.getAccountById(id);
-//		(new ScrumRoleLogic()).setScrumRoles(mUserSession.getAccount());// reset Project<-->ScrumRole map
-//
-//		return account;
-		
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
@@ -267,9 +159,6 @@ public class AccountHelper {
 
 	public String getManagementView(AccountObject account) {
 		String result = "";
-//		IPermission permAdmin = mAccountMapper.getPermission("system", "admin");
-
-//		if (Boolean.valueOf(account.checkPermission(permAdmin))) {
 		if (account.getRoles().get("system") != null) {
 			result = "Admin_ManagementView";
 		} else {
@@ -309,31 +198,6 @@ public class AccountHelper {
 		return roleList;
 	}
 
-//	private String getXmlstring(List<IActor> actors) {
-//		Iterator<IActor> iter = actors.iterator();
-//		// write projects to XML format
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("<Accounts>");
-//		while (iter.hasNext()) {
-//			IAccount account = (IAccount) iter.next();
-//			sb.append("<Account>");
-//			sb.append("<ID>" + account.getID() + "</ID>");
-//			sb.append("<Name>" + account.getName() + "</Name>");
-//			sb.append("<Mail>" + account.getEmail() + "</Mail>");
-//			String mail = account.getEmail();
-//			sb.append("<Roles>" + TranslateUtil.getRolesString(account.getRoles()) + "</Roles>");
-//			sb.append("<Enable>" + account.getEnable() + "</Enable>");
-//			String enable = account.getEnable();
-//			if (enable == null || enable.equalsIgnoreCase("true")) enable = "true";
-//			else enable = "false";
-//			if (mail == null) mail = "";
-//			sb.append("</Account>");
-//		}
-//		sb.append("</Accounts>");
-//
-//		return sb.toString();
-//	}
-	
 	// ezScrum v1.8
 	private String getXmlstring(List<AccountObject> users) {
 		Iterator<AccountObject> iter = users.iterator();

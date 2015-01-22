@@ -27,12 +27,10 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
-import ntut.csie.jcis.account.core.internal.Account;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -55,10 +53,13 @@ public class ProjectLogic {
 		return projectMapper.getAllProjectList();
 	}
 
-	// ezScrum v1.8
-	private List<ProjectObject> getAllProjectListForDb() {
+	/**
+	 * get all projects use DAO
+	 * @return all project list
+	 */
+	public ArrayList<ProjectObject> getProjects() {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectListForDb();
+		return projectMapper.getProjects();
 	}
 
 	/**
@@ -72,12 +73,6 @@ public class ProjectLogic {
 
 		Collections.sort(list, new ProjectComparator(ProjectComparator.COMPARE_TYPE_NAME));
 
-		return list;
-	}
-
-	public List<ProjectObject> getAllProjectsForDb() {
-		// ezScrum v1.8
-		List<ProjectObject> list = this.getAllProjectListForDb();
 		return list;
 	}
 
@@ -130,7 +125,7 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public boolean isProjectExisted(String projectID) {
-		List<ProjectObject> projects = this.getAllProjectListForDb();
+		List<ProjectObject> projects = this.getProjects();
 		
 		for (ProjectObject project : projects) {
 			String PID = project.getName();
@@ -208,7 +203,7 @@ public class ProjectLogic {
 //		return map;
 		// ezScrum v1.8
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
-		List<ProjectObject> list = this.getAllProjectListForDb();
+		List<ProjectObject> list = this.getProjects();
 		
 		// check 是否可以讀取專案
 		Iterator<ProjectObject> ir = list.iterator();
@@ -231,11 +226,10 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public IProject[] getAllCustomProjects() {
-		List<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
-		List<ProjectObject> projects = getAllProjectListForDb();
+		ArrayList<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
+		ArrayList<ProjectObject> projects = getProjects();
 
 		for (ProjectObject P : projects) {
-//			IssueBacklog IB = new IssueBacklog(P, new UserSession(new Account("guest")));
 			IssueBacklog IB = new IssueBacklog(P, new UserSession(null));
 
 			if (IB.isReportProject()) {

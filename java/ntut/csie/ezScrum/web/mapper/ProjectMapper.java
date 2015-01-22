@@ -48,26 +48,31 @@ public class ProjectMapper {
 		mService = new MySQLService(mConfig);
 	}
 
+//	/**
+//	 * new mapper function for ezScrum v1.8
+//	 */
+//	public ProjectObject createProjectForDb(ProjectObject project) {
+//		mService.openConnect();
+//		mService.createProject(project);
+//		project = mService.getProjectByPid(project.getName());
+//		
+//		// 新建 project，也把 serial number 建起來
+//		long projectId = project.getId();
+//		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
+//		serialnumberDAO.create(new SerialNumberObject(projectId
+//				, 0, 0, 0, 0, 0, 0));
+//
+//		mService.closeConnect();
+//		return project;
+//	}
 	/**
-	 * new mapper function for ezScrum v1.8
+	 * create project use DAO
+	 * @param name 必要參數
+	 * @param projectInfo 其他資訊都包成 Info
+	 * @return project id
 	 */
-	public ProjectObject createProjectForDb(ProjectObject project) {
-		mService.openConnect();
-		mService.createProject(project);
-		project = mService.getProjectByPid(project.getName());
-		
-		// 新建 project，也把 serial number 建起來
-		long projectId = project.getId();
-		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-		serialnumberDAO.create(new SerialNumberObject(projectId
-				, 0, 0, 0, 0, 0, 0));
-
-		mService.closeConnect();
-		return project;
-	}
-	
-	public long createProject(ProjectInfo projectInfo) {
-		ProjectObject project = new ProjectObject(projectInfo.name);
+	public long createProject(String name, ProjectInfo projectInfo) {
+		ProjectObject project = new ProjectObject(name);
 		project
 			.setDisplayName(projectInfo.displayName)
 			.setComment(projectInfo.common)
@@ -85,50 +90,91 @@ public class ProjectMapper {
 		return projectId;
 	}
 	
+	/**
+	 * get project use DAO
+	 * @param id
+	 * @return project object
+	 */
+	public ProjectObject getProject(long id) {
+		return ProjectObject.get(id);
+	}
+	
+	/**
+	 * get project use DAO
+	 * @param name
+	 * @return project object
+	 */
+	public ProjectObject getProjectByName(String name) {
+		return ProjectObject.getProjectByName(name);
+	}
+	
+	/**
+	 * get all projects use DAO
+	 * @return all project list
+	 */
 	public ArrayList<ProjectObject> getProjects() {
 		return ProjectObject.getProjects();
 	}
 	
-	public boolean updateProject() {
-		
-	}
-
-	public boolean deleteProjectForDb(String id) {
-		mService.openConnect();
-		boolean result = mService.deleteProject(id);
-		mService.closeConnect();
-		return result;
-	}
-
-	public ProjectObject updateProjectForDb(ProjectObject project) {
-		mService.openConnect();
-		mService.updateProject(project);
-		project = mService.getProjectById(project.getId());
-		mService.closeConnect();
-		return project;
-	}
-
-	public List<ProjectObject> getProjectListForDb() {
-		mService.openConnect();
-		List<ProjectObject> result = mService.getProjectList();
-		mService.closeConnect();
-		if (result == null) result = new ArrayList<ProjectObject>();
-		return result;
+	/**
+	 * update project use DAO
+	 * @param id 必要參數
+	 * @param projectInfo 其他資訊都包成 Info
+	 */
+	public void updateProject(long id, ProjectInfo projectInfo) {
+		ProjectObject project = ProjectObject.get(id);
+		if(project != null) {
+			project.setDisplayName(projectInfo.displayName).setComment(projectInfo.common)
+			.setManager(projectInfo.manager).setAttachFileSize(projectInfo.attachFileSize)
+			.save();
+		}
 	}
 	
-	public ProjectObject getProjectByIdForDb(String id) {
-		mService.openConnect();
-		ProjectObject result = mService.getProjectById(id);
-		mService.closeConnect();
-		return result;
+	/**
+	 * delete project use DAO
+	 * @param id
+	 */
+	public void deleteProject(long id) {
+		ProjectObject project = ProjectObject.get(id);
+		project.delete();
 	}
 
-	public ProjectObject getProjectByPidForDb(String pid) {
-		mService.openConnect();
-		ProjectObject result = mService.getProjectByPid(pid);
-		mService.closeConnect();
-		return result;
-	}
+//	public boolean deleteProjectForDb(String id) {
+//		mService.openConnect();
+//		boolean result = mService.deleteProject(id);
+//		mService.closeConnect();
+//		return result;
+//	}
+
+//	public ProjectObject updateProjectForDb(ProjectObject project) {
+//		mService.openConnect();
+//		mService.updateProject(project);
+//		project = mService.getProjectById(project.getId());
+//		mService.closeConnect();
+//		return project;
+//	}
+
+//	public List<ProjectObject> getProjectListForDb() {
+//		mService.openConnect();
+//		List<ProjectObject> result = mService.getProjectList();
+//		mService.closeConnect();
+//		if (result == null) result = new ArrayList<ProjectObject>();
+//		return result;
+//	}
+	
+//	public ProjectObject getProjectByIdForDb(String id) {
+//		mService.openConnect();
+//		ProjectObject result = mService.getProjectById(id);
+//		mService.closeConnect();
+//		return result;
+//	}
+
+//	public ProjectObject getProjectByPidForDb(String pid) {
+//		mService.openConnect();
+//		ProjectObject result = mService.getProjectByPid(pid);
+//		mService.closeConnect();
+//		return result;
+//	}
 
 	public List<AccountObject> getProjectMemberListForDb(String id) {
 		mService.openConnect();
