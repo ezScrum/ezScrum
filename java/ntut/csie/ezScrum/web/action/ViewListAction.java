@@ -25,7 +25,7 @@ public class ViewListAction extends Action {
 		// 取得使用者登入資料
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = userSession.getAccount();
-		log.debug(userSession.getAccount().getAccount());
+		log.debug(userSession.getAccount().getUsername());
 
 		// 移除Project information如此一來專案列表就不顯示上次進入的Project ID。
 		request.getSession().removeAttribute("Project");

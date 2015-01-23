@@ -9,44 +9,24 @@ public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 	
 	private long mId;
-	private String mAccount;
+	private String mUsername;
 	private String mPassword;
 	private String mEmail;
 	private String mName;
 	private boolean mEnable;
 	private HashMap<String, ProjectRole> mRoles;
 	
-	public AccountObject() {}
-	
-	public AccountObject(long id, String account, String name, String password, String email, boolean enable, HashMap<String, ProjectRole> roles) {
-		setId(id);
-		setAccount(account);
-		setPassword(password);
-		setName(name);
-		setEmail(email);
-		setEnable(enable);
-		setRoles(roles);
+	public AccountObject(long id, String username) {
+		mUsername = username;
+		mId = id;
 	}
 	
-	public AccountObject(long id, String account, String name, String password, String email, boolean enable) {
-		setId(id);
-		setAccount(account);
-		setPassword(password);
-		setName(name);
-		setEmail(email);
-		setEnable(enable);
-	}
-	
-	public AccountObject(String account, String name, String password, String email, boolean enable) {
-		setAccount(account);
-		setPassword(password);
-		setName(name);
-		setEmail(email);
-		setEnable(enable);
+	public AccountObject(String username) {
+		mUsername = username;
 	}
 	
 	public String toString() {
-		String user = "account :" + getAccount() + 
+		String user = "username :" + getUsername() + 
 				", password :" + getPassword() +
 				", email :" + getEmail() +
 				", name :" + getName() +
@@ -58,20 +38,6 @@ public class AccountObject implements IBaseObject {
 	    return mId;
     }
 
-	public AccountObject setId(long id) {
-	    mId = id;
-	    return this;
-    }
-
-	public String getAccount() {
-	    return mAccount;
-    }
-
-	public AccountObject setAccount(String account) {
-	    mAccount = account;
-	    return this;
-    }
-
 	public String getPassword() {
 	    return mPassword;
     }
@@ -80,6 +46,10 @@ public class AccountObject implements IBaseObject {
 	    mPassword = password;
 	    return this;
     }
+	
+	public String getUsername() {
+		return mUsername;
+	}
 
 	public String getEmail() {
 	    return mEmail;
@@ -175,7 +145,7 @@ public class AccountObject implements IBaseObject {
 	
 	private void resetData(AccountObject account) {
 		mId = account.getId();
-		mAccount = account.getAccount();
+		mUsername = account.getUsername();
 		mPassword = account.getPassword();
 		mEmail = account.getEmail();
 		mName = account.getName();

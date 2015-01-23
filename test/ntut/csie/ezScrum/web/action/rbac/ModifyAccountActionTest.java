@@ -131,7 +131,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
 		assertEquals(userName, account.getName());
@@ -150,7 +150,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String postfix = "_update";
 		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
+		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = "modify@test.com";
 		String userName = user.getName() + postfix;
@@ -179,7 +179,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
 		assertEquals(userName, account.getName());
@@ -202,7 +202,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
+		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userMail = "modify@test.com";
 		String userName = user.getName() + postfix;
 		String userEnable = "false";	// default is true
@@ -247,7 +247,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String expectUserPassword = this.CA.getAccount_PWD(1);
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(expectUserPassword), account.getPassword());
 		assertEquals(userMail, account.getEmail());
 		assertEquals(userName, account.getName());
@@ -270,7 +270,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		AccountObject user = CA.getAccountList().get(0);
 		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
+		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = user.getEmail();
 		String userName = user.getName();
@@ -316,7 +316,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		AccountObject account = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
 		assertEquals(userName, account.getName());
@@ -384,7 +384,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// assert database information
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPwd), account.getPassword());
 		assertEquals(userEmail, account.getEmail());
 		assertEquals(userName, account.getName());
@@ -408,7 +408,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", account.getId());
-		addRequestParameter("account", account.getAccount());
+		addRequestParameter("account", account.getUsername());
 		addRequestParameter("name", updateUserName);
 		addRequestParameter("passwd", updateUserPwd);
 		addRequestParameter("mail", updateUserEmail);
@@ -443,7 +443,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		AccountObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
-		assertEquals(userAccount, updateAccount.getAccount());
+		assertEquals(userAccount, updateAccount.getUsername());
 		assertEquals(updateUserName, updateAccount.getName());
 		assertEquals((new TestTool()).getMd5(updateUserPwd), updateAccount.getPassword());
 		assertEquals(updateUserEmail, updateAccount.getEmail());
@@ -535,7 +535,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// assert database information
 
 		assertNotNull(account);
-		assertEquals(account.getAccount(), userAccount);
+		assertEquals(account.getUsername(), userAccount);
 		assertEquals(account.getName(), userName);
 		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPwd));
 		assertEquals(account.getEmail(), userEmail);
@@ -591,7 +591,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		AccountObject updateAccount = this.accountMapper.getAccount(userAccount);
 
 		assertNotNull(updateAccount);
-		assertEquals(userAccount, updateAccount.getAccount());
+		assertEquals(userAccount, updateAccount.getUsername());
 		assertEquals((new TestTool()).getMd5(userPwd), updateAccount.getPassword());
 		assertEquals(userEmail, updateAccount.getEmail());
 		assertEquals(userName, updateAccount.getName());

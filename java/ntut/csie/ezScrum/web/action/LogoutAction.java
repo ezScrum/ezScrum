@@ -60,7 +60,7 @@ public class LogoutAction extends Action {
         HttpServletRequest request, HttpServletResponse response) {
     	HttpSession session = request.getSession();
     	IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
-    	session.removeAttribute(userSession.getAccount().getAccount()+ "Permession");
+    	session.removeAttribute(userSession.getAccount().getUsername()+ "Permession");
     	session.removeAttribute("UserSession");
     	session.removeAttribute("logonForm");
 

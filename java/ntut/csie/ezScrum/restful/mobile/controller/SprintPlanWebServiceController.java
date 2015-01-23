@@ -49,7 +49,7 @@ public class SprintPlanWebServiceController {
 			decoder.decode(userName, password, projectID);
 			// 使用者帳號
 			AccountObject userObject = new AccountObject();
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -92,7 +92,7 @@ public class SprintPlanWebServiceController {
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(userName, password, projectID);
 			AccountObject userObject = new AccountObject();
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -136,7 +136,7 @@ public class SprintPlanWebServiceController {
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(userName, password, projectID);
 			AccountObject userObject = new AccountObject();
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -180,7 +180,7 @@ public class SprintPlanWebServiceController {
 		AccountObject userObject = new AccountObject();
 		try {
 			decoder.decode(userName, password, projectID);
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -223,7 +223,7 @@ public class SprintPlanWebServiceController {
 		try {
 			decoder.decode(username, password, projectID);
 			AccountObject userObject = new AccountObject();
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -268,7 +268,7 @@ public class SprintPlanWebServiceController {
 		try {
 			decoder.decode(username, password, projectID);
 			AccountObject userObject = new AccountObject();
-			userObject.setAccount(decoder.getDecodeUserName());
+			userObject.setUsername(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());

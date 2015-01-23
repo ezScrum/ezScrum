@@ -126,7 +126,7 @@ public class ProjectMapper {
 	public ArrayList<String> getProjectScrumWorkersAccount(long projectId) {
 		ArrayList<String> accountList = new ArrayList<String>();
 		for (AccountObject account : getProjectScrumWorkers(projectId)) {
-			accountList.add(account.getAccount());
+			accountList.add(account.getUsername());
 		}
 		return accountList;
 	}

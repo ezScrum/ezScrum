@@ -251,7 +251,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		String expectedUserRole_ST = (new TestTool()).getRole(pid, scrumRole);
 		//		String expectedUserRole_USER = "user";
 		String expectedUserId = account.getId();
-		String expectedUserAccount = account.getAccount();
+		String expectedUserAccount = account.getUsername();
 		String expectedUserName = account.getName();
 		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
@@ -278,7 +278,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		AccountObject actualAccount = new AccountMapper().getAccountById(userId);
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
-		assertEquals(expectedUserAccount, actualAccount.getAccount());
+		assertEquals(expectedUserAccount, actualAccount.getUsername());
 		assertEquals(expectedUserName, actualAccount.getName());
 		assertEquals(expectedUserPassword, actualAccount.getPassword());
 		assertEquals(expectedUserMail, actualAccount.getEmail());
@@ -320,7 +320,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(actionPath_logonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = account.getAccount();
+		String loginUserID = account.getUsername();
 		String loginUserPassword = this.CA.getAccount_PWD(1);
 		LogonForm logonForm = new LogonForm();
 		logonForm.setUserId(loginUserID);
@@ -698,7 +698,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(pathViewProjectSummary);
 
 		// ================ set session info ========================
-		AccountObject account = new AccountMapper().getAccount(CA.getAccountList().get(0).getAccount());
+		AccountObject account = new AccountMapper().getAccount(CA.getAccountList().get(0).getUsername());
 		userSession = getUserSession(account);
 		request.getSession().setAttribute("UserSession", userSession);
 

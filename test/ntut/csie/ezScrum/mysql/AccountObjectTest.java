@@ -93,7 +93,7 @@ public class AccountObjectTest extends TestCase {
 		
 		AccountObject result = mService.getAccount(id);
 		
-		assertEquals(id, result.getAccount());
+		assertEquals(id, result.getUsername());
 	}
 	
 	public void testGetAccountList() {
@@ -113,6 +113,6 @@ public class AccountObjectTest extends TestCase {
 		
 		AccountObject result = mService.confirmAccount(id, password);
 		
-		assertEquals(id, result.getAccount());
+		assertEquals(id, result.getUsername());
 	}
 }

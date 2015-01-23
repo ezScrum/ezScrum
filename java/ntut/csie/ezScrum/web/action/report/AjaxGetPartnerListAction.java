@@ -45,7 +45,7 @@ public class AjaxGetPartnerListAction extends PermissionAction {
 
 		for (int i = 0, size = users.size(); i < size; i++) {
 			result.append("<Partner>")
-			      .append("<Name>").append(users.get(i).getAccount()).append("</Name>")
+			      .append("<Name>").append(users.get(i).getUsername()).append("</Name>")
 			      .append("</Partner>");
 		}
 		result.append("</Partners>");

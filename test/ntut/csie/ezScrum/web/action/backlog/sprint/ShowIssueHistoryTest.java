@@ -473,7 +473,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		IIssue task = SBHelper.getIssue(taskId);
 		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
 		// change task handler
-		task.setAssignto(createAccount.getAccountList().get(0).getAccount());
+		task.setAssignto(createAccount.getAccountList().get(0).getUsername());
 		SBHelper.editTask(new TaskObject(task));
 		
 		// ================ set request info ========================

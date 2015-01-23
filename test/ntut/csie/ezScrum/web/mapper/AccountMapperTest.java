@@ -64,7 +64,7 @@ public class AccountMapperTest extends TestCase {
 		AccountInfo user = new AccountInfo(id, name, password, email, enable);
 		AccountObject account = mAccountMapper.createAccount(user);
 		
-		assertEquals(id, account.getAccount());
+		assertEquals(id, account.getUsername());
 		assertEquals(name, account.getName());
 		assertEquals(email, account.getEmail());
 		assertEquals(enable, account.getEnable());
@@ -83,7 +83,7 @@ public class AccountMapperTest extends TestCase {
 		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
 		AccountObject userObject = mAccountMapper.updateAccount(user);
 		
-		assertEquals(account, userObject.getAccount());
+		assertEquals(account, userObject.getUsername());
 		assertEquals(name, userObject.getName());
 		assertEquals(email, userObject.getEmail());
 		assertEquals(enable, userObject.getEnable());
@@ -130,7 +130,7 @@ public class AccountMapperTest extends TestCase {
 		
         account = mAccountMapper.confirmAccount(id, password);
         
-        assertEquals(id, account.getAccount());
+        assertEquals(id, account.getUsername());
 	}
 	
 	public void testIsAccountExist() {

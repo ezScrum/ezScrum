@@ -84,7 +84,7 @@ public class AccountHelper {
 		assignRoleInfo.append("<AccountInfo>");
 		// Account Info
 		assignRoleInfo.append("<ID>").append(account.getId()).append("</ID>");
-		assignRoleInfo.append("<Account>").append(account.getAccount()).append("</Account>");
+		assignRoleInfo.append("<Account>").append(account.getUsername()).append("</Account>");
 		assignRoleInfo.append("<Name>").append(account.getName()).append("</Name>");
 		// Assign Roles
 		assignRoleInfo.append("<Roles>");
@@ -207,7 +207,7 @@ public class AccountHelper {
 			AccountObject account = (AccountObject) iter.next();
 			sb.append("<AccountInfo>");
 			sb.append("<ID>").append(account.getId()).append("</ID>");
-			sb.append("<Account>").append(account.getAccount()).append("</Account>");
+			sb.append("<Account>").append(account.getUsername()).append("</Account>");
 			sb.append("<Name>").append(account.getName()).append("</Name>");
 			sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
 			sb.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");

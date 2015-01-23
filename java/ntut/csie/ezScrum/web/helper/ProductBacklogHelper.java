@@ -601,7 +601,7 @@ public class ProductBacklogHelper {
 	}
 	
 	public boolean checkAccountInProject(List<AccountObject> memberList, AccountObject userObject) {
-		if(userObject.getAccount().equals("admin")) {
+		if(userObject.getUsername().equals("admin")) {
 			return true;
 		}
 		for(AccountObject member : memberList) {

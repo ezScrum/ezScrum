@@ -91,11 +91,11 @@ public class ViewProjectSummaryAction extends Action {
 
 		if (scrumRole != null && scrumRole.isGuest()) {
 			request.getSession().setAttribute("isGuest", "true");
-			log.info(account.getAccount() + " is a guest, view project: " + project.getName());
+			log.info(account.getUsername() + " is a guest, view project: " + project.getName());
 			return mapping.findForward("GuestOnly");
 		} else {
 			request.getSession().setAttribute("isGuest", "false");
-			log.info(account.getAccount() + " is not a guest, view project: " + project.getName());
+			log.info(account.getUsername() + " is not a guest, view project: " + project.getName());
 		}
 
 		return mapping.findForward("SummaryView");

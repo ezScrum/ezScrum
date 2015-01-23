@@ -39,7 +39,7 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(userName, password, projectID);
 			AccountObject user = new AccountObject();
-			user.setAccount(decoder.getDecodeUserName());
+			user.setUsername(decoder.getDecodeUserName());
 			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());
 			jsonString = this.mSprintPlanWebService.getRESTFulResponseString();
@@ -128,7 +128,7 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(userName, password, projectID);
 			AccountObject user = new AccountObject();
-			user.setAccount(decoder.getDecodeUserName());
+			user.setUsername(decoder.getDecodeUserName());
 			user.setPassword(decoder.getDecodePwd());
 			this.mSprintPlanWebService = new SprintPlanWebService(user, decoder.getDecodeProjectID());
 			jsonString = this.mSprintPlanWebService.getCurrentSprint();

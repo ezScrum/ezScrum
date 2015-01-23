@@ -2,23 +2,23 @@ package ntut.csie.ezScrum.web.dataInfo;
 
 public class AccountInfo {
 	private String id = "";
-	private String account = "";
+	private String username = "";
 	private String password = "";
 	private String email = "";
 	private String name = "";
 	private String enable = "";
 
-	public AccountInfo(String account, String name, String password, String email, String enable) {
-		this.setAccount(account);
+	public AccountInfo(String username, String name, String password, String email, String enable) {
+		this.setUsername(username);
 		this.setName(name);
 		this.setPassword(password);
 		this.setEmail(email);
 		this.setEnable(enable);
 	}
 	
-	public AccountInfo(String id, String account, String name, String password, String email, String enable) {
+	public AccountInfo(String id, String username, String name, String password, String email, String enable) {
 		this.setId(id);
-		this.setAccount(account);
+		this.setUsername(username);
 		this.setName(name);
 		this.setPassword(password);
 		this.setEmail(email);
@@ -33,14 +33,14 @@ public class AccountInfo {
 	    this.id = id;
     }
 
-	public void setAccount(String account) {
+	public void setUsername(String account) {
 		if (account != null) {
-			this.account = account;
+			this.username = account;
 		}
 	}
 
-	public String getAccount() {
-		return account;
+	public String getUsername() {
+		return username;
 	}
 
 	public void setPassword(String password) {

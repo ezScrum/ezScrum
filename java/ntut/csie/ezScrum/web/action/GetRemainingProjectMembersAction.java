@@ -60,10 +60,10 @@ public class GetRemainingProjectMembersAction extends Action {
 		result.append("<Members>");
 //		for (UserObject total_member_list : accountList) {
 		for (AccountObject member : accountList) {
-			if (!accounts.contains(member) && !member.getAccount().equals("admin")) {
+			if (!accounts.contains(member) && !member.getUsername().equals("admin")) {
 //				UserObject member = (UserObject) total_member_list;
 				result.append("<Member>");
-				result.append("<ID>").append(member.getAccount()).append("</ID>");
+				result.append("<ID>").append(member.getUsername()).append("</ID>");
 				result.append("<Name>").append(member.getName()).append("</Name>");
 //				result.append("<Role>").append(splitRole(project, member.getRoles())).append("</Role>");
 				result.append("<Role>").append(member.getRoles().get(project.getName()).getScrumRole().getRoleName()).append("</Role>");
