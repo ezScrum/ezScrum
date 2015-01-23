@@ -80,135 +80,135 @@ public class MySQLService {
 	 * ------------------------------------------
 	 */
 
-	public boolean createAccount(AccountInfo user) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addInsertValue(AccountEnum.ACCOUNT, user.getAccount());
-		valueSet.addInsertValue(AccountEnum.NICK_NAME, user.getName());
-		valueSet.addInsertValue(AccountEnum.EMAIL, user.getEmail());
-		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(user.getPassword()));
-		valueSet.addInsertValue(AccountEnum.ENABLE, user.getEnable().equals("true") ? "1" : "0");
-		valueSet.addInsertValue(AccountEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getInsertQuery();
-		return mControl.executeUpdate(query);
-	}
-
-	public boolean updateAccount(AccountInfo user) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, user.getId());
-		valueSet.addInsertValue(AccountEnum.NICK_NAME, user.getName());
-		valueSet.addInsertValue(AccountEnum.EMAIL, user.getEmail());
-		if (user.getPassword() != null && !user.getPassword().equals("")) {
-			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(user.getPassword()));
-		}
-		valueSet.addInsertValue(AccountEnum.ENABLE, user.getEnable().equals("true") ? "1" : "0");
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getUpdateQuery();
-		return mControl.executeUpdate(query);
-	}
-
-	public boolean deleteAccount(String id) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, id);
-		String query = valueSet.getDeleteQuery();
-		return mControl.executeUpdate(query);
-	}
-
-	public AccountObject getAccount(String account) {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, account);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			if (result.first()) {
-				return getAccount(result);
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public AccountObject getAccountById(String id) {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			valueSet.addTextFieldEqualCondition(AccountEnum.ID, id);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			if (result.first()) {
-				return getAccount(result);
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public AccountObject confirmAccount(String account, String password) {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, account);
-			valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
-			valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			if (result.first()) {
-				return getAccount(result);
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public List<AccountObject> getAccountList() {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			List<AccountObject> list = new ArrayList<AccountObject>();
-			if (result.next()) {
-				do {
-					list.add(getAccount(result));
-				} while (result.next());
-				return list;
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private AccountObject getAccount(ResultSet result) throws SQLException {
-		String id;
-		try {
-			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);
-		} catch (SQLException e) {
-			id = result.getString(AccountEnum.ID);
-		}
-		String account = result.getString(AccountEnum.ACCOUNT);
-		String name = result.getString(AccountEnum.NICK_NAME);
-		String password = result.getString(AccountEnum.PASSWORD);
-		String email = result.getString(AccountEnum.EMAIL);
-		String enable = result.getString(AccountEnum.ENABLE).equals("1") ? "true" : "false";
-		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
-		return new AccountObject(id, account, name, password, email, enable, roles);
-	}
+//	public boolean createAccount(AccountInfo user) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(AccountEnum.TABLE_NAME);
+//		valueSet.addInsertValue(AccountEnum.ACCOUNT, user.getAccount());
+//		valueSet.addInsertValue(AccountEnum.NICK_NAME, user.getName());
+//		valueSet.addInsertValue(AccountEnum.EMAIL, user.getEmail());
+//		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(user.getPassword()));
+//		valueSet.addInsertValue(AccountEnum.ENABLE, user.getEnable().equals("true") ? "1" : "0");
+//		valueSet.addInsertValue(AccountEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+//		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+//		String query = valueSet.getInsertQuery();
+//		return mControl.executeUpdate(query);
+//	}
+//
+//	public boolean updateAccount(AccountInfo user) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(AccountEnum.TABLE_NAME);
+//		valueSet.addEqualCondition(AccountEnum.ID, user.getId());
+//		valueSet.addInsertValue(AccountEnum.NICK_NAME, user.getName());
+//		valueSet.addInsertValue(AccountEnum.EMAIL, user.getEmail());
+//		if (user.getPassword() != null && !user.getPassword().equals("")) {
+//			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(user.getPassword()));
+//		}
+//		valueSet.addInsertValue(AccountEnum.ENABLE, user.getEnable().equals("true") ? "1" : "0");
+//		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+//		String query = valueSet.getUpdateQuery();
+//		return mControl.executeUpdate(query);
+//	}
+//
+//	public boolean deleteAccount(String id) {
+//		IQueryValueSet valueSet = new MySQLQuerySet();
+//		valueSet.addTableName(AccountEnum.TABLE_NAME);
+//		valueSet.addEqualCondition(AccountEnum.ID, id);
+//		String query = valueSet.getDeleteQuery();
+//		return mControl.executeUpdate(query);
+//	}
+//
+//	public AccountObject getAccount(String account) {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(AccountEnum.TABLE_NAME);
+//			valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, account);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			if (result.first()) {
+//				return getAccount(result);
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//	
+//	public AccountObject getAccountById(String id) {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(AccountEnum.TABLE_NAME);
+//			valueSet.addTextFieldEqualCondition(AccountEnum.ID, id);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			if (result.first()) {
+//				return getAccount(result);
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//
+//	public AccountObject confirmAccount(String account, String password) {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(AccountEnum.TABLE_NAME);
+//			valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, account);
+//			valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
+//			valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			if (result.first()) {
+//				return getAccount(result);
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//
+//	public List<AccountObject> getAccountList() {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(AccountEnum.TABLE_NAME);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			List<AccountObject> list = new ArrayList<AccountObject>();
+//			if (result.next()) {
+//				do {
+//					list.add(getAccount(result));
+//				} while (result.next());
+//				return list;
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//
+//	private AccountObject getAccount(ResultSet result) throws SQLException {
+//		String id;
+//		try {
+//			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);
+//		} catch (SQLException e) {
+//			id = result.getString(AccountEnum.ID);
+//		}
+//		String account = result.getString(AccountEnum.ACCOUNT);
+//		String name = result.getString(AccountEnum.NICK_NAME);
+//		String password = result.getString(AccountEnum.PASSWORD);
+//		String email = result.getString(AccountEnum.EMAIL);
+//		String enable = result.getString(AccountEnum.ENABLE).equals("1") ? "true" : "false";
+//		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
+//		return new AccountObject(id, account, name, password, email, enable, roles);
+//	}
 
 	private String getMd5(String str) {
 		MessageDigest md = null;

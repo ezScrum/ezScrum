@@ -1112,7 +1112,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `account` VARCHAR(255) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
   `nick_name` VARCHAR(255) NULL,
   `email` TEXT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -1120,7 +1120,7 @@ CREATE TABLE `account` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `account_UNIQUE` (`account` ASC))
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 LOCK TABLES `account` WRITE;

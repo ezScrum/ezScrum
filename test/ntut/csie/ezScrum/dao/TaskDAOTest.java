@@ -369,7 +369,8 @@ public class TaskDAOTest extends TestCase {
 		query = valueSet.getSelectQuery();
 		
 		ResultSet result= mControl.executeQuery(query);
-		TaskObject actual = TaskDAO.getInstance().convert(result);
+		result.next();
+		TaskObject actual = TaskDAO.convert(result);
 		
 		assertEquals(id, actual.getId());
 		assertEquals(TEST_SERIAL_NUMBER, actual.getSerialId());
@@ -382,26 +383,5 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(TEST_ACTUAL, actual.getActual());
 		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
 		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
-	}
-	
-	private ArrayList<TaskObject> createData(int num) {
-		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		for (int i = 0; i < num; i++) {
-			TaskObject task = new TaskObject(projectId);
-			task.setName("TEST_TASK_" + i + 1)
-		        .setNotes("TEST_NOTE_" + i + 1)
-		        .setEstimate(i * 1)
-		        .setRemains(i * 2)
-		        .setActual(i * 3)
-				.setStoryId(i + 1);
-			
-			long taskId = TaskDAO.getInstance().create(task);
-			
-			assertNotSame(-1, taskId);
-			
-			tasks.add(TaskDAO.getInstance().get(taskId));
-		}
-		
-		return tasks;
 	}
 }

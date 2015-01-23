@@ -75,7 +75,6 @@ public class CreateProject {
 			projectInfo.manager = mProjectMaNager + (i + 1);		// Project_Manager_X
 			
 			long id = projectMapper.createProject(projectInfo.name, projectInfo);
-			projectMapper.createScrumRole(id);
 		}
 	}
 	
