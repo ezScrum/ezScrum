@@ -37,14 +37,15 @@ public abstract class AbstractDAO<T, K> {
 
 	// delete
 	abstract public boolean delete(long id);
-
+	
 	protected void closeResultSet(ResultSet result) {
 		if (result != null) {
 			try {
 				result.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}
+			}			
 		}
 	}
+		
 }
