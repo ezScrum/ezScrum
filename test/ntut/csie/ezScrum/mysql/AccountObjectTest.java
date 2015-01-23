@@ -11,11 +11,11 @@ import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
-public class AccountTest extends TestCase {
+public class AccountObjectTest extends TestCase {
 	private MySQLService mService;
 	private Configuration configuration = null;
 	
-	public AccountTest(String testMethod) {
+	public AccountObjectTest(String testMethod) {
 		super(testMethod);
 	}
 

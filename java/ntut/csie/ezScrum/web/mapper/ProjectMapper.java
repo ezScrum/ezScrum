@@ -40,23 +40,6 @@ public class ProjectMapper {
 	public ProjectMapper() {
 	}
 
-//	/**
-//	 * new mapper function for ezScrum v1.8
-//	 */
-//	public ProjectObject createProjectForDb(ProjectObject project) {
-//		mService.openConnect();
-//		mService.createProject(project);
-//		project = mService.getProjectByPid(project.getName());
-//		
-//		// 新建 project，也把 serial number 建起來
-//		long projectId = project.getId();
-//		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-//		serialnumberDAO.create(new SerialNumberObject(projectId
-//				, 0, 0, 0, 0, 0, 0));
-//
-//		mService.closeConnect();
-//		return project;
-//	}
 	/**
 	 * create project use DAO
 	 * @param name 必要參數
@@ -97,7 +80,7 @@ public class ProjectMapper {
 	 * @return project object
 	 */
 	public ProjectObject getProjectByName(String name) {
-		return ProjectObject.getProjectByName(name);
+		return ProjectObject.get(name);
 	}
 	
 	/**
@@ -131,49 +114,13 @@ public class ProjectMapper {
 		project.delete();
 	}
 
-//	public boolean deleteProjectForDb(String id) {
-//		mService.openConnect();
-//		boolean result = mService.deleteProject(id);
-//		mService.closeConnect();
-//		return result;
-//	}
-
-//	public ProjectObject updateProjectForDb(ProjectObject project) {
-//		mService.openConnect();
-//		mService.updateProject(project);
-//		project = mService.getProjectById(project.getId());
-//		mService.closeConnect();
-//		return project;
-//	}
-
-//	public List<ProjectObject> getProjectListForDb() {
-//		mService.openConnect();
-//		List<ProjectObject> result = mService.getProjectList();
-//		mService.closeConnect();
-//		if (result == null) result = new ArrayList<ProjectObject>();
-//		return result;
-//	}
-	
-//	public ProjectObject getProjectByIdForDb(String id) {
-//		mService.openConnect();
-//		ProjectObject result = mService.getProjectById(id);
-//		mService.closeConnect();
-//		return result;
-//	}
-
-//	public ProjectObject getProjectByPidForDb(String pid) {
-//		mService.openConnect();
-//		ProjectObject result = mService.getProjectByPid(pid);
-//		mService.closeConnect();
-//		return result;
-//	}
 
 	public ArrayList<AccountObject> getProjectMembers(long projectId) {
-		return ProjectObject.getProjectMembers(projectId);
+		return ProjectObject.get(projectId).getProjectMembers();
 	}
 
 	public ArrayList<AccountObject> getProjectScrumWorkers(long projectId) {
-		return ProjectObject.getProjectWorkers(projectId);
+		return ProjectObject.get(projectId).getProjectWorkers();
 	}
 
 	public ArrayList<String> getProjectScrumWorkersAccount(long projectId) {
@@ -183,16 +130,6 @@ public class ProjectMapper {
 		}
 		return accountList;
 	}
-
-//	public void createScrumRole(long id) {
-//		ScrumRole scrumRole;
-//		mService.openConnect();
-//		for (RoleEnum role : RoleEnum.values()) {
-//			scrumRole = new ScrumRole(role);
-//			mService.createScrumRole(id, role, scrumRole);
-//		}
-//		mService.closeConnect();
-//	}
 
 	/**
 	 * 建立專案的資料結構及外部檔案

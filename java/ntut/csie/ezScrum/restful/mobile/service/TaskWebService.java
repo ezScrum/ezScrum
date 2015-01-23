@@ -45,7 +45,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getWildTasks() throws SQLException {
+	public String getNoParentTasks() throws SQLException {
 		IIssue[] existedTask = mProductBacklogHelper.getWildTasks();
 		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
 		for (IIssue task : existedTask)

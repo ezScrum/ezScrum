@@ -177,7 +177,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ProjectObject getProjectByName(String name) {
+	/**
+	 * Get project by name
+	 * 
+	 * @param name project name
+	 * @return ProjectObject
+	 */
+	public ProjectObject get(String name) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addTextFieldEqualCondition(ProjectEnum.NAME, name);
