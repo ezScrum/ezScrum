@@ -34,7 +34,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	public long create(AccountObject account) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addInsertValue(AccountEnum.ACCOUNT, account.getAccount());
+		valueSet.addInsertValue(AccountEnum.USERNAME, account.getAccount());
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
@@ -199,29 +199,55 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		return account;
 	}
-
-	public ArrayList<AccountObject> getAccounts() {
+	
+	/**
+	 * Get account object by account's username
+	 * 
+	 * @param account Account's username
+	 * @return AccountObject
+	 */
+	public AccountObject get(String username) {
+		AccountObject accountObject = null;
+		
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.USERNAME, username);
+		String query = valueSet.getSelectQuery();
+		
+		ResultSet result = mControl.executeQuery(query);
 		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			ArrayList<AccountObject> list = new ArrayList<AccountObject>();
 			if (result.next()) {
-				do {
-					list.add(convert(result));
-				} while (result.next());
-				return list;
-			} else {
-				return null;
+				accountObject = convert(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+		} finally {
+			closeResultSet(result);
 		}
+		return accountObject;
+	}
+
+	public ArrayList<AccountObject> getAccounts() {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<AccountObject> accounts = new ArrayList<AccountObject>();
+		try {
+			while (result.next()) {
+				accounts.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return accounts;
 	}
 	
 	@Override
@@ -257,13 +283,13 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		} catch (SQLException e) {
 			id = result.getLong(AccountEnum.ID);
 		}
-		String account = result.getString(AccountEnum.ACCOUNT);
-		String name = result.getString(AccountEnum.NICK_NAME);
+		String username = result.getString(AccountEnum.USERNAME);
+		String nickName = result.getString(AccountEnum.NICK_NAME);
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
 		boolean enable = result.getBoolean(AccountEnum.ENABLE);
 		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
-		return new AccountObject(id, account, name, password, email, enable, roles);
+		return new AccountObject(id, username, nickName, password, email, enable, roles);
 	}
 	
 	private String getMd5(String str) {

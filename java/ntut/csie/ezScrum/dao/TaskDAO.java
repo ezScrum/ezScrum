@@ -75,6 +75,8 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		return task;
 	}
@@ -110,8 +112,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ArrayList<TaskObject> getTasksByStory(long storyId)
-			throws SQLException {
+	public ArrayList<TaskObject> getTasksByStory(long storyId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.STORY_ID, storyId);
@@ -119,41 +120,68 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		ResultSet result = mControl.executeQuery(query);
 
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		while (result.next()) {
-			tasks.add(convert(result));
+		try {
+			while (result.next()) {
+				tasks.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		return tasks;
 	}
 
-	public ArrayList<TaskObject> getWildTasks(long projectId)
-			throws SQLException {
+	/**
+	 * Get the tasks which do not have story id.
+	 * 
+	 * @param projectId
+	 * @return All tasks which no parent in this project
+	 */
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TaskEnum.STORY_ID, -1);
+		valueSet.addEqualCondition(TaskEnum.STORY_ID, TaskObject.NO_PARENT);
 		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		while (result.next()) {
-			tasks.add(convert(result));
+		try {
+			while (result.next()) {
+				tasks.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
+		
 		return tasks;
 	}
 
-	public ArrayList<Long> getPartnersId(long taskId) throws SQLException {
+	public ArrayList<Long> getPartnersId(long taskId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID,
 				Long.toString(taskId));
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
 		String query = valueSet.getSelectQuery();
 
 		ArrayList<Long> partnerIdList = new ArrayList<Long>();
 		ResultSet result = mControl.executeQuery(query);
-		while (result.next()) {
-			partnerIdList.add(result
-					.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
+		try {
+			while (result.next()) {
+				partnerIdList.add(result
+						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
+			
 		return partnerIdList;
 	}
 
@@ -168,7 +196,6 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
 					IssueTypeEnum.TYPE_TASK);
 			String query = valueSet.getInsertQuery();
-			System.out.println(query);
 			id = mControl.executeInsert(query);
 		}
 
@@ -203,6 +230,8 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		if (size > 0) {
 			return true;
@@ -210,7 +239,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		return false;
 	}
 
-	private TaskObject convert(ResultSet result) throws SQLException {
+	public static TaskObject convert(ResultSet result) throws SQLException {
 		TaskObject task = new TaskObject(result.getLong(TaskEnum.ID),
 				result.getLong(TaskEnum.SERIAL_ID),
 				result.getLong(TaskEnum.PROJECT_ID));

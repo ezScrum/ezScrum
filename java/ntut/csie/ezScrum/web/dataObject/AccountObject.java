@@ -125,6 +125,10 @@ public class AccountObject implements IBaseObject {
 		return AccountDAO.getInstance().get(id);
 	}
 	
+	public static AccountObject get(String account) {
+		return AccountDAO.getInstance().get(account);
+	}
+	
 	public static ArrayList<AccountObject> getAccounts() {
 		return AccountDAO.getInstance().getAccounts();
 	}

@@ -20,7 +20,6 @@ public class TaskObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = 1;
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
-	public final static int WILD = -1;
 	public final static int NO_PARENT = -1;
 	
 	private final static int DEFAULT_VALUE = -1;
@@ -49,7 +48,7 @@ public class TaskObject implements IBaseObject {
 	
 	public static ArrayList<TaskObject> getWildTasks(long projectId)
 			throws SQLException {
-		return TaskDAO.getInstance().getWildTasks(projectId);
+		return TaskDAO.getInstance().getTasksWithNoParent(projectId);
 	}
 	
 	public static ArrayList<TaskObject> getTasksByStory(long storyId)

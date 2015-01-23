@@ -74,11 +74,7 @@ public class AccountMapper {
 	}
 
 	public AccountObject getAccount(String account) {
-		mService.openConnect();
-		AccountObject user = mService.getAccount(account);
-		mService.closeConnect();
-//		IAccount itsAccount = getAccountByIdToITS(id);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-//		return addRoleFromITS(account, itsAccount);					// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		AccountObject user = AccountObject.get(account);		// 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return user;
 	}
 	
