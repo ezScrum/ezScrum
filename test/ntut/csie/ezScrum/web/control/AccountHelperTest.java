@@ -85,7 +85,7 @@ public class AccountHelperTest extends TestCase {
 //    	IAccount ac_ScrumMaster = ca.getAccountList().get(2);
 //    	IAccount ac_ScrumTeam = ca.getAccountList().get(3);
     	
-    	List<String> accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	List<String> accountIDList = this.projectMapper.getProjectScrumWorkersAccount(this.project.getId());
     	assertEquals(0, accountIDList.size());
     	
     	AddUserToRole autr = new AddUserToRole(this.CP, ca);
@@ -102,14 +102,14 @@ public class AccountHelperTest extends TestCase {
     	updatePermission(p, "Stakeholder", false);	// 將 Stakeholder 角色設定成不能存取 TaskBoard
     	updatePermission(p, "ProductOwner", false);	// 將 PO 角色設定成不能存取 TaskBoard
     	
-    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	accountIDList = this.projectMapper.getProjectScrumWorkersAccount(this.project.getId());
     	assertEquals(2, accountIDList.size());		// 可以領取工作的角色剩下兩個
     	assertTrue(accountIDList.contains(ca.getAccount_ID(3)));
     	assertTrue(accountIDList.contains(ca.getAccount_ID(4)));
     	
     	
     	updatePermission(p, "ProductOwner", true);	// 將 PO 角色設定成能存取 TaskBoard
-    	accountIDList = this.projectMapper.getProjectScrumWorkerList(this.project.getId());
+    	accountIDList = this.projectMapper.getProjectScrumWorkersAccount(this.project.getId());
     	assertEquals(3, accountIDList.size());		// 可以領取工作的角色剩下四個
     	assertTrue(accountIDList.contains(ca.getAccount_ID(2)));
     	assertTrue(accountIDList.contains(ca.getAccount_ID(3)));

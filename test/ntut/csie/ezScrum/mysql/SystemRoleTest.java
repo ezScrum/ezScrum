@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
@@ -44,8 +45,7 @@ public class SystemRoleTest extends TestCase {
 	}
 
 	public void testGetSystemRole() {
-		ProjectRole role = mService.getSystemRole("1");	// id = 1 means admin
-		
+		ProjectRole role = AccountObject.getSystemRole(1);
 		assertNotNull(role);	// 預設應該就要有admin帳號存在了
 	}
 

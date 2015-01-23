@@ -116,7 +116,7 @@ public class AccountMapperTest extends TestCase {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<AccountObject> accountList = mAccountMapper.getAccountList();
+		List<AccountObject> accountList = mAccountMapper.getAccounts();
 		
 		assertEquals(2, accountList.size());
 	}

@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.mysql;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -79,9 +79,9 @@ public class AccountTest extends TestCase {
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
+		AccountObject account = createAccount.getAccountList().get(0);
 		
-		boolean result = mService.deleteAccount(id);
+		boolean result = account.delete();
 		
 		assertTrue(result);
 	}
@@ -100,9 +100,9 @@ public class AccountTest extends TestCase {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		List<AccountObject> result = mService.getAccountList();
+		ArrayList<AccountObject> accounts = AccountObject.getAccounts();
 		
-		assertEquals(2, result.size());	// include admin
+		assertEquals(2, accounts.size());	// include admin
 	}
 	
 	public void testConfirmAccount() {

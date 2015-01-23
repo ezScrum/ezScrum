@@ -84,7 +84,7 @@ public class ProjectRoleTest extends TestCase {
 	
 	public void testGetProjectMemberList() {
 		mService.createProjectRole(mProject.getId(), mUserId, RoleEnum.ProductOwner);
-		List<AccountObject> userList = mService.getProjectMemberList(mProject.getId());
+		List<AccountObject> userList = mService.getProjectMembers(mProject.getId());
 		
 		assertEquals(1, userList.size());
 	}

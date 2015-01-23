@@ -15,15 +15,12 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.project.core.ICVS;
 import ntut.csie.jcis.project.core.IProjectDescription;
@@ -40,12 +37,7 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
 
-	private MySQLService mService;
-	private Configuration mConfig;
-
 	public ProjectMapper() {
-		mConfig = new Configuration();
-		mService = new MySQLService(mConfig);
 	}
 
 //	/**
@@ -176,40 +168,31 @@ public class ProjectMapper {
 //		return result;
 //	}
 
-	public List<AccountObject> getProjectMemberListForDb(String id) {
-		mService.openConnect();
-		List<AccountObject> result = mService.getProjectMemberList(id);
-		mService.closeConnect();
-		return result;
+	public ArrayList<AccountObject> getProjectMembers(long projectId) {
+		return ProjectObject.getProjectMembers(projectId);
 	}
 
-	public List<AccountObject> getProjectScrumWorkerListForDb(String id) {
-		mService.openConnect();
-		List<AccountObject> result = mService.getProjectWorkerList(id);
-		mService.closeConnect();
-		return result;
+	public ArrayList<AccountObject> getProjectScrumWorkers(long projectId) {
+		return ProjectObject.getProjectWorkers(projectId);
 	}
 
-	public List<String> getProjectScrumWorkerList(String id) {
-		mService.openConnect();
-		List<AccountObject> userList = mService.getProjectWorkerList(id);
-		mService.closeConnect();
-		List<String> result = new ArrayList<String>();
-		for (AccountObject user : userList) {
-			result.add(user.getAccount());
+	public ArrayList<String> getProjectScrumWorkersAccount(long projectId) {
+		ArrayList<String> accountList = new ArrayList<String>();
+		for (AccountObject account : getProjectScrumWorkers(projectId)) {
+			accountList.add(account.getAccount());
 		}
-		return result;
+		return accountList;
 	}
 
-	public void createScrumRole(long id) {
-		ScrumRole scrumRole;
-		mService.openConnect();
-		for (RoleEnum role : RoleEnum.values()) {
-			scrumRole = new ScrumRole(role);
-			mService.createScrumRole(id, role, scrumRole);
-		}
-		mService.closeConnect();
-	}
+//	public void createScrumRole(long id) {
+//		ScrumRole scrumRole;
+//		mService.openConnect();
+//		for (RoleEnum role : RoleEnum.values()) {
+//			scrumRole = new ScrumRole(role);
+//			mService.createScrumRole(id, role, scrumRole);
+//		}
+//		mService.closeConnect();
+//	}
 
 	/**
 	 * 建立專案的資料結構及外部檔案

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.dao;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -37,7 +38,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
-		valueSet.addInsertValue(AccountEnum.ENABLE, account.getEnable().equals("true") ? "1" : "0");
+		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable()));
 		valueSet.addInsertValue(AccountEnum.CREATE_TIME, System.currentTimeMillis());
 		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, System.currentTimeMillis());
 		String query = valueSet.getInsertQuery();
@@ -51,11 +52,10 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	
 	/**
 	 * 取出 account 的在 project 的 role 權限列表 
-	 * 
 	 * @param id - account id
 	 * @return
 	 */
-	public HashMap<String, ProjectRole> getProjectRoleList(String id) {
+	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
 		try {
 			StringBuilder query = new StringBuilder();
 			query.append("select * from ").append(ProjectRoleEnum.TABLE_NAME).append(" as pr")
@@ -87,14 +87,16 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * -------------------------------------------
 	 */
 	
-	public ProjectRole getSystemRole(String id) {
+	public ProjectRole getSystemRole(long id) {
 		try {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(SystemEnum.TABLE_NAME);
 			valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, id);
 			ResultSet result = mControl.executeQuery(valueSet.getSelectQuery());
 			if (result.next()) {
-				ProjectObject project = new ProjectObject("0", "system", "system", "system", "admin", "0", 0);
+				ProjectObject project = new ProjectObject(0, "system");
+				project.setDisplayName("system").setComment("system")
+					.setManager("admin").setAttachFileSize(0).setCreateTime(0);
 				ScrumRole scrumRole = new ScrumRole("system", "admin");
 				scrumRole.setisAdmin(true);
 				return new ProjectRole(project, scrumRole);
@@ -123,19 +125,64 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 	
 	private ProjectRole getProjectWithScrumRole(ResultSet result) throws SQLException {
-		String id = result.getString(ProjectRoleEnum.PROJECT_ID);
-		String pid = result.getString(ProjectEnum.NAME);
-		String name = result.getString(ProjectEnum.NAME);
-		String comment = result.getString(ProjectEnum.COMMENT);
-		String productOwner = result.getString(ProjectEnum.PRODUCT_OWNER);
-		String maxSize = result.getString(ProjectEnum.ATTATCH_MAX_SIZE);
-		ProjectObject project = new ProjectObject(id, pid, name, comment, productOwner, maxSize, 0);
+		ProjectObject project = new ProjectObject(result.getLong(ProjectRoleEnum.PROJECT_ID),
+												  result.getString(ProjectEnum.NAME));
+		project
+			.setComment(result.getString(ProjectEnum.COMMENT))
+			.setManager(result.getString(ProjectEnum.PRODUCT_OWNER))
+			.setAttachFileSize(result.getLong(ProjectEnum.ATTATCH_MAX_SIZE))
+			.save();
 		
 		RoleEnum role = RoleEnum.values()[result.getInt(ProjectRoleEnum.ROLE)];
-		ScrumRole scrumRole = getScrumRole(pid, role.name(), result);
+		ScrumRole scrumRole = getScrumRole(project.getName(), role.name(), result);
 
 		return new ProjectRole(project, scrumRole);
     }
+	
+	public ArrayList<AccountObject> getProjectMembers(long id) {
+		try {
+			MySQLQuerySet valueSet = new MySQLQuerySet();
+			valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
+			valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, id);
+			valueSet.addCrossJoinMultiCondition(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID, AccountEnum.ENABLE, "1");
+			String query = valueSet.getSelectQuery();
+			ResultSet result = mControl.executeQuery(query);
+			ArrayList<AccountObject> list = new ArrayList<AccountObject>();
+			if (result.next()) {
+				do {
+					list.add(convert(result));
+				} while (result.next());
+				return list;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ArrayList<AccountObject> getProjectWorkers(long id) {
+		try {
+			MySQLQuerySet valueSet = new MySQLQuerySet();
+			valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
+			valueSet.addEqualCondition(ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.PROJECT_ID, id);
+			valueSet.addEqualCondition(ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.PROJECT_ID, id);
+			valueSet.addEqualCondition(ScrumRoleEnum.ACCESS_TASKBOARD, "1");
+			valueSet.addCrossJoin(ProjectRoleEnum.TABLE_NAME, ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.ROLE, ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.ROLE);
+			valueSet.addCrossJoin(AccountEnum.TABLE_NAME, ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.' + AccountEnum.ID);
+			String query = valueSet.getSelectQuery();
+			ResultSet result = mControl.executeQuery(query);
+			ArrayList<AccountObject> list = new ArrayList<AccountObject>();
+			while (result.next()) {
+				list.add(convert(result));
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	@Override
 	public AccountObject get(long id) {
@@ -156,6 +203,27 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return account;
 	}
 
+	public ArrayList<AccountObject> getAccounts() {
+		try {
+			IQueryValueSet valueSet = new MySQLQuerySet();
+			valueSet.addTableName(AccountEnum.TABLE_NAME);
+			String query = valueSet.getSelectQuery();
+			ResultSet result = mControl.executeQuery(query);
+			ArrayList<AccountObject> list = new ArrayList<AccountObject>();
+			if (result.next()) {
+				do {
+					list.add(convert(result));
+				} while (result.next());
+				return list;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public boolean update(AccountObject account) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -166,7 +234,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		if (account.getPassword() != null && !account.getPassword().equals("")) {
 			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
 		}
-		valueSet.addInsertValue(AccountEnum.ENABLE, account.getEnable().equals("true") ? "1" : "0");
+		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable()));
 		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getUpdateQuery();
 		
@@ -183,17 +251,17 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 
 	private AccountObject convert(ResultSet result) throws SQLException {
-		String id;
+		long id;
 		try {
-			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);
+			id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
 		} catch (SQLException e) {
-			id = result.getString(AccountEnum.ID);
+			id = result.getLong(AccountEnum.ID);
 		}
 		String account = result.getString(AccountEnum.ACCOUNT);
 		String name = result.getString(AccountEnum.NICK_NAME);
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
-		String enable = result.getString(AccountEnum.ENABLE).equals("1") ? "true" : "false";
+		boolean enable = result.getBoolean(AccountEnum.ENABLE);
 		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
 		return new AccountObject(id, account, name, password, email, enable, roles);
 	}

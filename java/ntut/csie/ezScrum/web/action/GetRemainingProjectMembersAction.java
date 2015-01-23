@@ -54,8 +54,8 @@ public class GetRemainingProjectMembersAction extends Action {
 		
 		// ezScrum v1.8
 		// get total member list
-		List<AccountObject> accounts = new ProjectMapper().getProjectMemberListForDb(project.getName());
-		List<AccountObject> accountList = (new AccountMapper()).getAccountList();
+		List<AccountObject> accounts = new ProjectMapper().getProjectMembers(project.getName());
+		List<AccountObject> accountList = (new AccountMapper()).getAccounts();
 		StringBuilder result = new StringBuilder();
 		result.append("<Members>");
 //		for (UserObject total_member_list : accountList) {

@@ -101,7 +101,7 @@ public class ProjectHelper {
 	 */
 	public List<AccountObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
+		return projectMapper.getProjectScrumWorkers(project.getId());
 	}
 
 	public String getCreateProjectXML(HttpServletRequest request,
@@ -152,8 +152,8 @@ public class ProjectHelper {
 	}
 	
 	// ezScrum v1.8
-	public List<AccountObject> getProjectMemberList(ProjectObject project) {
-		return mProjectMapper.getProjectMemberListForDb(project.getId());
+	public ArrayList<AccountObject> getProjectMemberList(ProjectObject project) {
+		return mProjectMapper.getProjectMembers(project.getId());
 	}
 
 	private ProjectInfoForm convertProjectInfo(ProjectInfo projectInfo) {

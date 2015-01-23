@@ -153,7 +153,7 @@ public class AccountHelper {
 
 	public String getAccountListXML() {
 		AccountMapper am = new AccountMapper();
-		List<AccountObject> accountList = am.getAccountList();
+		List<AccountObject> accountList = am.getAccounts();
 		return this.getXmlstring(accountList);
 	}
 

@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 
@@ -147,7 +148,15 @@ public class ProjectObject implements IBaseObject {
 	public static ArrayList<ProjectObject> getProjects() {
 		return ProjectDAO.getInstance().getProjects();
 	}
-
+	
+	public static ArrayList<AccountObject> getProjectMembers(long projectId) {
+		return AccountDAO.getInstance().getProjectMembers(projectId);
+	}
+	
+	public static ArrayList<AccountObject> getProjectWorkers(long projectId) {
+		return AccountDAO.getInstance().getProjectWorkers(projectId);
+	}
+	
 	@Override
     public void save() {
 		if (recordExists()) {
