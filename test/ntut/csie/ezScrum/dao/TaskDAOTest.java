@@ -287,7 +287,7 @@ public class TaskDAOTest extends TestCase {
 		while (result.next()) {
 			size++;
 		}
-		result.close();
+		closeResultSet(result);
 		assertEquals(1, size);
 		
 		// remove partner from relations
@@ -304,7 +304,7 @@ public class TaskDAOTest extends TestCase {
 		while (result.next()) {
 			size++;
 		}
-		result.close();
+		closeResultSet(result);
 		assertEquals(0, size);
 	}
 
@@ -384,4 +384,15 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
 		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
 	}
+
+	private void closeResultSet(ResultSet result) {
+		if (result != null) {
+			try {
+				result.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+	}
+	
 }

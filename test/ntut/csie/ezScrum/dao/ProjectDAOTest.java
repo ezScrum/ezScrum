@@ -442,7 +442,7 @@ public class ProjectDAOTest extends TestCase {
 		}
 
 		// get project by name
-		ProjectObject theProject = ProjectDAO.getInstance().getProjectByName("TEST_PROJECT_1");
+		ProjectObject theProject = ProjectDAO.getInstance().get("TEST_PROJECT_1");
 
 		assertEquals(1, theProject.getId());
 		assertEquals("TEST_DISPLATNAME_1", theProject.getDisplayName());

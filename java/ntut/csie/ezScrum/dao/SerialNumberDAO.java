@@ -60,13 +60,7 @@ public class SerialNumberDAO extends
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (result != null) {
-				try {
-					result.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			closeResultSet(result);
 		}
 		return serialNumber;
 	}
@@ -125,7 +119,6 @@ public class SerialNumberDAO extends
 				.setUnplannedId(result.getLong(SerialNumberEnum.UNPLANNED))
 				.setRetrospectiveId(
 						result.getLong(SerialNumberEnum.RETROSPECTIVE));
-		;
 		return serialNumber;
 	}
 }
