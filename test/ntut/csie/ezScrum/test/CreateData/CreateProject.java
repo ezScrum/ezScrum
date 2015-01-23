@@ -74,7 +74,7 @@ public class CreateProject {
 			projectInfo.common = mProjectCommon + (i + 1);			// This is Test Project - X
 			projectInfo.manager = mProjectMaNager + (i + 1);		// Project_Manager_X
 			
-			long id = projectMapper.createProject(projectInfo.name, projectInfo);
+			projectMapper.createProject(projectInfo.name, projectInfo);
 		}
 	}
 	

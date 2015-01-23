@@ -101,10 +101,6 @@ public class AccountMapper {
 		if (account == null) {
 			throw new LogonException(false, false);
 		} else {
-			// IAccount itsAccount = getAccountByIdToITS(id); //
-			// 當project與role都從外部檔案移到資料庫，就可以刪掉
-			// return addRoleFromITS(account, itsAccount); //
-			// 當project與role都從外部檔案移到資料庫，就可以刪掉
 			return account;
 		}
 	}
