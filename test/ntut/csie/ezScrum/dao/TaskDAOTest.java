@@ -13,6 +13,8 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 public class TaskDAOTest extends TestCase {
@@ -259,12 +261,75 @@ public class TaskDAOTest extends TestCase {
 		
 	}
 	
-	public void testRemovePartner() {
+	public void testRemovePartner() throws SQLException {
+		long TEST_TASK_ID = 1;
+		long TEST_PARTNER_ID = 2;
 		
+		// add a new issue partner relationship
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, TEST_TASK_ID);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
+				TEST_PARTNER_ID);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String query = valueSet.getInsertQuery();
+		long id = mControl.executeInsert(query);
+		
+		// assert the record is inserted correctly
+		valueSet.clear();
+		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ID, id);
+		query = valueSet.getSelectQuery();
+		
+		ResultSet result = mControl.executeQuery(query);
+		int size = 0;
+		while (result.next()) {
+			size++;
+		}
+		result.close();
+		assertEquals(1, size);
+		
+		// remove partner from relations
+		TaskDAO.getInstance().removePartner(TEST_TASK_ID, TEST_PARTNER_ID);
+		
+		// assert again, the record should be removed 
+		valueSet.clear();
+		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ID, id);
+		query = valueSet.getSelectQuery();
+		
+		result = mControl.executeQuery(query);
+		size = 0;
+		while (result.next()) {
+			size++;
+		}
+		result.close();
+		assertEquals(0, size);
 	}
 
 	public void testPartnerExists() {
+		long TEST_TASK_ID = 1;
+		long TEST_PARTNER_ID = 2;
 		
+		// assert does relation exist, should be FALSE
+		boolean exists = TaskDAO.getInstance().partnerExists(TEST_TASK_ID, TEST_PARTNER_ID);
+		assertFalse(exists);
+		
+		// add a new issue partner relationship
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, TEST_TASK_ID);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
+				TEST_PARTNER_ID);
+		valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String query = valueSet.getInsertQuery();
+		mControl.executeInsert(query);
+		
+		// assert again, should be TURE
+		exists = TaskDAO.getInstance().partnerExists(TEST_TASK_ID, TEST_PARTNER_ID);
+		assertTrue(exists);
 	}
 	
 	public void testConvert() throws SQLException {
