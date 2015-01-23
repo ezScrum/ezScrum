@@ -16,7 +16,7 @@ import ntut.csie.jcis.account.core.LogonException;
 
 import com.google.gson.Gson;
 
-public class TaskWebService extends ProjectWebService{
+public class TaskWebService extends ProjectWebService {
 	private SprintBacklogHelper mSprintBacklogHelper;
 	private ProductBacklogHelper mProductBacklogHelper;
 	private ProjectHelper mProjectHelper;
@@ -24,20 +24,20 @@ public class TaskWebService extends ProjectWebService{
 	
 	public TaskWebService(AccountObject user, String projectId) throws LogonException {
 		super(user, projectId);
-		initialize(projectId);
+		initialize(Long.parseLong(projectId));
 	}
 	
 	public TaskWebService(String username, String userpwd, String projectId) throws LogonException {
 		super(username, userpwd, projectId);
-		initialize(projectId);
+		initialize(Long.parseLong(projectId));
 	}
 	
-	private void initialize(String projectId) {
+	private void initialize(long projectId) {
 		UserSession userSession = new UserSession(super.getAccount());
 		mSprintBacklogHelper = new SprintBacklogHelper(super.getProjectList().get(0), userSession);
 		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
 		mProjectHelper = new ProjectHelper();
-		mProject = mProjectHelper.getProjectById(projectId);
+		mProject = mProjectHelper.getProject(projectId);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class TaskWebService extends ProjectWebService{
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getWildTasks() throws SQLException {
+	public String getNoParentTasks() throws SQLException {
 		IIssue[] existedTask = mProductBacklogHelper.getWildTasks();
 		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
 		for (IIssue task : existedTask)
@@ -55,8 +55,7 @@ public class TaskWebService extends ProjectWebService{
 	}
 	
 	public String getWildTask() throws NumberFormatException, SQLException {
-		return mSprintBacklogHelper.getWildTasks(
-				Long.parseLong(mProject.getId()));
+		return mSprintBacklogHelper.getWildTasks(mProject.getId());
 	}
 	
 	/**

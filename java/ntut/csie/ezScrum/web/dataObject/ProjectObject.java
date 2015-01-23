@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 
@@ -27,29 +28,8 @@ public class ProjectObject implements IBaseObject {
 	private long mAttachFileSize = DEFAULT_VALUE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-
-//	public ProjectObject(long id, String name, String displayName, String comment,
-//			String manager, String attachFileSize, long createDate, long updateTime) {
-//		mId = id;
-//		mName = name;
-//		setDisplayName(displayName);
-//		setComment(comment);
-//		setManager(manager);
-//		setAttachFileSize(attachFileSize);
-//		setCreateTime(createDate);
-//		setUpdateTime(updateTime);
-//	}
-//
-//	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
-//		mName = name;
-//		setDisplayName(displayName);
-//		setComment(comment);
-//		setManager(manager);
-//		setAttachFileSize(attachFileSize);
-//	}
-//
-//	public ProjectObject() {
-//	}
+	private ArrayList<AccountObject> mMembers = null;
+	private ArrayList<AccountObject> mWorkers = null;
 	
 	public ProjectObject(String name) {
 		mName = name;
@@ -140,14 +120,34 @@ public class ProjectObject implements IBaseObject {
 		return ProjectDAO.getInstance().get(id);
 	}
 
-	public static ProjectObject getProjectByName(String name) {
-		return ProjectDAO.getInstance().getProjectByName(name);
+	/**
+	 * Get project by name
+	 * 
+	 * @param name project name
+	 * @return ProjectObject
+	 */
+	public static ProjectObject get(String name) {
+		return ProjectDAO.getInstance().get(name);
 	}
 
 	public static ArrayList<ProjectObject> getProjects() {
 		return ProjectDAO.getInstance().getProjects();
 	}
-
+	
+	public ArrayList<AccountObject> getProjectMembers() {
+		if (mMembers == null) {
+			mMembers = AccountDAO.getInstance().getProjectMembers(mId);
+		}
+		return mMembers;
+	}
+	
+	public ArrayList<AccountObject> getProjectWorkers() {
+		if (mWorkers == null) {
+			mWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
+		}
+		return mWorkers;
+	}
+	
 	@Override
     public void save() {
 		if (recordExists()) {
@@ -189,6 +189,8 @@ public class ProjectObject implements IBaseObject {
 		mManager = project.getManager();
 		mCreateTime = project.getCreateTime();
 		mUpdateTime = project.getUpdateTime();
+		mMembers = null;
+		mWorkers = null;
 	}
 	
 	private void doCreate() {

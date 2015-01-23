@@ -17,7 +17,7 @@ public class ProjectObjectTest extends TestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -33,7 +33,7 @@ public class ProjectObjectTest extends TestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 		
 		mConfig = null;
 		super.tearDown();
@@ -164,7 +164,7 @@ public class ProjectObjectTest extends TestCase {
 			.setAttachFileSize(attachFileSize)
 			.save();
 		
-		ProjectObject theProject = ProjectObject.getProjectByName(name);
+		ProjectObject theProject = ProjectObject.get(name);
 		
 		assertEquals(name, theProject.getName());
 		assertEquals(displayName, theProject.getDisplayName());

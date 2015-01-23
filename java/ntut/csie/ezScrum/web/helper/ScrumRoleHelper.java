@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,11 +17,11 @@ public class ScrumRoleHelper {
 
 	public String getResourceList() {
 		ProjectLogic projectLogic = new ProjectLogic();
-		List<ProjectObject> projects = projectLogic.getAllProjectsForDb();
+		ArrayList<ProjectObject> projects = projectLogic.getProjects();
 
 		List<ProjectNameUI> pnui_list = new LinkedList<ProjectNameUI>();
-		for (ProjectObject p : projects) {
-			pnui_list.add(new ProjectNameUI(p));
+		for (ProjectObject project : projects) {
+			pnui_list.add(new ProjectNameUI(project));
 		}
 
 		return new Gson().toJson(pnui_list);
@@ -34,14 +35,14 @@ public class ScrumRoleHelper {
 		private String iconCls = "leaf-icon";
 
 		public ProjectNameUI(ProjectObject project) {
-			this.id = project.getId();
+			this.id = String.valueOf(project.getId());
 			this.text = project.getName();
 		}
 	}
 
 	public String getScrumRolePermissionList(String id, String projectId, String scrumRole) {
 		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectObject project = projectMapper.getProjectByIdForDb(id);
+		ProjectObject project = projectMapper.getProject(id);
 
 		Gson gson = new Gson();
 		if (project != null) {

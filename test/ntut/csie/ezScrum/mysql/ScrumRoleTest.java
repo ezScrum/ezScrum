@@ -89,7 +89,7 @@ public class ScrumRoleTest extends TestCase {
 			scrumRole = new ScrumRole(role);
 			mService.createScrumRole(mProject.getId(), role, scrumRole);
 		}
-		List<AccountObject> userList = mService.getProjectWorkerList(mProject.getId());
+		List<AccountObject> userList = mService.getProjectWorkers(mProject.getId());
 		
 		assertEquals(1, userList.size());
 	}

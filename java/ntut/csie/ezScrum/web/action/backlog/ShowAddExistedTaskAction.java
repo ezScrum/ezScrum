@@ -45,7 +45,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		long projectId = Long.parseLong(projectObject.getId());
+		long projectId = projectObject.getId();
 		ArrayList<TaskObject> wildedTasks = null;
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
 		

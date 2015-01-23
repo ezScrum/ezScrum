@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class ProjectHelper {
 		ProjectLogic projectLogic = new ProjectLogic();
 		List<IProject> projects = projectLogic.getAllProjects();
 		// ezScrum v1.8
-		List<ProjectObject> projectsForDb = projectLogic.getAllProjectsForDb();
+		ArrayList<ProjectObject> projectObjects = projectLogic.getProjects();
 		
 		// get the user and projects permission mapping
 		Map<String, Boolean> map = projectLogic.getProjectPermissionMap(account);
@@ -63,7 +64,7 @@ public class ProjectHelper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Projects>");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		for (ProjectObject project : projectsForDb) {
+		for (ProjectObject project : projectObjects) {
 			if (map.get(project.getName()) == Boolean.TRUE) {
 				sb.append("<Project>");
 				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getName())).append("</ID>");
@@ -100,7 +101,7 @@ public class ProjectHelper {
 	 */
 	public List<AccountObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectScrumWorkerListForDb(project.getId());
+		return projectMapper.getProjectScrumWorkers(project.getId());
 	}
 
 	public String getCreateProjectXML(HttpServletRequest request,
@@ -151,8 +152,8 @@ public class ProjectHelper {
 	}
 	
 	// ezScrum v1.8
-	public List<AccountObject> getProjectMemberList(ProjectObject project) {
-		return mProjectMapper.getProjectMemberListForDb(project.getId());
+	public ArrayList<AccountObject> getProjectMemberList(ProjectObject project) {
+		return mProjectMapper.getProjectMembers(project.getId());
 	}
 
 	private ProjectInfoForm convertProjectInfo(ProjectInfo projectInfo) {
@@ -174,7 +175,7 @@ public class ProjectHelper {
 		saveProjectInfoForm.setDisplayName(displayName);
 		saveProjectInfoForm.setComment(comment);
 		saveProjectInfoForm.setProjectManager(manager);
-		saveProjectInfoForm.setAttachFileSize(attachFileSize);
+		saveProjectInfoForm.setAttachFileSize(String.valueOf(attachFileSize));
 		// log info
 		log.info("saveProjectInfoForm.getOutputPath()=" + saveProjectInfoForm.getOutputPath());
 		log.info("saveProjectInfoForm.getSourcePaths().length=" + saveProjectInfoForm.getSourcePaths().length);
@@ -182,12 +183,21 @@ public class ProjectHelper {
 		return saveProjectInfoForm;
 	}
 	
-	public ProjectObject getProjectById(String id) {
-		return mProjectMapper.getProjectByIdForDb(id);
+	/**
+	 * get project use DAO
+	 * @param id
+	 * @return project object
+	 */
+	public ProjectObject getProject(long id) {
+		return mProjectMapper.getProject(id);
 	}
 	
-	// ezScrum v1.8
-	public ProjectObject updateProject(ProjectObject project) {
-		return mProjectMapper.updateProjectForDb(project);
+	/**
+	 * update project use DAO
+	 * @param id 必要參數
+	 * @param projectInfo 其他資訊都包成 Info
+	 */
+	public void updateProject(long id, ProjectInfo projectInfo) {
+		mProjectMapper.updateProject(id, projectInfo);
 	}
 }

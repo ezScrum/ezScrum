@@ -27,12 +27,10 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
-import ntut.csie.jcis.account.core.internal.Account;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -55,10 +53,13 @@ public class ProjectLogic {
 		return projectMapper.getAllProjectList();
 	}
 
-	// ezScrum v1.8
-	private List<ProjectObject> getAllProjectListForDb() {
+	/**
+	 * get all projects use DAO
+	 * @return all project list
+	 */
+	public ArrayList<ProjectObject> getProjects() {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectListForDb();
+		return projectMapper.getProjects();
 	}
 
 	/**
@@ -75,12 +76,6 @@ public class ProjectLogic {
 		return list;
 	}
 
-	public List<ProjectObject> getAllProjectsForDb() {
-		// ezScrum v1.8
-		List<ProjectObject> list = this.getAllProjectListForDb();
-		return list;
-	}
-
 	/**
 	 * 比對專案和帳號
 	 * 
@@ -89,29 +84,6 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public boolean isUserExistInProject(IProject project, IUserSession userSession) {
-		// String adminAccountID = userSession.getAccount().getID();
-		// if( adminAccountID.equalsIgnoreCase("admin")||adminAccountID.equalsIgnoreCase("administrator") ){
-		// return true;
-		// }
-		
-//		IPermission permAdmin = (new AccountMapper()).getPermission("system", "admin");
-//		if (userSession.getAccount().checkPermission(permAdmin)) {
-//			return true;
-//		}
-//
-//		// AccountMapper accountMapper = new AccountMapper();
-//		// List<IAccount> projectMemberList = accountMapper.getProjectMemberList(userSession, project);
-//		List<IAccount> projectMemberList = (new ProjectMapper()).getProjectMemberList(userSession, project);
-//		boolean existedInProject = false;
-//		for (IAccount account : projectMemberList) {
-//			String accountID = account.getID();
-//			if (userSession.getAccount().getAccount().equals(accountID)) {
-//				existedInProject = true;
-//				break;
-//			}
-//		}
-//		return existedInProject;
-		
 		// ezScrum v1.8
 		AccountObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
@@ -130,7 +102,7 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public boolean isProjectExisted(String projectID) {
-		List<ProjectObject> projects = this.getAllProjectListForDb();
+		List<ProjectObject> projects = this.getProjects();
 		
 		for (ProjectObject project : projects) {
 			String PID = project.getName();
@@ -149,66 +121,9 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public Map<String, Boolean> getProjectPermissionMap(AccountObject account) {
-//		Map<String, Boolean> map = new HashMap<String, Boolean>();
-//
-//		// IAccount account = userSession.getAccount();
-//		// IAccountManager manager = AccountFactory.getManager();
-//		// IPermission permAdmin = manager.getPermission(this.system_Admin);
-//
-//		IPermission permAdmin = (new AccountMapper()).getPermission(this.system_Admin);
-//		List<ProjectInformation> list = this.getAllProjectListForDb();
-//
-//		// 如果為系統管理員，那麼將可以瀏覽所有的Project。
-//		// 因此所有皆設為True
-//		if (account.checkPermission(permAdmin)) {
-//			Iterator<ProjectInformation> ir = list.iterator();
-//
-//			while (ir.hasNext()) {
-//				ProjectInformation project = (ProjectInformation) ir.next();
-//				map.put(project.getName(), Boolean.TRUE);
-//			}
-//
-//			return map;
-//		}
-//
-//		Iterator<ProjectInformation> ir = list.iterator();
-//
-//		AccountMapper accountMapper = new AccountMapper();
-//
-//		while (ir.hasNext()) {
-//			IProject project = (IProject) ir.next();
-//
-//			IPermission permProjectPO = accountMapper.getPermission(project.getName(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);	// productOwner
-//			IPermission permProjectSM = accountMapper.getPermission(project.getName(), ScrumEnum.SCRUMROLE_SCRUMMASTER);	// ScrumMaster
-//			IPermission permProjectST = accountMapper.getPermission(project.getName(), ScrumEnum.SCRUMROLE_SCRUMTEAM);		// ScrumTeam
-//			IPermission permProjectSO = accountMapper.getPermission(project.getName(), ScrumEnum.SCRUMROLE_STAKEHOLDER);	// Stakeholder
-//			IPermission permProjectGuest = accountMapper.getPermission(project.getName(), ScrumEnum.SCRUMROLE_GUEST);		// guest
-//
-//			// check 是否可以讀取專案
-//			if (account.checkPermission(permProjectPO)) {
-//				map.put(project.getName(), Boolean.TRUE);
-//				continue;
-//			} else if (account.checkPermission(permProjectSM)) {
-//				map.put(project.getName(), Boolean.TRUE);
-//				continue;
-//			} else if (account.checkPermission(permProjectST)) {
-//				map.put(project.getName(), Boolean.TRUE);
-//				continue;
-//			} else if (account.checkPermission(permProjectSO)) {
-//				map.put(project.getName(), Boolean.TRUE);
-//				continue;
-//			} else if (account.checkPermission(permProjectGuest)) {
-//				map.put(project.getName(), Boolean.TRUE);
-//				continue;
-//			}
-//
-//			map.put(project.getName(), Boolean.FALSE);
-//		}
-//
-//		return map;
 		// ezScrum v1.8
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
-		List<ProjectObject> list = this.getAllProjectListForDb();
+		List<ProjectObject> list = this.getProjects();
 		
 		// check 是否可以讀取專案
 		Iterator<ProjectObject> ir = list.iterator();
@@ -231,11 +146,10 @@ public class ProjectLogic {
 	 * @return
 	 */
 	public IProject[] getAllCustomProjects() {
-		List<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
-		List<ProjectObject> projects = getAllProjectListForDb();
+		ArrayList<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
+		ArrayList<ProjectObject> projects = getProjects();
 
 		for (ProjectObject P : projects) {
-//			IssueBacklog IB = new IssueBacklog(P, new UserSession(new Account("guest")));
 			IssueBacklog IB = new IssueBacklog(P, new UserSession(null));
 
 			if (IB.isReportProject()) {

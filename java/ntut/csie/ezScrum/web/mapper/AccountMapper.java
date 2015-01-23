@@ -8,8 +8,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
@@ -30,8 +30,6 @@ public class AccountMapper {
 	private MySQLService mService;
 
 	public AccountMapper() {
-		//mPrefs = new ITSPrefsStorage();
-		//mService = new MySQLService(mPrefs);
 		mConfig = new Configuration();
 		mService = new MySQLService(mConfig);
 	}
@@ -39,7 +37,6 @@ public class AccountMapper {
 	public AccountMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
-		//mPrefs = new ITSPrefsStorage(mProject, mUserSession);
 		mConfig = new Configuration(mUserSession);
 		mService = new MySQLService(mConfig);
 	}
@@ -49,8 +46,6 @@ public class AccountMapper {
 		mService.createAccount(user);
 		AccountObject account = mService.getAccount(user.getAccount());
 		mService.closeConnect();
-//		IAccount itsAccount = createAccountToITS(user, roles);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-//		return addRoleFromITS(account, itsAccount);				// 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return account;
 	}
 
@@ -96,12 +91,8 @@ public class AccountMapper {
 		return user;
 	}
 
-	public List<AccountObject> getAccountList() {
-		mService.openConnect();
-		List<AccountObject> list = mService.getAccountList();
-		mService.closeConnect();
-//		list = getAccountListToITS();	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-		return list;
+	public ArrayList<AccountObject> getAccounts() {
+		return AccountObject.getAccounts();
 	}
 
 	public AccountObject confirmAccount(String id, String password) throws LogonException {
@@ -117,11 +108,14 @@ public class AccountMapper {
 		}
 	}
 
-	public HashMap<String, ProjectRole> getProjectRoleList(String id) {
-		mService.openConnect();
-		HashMap<String, ProjectRole> roles = mService.getProjectRoleList(id);
-		mService.closeConnect();
-		return roles;
+	/**
+	 * 取出 account 的在 project 的 role 權限列表
+	 * @param id is account id
+	 * @return 權限列表
+	 */
+	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
+		AccountObject account = AccountObject.get(id);
+		return account.getProjectRoleList();
 	}
 	
 	/**
