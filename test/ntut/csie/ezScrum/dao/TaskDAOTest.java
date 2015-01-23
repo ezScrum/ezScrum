@@ -253,12 +253,109 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(2, tasks.size());
 	}
 	
-	public void testGetPartnersId() {
-		
+	public void testGetPartnersId_withOnePartner() {
+		long TEST_TASK_ID = 3;
+		long TEST_PARTNER_ID = 5;
+		// before add partner testGetPartnersId
+		ArrayList<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(0, partnersId.size());
+		// create add partner query
+		IQueryValueSet addPartnerValueSet = new MySQLQuerySet();
+		addPartnerValueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		addPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, TEST_TASK_ID);
+		addPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
+				TEST_PARTNER_ID);
+		addPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String addPartnerQuery = addPartnerValueSet.getInsertQuery();
+		// execute add partner query
+		mControl.executeInsert(addPartnerQuery);
+		// after add partner testGetPartnersId
+		partnersId.clear();
+		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(1, partnersId.size());
+		assertEquals(5, partnersId.get(0).longValue());
+	}
+	
+	public void testGetPartnersId_withTwoPartners() {
+		long TEST_TASK_ID = 3;
+		long TEST_FIRST_PARTNER_ID = 5;
+		long TEST_SECOND_PARTNER_ID = 7;
+		// before add partner testGetPartnersId
+		ArrayList<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(0, partnersId.size());
+		// create add first partner query
+		IQueryValueSet addFirstPartnerValueSet = new MySQLQuerySet();
+		addFirstPartnerValueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		addFirstPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, TEST_TASK_ID);
+		addFirstPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
+				TEST_FIRST_PARTNER_ID);
+		addFirstPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String addFirstPartnerQuery = addFirstPartnerValueSet.getInsertQuery();
+		// create add first partner query
+		IQueryValueSet addSecondPartnerValueSet = new MySQLQuerySet();
+		addSecondPartnerValueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		addSecondPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, TEST_TASK_ID);
+		addSecondPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
+				TEST_SECOND_PARTNER_ID);
+		addSecondPartnerValueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String addSecondPartnerQuery = addSecondPartnerValueSet.getInsertQuery();
+		// execute add partner query
+		mControl.executeInsert(addFirstPartnerQuery);
+		mControl.executeInsert(addSecondPartnerQuery);
+		// after add partner testGetPartnersId
+		partnersId.clear();
+		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, partnersId.size());
+		assertEquals(5, partnersId.get(0).longValue());
+		assertEquals(7, partnersId.get(1).longValue());
 	}
 	
 	public void testAddPartner() {
-		
+		long TEST_TASK_ID = 3;
+		long TEST_PARTNER_ID = 5;
+		// create get partners id query
+		IQueryValueSet getPartnersIdValueSet = new MySQLQuerySet();
+		getPartnersIdValueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
+		getPartnersIdValueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID,
+				Long.toString(TEST_TASK_ID));
+		getPartnersIdValueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE,
+				IssueTypeEnum.TYPE_TASK);
+		String getPartnersIdQuery = getPartnersIdValueSet.getSelectQuery();
+		ArrayList<Long> partnerIdList = new ArrayList<Long>();
+		// execute get partners id query
+		ResultSet result = mControl.executeQuery(getPartnersIdQuery);
+		try {
+			while (result.next()) {
+				partnerIdList.add(result
+						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		// before add partner
+		assertEquals(0, partnerIdList.size());
+		// add partner
+		TaskDAO.getInstance().addPartner(TEST_TASK_ID, TEST_PARTNER_ID);
+		// execute get partners id query
+		result = mControl.executeQuery(getPartnersIdQuery);
+		try {
+			while (result.next()) {
+				partnerIdList.add(result
+						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		// after add partner
+		assertEquals(1, partnerIdList.size());
+		assertEquals(5, partnerIdList.get(0).longValue());
 	}
 	
 	public void testRemovePartner() throws SQLException {
