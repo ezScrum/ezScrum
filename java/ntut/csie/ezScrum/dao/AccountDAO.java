@@ -34,7 +34,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	public long create(AccountObject account) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addInsertValue(AccountEnum.USERNAME, account.getAccount());
+		valueSet.addInsertValue(AccountEnum.USERNAME, account.getUsername());
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
@@ -208,7 +208,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	/**
 	 * Get account object by account's username
 	 * 
-	 * @param account Account's username
+	 * @param username Account's username
 	 * @return AccountObject
 	 */
 	public AccountObject get(String username) {

@@ -337,7 +337,7 @@ public class TaskObject implements IBaseObject {
 		StringBuilder partnersName = new StringBuilder();
 		ArrayList<AccountObject> partners = getPartners();
 		for (AccountObject partner : partners) {
-			partnersName.append(partner.getAccount()).append(";");
+			partnersName.append(partner.getUsername()).append(";");
 		}
 		partnersName.deleteCharAt(partnersName.length()-1);
 		return partnersName.toString();

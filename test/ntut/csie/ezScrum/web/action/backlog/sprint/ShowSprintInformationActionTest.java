@@ -274,7 +274,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		AccountObject account = createAccount.getAccountList().get(0);
-		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
+		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getUsername()));
 		request.getSession().setAttribute("UserSession", newUser);
 
 		// ================ 執行 action ======================
@@ -317,7 +317,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		AccountObject account = createAccount.getAccountList().get(0);
-		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
+		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getUsername()));
 		request.getSession().setAttribute("UserSession", newUser);
 
 		// ================ 執行 action ======================

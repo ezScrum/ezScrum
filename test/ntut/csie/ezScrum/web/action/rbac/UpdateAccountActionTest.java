@@ -86,7 +86,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	String postfix = "_update";
     	AccountObject account = CA.getAccountList().get(0);
     	String userId = account.getId();		// 取得第一筆 Account ID
-    	String userAccount = account.getAccount();		// 取得第一筆 Account ID
+    	String userAccount = account.getUsername();		// 取得第一筆 Account ID
     	String userPw = account.getPassword() + postfix;
     	String userMail = "modify@test.com";
     	String userName = account.getName() + postfix;
@@ -120,7 +120,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	account = (new AccountMapper()).getAccount(userAccount);
 		
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
+		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());	
 		assertEquals(userMail, account.getEmail());		
 		assertEquals(userName, account.getName());

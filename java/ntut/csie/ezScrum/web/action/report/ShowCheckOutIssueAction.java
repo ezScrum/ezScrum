@@ -40,7 +40,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		StringBuilder result = new StringBuilder("");
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
 
-		String defaultHandler = session.getAccount().getAccount();
+		String defaultHandler = session.getAccount().getUsername();
 		try {
 			long issueId = Long.parseLong(request.getParameter("issueID"));
 			IIssue item = PBHelper.getIssue(issueId);

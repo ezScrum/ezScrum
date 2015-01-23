@@ -57,7 +57,7 @@ public class LoginWebServiceTest extends TestCase {
 		account = login.getAccount();
 		assertNotNull(account);
 //		assertEquals(true, account.isGuest());
-		assertEquals(username, account.getAccount());
+		assertEquals(username, account.getUsername());
 		
 		username = "admin";
 		userpwd = "admin";
@@ -66,6 +66,6 @@ public class LoginWebServiceTest extends TestCase {
 		account = login.getAccount();
 		assertNotNull(account);
 //		assertEquals(false, account.isGuest());
-		assertEquals(username, account.getAccount());
+		assertEquals(username, account.getUsername());
 	}
 }

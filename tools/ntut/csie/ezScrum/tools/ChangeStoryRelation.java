@@ -339,7 +339,7 @@ public class ChangeStoryRelation {
 //		return theUserSession;
 		// ezScrum v1.8
 		AccountObject user = new AccountObject();
-		user.setAccount("admin");
+		user.setUsername("admin");
 		return new UserSession(user);
 	}
 	/**

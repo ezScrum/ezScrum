@@ -48,7 +48,7 @@ public class ProjectRoleTest extends TestCase {
 		project.reload();
 		AccountInfo user = new AccountInfo("account", "user name", "password", "email", "true");
 		mService.createAccount(user);
-		mUser = mService.getAccount(user.getAccount());
+		mUser = mService.getAccount(user.getUsername());
 		mUserId = mUser.getId();
 	}
 
