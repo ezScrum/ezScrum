@@ -199,7 +199,7 @@ public class HistoryObject {
 		service.openConnect();
 		
 		if (mOldValue.equals("") && !mNewValue.equals("")) {
-			String newAccount = service.getAccountById(mNewValue).getAccount();
+			String newAccount = service.getAccountById(mNewValue).getUsername();
 			service.closeConnect();
 			return newAccount;
 		}
@@ -207,8 +207,8 @@ public class HistoryObject {
 		if (!mOldValue.equals("") && !mNewValue.equals("")) {
 			String oldAccount = "";
 			String newAccount = "";
-			oldAccount = service.getAccountById(mOldValue).getAccount();
-			newAccount = service.getAccountById(mNewValue).getAccount();
+			oldAccount = service.getAccountById(mOldValue).getUsername();
+			newAccount = service.getAccountById(mNewValue).getUsername();
 			service.closeConnect();
 			return oldAccount + " => " + newAccount;
 		}

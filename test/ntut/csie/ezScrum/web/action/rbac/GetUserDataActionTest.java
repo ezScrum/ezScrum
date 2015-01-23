@@ -116,7 +116,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		AccountObject accountE = this.userSession.getAccount();				// excepted
 
 		assertNotNull(account);
-		assertEquals(account.getAccount(), accountE.getAccount());
+		assertEquals(account.getUsername(), accountE.getUsername());
 		assertEquals(account.getPassword(), accountE.getPassword());
 		assertEquals(account.getEmail(), accountE.getEmail());
 		assertEquals(account.getName(), accountE.getName());

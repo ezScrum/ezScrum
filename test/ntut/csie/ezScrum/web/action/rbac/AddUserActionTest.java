@@ -131,7 +131,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		AccountObject account = this.accountMapper.getAccountById(id);
 		assertNotNull(account);
-		assertEquals(this.CA.getAccount_ID(1), account.getAccount());
+		assertEquals(this.CA.getAccount_ID(1), account.getUsername());
 		assertEquals(this.CA.getAccount_RealName(1), account.getName());
 		assertEquals("true", account.getEnable());
 
@@ -190,7 +190,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		AccountObject account = this.accountMapper.getAccount(accountId);
 
 		assertNotNull(account);
-		assertEquals(accountId, account.getAccount());
+		assertEquals(accountId, account.getUsername());
 		assertEquals(ScrumEnum.SCRUMROLE_ADMIN, account.getName());
 		assertEquals("true", account.getEnable());
 
@@ -267,7 +267,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		String expectedUserRole_PO = (new TestTool()).getRole(projectName, scrumRole);
 		//		String expectedUserRole_USER = "user";
 		String expectedUserId = account.getId();
-		String expectedUserAccount = account.getAccount();
+		String expectedUserAccount = account.getUsername();
 		String expectedUserName = account.getName();
 		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
@@ -293,7 +293,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
-		assertEquals(expectedUserAccount, actualAccount.getAccount());
+		assertEquals(expectedUserAccount, actualAccount.getUsername());
 		assertEquals(expectedUserName, actualAccount.getName());
 		assertEquals(expectedUserPassword, actualAccount.getPassword());
 		assertEquals(expectedUserMail, actualAccount.getEmail());
@@ -322,7 +322,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================== set parameter info ====================
 		LogonForm logonForm = new LogonForm();
-		logonForm.setUserId(account.getAccount());
+		logonForm.setUserId(account.getUsername());
 		logonForm.setPassword(this.CA.getAccount_PWD(1));
 		setActionForm(logonForm);
 

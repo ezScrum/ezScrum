@@ -118,7 +118,7 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
 		//	assert response text
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("<Handlers><Result>success</Result><Handler><Name>")
-							.append(CA.getAccountList().get(0).getAccount())
+							.append(CA.getAccountList().get(0).getUsername())
 							.append("</Name></Handler></Handlers>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

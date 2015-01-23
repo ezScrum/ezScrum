@@ -25,7 +25,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class AccountMapper {
 	private IProject mProject;
 	private IUserSession mUserSession;
-	//private ITSPrefsStorage mPrefs;
+	// private ITSPrefsStorage mPrefs;
 	private Configuration mConfig;
 	private MySQLService mService;
 
@@ -41,24 +41,23 @@ public class AccountMapper {
 		mService = new MySQLService(mConfig);
 	}
 
-	public AccountObject createAccount(AccountInfo user) {
-		mService.openConnect();
-		mService.createAccount(user);
-		AccountObject account = mService.getAccount(user.getAccount());
-		mService.closeConnect();
+	public AccountObject createAccount(AccountInfo accountInfo) {
+		AccountObject account = new AccountObject(accountInfo.getUsername());
+		account.setEmail(accountInfo.getEmail())
+				.setPassword(accountInfo.getPassword())
+				.setName(accountInfo.getName()).setEnable(true).save();
 		return account;
 	}
 
 	/**
 	 * 進行編輯帳號的動作，並且將帳號更新角色，in 資料庫 和外部檔案資訊( RoleBase )的部分
 	 */
-	public AccountObject updateAccount(AccountInfo user) {
-		mService.openConnect();
-		mService.updateAccount(user);
-		AccountObject account = mService.getAccount(user.getAccount());
-		mService.closeConnect();
-//		IAccount itsAccount = updateAccountToITS(mUserSession, user);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-//		return addRoleFromITS(account, itsAccount);						// 當project與role都從外部檔案移到資料庫，就可以刪掉
+	public AccountObject updateAccount(AccountInfo accountInfo) {
+		AccountObject account = AccountObject.get(accountInfo.getId());
+		account.setEmail(accountInfo.getEmail())
+				.setPassword(accountInfo.getPassword())
+				.setName(accountInfo.getName())
+				.setEnable(accountInfo.getEnable().equals("true")).save();
 		return account;
 	}
 
@@ -69,25 +68,24 @@ public class AccountMapper {
 		mService.openConnect();
 		boolean result = mService.deleteAccount(id);
 		mService.closeConnect();
-//		deleteAccountToITS(mUserSession, id);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		// deleteAccountToITS(mUserSession, id); //
+		// 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return result;
 	}
 
 	public AccountObject getAccount(String account) {
-		mService.openConnect();
-		AccountObject user = mService.getAccount(account);
-		mService.closeConnect();
-//		IAccount itsAccount = getAccountByIdToITS(id);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-//		return addRoleFromITS(account, itsAccount);					// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		AccountObject user = AccountObject.get(account); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return user;
 	}
-	
+
 	public AccountObject getAccountById(String id) {
 		mService.openConnect();
 		AccountObject user = mService.getAccountById(id);
 		mService.closeConnect();
-//		IAccount itsAccount = getAccountByIdToITS(id);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
-//		return addRoleFromITS(account, itsAccount);					// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		// IAccount itsAccount = getAccountByIdToITS(id); //
+		// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		// return addRoleFromITS(account, itsAccount); //
+		// 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return user;
 	}
 
@@ -95,54 +93,63 @@ public class AccountMapper {
 		return AccountObject.getAccounts();
 	}
 
-	public AccountObject confirmAccount(String id, String password) throws LogonException {
+	public AccountObject confirmAccount(String id, String password)
+			throws LogonException {
 		mService.openConnect();
 		AccountObject account = mService.confirmAccount(id, password);
 		mService.closeConnect();
 		if (account == null) {
 			throw new LogonException(false, false);
 		} else {
+			// IAccount itsAccount = getAccountByIdToITS(id); //
+			// 當project與role都從外部檔案移到資料庫，就可以刪掉
+			// return addRoleFromITS(account, itsAccount); //
+			// 當project與role都從外部檔案移到資料庫，就可以刪掉
 			return account;
 		}
 	}
 
 	/**
 	 * 取出 account 的在 project 的 role 權限列表
-	 * @param id is account id
+	 * 
+	 * @param id
+	 *            is account id
 	 * @return 權限列表
 	 */
 	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
 		AccountObject account = AccountObject.get(id);
 		return account.getProjectRoleList();
 	}
-	
+
 	/**
 	 * 取得角色在專案中的權限
 	 */
 	public IPermission getPermission(String project, String role) {
-		return getPermissionToITS(project, role);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		return getPermissionToITS(project, role); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 
 	public IPermission getPermission(String role) {
-		return getPermissionToITS(role);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		return getPermissionToITS(role); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 
 	public void createRole(IProject p) throws Exception {
-		createRoleToITS(p);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		createRoleToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 
-	public void removeRole(IUserSession session, IAccount account, String id, List<String> roleList, String res) throws Exception {
-		removeRoleToITS(mUserSession, account, id, roleList, res);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+	public void removeRole(IUserSession session, IAccount account, String id,
+			List<String> roleList, String res) throws Exception {
+		removeRoleToITS(mUserSession, account, id, roleList, res); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
-	
-	public AccountObject removeRoleToDb(String projectId, String accountId, RoleEnum role) {
+
+	public AccountObject removeRoleToDb(String projectId, String accountId,
+			RoleEnum role) {
 		mService.openConnect();
 		mService.deleteProjectRole(projectId, accountId, role);
 		AccountObject result = mService.getAccountById(accountId);
 		mService.closeConnect();
 		return result;
 	}
-	
+
 	public AccountObject removeRoleToDb(String accountId) {
 		mService.openConnect();
 		mService.deleteSystemRole(accountId);
@@ -151,11 +158,14 @@ public class AccountMapper {
 		return result;
 	}
 
-	public void addRole(IUserSession session, IAccount account, List<String> roleList, String id, String res, String op) throws Exception {
-		addRoleToITS(mUserSession, account, roleList, id, res, op);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+	public void addRole(IUserSession session, IAccount account,
+			List<String> roleList, String id, String res, String op)
+			throws Exception {
+		addRoleToITS(mUserSession, account, roleList, id, res, op); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
-	
-	public AccountObject addRoleToDb(String projectId, String accountId, RoleEnum role) {
+
+	public AccountObject addRoleToDb(String projectId, String accountId,
+			RoleEnum role) {
 		mService.openConnect();
 		mService.createProjectRole(projectId, accountId, role);
 		AccountObject result = mService.getAccountById(accountId);
@@ -170,7 +180,7 @@ public class AccountMapper {
 		mService.closeConnect();
 		return result;
 	}
-	
+
 	/**
 	 * 若帳號可建立且ID format正確 則回傳true
 	 */
@@ -185,28 +195,29 @@ public class AccountMapper {
 	 * TODO: 將外部檔案改成DB
 	 */
 	public void createPermission(IProject p) throws Exception {
-		createPermissionToITS(p);	// 當project與role都從外部檔案移到資料庫，就可以刪掉
+		createPermissionToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
-	
+
 	/**
 	 * 過度期使用，當外部檔案都轉移完畢即可刪掉
-	 */	
+	 */
 	@Deprecated
 	private IAccount addRoleFromITS(IAccount account, IAccount itsAccount) {
-		if (account!= null && itsAccount != null && itsAccount.getRoles() != null) {
+		if (account != null && itsAccount != null
+				&& itsAccount.getRoles() != null) {
 			for (IRole role : itsAccount.getRoles()) {
 				account.addRole(role);
 			}
 		}
 		return account;
 	}
-	
+
 	/**
-	 * old operation
-	 * delete it when project and scrum role is ready
+	 * old operation delete it when project and scrum role is ready
 	 */
 
-	private String[] operation = {"ProductOwner", "ScrumMaster", "ScrumTeam", "Stakeholder", "Guest"};
+	private String[] operation = { "ProductOwner", "ScrumMaster", "ScrumTeam",
+			"Stakeholder", "Guest" };
 
 	@Deprecated
 	public IAccount createAccountToITS(AccountInfo userInformation, String roles) {
@@ -218,7 +229,8 @@ public class AccountMapper {
 
 		IAccountManager am = getManager();
 		// 建立帳號(RoleBase部分)
-		IAccount account = AccountFactory.createAccount(id, realName, password, true);
+		IAccount account = AccountFactory.createAccount(id, realName, password,
+				true);
 		account.setEmail(email);
 
 		// 預防 null 的發生 -> when?
@@ -247,9 +259,11 @@ public class AccountMapper {
 	 * @return
 	 */
 	@Deprecated
-	public IAccount updateAccountToITS(IUserSession session, AccountInfo userInformation) {
+	public IAccount updateAccountToITS(IUserSession session,
+			AccountInfo userInformation) {
 		this.updateAccountInWorkspace(userInformation);
-		IAccount account = this.getAccountByIdToITS(userInformation.getAccount());
+		IAccount account = this.getAccountByIdToITS(userInformation
+				.getAccount());
 		this.updateAccountInDatabase(session, account);
 		return account;
 	}
@@ -261,7 +275,8 @@ public class AccountMapper {
 	 * @param updateAccount
 	 */
 	@Deprecated
-	private void updateAccountInDatabase(IUserSession session, IAccount updateAccount) {
+	private void updateAccountInDatabase(IUserSession session,
+			IAccount updateAccount) {
 		MantisAccountManager accountManager = new MantisAccountManager(session);
 		try {
 			accountManager.updateUserProfile(updateAccount);
@@ -295,9 +310,11 @@ public class AccountMapper {
 		// no password, use the default password
 		if ((pwd == null) || (pwd.length() == 0) || pwd.equals("")) {
 			pwd = updateAccount.getPassword(); // get default password
-			am.updateAccountData(id, name, pwd, mail, enable, false); // false 不經過Md5編碼
+			am.updateAccountData(id, name, pwd, mail, enable, false); // false
+																		// 不經過Md5編碼
 		} else {
-			am.updateAccountData(id, name, pwd, mail, enable, true); // true 經過Md5編碼
+			am.updateAccountData(id, name, pwd, mail, enable, true); // true
+																		// 經過Md5編碼
 		}
 
 		am.save();
@@ -344,7 +361,9 @@ public class AccountMapper {
 	 * 進行帳號更新的動作, 並且將帳號 Assign Roles, 建立完畢執行儲存檔案 in "外部檔案" 和 "資料庫"
 	 */
 	@Deprecated
-	public void addRoleToITS(IUserSession session, IAccount account, List<String> roleList, String id, String res, String op) throws Exception {
+	public void addRoleToITS(IUserSession session, IAccount account,
+			List<String> roleList, String id, String res, String op)
+			throws Exception {
 		this.updateAccountRoleInDatabase(session, account, res, op);
 		this.updateAccountRoleInWorkspace(id, roleList);
 	}
@@ -359,7 +378,8 @@ public class AccountMapper {
 	 * @throws Exception
 	 */
 	@Deprecated
-	private void updateAccountRoleInDatabase(IUserSession session, IAccount account, String res, String op) throws Exception {
+	private void updateAccountRoleInDatabase(IUserSession session,
+			IAccount account, String res, String op) throws Exception {
 		MantisAccountManager accountManager = new MantisAccountManager(session);
 		accountManager.addReleation(account, res, op);
 	}
@@ -387,7 +407,8 @@ public class AccountMapper {
 	 * @throws Exception
 	 */
 	@Deprecated
-	public void removeRoleToITS(IUserSession session, IAccount account, String id, List<String> roleList, String res) throws Exception {
+	public void removeRoleToITS(IUserSession session, IAccount account,
+			String id, List<String> roleList, String res) throws Exception {
 		this.removeAccountRoleInDatabase(session, account, res);
 		this.removeAccountRoleInWorkspace(id, roleList);
 	}
@@ -413,7 +434,8 @@ public class AccountMapper {
 	 * @throws Exception
 	 */
 	@Deprecated
-	private void removeAccountRoleInDatabase(IUserSession session, IAccount account, String res) throws Exception {
+	private void removeAccountRoleInDatabase(IUserSession session,
+			IAccount account, String res) throws Exception {
 		MantisAccountManager accountManager = new MantisAccountManager(session);
 		accountManager.removeReleation(account, res);
 	}
@@ -432,7 +454,8 @@ public class AccountMapper {
 			String name = resource + "_" + oper;
 			IPermission oriPerm = am.getPermission(name);
 			if (oriPerm == null) {
-				IPermission perm = AccountFactory.createPermission(name, resource, oper);
+				IPermission perm = AccountFactory.createPermission(name,
+						resource, oper);
 				am.addPermission(perm);
 				perm = am.getPermission(name);
 

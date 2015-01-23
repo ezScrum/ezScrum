@@ -161,7 +161,7 @@ public class Configuration {
 	public String getAccount() {
 		if (m_userSession == null)
 			return getDBAccount();
-		return m_userSession.getAccount().getAccount();
+		return m_userSession.getAccount().getUsername();
 	}
 
 	public String getDBAccount() {

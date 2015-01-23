@@ -113,7 +113,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		AccountObject account = this.accountMapper.getAccount(userId);
 
 		assertNotNull(account);
-		assertEquals(account.getAccount(), userId);
+		assertEquals(account.getUsername(), userId);
 		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPw));
 		assertEquals(account.getEmail(), userMail);
 		assertEquals(account.getName(), userName);
@@ -149,7 +149,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 			AccountObject account = this.accountMapper.getAccount(CA.getAccount_ID(i));
 
 			assertNotNull(account);
-			assertEquals(account.getAccount(), this.CA.getAccount_ID(i));
+			assertEquals(account.getUsername(), this.CA.getAccount_ID(i));
 			assertEquals(account.getPassword(), (new TestTool()).getMd5(this.CA.getAccount_PWD(i)));
 			assertEquals(account.getEmail(), this.CA.getAccount_Mail(i));
 			assertEquals(account.getName(), this.CA.getAccount_RealName(i));

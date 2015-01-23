@@ -111,7 +111,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		this.AUTR.exe_PO();
 
 		AccountObject acc = this.AUTR.getNowAccount();
-		AccountObject account = this.accountMapper.getAccount(acc.getAccount());
+		AccountObject account = this.accountMapper.getAccount(acc.getUsername());
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		assertEquals(1, roleMap.size());
@@ -157,7 +157,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		account = this.accountMapper.getAccountById(id);
 		assertNotNull(account);
-		assertEquals(this.CA.getAccount_ID(1), account.getAccount());
+		assertEquals(this.CA.getAccount_ID(1), account.getUsername());
 		assertEquals(this.CA.getAccount_RealName(1), account.getName());
 		assertEquals("true", account.getEnable());
 		assertEquals("5e6698ee13f3ef999374751897721cb6", account.getPassword());		// 密碼要經過 MD5 編碼
@@ -308,7 +308,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		String userId = account.getId();			// 取得第一筆  ID
-		String userAccount = account.getAccount();	// 取得第一筆 Account ID
+		String userAccount = account.getUsername();	// 取得第一筆 Account ID
 		String projectID = this.CP.getProjects().get(0).getId();
 
 		/**

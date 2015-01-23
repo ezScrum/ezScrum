@@ -74,7 +74,7 @@ public abstract class PermissionAction extends Action {
 		// 此為錯誤權限存取，回傳權限錯誤的資訊給頁面提示使用者
 		if (result == null) {
 			result = new StringBuilder("{\"PermissionAction\":{\"ActionCheck\":\"false\", \"Id\":0}}");
-			log.info("Account " + account.getAccount() + " access deny.");
+			log.info("Account " + account.getUsername() + " access deny.");
 		}
 		
 		try {

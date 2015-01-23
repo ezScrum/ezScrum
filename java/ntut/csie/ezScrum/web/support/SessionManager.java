@@ -215,7 +215,7 @@ public class SessionManager {
 	 * @author SPARK
 	 */
 	public static void removeScrumRolesMap(HttpServletRequest request, AccountObject account) {
-		String userPermessionNameForSession = account.getAccount() + sessionAttributeNameForPermession;
+		String userPermessionNameForSession = account.getUsername() + sessionAttributeNameForPermession;
 
 		List<HttpSession> sessionList = HttpSessionCollector.getSessionList(userPermessionNameForSession);
 
@@ -259,7 +259,7 @@ public class SessionManager {
 				ScrumRole scrumRole = role.getScrumRole();
 				String roleName = scrumRole.getRoleName();
 				if (roleName.equals("admin")) {
-					String userPermessionNameForSession = account.getAccount() + sessionAttributeNameForPermession;
+					String userPermessionNameForSession = account.getUsername() + sessionAttributeNameForPermession;
 					session.removeAttribute(userPermessionNameForSession);
 				}
 			}

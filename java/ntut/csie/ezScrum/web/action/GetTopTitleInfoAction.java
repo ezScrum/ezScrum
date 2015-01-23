@@ -27,7 +27,7 @@ public class GetTopTitleInfoAction extends Action {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		
-		String UserID = account.getAccount();
+		String UserID = account.getUsername();
 		String UserName = account.getName();
 
 		String userInfo = UserID + "(" + UserName + ")";

@@ -75,7 +75,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("<Members>")
 		        .append("<Member>")
 		        .append("<ID>").append(user.getId()).append("</ID>")
-		        .append("<Account>").append(user.getAccount()).append("</Account>")
+		        .append("<Account>").append(user.getUsername()).append("</Account>")
 		        .append("<Name>").append(user.getName()).append("</Name>")
 		        .append("<Role>ScrumMaster</Role>")
 		        .append("<Enable>").append(user.getEnable()).append("</Enable>")
