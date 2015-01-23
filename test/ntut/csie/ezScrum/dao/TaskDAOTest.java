@@ -20,7 +20,7 @@ public class TaskDAOTest extends TestCase {
 	private Configuration mConfig;
 	private CreateProject mCreateProject;
 	private int mProjectCount = 2;
-	private long projectId;
+	private static long projectId;
 
 	public TaskDAOTest(String testMethod) {
 		super(testMethod);
@@ -85,7 +85,7 @@ public class TaskDAOTest extends TestCase {
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
-			tasks.add(convert(result));
+			tasks.add(TaskDAO.convert(result));
 		}
 
 		assertEquals(3, tasks.size());
@@ -202,7 +202,7 @@ public class TaskDAOTest extends TestCase {
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
-			tasks.add(convert(resultSet));
+			tasks.add(TaskDAO.convert(resultSet));
 		}
 		assertEquals(2, tasks.size());
 	}
@@ -230,7 +230,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(2, tasks.size());
 	}
 	
-	public void testGetWildTasks() throws SQLException {
+	public void testGetTasksWithNoParent() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			TaskObject task = new TaskObject(projectId);
@@ -247,24 +247,96 @@ public class TaskDAOTest extends TestCase {
 		}
 		
 		// get Wild Tasks
-		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getWildTasks(projectId);
+		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(projectId);
 		assertEquals(2, tasks.size());
 	}
+	
+	public void testGetPartnersId() {
+		
+	}
+	
+	public void testAddPartner() {
+		
+	}
+	
+	public void testRemovePartner() {
+		
+	}
 
-	private TaskObject convert(ResultSet result) throws SQLException {
-		TaskObject task = new TaskObject(
-		        result.getLong(TaskEnum.ID),
-		        result.getLong(TaskEnum.SERIAL_ID),
-		        result.getLong(TaskEnum.PROJECT_ID));
-		task.setName(result.getString(TaskEnum.NAME))
-		        .setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
-		        .setEstimate(result.getInt(TaskEnum.ESTIMATE))
-		        .setRemains(result.getInt(TaskEnum.REMAIN))
-		        .setActual(result.getInt(TaskEnum.ACTUAL))
-		        .setNotes(result.getString(TaskEnum.NOTES))
-		        .setStoryId(result.getLong(TaskEnum.STORY_ID))
-		        .setCreateTime(result.getLong(TaskEnum.CREATE_TIME))
-		        .setUpdateTime(result.getLong(TaskEnum.UPDATE_TIME));
-		return task;
+	public void testPartnerExists() {
+		
+	}
+	
+	public void testConvert() throws SQLException {
+		String TEST_NAME = "TEST_NAME";
+		String TEST_NOTES = "TEST_NOTES";
+		long TEST_SERIAL_NUMBER = 99;
+		long TEST_ESTIMATE = 0;
+		long TEST_REMAINS = 1;
+		long TEST_ACTUAL = 3;
+		long TEST_STATUS = 1;
+		long TEST_HANDLER = 5;
+		long TEST_PROJECT_ID = 4;
+		long TEST_STORY_ID = 5;
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addInsertValue(TaskEnum.SERIAL_ID, TEST_SERIAL_NUMBER);
+		valueSet.addInsertValue(TaskEnum.NAME, TEST_NAME);
+		valueSet.addInsertValue(TaskEnum.HANDLER_ID, TEST_HANDLER);
+		valueSet.addInsertValue(TaskEnum.ESTIMATE, TEST_ESTIMATE);
+		valueSet.addInsertValue(TaskEnum.REMAIN, TEST_REMAINS);
+		valueSet.addInsertValue(TaskEnum.ACTUAL, TEST_ACTUAL);
+		valueSet.addInsertValue(TaskEnum.NOTES, TEST_NOTES);
+		valueSet.addInsertValue(TaskEnum.STATUS, TEST_STATUS);
+		valueSet.addInsertValue(TaskEnum.PROJECT_ID, TEST_PROJECT_ID);
+		valueSet.addInsertValue(TaskEnum.STORY_ID, TEST_STORY_ID);
+		valueSet.addInsertValue(TaskEnum.CREATE_TIME, TEST_CREATE_TIME);
+		valueSet.addInsertValue(TaskEnum.UPDATE_TIME, TEST_CREATE_TIME);
+		String query = valueSet.getInsertQuery();
+		
+		long id = mControl.executeInsert(query);
+		
+		valueSet.clear();
+		valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addEqualCondition(TaskEnum.ID, id);
+		query = valueSet.getSelectQuery();
+		
+		ResultSet result= mControl.executeQuery(query);
+		TaskObject actual = TaskDAO.getInstance().convert(result);
+		
+		assertEquals(id, actual.getId());
+		assertEquals(TEST_SERIAL_NUMBER, actual.getSerialId());
+		assertEquals(TEST_NAME, actual.getName());
+		assertEquals(TEST_NOTES, actual.getNotes());
+		assertEquals(TEST_PROJECT_ID, actual.getProjectId());
+		assertEquals(TEST_STORY_ID, actual.getStoryId());
+		assertEquals(TEST_ESTIMATE, actual.getEstimate());
+		assertEquals(TEST_REMAINS, actual.getRemains());
+		assertEquals(TEST_ACTUAL, actual.getActual());
+		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
+		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
+	}
+	
+	private ArrayList<TaskObject> createData(int num) {
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		for (int i = 0; i < num; i++) {
+			TaskObject task = new TaskObject(projectId);
+			task.setName("TEST_TASK_" + i + 1)
+		        .setNotes("TEST_NOTE_" + i + 1)
+		        .setEstimate(i * 1)
+		        .setRemains(i * 2)
+		        .setActual(i * 3)
+				.setStoryId(i + 1);
+			
+			long taskId = TaskDAO.getInstance().create(task);
+			
+			assertNotSame(-1, taskId);
+			
+			tasks.add(TaskDAO.getInstance().get(taskId));
+		}
+		
+		return tasks;
 	}
 }

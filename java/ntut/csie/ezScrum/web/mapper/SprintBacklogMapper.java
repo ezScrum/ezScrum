@@ -88,7 +88,7 @@ public class SprintBacklogMapper {
 	}
 
 	/**
-	 * 初始化 Sprint 的資訊
+	 * 初始化 Sprint 的資訊l
 	 */
 	private void initSprintInformation() {
 		try {

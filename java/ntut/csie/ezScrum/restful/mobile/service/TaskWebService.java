@@ -55,7 +55,7 @@ public class TaskWebService extends ProjectWebService{
 	}
 	
 	public String getWildTask() throws NumberFormatException, SQLException {
-		return mSprintBacklogHelper.getWildTasks(
+		return mSprintBacklogHelper.getTasksWithNoParent(
 				Long.parseLong(mProject.getId()));
 	}
 	
