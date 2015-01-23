@@ -125,7 +125,7 @@ public class MySQLService {
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			if (result.first()) {
-				return getAccount(result);
+				return convertAccount(result);
 			} else {
 				return null;
 			}
@@ -143,7 +143,7 @@ public class MySQLService {
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			if (result.first()) {
-				return getAccount(result);
+				return convertAccount(result);
 			} else {
 				return null;
 			}
@@ -163,7 +163,7 @@ public class MySQLService {
 			String query = valueSet.getSelectQuery();
 			ResultSet result = mControl.executeQuery(query);
 			if (result.first()) {
-				return getAccount(result);
+				return convertAccount(result);
 			} else {
 				return null;
 			}
@@ -173,28 +173,28 @@ public class MySQLService {
 		}
 	}
 
-	public List<AccountObject> getAccountList() {
-		try {
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName(AccountEnum.TABLE_NAME);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mControl.executeQuery(query);
-			List<AccountObject> list = new ArrayList<AccountObject>();
-			if (result.next()) {
-				do {
-					list.add(getAccount(result));
-				} while (result.next());
-				return list;
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public List<AccountObject> getAccountList() {
+//		try {
+//			IQueryValueSet valueSet = new MySQLQuerySet();
+//			valueSet.addTableName(AccountEnum.TABLE_NAME);
+//			String query = valueSet.getSelectQuery();
+//			ResultSet result = mControl.executeQuery(query);
+//			List<AccountObject> list = new ArrayList<AccountObject>();
+//			if (result.next()) {
+//				do {
+//					list.add(convertAccount(result));
+//				} while (result.next());
+//				return list;
+//			} else {
+//				return null;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 
-	private AccountObject getAccount(ResultSet result) throws SQLException {
+	private AccountObject convertAccount(ResultSet result) throws SQLException {
 		String id;
 		try {
 			id = result.getString(ProjectRoleEnum.ACCOUNT_ID);

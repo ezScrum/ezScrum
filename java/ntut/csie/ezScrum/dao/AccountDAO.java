@@ -50,6 +50,51 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return id;
 	}
 	
+	@Override
+	public AccountObject get(long id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, id);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		
+		AccountObject account = null;
+		try {
+			if (result.next()) {
+				account = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return account;
+	}
+	
+	@Override
+	public boolean update(AccountObject account) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
+		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
+		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
+		if (account.getPassword() != null && !account.getPassword().equals("")) {
+			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
+		}
+		valueSet.addInsertValue(AccountEnum.ENABLE, account.getEnable() == true ? 1 : 0);
+		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		String query = valueSet.getUpdateQuery();
+		
+		return mControl.executeUpdate(query);
+	}
+
+	@Override
+	public boolean delete(long id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, id);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
 	/**
 	 * 取出 account 的在 project 的 role 權限列表 
 	 * @param id - account id
@@ -184,24 +229,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		}
 	}
 
-	@Override
-	public AccountObject get(long id) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, id);
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		
-		AccountObject account = null;
-		try {
-			if (result.next()) {
-				account = convert(result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return account;
-	}
+	
 
 	public ArrayList<AccountObject> getAccounts() {
 		try {
@@ -224,31 +252,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		}
 	}
 	
-	@Override
-	public boolean update(AccountObject account) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
-		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
-		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
-		if (account.getPassword() != null && !account.getPassword().equals("")) {
-			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
-		}
-		valueSet.addInsertValue(AccountEnum.ENABLE, account.getEnable() == true ? 1 : 0);
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getUpdateQuery();
-		
-		return mControl.executeUpdate(query);
-	}
-
-	@Override
-	public boolean delete(long id) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, id);
-		String query = valueSet.getDeleteQuery();
-		return mControl.executeUpdate(query);
-	}
+	
 
 	private AccountObject convert(ResultSet result) throws SQLException {
 		long id;

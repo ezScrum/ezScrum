@@ -174,7 +174,6 @@ public class AccountDAOTest extends TestCase{
 		assertEquals(2, accountList.size());
 	}
 	
-	
 	private String getMd5(String str) {
 		MessageDigest md = null;
 		try {
