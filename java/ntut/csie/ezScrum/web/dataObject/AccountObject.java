@@ -3,18 +3,22 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 
 public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 	
-	private long mId;
-	private String mUsername;
-	private String mPassword;
-	private String mEmail;
-	private String mName;
-	private boolean mEnable;
-	private HashMap<String, ProjectRole> mRoles;
+	private long mId = DEFAULT_VALUE;
+	private String mUsername = "";
+	private String mPassword = "";
+	private String mEmail = "";
+	private String mName = "";
+	private boolean mEnable = false;
+	private HashMap<String, ProjectRole> mRoles = null;
 	
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -26,12 +30,29 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	public String toString() {
-		String user = "username :" + getUsername() + 
-				", password :" + getPassword() +
-				", email :" + getEmail() +
-				", name :" + getName() +
-				", enable :" + getEnable();
-		return user;
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
+	
+	/**
+	 * JSON 少 project role 的資料 (待補!!!)
+	 * 
+	 * @return JSONObject
+	 */
+	public JSONObject toJSON() throws JSONException {
+		JSONObject account = new JSONObject();
+		
+		account.put(AccountEnum.ID, mId)
+		.put(AccountEnum.USERNAME, mUsername)
+		.put(AccountEnum.PASSWORD, mPassword)
+		.put(AccountEnum.EMAIL, mEmail)
+		.put(AccountEnum.ENABLE, mEnable)
+		.put("project_role", "");
+		
+		return account;
 	}
 
 	public long getId() {
@@ -88,26 +109,50 @@ public class AccountObject implements IBaseObject {
     }
 	
 	/**
-	 * 取得一筆 account
-	 * @param id
+	 * Get account by account id
+	 * 
+	 * @param id account id
+	 * @return AccountObject
 	 */
 	public static AccountObject get(long id) {
 		return AccountDAO.getInstance().get(id);
 	}
 	
-	public static AccountObject get(String account) {
-		return AccountDAO.getInstance().get(account);
+	/**
+	 * Get account by account user name
+	 * 
+	 * @param username account user name
+	 * @return AccountObject
+	 */
+	public static AccountObject get(String username) {
+		return AccountDAO.getInstance().get(username);
 	}
 	
+	/**
+	 * Get project all accounts
+	 * 
+	 * @return AccountObject list
+	 */
 	public static ArrayList<AccountObject> getAccounts() {
 		return AccountDAO.getInstance().getAccounts();
 	}
 	
+	/**
+	 * 取出 account 的在 project 的 role 權限列表 
+	 * 
+	 * @return account access power map
+	 */
 	public HashMap<String, ProjectRole> getProjectRoleList() {
 		return AccountDAO.getInstance().getProjectRoleList(mId);
 	}
 	
-	public static ProjectRole getSystemRole(long id) {
+	/**
+	 * 藉由 account id 判斷是否取出專案下的管理者帳號
+	 * 
+	 * @param id account id
+	 * @return admin account's project role
+	 */
+	public ProjectRole getSystemRole(long id) {
 		return AccountDAO.getInstance().getSystemRole(id);
 	}
 	
