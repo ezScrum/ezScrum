@@ -224,7 +224,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return projects;
 	}
 
-	private ProjectObject convert(ResultSet result) throws SQLException {
+	public ProjectObject convert(ResultSet result) throws SQLException {
 		ProjectObject project = new ProjectObject(result.getLong(ProjectEnum.ID),
 		        result.getString(ProjectEnum.NAME));
 		project
