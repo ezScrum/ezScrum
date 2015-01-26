@@ -1,18 +1,23 @@
 package ntut.csie.ezScrum.mysql;
 
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.sql.ResultSet;
 
 import junit.framework.TestCase;
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class AccountObjectTest extends TestCase {
 	private MySQLService mService;
+	private MySQLControl mControl = null;
 	private Configuration configuration = null;
 	
 	public AccountObjectTest(String testMethod) {
@@ -28,6 +33,9 @@ public class AccountObjectTest extends TestCase {
 		ini.exe();
 		mService = new MySQLService(configuration);
 		mService.openConnect();
+		
+		mControl = new MySQLControl(configuration);
+		mControl.connection();
 	}
 
 	protected void tearDown() throws Exception {
@@ -41,78 +49,161 @@ public class AccountObjectTest extends TestCase {
 		
 		configuration.setTestMode(false);
 		configuration.save();
-		
+		mControl = null;
 		mService = null;
 		configuration = null;
 		super.tearDown();
 	}
 	
-	public void testCreateAccount() {
-		String id = "account";
-		String name = "account robot";
-		String password = "account robot";
-		String email = "iaccount@mail.com";
-		String enable = "true";
+	public void testCreateAccount() throws Exception {
+		String userName = "TEST_ACCOUNT_USERNAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		String email = "TEST_ACCOUNT_EMAIL";
+		boolean enable = true;
 		
-		AccountInfo user = new AccountInfo(id, name, password, email, enable);
-		boolean result = mService.createAccount(user);
-		
-		assertTrue(result);
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+
+		// Query
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
+		String query = valueSet.getSelectQuery();
+		ResultSet resultSet = mControl.executeQuery(query);
+		assertTrue(resultSet.first());
+		// assertion
+		AccountObject createAccount = AccountDAO.getInstance().convertAccount(resultSet);
+		assertEquals(userName, createAccount.getUsername());
+		assertEquals(nickName, createAccount.getName());
+		assertEquals(email, createAccount.getEmail());
+		assertEquals(enable, createAccount.getEnable());
 	}
 	
-	public void testUpdateAccount() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
-		String account = createAccount.getAccount_ID(1);
-		String name = "account robot";
-		String password = "account robot";
-		String email = "update@mail.com";
-		String enable = "true";
+	public void testUpdateAccount() throws Exception {
+		// test data
+		String userName = "TEST_ACCOUNT_USERNAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		String email = "TEST_ACCOUNT_EMAIL";
+		boolean enable = true;
 		
-		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
-		boolean result = mService.updateAccount(user);
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
 		
-		assertTrue(result);
+		String newUserName = "TEST_ACCOUNT_USERNAME_NEW";
+		String newNickName = "TEST_ACCOUNT_NICKNAME_NEW";
+		String newPassword = "TEST_ACCOUNT_PASSWORD_NEW";
+		String newEmail = "TEST_ACCOUNT_EMAIL_NEW";
+		
+		AccountObject newAccount = new AccountObject(account.getId(), newUserName);
+		newAccount.setName(newNickName)
+		          .setEmail(newEmail)
+		          .setPassword(newPassword)
+		          .save();
+		newAccount.reload();
+		
+		// Query
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, newAccount.getId());
+		String query = valueSet.getSelectQuery();
+		ResultSet resultSet = mControl.executeQuery(query);
+		assertTrue(resultSet.first());
+		
+		// assertion
+		AccountObject updateAccount = AccountDAO.getInstance().convertAccount(resultSet);
+		assertEquals(userName, updateAccount.getUsername());
+		assertEquals(newNickName, updateAccount.getName());
+		assertEquals(getMd5(newPassword), updateAccount.getPassword());
+		assertEquals(newEmail, updateAccount.getEmail());
 	}
 	
-	public void testDeleteAccount() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		AccountObject account = createAccount.getAccountList().get(0);
+	public void testDeleteAccount() throws Exception {
+		// test data
+		String userName = "TEST_ACCOUNT_USERNAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		String email = "TEST_ACCOUNT_EMAIL";
+		boolean enable = true;
+
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		// delete
+		assertTrue(account.delete());
 		
-		boolean result = account.delete();
-		
-		assertTrue(result);
+		// Query
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
+		String query = valueSet.getSelectQuery();
+		ResultSet resultSet = mControl.executeQuery(query);
+		assertFalse(resultSet.first());
 	}
 	
-	public void testGetAccountById() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+	public void testToString() throws Exception{
+		// test data
+		String userName = "TEST_ACCOUNT_USERNAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		String email = "TEST_ACCOUNT_EMAIL";
+		boolean enable = true;
+
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
 		
-		AccountObject result = mService.getAccount(id);
-		
-		assertEquals(id, result.getUsername());
+		String expectedString = "username :" + userName +
+		        ", password :" + getMd5(password) +
+		        ", email :" + email +
+		        ", name :" + nickName +
+		        ", enable :" + Boolean.toString(enable);
+		assertEquals(expectedString, account.toString());
 	}
 	
-	public void testGetAccountList() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		
-		ArrayList<AccountObject> accounts = AccountObject.getAccounts();
-		
-		assertEquals(2, accounts.size());	// include admin
+	private String getMd5(String str) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		md.update(str.getBytes());
+		byte b[] = md.digest();
+		str = byte2hex(b);
+		return str;
 	}
-	
-	public void testConfirmAccount() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
-		String password = createAccount.getAccount_PWD(1);
-		
-		AccountObject result = mService.confirmAccount(id, password);
-		
-		assertEquals(id, result.getUsername());
+
+	private String byte2hex(byte b[]) {
+		String hs = "";
+		String stmp = "";
+		for (int n = 0; n < b.length; n++) {
+			stmp = Integer.toHexString(b[n] & 255);
+			if (stmp.length() == 1) {
+				hs = (new StringBuilder(String.valueOf(hs))).append("0").append(stmp).toString();
+			} else {
+				hs = (new StringBuilder(String.valueOf(hs))).append(stmp).toString();
+			}
+		}
+		return hs;
 	}
 }
