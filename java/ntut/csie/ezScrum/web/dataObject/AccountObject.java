@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 
+import org.codehaus.jettison.json.JSONObject;
+
 public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 	
@@ -32,6 +34,10 @@ public class AccountObject implements IBaseObject {
 				", name :" + getName() +
 				", enable :" + getEnable();
 		return user;
+	}
+	
+	public JSONObject toJSON() {
+		return new JSONObject();
 	}
 
 	public long getId() {

@@ -46,13 +46,10 @@ public class TaskObject implements IBaseObject {
 		return TaskDAO.getInstance().get(id);
 	}
 	
-	public static ArrayList<TaskObject> getWildTasks(long projectId)
-			throws SQLException {
-		return TaskDAO.getInstance().getTasksWithNoParent(projectId);
-	}
-	
-	public static ArrayList<TaskObject> getTasksByStory(long storyId)
-			throws SQLException {
+	/*
+	 * 之後要搬到StoryObject
+	 */
+	public static ArrayList<TaskObject> getTasksByStory(long storyId) {
 		return TaskDAO.getInstance().getTasksByStory(storyId);
 	}
 
@@ -147,20 +144,20 @@ public class TaskObject implements IBaseObject {
 	public void addPartner(long partnerId) {
 		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
-			this.mPartnersId.add(partnerId);
+			mPartnersId.add(partnerId);
 		}
 	}
 
 	public void addAttachFile(AttachFileObject attachFile) {
-		this.mAttachFiles.add(attachFile);
+		mAttachFiles.add(attachFile);
 	}
 
 	public void addHistory(HistoryObject history) {
-		this.mHistories.add(history);
+		mHistories.add(history);
 	}
 
 	public void removePartner(long partnerId) {
-		this.mPartnersId.remove(partnerId);
+		mPartnersId.remove(partnerId);
 	}
 
 	public long getId() {
@@ -209,6 +206,9 @@ public class TaskObject implements IBaseObject {
 		return mStatus;
 	}
 	
+	/*
+	 * 之後要拔掉,為了符合目前的IIssue
+	 */
 	public String getStatusString() {
 		if (mStatus == STATUS_UNCHECK) {
 			return "new";
@@ -311,11 +311,7 @@ public class TaskObject implements IBaseObject {
 
 	public ArrayList<Long> getPartnersId() {
 		if (mPartnersId == null) {
-			try {
-				mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
 		}
 		return mPartnersId;
 	}
@@ -363,12 +359,23 @@ public class TaskObject implements IBaseObject {
 		return mAttachFiles;
 	}
 
+	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject task = new JSONObject();
 		JSONArray partners = new JSONArray();
+		JSONArray attachFiles = new JSONArray();
+		JSONArray histories = new JSONArray();
 
-		for (Long partnerId : mPartnersId) {
-			partners.put(partnerId);
+		for (AccountObject partner : getPartners()) {
+			partners.put(partner.toJSON());
+		}
+		
+		for (AttachFileObject file : getAttachFiles()) {
+			attachFiles.put(file.toJSON());
+		}
+		
+		for (HistoryObject history : getHistories()) {
+			histories.put(history.toJSON());
 		}
 
 		task.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
@@ -379,7 +386,9 @@ public class TaskObject implements IBaseObject {
 				.put(TaskEnum.SERIAL_ID, mSerialId).put(TaskEnum.ID, mId)
 				.put(TaskEnum.CREATE_TIME, mCreateTime)
 				.put(TaskEnum.UPDATE_TIME, mUpdateTime)
-				.put("partners", partners);
+				.put("partners", partners)
+				.put("attach_files", attachFiles)
+				.put("histories", histories);
 
 		return task;
 	}
@@ -421,9 +430,7 @@ public class TaskObject implements IBaseObject {
 	public void reload() {
 		if (recordExists()) {
 			TaskObject task = TaskDAO.getInstance().get(mId);
-			if (task != null) {
-				resetData(task);					
-			}
+			resetData(task);	
 		}
 	}
 
@@ -438,7 +445,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private boolean recordExists() {
-		return mId > 0;
+		TaskObject task = TaskDAO.getInstance().get(mId);
+		return task != null;
 	}
 
 	private void resetData(TaskObject task) {
