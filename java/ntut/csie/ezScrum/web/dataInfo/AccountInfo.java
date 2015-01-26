@@ -1,12 +1,10 @@
 package ntut.csie.ezScrum.web.dataInfo;
 
 public class AccountInfo {
-	private String id = "";
-	private String username = "";
-	private String password = "";
-	private String email = "";
-	private String name = "";
-	private String enable = "";
+	public String password = "";
+	public String email = "";
+	public String nickName = "";
+	public boolean enable = false;
 
 	public AccountInfo(String username, String name, String password, String email, String enable) {
 		this.setUsername(username);
@@ -65,12 +63,12 @@ public class AccountInfo {
 
 	public void setName(String name) {
 		if (name != null) {
-			this.name = name;
+			this.nickName = name;
 		}
 	}
 
 	public String getName() {
-		return name;
+		return nickName;
 	}
 
 	public void setEnable(String enable) {
