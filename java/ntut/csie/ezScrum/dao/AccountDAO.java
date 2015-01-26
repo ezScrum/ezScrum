@@ -38,7 +38,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
-		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable()));
+		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable() == true ? 1 : 0));
 		valueSet.addInsertValue(AccountEnum.CREATE_TIME, System.currentTimeMillis());
 		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, System.currentTimeMillis());
 		String query = valueSet.getInsertQuery();
@@ -297,7 +297,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		if (account.getPassword() != null && !account.getPassword().equals("")) {
 			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
 		}
-		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable()));
+		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable() == true ? 1 : 0));
 		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getUpdateQuery();
 		
@@ -314,7 +314,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 
 	public AccountObject convertAccount(ResultSet result) throws SQLException {
-		long id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
+		long id = result.getLong(AccountEnum.ID);
 		String username = result.getString(AccountEnum.USERNAME);
 		String nickName = result.getString(AccountEnum.NICK_NAME);
 		String password = result.getString(AccountEnum.PASSWORD);
