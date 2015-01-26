@@ -96,7 +96,7 @@ public class CreateAccount {
 	 */
 	public void setAccount_RealName(int accountIndex) {
 		AccountObject userObject = mAccountList.get(accountIndex - 1);
-		String id = userObject.getId();
+		long id = userObject.getId();
 		String account = userObject.getUsername();
 		String password = userObject.getPassword();
 		String mail = userObject.getEmail();
