@@ -100,29 +100,24 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 	
 	/**
-	 * 取出 account 的在 project 的 role 權限列表
+	 * 取出 account 的在 project 的 role 權限列表 
 	 * 
-	 * @param id
-	 *            - account id
+	 * @param id - account id
 	 * @return account access map
 	 */
 	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
 		StringBuilder query = new StringBuilder();
-		query.append("select * from ").append(ProjectRoleEnum.TABLE_NAME)
-				.append(" as pr").append(" cross join ")
-				.append(ProjectEnum.TABLE_NAME).append(" as p on ")
-				.append(ProjectRoleEnum.PROJECT_ID).append(" = p.")
-				.append(ProjectEnum.ID).append(" cross join ")
-				.append(ScrumRoleEnum.TABLE_NAME).append(" as sr on")
-				.append(" pr.").append(ProjectRoleEnum.PROJECT_ID)
-				.append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
-				.append(" and pr.").append(ProjectRoleEnum.ROLE)
-				.append(" = sr.").append(ScrumRoleEnum.ROLE).append(" where ")
-				.append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(id);
+		query.append("select * from ").append(ProjectRoleEnum.TABLE_NAME).append(" as pr")
+			.append(" cross join ").append(ProjectEnum.TABLE_NAME).append(" as p on ")
+			.append(ProjectRoleEnum.PROJECT_ID).append(" = p.").append(ProjectEnum.ID)
+			.append(" cross join ").append(ScrumRoleEnum.TABLE_NAME).append(" as sr on")
+			.append(" pr.").append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
+			.append(" and pr.").append(ProjectRoleEnum.ROLE).append(" = sr.").append(ScrumRoleEnum.ROLE)
+			.append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(id);
 		HashMap<String, ProjectRole> map = new HashMap<String, ProjectRole>();
 		ProjectRole systemRole = getSystemRole(id);
 		ResultSet result = mControl.executeQuery(query.toString());
-
+		
 		try {
 			if (systemRole != null) {
 				map.put("system", systemRole);
@@ -149,6 +144,12 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * 
 	 * @param id
 	 *            account id
+	 * @return admin account's project role
+	 */
+	/**
+	 * 藉由 account id 判斷是否取出專案下的管理者帳號
+	 * 
+	 * @param id account id
 	 * @return admin account's project role
 	 */
 	public ProjectRole getSystemRole(long id) {
@@ -225,6 +226,12 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 *            project id
 	 * @return project member list
 	 */
+	/**
+	 * 取得專案下的所有成員
+	 * 
+	 * @param id project id
+	 * @return project member list
+	 */
 	public ArrayList<AccountObject> getProjectMembers(long id) {
 		MySQLQuerySet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
@@ -253,6 +260,12 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * 
 	 * @param id
 	 *            project id
+	 * @return return worker list
+	 */
+	/**
+	 * 取得專案下的所有能工作的成員
+	 * 
+	 * @param id project id
 	 * @return return worker list
 	 */
 	public ArrayList<AccountObject> getProjectWorkers(long id) {
@@ -289,8 +302,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	/**
 	 * Get account by account id
 	 * 
-	 * @param id
-	 *            account id
+	 * @param id account id
 	 * @return AccountObject
 	 */
 	@Override
