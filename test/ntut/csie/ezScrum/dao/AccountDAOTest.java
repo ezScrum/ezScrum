@@ -193,9 +193,13 @@ public class AccountDAOTest extends TestCase{
 		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
+		
+		// get Admin
+		AccountObject adminAccount = AccountDAO.getInstance().get(1);
+		// getSystemRole
+		ProjectRole adminRole = adminAccount.getSystemRole(); // admin
+		ProjectRole newAccountRole = account.getSystemRole();
 		// assert
-		ProjectRole adminRole = AccountObject.getSystemRole(1); // admin
-		ProjectRole newAccountRole = AccountObject.getSystemRole(account.getId());
 		assertTrue(adminRole != null);
 		assertTrue(newAccountRole == null);
 	}

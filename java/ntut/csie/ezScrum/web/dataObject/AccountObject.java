@@ -152,8 +152,8 @@ public class AccountObject implements IBaseObject {
 	 * @param id account id
 	 * @return admin account's project role
 	 */
-	public ProjectRole getSystemRole(long id) {
-		return AccountDAO.getInstance().getSystemRole(id);
+	public ProjectRole getSystemRole() {
+		return AccountDAO.getInstance().getSystemRole(mId);
 	}
 	
 	@Override
