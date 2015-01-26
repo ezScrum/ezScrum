@@ -4,7 +4,9 @@ import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -71,7 +73,7 @@ public class AccountDAOTest extends TestCase{
 			String query = valueSet.getSelectQuery();
 			ResultSet resultSet = mControl.executeQuery(query);
 			if (resultSet.next()) {
-				AccountObject account = convert(resultSet);
+				AccountObject account = AccountDAO.getInstance().convert(resultSet);
 				assertEquals(accountName + (i + 1), account.getAccount());
 				assertEquals(name + (i + 1), account.getName());
 				assertEquals(email + (i + 1), account.getEmail());
@@ -169,10 +171,46 @@ public class AccountDAOTest extends TestCase{
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
-			accountList.add(convert(resultSet));
+			accountList.add(AccountDAO.getInstance().convert(resultSet));
 		}
 		assertEquals(2, accountList.size());
 	}
+	
+	public void testGetSystemRole(){
+		String accountName = "TEST_ACCOUNTNAME_1";
+		String name =  "TEST_NAME_1";
+		String email = "TEST_EMAIL_1";
+		String password = "TEST_PASSWORD_1";
+		boolean enable = true;
+		// create
+		AccountObject account = new AccountObject(accountName, name, password, email, enable);
+		long accountId = AccountDAO.getInstance().create(account);
+		assertNotSame(-1, accountId);
+		// assert
+		ProjectRole adminRole = AccountObject.getSystemRole(1); // admin
+		ProjectRole newAccountRole = AccountObject.getSystemRole(account.getId());
+		assertTrue(adminRole != null);
+		assertTrue(newAccountRole == null);
+	}
+	
+	public void testGetAccounts(){
+		String accountName = "TEST_ACCOUNTNAME_";
+		String name =  "TEST_NAME_";
+		String email = "TEST_EMAIL_";
+		String password = "TEST_PASSWORD_";
+		boolean enable = true;
+		// create 3 account
+		for(int i = 0; i < 3; i++){
+			AccountObject account = new AccountObject(accountName + (i + 1), name + (i + 1), password  + (i + 1), email + (i + 1), enable);
+			long accountId = AccountDAO.getInstance().create(account);
+			assertNotSame(-1, accountId);
+		}
+		// getAccounts
+		List<AccountObject> accountList = AccountDAO.getInstance().getAccounts();
+		assertEquals(4, accountList.size());
+	}
+	
+	
 	
 	private String getMd5(String str) {
 		MessageDigest md = null;
@@ -199,21 +237,5 @@ public class AccountDAOTest extends TestCase{
 			}
 		}
 		return hs;
-	}
-	
-	private AccountObject convert(ResultSet result) throws SQLException {
-		long id;
-		try {
-			id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
-		} catch (SQLException e) {
-			id = result.getLong(AccountEnum.ID);
-		}
-		String account = result.getString(AccountEnum.ACCOUNT);
-		String name = result.getString(AccountEnum.NICK_NAME);
-		String password = result.getString(AccountEnum.PASSWORD);
-		String email = result.getString(AccountEnum.EMAIL);
-		boolean enable = result.getBoolean(AccountEnum.ENABLE);
-		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleList(id);
-		return new AccountObject(id, account, name, password, email, enable, roles);
 	}
 }
