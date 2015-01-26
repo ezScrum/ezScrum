@@ -25,7 +25,6 @@ import ntut.csie.jcis.resource.core.IProject;
 public class AccountMapper {
 	private IProject mProject;
 	private IUserSession mUserSession;
-	// private ITSPrefsStorage mPrefs;
 	private Configuration mConfig;
 	private MySQLService mService;
 
