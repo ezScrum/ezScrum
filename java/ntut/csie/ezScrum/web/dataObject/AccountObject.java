@@ -40,6 +40,24 @@ public class AccountObject implements IBaseObject {
 			return "JSON Exception";
 		}
 	}
+	
+	/**
+	 * JSON 少 project role 的資料 (待補!!!)
+	 * 
+	 * @return JSONObject
+	 */
+	public JSONObject toJSON() throws JSONException {
+		JSONObject account = new JSONObject();
+		
+		account.put(AccountEnum.ID, mId)
+		.put(AccountEnum.USERNAME, mUsername)
+		.put(AccountEnum.PASSWORD, mPassword)
+		.put(AccountEnum.EMAIL, mEmail)
+		.put(AccountEnum.ENABLE, mEnable)
+		.put("project_role", "");
+		
+		return account;
+	}
 
 	/**
 	 * JSON 少 project role 的資料 (待補!!!)
@@ -114,25 +132,28 @@ public class AccountObject implements IBaseObject {
 	/**
 	 * Get account by account id
 	 * 
-	 * @param id
-	 *            account id
+	 * @param id account id
 	 * @return AccountObject
 	 */
 	public static AccountObject get(long id) {
 		return AccountDAO.getInstance().get(id);
 	}
-
+	
 	/**
 	 * Get account by account user name
 	 * 
-	 * @param username
-	 *            account user name
+	 * @param username account user name
 	 * @return AccountObject
 	 */
 	public static AccountObject get(String username) {
 		return AccountDAO.getInstance().get(username);
 	}
 
+	/**
+	 * Get project all accounts
+	 * 
+	 * @return AccountObject list
+	 */
 	/**
 	 * Get project all accounts
 	 * 
@@ -147,15 +168,19 @@ public class AccountObject implements IBaseObject {
 	 * 
 	 * @return account access power map
 	 */
+	/**
+	 * 取出 account 的在 project 的 role 權限列表 
+	 * 
+	 * @return account access power map
+	 */
 	public HashMap<String, ProjectRole> getProjectRoleList() {
 		return AccountDAO.getInstance().getProjectRoleList(mId);
 	}
-
+	
 	/**
 	 * 藉由 account id 判斷是否取出專案下的管理者帳號
 	 * 
-	 * @param id
-	 *            account id
+	 * @param id account id
 	 * @return admin account's project role
 	 */
 	public ProjectRole getSystemRole(long id) {
