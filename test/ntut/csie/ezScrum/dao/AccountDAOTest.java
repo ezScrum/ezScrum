@@ -4,10 +4,9 @@ import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
+import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -16,8 +15,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
-import junit.framework.TestCase;
 
 public class AccountDAOTest extends TestCase{
 	private MySQLControl mControl = null;
@@ -54,14 +51,16 @@ public class AccountDAOTest extends TestCase{
     }
 	
 	public void testCreate() throws SQLException{
-		String accountName = "TEST_ACCOUNTNAME_";
-		String name =  "TEST_NAME_";
+		String userName = "TEST_USERNAME_";
+		String nickName =  "TEST_NICKNAME_";
 		String email = "TEST_EMAIL_";
 		String password = "TEST_PASSWORD_";
 		boolean enable = true;
 		// create 3 account
 		for(int i = 0; i < 3; i++){
-			AccountObject account = new AccountObject(accountName + (i + 1), name + (i + 1), password  + (i + 1), email + (i + 1), enable);
+			AccountObject account = new AccountObject(userName + (i + 1));
+			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -73,9 +72,9 @@ public class AccountDAOTest extends TestCase{
 			String query = valueSet.getSelectQuery();
 			ResultSet resultSet = mControl.executeQuery(query);
 			if (resultSet.next()) {
-				AccountObject account = AccountDAO.getInstance().convert(resultSet);
-				assertEquals(accountName + (i + 1), account.getAccount());
-				assertEquals(name + (i + 1), account.getName());
+				AccountObject account = AccountDAO.getInstance().convertAccount(resultSet);
+				assertEquals(userName + (i + 1), account.getUsername());
+				assertEquals(nickName + (i + 1), account.getName());
 				assertEquals(email + (i + 1), account.getEmail());
 				assertEquals(getMd5(password + (i + 1)), account.getPassword());
 				assertTrue(enable == account.getEnable());
@@ -84,14 +83,16 @@ public class AccountDAOTest extends TestCase{
 	}
 	
 	public void testGet(){
-		String accountName = "TEST_ACCOUNTNAME_";
-		String name =  "TEST_NAME_";
+		String userName = "TEST_USERNAME_";
+		String nickName =  "TEST_NICKNAME_";
 		String email = "TEST_EMAIL_";
 		String password = "TEST_PASSWORD_";
 		boolean enable = true;
 		// create 3 account
 		for(int i = 0; i < 3; i++){
-			AccountObject account = new AccountObject(accountName + (i + 1), name + (i + 1), password  + (i + 1), email + (i + 1), enable);
+			AccountObject account = new AccountObject(userName + (i + 1));
+			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -104,8 +105,8 @@ public class AccountDAOTest extends TestCase{
 		
 		// assert
 		for(int i = 0 ; i < 3 ; i++){
-			assertEquals(accountName + (i + 1), accountList.get(i).getAccount());
-			assertEquals(name + (i + 1), accountList.get(i).getName());
+			assertEquals(userName + (i + 1), accountList.get(i).getUsername());
+			assertEquals(nickName + (i + 1), accountList.get(i).getName());
 			assertEquals(email + (i + 1), accountList.get(i).getEmail());
 			assertEquals(getMd5(password + (i + 1)), accountList.get(i).getPassword());
 			assertEquals(enable, accountList.get(i).getEnable());
@@ -113,13 +114,15 @@ public class AccountDAOTest extends TestCase{
 	}
 	
 	public void testUpdate(){
-		String accountName = "TEST_ACCOUNTNAME_1";
-		String name =  "TEST_NAME_1";
+		String userName = "TEST_USERNAME_1";
+		String nickName =  "TEST_NICKNAME_1";
 		String email = "TEST_EMAIL_1";
 		String password = "TEST_PASSWORD_1";
 		boolean enable = true;
 		// create
-		AccountObject account = new AccountObject(accountName, name, password, email, enable);
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName).setEmail(email)
+		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// update 
@@ -141,14 +144,16 @@ public class AccountDAOTest extends TestCase{
 	}
 	
 	public void testDelete() throws SQLException{
-		String accountName = "TEST_ACCOUNTNAME_";
-		String name =  "TEST_NAME_";
+		String userName = "TEST_USERNAME_";
+		String nickName =  "TEST_NICKNAME_";
 		String email = "TEST_EMAIL_";
 		String password = "TEST_PASSWORD_";
 		boolean enable = true;
 		// create 3 account
 		for(int i = 0; i < 3; i++){
-			AccountObject account = new AccountObject(accountName + (i + 1), name + (i + 1), password  + (i + 1), email + (i + 1), enable);
+			AccountObject account = new AccountObject(userName + (i + 1));
+			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -171,19 +176,21 @@ public class AccountDAOTest extends TestCase{
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
-			accountList.add(AccountDAO.getInstance().convert(resultSet));
+			accountList.add(AccountDAO.getInstance().convertAccount(resultSet));
 		}
 		assertEquals(2, accountList.size());
 	}
 	
 	public void testGetSystemRole(){
-		String accountName = "TEST_ACCOUNTNAME_1";
-		String name =  "TEST_NAME_1";
+		String userName = "TEST_USERNAME_1";
+		String nickName =  "TEST_NICKNAME_1";
 		String email = "TEST_EMAIL_1";
 		String password = "TEST_PASSWORD_1";
 		boolean enable = true;
 		// create
-		AccountObject account = new AccountObject(accountName, name, password, email, enable);
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName).setEmail(email)
+		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// assert
@@ -194,14 +201,16 @@ public class AccountDAOTest extends TestCase{
 	}
 	
 	public void testGetAccounts(){
-		String accountName = "TEST_ACCOUNTNAME_";
-		String name =  "TEST_NAME_";
+		String userName = "TEST_USERNAME_";
+		String nickName =  "TEST_NICKNAME_";
 		String email = "TEST_EMAIL_";
 		String password = "TEST_PASSWORD_";
 		boolean enable = true;
 		// create 3 account
 		for(int i = 0; i < 3; i++){
-			AccountObject account = new AccountObject(accountName + (i + 1), name + (i + 1), password  + (i + 1), email + (i + 1), enable);
+			AccountObject account = new AccountObject(userName + (i + 1));
+			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -210,7 +219,36 @@ public class AccountDAOTest extends TestCase{
 		assertEquals(4, accountList.size());
 	}
 	
-	
+	public void testConvertAccount() throws SQLException{
+		// create 1 account
+		String userName = "TEST_USERNAME_1";
+		String nickName =  "TEST_NICKNAME_1";
+		String email = "TEST_EMAIL_1";
+		String password = "TEST_PASSWORD_1";
+		boolean enable = true;
+		// create
+		AccountObject account = new AccountObject(userName);
+		account.setName(nickName).setEmail(email)
+		       .setPassword(password).setEnable(enable);
+		long accountId = AccountDAO.getInstance().create(account);
+		assertNotSame(-1, accountId);
+		// Query
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addEqualCondition(AccountEnum.ID, accountId);
+		String query = valueSet.getSelectQuery();
+		ResultSet resultSet = mControl.executeQuery(query);
+		assertTrue(resultSet.first());
+		
+		// call convertAccount
+		AccountObject convertAccount = AccountDAO.getInstance().convertAccount(resultSet);
+		// assert
+		assertEquals(userName, convertAccount.getUsername());
+		assertEquals(nickName, convertAccount.getName());
+		assertEquals(email, convertAccount.getEmail());
+		assertEquals(getMd5(password), convertAccount.getPassword());
+		assertTrue(enable && convertAccount.getEnable());
+	}
 	
 	private String getMd5(String str) {
 		MessageDigest md = null;
