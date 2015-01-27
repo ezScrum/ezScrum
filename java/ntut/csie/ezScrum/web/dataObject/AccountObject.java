@@ -52,6 +52,7 @@ public class AccountObject implements IBaseObject {
 		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
 				.put(AccountEnum.PASSWORD, mPassword)
 				.put(AccountEnum.EMAIL, mEmail)
+				.put(AccountEnum.NICK_NAME, mNickName)
 				.put(AccountEnum.ENABLE, mEnable).put("project_role", "");
 
 		return account;
