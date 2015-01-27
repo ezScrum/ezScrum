@@ -24,7 +24,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 	public long create(AttachFileObject attachFile) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
-		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(attachFile.getId()));
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(attachFile.getIssueId()));
 		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(attachFile.getIssueType()));
 		valueSet.addInsertValue(AttachFileEnum.NAME, attachFile.getName());
 		valueSet.addInsertValue(AttachFileEnum.PATH, attachFile.getPath());

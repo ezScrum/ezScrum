@@ -7,11 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 import org.codehaus.jettison.json.JSONException;
@@ -165,21 +167,17 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testAddAttachFile() {
-	}
-
-	@Test
 	public void testRemovePartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10)
-				.setRemains(8).setActual(0);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
 		task.save();
 		// add a partner
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
 		// check status before test
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
+				TEST_TASK_ID);
 		assertEquals(1, partnersId.size());
 		assertEquals(1L, partnersId.get(0));
 		// testRemovePartner
@@ -188,20 +186,20 @@ public class TaskObjectTest {
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 	}
-	
+
 	@Test
 	public void testRemovePartner_withTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10)
-				.setRemains(8).setActual(0);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
 		task.save();
 		// add two partners
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 2);
 		// check status before test
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
+				TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
 		assertEquals(1L, partnersId.get(0));
 		assertEquals(2L, partnersId.get(1));
@@ -212,7 +210,7 @@ public class TaskObjectTest {
 		assertEquals(1, partnersId.size());
 		assertEquals(2L, partnersId.get(0));
 	}
-	
+
 	@Test
 	public void testGetHandler_UnassignHandler() {
 		long TEST_TASK_ID = 1;
@@ -223,7 +221,7 @@ public class TaskObjectTest {
 		// testGetHandler
 		assertEquals(null, task.getHandler());
 	}
-	
+
 	@Test
 	public void testGetHandler() {
 		long TEST_TASK_ID = 1;
@@ -236,7 +234,8 @@ public class TaskObjectTest {
 		account.save();
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0).setHandlerId(account.getId());
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0)
+				.setHandlerId(account.getId());
 		task.save();
 		// testGetHandler
 		assertEquals(account.getId(), task.getHandler().getId());
@@ -406,12 +405,86 @@ public class TaskObjectTest {
 				.setEstimate(TEST_ESTIMATE_NEW).setActual(TEST_ACTUAL_NEW)
 				.setRemains(TEST_REMAIN_NEW).setStatus(TEST_STATUS_NEW)
 				.setHandlerId(TEST_HANDLER).setStoryId(TEST_STORY_ID).save();
-		
+
 		assertEquals(9, task.getHistories().size());
 	}
 
 	@Test
-	public void testGetAttachFiles() {
+	public void testGetAttachFiles_OneFile() {
+		String TEST_NAME = "TEST_NAME";
+		String TEST_NOTE = "TEST_NOTE";
+		int TEST_ESTIMATE = 0;
+		int TEST_ACTUAL = 1;
+		int TEST_REMAIN = 2;
+		long TEST_PROJECT = 1;
+		long TEST_STORY_ID = 5;
+
+		// the task will be added attach files
+		TaskObject task = new TaskObject(TEST_PROJECT);
+		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
+				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
+				.setStatus(TaskObject.STATUS_DONE).setStoryId(TEST_STORY_ID)
+				.save();
+
+		// create a attach file
+		String TEST_FILE_NAME = "TEST_FILE_NAME";
+		String TEST_FILE_PATH = "/TEST_PATH";
+		String TEST_FILE_CONTENT_TYPE = "jpg";
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		
+		AttachFileObject.Builder builder = new AttachFileObject.Builder();
+		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+				.setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setName(TEST_FILE_NAME).setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
+		AttachFileObject attachFile = builder.build();
+		AttachFileDAO.getInstance().create(attachFile);
+		
+		assertEquals(1, task.getAttachFiles().size());
+	}
+	
+	@Test
+	public void testGetAttachFiles_TwoFiles() {
+		String TEST_NAME = "TEST_NAME";
+		String TEST_NOTE = "TEST_NOTE";
+		int TEST_ESTIMATE = 0;
+		int TEST_ACTUAL = 1;
+		int TEST_REMAIN = 2;
+		long TEST_PROJECT = 1;
+		long TEST_STORY_ID = 5;
+
+		// the task will be added attach files
+		TaskObject task = new TaskObject(TEST_PROJECT);
+		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
+				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
+				.setStatus(TaskObject.STATUS_DONE).setStoryId(TEST_STORY_ID)
+				.save();
+
+		// first attach file
+		String TEST_FILE_NAME = "TEST_FILE_NAME";
+		String TEST_FILE_PATH = "/TEST_PATH";
+		String TEST_FILE_CONTENT_TYPE = "jpg";
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		
+		AttachFileObject.Builder builder = new AttachFileObject.Builder();
+		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+				.setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setName(TEST_FILE_NAME).setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
+		AttachFileObject attachFile = builder.build();
+		AttachFileDAO.getInstance().create(attachFile);
+		
+		String TEST_FILE2_NAME = "TEST_FILE_NAME";
+		String TEST_FILE2_PATH = "/TEST_PATH";
+		String TEST_FILE2_CONTENT_TYPE = "jpg";
+		
+		// second attach file
+		AttachFileObject.Builder builder2 = new AttachFileObject.Builder();
+		builder2.setContentType(TEST_FILE2_CONTENT_TYPE).setIssueId(task.getId())
+				.setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH).setCreateTime(TEST_CREATE_TIME);
+		AttachFileObject attachFile2 = builder2.build();
+		AttachFileDAO.getInstance().create(attachFile2);
+		
+		assertEquals(2, task.getAttachFiles().size());
 	}
 
 	@Test
