@@ -1,11 +1,7 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import java.security.MessageDigest;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -15,7 +11,10 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.LogonException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AccountMapperTest extends TestCase {
 	private AccountMapper mAccountMapper;
@@ -90,28 +89,36 @@ public class AccountMapperTest extends TestCase {
 	public void testGetAccountById() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		long id = createAccount.getAccountList().get(0).getId();
 		
+		long id = createAccount.getAccountList().get(0).getId();
 		AccountObject account = mAccountMapper.getAccount(id);
 		
 		assertEquals(id, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
 		assertEquals(createAccount.getAccount_RealName(1), account.getNickName());
-		assertEquals("true", account.getEnable());
+		assertEquals(true, account.getEnable());
 	}
 	
 	@Test
 	public void testGetAccountByName() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		long id = createAccount.getAccountList().get(0).getId();
 		
-		AccountObject account = mAccountMapper.getAccount(id);
+		String userName = createAccount.getAccountList().get(0).getUsername();
+		AccountObject account = mAccountMapper.getAccount(userName);
 		
-		assertEquals(id, account.getId());
+		assertEquals(2, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
 		assertEquals(createAccount.getAccount_RealName(1), account.getNickName());
-		assertEquals("true", account.getEnable());
+		assertEquals(true, account.getEnable());
+	}
+	
+	@Test
+	public void testGetAccounts() throws InterruptedException {
+		CreateAccount createAccount = new CreateAccount(3);
+		createAccount.exe();
+		ArrayList<AccountObject> accounts = mAccountMapper.getAccounts();
+		assertEquals(4, accounts.size());
 	}
 	
 	@Test
@@ -144,34 +151,25 @@ public class AccountMapperTest extends TestCase {
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		long id = createAccount.getAccountList().get(0).getId();
 		
+		long id = createAccount.getAccountList().get(0).getId();
 		boolean result = mAccountMapper.deleteAccount(id);
 		
 		assertTrue(result);
 	}
 	
-//	
-//	public void testAccountList() throws InterruptedException {
-//		CreateAccount createAccount = new CreateAccount(1);
-//		createAccount.exe();
-//		
-//		List<AccountObject> accountList = mAccountMapper.getAccounts();
-//		
-//		assertEquals(2, accountList.size());
-//	}
-//	
-//	public void testConfirmAccount() throws LogonException {
-//		CreateAccount createAccount = new CreateAccount(1);
-//		createAccount.exe();
-//		String id = createAccount.getAccount_ID(1);
-//		String password = createAccount.getAccount_PWD(1);
-//		AccountObject account = null;
-//		
-//        account = mAccountMapper.confirmAccount(id, password);
-//        
-//        assertEquals(id, account.getUsername());
-//	}
+	@Test
+	public void testConfirmAccount() {
+		CreateAccount createAccount = new CreateAccount(1);
+		createAccount.exe();
+		String id = createAccount.getAccount_ID(1);
+		String password = createAccount.getAccount_PWD(1);
+		AccountObject account = null;
+		
+        account = mAccountMapper.confirmAccount(id, password);
+        
+        assertEquals(id, account.getUsername());
+	}
 //	
 //	public void testIsAccountExist() {
 //		CreateAccount createAccount = new CreateAccount(1);
