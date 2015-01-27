@@ -3,6 +3,8 @@ package ntut.csie.ezScrum.mysql;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 
+import org.codehaus.jettison.json.JSONObject;
+
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -12,7 +14,10 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 public class AccountObjectTest extends TestCase {
@@ -172,12 +177,134 @@ public class AccountObjectTest extends TestCase {
 		account.save();
 		account.reload();
 		
-		String expectedString = "username :" + userName +
-		        ", password :" + getMd5(password) +
-		        ", email :" + email +
-		        ", name :" + nickName +
-		        ", enable :" + Boolean.toString(enable);
+		JSONObject json = new JSONObject();
+
+		json.put(AccountEnum.ID, account.getId())
+		        .put(AccountEnum.USERNAME, account.getUsername())
+		        .put(AccountEnum.PASSWORD, account.getPassword())
+		        .put(AccountEnum.EMAIL, account.getEmail())
+		        .put(AccountEnum.ENABLE, account.getEnable())
+		        .put("project_role", "");
+		
+		String expectedString = json.toString();
 		assertEquals(expectedString, account.toString());
+	}
+	
+	public void testCreateProjectRole() throws Exception {
+		/**
+		 * set up a project and a user
+		 */
+		ProjectObject project = new ProjectObject("name");
+		project.setDisplayName("name")
+			.setComment("comment")
+			.setManager("PO_YC")
+			.setAttachFileSize(2)
+			.save();
+		project.reload();
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		// create account
+		AccountObject account = new AccountObject(userName);
+		account.setNickName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		// create project role
+		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		assertTrue(result);
+	}
+	
+	public void testDeleteProjectRole() throws Exception {
+		/**
+		 * set up a project and a user
+		 */
+		ProjectObject project = new ProjectObject("name");
+		project.setDisplayName("name")
+			.setComment("comment")
+			.setManager("PO_YC")
+			.setAttachFileSize(2)
+			.save();
+		project.reload();
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		// create account
+		AccountObject account = new AccountObject(userName);
+		account.setNickName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		
+		// create project role
+		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		assertTrue(result);
+		
+		// delete project role
+		result = account.deleteProjectRole(project.getId(), RoleEnum.ProductOwner);
+		assertTrue(result);
+	}
+	
+	public void testGetSystemRole() throws Exception {
+		AccountObject adminAccount = AccountDAO.getInstance().get(1);
+		
+		ProjectRole role = adminAccount.getSystemRole();
+		assertNotNull(role);	// 預設應該就要有admin帳號存在了
+	}
+	
+	public void testCreateSystemRole() throws Exception {
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		// create account
+		AccountObject account = new AccountObject(userName);
+		account.setNickName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		// create System Role
+		boolean result = account.createSystemRole();
+		assertTrue(result);
+		// assert is system role
+		ProjectRole role = account.getSystemRole();
+		assertNotNull(role);
+	}
+	
+	public void testDeleteSystemRole() throws Exception {
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		// create account
+		AccountObject account = new AccountObject(userName);
+		account.setNickName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		// create role
+		boolean result = account.createSystemRole();
+		assertTrue(result);
+		// delete role
+		result = account.deleteSystemRole();
+		assertTrue(result);
+		// assert not system role
+		ProjectRole role = account.getSystemRole();
+		assertNull(role);
 	}
 	
 	private String getMd5(String str) {

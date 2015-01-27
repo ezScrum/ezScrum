@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -173,22 +174,7 @@ public class AccountMapperTest extends TestCase {
         assertEquals(userName, account.getUsername());
         assertEquals(getMd5(password), account.getPassword());
 	}
-	
-	@Test
-	public void testGetProjectRoleList() {
-		
-	}
-	
-//	public void testIsAccountExist() {
-//		CreateAccount createAccount = new CreateAccount(1);
-//		createAccount.exe();
-//		String id = createAccount.getAccount_ID(1);
-//		
-//        boolean result = mAccountMapper.isAccountExist(id);
-//       
-//        assertTrue(result);
-//	}
-	
+
 	private String getMd5(String str) {
 		MessageDigest md = null;
 		try {
