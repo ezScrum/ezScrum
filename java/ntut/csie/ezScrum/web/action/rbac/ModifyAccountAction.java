@@ -29,16 +29,22 @@ public class ModifyAccountAction extends Action {
 
 		// 取得要新增帳戶的資料
 		String id = request.getParameter("id");
-		String account = request.getParameter("account");
+		String userName = request.getParameter("account");
 		String password = request.getParameter("passwd");
 		String email = request.getParameter("mail");
-		String realName = request.getParameter("name");
+		String nickName = request.getParameter("name");
 		String enable = request.getParameter("enable");
 		String isEdit = request.getParameter("isEdit");
 
 		String roles = "user";
 
-		AccountInfo user = new AccountInfo(id, account, realName, password, email, enable);
+		AccountInfo user = new AccountInfo();
+		user.id = Long.parseLong(id);
+		user.userName = userName;
+		user.nickName = nickName;
+		user.password = password;
+		user.email = email;
+		user.enable = Boolean.parseBoolean(enable);
 
 		AccountHelper ah = new AccountHelper(session);
 		AccountObject newAccount = null;

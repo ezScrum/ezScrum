@@ -23,14 +23,20 @@ public class UpdateAccountAction extends Action {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		String id = request.getParameter("id");
-		String account = request.getParameter("account");
+		String userName = request.getParameter("account");
 		String password = request.getParameter("passwd");
 		String email = request.getParameter("mail");
-		String name = request.getParameter("name");
+		String nickName = request.getParameter("name");
 		String enable = request.getParameter("enable");
 
-		AccountInfo userInformation = new AccountInfo(id, account, name, password, email, enable);
-
+		AccountInfo userInformation = new AccountInfo();
+		userInformation.id = Long.parseLong(id);
+		userInformation.userName = userName;
+		userInformation.nickName = nickName;
+		userInformation.password = password;
+		userInformation.email = email;
+		userInformation.enable = Boolean.parseBoolean(enable);
+		
 		AccountHelper ah = new AccountHelper(session);
 		AccountObject newAccInfo = ah.updateAccount(userInformation);
 

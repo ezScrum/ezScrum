@@ -74,11 +74,12 @@ public class AccountMapper {
 	 * 進行編輯帳號的動作，並且將帳號更新角色，in 資料庫 和外部檔案資訊( RoleBase )的部分
 	 */
 	public AccountObject updateAccount(AccountInfo accountInfo) {
-		AccountObject account = AccountObject.get(accountInfo.getId());
-		account.setEmail(accountInfo.getEmail())
-				.setPassword(accountInfo.getPassword())
-				.setNickName(accountInfo.getName())
-				.setEnable(accountInfo.getEnable().equals("true")).save();
+		AccountObject account = AccountObject.get(accountInfo.id);
+		account.setEmail(accountInfo.email)
+				.setPassword(accountInfo.password)
+				.setNickName(accountInfo.nickName)
+				.setEnable(accountInfo.enable)
+				.save();
 		return account;
 	}
 
