@@ -21,7 +21,7 @@ public class TaskObject implements IBaseObject {
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
 	public final static int NO_PARENT = -1;
-	
+
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;
@@ -37,22 +37,16 @@ public class TaskObject implements IBaseObject {
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-	private ArrayList<Long> mPartnersId = null;
-	private ArrayList<AccountObject> mPartners = null;
-	private ArrayList<AttachFileObject> mAttachFiles = null;
 	private ArrayList<HistoryObject> mHistories = null;
 
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
-	
-	public static ArrayList<TaskObject> getWildTasks(long projectId)
-			throws SQLException {
-		return TaskDAO.getInstance().getTasksWithNoParent(projectId);
-	}
-	
-	public static ArrayList<TaskObject> getTasksByStory(long storyId)
-			throws SQLException {
+
+	/*
+	 * 之後要搬到StoryObject
+	 */
+	public static ArrayList<TaskObject> getTasksByStory(long storyId) {
 		return TaskDAO.getInstance().getTasksByStory(storyId);
 	}
 
@@ -117,50 +111,31 @@ public class TaskObject implements IBaseObject {
 	}
 
 	@SuppressWarnings("unchecked")
-	public TaskObject setPartnersId(ArrayList<Long> partnersId) {
-		getPartnersId();
-		
-		List<Long> intersection = (List<Long>) CollectionUtils.intersection(mPartnersId, partnersId);
-		List<Long> removeList = (List<Long>) CollectionUtils.subtract(mPartnersId, intersection);
-		List<Long> addList = (List<Long>) CollectionUtils.subtract(partnersId, intersection);
-		for (long partnerId : removeList) {
+	public TaskObject setPartnersId(ArrayList<Long> newPartnersId) {
+		List<Long> oldPartnersId = getPartnersId();
+		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
+				.intersection(oldPartnersId, newPartnersId);
+		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
+				.subtract(oldPartnersId, intersectionPartnersId);
+		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
+				newPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
 			TaskDAO.getInstance().removePartner(mId, partnerId);
 		}
-		for (long partnerId : addList) {
+		for (long partnerId : shouldAddPartnersId) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
 		}
-		
-		mPartnersId = partnersId;
-		return this;
-	}
-
-	public TaskObject setAttachFiles(ArrayList<AttachFileObject> attachFiles) {
-		mAttachFiles = attachFiles;
-		return this;
-	}
-
-	public TaskObject setHistories(ArrayList<HistoryObject> histories) {
-		mHistories = histories;
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
 		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
-			this.mPartnersId.add(partnerId);
 		}
 	}
 
-	public void addAttachFile(AttachFileObject attachFile) {
-		this.mAttachFiles.add(attachFile);
-	}
-
-	public void addHistory(HistoryObject history) {
-		this.mHistories.add(history);
-	}
-
 	public void removePartner(long partnerId) {
-		this.mPartnersId.remove(partnerId);
+		TaskDAO.getInstance().removePartner(mId, partnerId);
 	}
 
 	public long getId() {
@@ -178,7 +153,7 @@ public class TaskObject implements IBaseObject {
 	public long getHandlerId() {
 		return mHandlerId;
 	}
-	
+
 	public AccountObject getHandler() {
 		if (mHandlerId > 0) {
 			AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
@@ -208,7 +183,10 @@ public class TaskObject implements IBaseObject {
 	public int getStatus() {
 		return mStatus;
 	}
-	
+
+	/*
+	 * 之後要拔掉,為了符合目前的IIssue
+	 */
 	public String getStatusString() {
 		if (mStatus == STATUS_UNCHECK) {
 			return "new";
@@ -310,36 +288,33 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<Long> getPartnersId() {
-		if (mPartnersId == null) {
-			try {
-				mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return mPartnersId;
+		ArrayList<Long> partnersId = TaskDAO.getInstance().getPartnersId(mId);
+		return partnersId;
 	}
 
 	public ArrayList<AccountObject> getPartners() {
-		if (mPartners == null) {
-			mPartners = new ArrayList<AccountObject>();
-			for (long partnerId : mPartnersId) {
-				AccountObject partner = AccountDAO.getInstance().get(partnerId);
-				if (partner != null) {
-					mPartners.add(partner);					
-				}
+		ArrayList<AccountObject> partners = new ArrayList<AccountObject>();
+		ArrayList<Long> partnersId = getPartnersId();
+		for (long partnerId : partnersId) {
+			AccountObject partner = AccountDAO.getInstance().get(partnerId);
+			if (partner != null) {
+				partners.add(partner);
 			}
 		}
-		return mPartners;
+		return partners;
 	}
-	
-	public String getPartnersName() {
+
+	public String getPartnersUsername() {
 		StringBuilder partnersName = new StringBuilder();
 		ArrayList<AccountObject> partners = getPartners();
-		for (AccountObject partner : partners) {
-			partnersName.append(partner.getUsername()).append(";");
+		int partnersAmount = partners.size();
+		int lastIndex = partnersAmount - 1;
+		for (int i = 0; i < partnersAmount; i++) {
+			partnersName.append(partners.get(i).getUsername());
+			if (i != lastIndex) {
+				partnersName.append(";");
+			}
 		}
-		partnersName.deleteCharAt(partnersName.length()-1);
 		return partnersName.toString();
 	}
 
@@ -356,19 +331,27 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<AttachFileObject> getAttachFiles() {
-		if (mAttachFiles == null) {
-			mAttachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(
-					mId);
-		}
-		return mAttachFiles;
+		ArrayList<AttachFileObject> attachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(mId); 
+		return attachFiles;
 	}
 
+	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject task = new JSONObject();
 		JSONArray partners = new JSONArray();
+		JSONArray attachFiles = new JSONArray();
+		JSONArray histories = new JSONArray();
 
-		for (Long partnerId : mPartnersId) {
-			partners.put(partnerId);
+		for (AccountObject partner : getPartners()) {
+			partners.put(partner.toJSON());
+		}
+
+		for (AttachFileObject file : getAttachFiles()) {
+			attachFiles.put(file.toJSON());
+		}
+
+		for (HistoryObject history : getHistories()) {
+			histories.put(history.toJSON());
 		}
 
 		task.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
@@ -379,7 +362,9 @@ public class TaskObject implements IBaseObject {
 				.put(TaskEnum.SERIAL_ID, mSerialId).put(TaskEnum.ID, mId)
 				.put(TaskEnum.CREATE_TIME, mCreateTime)
 				.put(TaskEnum.UPDATE_TIME, mUpdateTime)
-				.put("partners", partners);
+				.put(TaskEnum.HANDLER, getHandler().toJSON())
+				.put("partners", partners).put("attach_files", attachFiles)
+				.put("histories", histories);
 
 		return task;
 	}
@@ -411,7 +396,7 @@ public class TaskObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (recordExists()) {
-			doUpdate();			
+			doUpdate();
 		} else {
 			doCreate();
 		}
@@ -421,9 +406,7 @@ public class TaskObject implements IBaseObject {
 	public void reload() {
 		if (recordExists()) {
 			TaskObject task = TaskDAO.getInstance().get(mId);
-			if (task != null) {
-				resetData(task);					
-			}
+			resetData(task);
 		}
 	}
 
@@ -438,7 +421,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private boolean recordExists() {
-		return mId > 0;
+		TaskObject task = TaskDAO.getInstance().get(mId);
+		return task != null;
 	}
 
 	private void resetData(TaskObject task) {
@@ -456,24 +440,21 @@ public class TaskObject implements IBaseObject {
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
 		mHistories = null;
-		mPartnersId = null;
-		mAttachFiles = null;
 	}
 
 	private void doCreate() {
 		mId = TaskDAO.getInstance().create(this);
-		try {
-			reload();
 
-			HistoryDAO historyDao = HistoryDAO.getInstance();
-			historyDao.create(new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
-					HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
+		reload();
 
-			// add task relation history
-			if (mStoryId > 0) {
-				addHistoryOfAddRelation(mStoryId, mId);
-			}
-		} catch (Exception e) {
+		HistoryDAO.getInstance().create(
+				new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+
+		// add task relation history
+		if (mStoryId > 0) {
+			addHistoryOfAddRelation(mStoryId, mId);
 		}
 	}
 
@@ -492,16 +473,14 @@ public class TaskObject implements IBaseObject {
 					mEstimate);
 		}
 		if (mActual != oldTask.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(),
-					mActual);
+			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual);
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
 					mRemains);
 		}
 		if (mStatus != oldTask.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(),
-					mStatus);
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {

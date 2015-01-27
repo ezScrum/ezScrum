@@ -308,7 +308,7 @@ public class SprintBacklogMapper {
 	
 	public ArrayList<TaskObject> getWildTasks(long projectId)
 			throws SQLException {
-		return TaskObject.getWildTasks(projectId);
+		return TaskObject.getTasksWithNoParent(projectId);
 	}
 
 	// for ezScrum 1.8

@@ -26,7 +26,6 @@ public class AttachFileObject {
 	 * @param path : 完整的檔案路徑
 	 * @param createTime : 檔案上傳的時間 (Milliseconds)
 	 */
-	
 	private AttachFileObject(AttachFileObject.Builder builder) {
 		this.mId = builder.mId;
 		this.mName = builder.mName;

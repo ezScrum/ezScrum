@@ -167,6 +167,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 				Long.toString(taskId));
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE,
 				IssueTypeEnum.TYPE_TASK);
+		valueSet.setOrderBy(IssuePartnerRelationEnum.ID, IQueryValueSet.ASC_ORDER);
 		String query = valueSet.getSelectQuery();
 
 		ArrayList<Long> partnerIdList = new ArrayList<Long>();
