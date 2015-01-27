@@ -13,7 +13,11 @@ import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -331,151 +335,248 @@ public class TaskObjectTest {
 	public void testToJSON() {
 	}
 
-	/**
-	 * 測試新增一個 task
-	 */
-	@Test
-	public void testSave_createANewTask() {
-		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
-
-		task.save();
-
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME", task.getName());
-		assertEquals("TEST_NOTES", task.getNotes());
-		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
-		assertEquals(0, task.getActual());
-	}
-
-	/**
-	 * 測試一個已存在的 task
-	 */
-	@Test
-	public void testSave_updateTask() {
-		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
-
-		task.save();
-
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME", task.getName());
-		assertEquals("TEST_NOTES", task.getNotes());
-		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
-		assertEquals(0, task.getActual());
-
-		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
-				.setRemains(5).setActual(1);
-
-		task.save();
-
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME2", task.getName());
-		assertEquals("TEST_NOTES2", task.getNotes());
-		assertEquals(3, task.getEstimate());
-		assertEquals(5, task.getRemains());
-		assertEquals(1, task.getActual());
-	}
+	// @Test
+	// public void testSetPartnersId() {
+	// }
+	//
+	// @Test
+	// public void testAddPartner() {
+	// }
+	//
+	// @Test
+	// public void testGetHandler() {
+	//
+	// }
+	//
+	// @Test
+	// public void testGetPartnersId() {
+	// }
+	//
+	// @Test
+	// public void testGetPartners() {
+	// }
+	//
+	// @Test
+	// public void testGetPartnersName() {
+	// }
+	//
+	// @Test
+	// public void testGetHistories() {
+	// }
+	//
+	// @Test
+	// public void testAddAttachFile() {
+	// }
+	//
+	// @Test
+	// public void testGetAttachFiles() {
+	// }
 
 	@Test
-	public void testDelete() throws SQLException {
-		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
+	public void testToJSON() throws JSONException {
+		// init handler and partner, and setup a task
+		String TEST_USERNAME = "TEST_ACCOUNT";
+		String TEST_EMAIL = "TEST@ezscrum.tw";
+		String TEST_ACCOUNT_NAME = "ACCOUNT_NAME";
+		String TEST_ACCOUNT_PW = "123123123";
+		AccountObject handler = new AccountObject(TEST_USERNAME);
+		handler.setEmail(TEST_EMAIL).setName(TEST_ACCOUNT_NAME)
+				.setPassword(TEST_ACCOUNT_PW).save();
 
-		task.save();
+		String TEST_PARTNER_USERNAME = "TEST_PAERTNER_ACCOUNT";
+		String TEST_PARTNER_EMAIL = "PARTNER@ezscrum.tw";
+		String TEST_PARTNER_NAME = "TEST_PAERTNER_NAME";
+		AccountObject partner = new AccountObject(TEST_PARTNER_USERNAME);
+		partner.setEmail(TEST_PARTNER_EMAIL).setName(TEST_PARTNER_NAME)
+				.setPassword(TEST_ACCOUNT_PW).save();
 
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME", task.getName());
-		assertEquals("TEST_NOTES", task.getNotes());
-		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
-		assertEquals(0, task.getActual());
+		String TEST_NAME = "TEST_NAME";
+		String TEST_NOTE = "TEST_NOTE";
+		int TEST_ESTIMATE = 0;
+		int TEST_ACTUAL = 1;
+		int TEST_REMAIN = 2;
+		long TEST_PROJECT = 1;
+		long TEST_STORY_ID = 5;
 
-		boolean deleteSuccess = task.delete();
+		TaskObject task = new TaskObject(TEST_PROJECT);
+		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
+				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
+				.setStatus(TaskObject.STATUS_DONE)
+				.setHandlerId(handler.getId()).setStoryId(TEST_STORY_ID).save();
+		ArrayList<Long> partners = new ArrayList<Long>();
+		partners.add(partner.getId());
+		task.addPartner(partner.getId());
 
-		assertTrue(deleteSuccess);
-		assertEquals(-1, task.getId());
-		assertEquals(-1, task.getSerialId());
-		assertEquals(null, TaskDAO.getInstance().get(1));
+		// assert json object
+		JSONObject json = task.toJSON();
+		assertEquals(TEST_NAME, json.getString(TaskEnum.NAME));
+		assertEquals(TEST_NOTE, json.getString(TaskEnum.NOTES));
+		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.ESTIMATE));
+		assertEquals(TEST_ACTUAL, json.getInt(TaskEnum.ACTUAL));
+		assertEquals(TEST_REMAIN, json.getInt(TaskEnum.REMAIN));
+		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
+		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
+		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
+		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
+		assertEquals(handler.getUsername(),
+				handlerJson.getLong(AccountEnum.USERNAME));
+		assertEquals(handler.getEmail(), handlerJson.getLong(AccountEnum.EMAIL));
+		assertEquals(handler.getName(),
+				handlerJson.getLong(AccountEnum.NICK_NAME));
+		JSONObject partnerJosn = json.getJSONArray("partners").getJSONObject(0);
+		assertEquals(partner.getId(), partnerJosn.getInt(AccountEnum.ID));
+		assertEquals(partner.getUsername(),
+				partnerJosn.getLong(AccountEnum.USERNAME));
+		assertEquals(partner.getEmail(), partnerJosn.getLong(AccountEnum.EMAIL));
+		assertEquals(partner.getName(),
+				partnerJosn.getLong(AccountEnum.NICK_NAME));
 	}
 
-	@Test
-	public void testReload() {
-		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
-
-		task.save();
-
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME", task.getName());
-		assertEquals("TEST_NOTES", task.getNotes());
-		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
-		assertEquals(0, task.getActual());
-
-		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
-				.setRemains(3).setActual(1);
-
-		assertEquals(1, task.getId());
-		assertEquals(1, task.getSerialId());
-		assertEquals("TEST_NAME2", task.getName());
-		assertEquals("TEST_NOTES2", task.getNotes());
-		assertEquals(5, task.getEstimate());
-		assertEquals(3, task.getRemains());
-		assertEquals(1, task.getActual());
-
-		try {
-			task.reload();
-
-			assertEquals(1, task.getId());
-			assertEquals(1, task.getSerialId());
-			assertEquals("TEST_NAME", task.getName());
-			assertEquals("TEST_NOTES", task.getNotes());
-			assertEquals(10, task.getEstimate());
-			assertEquals(8, task.getRemains());
-			assertEquals(0, task.getActual());
-		} catch (Exception e) {
-		}
-	}
-
-	@Test
-	public void testGetTasksByStory() throws SQLException {
-		long storyId = 1;
-		// 新增三筆 task 但有兩筆在 story 下
-		for (int i = 1; i <= 3; i++) {
-			TaskObject task = new TaskObject(1);
-			task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i)
-					.setEstimate(10).setRemains(8).setActual(0);
-			if (i != 2) {
-				task.setStoryId(storyId);
-			}
-			task.save();
-		}
-
-		ArrayList<TaskObject> tasks = TaskObject.getTasksByStory(storyId);
-		assertEquals(2, tasks.size());
-
-		assertEquals("TEST_NAME_1", tasks.get(0).getName());
-		assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
-		assertEquals(10, tasks.get(0).getEstimate());
-		assertEquals(8, tasks.get(0).getRemains());
-		assertEquals(0, tasks.get(0).getActual());
-
-		assertEquals("TEST_NAME_3", tasks.get(1).getName());
-		assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
-		assertEquals(10, tasks.get(1).getEstimate());
-		assertEquals(8, tasks.get(1).getRemains());
-		assertEquals(0, tasks.get(1).getActual());
-	}
+	// /**
+	// * 測試新增一個 task
+	// */
+	// @Test
+	// public void testSave_createANewTask() {
+	// TaskObject task = new TaskObject(1);
+	// task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+	// .setRemains(8).setActual(0);
+	//
+	// task.save();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME", task.getName());
+	// assertEquals("TEST_NOTES", task.getNotes());
+	// assertEquals(10, task.getEstimate());
+	// assertEquals(8, task.getRemains());
+	// assertEquals(0, task.getActual());
+	// }
+	//
+	// /**
+	// * 測試一個已存在的 task
+	// */
+	// @Test
+	// public void testSave_updateTask() {
+	// TaskObject task = new TaskObject(1);
+	// task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+	// .setRemains(8).setActual(0);
+	//
+	// task.save();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME", task.getName());
+	// assertEquals("TEST_NOTES", task.getNotes());
+	// assertEquals(10, task.getEstimate());
+	// assertEquals(8, task.getRemains());
+	// assertEquals(0, task.getActual());
+	//
+	// task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
+	// .setRemains(5).setActual(1);
+	//
+	// task.save();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME2", task.getName());
+	// assertEquals("TEST_NOTES2", task.getNotes());
+	// assertEquals(3, task.getEstimate());
+	// assertEquals(5, task.getRemains());
+	// assertEquals(1, task.getActual());
+	// }
+	//
+	// @Test
+	// public void testDelete() throws SQLException {
+	// TaskObject task = new TaskObject(1);
+	// task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+	// .setRemains(8).setActual(0);
+	//
+	// task.save();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME", task.getName());
+	// assertEquals("TEST_NOTES", task.getNotes());
+	// assertEquals(10, task.getEstimate());
+	// assertEquals(8, task.getRemains());
+	// assertEquals(0, task.getActual());
+	//
+	// boolean deleteSuccess = task.delete();
+	//
+	// assertTrue(deleteSuccess);
+	// assertEquals(-1, task.getId());
+	// assertEquals(-1, task.getSerialId());
+	// assertEquals(null, TaskDAO.getInstance().get(1));
+	// }
+	//
+	// @Test
+	// public void testReload() {
+	// TaskObject task = new TaskObject(1);
+	// task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+	// .setRemains(8).setActual(0);
+	//
+	// task.save();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME", task.getName());
+	// assertEquals("TEST_NOTES", task.getNotes());
+	// assertEquals(10, task.getEstimate());
+	// assertEquals(8, task.getRemains());
+	// assertEquals(0, task.getActual());
+	//
+	// task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
+	// .setRemains(3).setActual(1);
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME2", task.getName());
+	// assertEquals("TEST_NOTES2", task.getNotes());
+	// assertEquals(5, task.getEstimate());
+	// assertEquals(3, task.getRemains());
+	// assertEquals(1, task.getActual());
+	//
+	// try {
+	// task.reload();
+	//
+	// assertEquals(1, task.getId());
+	// assertEquals(1, task.getSerialId());
+	// assertEquals("TEST_NAME", task.getName());
+	// assertEquals("TEST_NOTES", task.getNotes());
+	// assertEquals(10, task.getEstimate());
+	// assertEquals(8, task.getRemains());
+	// assertEquals(0, task.getActual());
+	// } catch (Exception e) {
+	// }
+	// }
+	//
+	// @Test
+	// public void testGetTasksByStory() throws SQLException {
+	// long storyId = 1;
+	// // 新增三筆 task 但有兩筆在 story 下
+	// for (int i = 1; i <= 3; i++) {
+	// TaskObject task = new TaskObject(1);
+	// task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i)
+	// .setEstimate(10).setRemains(8).setActual(0);
+	// if (i != 2) {
+	// task.setStoryId(storyId);
+	// }
+	// task.save();
+	// }
+	//
+	// ArrayList<TaskObject> tasks = TaskObject.getTasksByStory(storyId);
+	// assertEquals(2, tasks.size());
+	//
+	// assertEquals("TEST_NAME_1", tasks.get(0).getName());
+	// assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
+	// assertEquals(10, tasks.get(0).getEstimate());
+	// assertEquals(8, tasks.get(0).getRemains());
+	// assertEquals(0, tasks.get(0).getActual());
+	//
+	// assertEquals("TEST_NAME_3", tasks.get(1).getName());
+	// assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
+	// assertEquals(10, tasks.get(1).getEstimate());
+	// assertEquals(8, tasks.get(1).getRemains());
+	// assertEquals(0, tasks.get(1).getActual());
+	// }
 }

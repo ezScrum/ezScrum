@@ -119,7 +119,7 @@ public class TaskObject implements IBaseObject {
 		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(newPartnersId, intersectionPartnersId);
 		for (long partnerId : shouldRemovePartnersId) {
 			TaskDAO.getInstance().removePartner(mId, partnerId);
-		}
+		} 
 		for (long partnerId : shouldAddPartnersId) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
 		}
@@ -337,7 +337,7 @@ public class TaskObject implements IBaseObject {
 		if (mAttachFiles == null) {
 			mAttachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(
 					mId);
-		}
+		} 
 		return mAttachFiles;
 	}
 
@@ -368,6 +368,7 @@ public class TaskObject implements IBaseObject {
 				.put(TaskEnum.SERIAL_ID, mSerialId).put(TaskEnum.ID, mId)
 				.put(TaskEnum.CREATE_TIME, mCreateTime)
 				.put(TaskEnum.UPDATE_TIME, mUpdateTime)
+				.put(TaskEnum.HANDLER, getHandler().toJSON())
 				.put("partners", partners)
 				.put("attach_files", attachFiles)
 				.put("histories", histories);

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -199,7 +200,7 @@ public class HistoryObject {
 		service.openConnect();
 		
 		if (mOldValue.equals("") && !mNewValue.equals("")) {
-			String newAccount = service.getAccountById(mNewValue).getUsername();
+			String newAccount = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
 			service.closeConnect();
 			return newAccount;
 		}
@@ -207,8 +208,8 @@ public class HistoryObject {
 		if (!mOldValue.equals("") && !mNewValue.equals("")) {
 			String oldAccount = "";
 			String newAccount = "";
-			oldAccount = service.getAccountById(mOldValue).getUsername();
-			newAccount = service.getAccountById(mNewValue).getUsername();
+			oldAccount = AccountDAO.getInstance().get(Long.parseLong(mOldValue)).getUsername();
+			newAccount = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
 			service.closeConnect();
 			return oldAccount + " => " + newAccount;
 		}
