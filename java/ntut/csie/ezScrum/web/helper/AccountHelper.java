@@ -127,9 +127,9 @@ public class AccountHelper {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
-			account = mAccountMapper.addRoleToDb(id);
+			account = mAccountMapper.addSystemRole(Long.parseLong(id));
 		} else {
-			account = mAccountMapper.addRoleToDb(res, id, RoleEnum.valueOf(op));
+			account = mAccountMapper.addProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
 		}
 		return account;
 	}
@@ -138,9 +138,9 @@ public class AccountHelper {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
-			account = mAccountMapper.removeRoleToDb(id);
+			account = mAccountMapper.removeSystemRole(Long.parseLong(id));
 		} else {
-			account = mAccountMapper.removeRoleToDb(res, id, RoleEnum.valueOf(op));
+			account = mAccountMapper.removeProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
 		}
 		return account;
 	}

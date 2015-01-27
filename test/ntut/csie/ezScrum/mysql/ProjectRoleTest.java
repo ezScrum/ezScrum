@@ -104,7 +104,7 @@ public class ProjectRoleTest extends TestCase {
 		ScrumRole scrumRole = new ScrumRole(role);
 		mService.createScrumRole(mProject.getId(), role, scrumRole);
 		mService.createProjectRole(mProject.getId(), mUserId, role);
-		HashMap<String, ProjectRole> result = mService.getProjectRoleList(mUserId);
+		HashMap<String, ProjectRole> result = mService.getProjectRoleMap(mUserId);
 		
 		assertEquals(1, result.size());
 	}

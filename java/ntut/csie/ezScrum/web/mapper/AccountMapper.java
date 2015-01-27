@@ -26,18 +26,18 @@ public class AccountMapper {
 	private IProject mProject;
 	private IUserSession mUserSession;
 	private Configuration mConfig;
-	private MySQLService mService;
+//	private MySQLService mService;
 
 	public AccountMapper() {
 		mConfig = new Configuration();
-		mService = new MySQLService(mConfig);
+//		mService = new MySQLService(mConfig);
 	}
 
 	public AccountMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
 		mConfig = new Configuration(mUserSession);
-		mService = new MySQLService(mConfig);
+//		mService = new MySQLService(mConfig);
 	}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
@@ -106,6 +106,14 @@ public class AccountMapper {
 		return result;
 	}
 
+	/**
+	 * Use username and password to get account
+	 * 
+	 * @param username
+	 * @param password
+	 * @return AccountObject
+	 * @throws LogonException
+	 */
 	public AccountObject confirmAccount(String username, String password) throws LogonException {
 		AccountObject account = AccountObject.confirmAccount(username, password);
 		if (account == null) {
@@ -123,77 +131,76 @@ public class AccountMapper {
 	 */
 	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
 		AccountObject account = AccountObject.get(id);
-		return account.getProjectRoleList();
+		return account.getProjectRoleMap();
 	}
 
 	/**
-	 * 取得角色在專案中的權限
+	 * Create a project's role for account
+	 * 
+	 * @param projectId
+	 * @param accountId
+	 * @param role
+	 * @return AccountObject
 	 */
-	public IPermission getPermission(String project, String role) {
-		return getPermissionToITS(project, role); // 當project與role都從外部檔案移到資料庫，就可以刪掉
+	public AccountObject addProjectRole(long projectId, long accountId,
+			RoleEnum role) {
+		AccountObject account = AccountObject.get(accountId);
+		account.createProjectRole(projectId, role);
+		return account;
+	}
+	
+	/**
+	 * Create a system's role for account
+	 * 
+	 * @param accountId
+	 * @return AccountObject
+	 */
+	public AccountObject addSystemRole(long accountId) {
+		AccountObject account = AccountObject.get(accountId);
+		account.createSystemRole();
+		return account;
+	}
+	
+	/**
+	 * Remove a project's role for account
+	 * 
+	 * @param projectId
+	 * @param accountId
+	 * @param role
+	 * @return AccountObject
+	 */
+	public AccountObject removeProjectRole(long projectId, long accountId,
+			RoleEnum role) {
+		AccountObject account = AccountObject.get(accountId);
+		account.deleteProjectRole(projectId, role);
+		return account;
 	}
 
-	public IPermission getPermission(String role) {
-		return getPermissionToITS(role); // 當project與role都從外部檔案移到資料庫，就可以刪掉
+	/**
+	 * Remove a system's role for account
+	 * 
+	 * @param accountId
+	 * @return AccountObject
+	 */
+	public AccountObject removeSystemRole(long accountId) {
+		AccountObject account = AccountObject.get(accountId);
+		account.deleteSystemRole();
+		return account;
 	}
-
+	
+	/**
+	 * 判斷 userName 是否已被建立且格式是否正確
+	 * 
+	 * @param userName
+	 * @return boolean
+	 */
+	public boolean isAccountExist(String userName) {
+		AccountObject account = AccountObject.get(userName);
+		return account != null;
+	}
+	
 	public void createRole(IProject p) throws Exception {
 		createRoleToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-	}
-
-	public void removeRole(IUserSession session, IAccount account, String id,
-			List<String> roleList, String res) throws Exception {
-		removeRoleToITS(mUserSession, account, id, roleList, res); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-	}
-
-	public AccountObject removeRoleToDb(String projectId, String accountId,
-			RoleEnum role) {
-		mService.openConnect();
-		mService.deleteProjectRole(projectId, accountId, role);
-		AccountObject result = mService.getAccount(accountId);
-		mService.closeConnect();
-		return result;
-	}
-
-	public AccountObject removeRoleToDb(String accountId) {
-		mService.openConnect();
-		mService.deleteSystemRole(accountId);
-		AccountObject result = mService.getAccount(accountId);
-		mService.closeConnect();
-		return result;
-	}
-
-	public void addRole(IUserSession session, IAccount account,
-			List<String> roleList, String id, String res, String op)
-			throws Exception {
-		addRoleToITS(mUserSession, account, roleList, id, res, op); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-	}
-
-	public AccountObject addRoleToDb(String projectId, String accountId,
-			RoleEnum role) {
-		mService.openConnect();
-		mService.createProjectRole(projectId, accountId, role);
-		AccountObject result = mService.getAccount(accountId);
-		mService.closeConnect();
-		return result;
-	}
-
-	public AccountObject addRoleToDb(String accountId) {
-		mService.openConnect();
-		mService.createSystemRole(accountId);
-		AccountObject result = mService.getAccount(accountId);
-		mService.closeConnect();
-		return result;
-	}
-
-	/**
-	 * 若帳號可建立且ID format正確 則回傳true
-	 */
-	public boolean isAccountExist(String id) {
-		mService.openConnect();
-		AccountObject account = mService.getAccount(id);
-		mService.closeConnect();
-		return account != null;
 	}
 
 	/**
@@ -203,164 +210,8 @@ public class AccountMapper {
 		createPermissionToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
 	}
 
-	/**
-	 * 過度期使用，當外部檔案都轉移完畢即可刪掉
-	 */
-	@Deprecated
-	private IAccount addRoleFromITS(IAccount account, IAccount itsAccount) {
-		if (account != null && itsAccount != null
-				&& itsAccount.getRoles() != null) {
-			for (IRole role : itsAccount.getRoles()) {
-				account.addRole(role);
-			}
-		}
-		return account;
-	}
-
-	/**
-	 * old operation delete it when project and scrum role is ready
-	 */
-
 	private String[] operation = { "ProductOwner", "ScrumMaster", "ScrumTeam",
 			"Stakeholder", "Guest" };
-
-	@Deprecated
-	public IAccount createAccountToITS(AccountInfo userInformation, String roles) {
-		String id = userInformation.getAccount();
-		String realName = userInformation.getName();
-		String password = userInformation.getPassword();
-		String email = userInformation.getEmail();
-		String enable = userInformation.getEnable();
-
-		IAccountManager am = getManager();
-		// 建立帳號(RoleBase部分)
-		IAccount account = AccountFactory.createAccount(id, realName, password,
-				true);
-		account.setEmail(email);
-
-		// 預防 null 的發生 -> when?
-		if ((enable == null) || (enable.length() == 0)) {
-			enable = "true";
-		}
-		account.setEnable(enable);
-
-		am.addAccount(account);
-		account = am.getAccount(id);
-		List<String> roleList = TranslateUtil.translateRoleString(roles);
-
-		// 確認已成功加入Assign roles
-		if (account != null) {
-			am.updateAccountRoles(id, roleList);
-			am.save();
-		}
-		return account;
-	}
-
-	/**
-	 * 進行編輯帳號的動作，並且將帳號更新角色，in 資料庫 和外部檔案資訊( RoleBase )的部分
-	 * 
-	 * @param session
-	 * @param userInformation
-	 * @return
-	 */
-	@Deprecated
-	public IAccount updateAccountToITS(IUserSession session,
-			AccountInfo userInformation) {
-		this.updateAccountInWorkspace(userInformation);
-		IAccount account = this.getAccountByIdToITS(userInformation
-				.getAccount());
-		this.updateAccountInDatabase(session, account);
-		return account;
-	}
-
-	/**
-	 * 進行編輯帳號的動作，並且將帳號更新角色 in mantis 資訊的部分
-	 * 
-	 * @param session
-	 * @param updateAccount
-	 */
-	@Deprecated
-	private void updateAccountInDatabase(IUserSession session,
-			IAccount updateAccount) {
-		MantisAccountManager accountManager = new MantisAccountManager(session);
-		try {
-			accountManager.updateUserProfile(updateAccount);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * 進行編輯帳號的動作，並且將帳號更新角色 in 外部檔案資訊的部分
-	 * 
-	 * @param userInformation
-	 */
-	@Deprecated
-	private void updateAccountInWorkspace(AccountInfo userInformation) {
-		String id = userInformation.getAccount();
-		String name = userInformation.getName();
-		String pwd = userInformation.getPassword();
-		String mail = userInformation.getEmail();
-		String enable = userInformation.getEnable();
-
-		IAccountManager am = getManager();
-		IAccount updateAccount = am.getAccount(id);
-
-		// 預防 null 的發生
-		if ((enable == null) || (enable.length() == 0)) {
-			enable = updateAccount.getEnable();
-		}
-
-		// no password, use the default password
-		if ((pwd == null) || (pwd.length() == 0) || pwd.equals("")) {
-			pwd = updateAccount.getPassword(); // get default password
-			am.updateAccountData(id, name, pwd, mail, enable, false); // false
-																		// 不經過Md5編碼
-		} else {
-			am.updateAccountData(id, name, pwd, mail, enable, true); // true
-																		// 經過Md5編碼
-		}
-
-		am.save();
-	}
-
-	/**
-	 * 刪除 account in "外部檔案" 和 "資料庫" 資訊的部分
-	 */
-	@Deprecated
-	public void deleteAccountToITS(IUserSession session, String id) {
-		this.deleteAccountInDatabase(session, id);
-		this.deleteAccountInWorkspace(id);
-	}
-
-	/**
-	 * 刪除 account in mantis 資訊的部分
-	 * 
-	 * @param session
-	 * @param id
-	 */
-	@Deprecated
-	private void deleteAccountInDatabase(IUserSession session, String id) {
-		MantisAccountManager accountManager = new MantisAccountManager(session);
-		try {
-			accountManager.deleteAccount(getManager(), id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 刪除 account in ezScrum local 的部分
-	 * 
-	 * @param id
-	 */
-	@Deprecated
-	private void deleteAccountInWorkspace(String id) {
-		// 刪除帳號, 包含群組內與Assign的資料
-		getManager().removeAccount(id);
-		getManager().save();
-	}
 
 	/**
 	 * 進行帳號更新的動作, 並且將帳號 Assign Roles, 建立完畢執行儲存檔案 in "外部檔案" 和 "資料庫"
@@ -536,10 +387,5 @@ public class AccountMapper {
 	@Deprecated
 	public IAccount getAccountByIdToITS(String id) {
 		return getManager().getAccount(id);
-	}
-
-	@Deprecated
-	public List<IActor> getAccountListToITS() {
-		return getManager().getAccountList();
 	}
 }
