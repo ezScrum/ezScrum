@@ -37,8 +37,6 @@ public class TaskObject implements IBaseObject {
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-	private ArrayList<Long> mPartnersId = null;
-	private ArrayList<AccountObject> mPartners = null;
 	private ArrayList<AttachFileObject> mAttachFiles = null;
 	private ArrayList<HistoryObject> mHistories = null;
 
@@ -114,37 +112,23 @@ public class TaskObject implements IBaseObject {
 	}
 
 	@SuppressWarnings("unchecked")
-	public TaskObject setPartnersId(ArrayList<Long> partnersId) {
-		getPartnersId();
-		
-		List<Long> intersection = (List<Long>) CollectionUtils.intersection(mPartnersId, partnersId);
-		List<Long> removeList = (List<Long>) CollectionUtils.subtract(mPartnersId, intersection);
-		List<Long> addList = (List<Long>) CollectionUtils.subtract(partnersId, intersection);
-		for (long partnerId : removeList) {
+	public TaskObject setPartnersId(ArrayList<Long> newPartnersId) {
+		List<Long> oldPartnersId = getPartnersId();
+		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils.intersection(oldPartnersId, newPartnersId);
+		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils.subtract(oldPartnersId, intersectionPartnersId);
+		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(newPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
 			TaskDAO.getInstance().removePartner(mId, partnerId);
 		}
-		for (long partnerId : addList) {
+		for (long partnerId : shouldAddPartnersId) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
 		}
-		
-		mPartnersId = partnersId;
-		return this;
-	}
-
-	public TaskObject setAttachFiles(ArrayList<AttachFileObject> attachFiles) {
-		mAttachFiles = attachFiles;
-		return this;
-	}
-
-	public TaskObject setHistories(ArrayList<HistoryObject> histories) {
-		mHistories = histories;
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
 		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
-			mPartnersId.add(partnerId);
 		}
 	}
 
@@ -152,12 +136,8 @@ public class TaskObject implements IBaseObject {
 		mAttachFiles.add(attachFile);
 	}
 
-	public void addHistory(HistoryObject history) {
-		mHistories.add(history);
-	}
-
 	public void removePartner(long partnerId) {
-		mPartnersId.remove(partnerId);
+		TaskDAO.getInstance().removePartner(mId, partnerId);
 	}
 
 	public long getId() {
@@ -310,32 +290,34 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<Long> getPartnersId() {
-		if (mPartnersId == null) {
-			mPartnersId = TaskDAO.getInstance().getPartnersId(mId);
-		}
-		return mPartnersId;
+		ArrayList<Long> partnersId = TaskDAO.getInstance().getPartnersId(mId);
+		return partnersId;
 	}
 
 	public ArrayList<AccountObject> getPartners() {
-		if (mPartners == null) {
-			mPartners = new ArrayList<AccountObject>();
-			for (long partnerId : mPartnersId) {
-				AccountObject partner = AccountDAO.getInstance().get(partnerId);
-				if (partner != null) {
-					mPartners.add(partner);					
-				}
+		ArrayList<AccountObject> partners = new ArrayList<AccountObject>();
+		ArrayList<Long> partnersId = getPartnersId();
+		for (long partnerId : partnersId) {
+			AccountObject partner = AccountDAO.getInstance().get(partnerId);
+			if (partner != null) {
+				partners.add(partner);					
 			}
 		}
-		return mPartners;
+		return partners;
 	}
 	
-	public String getPartnersName() {
+	public String getPartnersUsername() {
 		StringBuilder partnersName = new StringBuilder();
 		ArrayList<AccountObject> partners = getPartners();
-		for (AccountObject partner : partners) {
-			partnersName.append(partner.getUsername()).append(";");
+		int partnersAmount = partners.size();
+		int lastIndex = partnersAmount - 1;
+		for (int i = 0; i < partnersAmount; i++){
+			partnersName.append(partners.get(i).getUsername());
+			if (i != lastIndex)
+			{
+				partnersName.append(";");
+			}
 		}
-		partnersName.deleteCharAt(partnersName.length()-1);
 		return partnersName.toString();
 	}
 
@@ -464,7 +446,6 @@ public class TaskObject implements IBaseObject {
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
 		mHistories = null;
-		mPartnersId = null;
 		mAttachFiles = null;
 	}
 
