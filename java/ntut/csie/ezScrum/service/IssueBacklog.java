@@ -33,7 +33,7 @@ public class IssueBacklog {
 	public IssueBacklog(IProject project, IUserSession userSession) {
 		// 有些地方還是只能使用IProject 所以過度期使用此段程式碼 ezScrum v1.8
 		m_project = new ProjectObject();
-		m_project.setName(project.getName());
+		m_project.setNickName(project.getName());
 		//		m_project = project;
 		m_userSession = userSession;
 

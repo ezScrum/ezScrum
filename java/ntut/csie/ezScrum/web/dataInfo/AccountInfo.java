@@ -1,27 +1,26 @@
 package ntut.csie.ezScrum.web.dataInfo;
 
 public class AccountInfo {
-	public String password = "";
-	public String email = "";
-	public String nickName = "";
+	public long id = -1;
+	public String userName, password, email, nickName;
 	public boolean enable = false;
 
-	public AccountInfo(String username, String name, String password, String email, String enable) {
-		this.setUsername(username);
-		this.setName(name);
-		this.setPassword(password);
-		this.setEmail(email);
-		this.setEnable(enable);
-	}
-	
-	public AccountInfo(String id, String username, String name, String password, String email, String enable) {
-		this.setId(id);
-		this.setUsername(username);
-		this.setName(name);
-		this.setPassword(password);
-		this.setEmail(email);
-		this.setEnable(enable);
-	}
+//	public AccountInfo(String username, String name, String password, String email, String enable) {
+//		this.setUsername(username);
+//		this.setName(name);
+//		this.setPassword(password);
+//		this.setEmail(email);
+//		this.setEnable(enable);
+//	}
+//	
+//	public AccountInfo(String id, String username, String name, String password, String email, String enable) {
+//		this.setId(id);
+//		this.setUsername(username);
+//		this.setName(name);
+//		this.setPassword(password);
+//		this.setEmail(email);
+//		this.setEnable(enable);
+//	}
 
 	public String getId() {
 	    return id;

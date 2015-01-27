@@ -134,7 +134,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());
 	}
 
@@ -153,7 +153,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = "modify@test.com";
-		String userName = user.getName() + postfix;
+		String userName = user.getNickName() + postfix;
 		String userEnable = "false";			// default is true
 		String userIsEdit = "true";	// false 代表是新增帳號
 
@@ -182,7 +182,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());
 	}
 
@@ -204,7 +204,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String userId = user.getId();			// 取得第一筆 ID
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userMail = "modify@test.com";
-		String userName = user.getName() + postfix;
+		String userName = user.getNickName() + postfix;
 		String userEnable = "false";	// default is true
 		String userIsEdit = "true";		// false 代表是新增帳號
 
@@ -250,7 +250,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(expectUserPassword), account.getPassword());
 		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());
 	}
 
@@ -273,7 +273,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = user.getEmail();
-		String userName = user.getName();
+		String userName = user.getNickName();
 		String userEnable = user.getEnable();	// default is true
 		String userIsEdit = "true";				// false 代表是新增帳號
 
@@ -319,7 +319,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
 		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());
 	}
 
@@ -387,7 +387,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPwd), account.getPassword());
 		assertEquals(userEmail, account.getEmail());
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());
 
 		/**
@@ -444,7 +444,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		assertNotNull(updateAccount);
 		assertEquals(userAccount, updateAccount.getUsername());
-		assertEquals(updateUserName, updateAccount.getName());
+		assertEquals(updateUserName, updateAccount.getNickName());
 		assertEquals((new TestTool()).getMd5(updateUserPwd), updateAccount.getPassword());
 		assertEquals(updateUserEmail, updateAccount.getEmail());
 		assertEquals(updateUserEnable, updateAccount.getEnable());
@@ -536,7 +536,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		assertNotNull(account);
 		assertEquals(account.getUsername(), userAccount);
-		assertEquals(account.getName(), userName);
+		assertEquals(account.getNickName(), userName);
 		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPwd));
 		assertEquals(account.getEmail(), userEmail);
 		assertEquals(account.getEnable(), userEnable);
@@ -594,7 +594,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, updateAccount.getUsername());
 		assertEquals((new TestTool()).getMd5(userPwd), updateAccount.getPassword());
 		assertEquals(userEmail, updateAccount.getEmail());
-		assertEquals(userName, updateAccount.getName());
+		assertEquals(userName, updateAccount.getNickName());
 		assertEquals(updateUserEnable, updateAccount.getEnable());
 
 		/**

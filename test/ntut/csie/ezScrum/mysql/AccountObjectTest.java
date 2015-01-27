@@ -63,7 +63,7 @@ public class AccountObjectTest extends TestCase {
 		boolean enable = true;
 		
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName);
+		account.setNickName(nickName);
 		account.setPassword(password);
 		account.setEmail(email);
 		account.setEnable(enable);
@@ -80,7 +80,7 @@ public class AccountObjectTest extends TestCase {
 		// assertion
 		AccountObject createAccount = AccountDAO.getInstance().convertAccount(resultSet);
 		assertEquals(userName, createAccount.getUsername());
-		assertEquals(nickName, createAccount.getName());
+		assertEquals(nickName, createAccount.getNickName());
 		assertEquals(email, createAccount.getEmail());
 		assertEquals(enable, createAccount.getEnable());
 	}
@@ -94,7 +94,7 @@ public class AccountObjectTest extends TestCase {
 		boolean enable = true;
 		
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName);
+		account.setNickName(nickName);
 		account.setPassword(password);
 		account.setEmail(email);
 		account.setEnable(enable);
@@ -107,7 +107,7 @@ public class AccountObjectTest extends TestCase {
 		String newEmail = "TEST_ACCOUNT_EMAIL_NEW";
 		
 		AccountObject newAccount = new AccountObject(account.getId(), newUserName);
-		newAccount.setName(newNickName)
+		newAccount.setNickName(newNickName)
 		          .setEmail(newEmail)
 		          .setPassword(newPassword)
 		          .save();
@@ -124,7 +124,7 @@ public class AccountObjectTest extends TestCase {
 		// assertion
 		AccountObject updateAccount = AccountDAO.getInstance().convertAccount(resultSet);
 		assertEquals(userName, updateAccount.getUsername());
-		assertEquals(newNickName, updateAccount.getName());
+		assertEquals(newNickName, updateAccount.getNickName());
 		assertEquals(getMd5(newPassword), updateAccount.getPassword());
 		assertEquals(newEmail, updateAccount.getEmail());
 	}
@@ -138,7 +138,7 @@ public class AccountObjectTest extends TestCase {
 		boolean enable = true;
 
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName);
+		account.setNickName(nickName);
 		account.setPassword(password);
 		account.setEmail(email);
 		account.setEnable(enable);
@@ -165,7 +165,7 @@ public class AccountObjectTest extends TestCase {
 		boolean enable = true;
 
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName);
+		account.setNickName(nickName);
 		account.setPassword(password);
 		account.setEmail(email);
 		account.setEnable(enable);

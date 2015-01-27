@@ -41,11 +41,33 @@ public class AccountMapper {
 	}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
-		AccountObject account = new AccountObject(accountInfo.getUsername());
-		account.setEmail(accountInfo.getEmail())
-				.setPassword(accountInfo.getPassword())
-				.setName(accountInfo.getName()).setEnable(true).save();
+		AccountObject account = new AccountObject(accountInfo.userName);
+		account.setEmail(accountInfo.email)
+				.setPassword(accountInfo.password)
+				.setNickName(accountInfo.nickName).setEnable(true).save();
 		return account;
+	}
+
+	/**
+	 * Get account by userName
+	 * 
+	 * @param userName
+	 * @return AccountObject
+	 */
+	public AccountObject getAccount(String userName) {
+		AccountObject user = AccountObject.get(userName);
+		return user;
+	}
+	
+	/**
+	 * Get account by account id
+	 * 
+	 * @param account id
+	 * @return AccountObject
+	 */
+	public AccountObject getAccount(long id) {
+		AccountObject user = AccountObject.get(id);
+		return user;
 	}
 
 	/**
@@ -55,7 +77,7 @@ public class AccountMapper {
 		AccountObject account = AccountObject.get(accountInfo.getId());
 		account.setEmail(accountInfo.getEmail())
 				.setPassword(accountInfo.getPassword())
-				.setName(accountInfo.getName())
+				.setNickName(accountInfo.getName())
 				.setEnable(accountInfo.getEnable().equals("true")).save();
 		return account;
 	}
@@ -70,22 +92,6 @@ public class AccountMapper {
 		// deleteAccountToITS(mUserSession, id); //
 		// 當project與role都從外部檔案移到資料庫，就可以刪掉
 		return result;
-	}
-
-	public AccountObject getAccount(String account) {
-		AccountObject user = AccountObject.get(account); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-		return user;
-	}
-
-	public AccountObject getAccountById(String id) {
-		mService.openConnect();
-		AccountObject user = mService.getAccountById(id);
-		mService.closeConnect();
-		// IAccount itsAccount = getAccountByIdToITS(id); //
-		// 當project與role都從外部檔案移到資料庫，就可以刪掉
-		// return addRoleFromITS(account, itsAccount); //
-		// 當project與role都從外部檔案移到資料庫，就可以刪掉
-		return user;
 	}
 
 	public ArrayList<AccountObject> getAccounts() {
@@ -107,8 +113,7 @@ public class AccountMapper {
 	/**
 	 * 取出 account 的在 project 的 role 權限列表
 	 * 
-	 * @param id
-	 *            is account id
+	 * @param id account id
 	 * @return 權限列表
 	 */
 	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
@@ -140,7 +145,7 @@ public class AccountMapper {
 			RoleEnum role) {
 		mService.openConnect();
 		mService.deleteProjectRole(projectId, accountId, role);
-		AccountObject result = mService.getAccountById(accountId);
+		AccountObject result = mService.getAccount(accountId);
 		mService.closeConnect();
 		return result;
 	}
@@ -148,7 +153,7 @@ public class AccountMapper {
 	public AccountObject removeRoleToDb(String accountId) {
 		mService.openConnect();
 		mService.deleteSystemRole(accountId);
-		AccountObject result = mService.getAccountById(accountId);
+		AccountObject result = mService.getAccount(accountId);
 		mService.closeConnect();
 		return result;
 	}
@@ -163,7 +168,7 @@ public class AccountMapper {
 			RoleEnum role) {
 		mService.openConnect();
 		mService.createProjectRole(projectId, accountId, role);
-		AccountObject result = mService.getAccountById(accountId);
+		AccountObject result = mService.getAccount(accountId);
 		mService.closeConnect();
 		return result;
 	}
@@ -171,7 +176,7 @@ public class AccountMapper {
 	public AccountObject addRoleToDb(String accountId) {
 		mService.openConnect();
 		mService.createSystemRole(accountId);
-		AccountObject result = mService.getAccountById(accountId);
+		AccountObject result = mService.getAccount(accountId);
 		mService.closeConnect();
 		return result;
 	}
