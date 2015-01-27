@@ -100,12 +100,32 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 	
 	/**
-	 * 取出 account 的在 project 的 role 權限列表 
+	 * Create map about user and role in each attend project
 	 * 
-	 * @param id - account id
+	 * @param projectId
+	 * @param accountId
+	 * @param role
+	 * @return isCreateSuccess
+	 */
+	public boolean createProjectRole(long projectId, long accountId, RoleEnum role) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
+		valueSet.addInsertValue(ProjectRoleEnum.PROJECT_ID, projectId);
+		valueSet.addInsertValue(ProjectRoleEnum.ACCOUNT_ID, accountId);
+		valueSet.addInsertValue(ProjectRoleEnum.ROLE, String.valueOf(role.ordinal()));
+		valueSet.addInsertValue(ProjectRoleEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(ProjectRoleEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		String query = valueSet.getInsertQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	/**
+	 * Get account access mapping each attend project
+	 * 
+	 * @param accountId
 	 * @return account access map
 	 */
-	public HashMap<String, ProjectRole> getProjectRoleList(long id) {
+	public HashMap<String, ProjectRole> getProjectRoleMap(long accountId) {
 		StringBuilder query = new StringBuilder();
 		query.append("select * from ").append(ProjectRoleEnum.TABLE_NAME).append(" as pr")
 			.append(" cross join ").append(ProjectEnum.TABLE_NAME).append(" as p on ")
@@ -113,9 +133,9 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			.append(" cross join ").append(ScrumRoleEnum.TABLE_NAME).append(" as sr on")
 			.append(" pr.").append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
 			.append(" and pr.").append(ProjectRoleEnum.ROLE).append(" = sr.").append(ScrumRoleEnum.ROLE)
-			.append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(id);
+			.append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(accountId);
 		HashMap<String, ProjectRole> map = new HashMap<String, ProjectRole>();
-		ProjectRole systemRole = getSystemRole(id);
+		ProjectRole systemRole = getSystemRole(accountId);
 		ResultSet result = mControl.executeQuery(query.toString());
 		
 		try {
@@ -135,27 +155,47 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 
 	/**
-	 * ------------------------------------------- System Table Operation
-	 * -------------------------------------------
-	 */
-
-	/**
-	 * 藉由 account id 判斷是否取出專案下的管理者帳號
+	 * Delete account's role in project
 	 * 
-	 * @param id
-	 *            account id
-	 * @return admin account's project role
+	 * @param projectId
+	 * @param accountId
+	 * @param role
+	 * @return isDeleteSuccess
 	 */
+	public boolean deleteProjectRole(long projectId, long accountId, RoleEnum role) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(ProjectRoleEnum.ACCOUNT_ID, accountId);
+		valueSet.addEqualCondition(ProjectRoleEnum.ROLE, String.valueOf(role.ordinal()));
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
 	/**
-	 * 藉由 account id 判斷是否取出專案下的管理者帳號
+	 * Create project system role
 	 * 
-	 * @param id account id
-	 * @return admin account's project role
+	 * @param accountId
+	 * @return isCreateSuccess
 	 */
-	public ProjectRole getSystemRole(long id) {
+	public boolean createSystemRole(long accountId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SystemEnum.TABLE_NAME);
-		valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, id);
+		valueSet.addInsertValue(SystemEnum.ACCOUNT_ID, accountId);
+		String query = valueSet.getInsertQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	/**
+	 * 藉由 account id 判斷是否取出專案下的管理者帳號
+	 * 
+	 * @param accountId
+	 * @return admin account's project role
+	 */
+	public ProjectRole getSystemRole(long accountId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SystemEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, accountId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		ProjectRole projectRole = null;
@@ -177,9 +217,22 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		}
 		return projectRole;
 	}
-
-	public ScrumRole convertScrumRole(String projectId, String role,
-			ResultSet result) throws SQLException {
+	
+	/**
+	 * Delete account's system role in project
+	 * 
+	 * @param accountId
+	 * @return isDeleteSuccess
+	 */
+	public boolean deleteSystemRole(long accountId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SystemEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SystemEnum.ACCOUNT_ID, accountId);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	public ScrumRole convertScrumRole(String projectId, String role, ResultSet result) throws SQLException {
 		ScrumRole scrumRole = new ScrumRole(projectId, role);
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
 		scrumRole.setAccessProductBacklog(result
@@ -427,7 +480,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
 		boolean enable = result.getBoolean(AccountEnum.ENABLE);
-		HashMap<String, ProjectRole> roles = getProjectRoleList(id);
 
 		AccountObject account = new AccountObject(id, username);
 		account.setPassword(password).setNickName(nickName).setEmail(email)

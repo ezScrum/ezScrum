@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
@@ -121,13 +122,8 @@ public class AccountObject implements IBaseObject {
 	}
 
 	public HashMap<String, ProjectRole> getRoles() {
-		return mRoles;
-	}
-
-	public AccountObject setRoles(HashMap<String, ProjectRole> roles) {
-		mRoles = roles;
-		return this;
-	}
+	    return AccountDAO.getInstance().getProjectRoleMap(mId);
+    }
 
 	/**
 	 * Get account by account id
@@ -164,23 +160,48 @@ public class AccountObject implements IBaseObject {
 	}
 
 	/**
-	 * 取出 account 的在 project 的 role 權限列表
+	 * Create map about user and role in each attend project
 	 * 
-	 * @return account access power map
+	 * @param projectId
+	 * @param role
+	 * @return isCreateSuccess
 	 */
+	public boolean createProjectRole(long projectId, RoleEnum role) {
+		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
+	}
+	
 	/**
-	 * 取出 account 的在 project 的 role 權限列表 
+	 * Get account access mapping each attend project
 	 * 
-	 * @return account access power map
+	 * @return account access map <"Project name", "Project role">
 	 */
-	public HashMap<String, ProjectRole> getProjectRoleList() {
-		return AccountDAO.getInstance().getProjectRoleList(mId);
+	public HashMap<String, ProjectRole> getProjectRoleMap() {
+		return AccountDAO.getInstance().getProjectRoleMap(mId);
+	}
+	
+	/**
+	 * Delete account's role in project
+	 * 
+	 * @param projectId
+	 * @param role
+	 * @return isDeleteSuccess
+	 */
+	public boolean deleteProjectRole(long projectId, RoleEnum role) {
+		return AccountDAO.getInstance().deleteProjectRole(projectId, mId, role);
+	}
+	
+	/**
+	 * Create project system role
+	 * 
+	 * @return isCreateSuccess
+	 */
+	public boolean createSystemRole() {
+		return AccountDAO.getInstance().createSystemRole(mId);
 	}
 	
 	/**
 	 * 藉由 account id 判斷是否取出專案下的管理者帳號
 	 * 
-	 * @param id account id
 	 * @return admin account's project role
 	 */
 	public ProjectRole getSystemRole() {
@@ -188,7 +209,17 @@ public class AccountObject implements IBaseObject {
 	}
 
 	/**
+	 * Delete account's system role in project
+	 * 
+	 * @return isDeleteSuccess
+	 */
+	public boolean deleteSystemRole() {
+		return AccountDAO.getInstance().deleteSystemRole(mId);
+	}
+	
+	/**
 	 * Use username and password to get account
+	 * 
 	 * @param username
 	 * @param password
 	 * @return AccountObject
@@ -236,7 +267,7 @@ public class AccountObject implements IBaseObject {
 		mEmail = account.getEmail();
 		mNickName = account.getNickName();
 		mEnable = account.getEnable();
-		mRoles = account.getRoles();
+		mRoles = null;
 	}
 
 	private void doCreate() {

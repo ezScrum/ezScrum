@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.AccountFactory;
+import ntut.csie.jcis.account.core.LogonException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -159,18 +160,25 @@ public class AccountMapperTest extends TestCase {
 	}
 	
 	@Test
-	public void testConfirmAccount() {
+	public void testConfirmAccount() throws LogonException {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		
+		String userName = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
 		AccountObject account = null;
 		
-        account = mAccountMapper.confirmAccount(id, password);
+        account = mAccountMapper.confirmAccount(userName, password);
         
-        assertEquals(id, account.getUsername());
+        assertEquals(userName, account.getUsername());
+        assertEquals(getMd5(password), account.getPassword());
 	}
-//	
+	
+	@Test
+	public void testGetProjectRoleList() {
+		
+	}
+	
 //	public void testIsAccountExist() {
 //		CreateAccount createAccount = new CreateAccount(1);
 //		createAccount.exe();
