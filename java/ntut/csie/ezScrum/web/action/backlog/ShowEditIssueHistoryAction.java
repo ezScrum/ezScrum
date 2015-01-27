@@ -46,7 +46,7 @@ public class ShowEditIssueHistoryAction extends Action {
 			issue = PBHelper.getIssue(issueId);
 		} else {
 			SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, sprintId)).getSprintBacklogMapper();
-			issue = backlog.getIssue(issueId);
+			issue = backlog.getStory(issueId);
 		}
 
 		try {

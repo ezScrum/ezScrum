@@ -197,7 +197,7 @@ public class RemainingWorkReport {
 
 	private void createTaskDataBySprint(int sprintid) {
 		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, String.valueOf(sprintid))).getSprintBacklogMapper();
-		List<IIssue> issues = backlog.getTasks();
+		List<IIssue> issues = backlog.getAllTasks();
 		Date timeNode = new Date(this.m_chartStartDate.getTime());
 		while (timeNode.getTime() <= this.m_chartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間

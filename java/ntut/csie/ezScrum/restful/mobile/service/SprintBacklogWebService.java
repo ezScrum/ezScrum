@@ -146,7 +146,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getTaskInformation(String taskID) throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue currentTask = sprintBacklog.getIssue(Long.parseLong(taskID));
+		IIssue currentTask = sprintBacklog.getStory(Long.parseLong(taskID));
 		return csb.readTaskInformationList(currentTask);
 	}
 

@@ -53,23 +53,23 @@ public class SprintBacklogHelper {
 	}
 
 	public IIssue getIssue(long issueId) {
-		return mSprintBacklogMapper.getIssue(issueId);
+		return mSprintBacklogMapper.getStory(issueId);
 	}
 
 	public IIssue[] getStoryInSprint(String sprintId) {
-		return mSprintBacklogMapper.getStoryInSprint(Long.parseLong(sprintId));
+		return mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintId));
 	}
 
 	public IIssue[] getTaskInStory(String storyId) {
 		if (mSprintBacklogMapper != null) {
-			return mSprintBacklogMapper.getTaskInStory(Long.parseLong(storyId));
+			return mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(storyId));
 		}
 		return null;
 	}
 	
 	public ArrayList<TaskObject> getWildTasks(long projectId)
 			throws SQLException {
-		return mSprintBacklogMapper.getWildTasks(projectId);
+		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
 	}
 
 	public void addExistedTask(String storyId, String[] selectedTaskIds) {
@@ -80,7 +80,7 @@ public class SprintBacklogHelper {
 		if (mSprintBacklogMapper != null) {
 			Date date = DateUtil.dayFillter(DateUtil.getToday(),
 					DateUtil._8DIGIT_DATE_2);
-			mSprintBacklogMapper.addExistedTask(taskIds,
+			mSprintBacklogMapper.addExistingTask(taskIds,
 					Long.parseLong(storyId), date);
 		}
 	}
@@ -100,7 +100,7 @@ public class SprintBacklogHelper {
 	 * 根據 id 取得 task
 	 */
 	public IIssue getTaskById(long id) {
-		List<IIssue> tasks = mSprintBacklogMapper.getTasks();
+		List<IIssue> tasks = mSprintBacklogMapper.getAllTasks();
 		for (IIssue task : tasks) {
 			if (task.getIssueID() == id) {
 				return task;
@@ -118,7 +118,7 @@ public class SprintBacklogHelper {
 
 	public void dropTask(String taskId, String storyId) {
 		if (mSprintBacklogMapper != null) {
-			mSprintBacklogMapper.removeTask(Long.parseLong(taskId),
+			mSprintBacklogMapper.dropTask(Long.parseLong(taskId),
 					Long.parseLong(storyId));
 		}
 	}

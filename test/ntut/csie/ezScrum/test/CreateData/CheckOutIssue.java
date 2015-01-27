@@ -114,10 +114,10 @@ public class CheckOutIssue {
 				String name = issue.getSummary();
 				if (this.SetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
-					sprintBacklogMapper.getIssue(ID).setAssignto(handler);
+					sprintBacklogMapper.getStory(ID).setAssignto(handler);
 					sprintBacklogLogic.doneIssue(ID, name, format.format(this.SetDoneDate), "", "");
 				} else {
-					sprintBacklogMapper.getIssue(ID).setAssignto(handler);
+					sprintBacklogMapper.getStory(ID).setAssignto(handler);
 					sprintBacklogLogic.doneIssue(ID, name, "", "", "");
 				}
 				System.out.println("移動 Issue " + ID + " 到 Done 成功");
