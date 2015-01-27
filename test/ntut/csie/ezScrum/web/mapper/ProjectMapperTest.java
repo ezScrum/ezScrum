@@ -70,7 +70,7 @@ public class ProjectMapperTest extends TestCase{
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		if (resultSet.next()) {
-			ProjectObject project= ProjectDAO.getInstance().convert(resultSet);
+			ProjectObject project= ProjectDAO.getInstance().convertProject(resultSet);
 			assertEquals(projectInfo.name, project.getName());
 			assertEquals(projectInfo.displayName, project.getDisplayName());
 			assertEquals(projectInfo.common, project.getComment());
