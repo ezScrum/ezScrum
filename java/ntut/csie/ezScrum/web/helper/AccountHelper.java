@@ -64,7 +64,7 @@ public class AccountHelper {
 	}
 
 	public void deleteAccount(String id) {
-		mAccountMapper.deleteAccount(id);
+		mAccountMapper.deleteAccount(Long.parseLong(id));
 	}
 
 	/**

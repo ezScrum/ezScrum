@@ -42,8 +42,7 @@ public class AccountMapper {
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
 		AccountObject account = new AccountObject(accountInfo.userName);
-		account.setEmail(accountInfo.email)
-				.setPassword(accountInfo.password)
+		account.setEmail(accountInfo.email).setPassword(accountInfo.password)
 				.setNickName(accountInfo.nickName).setEnable(true).save();
 		return account;
 	}
@@ -58,11 +57,11 @@ public class AccountMapper {
 		AccountObject user = AccountObject.get(userName);
 		return user;
 	}
-	
+
 	/**
 	 * Get account by account id
 	 * 
-	 * @param account id
+	 * @param id
 	 * @return AccountObject
 	 */
 	public AccountObject getAccount(long id) {
@@ -71,7 +70,19 @@ public class AccountMapper {
 	}
 
 	/**
-	 * 進行編輯帳號的動作，並且將帳號更新角色，in 資料庫 和外部檔案資訊( RoleBase )的部分
+	 * Get all account in DB
+	 * 
+	 * @return AccountObject list
+	 */
+	public ArrayList<AccountObject> getAccounts() {
+		return AccountObject.getAccounts();
+	}
+	
+	/**
+	 * Update account info use DAO
+	 * 
+	 * @param accountInfo
+	 * @return AccountObject
 	 */
 	public AccountObject updateAccount(AccountInfo accountInfo) {
 		AccountObject account = AccountObject.get(accountInfo.id);
@@ -84,19 +95,15 @@ public class AccountMapper {
 	}
 
 	/**
-	 * 刪除 account
+	 * Delete account by id
+	 * 
+	 * @param id
+	 * @return boolean
 	 */
-	public boolean deleteAccount(String id) {
-		mService.openConnect();
-		boolean result = mService.deleteAccount(id);
-		mService.closeConnect();
-		// deleteAccountToITS(mUserSession, id); //
-		// 當project與role都從外部檔案移到資料庫，就可以刪掉
+	public boolean deleteAccount(long id) {
+		AccountObject account = AccountObject.get(id);
+		boolean result = account.delete();
 		return result;
-	}
-
-	public ArrayList<AccountObject> getAccounts() {
-		return AccountObject.getAccounts();
 	}
 
 	public AccountObject confirmAccount(String id, String password)
@@ -107,10 +114,6 @@ public class AccountMapper {
 		if (account == null) {
 			throw new LogonException(false, false);
 		} else {
-			// IAccount itsAccount = getAccountByIdToITS(id); //
-			// 當project與role都從外部檔案移到資料庫，就可以刪掉
-			// return addRoleFromITS(account, itsAccount); //
-			// 當project與role都從外部檔案移到資料庫，就可以刪掉
 			return account;
 		}
 	}
