@@ -214,7 +214,32 @@ public class TaskObjectTest {
 	}
 	
 	@Test
+	public void testGetHandler_UnassignHandler() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// testGetHandler
+		assertEquals(null, task.getHandler());
+	}
+	
+	@Test
 	public void testGetHandler() {
+		long TEST_TASK_ID = 1;
+		String USERNAME = "test_username";
+		String PASSWORD = "test_password";
+		boolean ENABLE = true;
+		// create a account
+		AccountObject account = new AccountObject(USERNAME);
+		account.setPassword(PASSWORD).setEnable(ENABLE);
+		account.save();
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0).setHandlerId(account.getId());
+		task.save();
+		// testGetHandler
+		assertEquals(account.getId(), task.getHandler().getId());
 	}
 
 	@Test
