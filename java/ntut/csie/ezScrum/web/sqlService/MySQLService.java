@@ -153,26 +153,6 @@ public class MySQLService {
 //		}
 //	}
 //
-//	public AccountObject confirmAccount(String account, String password) {
-//		try {
-//			IQueryValueSet valueSet = new MySQLQuerySet();
-//			valueSet.addTableName(AccountEnum.TABLE_NAME);
-//			valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, account);
-//			valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
-//			valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
-//			String query = valueSet.getSelectQuery();
-//			ResultSet result = mControl.executeQuery(query);
-//			if (result.first()) {
-//				return getAccount(result);
-//			} else {
-//				return null;
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-//
 //	public List<AccountObject> getAccountList() {
 //		try {
 //			IQueryValueSet valueSet = new MySQLQuerySet();

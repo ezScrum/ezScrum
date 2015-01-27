@@ -160,6 +160,16 @@ public class AccountObject implements IBaseObject {
 		return AccountDAO.getInstance().getSystemRole(mId);
 	}
 	
+	/**
+	 * Use username and password to get account
+	 * @param username
+	 * @param password
+	 * @return AccountObject
+	 */
+	public static AccountObject confirmAccount(String username, String password) {
+		return AccountDAO.getInstance().confirmAccount(username, password);
+	}
+	
 	@Override
 	public boolean delete() {
 		boolean success = AccountDAO.getInstance().delete(mId);

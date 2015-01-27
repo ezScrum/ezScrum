@@ -247,7 +247,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.USERNAME, username);
+		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, username);
 		String query = valueSet.getSelectQuery();
 		
 		ResultSet result = mControl.executeQuery(query);
@@ -311,6 +311,28 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addEqualCondition(AccountEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
+	}
+	
+	public AccountObject confirmAccount(String username, String password) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, username);
+		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
+		valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		AccountObject account = null;
+		
+		try {
+			if (result.next()) {
+				account = convertAccount(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return account;
 	}
 
 	public AccountObject convertAccount(ResultSet result) throws SQLException {

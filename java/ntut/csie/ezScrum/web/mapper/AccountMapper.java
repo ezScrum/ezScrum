@@ -106,11 +106,8 @@ public class AccountMapper {
 		return result;
 	}
 
-	public AccountObject confirmAccount(String id, String password)
-			throws LogonException {
-		mService.openConnect();
-		AccountObject account = mService.confirmAccount(id, password);
-		mService.closeConnect();
+	public AccountObject confirmAccount(String username, String password) throws LogonException {
+		AccountObject account = AccountObject.confirmAccount(username, password);
 		if (account == null) {
 			throw new LogonException(false, false);
 		} else {
