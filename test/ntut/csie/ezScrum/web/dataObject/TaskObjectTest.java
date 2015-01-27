@@ -169,6 +169,51 @@ public class TaskObjectTest {
 	}
 
 	@Test
+	public void testRemovePartner() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10)
+				.setRemains(8).setActual(0);
+		task.save();
+		// add a partner
+		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
+		// check status before test
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(1, partnersId.size());
+		assertEquals(1L, partnersId.get(0));
+		// testRemovePartner
+		task.removePartner(1);
+		partnersId.clear();
+		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(0, partnersId.size());
+	}
+	
+	@Test
+	public void testRemovePartner_withTwoPartners() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10)
+				.setRemains(8).setActual(0);
+		task.save();
+		// add two partners
+		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
+		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 2);
+		// check status before test
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, partnersId.size());
+		assertEquals(1L, partnersId.get(0));
+		assertEquals(2L, partnersId.get(1));
+		// testRemovePartner_withTwoPartners
+		task.removePartner(1);
+		partnersId.clear();
+		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(1, partnersId.size());
+		assertEquals(2L, partnersId.get(0));
+	}
+	
+	@Test
 	public void testGetHandler() {
 	}
 
