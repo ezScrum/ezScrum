@@ -109,7 +109,7 @@ public class SprintBacklogLogic {
 
 	// for ezScrum 1.8
 	private void doneTask(long id, String name, String notes, int actualHour, Date changeDate) {
-		mSprintBacklogMapper.doneTask(id, name, notes, changeDate);
+		mSprintBacklogMapper.closeTask(id, name, notes, changeDate);
 	}
 
 	// for ezScrum 1.8
@@ -127,7 +127,7 @@ public class SprintBacklogLogic {
 		if (issueType == IssueTypeEnum.TYPE_TASK) { // Done Task
 			doneTask(id, name, notes, Integer.parseInt(actualHour), closeDate);
 		} else { // Done Story
-			mSprintBacklogMapper.doneIssue(id, notes, changeDate);
+			mSprintBacklogMapper.closeStory(id, notes, changeDate);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class SprintBacklogLogic {
 		List<IIssue> items;
 		double point = 0;
 		if (type.equalsIgnoreCase(ScrumEnum.TASK_ISSUE_TYPE)) {
-			items = this.mSprintBacklogMapper.getTasks();
+			items = this.mSprintBacklogMapper.getAllTasks();
 			for (IIssue item : items) {
 				point += Double.parseDouble(item.getEstimated());
 			}
@@ -287,7 +287,7 @@ public class SprintBacklogLogic {
 		List<IIssue> items;
 		double point = 0;
 		if (type.equalsIgnoreCase(ScrumEnum.TASK_ISSUE_TYPE)) {
-			items = this.mSprintBacklogMapper.getTasks();
+			items = this.mSprintBacklogMapper.getAllTasks();
 			for (IIssue item : items) {
 				if (ITSEnum.getStatus(item.getStatus()) >= ITSEnum.CLOSED_STATUS)
 					continue;
@@ -309,13 +309,13 @@ public class SprintBacklogLogic {
 
 	public List<IIssue> getStories() {
 		List<IIssue> stories = this.mSprintBacklogMapper
-				.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
 		return this.sort(stories, "null");
 	}
 
 	public List<IIssue> getStoriesByImp() {
 		List<IIssue> stories = this.mSprintBacklogMapper
-				.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
 		return this.sortByImp(stories);
 	}
 
@@ -380,7 +380,7 @@ public class SprintBacklogLogic {
 	 * @return
 	 */
 	public IIssue getTaskById(long id) {
-		List<IIssue> tasks = this.mSprintBacklogMapper.getTasks();
+		List<IIssue> tasks = this.mSprintBacklogMapper.getAllTasks();
 		for (IIssue task : tasks) {
 			if (task.getIssueID() == id)
 				return task;

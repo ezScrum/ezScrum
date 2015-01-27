@@ -111,7 +111,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
+		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
 
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
@@ -160,7 +160,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getIssue(StoryID); // 重新取得Story資訊
+		issue = sprintBacklogMapper.getStory(StoryID); // 重新取得Story資訊
 		
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")

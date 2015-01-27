@@ -285,11 +285,11 @@ public class SprintPlanHelper {
 	public SprintObject getSprintWithAllItem(String sprintID) throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintID));
 		// 找出 sprint 中所有的 story
-		IIssue[] storyIIssues = mSprintBacklogMapper.getStoryInSprint(Long.parseLong(sprintID));
+		IIssue[] storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintID));
 		for (IIssue storyIssue : storyIIssues) {
 			StoryObject story = new StoryObject(storyIssue);
 			// 找出 story 中所有的 task
-			IIssue[] taskIIssues = mSprintBacklogMapper.getTaskInStory(Long.parseLong(story.id));
+			IIssue[] taskIIssues = mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(story.id));
 			for (IIssue taskIssue : taskIIssues) {
 				TaskObject taskObject = new TaskObject(taskIssue);
 				if (taskIssue.getHistories().size() > 0) {

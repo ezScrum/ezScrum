@@ -115,7 +115,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
+		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
 		
 		assertEquals(String.valueOf(TaskID), Long.toString(issue.getIssueID()));
 		assertEquals(configuration.USER_ID, issue.getAssignto());
@@ -174,7 +174,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
+		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
 		
 		assertEquals(String.valueOf(TaskID), Long.toString(issue.getIssueID()));
 		assertEquals("TEST_TASK_1", issue.getSummary());

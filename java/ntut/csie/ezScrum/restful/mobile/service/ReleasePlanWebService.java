@@ -116,7 +116,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 				for (IIssue issue : issues) {
 					total = total + Float.parseFloat(issue.getEstimated());
 					storyList.add(new StoryObject(issue));
-					IIssue[] taskIssueList = sprintBacklogMapper.getTaskInStory(issue.getIssueID());
+					IIssue[] taskIssueList = sprintBacklogMapper.getTasksByStoryId(issue.getIssueID());
 					List<TaskObject> taskList = new LinkedList<TaskObject>();
 					for (IIssue taskIssue : taskIssueList)
 						taskList.add(new TaskObject(taskIssue));

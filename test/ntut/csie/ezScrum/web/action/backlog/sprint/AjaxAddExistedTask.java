@@ -116,7 +116,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, configuration.getUserSession(), sprintId);
-		IIssue[] tasks = sprintBacklogMapper.getTaskInStory(storyID);
+		IIssue[] tasks = sprintBacklogMapper.getTasksByStoryId(storyID);
 		assertEquals(expectedTaskID, String.valueOf(tasks[0].getIssueID()));
 	}
 }

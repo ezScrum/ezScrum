@@ -24,6 +24,6 @@ public class DropTask {
 		IUserSession userSession = mConfig.getUserSession();
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, mSprintId);
 		// remove relation
-		sprintBacklogMapper.removeTask(mIssueId, mParentId);
+		sprintBacklogMapper.dropTask(mIssueId, mParentId);
 	}
 }

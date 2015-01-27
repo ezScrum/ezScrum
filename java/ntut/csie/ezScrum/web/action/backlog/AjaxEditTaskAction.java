@@ -60,7 +60,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		sprintBacklogLogic.editTask(issueID, taskName, estimate, remains, handler, partners, actual, notes, null);
 		
-		IIssue issue = sprintBacklogMapper.getIssue(issueID);		
+		IIssue issue = sprintBacklogMapper.getStory(issueID);		
 		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		result.append("<EditTask><Result>true</Result><Task>");

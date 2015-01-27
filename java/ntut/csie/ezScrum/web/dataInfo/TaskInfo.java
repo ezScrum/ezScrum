@@ -5,13 +5,9 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class TaskInfo {
-	private long projectId = -1;
+	public long projectId = -1, taskId = -1;
 	public long serialId, handlerId = -1, storyId, specificTime = 0;
 	public String name, notes;
 	public int estimate, remains, actualHour, status = TaskObject.STATUS_UNCHECK;
 	public ArrayList<Long> partnersId;
-	
-	public TaskInfo(long projectId) {
-		this.projectId = projectId;
-	}
 }

@@ -110,7 +110,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
+		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
