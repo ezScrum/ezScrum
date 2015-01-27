@@ -36,11 +36,16 @@ public class CreateAccount {
 		AccountInfo user;
 		for (int i = 0; i < AccountCount; i++) {	// ID = 1 為預設 admin 
 			String ID = Integer.toString(i + 1);
-			String Acc_ID = Account_ID + ID;
-			String Acc_RLNAME = Account_NAME + ID;
+			String Acc_userNmae = Account_ID + ID;
+			String Acc_nickName = Account_NAME + ID;
 			String Acc_PWD = Account_PWD + ID;
 			String Acc_Mail = Account_Mail + ID;
-			user = new AccountInfo(Acc_ID, Acc_RLNAME, Acc_PWD, Acc_Mail, "true");
+			user = new AccountInfo();
+			user.userName = Acc_userNmae;
+			user.nickName = Acc_nickName;
+			user.password = Acc_PWD;
+			user.email = Acc_Mail;
+			
 			AccountObject account = mAccountHelper.createAccount(user);
 			mAccountList.add(account);
 			log.info("Create " + AccountCount + " accounts success.");
@@ -97,11 +102,17 @@ public class CreateAccount {
 	public void setAccount_RealName(int accountIndex) {
 		AccountObject userObject = mAccountList.get(accountIndex - 1);
 		long id = userObject.getId();
-		String account = userObject.getUsername();
+		String userNmae = userObject.getUsername();
 		String password = userObject.getPassword();
 		String mail = userObject.getEmail();
-		String name = Account_NAME + "NEW_" + id;
-		AccountInfo user = new AccountInfo(id, account, name, password, mail, "true");
+		String nickName = Account_NAME + "NEW_" + id;
+		AccountInfo user = new AccountInfo();
+		user.id = id;
+		user.userName = userNmae;
+		user.nickName = nickName;
+		user.password = password;
+		user.email = mail;
+		user.enable = true;
 		mAccountList.set(accountIndex - 1, mAccountHelper.updateAccount(user));
 	}
 }

@@ -46,9 +46,19 @@ public class ProjectRoleTest extends TestCase {
 			.setAttachFileSize(2)
 			.save();
 		project.reload();
-		AccountInfo user = new AccountInfo("account", "user name", "password", "email", "true");
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		AccountInfo user = new AccountInfo();
+		user.userName = userName;
+		user.nickName = nickName;
+		user.password = password;
+		user.email = "email";
+		user.enable = enable;
 		mService.createAccount(user);
-		mUser = mService.getAccount(user.getUsername());
+		mUser = mService.getAccount(user.userName);
 		mUserId = mUser.getId();
 	}
 
