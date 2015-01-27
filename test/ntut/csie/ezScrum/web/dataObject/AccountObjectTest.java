@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.mysql;
+package ntut.csie.ezScrum.web.dataObject;
 
 import java.security.MessageDigest;
 import java.sql.ResultSet;
