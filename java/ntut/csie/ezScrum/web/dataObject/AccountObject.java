@@ -16,7 +16,7 @@ public class AccountObject implements IBaseObject {
 	private String mUsername = "";
 	private String mPassword = "";
 	private String mEmail = "";
-	private String mName = "";
+	private String mNickName = "";
 	private boolean mEnable = false;
 	private HashMap<String, ProjectRole> mRoles = null;
 	
@@ -26,7 +26,11 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	public AccountObject(String username) {
-		mUsername = username;
+		if (username != null && username != "") {
+			mUsername = username;
+		} else {
+			throw new RuntimeException();
+		}
 	}
 	
 	public String toString() {
@@ -81,12 +85,12 @@ public class AccountObject implements IBaseObject {
 	    return this;
     }
 
-	public String getName() {
-	    return mName;
+	public String getNickName() {
+	    return mNickName;
     }
 
-	public AccountObject setName(String name) {
-	    mName = name;
+	public AccountObject setNickName(String nickName) {
+	    mNickName = nickName;
 	    return this;
     }
 
@@ -193,7 +197,7 @@ public class AccountObject implements IBaseObject {
 		mUsername = account.getUsername();
 		mPassword = account.getPassword();
 		mEmail = account.getEmail();
-		mName = account.getName();
+		mNickName = account.getNickName();
 		mEnable = account.getEnable();
 		mRoles = account.getRoles();
 	}

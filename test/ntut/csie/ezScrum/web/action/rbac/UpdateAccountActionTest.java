@@ -89,7 +89,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	String userAccount = account.getUsername();		// 取得第一筆 Account ID
     	String userPw = account.getPassword() + postfix;
     	String userMail = "modify@test.com";
-    	String userName = account.getName() + postfix;
+    	String userName = account.getNickName() + postfix;
     	String userEnable = "false";	// default is true
     	String userIsEdit = "true";	// false 代表是新增帳號
     	// ================ set initial data =======================    	
@@ -123,7 +123,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
 		assertEquals(userAccount, account.getUsername());
 		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());	
 		assertEquals(userMail, account.getEmail());		
-		assertEquals(userName, account.getName());
+		assertEquals(userName, account.getNickName());
 		assertEquals(userEnable, account.getEnable());		
     }		
     

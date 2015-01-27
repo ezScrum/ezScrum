@@ -106,14 +106,14 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(this.ActionPath_AddUser);
 
 		// ================ set initial data =======================
-		String id = this.CA.getAccountList().get(0).getId();		// 取得第一筆 Account ID
-		String Project_ID = this.CP.getProjects().get(0).getId();
+		long id = this.CA.getAccountList().get(0).getId();		// 取得第一筆 Account ID
+		long Project_ID = this.CP.getProjects().get(0).getId();
 		String pid = this.CP.getProjects().get(0).getName();
 		String Actor = RoleEnum.ProductOwner.name();	// ?
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", Project_ID);
+		addRequestParameter("id", String.valueOf(id));
+		addRequestParameter("resource", String.valueOf(Project_ID));
 		addRequestParameter("operation", Actor);
 
 		// ================ set session info ========================
@@ -129,10 +129,10 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		 * Verify:
 		 */
 
-		AccountObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccount(id);
 		assertNotNull(account);
 		assertEquals(this.CA.getAccount_ID(1), account.getUsername());
-		assertEquals(this.CA.getAccount_RealName(1), account.getName());
+		assertEquals(this.CA.getAccount_RealName(1), account.getNickName());
 		assertEquals("true", account.getEnable());
 
 		assertEquals((new TestTool()).getMd5(this.CA.getAccount_PWD(1)), account.getPassword());
@@ -163,14 +163,14 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String id = "1";			// 取得第一筆 Account ID
 		String accountId = "admin";	// 取得第一筆 Account ID
-		String Project_ID = this.CP.getProjects().get(0).getId();
+		long Project_ID = this.CP.getProjects().get(0).getId();
 		String projectName = this.CP.getProjects().get(0).getName();
 		String Actor = "ProductOwner";	// ?
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", id);
-		addRequestParameter("resource", Project_ID);
+		addRequestParameter("resource", String.valueOf(Project_ID));
 		addRequestParameter("operation", Actor);
 		// ================== set parameter info ====================
 
@@ -191,7 +191,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		assertNotNull(account);
 		assertEquals(accountId, account.getUsername());
-		assertEquals(ScrumEnum.SCRUMROLE_ADMIN, account.getName());
+		assertEquals(ScrumEnum.SCRUMROLE_ADMIN, account.getNickName());
 		assertEquals("true", account.getEnable());
 
 		// 更新囉 ilove306 -> admin	
@@ -234,8 +234,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		String userId = account.getId();		// 取得第一筆 Account ID
-		String projectID = this.CP.getProjects().get(0).getId();
+		long userId = account.getId();		// 取得第一筆 Account ID
+		long projectID = this.CP.getProjects().get(0).getId();
 		String projectName = this.CP.getProjects().get(0).getName();
 
 		/**
@@ -249,8 +249,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		String scrumRole = "ProductOwner";
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", projectID);
+		addRequestParameter("id", String.valueOf(userId));
+		addRequestParameter("resource", String.valueOf(projectID));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
@@ -266,12 +266,12 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//	assert response text
 		String expectedUserRole_PO = (new TestTool()).getRole(projectName, scrumRole);
 		//		String expectedUserRole_USER = "user";
-		String expectedUserId = account.getId();
+		long expectedUserId = account.getId();
 		String expectedUserAccount = account.getUsername();
-		String expectedUserName = account.getName();
+		String expectedUserName = account.getNickName();
 		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
-		String expectedUserEnable = account.getEnable();
+		boolean expectedUserEnable = account.getEnable();
 		//		account.addRole(new Role(expectedUserRole_PO, expectedUserRole_PO));
 		//		String expectedUserRole = roleArr[0].getRoleId() + ", " + roleArr[1].getRoleId();
 		StringBuilder addUserExpectedResponseText = new StringBuilder();
@@ -289,12 +289,12 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
 
 		//	assert database information
-		AccountObject actualAccount = this.accountMapper.getAccountById(userId);
+		AccountObject actualAccount = this.accountMapper.getAccount(userId);
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
 		assertEquals(expectedUserAccount, actualAccount.getUsername());
-		assertEquals(expectedUserName, actualAccount.getName());
+		assertEquals(expectedUserName, actualAccount.getNickName());
 		assertEquals(expectedUserPassword, actualAccount.getPassword());
 		assertEquals(expectedUserMail, actualAccount.getEmail());
 		assertEquals(expectedUserEnable, actualAccount.getEnable());
@@ -335,7 +335,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		/**
 		 * 5. view project list
 		 */
-		account = accountMapper.getAccountById(userId);
+		account = accountMapper.getAccount(userId);
 		userSession = getUserSession(account);
 		// ================ clean previous action info ========================
 		cleanActionInformation();
@@ -401,7 +401,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	public void testAddUserAction_NullID_RequestParameter() {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
-		String projectID = this.CP.getProjects().get(0).getId();
+		long projectID = this.CP.getProjects().get(0).getId();
 		String pid = this.CP.getProjects().get(0).getName();
 		String scrumRole = "ProductOwner";
 
@@ -414,7 +414,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================== set parameter info ====================
 		//    	addRequestParameter("id", userId);
-		addRequestParameter("resource", projectID);
+		addRequestParameter("resource", String.valueOf(projectID));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
@@ -492,7 +492,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
 		String userId = this.CA.getAccount_ID(1);
-		String projectID = this.CP.getProjects().get(0).getId();
+		long projectID = this.CP.getProjects().get(0).getId();
 		String pid = this.CP.getProjects().get(0).getName();
 
 		/**
@@ -504,7 +504,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================== set parameter info ====================
 		addRequestParameter("id", userId);
-		addRequestParameter("resource", projectID);
+		addRequestParameter("resource", String.valueOf(projectID));
 		//    	addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================

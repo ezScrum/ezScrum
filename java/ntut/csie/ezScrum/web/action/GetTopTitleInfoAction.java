@@ -28,7 +28,7 @@ public class GetTopTitleInfoAction extends Action {
 		AccountObject account = session.getAccount();
 		
 		String UserID = account.getUsername();
-		String UserName = account.getName();
+		String UserName = account.getNickName();
 
 		String userInfo = UserID + "(" + UserName + ")";
 		String projectInfo = "";

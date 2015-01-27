@@ -43,7 +43,7 @@ public class GetProjectMembersAction extends Action {
 				result.append("<Member>");
 				result.append("<ID>").append(acc.getId()).append("</ID>");
 				result.append("<Account>").append(acc.getUsername()).append("</Account>");
-				result.append("<Name>").append(acc.getName()).append("</Name>");
+				result.append("<Name>").append(acc.getNickName()).append("</Name>");
 				result.append("<Role>").append(acc.getRoles().get(project.getName()).getScrumRole().getRoleName()).append("</Role>");
 				result.append("<Enable>").append(acc.getEnable()).append("</Enable>");
 				result.append("</Member>");

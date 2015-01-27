@@ -59,7 +59,7 @@ public class AccountDAOTest extends TestCase{
 		// create 3 account
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
-			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
 			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
@@ -74,7 +74,7 @@ public class AccountDAOTest extends TestCase{
 			if (resultSet.next()) {
 				AccountObject account = AccountDAO.getInstance().convertAccount(resultSet);
 				assertEquals(userName + (i + 1), account.getUsername());
-				assertEquals(nickName + (i + 1), account.getName());
+				assertEquals(nickName + (i + 1), account.getNickName());
 				assertEquals(email + (i + 1), account.getEmail());
 				assertEquals(getMd5(password + (i + 1)), account.getPassword());
 				assertTrue(enable == account.getEnable());
@@ -91,7 +91,7 @@ public class AccountDAOTest extends TestCase{
 		// create 3 account
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
-			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
 			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
@@ -106,7 +106,7 @@ public class AccountDAOTest extends TestCase{
 		// assert
 		for(int i = 0 ; i < 3 ; i++){
 			assertEquals(userName + (i + 1), accountList.get(i).getUsername());
-			assertEquals(nickName + (i + 1), accountList.get(i).getName());
+			assertEquals(nickName + (i + 1), accountList.get(i).getNickName());
 			assertEquals(email + (i + 1), accountList.get(i).getEmail());
 			assertEquals(getMd5(password + (i + 1)), accountList.get(i).getPassword());
 			assertEquals(enable, accountList.get(i).getEnable());
@@ -121,13 +121,13 @@ public class AccountDAOTest extends TestCase{
 		boolean enable = true;
 		// create
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName).setEmail(email)
+		account.setNickName(nickName).setEmail(email)
 		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// update 
 		account = AccountDAO.getInstance().get(accountId);
-		account.setName("hello");
+		account.setNickName("hello");
 		account.setPassword("12312113134546");
 		account.setEmail("hello@gmail.com");
 		account.setEnable(true);
@@ -137,7 +137,7 @@ public class AccountDAOTest extends TestCase{
 		AccountObject newAccount = AccountDAO.getInstance().get(accountId);
 		
 		// assert
-		assertEquals(account.getName(), newAccount.getName());
+		assertEquals(account.getNickName(), newAccount.getNickName());
 		assertEquals(getMd5(account.getPassword()), newAccount.getPassword());
 		assertEquals(account.getEmail(), newAccount.getEmail());
 		assertEquals(account.getEnable(), newAccount.getEnable());
@@ -152,7 +152,7 @@ public class AccountDAOTest extends TestCase{
 		// create 3 account
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
-			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
 			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
@@ -189,7 +189,7 @@ public class AccountDAOTest extends TestCase{
 		boolean enable = true;
 		// create
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName).setEmail(email)
+		account.setNickName(nickName).setEmail(email)
 		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
@@ -213,7 +213,7 @@ public class AccountDAOTest extends TestCase{
 		// create 3 account
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
-			account.setName(nickName + (i + 1)).setEmail(email + (i + 1))
+			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
 			       .setPassword(password + (i + 1)).setEnable(enable);
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
@@ -232,7 +232,7 @@ public class AccountDAOTest extends TestCase{
 		boolean enable = true;
 		// create
 		AccountObject account = new AccountObject(userName);
-		account.setName(nickName).setEmail(email)
+		account.setNickName(nickName).setEmail(email)
 		       .setPassword(password).setEnable(enable);
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
@@ -248,7 +248,7 @@ public class AccountDAOTest extends TestCase{
 		AccountObject convertAccount = AccountDAO.getInstance().convertAccount(resultSet);
 		// assert
 		assertEquals(userName, convertAccount.getUsername());
-		assertEquals(nickName, convertAccount.getName());
+		assertEquals(nickName, convertAccount.getNickName());
 		assertEquals(email, convertAccount.getEmail());
 		assertEquals(getMd5(password), convertAccount.getPassword());
 		assertTrue(enable && convertAccount.getEnable());

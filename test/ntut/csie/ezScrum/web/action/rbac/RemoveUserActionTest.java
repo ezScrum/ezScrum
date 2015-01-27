@@ -14,8 +14,8 @@ import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -117,8 +117,8 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		assertEquals(1, roleMap.size());
 
 		// ================ set initial data =======================
-		String id = acc.getId();
-		String res = this.AUTR.getNowProjectObject().getId();
+		long id = acc.getId();
+		long res = this.AUTR.getNowProjectObject().getId();
 		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 		// ================ set initial data =======================
 
@@ -133,19 +133,10 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 			}
 		}
 		assertTrue(isExisted);
-//		String expectUserRole = getRole(res, op);
-//		boolean isExisted = false;
-//		for (IRole role : roles) {
-//			if (expectUserRole.equals(role.getRoleId())) {
-//				isExisted = true;
-//				break;
-//			}
-//		}
-//		assertEquals(true, isExisted);
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
+		addRequestParameter("id", String.valueOf(id));
+		addRequestParameter("resource", String.valueOf(res));
 		addRequestParameter("operation", op);
 		// ================== set parameter info ====================
 
@@ -155,10 +146,10 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		actionPerform();		// 執行 action
 
-		account = this.accountMapper.getAccountById(id);
+		account = this.accountMapper.getAccount(id);
 		assertNotNull(account);
 		assertEquals(this.CA.getAccount_ID(1), account.getUsername());
-		assertEquals(this.CA.getAccount_RealName(1), account.getName());
+		assertEquals(this.CA.getAccount_RealName(1), account.getNickName());
 		assertEquals("true", account.getEnable());
 		assertEquals("5e6698ee13f3ef999374751897721cb6", account.getPassword());		// 密碼要經過 MD5 編碼
 		assertEquals(this.CA.getAccount_Mail(1), account.getEmail());
@@ -209,15 +200,15 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		this.AUTR.exe_PO();
 
 		// ================ set initial data =======================
-		String id = "1"; 			// admin
+		long id = 1;	 			// admin
 		String accountId = "admin"; // admin
-		String res = this.AUTR.getNowProjectObject().getId();
+		long res = this.AUTR.getNowProjectObject().getId();
 		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 		// ================ set initial data =======================    	
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
+		addRequestParameter("id", String.valueOf(id));
+		addRequestParameter("resource", String.valueOf(res));
 		addRequestParameter("operation", op);
 		// ================== set parameter info ====================
 
@@ -228,7 +219,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		AccountObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccount(id);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
@@ -256,15 +247,15 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		this.AUTR.exe_PO();
 
 		// ================ set initial data =======================
-		String id = "1"; 			// admin
-		String res = this.AUTR.getNowProjectObject().getId();
+		long id = 1; 			// admin
+		long res = this.AUTR.getNowProjectObject().getId();
 		String pid = this.AUTR.getNowProjectObject().getName();
 		String op = ScrumEnum.SCRUMROLE_ADMIN;
 		// ================ set initial data =======================    	
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
+		addRequestParameter("id", String.valueOf(id));
+		addRequestParameter("resource", String.valueOf(res));
 		addRequestParameter("operation", op);
 		// ================== set parameter info ====================
 
@@ -275,23 +266,12 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		actionPerform();		// 執行 action
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		AccountObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = this.accountMapper.getAccount(id);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
 		assertEquals(1, roleMap.size());
 		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(pid).getScrumRole().getRoleName());
-//		assertEquals(roleMap.length, 2);
-//		// 測試專案的 Role 是否正確加入，並且沒有移除 admin 權限
-//		String[] Role_ID = new String[roleMap.length];
-//		for (int i = 0; i < roleMap.length; i++) {
-//			Role_ID[i] = roleMap[i].getRoleId();
-//		}
-//		// 利用 Rold ID 抽出來後排序，再做比對
-//		Arrays.sort(Role_ID);
-//
-//		assertEquals(Role_ID[0], getRole(this.AUTR.getNowProject().getName(), ScrumEnum.SCRUMROLE_PRODUCTOWNER));
-//		assertEquals(Role_ID[1], "user");
 	}
 
 	/**
@@ -307,9 +287,9 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		String userId = account.getId();			// 取得第一筆  ID
+		long userId = account.getId();			// 取得第一筆  ID
 		String userAccount = account.getUsername();	// 取得第一筆 Account ID
-		String projectID = this.CP.getProjects().get(0).getId();
+		long projectID = this.CP.getProjects().get(0).getId();
 
 		/**
 		 * 3. admin 指定 user 到專案中擔任 PO (將 user 加入測試專案一的 PO)
@@ -322,12 +302,12 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		 */
 		// ================ set initial data =======================
 		setRequestPathInformation(this.ActionPath_RemoveUser);
-		String res = projectID;
+		long res = projectID;
 		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", res);
+		addRequestParameter("id", String.valueOf(userId));
+		addRequestParameter("resource", String.valueOf(res));
 		addRequestParameter("operation", op);
 
 		// ================ set session info ========================

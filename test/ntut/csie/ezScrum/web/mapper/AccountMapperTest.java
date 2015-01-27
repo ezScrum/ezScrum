@@ -55,36 +55,46 @@ public class AccountMapperTest extends TestCase {
 	}
 	
 	public void testCreateAccount() {
-		String id = "account";
-		String name = "account robot";
+		String userName = "account";
 		String password = "account robot";
+		String nickName = "account robot";
 		String email = "account@mail.com";
-		String enable = "true";
 		
-		AccountInfo user = new AccountInfo(id, name, password, email, enable);
-		AccountObject account = mAccountMapper.createAccount(user);
+		AccountInfo userInfo = new AccountInfo();
+		userInfo.userName = userName;
+		userInfo.password = password;
+		userInfo.nickName = nickName;
+		userInfo.email = email;
 		
-		assertEquals(id, account.getUsername());
-		assertEquals(name, account.getName());
+		AccountObject account = mAccountMapper.createAccount(userInfo);
+		assertEquals(userName, account.getUsername());
+		assertEquals(password, account.getPassword());
+		assertEquals(nickName, account.getNickName());
 		assertEquals(email, account.getEmail());
-		assertEquals(enable, account.getEnable());
+		assertEquals(true, account.getEnable());
 	}
 	
 	public void testUpdateAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
-		String account = createAccount.getAccount_ID(1);
-		String name = "account robot";
+		long id = createAccount.getAccountList().get(0).getId();
+		String userName = createAccount.getAccount_ID(1);
+		String nickName = "account robot";
 		String password = "account robot";
 		String email = "update@mail.com";
-		String enable = "true";
+		boolean enable = true;
 		
-		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
-		AccountObject userObject = mAccountMapper.updateAccount(user);
+		AccountInfo userInfo = new AccountInfo();
+		userInfo.id = id;
+		userInfo.userName = userName;
+		userInfo.password = password;
+		userInfo.nickName = nickName;
+		userInfo.email = email;
+		userInfo.enable = enable;
 		
-		assertEquals(account, userObject.getUsername());
-		assertEquals(name, userObject.getName());
+		AccountObject userObject = mAccountMapper.updateAccount(userInfo);
+		assertEquals(userName, userObject.getUsername());
+		assertEquals(nickName, userObject.getNickName());
 		assertEquals(email, userObject.getEmail());
 		assertEquals(enable, userObject.getEnable());
 	}
@@ -92,7 +102,7 @@ public class AccountMapperTest extends TestCase {
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
+		long id = createAccount.getAccountList().get(0).getId();
 		
 		boolean result = mAccountMapper.deleteAccount(id);
 		
@@ -102,13 +112,13 @@ public class AccountMapperTest extends TestCase {
 	public void testGetAccountById() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
+		long id = createAccount.getAccountList().get(0).getId();
 
-		AccountObject account = mAccountMapper.getAccountById(id);
+		AccountObject account = mAccountMapper.getAccount(id);
 		
 		assertEquals(id, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
-		assertEquals(createAccount.getAccount_RealName(1), account.getName());
+		assertEquals(createAccount.getAccount_RealName(1), account.getNickName());
 		assertEquals("true", account.getEnable());
 	}
 	
