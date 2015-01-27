@@ -452,18 +452,16 @@ public class TaskObject implements IBaseObject {
 
 	private void doCreate() {
 		mId = TaskDAO.getInstance().create(this);
-		try {
-			reload();
 
-			HistoryDAO historyDao = HistoryDAO.getInstance();
-			historyDao.create(new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
-					HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
+		reload();
 
-			// add task relation history
-			if (mStoryId > 0) {
-				addHistoryOfAddRelation(mStoryId, mId);
-			}
-		} catch (Exception e) {
+		HistoryDAO.getInstance().create(new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+				HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+
+		// add task relation history
+		if (mStoryId > 0) {
+			addHistoryOfAddRelation(mStoryId, mId);
 		}
 	}
 

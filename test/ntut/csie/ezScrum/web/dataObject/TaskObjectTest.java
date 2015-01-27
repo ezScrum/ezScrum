@@ -363,6 +363,26 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetHistories() {
+		String TEST_NAME = "TEST_NAME", TEST_NAME_NEW = "TEST_NAME_NEW";
+		String TEST_NOTE = "TEST_NOTE", TEST_NOTE_NEW = "TEST_NOTE_NEW";
+		int TEST_ESTIMATE = 1, TEST_ESTIMATE_NEW = 2;
+		int TEST_ACTUAL = 3, TEST_ACTUAL_NEW = 4;
+		int TEST_REMAIN = 5, TEST_REMAIN_NEW = 6;
+		int TEST_STATUS = TaskObject.STATUS_UNCHECK, TEST_STATUS_NEW = TaskObject.STATUS_DONE;
+		long TEST_HANDLER = 1;
+		long TEST_STORY_ID = 2;
+
+		TaskObject task = new TaskObject(1);
+		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
+				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
+				.setStatus(TEST_STATUS).save();
+
+		task.setName(TEST_NAME_NEW).setNotes(TEST_NOTE_NEW)
+				.setEstimate(TEST_ESTIMATE_NEW).setActual(TEST_ACTUAL_NEW)
+				.setRemains(TEST_REMAIN_NEW).setStatus(TEST_STATUS_NEW)
+				.setHandlerId(TEST_HANDLER).setStoryId(TEST_STORY_ID).save();
+		
+		assertEquals(9, task.getHistories().size());
 	}
 
 	@Test
@@ -417,14 +437,16 @@ public class TaskObjectTest {
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
 		assertEquals(handler.getUsername(),
 				handlerJson.getString(AccountEnum.USERNAME));
-		assertEquals(handler.getEmail(), handlerJson.getString(AccountEnum.EMAIL));
+		assertEquals(handler.getEmail(),
+				handlerJson.getString(AccountEnum.EMAIL));
 		assertEquals(handler.getNickName(),
 				handlerJson.getString(AccountEnum.NICK_NAME));
 		JSONObject partnerJosn = json.getJSONArray("partners").getJSONObject(0);
 		assertEquals(partner.getId(), partnerJosn.getLong(AccountEnum.ID));
 		assertEquals(partner.getUsername(),
 				partnerJosn.getString(AccountEnum.USERNAME));
-		assertEquals(partner.getEmail(), partnerJosn.getString(AccountEnum.EMAIL));
+		assertEquals(partner.getEmail(),
+				partnerJosn.getString(AccountEnum.EMAIL));
 		assertEquals(partner.getNickName(),
 				partnerJosn.getString(AccountEnum.NICK_NAME));
 	}

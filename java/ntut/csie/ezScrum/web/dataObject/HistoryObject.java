@@ -195,25 +195,18 @@ public class HistoryObject {
 	}
 	
 	private String getHandlerDesc() {
-		Configuration config = new Configuration();
-		MySQLService service = new MySQLService(config);
-		service.openConnect();
-		
 		if (mOldValue.equals("") && !mNewValue.equals("")) {
-			String newAccount = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
-			service.closeConnect();
-			return newAccount;
+			String newUsername = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
+			return newUsername;
 		}
 		
 		if (!mOldValue.equals("") && !mNewValue.equals("")) {
-			String oldAccount = "";
-			String newAccount = "";
-			oldAccount = AccountDAO.getInstance().get(Long.parseLong(mOldValue)).getUsername();
-			newAccount = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
-			service.closeConnect();
-			return oldAccount + " => " + newAccount;
+			String oldUsername = "";
+			String newUsername = "";
+			oldUsername = AccountDAO.getInstance().get(Long.parseLong(mOldValue)).getUsername();
+			newUsername = AccountDAO.getInstance().get(Long.parseLong(mNewValue)).getUsername();
+			return oldUsername + " => " + newUsername;
 		}
-		service.closeConnect();
 		return "";
 	}
 	
