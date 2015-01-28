@@ -154,9 +154,9 @@ public class SprintBacklogMapperTest {
 		}
 	}
 	
-//	@Test
-//	public void testGetDropedTasksMap() {
-//	}
+	@Test
+	public void testGetDropedTasksMap() {
+	}
 	
 	@Test
 	public void testGetAllStories() {
@@ -212,18 +212,54 @@ public class SprintBacklogMapperTest {
 	public void testGetTasksByStoryId_WithStory1() {
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(1);
 		assertEquals(3, tasks.size());
+		// check project id
+		assertEquals(1, tasks.get(0).getProjectId());
+		assertEquals(1, tasks.get(1).getProjectId());
+		assertEquals(1, tasks.get(2).getProjectId());
+		// check story id
+		assertEquals(1, tasks.get(0).getStoryId());
+		assertEquals(1, tasks.get(1).getStoryId());
+		assertEquals(1, tasks.get(2).getStoryId());
+		// check task id
+		assertEquals(1, tasks.get(0).getId());
+		assertEquals(2, tasks.get(1).getId());
+		assertEquals(3, tasks.get(2).getId());
 	}
 	
 	@Test
 	public void testGetTasksByStoryId_WithStory2() {
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(2);
 		assertEquals(3, tasks.size());
+		// check project id
+		assertEquals(1, tasks.get(0).getProjectId());
+		assertEquals(1, tasks.get(1).getProjectId());
+		assertEquals(1, tasks.get(2).getProjectId());
+		// check story id
+		assertEquals(2, tasks.get(0).getStoryId());
+		assertEquals(2, tasks.get(1).getStoryId());
+		assertEquals(2, tasks.get(2).getStoryId());
+		// check task id
+		assertEquals(4, tasks.get(0).getId());
+		assertEquals(5, tasks.get(1).getId());
+		assertEquals(6, tasks.get(2).getId());
 	}
 	
 	@Test
 	public void testGetTasksByStoryId_WithStory3() {
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(3);
 		assertEquals(3, tasks.size());
+		// check project id
+		assertEquals(1, tasks.get(0).getProjectId());
+		assertEquals(1, tasks.get(1).getProjectId());
+		assertEquals(1, tasks.get(2).getProjectId());
+		// check story id
+		assertEquals(3, tasks.get(0).getStoryId());
+		assertEquals(3, tasks.get(1).getStoryId());
+		assertEquals(3, tasks.get(2).getStoryId());
+		// check task id
+		assertEquals(7, tasks.get(0).getId());
+		assertEquals(8, tasks.get(1).getId());
+		assertEquals(9, tasks.get(2).getId());
 	}
 	
 	@Test
@@ -231,7 +267,29 @@ public class SprintBacklogMapperTest {
 	}
 	
 	@Test
+	public void testGetStory_WithNotExistStoryId() {
+		IIssue story = mSprintBacklogMapper.getStory(-1);
+		assertEquals(null, story);
+	}
+	
+	@Test
 	public void testGetStory() {
+		String projectName = mCP.getProjectList().get(0).getName();
+		IIssue story1 = mSprintBacklogMapper.getStory(1);
+		IIssue story2 = mSprintBacklogMapper.getStory(2);
+		IIssue story3 = mSprintBacklogMapper.getStory(3);
+		// check project id
+		assertEquals(projectName, story1.getProjectName());
+		assertEquals(projectName, story2.getProjectName());
+		assertEquals(projectName, story3.getProjectName());
+		// check story id
+		assertEquals(1, story1.getIssueID());
+		assertEquals(2, story2.getIssueID());
+		assertEquals(3, story3.getIssueID());
+		// check issue type
+		assertEquals("Story", story1.getCategory());
+		assertEquals("Story", story2.getCategory());
+		assertEquals("Story", story3.getCategory());
 	}
 	
 	@Test

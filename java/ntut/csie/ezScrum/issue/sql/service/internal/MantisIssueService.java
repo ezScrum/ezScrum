@@ -156,7 +156,7 @@ public class MantisIssueService extends AbstractMantisService {
 						.getTime());
 				String project_id = result.getString("project_id");
 				if(project_id!=null && !project_id.equals("")){
-					issue.setProjectID(project_id);
+					issue.setProjectID(getProjectName(Integer.parseInt(project_id)));
 					issue.setProjectName(getProjectName(Integer.parseInt(project_id)));
 				}
 
