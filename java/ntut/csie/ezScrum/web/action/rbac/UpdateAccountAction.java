@@ -1,4 +1,4 @@
-Rpackage ntut.csie.ezScrum.web.action.rbac;
+package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.IOException;
 
