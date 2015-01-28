@@ -30,52 +30,49 @@ import org.jdom.Element;
 public class CreateTask {
 	private static Log log = LogFactory.getLog(CreateTask.class);
 
-	private int ProjectCount = 1;
-	private int TaskCount = 1;
+	private int mProjectAmount = 1;
+	private int mTaskAmount = 1;
 
 	private String TEST_TASK_NAME = "TEST_TASK_"; // Task Name
 	private String TEST_TASK_NOTE = "TEST_TASK_NOTES_"; // Task Notes
 	private int TEST_TASK_EST = 2; // Task estimation
 	private long TEST_HANDLER = -1;
-	private ArrayList<Long> TEST_PARTNER = new ArrayList<Long>();
-	private Date SpecificTime;
+	private ArrayList<Long> TEST_PARTNERS_ID = new ArrayList<Long>();
+	private Date mSpecificTime;
 
-	private CreateProject CP;
+	private CreateProject mCP;
 
 	// ========================== 為了可以設定 task 而新增下列屬性
 	// ===========================
-	private boolean AutoSetTask = true;
-	private long StoryID = 1;
+	private boolean mDoesAutoSetStoryId = true;
+	private long mStoryId = 1;
 
-	private ArrayList<Long> TaskIdList = new ArrayList<Long>();
-	private ArrayList<TaskObject> TaskList = new ArrayList<TaskObject>();
-
-	private IUserSession userSession = new UserSession(
-			new AccountMapper().getAccount("admin"));
+	private ArrayList<Long> mTasksId = new ArrayList<Long>();
+	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
 
 	public CreateTask(int count, int EstValue, long StoryID, CreateProject CP) {
-		this.TaskCount = count;
-		this.TEST_TASK_EST = EstValue;
-		this.StoryID = StoryID;
-		this.AutoSetTask = false;
-		this.CP = CP;
+		mTaskAmount = count;
+		TEST_TASK_EST = EstValue;
+		mStoryId = StoryID;
+		mDoesAutoSetStoryId = false;
+		mCP = CP;
 
 		Calendar cal = Calendar.getInstance();
-		this.SpecificTime = cal.getTime();
+		mSpecificTime = cal.getTime();
 	}
 
 	public CreateTask(int count, CreateProject CP) {
-		this.TaskCount = count;
-		this.ProjectCount = CP.getProjectList().size();
-		this.CP = CP;
+		mTaskAmount = count;
+		mProjectAmount = CP.getProjectList().size();
+		mCP = CP;
 		Calendar cal = Calendar.getInstance();
-		this.SpecificTime = cal.getTime();
+		mSpecificTime = cal.getTime();
 
-		this.AutoSetTask = true;
+		mDoesAutoSetStoryId = true;
 	}
 
 	public ArrayList<Long> getTaskIDList() {
-		return this.TaskIdList;
+		return mTasksId;
 	}
 
 	public String getDefault_TASK_NAME(int i) {
@@ -91,48 +88,48 @@ public class CreateTask {
 	}
 
 	public List<TaskObject> getTaskList() {
-		return this.TaskList;
+		return mTasks;
 	}
 
 	public void exe() throws Exception {
-		if (this.AutoSetTask) {
+		if (mDoesAutoSetStoryId) {
 			initial_Spint_Story();
 
-			for (int i = 0; i < this.ProjectCount; i++) {
+			for (int i = 0; i < mProjectAmount; i++) {
 				// 此路徑為開發端的 TestData/MyWorkspace/
-				IProject project = this.CP.getProjectList().get(i);
+				IProject project = mCP.getProjectList().get(i);
 
 				long Default_storyID = 1;
 
-				for (int j = 0; j < this.TaskCount; j++) {
+				for (int j = 0; j < mTaskAmount; j++) {
 					String TaskName = getDefault_TASK_NAME(j + 1);
 					String TaskNote = getDefault_TASK_NOTE(j + 1);
 
-					TaskObject task = this.addTask(project, TaskName,
-							this.TEST_TASK_EST, this.TEST_HANDLER,
+					TaskObject task = addTask(project, TaskName,
+							TEST_TASK_EST, TEST_HANDLER,
 							new ArrayList<Long>(), TaskNote, Default_storyID,
-							this.SpecificTime);
-					this.TaskList.add(task);
-					this.TaskIdList.add(task.getId());
-					this.log.info("專案 " + project.getName() + " 在 Story ID: "
+							mSpecificTime);
+					mTasks.add(task);
+					mTasksId.add(task.getId());
+					log.info("專案 " + project.getName() + " 在 Story ID: "
 							+ Default_storyID + " 新增一筆 Task ID: " + task.getId());
 				}
 			}
 		} else {
-			for (int j = 0; j < this.TaskCount; j++) {
-				IProject project = this.CP.getProjectList().get(0);
+			for (int j = 0; j < mTaskAmount; j++) {
+				IProject project = mCP.getProjectList().get(0);
 
 				String TaskName = getDefault_TASK_NAME(j + 1);
 				String TaskNote = getDefault_TASK_NOTE(j + 1);
 
-				TaskObject task = this.addTask(project, TaskName,
-						this.TEST_TASK_EST, this.TEST_HANDLER,
-						new ArrayList<Long>(), TaskNote, this.StoryID,
-						this.SpecificTime);
+				TaskObject task = addTask(project, TaskName,
+						TEST_TASK_EST, TEST_HANDLER,
+						new ArrayList<Long>(), TaskNote, mStoryId,
+						mSpecificTime);
 
-				this.TaskList.add(task);
-				this.TaskIdList.add(task.getId());
-				this.log.info("在 Story ID: " + this.StoryID + " 新增一筆 Task ID: "
+				mTasks.add(task);
+				mTasksId.add(task.getId());
+				log.info("在 Story ID: " + mStoryId + " 新增一筆 Task ID: "
 						+ task.getId());
 			}
 		}
@@ -141,11 +138,11 @@ public class CreateTask {
 	// initial create one sprint and one product backlog
 	private void initial_Spint_Story() throws Exception {
 		// 新建一個 sprint
-		CreateSprint CS = new CreateSprint(1, this.CP);
+		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe();
 
 		AddStoryToSprint storyTosprint = new AddStoryToSprint(1, 2, CS,
-				this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+				mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		storyTosprint.exe(); // 執行 - 將 stories 區分到每個 sprints
 	}
 

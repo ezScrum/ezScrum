@@ -220,7 +220,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		
-		List<IIssue> issueList = addStoryToSprint.getIssueList();
+		List<IIssue> issueList = addStoryToSprint.getStories();
 		CheckOutIssue checkOutIssue = new CheckOutIssue(issueList, this.CP);
 		checkOutIssue.exeDone_Issues();
 		
@@ -230,13 +230,13 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		
 		String filterType = "DONE";
 		addRequestParameter("FilterType", filterType);
-		String expectedStoryName = addStoryToSprint.getIssueList().get(0).getSummary();
-		String expectedStoryImportance = addStoryToSprint.getIssueList().get(0).getImportance();
-		String expectedStoryEstimation = addStoryToSprint.getIssueList().get(0).getEstimated();
-		String expectedStoryValue = addStoryToSprint.getIssueList().get(0).getValue();
-		String expectedStoryHoewToDemo = addStoryToSprint.getIssueList().get(0).getHowToDemo();
-		String expectedStoryNote = addStoryToSprint.getIssueList().get(0).getNotes();
-		String issueID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
+		String expectedStoryName = addStoryToSprint.getStories().get(0).getSummary();
+		String expectedStoryImportance = addStoryToSprint.getStories().get(0).getImportance();
+		String expectedStoryEstimation = addStoryToSprint.getStories().get(0).getEstimated();
+		String expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
+		String expectedStoryHoewToDemo = addStoryToSprint.getStories().get(0).getHowToDemo();
+		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
+		String issueID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
 		String SprintID = createSprint.getSprintIDList().get(0);
 		// ================ set session info ========================
 		request.getSession().setAttribute( projectName, this.project );
@@ -291,7 +291,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		
-		List<IIssue> issueList = addStoryToSprint.getIssueList();
+		List<IIssue> issueList = addStoryToSprint.getStories();
 		CheckOutIssue checkOutIssue = new CheckOutIssue(issueList, this.CP);
 		checkOutIssue.exeDone_Issues();
 		// ================ set request info ========================

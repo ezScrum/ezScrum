@@ -135,7 +135,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	public void testReopenIssue_Story() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ASS.getIssueList().get(0); // 取得Story資訊
+		IIssue issue = this.ASS.getStories().get(0); // 取得Story資訊
 		Long StoryID = issue.getIssueID();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();

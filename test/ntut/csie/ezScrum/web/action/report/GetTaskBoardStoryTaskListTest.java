@@ -106,7 +106,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		int storyCount = 1;
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
 		addStoryToSprint.exe();
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = addStoryToSprint.getStories().get(0);
 		long stroyId = story.getIssueID();
 
 		// ================ set request info ========================
@@ -181,7 +181,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		HashMap<String, Object> resultMap = gson.fromJson(result, HashMap.class);
 		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
 		Number total = (Number) resultMap.get("Total");
-		List<IIssue> expectedStories = addStoryToSprint.getIssueList();
+		List<IIssue> expectedStories = addStoryToSprint.getStories();
 		IIssue expectedStory;
 
 		assertEquals(true, resultMap.get("success"));
@@ -219,7 +219,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
 		addStoryToSprint.exe();
 		
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = addStoryToSprint.getStories().get(0);
 		long stroyId = story.getIssueID();
 
 		// 每個 Story 加入1個 task
@@ -309,7 +309,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), null);
 		// 將第一個 story 跟 task 全都拉到 done, 用 TEST_ACCOUNT_ID_1 checkout task
 		List<IIssue> tasks = addTaskToStory.getTaskList();
-		List<IIssue> stories = addStoryToSprint.getIssueList();
+		List<IIssue> stories = addStoryToSprint.getStories();
 		sprintBacklogLogic.checkOutTask(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), createAccount.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
 		Thread.sleep(1000);
 		sprintBacklogLogic.doneIssue(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), tasks.get(0).getNotes(), null, null);
@@ -338,7 +338,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
 		ArrayList<LinkedHashTreeMap<String, Object>> taskList;
 		Number total = (Number) resultMap.get("Total");
-		List<IIssue> expectedStories = addStoryToSprint.getIssueList();
+		List<IIssue> expectedStories = addStoryToSprint.getStories();
 		List<IIssue> expectedTasks = addTaskToStory.getTaskList();
 		IIssue expectedStory, expectedTask;
 
@@ -406,7 +406,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
 		addStoryToSprint.exe();
 
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = addStoryToSprint.getStories().get(0);
 		long storyId = story.getIssueID();
 
 		// attach file
@@ -484,7 +484,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
 		addStoryToSprint.exe();
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = addStoryToSprint.getStories().get(0);
 		long stroyId = story.getIssueID();
 		
 		// 每個 Story 加入1個 task

@@ -138,7 +138,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 	public void testDoneIssue_Story() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ASS.getIssueList().get(0);		// 取得Story資訊
+		IIssue issue = this.ASS.getStories().get(0);		// 取得Story資訊
 		Long StoryID = issue.getIssueID();
 		
 		// ================== set parameter info ====================

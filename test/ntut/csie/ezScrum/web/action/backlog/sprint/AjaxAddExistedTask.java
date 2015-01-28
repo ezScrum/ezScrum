@@ -84,7 +84,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		// Sprint加入1個Story
 		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, (int)sprintId, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStory_Sprint.exe();
-		int storyID = (int) addStory_Sprint.getIssueList().get(0).getIssueID();
+		int storyID = (int) addStory_Sprint.getStories().get(0).getIssueID();
 		// Story加入1個Task
 		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
 		addTask_Story.exe();

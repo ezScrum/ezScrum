@@ -19,7 +19,7 @@ public class AddTaskToStory {
 
 	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS, CreateProject CP) {
 		this.EachCount = count;
-		this.StoryCount = ASS.getIssueList().size() / ASS.getSprintCount();
+		this.StoryCount = ASS.getStories().size() / ASS.getSprintCount();
 		this.ProjectCount = CP.getProjectList().size();
 		this.SprintCount = ASS.getSprintCount();
 
