@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class AddTaskToStory {
 	private int EachCount = 1;
@@ -15,7 +15,7 @@ public class AddTaskToStory {
 
 	private CreateProject CP;
 	private ArrayList<Long> TaskIDList = new ArrayList<Long>();
-	private List<IIssue> TaskList = new ArrayList<IIssue>();
+	private List<TaskObject> TaskList = new ArrayList<TaskObject>();
 
 	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS, CreateProject CP) {
 		this.EachCount = count;
@@ -29,11 +29,6 @@ public class AddTaskToStory {
 
 	public void exe() throws Exception {
 		for (int i = 0; i < this.ProjectCount; i++) {
-			// String projectName = this.CP.PJ_NAME + Integer.toString((i+1)); // TEST_PROJECT_X
-
-			// IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			// 此路徑為開發端的 TestData/MyWorkspace/
-
 			// 將 story 區分到每個 sprint 的 story 底下
 			// 將task已相同數量的方式加入至story中
 			for (int j = 0; j < this.SprintCount; j++) {
@@ -53,7 +48,7 @@ public class AddTaskToStory {
 		return this.TaskIDList;
 	}
 
-	public List<IIssue> getTaskList() {
+	public List<TaskObject> getTaskList() {
 		return this.TaskList;
 	}
 }

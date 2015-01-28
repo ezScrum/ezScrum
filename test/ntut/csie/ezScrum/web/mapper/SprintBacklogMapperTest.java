@@ -67,119 +67,119 @@ public class SprintBacklogMapperTest {
 	
 	@Test
 	public void testGetTasksMap() {
-		
+		System.out.println("123");
 	}
-	
-	@Test
-	public void testGetAllTasks() {
-	}
-	
-	@Test
-	public void testGetDropedTasksMap() {
-	}
-	
-	@Test
-	public void testGetAllStories() {
-	}
-	
-	@Test
-	public void testGetStoriesBySprintId() {
-	}
-	
-	@Test
-	public void testGetTasksByStoryId() {
-	}
-	
-	@Test
-	public void testGetDroppedStories() {
-	}
-	
-	@Test
-	public void testGetStory() {
-	}
-	
-	@Test
-	public void testGetTask() {
-	}
-	
-	@Test
-	public void testUpdateTask() {
-	}
-	
-	@Test
-	public void testAddTask() {
-		TaskInfo taskInfo = createTaskInfo(1);
-		
-		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
-		
-		TaskObject actualTask = TaskObject.get(taskId);
-		assertEquals(taskInfo.name, actualTask.getName());
-		assertEquals(taskInfo.notes, actualTask.getNotes());
-		assertEquals(taskInfo.estimate, actualTask.getEstimate());
-		assertEquals(0, actualTask.getActual());
-		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
-		assertEquals(taskInfo.estimate, actualTask.getRemains());
-		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
-	}
-	
-	@Test
-	public void testAddExistingTask() {
-	}
-	
-	@Test
-	public void testGetTasksWithNoParent() {
-	}
-	
-	@Test
-	public void testDeleteExistingTask() {
-	}
-	
-	@Test
-	public void testDropTask() {
-	}
-	
-	@Test
-	public void testCloseStory() {
-	}
-	
-	@Test
-	public void testReopenStory() {
-	}
-	
-	@Test
-	public void testCloseTask() {
-	}
-	
-	@Test
-	public void testResetTask() {
-	}
-	
-	@Test
-	public void testReopenTask() {
-	}
-	
-	@Test
-	public void testCheckOutTask() {
-	}
-	
-	@Test
-	public void testDeleteTask() {
-	}
-	
-	private TaskInfo createTaskInfo(int id) {
-		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.name = "TEST_TASK_NAME_" + id;
-		taskInfo.notes = "TEST_TASK_NOTES_" + id;
-		taskInfo.handlerId = id;
-		taskInfo.estimate = id;
-		taskInfo.actualHour = id;
-		
-		ArrayList<Long> partnersId = new ArrayList<Long>();
-		partnersId.add((long)id);
-		taskInfo.partnersId = partnersId;
-		
-		taskInfo.specificTime = System.currentTimeMillis();
-		
-		return taskInfo;
-	}
+//	
+//	@Test
+//	public void testGetAllTasks() {
+//	}
+//	
+//	@Test
+//	public void testGetDropedTasksMap() {
+//	}
+//	
+//	@Test
+//	public void testGetAllStories() {
+//	}
+//	
+//	@Test
+//	public void testGetStoriesBySprintId() {
+//	}
+//	
+//	@Test
+//	public void testGetTasksByStoryId() {
+//	}
+//	
+//	@Test
+//	public void testGetDroppedStories() {
+//	}
+//	
+//	@Test
+//	public void testGetStory() {
+//	}
+//	
+//	@Test
+//	public void testGetTask() {
+//	}
+//	
+//	@Test
+//	public void testUpdateTask() {
+//	}
+//	
+//	@Test
+//	public void testAddTask() {
+//		TaskInfo taskInfo = createTaskInfo(1);
+//		
+//		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
+//		
+//		TaskObject actualTask = TaskObject.get(taskId);
+//		assertEquals(taskInfo.name, actualTask.getName());
+//		assertEquals(taskInfo.notes, actualTask.getNotes());
+//		assertEquals(taskInfo.estimate, actualTask.getEstimate());
+//		assertEquals(0, actualTask.getActual());
+//		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
+//		assertEquals(taskInfo.estimate, actualTask.getRemains());
+//		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
+//	}
+//	
+//	@Test
+//	public void testAddExistingTask() {
+//	}
+//	
+//	@Test
+//	public void testGetTasksWithNoParent() {
+//	}
+//	
+//	@Test
+//	public void testDeleteExistingTask() {
+//	}
+//	
+//	@Test
+//	public void testDropTask() {
+//	}
+//	
+//	@Test
+//	public void testCloseStory() {
+//	}
+//	
+//	@Test
+//	public void testReopenStory() {
+//	}
+//	
+//	@Test
+//	public void testCloseTask() {
+//	}
+//	
+//	@Test
+//	public void testResetTask() {
+//	}
+//	
+//	@Test
+//	public void testReopenTask() {
+//	}
+//	
+//	@Test
+//	public void testCheckOutTask() {
+//	}
+//	
+//	@Test
+//	public void testDeleteTask() {
+//	}
+//	
+//	private TaskInfo createTaskInfo(int id) {
+//		TaskInfo taskInfo = new TaskInfo();
+//		taskInfo.name = "TEST_TASK_NAME_" + id;
+//		taskInfo.notes = "TEST_TASK_NOTES_" + id;
+//		taskInfo.handlerId = id;
+//		taskInfo.estimate = id;
+//		taskInfo.actualHour = id;
+//		
+//		ArrayList<Long> partnersId = new ArrayList<Long>();
+//		partnersId.add((long)id);
+//		taskInfo.partnersId = partnersId;
+//		
+//		taskInfo.specificTime = System.currentTimeMillis();
+//		
+//		return taskInfo;
+//	}
 }
