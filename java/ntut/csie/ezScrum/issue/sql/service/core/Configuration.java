@@ -33,7 +33,7 @@ public class Configuration {
 	private final String TEST = "test";
 	
 	private String dataPath;	     // 預設的 TestData
-	private String workspacePath;	 // 預設的 worksapce
+	private String workspacePath;	 // 預設的 workspace
 	private String initialSQLPath;	 // 預設的初始SQL檔案位置
 	
 	private ProjectObject mProject;
