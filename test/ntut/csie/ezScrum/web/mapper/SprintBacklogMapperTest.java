@@ -77,7 +77,7 @@ public class SprintBacklogMapperTest {
 	public void testGetTasksMap() {
 		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
 		assertEquals(3, tasksMap.size());
-		List<IIssue> stories = mASTS.getIssueList();
+		List<IIssue> stories = mASTS.getStories();
 		ArrayList<TaskObject> tasksInStory1 = tasksMap.get(0);
 		ArrayList<TaskObject> tasksInStory2 = tasksMap.get(1);
 		ArrayList<TaskObject> tasksInStory3 = tasksMap.get(2);

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
@@ -29,6 +30,7 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.account.core.AccountEnum;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -387,6 +389,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 				parentId = result.getLong("source_bug_id");
 			}
 		} catch (SQLException e) {
+		}
+		
+		if (issue.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) {
+			childrenId.clear();
+			ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStory(issue.getIssueID());
+			for (TaskObject task : tasks) {
+				childrenId.add(task.getId());
+			}
 		}
 		
 		issue.setChildrenId(childrenId);
