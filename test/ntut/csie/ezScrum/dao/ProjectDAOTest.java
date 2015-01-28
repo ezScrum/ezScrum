@@ -463,7 +463,7 @@ public class ProjectDAOTest extends TestCase {
 			assertNotSame(-1, projectId);
 		}
 
-		ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getProjects();
+		ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getAllProjects();
 
 		assertEquals(3, projects.size());
 	}

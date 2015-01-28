@@ -31,7 +31,7 @@ public class AccountHelper {
 	
 	public AccountHelper(IUserSession userSession) {
 		mUserSession = userSession;
-		mAccountMapper = new AccountMapper(null, mUserSession);
+		mAccountMapper = new AccountMapper();
 	}
 
 	public String validateAccountID(String id) {

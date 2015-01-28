@@ -107,8 +107,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set initial data =======================
 		long id = this.CA.getAccountList().get(0).getId();		// 取得第一筆 Account ID
-		long Project_ID = this.CP.getProjects().get(0).getId();
-		String pid = this.CP.getProjects().get(0).getName();
+		long Project_ID = this.CP.getAllProjects().get(0).getId();
+		String pid = this.CP.getAllProjects().get(0).getName();
 		String Actor = RoleEnum.ProductOwner.name();	// ?
 
 		// ================== set parameter info ====================
@@ -163,8 +163,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String id = "1";			// 取得第一筆 Account ID
 		String accountId = "admin";	// 取得第一筆 Account ID
-		long Project_ID = this.CP.getProjects().get(0).getId();
-		String projectName = this.CP.getProjects().get(0).getName();
+		long Project_ID = this.CP.getAllProjects().get(0).getId();
+		String projectName = this.CP.getAllProjects().get(0).getName();
 		String Actor = "ProductOwner";	// ?
 		// ================ set initial data =======================
 
@@ -235,8 +235,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
 		long userId = account.getId();		// 取得第一筆 Account ID
-		long projectID = this.CP.getProjects().get(0).getId();
-		String projectName = this.CP.getProjects().get(0).getName();
+		long projectID = this.CP.getAllProjects().get(0).getId();
+		String projectName = this.CP.getAllProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project
@@ -352,7 +352,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		ProjectObject expectedProject = this.CP.getProjects().get(0);
+		ProjectObject expectedProject = this.CP.getAllProjects().get(0);
 		String expectedProjectDemoDate = "No Plan!";
 		//	assert response text
 		StringBuilder viewProjectListExpectedResponseText = new StringBuilder();
@@ -401,8 +401,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	public void testAddUserAction_NullID_RequestParameter() {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
-		long projectID = this.CP.getProjects().get(0).getId();
-		String pid = this.CP.getProjects().get(0).getName();
+		long projectID = this.CP.getAllProjects().get(0).getId();
+		String pid = this.CP.getAllProjects().get(0).getName();
 		String scrumRole = "ProductOwner";
 
 		/**
@@ -492,8 +492,8 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
 		String userId = this.CA.getAccount_ID(1);
-		long projectID = this.CP.getProjects().get(0).getId();
-		String pid = this.CP.getProjects().get(0).getName();
+		long projectID = this.CP.getAllProjects().get(0).getId();
+		String pid = this.CP.getAllProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project

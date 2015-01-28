@@ -117,6 +117,12 @@ public class ProjectObject implements IBaseObject {
 		return object;
 	}
 
+	/**
+	 * Get project by id
+	 * 
+	 * @param id projectId
+	 * @return ProjectObject
+	 */
 	public static ProjectObject get(long id) {
 		return ProjectDAO.getInstance().get(id);
 	}
@@ -124,15 +130,15 @@ public class ProjectObject implements IBaseObject {
 	/**
 	 * Get project by name
 	 * 
-	 * @param name project name
+	 * @param name projectName
 	 * @return ProjectObject
 	 */
 	public static ProjectObject get(String name) {
 		return ProjectDAO.getInstance().get(name);
 	}
 
-	public static ArrayList<ProjectObject> getProjects() {
-		return ProjectDAO.getInstance().getProjects();
+	public static ArrayList<ProjectObject> getAllProjects() {
+		return ProjectDAO.getInstance().getAllProjects();
 	}
 	
 	public ArrayList<AccountObject> getProjectMembers() {
@@ -199,6 +205,7 @@ public class ProjectObject implements IBaseObject {
 		mUpdateTime = project.getUpdateTime();
 		mMembers = null;
 		mWorkers = null;
+		mTasksWithNoParent = null;
 	}
 	
 	private void doCreate() {

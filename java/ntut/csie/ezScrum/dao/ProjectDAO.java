@@ -205,7 +205,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return project;
 	}
 
-	public ArrayList<ProjectObject> getProjects() {
+	public ArrayList<ProjectObject> getAllProjects() {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		String query = valueSet.getSelectQuery();

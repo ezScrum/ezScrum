@@ -42,7 +42,7 @@ public class TaskDAOTest extends TestCase {
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 
-		projectId = mCreateProject.getProjects().get(0).getId();
+		projectId = mCreateProject.getAllProjects().get(0).getId();
 
 		super.setUp();
 	}

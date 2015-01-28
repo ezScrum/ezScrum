@@ -60,8 +60,8 @@ public class CreateProject {
 	}
 	
 	// ezScrum v1.8
-	public ArrayList<ProjectObject> getProjects() {
-		return mProjectMapper.getProjects();
+	public ArrayList<ProjectObject> getAllProjects() {
+		return mProjectMapper.getAllProjects();
 	}
 
 	// ezScrum v1.8
@@ -74,7 +74,7 @@ public class CreateProject {
 			projectInfo.common = mProjectCommon + (i + 1);			// This is Test Project - X
 			projectInfo.manager = mProjectMaNager + (i + 1);		// Project_Manager_X
 			
-			projectMapper.createProject(projectInfo.name, projectInfo);
+			long id = projectMapper.createProject(projectInfo.name, projectInfo);
 		}
 	}
 	

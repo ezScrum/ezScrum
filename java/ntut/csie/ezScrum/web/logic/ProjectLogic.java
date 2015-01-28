@@ -59,7 +59,7 @@ public class ProjectLogic {
 	 */
 	public ArrayList<ProjectObject> getProjects() {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjects();
+		return projectMapper.getAllProjects();
 	}
 
 	/**

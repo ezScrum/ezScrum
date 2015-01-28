@@ -21,7 +21,6 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.project.core.ICVS;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IPath;
@@ -41,10 +40,9 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * create project use DAO
-	 * @param name 必要參數
+	 * @param name projectName
 	 * @param projectInfo 其他資訊都包成 Info
-	 * @return project id
+	 * @return projectId
 	 */
 	public long createProject(String name, ProjectInfo projectInfo) {
 		ProjectObject project = new ProjectObject(name);
@@ -66,34 +64,36 @@ public class ProjectMapper {
 	}
 	
 	/**
-	 * get project use DAO
-	 * @param id
-	 * @return project object
+	 * Get project by id
+	 * 
+	 * @param id projectId
+	 * @return ProjectObject
 	 */
 	public ProjectObject getProject(long id) {
 		return ProjectObject.get(id);
 	}
 	
 	/**
-	 * get project use DAO
-	 * @param name
-	 * @return project object
+	 * Get project by name
+	 * 
+	 * @param name projectName
+	 * @return ProjectObject
 	 */
-	public ProjectObject getProjectByName(String name) {
+	public ProjectObject getProject(String name) {
 		return ProjectObject.get(name);
 	}
 	
 	/**
-	 * get all projects use DAO
-	 * @return all project list
+	 * Get all projects
+	 * 
+	 * @return ProjectObject list
 	 */
-	public ArrayList<ProjectObject> getProjects() {
-		return ProjectObject.getProjects();
+	public ArrayList<ProjectObject> getAllProjects() {
+		return ProjectObject.getAllProjects();
 	}
 	
 	/**
-	 * update project use DAO
-	 * @param id 必要參數
+	 * @param id projectId
 	 * @param projectInfo 其他資訊都包成 Info
 	 */
 	public void updateProject(long id, ProjectInfo projectInfo) {
@@ -106,19 +106,31 @@ public class ProjectMapper {
 	}
 	
 	/**
-	 * delete project use DAO
-	 * @param id
+	 * Delete project by id
+	 * 
+	 * @param id projectId
 	 */
 	public void deleteProject(long id) {
 		ProjectObject project = ProjectObject.get(id);
 		project.delete();
 	}
 
-
+	/**
+	 * Get all members in project include enable and disable members
+	 * 
+	 * @param projectId
+	 * @return AccountObject list
+	 */
 	public ArrayList<AccountObject> getProjectMembers(long projectId) {
 		return ProjectObject.get(projectId).getProjectMembers();
 	}
 
+	/**
+	 * Get members in project only enable members
+	 * 
+	 * @param projectId
+	 * @return AccountObject list
+	 */
 	public ArrayList<AccountObject> getProjectScrumWorkers(long projectId) {
 		return ProjectObject.get(projectId).getProjectWorkers();
 	}
@@ -194,7 +206,6 @@ public class ProjectMapper {
 		} catch (Exception e) {
 			log.warn("Save Project Error!" + e.getMessage());
 		}
-		// this.saveITSConfig(project, userSession, tmpPrefs); ezScrum v1.8 不需要
 		return project;
 	}
 
@@ -260,21 +271,6 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 透過projectID取得Project information
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@Deprecated
-	public IProject cloneProjectByID(String projectID) {
-		IWorkspace workspace = ResourceFacade.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-
-		IProject project = root.cloneProject(projectID);
-		return project;
-	}
-
-	/**
 	 * 取的專案存於外部檔案的資料
 	 * 
 	 * @param project
@@ -320,20 +316,6 @@ public class ProjectMapper {
 		log.info("Source Path length:" + desc.getProjectReferences().length);
 
 		return form;
-	}
-
-	/**
-	 * 取得專案內的所有成員
-	 * 
-	 * @param userSession
-	 * @param project
-	 * @return
-	 */
-	@Deprecated
-	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
-		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
-		List<IAccount> projectMemberList = mantisAccountManager.getProjectMemberList(project);
-		return projectMemberList;
 	}
 
 	/**
