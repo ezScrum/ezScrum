@@ -1,12 +1,14 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
@@ -18,6 +20,7 @@ public class ProjectObjectTest extends TestCase {
 		super(testMethod);
 	}
 
+	@Before
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -27,6 +30,7 @@ public class ProjectObjectTest extends TestCase {
 		ini.exe();
 	}
 
+	@After
 	protected void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -43,6 +47,7 @@ public class ProjectObjectTest extends TestCase {
 		super.tearDown();
 	}
 	
+	@Test
 	public void testCreateProject() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -62,6 +67,7 @@ public class ProjectObjectTest extends TestCase {
 		assertNotSame(-1, project.getId());
 	}
 	
+	@Test
 	public void testDeleteProject() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -81,6 +87,7 @@ public class ProjectObjectTest extends TestCase {
 		assertNotSame(-1, project.getId());
 	}
 	
+	@Test
 	public void testUpdateProject() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -106,6 +113,7 @@ public class ProjectObjectTest extends TestCase {
 		assertEquals(updateComment, project.getComment());
 	}
 	
+	@Test
 	public void testGetProjectList() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -132,6 +140,7 @@ public class ProjectObjectTest extends TestCase {
 		assertEquals(1, projects.size());
 	}
 	
+	@Test
 	public void testGetProject() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -153,6 +162,7 @@ public class ProjectObjectTest extends TestCase {
 		assertEquals(name, theProject.getName());
 	}
 	
+	@Test
 	public void testGetProjectByName() {
 		String name = "testProject";
 		String displayName = "testDisplayName";
@@ -177,6 +187,7 @@ public class ProjectObjectTest extends TestCase {
 		assertEquals(attachFileSize, theProject.getAttachFileSize());
 	}
 	
+	@Test
 	public void testGetProjectMemberList() throws Exception {
 		/**
 		 * set up a project and a user

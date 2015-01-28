@@ -1,10 +1,17 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -13,17 +20,18 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import junit.framework.TestCase;
 
-public class ProjectMapperTest extends TestCase{
+public class ProjectMapperTest{
+	private long mProjectId = 0;
 	private MySQLControl mControl = null;
 	private Configuration mConfig = null;
 	private ProjectMapper mProjectMapper;
 
-	@Override
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -34,12 +42,13 @@ public class ProjectMapperTest extends TestCase{
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 		mProjectMapper = new ProjectMapper();
-		ini = null;
-		super.setUp();
+		
+		// 建立測試資料
+		createTestData();
     }
 
-	@Override
-    protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
@@ -50,19 +59,18 @@ public class ProjectMapperTest extends TestCase{
 		mConfig = null;
 		mControl = null;
 		mProjectMapper = null;
-		
-		super.tearDown();
     }
 	
+	@Test
 	public void testCreateProject() throws SQLException{
 		// project data
 		ProjectInfo projectInfo = new ProjectInfo();
-		projectInfo.name = "TEST_PROJECT_NAME";
-		projectInfo.displayName = "TEST_PROJECT_DISPLAYNAME";
-		projectInfo.common = "TEST_PROJECT_COMMON";
-		projectInfo.manager = "TEST_PROJECT_MANAGER";
+		projectInfo.name = "TEST_PROJECT_NAME_1";
+		projectInfo.displayName = "TEST_PROJECT_DISPLAYNAME_1";
+		projectInfo.common = "TEST_PROJECT_COMMON_1";
+		projectInfo.manager = "TEST_PROJECT_MANAGER_1";
 		projectInfo.attachFileSize = 2048L;
-		
+
 		// create project
 		long projectId = mProjectMapper.createProject(projectInfo.name, projectInfo);
 		assertTrue(projectId > 0);
@@ -83,69 +91,78 @@ public class ProjectMapperTest extends TestCase{
 		}
 	}
 	
+	@Test
 	public void testUpdateProject() throws SQLException{
-		// project data
-		ProjectInfo projectInfo = new ProjectInfo();
-		projectInfo.name = "TEST_PROJECT_NAME";
-		projectInfo.displayName = "TEST_PROJECT_DISPLAYNAME";
-		projectInfo.common = "TEST_PROJECT_COMMON";
-		projectInfo.manager = "TEST_PROJECT_MANAGER";
-		projectInfo.attachFileSize = 2048L;
-		
-		// create project
-		long projectId = mProjectMapper.createProject(projectInfo.name, projectInfo);
-		assertTrue(projectId > 0);
-		
 		// new project data
-		projectInfo.displayName = "TEST_PROJECT_DISPLAYNAME_NEW";
-		projectInfo.common = "TEST_PROJECT_COMMON_NEW";
-		projectInfo.manager = "TEST_PROJECT_MANAGER_NEW";
-		projectInfo.attachFileSize = 1024L;
+		ProjectInfo newProjectInfo = new ProjectInfo();
+		newProjectInfo.displayName = "TEST_PROJECT_DISPLAYNAME_NEW";
+		newProjectInfo.common = "TEST_PROJECT_COMMON_NEW";
+		newProjectInfo.manager = "TEST_PROJECT_MANAGER_NEW";
+		newProjectInfo.attachFileSize = 1024L;
 		
 		// update project
-		mProjectMapper.updateProject(projectId, projectInfo);
+		mProjectMapper.updateProject(mProjectId, newProjectInfo);
 		
 		// get project using query
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addEqualCondition(ProjectEnum.ID, projectId);
+		valueSet.addEqualCondition(ProjectEnum.ID, mProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		if (resultSet.next()) {
 			ProjectObject project = ProjectDAO.getInstance().convertProject(resultSet);
-			assertEquals(projectInfo.displayName, project.getDisplayName());
-			assertEquals(projectInfo.common, project.getComment());
-			assertEquals(projectInfo.manager, project.getManager());
-			assertEquals(projectInfo.attachFileSize, project.getAttachFileSize());
+			assertEquals(newProjectInfo.displayName, project.getDisplayName());
+			assertEquals(newProjectInfo.common, project.getComment());
+			assertEquals(newProjectInfo.manager, project.getManager());
+			assertEquals(newProjectInfo.attachFileSize, project.getAttachFileSize());
 		}
 	}
 	
+	@Test
 	public void testDeleteProject() throws SQLException{
-		// project data
-		ProjectInfo projectInfo = new ProjectInfo();
-		projectInfo.name = "TEST_PROJECT_NAME";
-		projectInfo.displayName = "TEST_PROJECT_DISPLAYNAME";
-		projectInfo.common = "TEST_PROJECT_COMMON";
-		projectInfo.manager = "TEST_PROJECT_MANAGER";
-		projectInfo.attachFileSize = 2048L;
-		
-		// create project
-		long projectId = mProjectMapper.createProject(projectInfo.name, projectInfo);
-		assertTrue(projectId > 0);
-		
 		// delete project
-		mProjectMapper.deleteProject(projectId);
+		mProjectMapper.deleteProject(mProjectId);
 		
 		// get project using query
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addEqualCondition(ProjectEnum.ID, projectId);
+		valueSet.addEqualCondition(ProjectEnum.ID, mProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		assertFalse(resultSet.first()); // 無此project
 	}
 	
+	@Test
 	public void testGetProjectScrumWorkersUsername(){
+		// check status before test
+		assertEquals(0, mProjectMapper.getProjectScrumWorkersUsername(mProjectId).size());
+		
+		// test account data
+		String accountName = "TEST_ACCOUNT_NAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String email = "TEST_ACCOUNT_EMAIL";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		
+		AccountObject account = new AccountObject(accountName);
+		account.setNickName(nickName);
+		account.setEmail(email);
+		account.setPassword(password);
+		account.save();
+		
+		// create project role - ProductOwner
+		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ProductOwner);
+		assertTrue(createAcountResult);
+		
+		// get project scrum workers username
+		ArrayList<String> userNameList = mProjectMapper.getProjectScrumWorkersUsername(mProjectId);
+		assertEquals(1, userNameList.size());
+		assertEquals(accountName, userNameList.get(0));
+	}
+	
+	/**
+	 * 建立測試專案資料
+	 */
+	private void createTestData(){
 		// project data
 		ProjectInfo projectInfo = new ProjectInfo();
 		projectInfo.name = "TEST_PROJECT_NAME";
@@ -154,29 +171,18 @@ public class ProjectMapperTest extends TestCase{
 		projectInfo.manager = "TEST_PROJECT_MANAGER";
 		projectInfo.attachFileSize = 2048L;
 
-		// create project
-		long projectId = mProjectMapper.createProject(projectInfo.name, projectInfo);
-		assertTrue(projectId > 0);
-		assertEquals(0, mProjectMapper.getProjectScrumWorkersUsername(projectId).size());
+		ProjectObject project = new ProjectObject(projectInfo.name);
+		project
+			.setDisplayName(projectInfo.displayName)
+			.setComment(projectInfo.common)
+			.setManager(projectInfo.manager)
+			.setAttachFileSize(projectInfo.attachFileSize)
+			.save();
+		project.reload();
 		
-		// test account data
-		String accountName = "TEST_ACCOUNT_NAME";
-		String nickName = "TEST_ACCOUNT_NICKNAME";
-		String email = "TEST_ACCOUNT_EMAIL";
-		String password = "TEST_ACCOUNT_PASSWORD";
-		AccountObject account = new AccountObject(accountName);
-		account.setNickName(nickName);
-		account.setEmail(email);
-		account.setPassword(password);
-		account.save();
-		
-		// create project role - ProductOwner
-		boolean createResult = account.createProjectRole(projectId, RoleEnum.ProductOwner);
-		assertTrue(createResult);
-		
-		// get project scrum workers username
-		ArrayList<String> userNameList = mProjectMapper.getProjectScrumWorkersUsername(projectId);
-		assertEquals(1, userNameList.size());
-		assertEquals(accountName, userNameList.get(0));
+		// 新建 project，也把 serial number 建起來
+		mProjectId = project.getId();
+		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
+		serialnumberDAO.create(new SerialNumberObject(mProjectId, 0, 0, 0, 0, 0, 0));
 	}
 }

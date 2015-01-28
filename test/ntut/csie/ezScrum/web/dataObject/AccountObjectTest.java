@@ -1,9 +1,14 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import static org.junit.Assert.*;
+
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.AccountDAO;
@@ -21,16 +26,13 @@ import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
-public class AccountObjectTest extends TestCase {
+public class AccountObjectTest{
 	private MySQLService mService;
 	private MySQLControl mControl = null;
 	private Configuration configuration = null;
-	
-	public AccountObjectTest(String testMethod) {
-		super(testMethod);
-	}
 
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
@@ -44,7 +46,8 @@ public class AccountObjectTest extends TestCase {
 		mControl.connection();
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
 		mService.closeConnect();
@@ -58,9 +61,9 @@ public class AccountObjectTest extends TestCase {
 		mControl = null;
 		mService = null;
 		configuration = null;
-		super.tearDown();
 	}
 	
+	@Test
 	public void testCreateAccount() throws Exception {
 		String userName = "TEST_ACCOUNT_USERNAME";
 		String nickName = "TEST_ACCOUNT_NICKNAME";
@@ -91,6 +94,7 @@ public class AccountObjectTest extends TestCase {
 		assertEquals(enable, createAccount.getEnable());
 	}
 	
+	@Test
 	public void testUpdateAccount() throws Exception {
 		// test data
 		String userName = "TEST_ACCOUNT_USERNAME";
@@ -135,6 +139,7 @@ public class AccountObjectTest extends TestCase {
 		assertEquals(newEmail, updateAccount.getEmail());
 	}
 	
+	@Test
 	public void testDeleteAccount() throws Exception {
 		// test data
 		String userName = "TEST_ACCOUNT_USERNAME";
@@ -162,6 +167,7 @@ public class AccountObjectTest extends TestCase {
 		assertFalse(resultSet.first());
 	}
 	
+	@Test
 	public void testToString() throws Exception{
 		// test data
 		String userName = "TEST_ACCOUNT_USERNAME";
@@ -191,6 +197,7 @@ public class AccountObjectTest extends TestCase {
 		assertEquals(expectedString, account.toString());
 	}
 	
+	@Test
 	public void testCreateProjectRole() throws Exception {
 		/**
 		 * set up a project and a user
@@ -220,6 +227,7 @@ public class AccountObjectTest extends TestCase {
 		assertTrue(result);
 	}
 	
+	@Test
 	public void testDeleteProjectRole() throws Exception {
 		/**
 		 * set up a project and a user
@@ -254,6 +262,7 @@ public class AccountObjectTest extends TestCase {
 		assertTrue(result);
 	}
 	
+	@Test
 	public void testGetSystemRole() throws Exception {
 		AccountObject adminAccount = AccountDAO.getInstance().get(1);
 		
@@ -261,6 +270,7 @@ public class AccountObjectTest extends TestCase {
 		assertNotNull(role);	// 預設應該就要有admin帳號存在了
 	}
 	
+	@Test
 	public void testCreateSystemRole() throws Exception {
 		String userName = "account";
 		String nickName = "user name";
@@ -283,6 +293,7 @@ public class AccountObjectTest extends TestCase {
 		assertNotNull(role);
 	}
 	
+	@Test
 	public void testDeleteSystemRole() throws Exception {
 		String userName = "account";
 		String nickName = "user name";
