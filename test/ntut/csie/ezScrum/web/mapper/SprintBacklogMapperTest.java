@@ -41,22 +41,28 @@ public class SprintBacklogMapperTest {
 		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();// 初始化 SQL
 		ini = null;
+		
 		// create test data
-		int PROJECT_AMOUNT = 1;
-		int SPRINT_AMOUNT = 1;
-		int STORY_AMOUNT = 3;
+		int PROJECT_COUNT = 1;
+		int SPRINT_COUNT = 1;
+		int STORY_COUNT = 3;
 		int STORY_ESTIMATE = 5;
-		int TASK_AMOUNT = 3;
+		int TASK_COUNT = 3;
 		int TASK_ESTIMATE = 8;
 		String CREATE_PRODUCTBACKLOG_TYPE = "EST";
-		mCP = new CreateProject(PROJECT_AMOUNT);
+		
+		mCP = new CreateProject(PROJECT_COUNT);
 		mCP.exeCreate();
-		mCS = new CreateSprint(SPRINT_AMOUNT, mCP);
+		
+		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
-		mASTS = new AddStoryToSprint(STORY_AMOUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
+		
+		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
 		mASTS.exe();
-		mATTS = new AddTaskToStory(TASK_AMOUNT, TASK_ESTIMATE, mASTS, mCP);
+		
+		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
+		
 		IProject project = mCP.getProjectList().get(0);
 		IUserSession userSession = mConfiguration.getUserSession();
 		mSprintBacklogMapper = new SprintBacklogMapper(project, userSession);

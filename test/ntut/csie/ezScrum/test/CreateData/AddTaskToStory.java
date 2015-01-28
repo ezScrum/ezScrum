@@ -6,49 +6,49 @@ import java.util.List;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class AddTaskToStory {
-	private int EachCount = 1;
-	private int StoryCount = 1;
-	private int ProjectCount = 1;
-	private int SprintCount = 1;
+	private int mTaskCount = 1;	// add number of task into story
+	private int mStoryCount = 1;
+	private int mProjectCount = 1;
+	private int mSprintCount = 1;
 
-	private int EstValue = 1;
+	private int mEstValue = 1;
 
-	private CreateProject CP;
-	private ArrayList<Long> TaskIDList = new ArrayList<Long>();
-	private List<TaskObject> TaskList = new ArrayList<TaskObject>();
+	private CreateProject mCP;
+	private ArrayList<Long> mTasksId = new ArrayList<Long>();
+	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
 
 	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS, CreateProject CP) {
-		this.EachCount = count;
-		this.StoryCount = ASS.getStories().size() / ASS.getSprintCount();
-		this.ProjectCount = CP.getProjectList().size();
-		this.SprintCount = ASS.getSprintCount();
+		mTaskCount = count;
+		mStoryCount = ASS.getStories().size() / ASS.getSprintCount();
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = ASS.getSprintCount();
 
-		this.EstValue = EstValue;
-		this.CP = CP;
+		mEstValue = EstValue;
+		mCP = CP;
 	}
 
 	public void exe() throws Exception {
-		for (int i = 0; i < this.ProjectCount; i++) {
+		for (int i = 0; i < mProjectCount; i++) {
 			// 將 story 區分到每個 sprint 的 story 底下
 			// 將task已相同數量的方式加入至story中
-			for (int j = 0; j < this.SprintCount; j++) {
-				for (int k = 0; k < this.StoryCount; k++) {
-					long StoryID = j * this.StoryCount + (k + 1);
-					CreateTask CT = new CreateTask(this.EachCount, this.EstValue, StoryID, this.CP);
+			for (int j = 0; j < mSprintCount; j++) {
+				for (int k = 0; k < mStoryCount; k++) {
+					long StoryID = j * mStoryCount + (k + 1);
+					CreateTask CT = new CreateTask(mTaskCount, mEstValue, StoryID, mCP);
 					CT.exe();
 
-					this.TaskList.addAll(CT.getTaskList());
-					this.TaskIDList.addAll(CT.getTaskIDList());
+					mTasks.addAll(CT.getTaskList());
+					mTasksId.addAll(CT.getTaskIDList());
 				}
 			}
 		}
 	}
 
 	public ArrayList<Long> getTaskIDList() {
-		return this.TaskIDList;
+		return mTasksId;
 	}
 
-	public List<TaskObject> getTaskList() {
-		return this.TaskList;
+	public ArrayList<TaskObject> getTaskList() {
+		return mTasks;
 	}
 }

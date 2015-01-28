@@ -12,7 +12,6 @@ import java.util.TreeMap;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
 import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
@@ -20,6 +19,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
 import ntut.csie.ezScrum.restful.mobile.support.IScrumReport;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -197,7 +197,7 @@ public class RemainingWorkReport {
 
 	private void createTaskDataBySprint(int sprintid) {
 		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, String.valueOf(sprintid))).getSprintBacklogMapper();
-		List<IIssue> issues = backlog.getAllTasks();
+		ArrayList<TaskObject> issues = backlog.getAllTasks();
 		Date timeNode = new Date(this.m_chartStartDate.getTime());
 		while (timeNode.getTime() <= this.m_chartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間

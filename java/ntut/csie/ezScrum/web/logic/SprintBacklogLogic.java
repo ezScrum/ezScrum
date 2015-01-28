@@ -326,7 +326,7 @@ public class SprintBacklogLogic {
 	 * @param tagName
 	 * @return
 	 */
-	private List<IIssue> sort(Collection<IIssue> list, String tagName) {
+	private ArrayList<IIssue> sort(Collection<IIssue> list, String tagName) {
 		ArrayList<IIssue> sortedList = new ArrayList<IIssue>();
 		for (IIssue issue : list) {
 			int index = 0;
@@ -356,7 +356,7 @@ public class SprintBacklogLogic {
 	 * @param list
 	 * @return
 	 */
-	private List<IIssue> sortByImp(Collection<IIssue> list) {
+	private ArrayList<IIssue> sortByImp(Collection<IIssue> list) {
 		List<IIssue> sortedList = new ArrayList<IIssue>();
 
 		for (IIssue issue : list) {
