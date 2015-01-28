@@ -119,7 +119,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	public void testshowCheckOutIssue_Story() throws Exception {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		long issueID = ASS.getIssueList().get(0).getIssueID();
+		long issueID = ASS.getStories().get(0).getIssueID();
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
 		IIssue item = productBacklogMapper.getIssue(issueID);
 

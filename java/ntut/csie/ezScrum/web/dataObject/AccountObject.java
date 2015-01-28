@@ -41,24 +41,6 @@ public class AccountObject implements IBaseObject {
 			return "JSON Exception";
 		}
 	}
-	
-	/**
-	 * JSON 少 project role 的資料 (待補!!!)
-	 * 
-	 * @return JSONObject
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject account = new JSONObject();
-		
-		account.put(AccountEnum.ID, mId)
-		.put(AccountEnum.USERNAME, mUsername)
-		.put(AccountEnum.PASSWORD, mPassword)
-		.put(AccountEnum.EMAIL, mEmail)
-		.put(AccountEnum.ENABLE, mEnable)
-		.put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
-		
-		return account;
-	}
 
 	/**
 	 * JSON 少 project role 的資料 (待補!!!)

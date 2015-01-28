@@ -144,7 +144,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		long storyId = addStoryToSprint.getIssueList().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -171,9 +171,9 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -187,7 +187,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		Thread.sleep(1000);
-		long storyId = addStoryToSprint.getIssueList().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
@@ -218,9 +218,9 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -235,7 +235,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		addStoryToSprint.exe();
 		Thread.sleep(1000);
 
-		long storyId = addStoryToSprint.getIssueList().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
@@ -271,9 +271,9 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(addStoryToSprint.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 

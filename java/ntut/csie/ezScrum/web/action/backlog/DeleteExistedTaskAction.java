@@ -47,7 +47,7 @@ public class DeleteExistedTaskAction extends PermissionAction {
 //			taskIDs[i++] = Long.parseLong(id);
 		
 		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, sprintID)).getSprintBacklogMapper();
-		backlog.deleteExistedTask(taskIDs);
+		backlog.deleteExistingTask(taskIDs);
 		return new StringBuilder("");
 	}
 }

@@ -191,16 +191,16 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		verifyNoActionMessages();
 		//	assert response text
 		//  Story
-		String StoryType = addStoryToSprint.getIssueList().get(0).getCategory();
-		String StoryID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
-		String StoryName = addStoryToSprint.getIssueList().get(0).getSummary();
-		String StoryValue = addStoryToSprint.getIssueList().get(0).getValue();		
-		String StoryEstimate = addStoryToSprint.getIssueList().get(0).getEstimated();
-		String StoryImportance = addStoryToSprint.getIssueList().get(0).getImportance();
-		String StoryStatus = addStoryToSprint.getIssueList().get(0).getStatus();
-		String StoryNotes = addStoryToSprint.getIssueList().get(0).getNotes();
+		String StoryType = addStoryToSprint.getStories().get(0).getCategory();
+		String StoryID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
+		String StoryName = addStoryToSprint.getStories().get(0).getSummary();
+		String StoryValue = addStoryToSprint.getStories().get(0).getValue();		
+		String StoryEstimate = addStoryToSprint.getStories().get(0).getEstimated();
+		String StoryImportance = addStoryToSprint.getStories().get(0).getImportance();
+		String StoryStatus = addStoryToSprint.getStories().get(0).getStatus();
+		String StoryNotes = addStoryToSprint.getStories().get(0).getNotes();
 		String StoryLink = "\"/ezScrum/showIssueInformation.do?issueID\\u003d1\"";
-		String ReleaseID = addStoryToSprint.getIssueList().get(0).getReleaseID();
+		String ReleaseID = addStoryToSprint.getStories().get(0).getReleaseID();
 		//  取得Story日期
 		List<String> StoryDate = new ArrayList<String>();
 		Date currentDate = new Date();

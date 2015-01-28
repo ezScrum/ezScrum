@@ -39,7 +39,6 @@ public class SprintBacklogMapper {
 	private ArrayList<IIssue> mStories = null;
 	private ArrayList<TaskObject> mTasks = null;
 	private ArrayList<IIssue> mDropedStories = null;
-	private ArrayList<IIssue> mAllIssues = null;
 
 	// 用於紀錄Story與Task之間的Mapping
 	LinkedHashMap<Long, ArrayList<TaskObject>> mMapStoryTasks = null;
@@ -56,13 +55,11 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
-		
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
 			mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
 		}
-
 		initSprintInformation();
 		initConfig();
 	}
@@ -78,11 +75,9 @@ public class SprintBacklogMapper {
 			long sprintId) {
 		mProject = project;
 		mUserSession = userSession;
-
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
-
 		initSprintInformation();
 		initConfig();
 	}
@@ -97,7 +92,6 @@ public class SprintBacklogMapper {
 			}
 			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
 			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-
 			String aDays = mIterPlanDesc.getAvailableDays();
 			// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
 			// 的機制移除
@@ -124,14 +118,14 @@ public class SprintBacklogMapper {
 	 * 測試用
 	 */
 	public void forceRefresh() {
-		getAllIssuesInSprint();
+		synchronizeDataInSprintInDB();
 		mUpdateFlag = false;
 	}
 
 	/************************************************************
 	 * =============== Sprint Backlog的操作 =========
 	 *************************************************************/
-
+	// StoryObject 時需要修改
 	public Map<Long, ArrayList<TaskObject>> getTasksMap() {
 		refresh();
 		return mMapStoryTasks;
@@ -142,35 +136,22 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	public ArrayList<TaskObject> getTasks() {
+	public ArrayList<TaskObject> getAllTasks() {
 		refresh();
 		return mTasks;
 	}
 
-	public Map<Long, ArrayList<TaskObject>> getDropedTaskMap() {
+	public Map<Long, ArrayList<TaskObject>> getDropedTasksMap() {
 		if (mMapDropedStoryTasks == null) {
-			getDropedStory();
+			getDroppedStories();
 		}
 		return mMapDropedStoryTasks;
 	}
 
-	public List<IIssue> getIssues(String category) {
+	// 上層如果 call 到這個 function, 要判斷傳入引數，如果是 Task 的話要改用 getAllTasks()
+	public List<IIssue> getAllStories(String category) {
 		refresh();
-
-		List<IIssue> stories = new ArrayList<IIssue>();
-		if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			stories.addAll(mStories);
-		} 
-		// 這個 function 不合用
-		// TODO
-//		else if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-//			stories.addAll(mTasks);
-//		} 
-		else {
-			stories.addAll(mAllIssues);
-		}
-
-		return stories;
+		return mStories;
 	}
 
 	/**
@@ -179,7 +160,7 @@ public class SprintBacklogMapper {
 	 * @param sprintId
 	 * @return
 	 */
-	public IIssue[] getStoryInSprint(long sprintId) {
+	public IIssue[] getStoriesBySprintId(long sprintId) {
 		mMantisService.openConnect();
 		IIssue[] stories = mMantisService
 				.getIssues(mProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
@@ -194,8 +175,8 @@ public class SprintBacklogMapper {
 	 * 
 	 * @param storyId
 	 */
-	public ArrayList<TaskObject> getTaskInStory(long storyId) {
-		IIssue story = getIssue(storyId);
+	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
+		IIssue story = getStory(storyId);
 
 		if (story == null) {
 			return null;
@@ -217,7 +198,7 @@ public class SprintBacklogMapper {
 	/**
 	 * 取得在這個 Sprint 中曾經被 Drop 掉的 Story
 	 */
-	public IIssue[] getDropedStory() {
+	public IIssue[] getDroppedStories() {
 		if (mDropedStories == null) {
 			mDropedStories = new ArrayList<IIssue>();
 		} else {
@@ -265,17 +246,22 @@ public class SprintBacklogMapper {
 		return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 	}
 
-	public IIssue getIssue(long issueId) {
+	public IIssue getStory(long storyId) {
 		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(issueId);
+		IIssue issue = mMantisService.getIssue(storyId);
 		mMantisService.closeConnect();
 		return issue;
 	}
+	
+	public TaskObject getTask(long taskId) {
+		return null;
+	}
 
 	// for ezScrum 1.8
-	public void updateTask(long taskId, TaskInfo taskInfo) {
+	// TaskInfo should include task id
+	public void updateTask(TaskInfo taskInfo) {
 
-		TaskObject task = TaskObject.get(taskId);
+		TaskObject task = TaskObject.get(taskInfo.taskId);
 		if (task != null) {
 			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate)
 					.setRemains(taskInfo.remains).setActual(taskInfo.actualHour).setNotes(taskInfo.notes)
@@ -294,7 +280,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistedTask(long[] taskIds, long storyId, Date date) {
+	public void addExistngTask(long[] taskIds, long storyId, Date date) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
@@ -306,13 +292,14 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 	
-	public ArrayList<TaskObject> getWildTasks(long projectId)
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId)
 			throws SQLException {
-		return TaskObject.getTasksWithNoParent(projectId);
+		ProjectObject project = ProjectObject.get(projectId);
+		return project.getTasksWithNoParent();
 	}
 
 	// for ezScrum 1.8
-	public void deleteExistedTask(long[] taskIds) {
+	public void deleteExistingTask(long[] taskIds) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
@@ -322,7 +309,7 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 
-	public void removeTask(long taskId, long parentId) {
+	public void dropTask(long taskId, long parentId) {
 		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
 			task.setStoryId(TaskObject.NO_PARENT).save();
@@ -358,7 +345,7 @@ public class SprintBacklogMapper {
 		return mIterPlanDesc.getGoal();
 	}
 
-	public void doneIssue(long id, String bugNote, String changeDate) {
+	public void closeStory(long id, String bugNote, String changeDate) {
 		Date closeDate = null;
 
 		if (changeDate != null && !changeDate.equals("")) {
@@ -371,12 +358,16 @@ public class SprintBacklogMapper {
 				bugNote, closeDate);
 		mMantisService.closeConnect();
 	}
+	
+	public void reopenStory(long id, String name, String bugNote, String changeDate) {
+		
+	}
 
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
 	// for ezScrum 1.8
-	public void doneTask(long id, String name, String notes, Date changeDate) {
+	public void closeTask(long id, String name, String notes, Date changeDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
@@ -389,7 +380,16 @@ public class SprintBacklogMapper {
 	public void resetTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes)
+			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_UNCHECK)
+					.setUpdateTime(reopenDate.getTime()).save();
+		}
+	}
+	
+	// for ezScrum 1.8
+	public void reopenTask(long id, String name, String notes, Date reopenDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.setUpdateTime(reopenDate.getTime()).save();
 		}
 	}
@@ -421,9 +421,8 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mAllIssues == null
-				|| mMapStoryTasks == null || mUpdateFlag) {
-			getAllIssuesInSprint();
+		if (mStories == null || mTasks == null || mMapStoryTasks == null || mUpdateFlag) {
+			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}
 	}
@@ -433,37 +432,27 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	private IIssue[] getAllIssuesInSprint() {
-		if (mStories == null || mTasks == null || mAllIssues == null
-				|| mMapStoryTasks == null) {
+	private void synchronizeDataInSprintInDB() {
+		if (mStories == null || mTasks == null || mMapStoryTasks == null) {
 			mStories = new ArrayList<IIssue>();
 			mTasks = new ArrayList<TaskObject>();
-			mAllIssues = new ArrayList<IIssue>();
 			mMapStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
 		} else {
 			mStories.clear();
 			mTasks.clear();
-			mAllIssues.clear();
 			mMapStoryTasks.clear();
 		}
-
-		IIssue[] issues = getStoryInSprint(mSprintPlanId);
-
-		for (IIssue issue : issues) {
-			mStories.add(issue);
-			ArrayList<TaskObject> taskList = getTaskInStory(issue.getIssueID());
-			if (taskList.size() != 0) {
-				for (TaskObject task : taskList) {
-					mTasks.add(task);
-				}
-				mMapStoryTasks.put(issue.getIssueID(), taskList);
+		IIssue[] stories = getStoriesBySprintId(mSprintPlanId);
+		for (IIssue story : stories) {
+			mStories.add(story);
+			ArrayList<TaskObject> tasks = getTasksByStoryId(story.getIssueID());
+			for (TaskObject task : tasks) {
+				mTasks.add(task);
+			}
+			if (tasks.size() > 0) {
+				mMapStoryTasks.put(story.getIssueID(), tasks);
 			}
 		}
 		mUpdateFlag = false;
-
-		mAllIssues.addAll(mStories);
-		// TODO 不合用需要修改
-		//mAllIssues.addAll(mTasks);
-		return mAllIssues.toArray(new IIssue[mAllIssues.size()]);
 	}
 }

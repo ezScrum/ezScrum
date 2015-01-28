@@ -1,61 +1,134 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.jcis.resource.core.IProject;
 
-public class SprintBacklogMapperTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class SprintBacklogMapperTest {
 	
 	private SprintBacklogMapper mSprintBacklogMapper;
-	private Configuration config = null;
-	private CreateProject CP;
-	private CreateSprint CS;
+	private Configuration mConfiguration = null;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 	private static long PROJECT_ID = 1;
 	
-	@Override
-	protected void setUp() throws Exception {
-		config = new Configuration();
-		config.setTestMode(true);
-		config.save();
-		
-		InitialSQL ini = new InitialSQL(config);
+	@Before
+	public void setUp() throws Exception {
+		// initialize database
+		mConfiguration = new Configuration();
+		mConfiguration.setTestMode(true);
+		mConfiguration.save();
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();// 初始化 SQL
-		
-		CP = new CreateProject(1);
-		CP.exeCreate();
-		
-		CS = new CreateSprint(1, CP);
-		CS.exe();
-		
-		mSprintBacklogMapper = new SprintBacklogMapper(CP.getProjectList().get(0), config.getUserSession());
-		
 		ini = null;
-		super.setUp();
+		
+		// create test data
+		int PROJECT_COUNT = 1;
+		int SPRINT_COUNT = 1;
+		int STORY_COUNT = 3;
+		int STORY_ESTIMATE = 5;
+		int TASK_COUNT = 3;
+		int TASK_ESTIMATE = 8;
+		String CREATE_PRODUCTBACKLOG_TYPE = "EST";
+		
+		mCP = new CreateProject(PROJECT_COUNT);
+		mCP.exeCreate();
+		
+		mCS = new CreateSprint(SPRINT_COUNT, mCP);
+		mCS.exe();
+		
+		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
+		mASTS.exe();
+		
+		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
+		mATTS.exe();
+		
+		IProject project = mCP.getProjectList().get(0);
+		IUserSession userSession = mConfiguration.getUserSession();
+		mSprintBacklogMapper = new SprintBacklogMapper(project, userSession);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+	@After
+	public void tearDown() throws Exception {
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();
-		
-		config.setTestMode(false);
-		config.save();
-		
 		ini = null;
-		CP = null;
+		mCP = null;
 		mSprintBacklogMapper = null;
-		
-		super.tearDown();
+		mConfiguration.setTestMode(false);
+		mConfiguration.save();
 	}
 	
+	@Test
+	public void testGetTasksMap() {
+		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
+		assertEquals(3, tasksMap.size());
+		List<IIssue> stories = mASTS.getStories();
+		ArrayList<TaskObject> tasksInStory1 = tasksMap.get(0);
+		ArrayList<TaskObject> tasksInStory2 = tasksMap.get(1);
+		ArrayList<TaskObject> tasksInStory3 = tasksMap.get(2);
+	}
+	
+	@Test
+	public void testGetAllTasks() {
+	}
+	
+	@Test
+	public void testGetDropedTasksMap() {
+	}
+	
+	@Test
+	public void testGetAllStories() {
+	}
+	
+	@Test
+	public void testGetStoriesBySprintId() {
+	}
+	
+	@Test
+	public void testGetTasksByStoryId() {
+	}
+	
+	@Test
+	public void testGetDroppedStories() {
+	}
+	
+	@Test
+	public void testGetStory() {
+	}
+	
+	@Test
+	public void testGetTask() {
+	}
+	
+	@Test
+	public void testUpdateTask() {
+	}
+	
+	@Test
 	public void testAddTask() {
 		TaskInfo taskInfo = createTaskInfo(1);
+		
 		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
 		
 		TaskObject actualTask = TaskObject.get(taskId);
@@ -68,8 +141,52 @@ public class SprintBacklogMapperTest extends TestCase {
 		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
 	}
 	
+	@Test
+	public void testAddExistingTask() {
+	}
+	
+	@Test
+	public void testGetTasksWithNoParent() {
+	}
+	
+	@Test
+	public void testDeleteExistingTask() {
+	}
+	
+	@Test
+	public void testDropTask() {
+	}
+	
+	@Test
+	public void testCloseStory() {
+	}
+	
+	@Test
+	public void testReopenStory() {
+	}
+	
+	@Test
+	public void testCloseTask() {
+	}
+	
+	@Test
+	public void testResetTask() {
+	}
+	
+	@Test
+	public void testReopenTask() {
+	}
+	
+	@Test
+	public void testCheckOutTask() {
+	}
+	
+	@Test
+	public void testDeleteTask() {
+	}
+	
 	private TaskInfo createTaskInfo(int id) {
-		TaskInfo taskInfo = new TaskInfo(PROJECT_ID);
+		TaskInfo taskInfo = new TaskInfo();
 		taskInfo.name = "TEST_TASK_NAME_" + id;
 		taskInfo.notes = "TEST_TASK_NOTES_" + id;
 		taskInfo.handlerId = id;

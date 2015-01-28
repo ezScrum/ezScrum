@@ -104,12 +104,12 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
-		sprintBacklogMapper.doneIssue(issue.getIssueID(), issue.getNotes(), ""); // 先設定Task為closed的狀態 在測試
+		sprintBacklogMapper.closeStory(issue.getIssueID(), issue.getNotes(), ""); // 先設定Task為closed的狀態 在測試
 		actionPerform();
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getIssue(TaskID); // 重新取得Task資訊
+		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
@@ -135,7 +135,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	public void testReopenIssue_Story() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ASS.getIssueList().get(0); // 取得Story資訊
+		IIssue issue = this.ASS.getStories().get(0); // 取得Story資訊
 		Long StoryID = issue.getIssueID();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
@@ -152,12 +152,12 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
-		sprintBacklogMapper.doneIssue(issue.getIssueID(), issue.getNotes(), ""); // 先設定Story為closed的狀態 在測試
+		sprintBacklogMapper.closeStory(issue.getIssueID(), issue.getNotes(), ""); // 先設定Story為closed的狀態 在測試
 		actionPerform();
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getIssue(StoryID); // 重新取得Story資訊
+		issue = sprintBacklogMapper.getStory(StoryID); // 重新取得Story資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
