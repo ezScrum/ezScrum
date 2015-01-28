@@ -60,7 +60,6 @@ public class SprintBacklogMapperTest {
 	public void testGetTasksMap() {
 	}
 	
-	
 	@Test
 	public void testGetAllTasks() {
 	}
@@ -130,6 +129,10 @@ public class SprintBacklogMapperTest {
 	
 	@Test
 	public void testCloseStory() {
+	}
+	
+	@Test
+	public void testReopenStory() {
 	}
 	
 	@Test

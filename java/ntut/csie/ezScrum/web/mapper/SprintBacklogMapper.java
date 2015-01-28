@@ -378,6 +378,10 @@ public class SprintBacklogMapper {
 				bugNote, closeDate);
 		mMantisService.closeConnect();
 	}
+	
+	public void reopenStory(long id, String name, String bugNote, String changeDate) {
+		
+	}
 
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
