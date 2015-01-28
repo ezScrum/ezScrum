@@ -1,10 +1,12 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
@@ -21,6 +23,8 @@ public class SprintBacklogMapperTest {
 	private Configuration config = null;
 	private CreateProject CP;
 	private CreateSprint CS;
+	private AddStoryToSprint ASTS;
+	private AddTaskToStory ATTS;
 	private static long PROJECT_ID = 1;
 	
 	@Before
@@ -31,6 +35,7 @@ public class SprintBacklogMapperTest {
 		
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe();// 初始化 SQL
+		ini = null;
 		
 		CP = new CreateProject(1);
 		CP.exeCreate();
@@ -38,9 +43,13 @@ public class SprintBacklogMapperTest {
 		CS = new CreateSprint(1, CP);
 		CS.exe();
 		
-		mSprintBacklogMapper = new SprintBacklogMapper(CP.getProjectList().get(0), config.getUserSession());
+		ASTS = new AddStoryToSprint(3, 5, CS, CP, "EST");
+		ASTS.exe();
 		
-		ini = null;
+		ATTS = new AddTaskToStory(3, 8, ASTS, CP);
+		ATTS.exe();
+		
+		mSprintBacklogMapper = new SprintBacklogMapper(CP.getProjectList().get(0), config.getUserSession());
 	}
 	
 	@After
@@ -58,6 +67,7 @@ public class SprintBacklogMapperTest {
 	
 	@Test
 	public void testGetTasksMap() {
+		
 	}
 	
 	@Test
@@ -99,6 +109,7 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testAddTask() {
 		TaskInfo taskInfo = createTaskInfo(1);
+		
 		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
 		
 		TaskObject actualTask = TaskObject.get(taskId);
