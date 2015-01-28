@@ -219,7 +219,7 @@ public class AccountDAOTest extends TestCase{
 			assertNotSame(-1, accountId);
 		}
 		// getAccounts
-		List<AccountObject> accountList = AccountDAO.getInstance().getAccounts();
+		List<AccountObject> accountList = AccountDAO.getInstance().getAllAccounts();
 		assertEquals(4, accountList.size());
 	}
 	

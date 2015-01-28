@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
@@ -184,7 +185,7 @@ public class AccountObjectTest extends TestCase {
 		        .put(AccountEnum.PASSWORD, account.getPassword())
 		        .put(AccountEnum.EMAIL, account.getEmail())
 		        .put(AccountEnum.ENABLE, account.getEnable())
-		        .put("project_role", "");
+		        .put(ProjectRoleEnum.TABLE_NAME, account.getProjectRoleMap());
 		
 		String expectedString = json.toString();
 		assertEquals(expectedString, account.toString());

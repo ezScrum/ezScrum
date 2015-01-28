@@ -324,11 +324,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 
 	/**
-	 * Get project all accounts
+	 * Get all accounts in ezScrum
 	 * 
 	 * @return account list
 	 */
-	public ArrayList<AccountObject> getAccounts() {
+	public ArrayList<AccountObject> getAllAccounts() {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		String query = valueSet.getSelectQuery();

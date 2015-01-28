@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 public class AccountObject implements IBaseObject {
@@ -19,7 +20,6 @@ public class AccountObject implements IBaseObject {
 	private String mEmail = "";
 	private String mNickName = "";
 	private boolean mEnable = false;
-	private HashMap<String, ProjectRole> mRoles = null;
 	
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -55,7 +55,7 @@ public class AccountObject implements IBaseObject {
 		.put(AccountEnum.PASSWORD, mPassword)
 		.put(AccountEnum.EMAIL, mEmail)
 		.put(AccountEnum.ENABLE, mEnable)
-		.put("project_role", "");
+		.put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
 		
 		return account;
 	}
@@ -129,12 +129,12 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	/**
-	 * Get project all accounts
+	 * get accounts in ezScrum
 	 * 
 	 * @return AccountObject list
 	 */
-	public static ArrayList<AccountObject> getAccounts() {
-		return AccountDAO.getInstance().getAccounts();
+	public static ArrayList<AccountObject> getAllAccounts() {
+		return AccountDAO.getInstance().getAllAccounts();
 	}
 	
 	/**
@@ -245,7 +245,6 @@ public class AccountObject implements IBaseObject {
 		mEmail = account.getEmail();
 		mNickName = account.getNickName();
 		mEnable = account.getEnable();
-		mRoles = null;
 	}
 	
 	private void doCreate() {
