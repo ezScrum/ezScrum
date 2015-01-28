@@ -112,7 +112,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ArrayList<TaskObject> getTasksByStory(long storyId) {
+	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.STORY_ID, storyId);

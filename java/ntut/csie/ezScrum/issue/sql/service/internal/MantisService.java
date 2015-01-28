@@ -393,7 +393,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		
 		if (issue.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 			childrenId.clear();
-			ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStory(issue.getIssueID());
+			ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStoryId(issue.getIssueID());
 			for (TaskObject task : tasks) {
 				childrenId.add(task.getId());
 			}

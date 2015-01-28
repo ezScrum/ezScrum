@@ -177,21 +177,17 @@ public class SprintBacklogMapper {
 	 */
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		IIssue story = getStory(storyId);
-
-		if (story == null) {
-			return null;
-		}
-
-		List<Long> taskIds = story.getChildrenId();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-
-		for (long taskId : taskIds) {
-			TaskObject task = TaskObject.get(taskId);
-			if (task != null) {
-				tasks.add(task);
+		if (story != null)
+		{
+			List<Long> taskIds = story.getChildrenId();
+			for (long taskId : taskIds) {
+				TaskObject task = TaskObject.get(taskId);
+				if (task != null) {
+					tasks.add(task);
+				}
 			}
 		}
-
 		return tasks;
 	}
 

@@ -47,7 +47,7 @@ public class TaskObject implements IBaseObject {
 	 * 之後要搬到StoryObject
 	 */
 	public static ArrayList<TaskObject> getTasksByStory(long storyId) {
-		return TaskDAO.getInstance().getTasksByStory(storyId);
+		return TaskDAO.getInstance().getTasksByStoryId(storyId);
 	}
 
 	public TaskObject(long projectId) {

@@ -228,7 +228,7 @@ public class TaskDAOTest extends TestCase {
 		}
 		
 		// get tasks by story
-		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStory(1);
+		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStoryId(1);
 		assertEquals(2, tasks.size());
 	}
 	
