@@ -10,8 +10,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.junit.After;
@@ -62,7 +60,6 @@ public class AccountMapperTest extends TestCase {
 		projectManager = null;
 		mAccountMapper = null;
 		mConfig = null;
-		AccountFactory.getManager().referesh();	// 等之後scrum role也完成外部toDB即可刪掉
 		super.tearDown();
 	}
 	
