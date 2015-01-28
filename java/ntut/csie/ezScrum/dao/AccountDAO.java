@@ -55,30 +55,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	}
 
 	@Override
-	public AccountObject get(long id) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, id);
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		
-		AccountObject account = null;
-		try {
-			if (result.next()) {
-				account = convert(result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return account;
-	}
-	
-	@Override
 	public boolean update(AccountObject account) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
-		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getName());
+		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getNickName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		if (account.getPassword() != null && !account.getPassword().equals("")) {
 			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
@@ -431,26 +412,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return accounts;
 	}
 
-	@Override
-	public boolean update(AccountObject account) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
-		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getNickName());
-		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
-		if (account.getPassword() != null && !account.getPassword().equals("")) {
-			valueSet.addInsertValue(AccountEnum.PASSWORD,
-					getMd5(account.getPassword()));
-		}
-		valueSet.addInsertValue(AccountEnum.ENABLE,
-				String.valueOf(account.getEnable() == true ? 1 : 0));
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME,
-				String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getUpdateQuery();
-
-		return mControl.executeUpdate(query);
-	}
-	
 	public AccountObject confirmAccount(String username, String password) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
@@ -483,7 +444,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 
 		AccountObject account = new AccountObject(id, username);
 		account.setPassword(password).setNickName(nickName).setEmail(email)
-				.setEnable(enable).setRoles(roles);
+				.setEnable(enable);
 		return account;
 	}
 
