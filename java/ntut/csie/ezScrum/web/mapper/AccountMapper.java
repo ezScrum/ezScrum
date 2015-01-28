@@ -2,43 +2,16 @@ package ntut.csie.ezScrum.web.mapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
-import ntut.csie.ezScrum.web.support.TranslateUtil;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IAccountManager;
-import ntut.csie.jcis.account.core.IActor;
-import ntut.csie.jcis.account.core.IPermission;
-import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class AccountMapper {
-	private IProject mProject;
-	private IUserSession mUserSession;
-	private Configuration mConfig;
-//	private MySQLService mService;
 
-	public AccountMapper() {
-		mConfig = new Configuration();
-//		mService = new MySQLService(mConfig);
-	}
-
-	public AccountMapper(IProject project, IUserSession userSession) {
-		mProject = project;
-		mUserSession = userSession;
-		mConfig = new Configuration(mUserSession);
-//		mService = new MySQLService(mConfig);
-	}
+	public AccountMapper() {}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
 		AccountObject account = new AccountObject(accountInfo.userName);
@@ -75,7 +48,7 @@ public class AccountMapper {
 	 * @return AccountObject list
 	 */
 	public ArrayList<AccountObject> getAccounts() {
-		return AccountObject.getAccounts();
+		return AccountObject.getAllAccounts();
 	}
 	
 	/**
