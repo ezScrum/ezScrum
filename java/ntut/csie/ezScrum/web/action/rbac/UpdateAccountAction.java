@@ -46,8 +46,7 @@ public class UpdateAccountAction extends Action {
 		}
 
 		//	如果更新的是登入者的密碼則更新session中屬於插件使用的密碼
-		String userName = session.getAccount().getNickName();
-		if (userName.equals(id)) {
+		if (session.getAccount().getUsername().equals(userName)) {
 			String encodedPassword = new String(Base64.encode(password.getBytes()));
 			request.getSession().setAttribute("passwordForPlugin", encodedPassword);
 		}
