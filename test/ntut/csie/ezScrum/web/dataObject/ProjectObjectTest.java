@@ -1,11 +1,15 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 public class ProjectObjectTest extends TestCase {
 	private Configuration mConfig;
@@ -171,5 +175,40 @@ public class ProjectObjectTest extends TestCase {
 		assertEquals(comment, theProject.getComment());
 		assertEquals(productOwner, theProject.getManager());
 		assertEquals(attachFileSize, theProject.getAttachFileSize());
+	}
+	
+	public void testGetProjectMemberList() throws Exception {
+		/**
+		 * set up a project and a user
+		 */
+		ProjectObject project = new ProjectObject("name");
+		project.setDisplayName("name")
+			.setComment("comment")
+			.setManager("PO_YC")
+			.setAttachFileSize(2)
+			.save();
+		project.reload();
+		String userName = "account";
+		String nickName = "user name";
+		String password = "password";
+		String email = "email";
+		boolean enable = true;
+		// create account
+		AccountObject account = new AccountObject(userName);
+		account.setNickName(nickName);
+		account.setPassword(password);
+		account.setEmail(email);
+		account.setEnable(enable);
+		account.save();
+		account.reload();
+		
+		// create project role
+		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		assertTrue(result);
+		
+		// GetProjectMemberList
+		List<AccountObject> userList = project.getProjectMembers();
+		
+		assertEquals(1, userList.size());
 	}
 }

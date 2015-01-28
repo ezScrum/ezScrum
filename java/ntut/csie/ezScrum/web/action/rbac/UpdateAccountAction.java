@@ -23,14 +23,20 @@ public class UpdateAccountAction extends Action {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		String id = request.getParameter("id");
-		String account = request.getParameter("account");
+		String userName = request.getParameter("account");
 		String password = request.getParameter("passwd");
 		String email = request.getParameter("mail");
-		String name = request.getParameter("name");
+		String nickName = request.getParameter("name");
 		String enable = request.getParameter("enable");
 
-		AccountInfo userInformation = new AccountInfo(id, account, name, password, email, enable);
-
+		AccountInfo userInformation = new AccountInfo();
+		userInformation.id = Long.parseLong(id);
+		userInformation.userName = userName;
+		userInformation.nickName = nickName;
+		userInformation.password = password;
+		userInformation.email = email;
+		userInformation.enable = Boolean.parseBoolean(enable);
+		
 		AccountHelper ah = new AccountHelper(session);
 		AccountObject newAccInfo = ah.updateAccount(userInformation);
 
@@ -40,8 +46,7 @@ public class UpdateAccountAction extends Action {
 		}
 
 		//	如果更新的是登入者的密碼則更新session中屬於插件使用的密碼
-		String userName = session.getAccount().getName();
-		if (userName.equals(id)) {
+		if (session.getAccount().getUsername().equals(userName)) {
 			String encodedPassword = new String(Base64.encode(password.getBytes()));
 			request.getSession().setAttribute("passwordForPlugin", encodedPassword);
 		}
@@ -49,7 +54,7 @@ public class UpdateAccountAction extends Action {
 		//	目前改了密碼之後並未強制使用者登出,可改良以避免一些問題
 		AccountObject sessionAccount = session.getAccount();
 
-		sessionAccount.setName(newAccInfo.getName());
+		sessionAccount.setNickName(newAccInfo.getNickName());
 		sessionAccount.setEmail(newAccInfo.getEmail());
 		sessionAccount.setPassword(newAccInfo.getPassword());	// 應該是下次登入才生效,但存取專案資料是比對新的密碼
 

@@ -139,7 +139,13 @@ public class AddUserToRole {
 		// ezScrum v1.8
 		AccountObject account = CA.getAccountList().get(index);
 		AccountHelper helper = new AccountHelper(configuration.getUserSession());
-		AccountInfo user = new AccountInfo(account.getId(), account.getUsername(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
+		AccountInfo user = new AccountInfo();
+		user.id = account.getId();
+		user.userName = account.getUsername();
+		user.nickName = account.getNickName();
+		user.password = account.getPassword();
+		user.email = account.getEmail();
+		user.enable = isEnable;
 		helper.updateAccount(user);
 	}
 

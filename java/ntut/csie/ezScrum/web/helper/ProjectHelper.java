@@ -137,10 +137,10 @@ public class ProjectHelper {
 					projectMapper.createScrumRole(projectInformation.getId());
 					
 					sb.append("<Result>Success</Result>");
-					sb.append("<ID>" + projectInformation.getName() + "</ID>");
+					sb.append("<ID>" + projectInformation.getNickName() + "</ID>");
 					// -- ezScrum v1.8 --
 				} catch (Exception e) {
-					projectMapper.deleteProject(projectInformation.getName());
+					projectMapper.deleteProject(projectInformation.getNickName());
                     e.printStackTrace();
                 }
 

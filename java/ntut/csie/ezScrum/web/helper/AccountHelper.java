@@ -64,7 +64,7 @@ public class AccountHelper {
 	}
 
 	public void deleteAccount(String id) {
-		mAccountMapper.deleteAccount(id);
+		mAccountMapper.deleteAccount(Long.parseLong(id));
 	}
 
 	/**
@@ -74,8 +74,8 @@ public class AccountHelper {
 	 */
 	public String getAssignedProject(String id) {
 		// ezScrum v1.8
-		AccountObject account = mAccountMapper.getAccountById(id);
-		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(id);
+		AccountObject account = mAccountMapper.getAccount(Long.parseLong(id));
+		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(Long.parseLong(id));
 		List<String> assignedProject = new ArrayList<String>();
 		StringBuilder assignRoleInfo = new StringBuilder();
 		
@@ -85,7 +85,7 @@ public class AccountHelper {
 		// Account Info
 		assignRoleInfo.append("<ID>").append(account.getId()).append("</ID>");
 		assignRoleInfo.append("<Account>").append(account.getUsername()).append("</Account>");
-		assignRoleInfo.append("<Name>").append(account.getName()).append("</Name>");
+		assignRoleInfo.append("<Name>").append(account.getNickName()).append("</Name>");
 		// Assign Roles
 		assignRoleInfo.append("<Roles>");
 		for (Entry<String, ProjectRole> entry : rolesMap.entrySet()) {
@@ -127,9 +127,9 @@ public class AccountHelper {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
-			account = mAccountMapper.addRoleToDb(id);
+			account = mAccountMapper.addSystemRole(Long.parseLong(id));
 		} else {
-			account = mAccountMapper.addRoleToDb(res, id, RoleEnum.valueOf(op));
+			account = mAccountMapper.addProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
 		}
 		return account;
 	}
@@ -138,9 +138,9 @@ public class AccountHelper {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
-			account = mAccountMapper.removeRoleToDb(id);
+			account = mAccountMapper.removeSystemRole(Long.parseLong(id));
 		} else {
-			account = mAccountMapper.removeRoleToDb(res, id, RoleEnum.valueOf(op));
+			account = mAccountMapper.removeProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
 		}
 		return account;
 	}
@@ -208,7 +208,7 @@ public class AccountHelper {
 			sb.append("<AccountInfo>");
 			sb.append("<ID>").append(account.getId()).append("</ID>");
 			sb.append("<Account>").append(account.getUsername()).append("</Account>");
-			sb.append("<Name>").append(account.getName()).append("</Name>");
+			sb.append("<Name>").append(account.getNickName()).append("</Name>");
 			sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
 			sb.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");
 			sb.append("<Enable>").append(account.getEnable()).append("</Enable>");

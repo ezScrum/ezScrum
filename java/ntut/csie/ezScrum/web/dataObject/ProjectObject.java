@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 
 import org.codehaus.jettison.json.JSONException;
@@ -19,7 +20,6 @@ import org.codehaus.jettison.json.JSONObject;
 public class ProjectObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 
-	// 取得所有專案的資訊
 	private long mId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mDisplayName = "";
@@ -30,6 +30,7 @@ public class ProjectObject implements IBaseObject {
 	private long mUpdateTime = DEFAULT_VALUE;
 	private ArrayList<AccountObject> mMembers = null;
 	private ArrayList<AccountObject> mWorkers = null;
+	private ArrayList<TaskObject> mTasksWithNoParent = null;
 	
 	public ProjectObject(String name) {
 		mName = name;
@@ -146,6 +147,13 @@ public class ProjectObject implements IBaseObject {
 			mWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
 		}
 		return mWorkers;
+	}
+	
+	public ArrayList<TaskObject> getTasksWithNoParent() {
+		if (mTasksWithNoParent == null) {
+			mTasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
+		}
+		return mTasksWithNoParent;
 	}
 	
 	@Override

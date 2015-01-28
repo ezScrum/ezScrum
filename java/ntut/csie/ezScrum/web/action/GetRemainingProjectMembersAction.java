@@ -64,7 +64,7 @@ public class GetRemainingProjectMembersAction extends Action {
 //				UserObject member = (UserObject) total_member_list;
 				result.append("<Member>");
 				result.append("<ID>").append(member.getUsername()).append("</ID>");
-				result.append("<Name>").append(member.getName()).append("</Name>");
+				result.append("<Name>").append(member.getNickName()).append("</Name>");
 //				result.append("<Role>").append(splitRole(project, member.getRoles())).append("</Role>");
 				result.append("<Role>").append(member.getRoles().get(project.getName()).getScrumRole().getRoleName()).append("</Role>");
 				result.append("<Enable>").append(member.getEnable()).append("</Enable>");

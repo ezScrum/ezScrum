@@ -252,7 +252,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		//		String expectedUserRole_USER = "user";
 		String expectedUserId = account.getId();
 		String expectedUserAccount = account.getUsername();
-		String expectedUserName = account.getName();
+		String expectedUserName = account.getNickName();
 		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
 		String expectedUserEnable = account.getEnable();
@@ -275,11 +275,11 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
 
 		//	assert database information
-		AccountObject actualAccount = new AccountMapper().getAccountById(userId);
+		AccountObject actualAccount = new AccountMapper().getAccount(userId);
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
 		assertEquals(expectedUserAccount, actualAccount.getUsername());
-		assertEquals(expectedUserName, actualAccount.getName());
+		assertEquals(expectedUserName, actualAccount.getNickName());
 		assertEquals(expectedUserPassword, actualAccount.getPassword());
 		assertEquals(expectedUserMail, actualAccount.getEmail());
 		assertEquals(expectedUserEnable, actualAccount.getEnable());
@@ -336,7 +336,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		/**
 		 * 5. view project list
 		 */
-		userSession = getUserSession(new AccountMapper().getAccountById(userId));
+		userSession = getUserSession(new AccountMapper().getAccount(userId));
 		// ================ clean previous action info ========================
 		cleanActionInformation();
 		ProjectObject projectObject = this.CP.getProjects().get(0);

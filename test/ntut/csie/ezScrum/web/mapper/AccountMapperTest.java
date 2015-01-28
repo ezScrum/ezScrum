@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.util.List;
+import java.security.MessageDigest;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -9,157 +10,192 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.LogonException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AccountMapperTest extends TestCase {
 	private AccountMapper mAccountMapper;
-	private Configuration configuration = null;
+	private Configuration mConfig = null;
 
 	public AccountMapperTest(String testMethod) {
 		super(testMethod);
 	}
 
+	@Before
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+		
 		mAccountMapper = new AccountMapper();
+		
 		// ============= release ==============
 		ini = null;
 		super.setUp();
 	}
 
+	@After
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		// ============= release ==============
 		ini = null;
 		projectManager = null;
 		mAccountMapper = null;
-		configuration = null;
-		AccountFactory.getManager().referesh();	// 等之後scrum role也完成外部toDB即可刪掉
+		mConfig = null;
 		super.tearDown();
 	}
 	
+	@Test
 	public void testCreateAccount() {
-		String id = "account";
-		String name = "account robot";
+		String userName = "account";
 		String password = "account robot";
+		String nickName = "account robot";
 		String email = "account@mail.com";
-		String enable = "true";
 		
-		AccountInfo user = new AccountInfo(id, name, password, email, enable);
-		AccountObject account = mAccountMapper.createAccount(user);
+		AccountInfo userInfo = new AccountInfo();
+		userInfo.userName = userName;
+		userInfo.password = password;
+		userInfo.nickName = nickName;
+		userInfo.email = email;
 		
-		assertEquals(id, account.getUsername());
-		assertEquals(name, account.getName());
+		AccountObject account = mAccountMapper.createAccount(userInfo);
+		assertEquals(userName, account.getUsername());
+		assertEquals(getMd5(password), account.getPassword());
+		assertEquals(nickName, account.getNickName());
 		assertEquals(email, account.getEmail());
-		assertEquals(enable, account.getEnable());
+		assertEquals(true, account.getEnable());
 	}
 	
+	@Test
+	public void testGetAccountById() {
+		CreateAccount createAccount = new CreateAccount(1);
+		createAccount.exe();
+		
+		long id = createAccount.getAccountList().get(0).getId();
+		AccountObject account = mAccountMapper.getAccount(id);
+		
+		assertEquals(id, account.getId());
+		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
+		assertEquals(createAccount.getAccount_RealName(1), account.getNickName());
+		assertEquals(true, account.getEnable());
+	}
+	
+	@Test
+	public void testGetAccountByUsername() {
+		CreateAccount createAccount = new CreateAccount(1);
+		createAccount.exe();
+		
+		String username = createAccount.getAccountList().get(0).getUsername();
+		AccountObject account = mAccountMapper.getAccount(username);
+		
+		assertEquals(2, account.getId());
+		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
+		assertEquals(createAccount.getAccount_RealName(1), account.getNickName());
+		assertEquals(true, account.getEnable());
+	}
+	
+	@Test
+	public void testGetAllAccounts() throws InterruptedException {
+		CreateAccount createAccount = new CreateAccount(3);
+		createAccount.exe();
+		ArrayList<AccountObject> accounts = mAccountMapper.getAccounts();
+		assertEquals(4, accounts.size());
+	}
+	
+	@Test
 	public void testUpdateAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
-		String account = createAccount.getAccount_ID(1);
-		String name = "account robot";
+		long id = createAccount.getAccountList().get(0).getId();
+		String userName = createAccount.getAccount_ID(1);
+		String nickName = "account robot";
 		String password = "account robot";
 		String email = "update@mail.com";
-		String enable = "true";
+		boolean enable = true;
 		
-		AccountInfo user = new AccountInfo(id, account, name, password, email, enable);
-		AccountObject userObject = mAccountMapper.updateAccount(user);
+		AccountInfo userInfo = new AccountInfo();
+		userInfo.id = id;
+		userInfo.userName = userName;
+		userInfo.password = password;
+		userInfo.nickName = nickName;
+		userInfo.email = email;
+		userInfo.enable = enable;
 		
-		assertEquals(account, userObject.getUsername());
-		assertEquals(name, userObject.getName());
+		AccountObject userObject = mAccountMapper.updateAccount(userInfo);
+		assertEquals(userName, userObject.getUsername());
+		assertEquals(nickName, userObject.getNickName());
 		assertEquals(email, userObject.getEmail());
 		assertEquals(enable, userObject.getEnable());
 	}
 	
+	@Test
 	public void testDeleteAccount() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
 		
+		long id = createAccount.getAccountList().get(0).getId();
 		boolean result = mAccountMapper.deleteAccount(id);
-		
 		assertTrue(result);
+		assertNull(mAccountMapper.getAccount(id));
 	}
 	
-	public void testGetAccountById() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		String id = createAccount.getAccountList().get(0).getId();
-
-		AccountObject account = mAccountMapper.getAccountById(id);
-		
-		assertEquals(id, account.getId());
-		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
-		assertEquals(createAccount.getAccount_RealName(1), account.getName());
-		assertEquals("true", account.getEnable());
-	}
-	
-	public void testAccountList() throws InterruptedException {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		
-		List<AccountObject> accountList = mAccountMapper.getAccounts();
-		
-		assertEquals(2, accountList.size());
-	}
-	
+	@Test
 	public void testConfirmAccount() throws LogonException {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
+		
+		String userName = createAccount.getAccount_ID(1);
 		String password = createAccount.getAccount_PWD(1);
 		AccountObject account = null;
 		
-        account = mAccountMapper.confirmAccount(id, password);
+        account = mAccountMapper.confirmAccount(userName, password);
         
-        assertEquals(id, account.getUsername());
+        assertEquals(userName, account.getUsername());
+        assertEquals(getMd5(password), account.getPassword());
 	}
-	
-	public void testIsAccountExist() {
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		String id = createAccount.getAccount_ID(1);
-		
-        boolean result = mAccountMapper.isAccountExist(id);
-       
-        assertTrue(result);
+
+	private String getMd5(String str) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		md.update(str.getBytes());
+		byte b[] = md.digest();
+		str = byte2hex(b);
+		return str;
 	}
-	
-//	public void testGetPermission() {
-//		
-//	}
-//	
-//	public void testCreateRole() {
-//		
-//	}
-//
-//	public void testRemoveRole() {
-//		
-//	}
-//	
-//	public void testAddRole() {
-//		
-//	}
-//	
-//	public void testIsCreatePermission() {
-//		
-//	}
+
+	private String byte2hex(byte b[]) {
+		String hs = "";
+		String stmp = "";
+		for (int n = 0; n < b.length; n++) {
+			stmp = Integer.toHexString(b[n] & 255);
+			if (stmp.length() == 1) {
+				hs = (new StringBuilder(String.valueOf(hs))).append("0").append(stmp).toString();
+			} else {
+				hs = (new StringBuilder(String.valueOf(hs))).append(stmp).toString();
+			}
+		}
+		return hs;
+	}
 }
