@@ -39,7 +39,6 @@ public class SprintBacklogMapper {
 	private ArrayList<IIssue> mStories = null;
 	private ArrayList<TaskObject> mTasks = null;
 	private ArrayList<IIssue> mDropedStories = null;
-	private ArrayList<IIssue> mAllIssues = null;
 
 	// 用於紀錄Story與Task之間的Mapping
 	LinkedHashMap<Long, ArrayList<TaskObject>> mMapStoryTasks = null;
@@ -56,13 +55,11 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
-		
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
 			mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
 		}
-
 		initSprintInformation();
 		initConfig();
 	}
@@ -78,11 +75,9 @@ public class SprintBacklogMapper {
 			long sprintId) {
 		mProject = project;
 		mUserSession = userSession;
-
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
-
 		initSprintInformation();
 		initConfig();
 	}
@@ -97,7 +92,6 @@ public class SprintBacklogMapper {
 			}
 			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
 			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-
 			String aDays = mIterPlanDesc.getAvailableDays();
 			// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
 			// 的機制移除
@@ -124,7 +118,7 @@ public class SprintBacklogMapper {
 	 * 測試用
 	 */
 	public void forceRefresh() {
-		getAllIssuesInSprint();
+		synchronizeDataInSprintInDB();
 		mUpdateFlag = false;
 	}
 
@@ -157,21 +151,7 @@ public class SprintBacklogMapper {
 	// 上層如果 call 到這個 function, 要判斷傳入引數，如果是 Task 的話要改用 getAllTasks()
 	public List<IIssue> getAllStories(String category) {
 		refresh();
-
-		List<IIssue> stories = new ArrayList<IIssue>();
-		if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			stories.addAll(mStories);
-		} 
-		// 這個 function 不合用
-		// TODO
-//		else if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-//			stories.addAll(mTasks);
-//		} 
-		else {
-			stories.addAll(mAllIssues);
-		}
-
-		return stories;
+		return mStories;
 	}
 
 	/**
@@ -441,9 +421,8 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mAllIssues == null
-				|| mMapStoryTasks == null || mUpdateFlag) {
-			getAllIssuesInSprint();
+		if (mStories == null || mTasks == null || mMapStoryTasks == null || mUpdateFlag) {
+			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}
 	}
@@ -453,37 +432,27 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	private IIssue[] getAllIssuesInSprint() {
-		if (mStories == null || mTasks == null || mAllIssues == null
-				|| mMapStoryTasks == null) {
+	private void synchronizeDataInSprintInDB() {
+		if (mStories == null || mTasks == null || mMapStoryTasks == null) {
 			mStories = new ArrayList<IIssue>();
 			mTasks = new ArrayList<TaskObject>();
-			mAllIssues = new ArrayList<IIssue>();
 			mMapStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
 		} else {
 			mStories.clear();
 			mTasks.clear();
-			mAllIssues.clear();
 			mMapStoryTasks.clear();
 		}
-
-		IIssue[] issues = getStoriesBySprintId(mSprintPlanId);
-
-		for (IIssue issue : issues) {
-			mStories.add(issue);
-			ArrayList<TaskObject> taskList = getTasksByStoryId(issue.getIssueID());
-			if (taskList.size() != 0) {
-				for (TaskObject task : taskList) {
-					mTasks.add(task);
-				}
-				mMapStoryTasks.put(issue.getIssueID(), taskList);
+		IIssue[] stories = getStoriesBySprintId(mSprintPlanId);
+		for (IIssue story : stories) {
+			mStories.add(story);
+			ArrayList<TaskObject> tasks = getTasksByStoryId(story.getIssueID());
+			for (TaskObject task : tasks) {
+				mTasks.add(task);
+			}
+			if (tasks.size() > 0) {
+				mMapStoryTasks.put(story.getIssueID(), tasks);
 			}
 		}
 		mUpdateFlag = false;
-
-		mAllIssues.addAll(mStories);
-		// TODO 不合用需要修改
-		//mAllIssues.addAll(mTasks);
-		return mAllIssues.toArray(new IIssue[mAllIssues.size()]);
 	}
 }
