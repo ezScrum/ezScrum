@@ -372,7 +372,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 1個story設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getIssueList().get(0).getIssueID(), ASS.getIssueList().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
 		sprintBacklogLogic.checkOutTask(ATS.getTaskList().get(1).getIssueID(), ATS.getTaskList().get(1).getSummary(), configuration.USER_ID, "", ATS.getTaskList().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -423,7 +423,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getIssueList().get(0).getIssueID(), ASS.getIssueList().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
 		sprintBacklogLogic.checkOutTask(ATS.getTaskList().get(1).getIssueID(), ATS.getTaskList().get(1).getSummary(), configuration.USER_ID, "", ATS.getTaskList().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -480,7 +480,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getIssueList().get(0).getIssueID(), ASS.getIssueList().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
 		sprintBacklogLogic.checkOutTask(ATS.getTaskList().get(1).getIssueID(), ATS.getTaskList().get(1).getSummary(), configuration.USER_ID, "", ATS.getTaskList().get(1).getNotes(), null);
 		Thread.sleep(1000);
 

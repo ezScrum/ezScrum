@@ -143,16 +143,16 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedStoryName = addStoryToSprint.getIssueList().get(0).getSummary();
-		String expectedStoryImportance = addStoryToSprint.getIssueList().get(0).getImportance();
+		String expectedStoryName = addStoryToSprint.getStories().get(0).getSummary();
+		String expectedStoryImportance = addStoryToSprint.getStories().get(0).getImportance();
 		String expectedStoryEstimation = String.valueOf(storyEst);
-		String expectedStoryValue = addStoryToSprint.getIssueList().get(0).getValue();
-		String expectedStoryHoewToDemo = addStoryToSprint.getIssueList().get(0).getHowToDemo();
-		String expectedStoryNote = addStoryToSprint.getIssueList().get(0).getNotes();
+		String expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
+		String expectedStoryHoewToDemo = addStoryToSprint.getStories().get(0).getHowToDemo();
+		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
 		String expectedSprintId= idList.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
 		String expectedSprintHoursToCommit = "10.0";
-		String issueID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
+		String issueID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
 		
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")
