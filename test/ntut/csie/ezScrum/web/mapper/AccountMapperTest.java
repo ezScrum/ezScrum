@@ -102,12 +102,12 @@ public class AccountMapperTest extends TestCase {
 	}
 	
 	@Test
-	public void testGetAccountByName() {
+	public void testGetAccountByUsername() {
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
 		
-		String userName = createAccount.getAccountList().get(0).getUsername();
-		AccountObject account = mAccountMapper.getAccount(userName);
+		String username = createAccount.getAccountList().get(0).getUsername();
+		AccountObject account = mAccountMapper.getAccount(username);
 		
 		assertEquals(2, account.getId());
 		assertEquals(createAccount.getAccount_Mail(1), account.getEmail());
@@ -116,7 +116,7 @@ public class AccountMapperTest extends TestCase {
 	}
 	
 	@Test
-	public void testGetAccounts() throws InterruptedException {
+	public void testGetAllAccounts() throws InterruptedException {
 		CreateAccount createAccount = new CreateAccount(3);
 		createAccount.exe();
 		ArrayList<AccountObject> accounts = mAccountMapper.getAccounts();
@@ -156,8 +156,8 @@ public class AccountMapperTest extends TestCase {
 		
 		long id = createAccount.getAccountList().get(0).getId();
 		boolean result = mAccountMapper.deleteAccount(id);
-		
 		assertTrue(result);
+		assertNull(mAccountMapper.getAccount(id));
 	}
 	
 	@Test

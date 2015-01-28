@@ -11,12 +11,9 @@ import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
-import ntut.csie.ezScrum.web.support.TranslateUtil;
 import ntut.csie.jcis.account.core.AccountFactory;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IAccountManager;
-import ntut.csie.jcis.account.core.IActor;
 import ntut.csie.jcis.account.core.IPermission;
 import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
@@ -26,18 +23,15 @@ public class AccountMapper {
 	private IProject mProject;
 	private IUserSession mUserSession;
 	private Configuration mConfig;
-//	private MySQLService mService;
 
 	public AccountMapper() {
 		mConfig = new Configuration();
-//		mService = new MySQLService(mConfig);
 	}
 
 	public AccountMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
 		mConfig = new Configuration(mUserSession);
-//		mService = new MySQLService(mConfig);
 	}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
@@ -75,7 +69,7 @@ public class AccountMapper {
 	 * @return AccountObject list
 	 */
 	public ArrayList<AccountObject> getAccounts() {
-		return AccountObject.getAccounts();
+		return AccountObject.getAllAccounts();
 	}
 	
 	/**
@@ -194,23 +188,12 @@ public class AccountMapper {
 	 * @param userName
 	 * @return boolean
 	 */
-	public boolean isAccountExist(String userName) {
-		AccountObject account = AccountObject.get(userName);
+	public boolean isAccountExist(String username) {
+		AccountObject account = AccountObject.get(username);
 		return account != null;
 	}
-	
-	public void createRole(IProject p) throws Exception {
-		createRoleToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-	}
 
-	/**
-	 * TODO: 將外部檔案改成DB
-	 */
-	public void createPermission(IProject p) throws Exception {
-		createPermissionToITS(p); // 當project與role都從外部檔案移到資料庫，就可以刪掉
-	}
-
-	private String[] operation = { "ProductOwner", "ScrumMaster", "ScrumTeam",
+	private String[] scrumRole = { "ProductOwner", "ScrumMaster", "ScrumTeam",
 			"Stakeholder", "Guest" };
 
 	/**
@@ -306,7 +289,7 @@ public class AccountMapper {
 		String resource = p.getName();
 
 		IAccountManager am = getManager();
-		for (String oper : operation) {
+		for (String oper : scrumRole) {
 			String name = resource + "_" + oper;
 			IPermission oriPerm = am.getPermission(name);
 			if (oriPerm == null) {
@@ -331,7 +314,7 @@ public class AccountMapper {
 		String resource = p.getName();
 
 		IAccountManager am = getManager();
-		for (String oper : operation) {
+		for (String oper : scrumRole) {
 			String name = resource + "_" + oper;
 			IRole oriRole = AccountFactory.getManager().getRole(name);
 			if (oriRole == null) {

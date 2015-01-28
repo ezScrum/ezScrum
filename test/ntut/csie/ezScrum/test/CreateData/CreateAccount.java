@@ -102,14 +102,14 @@ public class CreateAccount {
 	public void setAccount_RealName(int accountIndex) {
 		AccountObject userObject = mAccountList.get(accountIndex - 1);
 		long id = userObject.getId();
-		String userNmae = userObject.getUsername();
+		String username = userObject.getUsername();
 		String password = userObject.getPassword();
 		String mail = userObject.getEmail();
-		String nickName = Account_NAME + "NEW_" + id;
+		String nickname = Account_NAME + "NEW_" + id;
 		AccountInfo user = new AccountInfo();
 		user.id = id;
-		user.userName = userNmae;
-		user.nickName = nickName;
+		user.userName = username;
+		user.nickName = nickname;
 		user.password = password;
 		user.email = mail;
 		user.enable = true;
