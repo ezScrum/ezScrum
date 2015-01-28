@@ -1,15 +1,22 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,46 +25,62 @@ import org.junit.Test;
 public class SprintBacklogMapperTest {
 	
 	private SprintBacklogMapper mSprintBacklogMapper;
-	private Configuration config = null;
-	private CreateProject CP;
-	private CreateSprint CS;
+	private Configuration mConfiguration = null;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 	private static long PROJECT_ID = 1;
 	
 	@Before
 	public void setUp() throws Exception {
-		config = new Configuration();
-		config.setTestMode(true);
-		config.save();
-		
-		InitialSQL ini = new InitialSQL(config);
+		// initialize database
+		mConfiguration = new Configuration();
+		mConfiguration.setTestMode(true);
+		mConfiguration.save();
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();// 初始化 SQL
-		
-		CP = new CreateProject(1);
-		CP.exeCreate();
-		
-		CS = new CreateSprint(1, CP);
-		CS.exe();
-		
-		mSprintBacklogMapper = new SprintBacklogMapper(CP.getProjectList().get(0), config.getUserSession());
-		
 		ini = null;
+		// create test data
+		int PROJECT_AMOUNT = 1;
+		int SPRINT_AMOUNT = 1;
+		int STORY_AMOUNT = 3;
+		int STORY_ESTIMATE = 5;
+		int TASK_AMOUNT = 3;
+		int TASK_ESTIMATE = 8;
+		String CREATE_PRODUCTBACKLOG_TYPE = "EST";
+		mCP = new CreateProject(PROJECT_AMOUNT);
+		mCP.exeCreate();
+		mCS = new CreateSprint(SPRINT_AMOUNT, mCP);
+		mCS.exe();
+		mASTS = new AddStoryToSprint(STORY_AMOUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
+		mASTS.exe();
+		mATTS = new AddTaskToStory(TASK_AMOUNT, TASK_ESTIMATE, mASTS, mCP);
+		mATTS.exe();
+		IProject project = mCP.getProjectList().get(0);
+		IUserSession userSession = mConfiguration.getUserSession();
+		mSprintBacklogMapper = new SprintBacklogMapper(project, userSession);
 	}
 	
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();
-		
-		config.setTestMode(false);
-		config.save();
-		
 		ini = null;
-		CP = null;
+		mCP = null;
 		mSprintBacklogMapper = null;
+		mConfiguration.setTestMode(false);
+		mConfiguration.save();
 	}
 	
 	@Test
 	public void testGetTasksMap() {
+		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
+		assertEquals(3, tasksMap.size());
+		List<IIssue> stories = mASTS.getIssueList();
+		ArrayList<TaskObject> tasksInStory1 = tasksMap.get(0);
+		ArrayList<TaskObject> tasksInStory2 = tasksMap.get(1);
+		ArrayList<TaskObject> tasksInStory3 = tasksMap.get(2);
 	}
 	
 	@Test
@@ -99,6 +122,7 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testAddTask() {
 		TaskInfo taskInfo = createTaskInfo(1);
+		
 		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
 		
 		TaskObject actualTask = TaskObject.get(taskId);

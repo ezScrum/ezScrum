@@ -89,26 +89,6 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return null;
 	}
 
-	private ScrumRole convertScrumRole(String projectName, String role, ResultSet result) {
-		ScrumRole scrumRole = new ScrumRole(projectName, role);
-		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
-		try {
-			scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
-			scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
-			scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
-			scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
-			scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
-			scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-			scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
-			scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
-			scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeResultSet(result);
-		}
-		return scrumRole;
-	}
 
 	public boolean updateScrumRole(long projectId, RoleEnum role, ScrumRole scrumRole) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -129,6 +109,27 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return mControl.executeUpdate(query);
 	}
 
+	private ScrumRole convertScrumRole(String projectName, String role, ResultSet result) {
+		ScrumRole scrumRole = new ScrumRole(projectName, role);
+		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
+		try {
+			scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+			scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+			scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+			scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+			scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+			scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+			scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+			scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+			scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return scrumRole;
+	}
+	
 	@Override
 	public ProjectObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -141,7 +142,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		ProjectObject project = null;
 		try {
 			if (result.next()) {
-				project = convert(result);
+				project = convertProject(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -194,7 +195,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		ProjectObject project = null;
 		try {
 			if (result.next()) {
-				project = convert(result);
+				project = convertProject(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -214,7 +215,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		ArrayList<ProjectObject> projects = new ArrayList<ProjectObject>();
 		try {
 			while (result.next()) {
-				projects.add(convert(result));
+				projects.add(convertProject(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -224,7 +225,7 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		return projects;
 	}
 
-	private ProjectObject convert(ResultSet result) throws SQLException {
+	public ProjectObject convertProject(ResultSet result) throws SQLException {
 		ProjectObject project = new ProjectObject(result.getLong(ProjectEnum.ID),
 		        result.getString(ProjectEnum.NAME));
 		project

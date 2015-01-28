@@ -8,6 +8,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
@@ -18,7 +20,6 @@ public class AccountObject implements IBaseObject {
 	private String mEmail = "";
 	private String mNickName = "";
 	private boolean mEnable = false;
-	private HashMap<String, ProjectRole> mRoles = null;
 
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -103,30 +104,23 @@ public class AccountObject implements IBaseObject {
 	}
 
 	public HashMap<String, ProjectRole> getRoles() {
-		return mRoles;
-	}
-
-	public AccountObject setRoles(HashMap<String, ProjectRole> roles) {
-		mRoles = roles;
-		return this;
-	}
+	    return AccountDAO.getInstance().getProjectRoleMap(mId);
+    }
 
 	/**
 	 * Get account by account id
 	 * 
-	 * @param id
-	 *            account id
+	 * @param id account id
 	 * @return AccountObject
 	 */
 	public static AccountObject get(long id) {
 		return AccountDAO.getInstance().get(id);
 	}
-
+	
 	/**
 	 * Get account by account user name
 	 * 
-	 * @param username
-	 *            account user name
+	 * @param username account user name
 	 * @return AccountObject
 	 */
 	public static AccountObject get(String username) {
@@ -134,34 +128,83 @@ public class AccountObject implements IBaseObject {
 	}
 
 	/**
-	 * Get project all accounts
+	 * get accounts in ezScrum
 	 * 
 	 * @return AccountObject list
 	 */
-	public static ArrayList<AccountObject> getAccounts() {
-		return AccountDAO.getInstance().getAccounts();
+	public static ArrayList<AccountObject> getAllAccounts() {
+		return AccountDAO.getInstance().getAllAccounts();
 	}
 
 	/**
-	 * 取出 account 的在 project 的 role 權限列表
+	 * Create map about user and role in each attend project
 	 * 
-	 * @return account access power map
+	 * @param projectId
+	 * @param role
+	 * @return isCreateSuccess
 	 */
-	public HashMap<String, ProjectRole> getProjectRoleList() {
-		return AccountDAO.getInstance().getProjectRoleList(mId);
+	public boolean createProjectRole(long projectId, RoleEnum role) {
+		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
 	}
-
+	
+	/**
+	 * Get account access mapping each attend project
+	 * 
+	 * @return account access map <"Project name", "Project role">
+	 */
+	public HashMap<String, ProjectRole> getProjectRoleMap() {
+		return AccountDAO.getInstance().getProjectRoleMap(mId);
+	}
+	
+	/**
+	 * Delete account's role in project
+	 * 
+	 * @param projectId
+	 * @param role
+	 * @return isDeleteSuccess
+	 */
+	public boolean deleteProjectRole(long projectId, RoleEnum role) {
+		return AccountDAO.getInstance().deleteProjectRole(projectId, mId, role);
+	}
+	
+	/**
+	 * Create project system role
+	 * 
+	 * @return isCreateSuccess
+	 */
+	public boolean createSystemRole() {
+		return AccountDAO.getInstance().createSystemRole(mId);
+	}
+	
 	/**
 	 * 藉由 account id 判斷是否取出專案下的管理者帳號
 	 * 
-	 * @param id
-	 *            account id
 	 * @return admin account's project role
 	 */
-	public ProjectRole getSystemRole(long id) {
-		return AccountDAO.getInstance().getSystemRole(id);
+	public ProjectRole getSystemRole() {
+		return AccountDAO.getInstance().getSystemRole(mId);
 	}
 
+	/**
+	 * Delete account's system role in project
+	 * 
+	 * @return isDeleteSuccess
+	 */
+	public boolean deleteSystemRole() {
+		return AccountDAO.getInstance().deleteSystemRole(mId);
+	}
+	
+	/**
+	 * Use username and password to get account
+	 * 
+	 * @param username
+	 * @param password
+	 * @return AccountObject
+	 */
+	public static AccountObject confirmAccount(String username, String password) {
+		return AccountDAO.getInstance().confirmAccount(username, password);
+	}
+	
 	@Override
 	public boolean delete() {
 		boolean success = AccountDAO.getInstance().delete(mId);
@@ -201,7 +244,6 @@ public class AccountObject implements IBaseObject {
 		mEmail = account.getEmail();
 		mNickName = account.getNickName();
 		mEnable = account.getEnable();
-		mRoles = account.getRoles();
 	}
 
 	private void doCreate() {

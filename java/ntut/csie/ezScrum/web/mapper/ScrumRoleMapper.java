@@ -114,7 +114,7 @@ public class ScrumRoleMapper {
 	// ezScrum v1.8
 	public ScrumRole getScrumRoleForDb(String id, String projectId, String roleName) {
 		mService.openConnect();
-		ScrumRole scrumRole = mService.getScrumRole(id, projectId, RoleEnum.valueOf(roleName));
+		ScrumRole scrumRole = mService.convertScrumRole(id, projectId, RoleEnum.valueOf(roleName));
 		mService.closeConnect();
 		return scrumRole;
 	}

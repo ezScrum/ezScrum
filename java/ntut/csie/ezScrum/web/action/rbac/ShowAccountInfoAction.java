@@ -26,7 +26,7 @@ public class ShowAccountInfoAction extends Action {
 		sb.append("<Accounts>");
 		sb.append("<Account>");
 		sb.append("<ID>").append(id).append("</ID>");				
-		sb.append("<Name>").append(account.getName()).append("</Name>");				
+		sb.append("<Name>").append(account.getNickName()).append("</Name>");				
 		sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
 		sb.append("<Enable>").append(account.getEnable()).append("</Enable>");
 		sb.append("</Account>");

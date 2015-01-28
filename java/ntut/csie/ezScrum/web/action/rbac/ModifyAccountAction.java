@@ -29,16 +29,22 @@ public class ModifyAccountAction extends Action {
 
 		// 取得要新增帳戶的資料
 		String id = request.getParameter("id");
-		String account = request.getParameter("account");
+		String userName = request.getParameter("account");
 		String password = request.getParameter("passwd");
 		String email = request.getParameter("mail");
-		String realName = request.getParameter("name");
+		String nickName = request.getParameter("name");
 		String enable = request.getParameter("enable");
 		String isEdit = request.getParameter("isEdit");
 
 		String roles = "user";
 
-		AccountInfo user = new AccountInfo(id, account, realName, password, email, enable);
+		AccountInfo user = new AccountInfo();
+		user.id = Long.parseLong(id);
+		user.userName = userName;
+		user.nickName = nickName;
+		user.password = password;
+		user.email = email;
+		user.enable = Boolean.parseBoolean(enable);
 
 		AccountHelper ah = new AccountHelper(session);
 		AccountObject newAccount = null;
@@ -53,7 +59,7 @@ public class ModifyAccountAction extends Action {
 			}
 
 			// 如果更新的是登入者的密碼則更新session中屬於插件使用的密碼
-			String userName = session.getAccount().getName();
+			String userName = session.getAccount().getNickName();
 			if (userName.equals(id)) {
 				String encodedPassword = new String(Base64.encode(password.getBytes()));
 				request.getSession().setAttribute("passwordForPlugin", encodedPassword);

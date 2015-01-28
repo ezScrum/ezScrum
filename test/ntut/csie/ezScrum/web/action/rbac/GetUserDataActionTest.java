@@ -119,7 +119,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		assertEquals(account.getUsername(), accountE.getUsername());
 		assertEquals(account.getPassword(), accountE.getPassword());
 		assertEquals(account.getEmail(), accountE.getEmail());
-		assertEquals(account.getName(), accountE.getName());
+		assertEquals(account.getNickName(), accountE.getNickName());
 		assertEquals(account.getEnable(), accountE.getEnable());
 	}
 
