@@ -251,6 +251,10 @@ public class SprintBacklogMapper {
 	}
 	
 	public TaskObject getTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
+		if (task == null) {
+			return task;
+		}
 		return null;
 	}
 
@@ -276,7 +280,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistngTask(long[] taskIds, long storyId, Date date) {
+	public void addExistingTasks(long[] taskIds, long storyId, Date date) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
@@ -305,7 +309,7 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 
-	public void dropTask(long taskId, long parentId) {
+	public void dropTask(long taskId) {
 		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
 			task.setStoryId(TaskObject.NO_PARENT).save();

@@ -6,7 +6,7 @@ import java.util.List;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class AddTaskToStory {
-	private int mTaskCount = 1;	// add number of task into story
+	private int mTaskCount = 1; // add number of task into story
 	private int mStoryCount = 1;
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
@@ -17,7 +17,8 @@ public class AddTaskToStory {
 	private ArrayList<Long> mTasksId = new ArrayList<Long>();
 	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
 
-	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS, CreateProject CP) {
+	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS,
+			CreateProject CP) {
 		mTaskCount = count;
 		mStoryCount = ASS.getStories().size() / ASS.getSprintCount();
 		mProjectCount = CP.getProjectList().size();
@@ -34,7 +35,8 @@ public class AddTaskToStory {
 			for (int j = 0; j < mSprintCount; j++) {
 				for (int k = 0; k < mStoryCount; k++) {
 					long StoryID = j * mStoryCount + (k + 1);
-					CreateTask CT = new CreateTask(mTaskCount, mEstValue, StoryID, mCP);
+					CreateTask CT = new CreateTask(mTaskCount, mEstValue,
+							StoryID, mCP);
 					CT.exe();
 
 					mTasks.addAll(CT.getTaskList());
@@ -44,11 +46,11 @@ public class AddTaskToStory {
 		}
 	}
 
-	public ArrayList<Long> getTasksIdList() {
+	public ArrayList<Long> getTasksId() {
 		return mTasksId;
 	}
 
-	public ArrayList<TaskObject> getTaskList() {
+	public ArrayList<TaskObject> getTasks() {
 		return mTasks;
 	}
 }

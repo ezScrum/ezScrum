@@ -132,8 +132,8 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		// 將第1個story跟task全都拉到done
-		sprintBacklogLogic.doneIssue(addTaskToStory.getTaskList().get(0).getIssueID(), addTaskToStory.getTaskList().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.doneIssue(addTaskToStory.getTaskList().get(1).getIssueID(), addTaskToStory.getTaskList().get(1).getSummary(), "", null, null);
+		sprintBacklogLogic.doneIssue(addTaskToStory.getTasks().get(0).getIssueID(), addTaskToStory.getTasks().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.doneIssue(addTaskToStory.getTasks().get(1).getIssueID(), addTaskToStory.getTasks().get(1).getSummary(), "", null, null);
 		sprintBacklogLogic.doneIssue(addStoryToSprint.getStories().get(0).getIssueID(), addStoryToSprint.getStories().get(0).getSummary(), "", null, null);
 
 		// ================ set request info ========================

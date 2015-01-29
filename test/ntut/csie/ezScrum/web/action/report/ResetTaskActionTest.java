@@ -87,7 +87,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 	public void testResetTask() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
+		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();

@@ -175,13 +175,13 @@ public class MantisAttachFileServiceTest extends TestCase {
 		AttachFileInfo attachFileInfo1 = new AttachFileInfo();
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
-		attachFileInfo1.issueId = addTaskToStory.getTasksIdList().get(0);
+		attachFileInfo1.issueId = addTaskToStory.getTasksId().get(0);
 		attachFileInfo1.issueType = AttachFileObject.TYPE_TASK;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
-		attachFileInfo2.issueId = addTaskToStory.getTasksIdList().get(0);
+		attachFileInfo2.issueId = addTaskToStory.getTasksId().get(0);
 		attachFileInfo2.issueType = AttachFileObject.TYPE_TASK;
 
 		// 加入AttachFile
@@ -189,7 +189,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		fileIdList.add(MAFSservice.addAttachFile(attachFileInfo2));
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByTaskId(addTaskToStory.getTasksIdList().get(0));
+		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByTaskId(addTaskToStory.getTasksId().get(0));
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
 		attachFileArray.add(attachFileInfo2);

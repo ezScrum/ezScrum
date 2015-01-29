@@ -105,12 +105,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		String issueId = String.valueOf(addTaskToStory.getTasksIdList().get(0));
+		String issueId = String.valueOf(addTaskToStory.getTasksId().get(0));
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		addRequestParameter("issueID", issueId);
-		String expectedTaskName = addTaskToStory.getTaskList().get(0).getSummary();
-		String expectedIssueType = addTaskToStory.getTaskList().get(0).getCategory();
+		String expectedTaskName = addTaskToStory.getTasks().get(0).getSummary();
+		String expectedIssueType = addTaskToStory.getTasks().get(0).getCategory();
 		String expectedLink = "/ezScrum/showIssueInformation.do?issueID=" + issueId;
 		List<String> expectedDescription = genArrayList("Create Task #2", "Append to Story #1");
 		List<String> expectedHistoryType = genArrayList("", "");
@@ -240,7 +240,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
 		Thread.sleep(1000);
-		long taskId = addTaskToStory.getTasksIdList().get(0);
+		long taskId = addTaskToStory.getTasksId().get(0);
 
 		// drop Task from story
 		DropTask dropTask = new DropTask(mCreateProject, sprintId, storyId, taskId);
@@ -295,7 +295,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		long taskId = addTaskToStory.getTasksIdList().get(0);
+		long taskId = addTaskToStory.getTasksId().get(0);
 
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
@@ -337,7 +337,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		Thread.sleep(1000);
 
 		String projectName = mProject.getName();
-		long taskId = addTaskToStory.getTasksIdList().get(0);
+		long taskId = addTaskToStory.getTasksId().get(0);
 
 		// edit task info
 		SprintBacklogLogic SBLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), Long.toString(sprintId));
@@ -392,7 +392,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		Thread.sleep(1000);
 
 		String projectName = mProject.getName();
-		long taskId = addTaskToStory.getTasksIdList().get(0);
+		long taskId = addTaskToStory.getTasksId().get(0);
 
 		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
@@ -466,7 +466,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		Thread.sleep(1000);
 
 		String projectName = mProject.getName();
-		long taskId = addTaskToStory.getTasksIdList().get(0);
+		long taskId = addTaskToStory.getTasksId().get(0);
 
 		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out

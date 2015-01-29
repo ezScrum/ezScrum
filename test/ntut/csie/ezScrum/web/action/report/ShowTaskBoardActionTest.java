@@ -401,8 +401,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 //		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
 		List<IIssue> IssueID = new ArrayList<IIssue>();
-		IssueID.add(this.ATS.getTaskList().get(0)); // 加入第一筆
-		IssueID.add(this.ATS.getTaskList().get(1)); // 加入第二筆
+		IssueID.add(this.ATS.getTasks().get(0)); // 加入第一筆
+		IssueID.add(this.ATS.getTasks().get(1)); // 加入第二筆
 
 		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
 		COI.exeCheckOut_Issues(); // 將此兩筆 Task Check-out
@@ -480,8 +480,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //
 //		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
 		List<IIssue> issueList = new ArrayList<IIssue>();
-		issueList.add(this.ATS.getTaskList().get(0)); // 加入第一筆
-		issueList.add(this.ATS.getTaskList().get(1)); // 加入第二筆
+		issueList.add(this.ATS.getTasks().get(0)); // 加入第一筆
+		issueList.add(this.ATS.getTasks().get(1)); // 加入第二筆
 
 		CheckOutIssue COI = new CheckOutIssue(issueList, this.CP);
 		COI.exeDone_Issues(); // 將此兩筆 Task Done

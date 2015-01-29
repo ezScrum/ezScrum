@@ -86,7 +86,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
 		createProductBacklog.exe();
 //		String issueID = String.valueOf(createProductBacklog.getIssueIDList().get(0));
-		String issueID = String.valueOf(addTaskToStory.getTasksIdList().get(0));
+		String issueID = String.valueOf(addTaskToStory.getTasksId().get(0));
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
@@ -100,11 +100,11 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedTaskName = addTaskToStory.getTaskList().get(0).getSummary();
-		String expectedTaskEstimation= addTaskToStory.getTaskList().get(0).getEstimated();
-		String expectedTaskActualHour = addTaskToStory.getTaskList().get(0).getActualHour();
-		String expectedTaskRemains = addTaskToStory.getTaskList().get(0).getRemains();
-		String expectedTaskNote = addTaskToStory.getTaskList().get(0).getNotes();
+		String expectedTaskName = addTaskToStory.getTasks().get(0).getSummary();
+		String expectedTaskEstimation= addTaskToStory.getTasks().get(0).getEstimated();
+		String expectedTaskActualHour = addTaskToStory.getTasks().get(0).getActualHour();
+		String expectedTaskRemains = addTaskToStory.getTasks().get(0).getRemains();
+		String expectedTaskNote = addTaskToStory.getTasks().get(0).getNotes();
 		
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("<EditTask><Task><Id>" + issueID + "</Id>");

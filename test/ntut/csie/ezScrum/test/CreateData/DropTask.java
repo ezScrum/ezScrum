@@ -10,13 +10,11 @@ public class DropTask {
 	private CreateProject mCreateProject;
 	private long mSprintId = 0;
 	private long mTaskId = 0;
-	private long mParentId = 0;
 	
 	public DropTask(CreateProject createProject, long sprintId, long parentId, long taskId) {
 		mCreateProject = createProject;
 		mSprintId = sprintId;
 		mTaskId = taskId;
-		mParentId = parentId;
 	}
 
 	public void exe() {
@@ -24,6 +22,6 @@ public class DropTask {
 		IUserSession userSession = mConfig.getUserSession();
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, mSprintId);
 		// remove relation
-		sprintBacklogMapper.dropTask(mTaskId, mParentId);
+		sprintBacklogMapper.dropTask(mTaskId);
 	}
 }

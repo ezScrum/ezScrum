@@ -208,12 +208,12 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		StoryDate = getStoryDate.getDateList(currentDate, 10);
 		
 		//  Task
-		String TaskType = addTaskToStory.getTaskList().get(0).getCategory();
-		String TaskID = String.valueOf(addTaskToStory.getTaskList().get(0).getIssueID());
-		String TaskName = addTaskToStory.getTaskList().get(0).getSummary();
-		String TaskEstimate = addTaskToStory.getTaskList().get(0).getEstimated();
-		String TaskStatus = addTaskToStory.getTaskList().get(0).getStatus();
-		String TaskNotes = addTaskToStory.getTaskList().get(0).getNotes();
+		String TaskType = addTaskToStory.getTasks().get(0).getCategory();
+		String TaskID = String.valueOf(addTaskToStory.getTasks().get(0).getIssueID());
+		String TaskName = addTaskToStory.getTasks().get(0).getSummary();
+		String TaskEstimate = addTaskToStory.getTasks().get(0).getEstimated();
+		String TaskStatus = addTaskToStory.getTasks().get(0).getStatus();
+		String TaskNotes = addTaskToStory.getTasks().get(0).getNotes();
 		String TaskLink = "\"/ezScrum/showIssueInformation.do?issueID\\u003d2\"";
 	//  取得Task日期
 		List<String> TaskDate = new ArrayList<String>();
