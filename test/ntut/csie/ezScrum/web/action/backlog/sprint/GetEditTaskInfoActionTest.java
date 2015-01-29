@@ -86,7 +86,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
 		createProductBacklog.exe();
 //		String issueID = String.valueOf(createProductBacklog.getIssueIDList().get(0));
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));
+		String issueID = String.valueOf(addTaskToStory.getTasksIdList().get(0));
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);

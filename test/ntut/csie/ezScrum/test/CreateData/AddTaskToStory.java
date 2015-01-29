@@ -44,7 +44,7 @@ public class AddTaskToStory {
 		}
 	}
 
-	public ArrayList<Long> getTaskIDList() {
+	public ArrayList<Long> getTasksIdList() {
 		return mTasksId;
 	}
 

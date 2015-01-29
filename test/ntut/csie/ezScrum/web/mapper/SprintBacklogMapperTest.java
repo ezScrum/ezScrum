@@ -294,6 +294,95 @@ public class SprintBacklogMapperTest {
 	
 	@Test
 	public void testGetTask() {
+		// assert first task
+		TaskObject task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(0));
+		assertEquals(mATTS.getTaskList().get(0).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(0).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(0).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(0).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(0).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(0).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(0).getRemains(), task.getRemains());
+		
+		// assert second task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(1));
+		assertEquals(mATTS.getTaskList().get(1).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(1).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(1).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(1).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(1).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(1).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(1).getRemains(), task.getRemains());
+		
+		// assert third task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(2));
+		assertEquals(mATTS.getTaskList().get(2).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(2).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(2).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(2).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(2).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(2).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(2).getRemains(), task.getRemains());
+		
+		// assert fourth task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(3));
+		assertEquals(mATTS.getTaskList().get(3).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(3).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(3).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(3).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(3).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(3).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(3).getRemains(), task.getRemains());
+		
+		// assert fifth task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(4));
+		assertEquals(mATTS.getTaskList().get(4).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(4).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(4).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(4).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(4).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(4).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(4).getRemains(), task.getRemains());
+		
+		// assert sixth task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(5));
+		assertEquals(mATTS.getTaskList().get(5).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(5).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(5).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(5).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(5).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(5).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(5).getRemains(), task.getRemains());
+		
+		// assert seventh task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(6));
+		assertEquals(mATTS.getTaskList().get(6).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(6).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(6).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(6).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(6).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(6).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(6).getRemains(), task.getRemains());
+		
+		// assert eighth task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(7));
+		assertEquals(mATTS.getTaskList().get(7).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(7).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(7).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(7).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(7).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(7).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(7).getRemains(), task.getRemains());
+		
+		// assert nine task
+		task = mSprintBacklogMapper.getTask(mATTS.getTasksIdList().get(8));
+		assertEquals(mATTS.getTaskList().get(8).getName(), task.getName());
+		assertEquals(mATTS.getTaskList().get(8).getNotes(), task.getNotes());
+		assertEquals(mATTS.getTaskList().get(8).getActual(), task.getActual());
+		assertEquals(mATTS.getTaskList().get(8).getEstimate(), task.getEstimate());
+		assertEquals(mATTS.getTaskList().get(8).getStoryId(), task.getStoryId());
+		assertEquals(mATTS.getTaskList().get(8).getProjectId(), task.getProjectId());
+		assertEquals(mATTS.getTaskList().get(8).getRemains(), task.getRemains());
 	}
 	
 	@Test

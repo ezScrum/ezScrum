@@ -82,7 +82,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
 		addTaskToStory.exe();
 		
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));		
+		String issueID = String.valueOf(addTaskToStory.getTasksIdList().get(0));		
 		String parentID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
 		// ================ set request info ========================
 		String projectName = this.project.getName();
@@ -121,7 +121,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		IIssue task = addTaskToStory.getTaskList().get(0);
 		
 		String expectedSprintID = idList.get(0);
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));		
+		String issueID = String.valueOf(addTaskToStory.getTasksIdList().get(0));		
 		String expectedStoryID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
 		// ================ set request info ========================
 		String projectName = this.project.getName();
