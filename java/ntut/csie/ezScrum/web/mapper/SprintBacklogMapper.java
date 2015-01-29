@@ -276,11 +276,11 @@ public class SprintBacklogMapper {
 				.setStoryId(taskInfo.storyId).setHandlerId(taskInfo.handlerId)
 				.setEstimate(taskInfo.estimate).setRemains(taskInfo.estimate)
 				.setActual(0).setCreateTime(taskInfo.specificTime).save();
-		
+
 		for (long partnerId : taskInfo.partnersId) {
 			task.addPartner(partnerId);
 		}
-		
+
 		mUpdateFlag = true;
 		return task.getId();
 	}
@@ -378,27 +378,42 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
-					.setUpdateTime(changeDate.getTime()).save();
+					.setUpdateTime(changeDate.getTime())
+					.save(changeDate.getTime());
 		}
 	}
 
-	// for ezScrum 1.8
+	/**
+	 * From CHECK_OUT to UNCHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param reopenDate
+	 */
 	public void resetTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_UNCHECK)
-					.setUpdateTime(reopenDate.getTime()).save();
+					.save(reopenDate.getTime());
 		}
 	}
 
-	// for ezScrum 1.8
+	/**
+	 * From DONE to CHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param reopenDate
+	 */
 	public void reopenTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_CHECK)
-					.setUpdateTime(reopenDate.getTime()).save();
+					.save(reopenDate.getTime());
 		}
 	}
 
@@ -409,7 +424,7 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.setUpdateTime(changeDate.getTime()).save();
+					.save(changeDate.getTime());
 		}
 	}
 

@@ -553,7 +553,7 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testGetTasksWithNoParent() {
 		long projectId = mCP.getProjects().get(0).getId();
-		
+
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";
 		String TEST_NOTE = "NEW_TEST_TASK_NOTE_";
@@ -565,16 +565,17 @@ public class SprintBacklogMapperTest {
 		expectTask1.setName(TEST_NAME + 1).setNotes(TEST_NOTE + 1)
 				.setEstimate(TEST_EST).setHandlerId(TEST_HANDLER)
 				.setActual(TEST_ACTUAL).save();
-		
+
 		TaskObject expectTask2 = new TaskObject(projectId);
 		expectTask2.setName(TEST_NAME + 2).setNotes(TEST_NOTE + 2)
 				.setEstimate(TEST_EST + 2).setHandlerId(TEST_HANDLER)
 				.setActual(TEST_ACTUAL + 2).save();
-		
+
 		// assert size
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksWithNoParent(projectId);
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper
+				.getTasksWithNoParent(projectId);
 		assertEquals(2, tasks.size());
-		
+
 		// assert first task
 		TaskObject actualTask = tasks.get(0);
 		assertEquals(expectTask1.getName(), actualTask.getName());
@@ -582,7 +583,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(expectTask1.getEstimate(), actualTask.getEstimate());
 		assertEquals(expectTask1.getActual(), actualTask.getActual());
 		assertEquals(expectTask1.getHandlerId(), actualTask.getHandlerId());
-		
+
 		// assert second task
 		actualTask = tasks.get(1);
 		assertEquals(expectTask2.getName(), actualTask.getName());
@@ -595,7 +596,7 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testDeleteExistingTask() {
 		long projectId = mCP.getProjects().get(0).getId();
-		
+
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";
 		String TEST_NOTE = "NEW_TEST_TASK_NOTE_";
@@ -607,19 +608,19 @@ public class SprintBacklogMapperTest {
 		expectTask1.setName(TEST_NAME + 1).setNotes(TEST_NOTE + 1)
 				.setEstimate(TEST_EST).setHandlerId(TEST_HANDLER)
 				.setActual(TEST_ACTUAL).save();
-		
+
 		TaskObject expectTask2 = new TaskObject(projectId);
 		expectTask2.setName(TEST_NAME + 2).setNotes(TEST_NOTE + 2)
 				.setEstimate(TEST_EST + 2).setHandlerId(TEST_HANDLER)
 				.setActual(TEST_ACTUAL + 2).save();
-		
+
 		long[] deleteId = new long[2];
 		deleteId[0] = expectTask1.getId();
 		deleteId[1] = expectTask2.getId();
-		
+
 		// delete these tasks
 		mSprintBacklogMapper.deleteExistingTask(deleteId);
-		
+
 		assertEquals(null, TaskObject.get(expectTask1.getId()));
 		assertEquals(null, TaskObject.get(expectTask2.getId()));
 	}
@@ -627,9 +628,9 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testDropTask() {
 		long taskId = mATTS.getTasks().get(0).getId();
-		
+
 		mSprintBacklogMapper.dropTask(taskId);
-		
+
 		TaskObject task = TaskObject.get(taskId);
 		assertEquals(TaskObject.NO_PARENT, task.getStoryId());
 	}
@@ -640,20 +641,22 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testReopenStory() {
+
 	}
 
 	@Test
 	public void testCloseTask() {
 		String CLOSE_NAME = "CLOSE_NAME";
 		String CLOSE_NOTE = "CLOSE_NOTE";
-		Date SPECIFIC_DATE = new Date(System.currentTimeMillis() - 10000);
-		
+		Date SPECIFIC_DATE = new Date(System.currentTimeMillis());
+
 		// assert status, default status should be UNCHECK
 		TaskObject task = mATTS.getTasks().get(0);
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
-		
-		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE, SPECIFIC_DATE);
-		
+
+		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE,
+				SPECIFIC_DATE);
+
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(CLOSE_NAME, closedTask.getName());
 		assertEquals(CLOSE_NOTE, closedTask.getNotes());
@@ -664,26 +667,82 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testResetTask() {
+		String RESET_NAME = "RESET_NAME";
+		String RESET_NOTE = "RESET_NOTE";
+		Date SPECIFIC_DATE = new Date(System.currentTimeMillis());
+
+		// assert status, default status should be UNCHECK
+		TaskObject task = mATTS.getTasks().get(0);
+		task.setStatus(TaskObject.STATUS_CHECK).save();
+		assertEquals(TaskObject.STATUS_CHECK, task.getStatus());
+
+		mSprintBacklogMapper.resetTask(task.getId(), RESET_NAME, RESET_NOTE,
+				SPECIFIC_DATE);
+
+		TaskObject resetTask = TaskObject.get(task.getId());
+		assertEquals(RESET_NAME, resetTask.getName());
+		assertEquals(RESET_NOTE, resetTask.getNotes());
+		assertEquals(TaskObject.STATUS_UNCHECK, resetTask.getStatus());
+		assertEquals(SPECIFIC_DATE.getTime(), resetTask.getUpdateTime());
 	}
 
 	@Test
 	public void testReopenTask() {
+		String REOPEN_NAME = "REOPEN_NAME";
+		String REOPEN_NOTE = "REOPEN_NOTE";
+		Date SPECIFIC_DATE = new Date(System.currentTimeMillis());
+
+		// assert status, default status should be UNCHECK
+		TaskObject task = mATTS.getTasks().get(0);
+		task.setStatus(TaskObject.STATUS_DONE).save();
+		assertEquals(TaskObject.STATUS_DONE, task.getStatus());
+
+		mSprintBacklogMapper.reopenTask(task.getId(), REOPEN_NAME, REOPEN_NOTE,
+				SPECIFIC_DATE);
+
+		TaskObject reopenTask = TaskObject.get(task.getId());
+		assertEquals(REOPEN_NAME, reopenTask.getName());
+		assertEquals(REOPEN_NOTE, reopenTask.getNotes());
+		assertEquals(TaskObject.STATUS_CHECK, reopenTask.getStatus());
+		assertEquals(SPECIFIC_DATE.getTime(), reopenTask.getUpdateTime());
 	}
 
 	@Test
 	public void testCheckOutTask() {
+		String CHECKOUT_NAME = "CHECKOUT_NAME";
+		String CHECKOUT_NOTE = "CHECKOUT_NOTE";
+		long CHECKOUT_HANDLER = 1;
+		ArrayList<Long> CHECKOUT_PARTNERS = new ArrayList<Long>();
+		CHECKOUT_PARTNERS.add(1L);
+		Date SPECIFIC_DATE = new Date(System.currentTimeMillis());
+
+		// assert status, default status should be UNCHECK
+		TaskObject task = mATTS.getTasks().get(0);
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
+
+		mSprintBacklogMapper.checkOutTask(task.getId(), CHECKOUT_NAME,
+				CHECKOUT_HANDLER, CHECKOUT_PARTNERS, CHECKOUT_NOTE,
+				SPECIFIC_DATE);
+
+		TaskObject checkoutTask = TaskObject.get(task.getId());
+		assertEquals(CHECKOUT_NAME, checkoutTask.getName());
+		assertEquals(CHECKOUT_NOTE, checkoutTask.getNotes());
+		assertEquals(TaskObject.STATUS_CHECK, checkoutTask.getStatus());
+		assertEquals(1L, checkoutTask.getHandlerId());
+		assertEquals(1L, checkoutTask.getPartnersId().get(0));
+		assertEquals(SPECIFIC_DATE.getTime(), checkoutTask.getUpdateTime());
 	}
 
 	@Test
 	public void testDeleteTask() {
 		// get all tasks id
 		ArrayList<Long> tasksId = mATTS.getTasksId();
-		
+
 		// delete the tasks
 		for (long taskId : tasksId) {
 			mSprintBacklogMapper.deleteTask(taskId);
 		}
-		
+
 		// all tasks should be deleted
 		for (long taskId : tasksId) {
 			TaskObject task = TaskObject.get(taskId);

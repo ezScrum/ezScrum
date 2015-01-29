@@ -83,8 +83,6 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 
 	@Override
 	public boolean update(TaskObject task) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addInsertValue(TaskEnum.NAME, task.getName());
@@ -96,7 +94,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
 		valueSet.addInsertValue(TaskEnum.PROJECT_ID, task.getProjectId());
 		valueSet.addInsertValue(TaskEnum.STORY_ID, task.getStoryId());
-		valueSet.addInsertValue(TaskEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(TaskEnum.UPDATE_TIME, task.getUpdateTime());
 		valueSet.addEqualCondition(TaskEnum.ID, task.getId());
 		String query = valueSet.getUpdateQuery();
 

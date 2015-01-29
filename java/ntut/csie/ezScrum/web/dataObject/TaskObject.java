@@ -396,6 +396,16 @@ public class TaskObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (recordExists()) {
+			mUpdateTime = System.currentTimeMillis();
+			doUpdate();
+		} else {
+			doCreate();
+		}
+	}
+	
+	public void save(long specificTime) {
+		if (recordExists()) {
+			mUpdateTime = specificTime;
 			doUpdate();
 		} else {
 			doCreate();
