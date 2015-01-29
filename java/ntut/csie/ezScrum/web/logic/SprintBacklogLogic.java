@@ -12,6 +12,8 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
@@ -20,22 +22,36 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintBacklogLogic {
 
-	private IProject mProject;
+	private IProject mIProject;
+	private ProjectObject mProject;
 	private IUserSession mUserSession;
 	private SprintBacklogMapper mSprintBacklogMapper;
 
 	// 儲存目前處理過的 Sprint Date Column
-	private List<SprintBacklogDateColumn> currentCols = null;
-	private ArrayList<Date> dateList = null;
+	private List<SprintBacklogDateColumn> mCurrentCols = null;
+	private ArrayList<Date> mDateList = null;
 
-	public SprintBacklogLogic() {
-	}
+	public SprintBacklogLogic() {}
 
+	/**
+	 * 要換成用 ProjectObject 的建構子
+	 * @param project IProject
+	 * @param userSession
+	 * @param sprintID
+	 */
+	@Deprecated
 	public SprintBacklogLogic(IProject project, IUserSession userSession,
 			String sprintID) {
+		mIProject = project;
+		mUserSession = userSession;
+		mSprintBacklogMapper = createSprintBacklogMapper(Long.parseLong(sprintID));
+	}
+	
+	public SprintBacklogLogic(ProjectObject project, IUserSession userSession,
+			long sprintId) {
 		mProject = project;
 		mUserSession = userSession;
-		mSprintBacklogMapper = createSprintBacklogMapper(sprintID);
+		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
 	}
 
 	public SprintBacklogMapper getSprintBacklogMapper() {
@@ -43,57 +59,25 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * 判斷使用者輸入的sprintID是否為合法
-	 * 
-	 * @param mProject
-	 * @param mUserSession
+	 * 依據 sprintId 取得 SprintBacklogMapper
 	 * @param sprintId
-	 * @return
+	 * @return SprintBacklogMapper
 	 */
-	private SprintBacklogMapper createSprintBacklogMapper(String sprintId) {
+	private SprintBacklogMapper createSprintBacklogMapper(long sprintId) {
 		SprintBacklogMapper sprintBacklogMapper = null;
 
-		try {
-			// sprint 不存在，回傳最近的一個 sprint 或 空的 sprint
-			if (sprintId == null || sprintId.equals("") || sprintId.equals("0")
-					|| sprintId.equals("-1")) {
-				sprintBacklogMapper = new SprintBacklogMapper(mProject,
-						mUserSession);
-			} else {
-				sprintBacklogMapper = new SprintBacklogMapper(mProject,
-						mUserSession, Long.parseLong(sprintId));
-			}
-		} catch (Exception e) {
-			// 已經處理過不必輸出 Exception
-			sprintBacklogMapper = null;
+		if (sprintId == -1 || sprintId == 0) {
+			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+					mUserSession);
+		} else {
+			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+					mUserSession, sprintId);
 		}
 		return sprintBacklogMapper;
 	}
 
 	// for ezScrum 1.8
-	public long addTask(long projectId, String name, String notes,
-			int estimate, long handler, ArrayList<Long> partners, long storyId,
-			Date date) {
-
-		long taskId = mSprintBacklogMapper.addTask(projectId, name, notes,
-				estimate, handler, partners, storyId, date);
-
-		return taskId;
-	}
-
-	// for ezScrum 1.8
-	public boolean editTask(long taskId, String name, int estimate,
-			int remains, long handler, ArrayList<Long> partners,
-			int actualHour, String notes, Date modifyDate) {
-
-		mSprintBacklogMapper.updateTask(taskId, name, estimate, remains,
-				handler, partners, actualHour, notes, modifyDate);
-
-		return false;
-	}
-
-	// for ezScrum 1.8
-	public void checkOutTask(long id, String name, long handler,
+	public void checkOutTask(long id, String name, long handlerId,
 			ArrayList<Long> partners, String notes, String changeDate) {
 		Date closeDate = null;
 		if (changeDate != null && !changeDate.equals("")) {
@@ -103,12 +87,13 @@ public class SprintBacklogLogic {
 			closeDate = new Date();
 		}
 
-		mSprintBacklogMapper.checkOutTask(id, name, handler, partners, notes,
-				closeDate);
+		mSprintBacklogMapper.checkOutTask(id, name, handlerId, partners,
+				notes, closeDate);
 	}
 
 	// for ezScrum 1.8
-	private void doneTask(long id, String name, String notes, int actualHour, Date changeDate) {
+	private void closeTask(long id, String name, String notes,
+			Date changeDate) {
 		mSprintBacklogMapper.closeTask(id, name, notes, changeDate);
 	}
 
@@ -125,23 +110,23 @@ public class SprintBacklogLogic {
 		}
 		
 		if (issueType == IssueTypeEnum.TYPE_TASK) { // Done Task
-			doneTask(id, name, notes, Integer.parseInt(actualHour), closeDate);
+			closeTask(id, name, notes, closeDate);
 		} else { // Done Story
 			mSprintBacklogMapper.closeStory(id, notes, changeDate);
 		}
 	}
 
 	/**
-	 * 根據Sprint ID取得該Sprint的工作天數
+	 * 根據 Sprint ID 取得該 Sprint 的工作天數
 	 * 
-	 * @param sprintID
+	 * @param sprintId
 	 * @return
 	 */
-	public int getSprintAvailableDays(String sprintID) {
-		SprintBacklogMapper backlog = this.createSprintBacklogMapper(sprintID);
+	public int getSprintAvailableDays(long sprintId) {
+		SprintBacklogMapper backlog = createSprintBacklogMapper(sprintId);
 		int availableDays = 0;
 		if (backlog.getSprintPlanId() > 0) {
-			ISprintPlanDesc desc = (new SprintPlanMapper(this.mProject))
+			ISprintPlanDesc desc = (new SprintPlanMapper(mIProject))
 					.getSprintPlan(Integer.toString(backlog.getSprintPlanId()));
 			availableDays = Integer.parseInt(desc.getInterval()) * 5; // 一個禮拜五天
 		}
@@ -183,18 +168,18 @@ public class SprintBacklogLogic {
 			cal.add(Calendar.DATE, 1); // 加一工作天
 		}
 
-		this.dateList = dates;
-		this.currentCols = cols;
+		mDateList = dates;
+		mCurrentCols = cols;
 
 		return cols;
 	}
 
 	public List<SprintBacklogDateColumn> getCurrentDateColumns() {
-		return this.currentCols;
+		return mCurrentCols;
 	}
 
 	public ArrayList<Date> getCurrentDateList() {
-		return this.dateList;
+		return mDateList;
 	}
 
 	/************************************************************
@@ -209,8 +194,8 @@ public class SprintBacklogLogic {
 	 * @return
 	 */
 	public Date getSprintStartWorkDate() {
-		Date m_startDate = this.mSprintBacklogMapper.getSprintStartDate();
-		Date m_endDate = this.mSprintBacklogMapper.getSprintEndDate();
+		Date m_startDate = mSprintBacklogMapper.getSprintStartDate();
+		Date m_endDate = mSprintBacklogMapper.getSprintEndDate();
 		Date workDate = DateUtil.nearWorkDate(m_startDate,
 				DateUtil.BACK_DIRECTION);
 		if (workDate.getTime() > m_endDate.getTime())
@@ -224,8 +209,8 @@ public class SprintBacklogLogic {
 	 * @return
 	 */
 	public Date getSprintEndWorkDate() {
-		Date m_startDate = this.mSprintBacklogMapper.getSprintStartDate();
-		Date m_endDate = this.mSprintBacklogMapper.getSprintEndDate();
+		Date m_startDate = mSprintBacklogMapper.getSprintStartDate();
+		Date m_endDate = mSprintBacklogMapper.getSprintEndDate();
 		Date workDate = DateUtil.nearWorkDate(m_endDate,
 				DateUtil.FRONT_DIRECTION);
 		if (workDate.getTime() < m_startDate.getTime())
@@ -243,8 +228,8 @@ public class SprintBacklogLogic {
 		int dayOfSprint = -1;
 
 		Calendar indexDate = Calendar.getInstance();
-		indexDate.setTime(this.getSprintStartWorkDate());
-		long endTime = this.getSprintEndWorkDate().getTime();
+		indexDate.setTime(getSprintStartWorkDate());
+		long endTime = getSprintEndWorkDate().getTime();
 
 		while (!(indexDate.getTimeInMillis() > endTime)) {
 			// 扣除假日
@@ -260,20 +245,36 @@ public class SprintBacklogLogic {
 	public boolean isOutOfSprint() {
 		long OneDay = ScrumEnum.DAY_MILLISECOND;
 		// 在當天的晚上11:59:59仍是當天
-		return (new Date().getTime() > (this.getSprintEndWorkDate().getTime()
+		return (new Date().getTime() > (getSprintEndWorkDate().getTime()
 				+ OneDay - 1));
 	}
+	
+	/**
+	 * Get all tasks estimate point
+	 * @return task estimate point
+	 */
+	public double getTaskCurrentEstimatePoint() {
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getAllTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			point += task.getEstimate();
+		}
+		return point;
+	}
 
+	/**
+	 * Get issue estimate point (task 已被抽出來，story 完成後就可以拿掉)
+	 * @param Issuetype
+	 * @return issue estimate point
+	 */
+	@Deprecated
 	public double getCurrentPoint(String type) {
 		List<IIssue> items;
 		double point = 0;
 		if (type.equalsIgnoreCase(ScrumEnum.TASK_ISSUE_TYPE)) {
-			items = this.mSprintBacklogMapper.getAllTasks();
-			for (IIssue item : items) {
-				point += Double.parseDouble(item.getEstimated());
-			}
+			point = getTaskCurrentEstimatePoint();
 		} else if (type.equalsIgnoreCase(ScrumEnum.STORY_ISSUE_TYPE)) {
-			items = this.getStories();
+			items = getStories();
 			for (IIssue item : items) {
 				point += Double.parseDouble(item.getEstimated());
 			}
@@ -282,19 +283,36 @@ public class SprintBacklogLogic {
 
 		return point;
 	}
+	
+	/**
+	 * Get all tasks remains point
+	 * @return task remains point
+	 */
+	public double getTaskCurrnetRemainsPoint() {
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getAllTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			if (task.getStatus() == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			point += task.getRemains();
+		}
+		return point;
+	}
 
+	/**
+	 * Get issue remains point (task 已被抽出來，story 完成後就可以拿掉)
+	 * @param Issuetype
+	 * @return issue remains point
+	 */
+	@Deprecated
 	public double getCurrentUnclosePoint(String type) {
 		List<IIssue> items;
 		double point = 0;
 		if (type.equalsIgnoreCase(ScrumEnum.TASK_ISSUE_TYPE)) {
-			items = this.mSprintBacklogMapper.getAllTasks();
-			for (IIssue item : items) {
-				if (ITSEnum.getStatus(item.getStatus()) >= ITSEnum.CLOSED_STATUS)
-					continue;
-				point += Double.parseDouble(item.getRemains());
-			}
+			point = getTaskCurrnetRemainsPoint();
 		} else if (type.equalsIgnoreCase(ScrumEnum.STORY_ISSUE_TYPE)) {
-			items = this.getStories();
+			items = getStories();
 			for (IIssue item : items) {
 				if (ITSEnum.getStatus(item.getStatus()) >= ITSEnum.CLOSED_STATUS)
 					continue;
@@ -308,15 +326,15 @@ public class SprintBacklogLogic {
 	}
 
 	public List<IIssue> getStories() {
-		List<IIssue> stories = this.mSprintBacklogMapper
+		List<IIssue> stories = mSprintBacklogMapper
 				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
-		return this.sort(stories, "null");
+		return sort(stories, "null");
 	}
 
 	public List<IIssue> getStoriesByImp() {
-		List<IIssue> stories = this.mSprintBacklogMapper
+		List<IIssue> stories = mSprintBacklogMapper
 				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
-		return this.sortByImp(stories);
+		return sortByImp(stories);
 	}
 
 	/**
@@ -357,7 +375,7 @@ public class SprintBacklogLogic {
 	 * @return
 	 */
 	private ArrayList<IIssue> sortByImp(Collection<IIssue> list) {
-		List<IIssue> sortedList = new ArrayList<IIssue>();
+		ArrayList<IIssue> sortedList = new ArrayList<IIssue>();
 
 		for (IIssue issue : list) {
 			int index = 0;
@@ -373,20 +391,7 @@ public class SprintBacklogLogic {
 		return sortedList;
 	}
 
-	/**
-	 * 根據 id 取得 task
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public IIssue getTaskById(long id) {
-		List<IIssue> tasks = this.mSprintBacklogMapper.getAllTasks();
-		for (IIssue task : tasks) {
-			if (task.getIssueID() == id)
-				return task;
-		}
-		return null;
-	}
+
 
 	private class SprintBacklogDateColumn {
 		private String Id;
@@ -395,10 +400,6 @@ public class SprintBacklogLogic {
 		public SprintBacklogDateColumn(String ID, String name) {
 			this.Id = ID;
 			this.Name = name;
-		}
-
-		public String GetColumnName() {
-			return this.Name;
 		}
 	}
 }

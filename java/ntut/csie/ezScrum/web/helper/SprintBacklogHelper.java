@@ -209,7 +209,7 @@ public class SprintBacklogHelper {
 		if (mSprintBacklogMapper != null) {
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic
-					.getSprintAvailableDays(mSprintId);
+					.getSprintAvailableDays(Long.parseLong(mSprintId));
 
 			if (this.mSprintBacklogMapper.getSprintPlanId() > 0) {
 				List<IIssue> stories = getStoriesByImportance();
@@ -296,7 +296,7 @@ public class SprintBacklogHelper {
 			Date StartDate = mSprintBacklogMapper.getSprintStartDate();
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic
-					.getSprintAvailableDays(mSprintId);
+					.getSprintAvailableDays(Long.parseLong(mSprintId));
 
 			List<SprintBacklogDateColumn> cols = mSprintBacklogLogic
 					.calculateSprintBacklogDateList(StartDate, availableDays);

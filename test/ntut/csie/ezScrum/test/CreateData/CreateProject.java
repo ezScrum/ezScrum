@@ -94,7 +94,7 @@ public class CreateProject {
 			comment = mProjectCommon + Integer.toString((i + 1));	// This is Test Project - X
 			pmName = mProjectMaNager + Integer.toString((i + 1));		// Project_Manager_X
 
-			// save project info to test worksapce
+			// save project info to test workspace
 			IProject project = saveWorkSpace(projectName, comment, pmName, mFileSize);
 
 			// save in the permission
