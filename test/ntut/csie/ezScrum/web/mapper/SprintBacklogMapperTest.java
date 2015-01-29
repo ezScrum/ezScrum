@@ -549,6 +549,12 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testDropTask() {
+		long taskId = mATTS.getTasks().get(0).getId();
+		
+		mSprintBacklogMapper.dropTask(taskId);
+		
+		TaskObject task = TaskObject.get(taskId);
+		assertEquals(TaskObject.NO_PARENT, task.getStoryId());
 	}
 
 	@Test
