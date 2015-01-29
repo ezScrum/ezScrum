@@ -243,9 +243,9 @@ public class SprintBacklogMapper {
 
 	public IIssue getStory(long storyId) {
 		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(storyId);
+		IIssue story = mMantisService.getIssue(storyId);
 		mMantisService.closeConnect();
-		return issue;
+		return story;
 	}
 
 	public TaskObject getTask(long taskId) {
@@ -286,7 +286,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistingTasks(long[] taskIds, long storyId, Date date) {
+	public void addExistingTasks(long[] taskIds, long storyId) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {

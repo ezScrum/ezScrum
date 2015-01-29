@@ -10,6 +10,7 @@ import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -471,7 +472,82 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testAddExistingTasks() {
-		
+		// get story
+		MantisService mantisService = new MantisService(mConfiguration);
+		mantisService.openConnect();
+		IIssue story = mantisService.getIssue(1);
+		mantisService.closeConnect();
+		// check story tasks status before test
+		List<Long> oldTaskIds = story.getChildrenId();
+		assertEquals(3, oldTaskIds.size());
+		assertEquals(1, oldTaskIds.get(0));
+		assertEquals(2, oldTaskIds.get(1));
+		assertEquals(3, oldTaskIds.get(2));
+		// create a new task
+		TaskObject newTask = new TaskObject(1);
+		newTask.save();
+		// check new task status before be added to story
+		assertEquals(1, newTask.getProjectId());
+		assertEquals(-1, newTask.getStoryId());
+		assertEquals(10, newTask.getId());
+		// add new task to story
+		long[] tasksId = {10};
+		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
+		// get story again
+		mantisService.openConnect();
+		story = mantisService.getIssue(1);
+		mantisService.closeConnect();
+		// check story tasks status after add new task
+		List<Long> newTaskIds = story.getChildrenId();
+		assertEquals(4, newTaskIds.size());
+		assertEquals(1, newTaskIds.get(0));
+		assertEquals(2, newTaskIds.get(1));
+		assertEquals(3, newTaskIds.get(2));
+		assertEquals(10, newTaskIds.get(3));
+	}
+	
+	@Test
+	public void testAddExistingTasks_WithTwoExistingTasks() {
+		// get story
+		MantisService mantisService = new MantisService(mConfiguration);
+		mantisService.openConnect();
+		IIssue story = mantisService.getIssue(1);
+		mantisService.closeConnect();
+		// check story tasks status before test
+		List<Long> oldTaskIds = story.getChildrenId();
+		assertEquals(3, oldTaskIds.size());
+		assertEquals(1, oldTaskIds.get(0));
+		assertEquals(2, oldTaskIds.get(1));
+		assertEquals(3, oldTaskIds.get(2));
+		// create a new task 1
+		TaskObject newTask1 = new TaskObject(1);
+		newTask1.save();
+		// check new task status before be added to story
+		assertEquals(1, newTask1.getProjectId());
+		assertEquals(-1, newTask1.getStoryId());
+		assertEquals(10, newTask1.getId());
+		// create a new task 2
+		TaskObject newTask2 = new TaskObject(1);
+		newTask2.save();
+		// check new task status before be added to story
+		assertEquals(1, newTask2.getProjectId());
+		assertEquals(-1, newTask2.getStoryId());
+		assertEquals(11, newTask2.getId());
+		// add new task 1 and new task 2 to story
+		long[] tasksId = {10, 11};
+		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
+		// get story again
+		mantisService.openConnect();
+		story = mantisService.getIssue(1);
+		mantisService.closeConnect();
+		// check story tasks status after add new task
+		List<Long> newTaskIds = story.getChildrenId();
+		assertEquals(5, newTaskIds.size());
+		assertEquals(1, newTaskIds.get(0));
+		assertEquals(2, newTaskIds.get(1));
+		assertEquals(3, newTaskIds.get(2));
+		assertEquals(10, newTaskIds.get(3));
+		assertEquals(11, newTaskIds.get(4));
 	}
 
 	@Test
