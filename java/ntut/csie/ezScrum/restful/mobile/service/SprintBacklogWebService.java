@@ -69,7 +69,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	public String getTaskHsitoryList(String taskID) throws JSONException,
 			SQLException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue taskByID = this.sprintBacklogLogic.getTaskById(Long
+		IIssue taskByID = this.sprintBacklogLogic.getTask(Long
 				.parseLong(taskID));
 
 		List<HistoryObject> taskHistoryList = taskByID.getHistories();

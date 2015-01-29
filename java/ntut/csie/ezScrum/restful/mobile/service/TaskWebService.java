@@ -65,7 +65,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 */
 	public String createTaskInStory(String storyId, TaskObject task) {
-		return Long.toString(mSprintBacklogHelper.createTaskInStory(storyId, task).getIssueID());
+		return Long.toString(mSprintBacklogHelper.addTask(storyId, task).getIssueID());
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 */
 	public void deleteTask(String taskId, String storyId) {
-		mSprintBacklogHelper.deleteTask(taskId, storyId);
+		mSprintBacklogHelper.deleteTask(Long.parseLong(taskId));
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @param storyId
 	 */
 	public void dropTask(String taskId, String storyId) {
-		mSprintBacklogHelper.dropTask(taskId, storyId);
+		mSprintBacklogHelper.dropTask(Long.parseLong(taskId));
 	}
 	
 	/**
@@ -94,6 +94,6 @@ public class TaskWebService extends ProjectWebService {
 	public String updateTask(String taskJson) {
 		Gson gson = new Gson();
 		TaskObject task = gson.fromJson(taskJson, TaskObject.class);
-		return Boolean.toString(mSprintBacklogHelper.editTask(task));
+		return Boolean.toString(mSprintBacklogHelper.updateTask(task));
 	}
 }

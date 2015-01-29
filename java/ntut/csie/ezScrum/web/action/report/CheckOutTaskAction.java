@@ -54,7 +54,7 @@ public class CheckOutTaskAction extends PermissionAction {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
 				df.parse(changeDate);
 			sprintBacklogHelper.checkOutTask(issueID, name, handler, partners, notes, changeDate);
-			IIssue issue = sprintBacklogHelper.getIssue(issueID);	// return checkout的issue的相關資訊
+			IIssue issue = sprintBacklogHelper.getStory(issueID);	// return checkout的issue的相關資訊
 			result.append(new Translation().translateTaskboardIssueToJson(issue));
 		} catch (ParseException e) {								// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");

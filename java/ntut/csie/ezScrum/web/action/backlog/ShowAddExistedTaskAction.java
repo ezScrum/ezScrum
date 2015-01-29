@@ -50,7 +50,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
 		
 		try {
-			wildedTasks = sprintBacklogHelper.getWildTasks(projectId);
+			wildedTasks = sprintBacklogHelper.getTasksWithNoParent(projectId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

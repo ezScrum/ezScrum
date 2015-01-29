@@ -396,16 +396,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getIssue(taskId);
+		IIssue task = SBHelper.getStory(taskId);
 		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
 		// task Check Out -> Done
-		task = SBHelper.getIssue(taskId);
+		task = SBHelper.getStory(taskId);
 		SBHelper.doneIssue(taskId, task.getSummary(), task.getNotes(), "", task.getActualHour());
 		// task Done -> Check Out
-		task = SBHelper.getIssue(taskId);
+		task = SBHelper.getStory(taskId);
 		SBHelper.reopenIssue(taskId, task.getSummary(), task.getNotes(), "");
 		// task Check Out -> Not Check Out
-		task = SBHelper.getIssue(taskId);
+		task = SBHelper.getStory(taskId);
 		SBHelper.resetTask(taskId, task.getSummary(), task.getNotes(), "");
 		// ================ set request info ========================
 		// 設定 Session 資訊
@@ -470,11 +470,11 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getIssue(taskId);
+		IIssue task = SBHelper.getStory(taskId);
 		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
 		// change task handler
 		task.setAssignto(createAccount.getAccountList().get(0).getUsername());
-		SBHelper.editTask(new TaskObject(task));
+		SBHelper.updateTask(new TaskObject(task));
 		
 		// ================ set request info ========================
 		// 設定 Session 資訊

@@ -46,9 +46,9 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		// 表格的資料
 		TaskInfo taskInfo = new TaskInfo();
 		taskInfo.name = request.getParameter("Name");
-		taskInfo.projectId = Long.parseLong(projectObject.getId());
+		taskInfo.projectId = projectObject.getId();
 		taskInfo.storyId = Long.parseLong(storyId);
-		taskInfo.estiamte = Integer.parseInt(request.getParameter("Estimate"));
+		taskInfo.estimate = Integer.parseInt(request.getParameter("Estimate"));
 		taskInfo.notes = request.getParameter("Notes");
 		taskInfo.specificTime = Long.parseLong(request.getParameter("SpecificTime"));
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(

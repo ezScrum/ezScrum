@@ -88,22 +88,17 @@ public class StoryWebService extends ProjectWebService{
 	
 	/**
 	 * 取得 story 中所有的 task 
-	 * @param storyID
-	 * @return
-	 * @throws JSONException
+	 * @param storyId
+	 * @return tasks string
 	 */
-	public String getTaskInStory(String storyID) throws JSONException {
-		Gson gson = new Gson();
-		IIssue[] tasks = mSprintBacklogHelper.getTaskInStory(storyID);
-		List<TaskObject> taskList = new ArrayList<TaskObject>();
-		for (IIssue task : tasks)
-			taskList.add(new TaskObject(task));
-		return gson.toJson(taskList);
+	public String getTaskInStory(String storyId) {
+		ArrayList<TaskObject> tasks = mSprintBacklogHelper.getTasksByStoryId(Long.parseLong(storyId));
+		return tasks.toString();
 	}
 	
 	public void addExistedTask(String storyID, String taskIDsJson) {
 		Gson gson = new Gson();
 		String[] taskIDs = gson.fromJson(taskIDsJson, String[].class);
-		mSprintBacklogHelper.addExistedTask(storyID, taskIDs);
+		mSprintBacklogHelper.addExistingTask(storyID, taskIDs);
 	}
 }

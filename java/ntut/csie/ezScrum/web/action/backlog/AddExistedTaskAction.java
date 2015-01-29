@@ -43,7 +43,7 @@ public class AddExistedTaskAction extends PermissionAction {
 		String storyId = request.getParameter("issueID");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintId);
-		sprintBacklogHelper.addExistedTask(storyId, selectedTaskIds);
+		sprintBacklogHelper.addExistingTask(storyId, selectedTaskIds);
 		return new StringBuilder("");
 	}
 }

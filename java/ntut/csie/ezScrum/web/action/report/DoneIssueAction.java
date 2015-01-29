@@ -50,7 +50,7 @@ public class DoneIssueAction extends PermissionAction {
 		sprintBacklogHelper.doneIssue(issueId, issueType, name, bugNote, changeDate, ActualHour);
 
 		// return done issue 相關相關資訊
-		IIssue issue = sprintBacklogHelper.getIssue(issueId);
+		IIssue issue = sprintBacklogHelper.getStory(issueId);
 		StringBuilder result = new StringBuilder("");
 		result.append(new Translation().translateTaskboardIssueToJson(issue));
 
