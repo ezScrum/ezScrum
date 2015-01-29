@@ -470,6 +470,11 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testAddExistingTasks() {
+		
+	}
+
+	@Test
+	public void testGetTasksWithNoParent() {
 		long projectId = mCP.getProjects().get(0).getId();
 		
 		// add two task, no parent
@@ -511,12 +516,35 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetTasksWithNoParent() {
-
-	}
-
-	@Test
 	public void testDeleteExistingTask() {
+		long projectId = mCP.getProjects().get(0).getId();
+		
+		// add two task, no parent
+		String TEST_NAME = "NEW_TEST_TASK_NAME_";
+		String TEST_NOTE = "NEW_TEST_TASK_NOTE_";
+		int TEST_EST = 5;
+		int TEST_HANDLER = 1;
+		int TEST_ACTUAL = 3;
+
+		TaskObject expectTask1 = new TaskObject(projectId);
+		expectTask1.setName(TEST_NAME + 1).setNotes(TEST_NOTE + 1)
+				.setEstimate(TEST_EST).setHandlerId(TEST_HANDLER)
+				.setActual(TEST_ACTUAL).save();
+		
+		TaskObject expectTask2 = new TaskObject(projectId);
+		expectTask2.setName(TEST_NAME + 2).setNotes(TEST_NOTE + 2)
+				.setEstimate(TEST_EST + 2).setHandlerId(TEST_HANDLER)
+				.setActual(TEST_ACTUAL + 2).save();
+		
+		long[] deleteId = new long[2];
+		deleteId[0] = expectTask1.getId();
+		deleteId[1] = expectTask2.getId();
+		
+		// delete these tasks
+		mSprintBacklogMapper.deleteExistingTask(deleteId);
+		
+		assertEquals(null, TaskObject.get(expectTask1.getId()));
+		assertEquals(null, TaskObject.get(expectTask2.getId()));
 	}
 
 	@Test
