@@ -144,7 +144,20 @@ public class SprintBacklogMapper {
 
 	public Map<Long, ArrayList<TaskObject>> getDropedTasksMap() {
 		if (mMapDropedStoryTasks == null) {
-			getDroppedStories();
+			mDropedStories = getDroppedStories();
+			// 取得這些被 Dropped Story 的 Task
+			mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
+			for (IIssue dropedStory : mDropedStories) {
+				ArrayList<TaskObject> droppedTasks = new ArrayList<TaskObject>();
+				List<Long> droppedTasksId = dropedStory.getChildrenId();
+				for (Long droppedTaskId : droppedTasksId) {
+					TaskObject droppedTask = TaskObject.get(droppedTaskId);
+					if (droppedTask != null){
+						droppedTasks.add(droppedTask);
+					}
+				}
+				mMapDropedStoryTasks.put(dropedStory.getIssueID(), droppedTasks);
+			}
 		}
 		return mMapDropedStoryTasks;
 	}
@@ -191,54 +204,31 @@ public class SprintBacklogMapper {
 	}
 
 	/**
-	 * 取得在這個 Sprint 中曾經被 Drop 掉的 Story
+	 * 取得在這個 Sprint 中被 Drop 掉的 Story
 	 */
-	public IIssue[] getDroppedStories() {
+	public ArrayList<IIssue> getDroppedStories() {
 		if (mDropedStories == null) {
 			mDropedStories = new ArrayList<IIssue>();
 		} else {
-			return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
+			return mDropedStories;
 		}
-
-		String iter = Integer.toString(mSprintPlanId);
+		String sprintIdString = Integer.toString(mSprintPlanId);
 		Date startDate = getSprintStartDate();
 		Date endDate = getSprintEndDate();
-
 		mMantisService.openConnect();
-
 		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
-		IIssue[] tmpIIssues = mMantisService.getIssues(mIProject.getName(),
+		IIssue[] sprintStories = mMantisService.getIssues(mIProject.getName(),
 				ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
-
 		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
-		if (tmpIIssues != null) {
-			for (IIssue issue : tmpIIssues) {
-				Map<Date, String> map = issue.getTagValueList("Iteration");
-
-				if (!issue.getSprintID().equals(iter)) {
-					mDropedStories.add(issue);
+		if (sprintStories != null) {
+			for (IIssue story : sprintStories) {
+				if (!story.getSprintID().equals(sprintIdString)) {
+					mDropedStories.add(story);
 				}
 			}
 		}
-
-		// 取得這些被 Dropped Story 的 Task
-		mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
-		ArrayList<TaskObject> tmpList = new ArrayList<TaskObject>();
-		for (IIssue issue : mDropedStories) {
-			tmpList.clear();
-
-			List<Long> childList = issue.getChildrenId();
-
-			for (Long id : childList) {
-				TaskObject tmp = TaskObject.get(id);
-				if (tmp != null)
-					tmpList.add(tmp);
-			}
-			mMapDropedStoryTasks.put(issue.getIssueID(), tmpList);
-		}
-
 		mMantisService.closeConnect();
-		return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
+		return mDropedStories;
 	}
 
 	public IIssue getStory(long storyId) {
