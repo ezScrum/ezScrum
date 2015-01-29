@@ -170,14 +170,16 @@ public class SprintBacklogMapper {
 	}
 
 	/**
-	 * 取得 story 內的 tasks 與 sprint 無關 for ezScrum 1.8
+	 * 取得 story 內的 tasks 與 sprint 無關
+	 * for ezScrum 1.8
 	 * 
 	 * @param storyId
 	 */
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		IIssue story = getStory(storyId);
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		if (story != null) {
+		if (story != null)
+		{
 			List<Long> taskIds = story.getChildrenId();
 			for (long taskId : taskIds) {
 				TaskObject task = TaskObject.get(taskId);
@@ -246,25 +248,18 @@ public class SprintBacklogMapper {
 		mMantisService.closeConnect();
 		return issue;
 	}
-
+	
 	public TaskObject getTask(long taskId) {
-		TaskObject task = TaskObject.get(taskId);
-		if (task != null) {
-			return task;
-		}
 		return null;
 	}
 
 	// for ezScrum 1.8
 	// TaskInfo should include task id
 	public void updateTask(TaskInfo taskInfo) {
-
 		TaskObject task = TaskObject.get(taskInfo.taskId);
 		if (task != null) {
-			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId)
-					.setEstimate(taskInfo.estimate)
-					.setRemains(taskInfo.remains)
-					.setActual(taskInfo.actualHour).setNotes(taskInfo.notes)
+			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate)
+					.setRemains(taskInfo.remains).setActual(taskInfo.actual).setNotes(taskInfo.notes)
 					.setPartnersId(taskInfo.partnersId).save();
 		}
 	}
@@ -272,11 +267,9 @@ public class SprintBacklogMapper {
 	// for ezScrum 1.8
 	public long addTask(long projectId, TaskInfo taskInfo) {
 		TaskObject task = new TaskObject(projectId);
-		task.setName(taskInfo.name).setNotes(taskInfo.notes)
-				.setStoryId(taskInfo.storyId).setHandlerId(taskInfo.handlerId)
-				.setEstimate(taskInfo.estimate).setActual(0)
-				.setPartnersId(taskInfo.partnersId)
-				.setCreateTime(taskInfo.specificTime).save();
+		task.setName(taskInfo.name).setNotes(taskInfo.notes).setStoryId(taskInfo.storyId)
+				.setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate).setActual(0)
+				.setPartnersId(taskInfo.partnersId).setCreateTime(taskInfo.specificTime).save();
 		mUpdateFlag = true;
 		return task.getId();
 	}
@@ -287,13 +280,13 @@ public class SprintBacklogMapper {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
 				task.setStoryId(storyId);
-				task.save();
+				task.save();				
 			}
 		}
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		mUpdateFlag = true;
 	}
-
+	
 	public ArrayList<TaskObject> getTasksWithNoParent(long projectId)
 			throws SQLException {
 		ProjectObject project = ProjectObject.get(projectId);
@@ -305,7 +298,7 @@ public class SprintBacklogMapper {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
-				task.delete();
+				task.delete();				
 			}
 		}
 		mUpdateFlag = true;
@@ -360,9 +353,8 @@ public class SprintBacklogMapper {
 				bugNote, closeDate);
 		mMantisService.closeConnect();
 	}
-
-	public void reopenStory(long id, String name, String bugNote,
-			String changeDate) {
+	
+	public void reopenStory(long id, String name, String bugNote, String changeDate) {
 		
 	}
 
@@ -383,18 +375,16 @@ public class SprintBacklogMapper {
 	public void resetTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes)
-					.setStatus(TaskObject.STATUS_UNCHECK)
+			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_UNCHECK)
 					.setUpdateTime(reopenDate.getTime()).save();
 		}
 	}
-
+	
 	// for ezScrum 1.8
 	public void reopenTask(long id, String name, String notes, Date reopenDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes)
-					.setStatus(TaskObject.STATUS_CHECK)
+			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.setUpdateTime(reopenDate.getTime()).save();
 		}
 	}
@@ -426,8 +416,7 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mMapStoryTasks == null
-				|| mUpdateFlag) {
+		if (mStories == null || mTasks == null || mMapStoryTasks == null || mUpdateFlag) {
 			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}
