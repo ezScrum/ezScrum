@@ -22,21 +22,11 @@ public class CheckOutIssue {
 	private Configuration configuration = new Configuration();
 	private ProjectMapper projectMapper = new ProjectMapper();
 
-//	public CheckOutIssue(ArrayList<Long> list, CreateProject CP) {
-//		this.IssueIDList = list;
-//		this.CP = CP;
-//	}
 	
 	public CheckOutIssue(List<IIssue> list, CreateProject CP) {
 		this.issueList = list;
 		this.CP = CP;
 	}
-
-//	public CheckOutIssue(ArrayList<Long> list, CreateProject CP, Date setDate) {
-//		this.IssueIDList = list;
-//		this.CP = CP;
-//		this.SetDoneDate = setDate;
-//	}
 	
 	public CheckOutIssue(List<IIssue> list, CreateProject CP, Date setDate) {
 		this.issueList = list;

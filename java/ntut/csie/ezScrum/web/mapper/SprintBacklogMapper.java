@@ -27,7 +27,8 @@ import org.apache.commons.logging.LogFactory;
 public class SprintBacklogMapper {
 	private static Log log = LogFactory.getLog(SprintBacklogMapper.class);
 	private int mSprintPlanId = 0;
-	private IProject mProject;
+	private IProject mIProject;
+	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
 	private Date mEndDate;
@@ -53,7 +54,7 @@ public class SprintBacklogMapper {
 	 * @param userSession
 	 */
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
@@ -73,7 +74,7 @@ public class SprintBacklogMapper {
 	 */
 	public SprintBacklogMapper(IProject project, IUserSession userSession,
 			long sprintId) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
@@ -163,7 +164,7 @@ public class SprintBacklogMapper {
 	public IIssue[] getStoriesBySprintId(long sprintId) {
 		mMantisService.openConnect();
 		IIssue[] stories = mMantisService
-				.getIssues(mProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
+				.getIssues(mIProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
 						null, Long.toString(sprintId), null);
 		mMantisService.closeConnect();
 		return stories;
@@ -208,7 +209,7 @@ public class SprintBacklogMapper {
 		mMantisService.openConnect();
 
 		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
-		IIssue[] tmpIIssues = mMantisService.getIssues(mProject.getName(),
+		IIssue[] tmpIIssues = mMantisService.getIssues(mIProject.getName(),
 				ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
 
 		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
@@ -321,7 +322,7 @@ public class SprintBacklogMapper {
 	}
 
 	public IProject getProject() {
-		return mProject;
+		return mIProject;
 	}
 
 	public Date getSprintStartDate() {
