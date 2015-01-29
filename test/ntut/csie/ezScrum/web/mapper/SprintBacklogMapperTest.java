@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -19,6 +20,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -491,7 +493,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(-1, newTask.getStoryId());
 		assertEquals(10, newTask.getId());
 		// add new task to story
-		long[] tasksId = {10};
+		long[] tasksId = { 10 };
 		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
@@ -505,7 +507,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(3, newTaskIds.get(2));
 		assertEquals(10, newTaskIds.get(3));
 	}
-	
+
 	@Test
 	public void testAddExistingTasks_WithTwoExistingTasks() {
 		// get story
@@ -534,7 +536,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(-1, newTask2.getStoryId());
 		assertEquals(11, newTask2.getId());
 		// add new task 1 and new task 2 to story
-		long[] tasksId = {10, 11};
+		long[] tasksId = { 10, 11 };
 		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
@@ -637,11 +639,51 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testCloseStory() {
+		String CLOSE_NOTE = "CLOSE_NOTE";
+
+		IIssue story = mASTS.getStories().get(0);
+		long storyId = story.getIssueID();
+
+		// story default status is NEW
+		assertEquals("new", story.getStatus());
+
+		mSprintBacklogMapper.closeStory(storyId, CLOSE_NOTE, "");
+
+		MantisService service = new MantisService(mConfiguration);
+		service.openConnect();
+		story = service.getIssue(storyId);
+		service.closeConnect();
+
+		assertEquals("closed", story.getStatus());
 	}
 
 	@Test
 	public void testReopenStory() {
+		String REOPEN_NAME = "REOPEN_NAME";
+		String REOPEN_NOTE = "REOPEN_NOTE";
 
+		IIssue story = mASTS.getStories().get(0);
+		long storyId = story.getIssueID();
+
+		// story default status is NEW
+		assertEquals("new", story.getStatus());
+
+		MantisService service = new MantisService(mConfiguration);
+		service.openConnect();
+
+		// set story's status to CLOSED and assert it
+		service.changeStatusToClosed(storyId, ITSEnum.FIXED_RESOLUTION,
+				"", new Date());
+		story = service.getIssue(storyId);
+		assertEquals("closed", story.getStatus());
+		
+		// reopen the story
+		mSprintBacklogMapper.reopenStory(storyId, REOPEN_NAME, REOPEN_NOTE, "");
+		
+		story = service.getIssue(storyId);
+		service.closeConnect();
+		assertEquals("new", story.getStatus());
+		assertEquals(REOPEN_NAME, story.getSummary());
 	}
 
 	@Test

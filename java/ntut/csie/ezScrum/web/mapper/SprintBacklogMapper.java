@@ -350,7 +350,7 @@ public class SprintBacklogMapper {
 		return mIterPlanDesc.getGoal();
 	}
 
-	public void closeStory(long id, String bugNote, String changeDate) {
+	public void closeStory(long id, String notes, String changeDate) {
 		Date closeDate = null;
 
 		if (changeDate != null && !changeDate.equals("")) {
@@ -360,13 +360,24 @@ public class SprintBacklogMapper {
 
 		mMantisService.openConnect();
 		mMantisService.changeStatusToClosed(id, ITSEnum.FIXED_RESOLUTION,
-				bugNote, closeDate);
+				notes, closeDate);
 		mMantisService.closeConnect();
 	}
 
 	public void reopenStory(long id, String name, String bugNote,
 			String changeDate) {
+		Date closeDate = null;
 
+		if (changeDate != null && !changeDate.equals("")) {
+			closeDate = DateUtil.dayFillter(changeDate,
+					DateUtil._16DIGIT_DATE_TIME);
+		} else {
+			closeDate = new Date();
+		}
+
+		mMantisService.openConnect();
+		mMantisService.resetStatusToNew(id, name, bugNote, closeDate);
+		mMantisService.closeConnect();
 	}
 
 	/************************************************************
