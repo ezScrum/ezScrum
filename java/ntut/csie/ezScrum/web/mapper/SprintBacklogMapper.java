@@ -298,8 +298,7 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId)
-			throws SQLException {
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
 		ProjectObject project = ProjectObject.get(projectId);
 		return project.getTasksWithNoParent();
 	}
