@@ -150,7 +150,7 @@ public class SprintBacklogMapper {
 	}
 
 	// 上層如果 call 到這個 function, 要判斷傳入引數，如果是 Task 的話要改用 getAllTasks()
-	public List<IIssue> getAllStories(String category) {
+	public ArrayList<IIssue> getAllStories(String category) {
 		refresh();
 		return mStories;
 	}

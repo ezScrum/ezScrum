@@ -1,7 +1,10 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
@@ -271,6 +274,35 @@ public class TaskObject implements IBaseObject {
 	// return doneTime;
 	// }
 
+	private long getLastSeconds(Date date) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+		String dateString = sdf.format(date);
+		Date newDate = sdf.parse(dateString);
+		long lastSeconds = newDate.getTime();
+		lastSeconds += 86399999; // move to 23 hours 59 minutes 59 seconds the last second in one day
+		return lastSeconds;
+	}
+	
+	public double getRemains(Date date) {
+		long lastSeconds = date.getTime();
+		try {
+			lastSeconds = getLastSeconds(date);
+		} catch (ParseException e) {
+			lastSeconds = date.getTime();
+		}
+		
+		ArrayList<HistoryObject> histories = getHistories();
+
+		double remain = 0.0;
+		for (HistoryObject history : histories) {
+			if (history.getCreateTime() <= lastSeconds
+					&& history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
+				remain = Double.parseDouble(history.getNewValue());
+			}
+		}
+		return remain;
+	}
+
 	public long getProjectId() {
 		return mProjectId;
 	}
@@ -331,7 +363,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<AttachFileObject> getAttachFiles() {
-		ArrayList<AttachFileObject> attachFiles = AttachFileDAO.getInstance().getAttachFilesByTaskId(mId); 
+		ArrayList<AttachFileObject> attachFiles = AttachFileDAO.getInstance()
+				.getAttachFilesByTaskId(mId);
 		return attachFiles;
 	}
 
@@ -402,7 +435,7 @@ public class TaskObject implements IBaseObject {
 			doCreate();
 		}
 	}
-	
+
 	/**
 	 * Update time will equal to parameter you passed.
 	 * 

@@ -196,7 +196,7 @@ public class ProductBacklogLogic {
 	 * release plan select stories 2010.06.02 by taoyu modify
 	 * @return
 	 */
-	public List<IStory> getAddableStories() throws SQLException {
+	public ArrayList<IStory> getAddableStories() throws SQLException {
 		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
@@ -227,7 +227,7 @@ public class ProductBacklogLogic {
 	 * @param sprintId
 	 * @param releaseId
 	 */
-	public List<IStory> getAddableStories(String sprintId, String releaseId) throws SQLException {
+	public ArrayList<IStory> getAddableStories(String sprintId, String releaseId) throws SQLException {
 		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays

@@ -295,7 +295,7 @@ public class SprintPlanHelper {
 				if (taskIssue.getHistories().size() > 0) {
 					for (HistoryObject history : taskIssue.getHistories()) {
 						if (history.getHistoryType() == HistoryObject.TYPE_STATUS && history.getNewValue().equals("90")) {
-							taskObject.doneTime = history.getModifiedTime();
+							taskObject.doneTime = history.getCreateTime();
 						}
 					}
 				}

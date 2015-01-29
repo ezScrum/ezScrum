@@ -76,7 +76,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 		List<String> remainsList = new ArrayList<String>();
 		String lastRemainsHour = "0";
 		for (HistoryObject history : taskHistoryList) {
-			String date = parseDate(history.getModifiedTime());
+			String date = parseDate(history.getCreateTime());
 			lastRemainsHour = getTaskRemains(new Date(date), taskByID);
 			remainsList.add(lastRemainsHour);
 		}
@@ -101,7 +101,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 		
 		String remains = "0";
 		for (HistoryObject history : histories) {
-			if (history.getModifiedTime() <= date.getTime() && history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
+			if (history.getCreateTime() <= date.getTime() && history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
 				remains = history.getNewValue();
 			}
 		}

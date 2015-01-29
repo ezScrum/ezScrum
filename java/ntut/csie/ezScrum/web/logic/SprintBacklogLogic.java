@@ -28,7 +28,7 @@ public class SprintBacklogLogic {
 	private SprintBacklogMapper mSprintBacklogMapper;
 
 	// 儲存目前處理過的 Sprint Date Column
-	private List<SprintBacklogDateColumn> mCurrentCols = null;
+	private ArrayList<SprintBacklogDateColumn> mCurrentCols = null;
 	private ArrayList<Date> mDateList = null;
 
 	public SprintBacklogLogic() {}
@@ -140,12 +140,12 @@ public class SprintBacklogLogic {
 	 * @param availableDays
 	 * @return
 	 */
-	public List<SprintBacklogDateColumn> calculateSprintBacklogDateList(
+	public ArrayList<SprintBacklogDateColumn> calculateSprintBacklogDateList(
 			Date startDate, int availableDays) {
 		if (startDate == null)
 			return new ArrayList<SprintBacklogDateColumn>();
 
-		List<SprintBacklogDateColumn> cols = new ArrayList<SprintBacklogDateColumn>();
+		ArrayList<SprintBacklogDateColumn> cols = new ArrayList<SprintBacklogDateColumn>();
 		ArrayList<Date> dates = new ArrayList<Date>();
 
 		Calendar cal = Calendar.getInstance();
@@ -174,7 +174,7 @@ public class SprintBacklogLogic {
 		return cols;
 	}
 
-	public List<SprintBacklogDateColumn> getCurrentDateColumns() {
+	public ArrayList<SprintBacklogDateColumn> getCurrentDateColumns() {
 		return mCurrentCols;
 	}
 
@@ -325,14 +325,14 @@ public class SprintBacklogLogic {
 		return point;
 	}
 
-	public List<IIssue> getStories() {
-		List<IIssue> stories = mSprintBacklogMapper
+	public ArrayList<IIssue> getStories() {
+		ArrayList<IIssue> stories = mSprintBacklogMapper
 				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
 		return sort(stories, "null");
 	}
 
-	public List<IIssue> getStoriesByImp() {
-		List<IIssue> stories = mSprintBacklogMapper
+	public ArrayList<IIssue> getStoriesByImp() {
+		ArrayList<IIssue> stories = mSprintBacklogMapper
 				.getAllStories(ScrumEnum.STORY_ISSUE_TYPE);
 		return sortByImp(stories);
 	}
@@ -391,9 +391,7 @@ public class SprintBacklogLogic {
 		return sortedList;
 	}
 
-
-
-	private class SprintBacklogDateColumn {
+	public class SprintBacklogDateColumn {
 		private String Id;
 		private String Name;
 

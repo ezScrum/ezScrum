@@ -47,7 +47,7 @@ public class AddExistedStoryAction extends PermissionAction {
 		}
 		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintID);
-		sprintBacklogHelper.addExistedStory(list, releaseID);
+		sprintBacklogHelper.addExistingStory(list, releaseID);
 		
 		return new StringBuilder("");
 		

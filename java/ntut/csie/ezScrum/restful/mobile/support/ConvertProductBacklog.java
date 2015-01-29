@@ -175,7 +175,7 @@ public class ConvertProductBacklog {
 		JSONObject storyHistoryJsonObject = new JSONObject();
 		JSONArray storyHistoryJsonArray = new JSONArray();
 		for (HistoryObject history : histories) {
-			String modifyDate = parseDate(history.getModifiedTime());
+			String modifyDate = parseDate(history.getCreateTime());
 			HistoryItemInfo historyItemInfo = new HistoryItemInfo(history.getDescription());
 
 			JSONObject storyHistory = new JSONObject();

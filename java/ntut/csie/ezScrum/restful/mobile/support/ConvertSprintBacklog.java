@@ -146,7 +146,7 @@ public class ConvertSprintBacklog {
 			String reaminHour = remainingHourList.get(i);
 			int historyType = history.getHistoryType();
 			if (historyType == HistoryObject.TYPE_HANDLER) {
-				String modifyDate = parseDate(history.getModifiedTime());
+				String modifyDate = parseDate(history.getCreateTime());
 				HistoryItemInfo historyItemInfo = new HistoryItemInfo(
 						history.getDescription(), history.getHistoryTypeString());
 
