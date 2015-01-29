@@ -342,7 +342,7 @@ public class SprintBacklogMapperTest {
 		
 		// assert fifth task
 		task = mSprintBacklogMapper.getTask(mATTS.getTasksId().get(4));
-		expectTask = mATTS.getTasks().get(3);
+		expectTask = mATTS.getTasks().get(4);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
 		assertEquals(expectTask.getActual(), task.getActual());
@@ -442,28 +442,25 @@ public class SprintBacklogMapperTest {
 	
 	@Test
 	public void testAddTask() {
-//		// create task info
-//		TaskInfo taskInfo = new TaskInfo();
-//		taskInfo.taskId = 1;
-//		// set new value
-//		taskInfo.name = "NEW_TEST_TASK_NAME";
-//		taskInfo.handlerId = 1;
-//		taskInfo.estimate = 5;
-//		taskInfo.remains = 3;
-//		taskInfo.actual = 6;
-//		taskInfo.notes = "NEW_TEST_TASK_NOTES";
-//		TaskInfo taskInfo = createTaskInfo(1);
-//		
-//		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
-//		
-//		TaskObject actualTask = TaskObject.get(taskId);
-//		assertEquals(taskInfo.name, actualTask.getName());
-//		assertEquals(taskInfo.notes, actualTask.getNotes());
-//		assertEquals(taskInfo.estimate, actualTask.getEstimate());
-//		assertEquals(0, actualTask.getActual());
-//		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
-//		assertEquals(taskInfo.estimate, actualTask.getRemains());
-//		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
+		// create task info
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.name = "NEW_TEST_TASK_NAME";
+		taskInfo.handlerId = 1;
+		taskInfo.estimate = 5;
+		taskInfo.actual = 6;
+		taskInfo.notes = "NEW_TEST_TASK_NOTES";
+		taskInfo.partnersId.add(1L);
+		
+		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
+		
+		TaskObject actualTask = TaskObject.get(taskId);
+		assertEquals(taskInfo.name, actualTask.getName());
+		assertEquals(taskInfo.notes, actualTask.getNotes());
+		assertEquals(taskInfo.estimate, actualTask.getEstimate());
+		assertEquals(taskInfo.estimate, actualTask.getRemains());
+		assertEquals(0, actualTask.getActual());
+		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
+		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
 	}
 	
 	@Test

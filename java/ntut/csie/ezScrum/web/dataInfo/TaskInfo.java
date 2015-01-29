@@ -9,5 +9,5 @@ public class TaskInfo {
 	public long serialId, handlerId = -1, storyId, specificTime = 0;
 	public String name, notes;
 	public int estimate, remains, actual, status = TaskObject.STATUS_UNCHECK;
-	public ArrayList<Long> partnersId;
+	public ArrayList<Long> partnersId = new ArrayList<Long>();
 }
