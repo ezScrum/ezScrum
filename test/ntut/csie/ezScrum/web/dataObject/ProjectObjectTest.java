@@ -135,7 +135,7 @@ public class ProjectObjectTest extends TestCase {
 			.save();
 		project.reload();
 		
-		ArrayList<ProjectObject> projects = ProjectObject.getProjects();
+		ArrayList<ProjectObject> projects = ProjectObject.getAllProjects();
 				
 		assertEquals(1, projects.size());
 	}

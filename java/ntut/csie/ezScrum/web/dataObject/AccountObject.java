@@ -3,13 +3,13 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 public class AccountObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
@@ -40,23 +40,6 @@ public class AccountObject implements IBaseObject {
 		} catch (JSONException e) {
 			return "JSON Exception";
 		}
-	}
-
-	/**
-	 * JSON 少 project role 的資料 (待補!!!)
-	 * 
-	 * @return JSONObject
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject account = new JSONObject();
-
-		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
-				.put(AccountEnum.PASSWORD, mPassword)
-				.put(AccountEnum.EMAIL, mEmail)
-				.put(AccountEnum.NICK_NAME, mNickName)
-				.put(AccountEnum.ENABLE, mEnable).put("project_role", "");
-
-		return account;
 	}
 
 	public long getId() {

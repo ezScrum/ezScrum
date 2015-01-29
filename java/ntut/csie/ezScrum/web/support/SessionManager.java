@@ -2,28 +2,21 @@ package ntut.csie.ezScrum.web.support;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.codehaus.jettison.json.JSONException;
-
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.account.core.IAccount;
-import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONException;
 
 /**
  * @author franklin
@@ -110,11 +103,10 @@ public class SessionManager {
 			 * 如果 session 拿不到 project 的資料，則往 DB 找
 			 */
 			if (project == null) {
-				project = new ProjectMapper().getProjectByPidForDb(projectName);
+				project = new ProjectMapper().getProject(projectName);
 				if (project != null) {
 					try {
 						project.toJSON().toString();
-//						System.out.println(project.toJSON().toString());
 					} catch (JSONException e) {
 					}
 					session.setAttribute(projectName + "_new", project);	// 當IProject完全改完，把new拿掉
@@ -221,48 +213,6 @@ public class SessionManager {
 
 		for (HttpSession session : sessionList) {
 			session.removeAttribute(userPermessionNameForSession);
-		}
-	}
-
-	/**
-	 * 確認登入帳號是否擁有admin權限
-	 * 
-	 * @author SPARK
-	 * @param account
-	 * @return
-	 */
-	private static boolean checkIsAdmin(IAccount account) {
-		for (IRole role : account.getRoles()) {
-			String roleName = role.getRoleName();
-			String roleID = role.getRoleId();
-			if (roleName.equals("administrator") && roleID.equals("admin")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 移除Session中User所有專案的權限記錄
-	 * 
-	 * @author SPARK
-	 * @param allSessions
-	 */
-	private static void removeAdmineRole(Map<String, HttpSession> allSessions) {
-		for (Entry<String, HttpSession> entry : allSessions.entrySet()) {
-			HttpSession session = entry.getValue();
-			IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
-			AccountObject account = userSession.getAccount();
-			HashMap<String, ProjectRole> roles = account.getRoles();
-			ProjectRole role = roles.get("system");
-			if (role != null) {
-				ScrumRole scrumRole = role.getScrumRole();
-				String roleName = scrumRole.getRoleName();
-				if (roleName.equals("admin")) {
-					String userPermessionNameForSession = account.getUsername() + sessionAttributeNameForPermession;
-					session.removeAttribute(userPermessionNameForSession);
-				}
-			}
 		}
 	}
 }

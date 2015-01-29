@@ -47,7 +47,7 @@ public class AccountHelperTest extends TestCase {
 		//this.helper = new MantisAccountMapper(this.CP.getProjectList().get(0), config.getUserSession());
 		this.projectMapper = new ProjectMapper();
 		this.userSession = configuration.getUserSession();
-		this.project = this.CP.getProjects().get(0);
+		this.project = this.CP.getAllProjects().get(0);
 		
 		super.setUp();
 		
@@ -98,7 +98,7 @@ public class AccountHelperTest extends TestCase {
     	autr.setAccountIndex(3);
     	autr.exe_ST();
     	
-    	ProjectObject p = this.CP.getProjects().get(0);
+    	ProjectObject p = this.CP.getAllProjects().get(0);
     	updatePermission(p, "Stakeholder", false);	// 將 Stakeholder 角色設定成不能存取 TaskBoard
     	updatePermission(p, "ProductOwner", false);	// 將 PO 角色設定成不能存取 TaskBoard
     	

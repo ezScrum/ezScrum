@@ -34,10 +34,6 @@ public class ProjectHelper {
 		mProjectMapper = new ProjectMapper();
 	}
 
-	public ProjectInfoForm getProjectInfoForm(IProject project) {
-		return mProjectMapper.getProjectInfoForm(project);
-	}
-
 	public String getProjectListXML(AccountObject account) {
 		log.info(" handle project list xml format");
 
