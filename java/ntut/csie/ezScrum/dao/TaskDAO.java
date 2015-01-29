@@ -249,6 +249,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 				.setEstimate(result.getInt(TaskEnum.ESTIMATE))
 				.setRemains(result.getInt(TaskEnum.REMAIN))
 				.setActual(result.getInt(TaskEnum.ACTUAL))
+				.setStatus(result.getInt(TaskEnum.STATUS))
 				.setNotes(result.getString(TaskEnum.NOTES))
 				.setStoryId(result.getLong(TaskEnum.STORY_ID))
 				.setCreateTime(result.getLong(TaskEnum.CREATE_TIME))

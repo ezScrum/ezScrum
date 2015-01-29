@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -567,6 +568,22 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testCloseTask() {
+		String CLOSE_NAME = "CLOSE_NAME";
+		String CLOSE_NOTE = "CLOSE_NOTE";
+		Date SPECIFIC_DATE = new Date(System.currentTimeMillis() - 10000);
+		
+		// assert status, default status should be UNCHECK
+		TaskObject task = mATTS.getTasks().get(0);
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
+		
+		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE, SPECIFIC_DATE);
+		
+		TaskObject closedTask = TaskObject.get(task.getId());
+		assertEquals(CLOSE_NAME, closedTask.getName());
+		assertEquals(CLOSE_NOTE, closedTask.getNotes());
+		assertEquals(0, closedTask.getRemains());
+		assertEquals(TaskObject.STATUS_DONE, closedTask.getStatus());
+		assertEquals(SPECIFIC_DATE.getTime(), closedTask.getUpdateTime());
 	}
 
 	@Test
