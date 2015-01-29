@@ -403,6 +403,11 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 	
+	/**
+	 * Update time will equal to parameter you passed.
+	 * 
+	 * @param specificTime
+	 */
 	public void save(long specificTime) {
 		if (recordExists()) {
 			mUpdateTime = specificTime;

@@ -372,31 +372,38 @@ public class SprintBacklogMapper {
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
-	// for ezScrum 1.8
-	public void closeTask(long id, String name, String notes, Date changeDate) {
-		TaskObject task = TaskObject.get(id);
-		if (task != null) {
-			task.setName(name).setNotes(notes)
-					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
-					.setUpdateTime(changeDate.getTime())
-					.save(changeDate.getTime());
-		}
-	}
-
 	/**
-	 * From CHECK_OUT to UNCHECK
+	 * To DONE
 	 * 
 	 * @param id
 	 * @param name
 	 * @param notes
-	 * @param reopenDate
+	 * @param specificDate
 	 */
-	public void resetTask(long id, String name, String notes, Date reopenDate) {
+	public void closeTask(long id, String name, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
+					.save(specificDate.getTime());
+		}
+	}
+
+	/**
+	 * From CHECK to UNCHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void resetTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_UNCHECK)
-					.save(reopenDate.getTime());
+					.save(specificDate.getTime());
 		}
 	}
 
@@ -406,25 +413,34 @@ public class SprintBacklogMapper {
 	 * @param id
 	 * @param name
 	 * @param notes
-	 * @param reopenDate
+	 * @param specificDate
 	 */
-	public void reopenTask(long id, String name, String notes, Date reopenDate) {
+	public void reopenTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_CHECK)
-					.save(reopenDate.getTime());
+					.save(specificDate.getTime());
 		}
 	}
 
-	// for ezScrum 1.8
+	/**
+	 * From UNCHECK to CHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
 	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date changeDate) {
+			ArrayList<Long> partners, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.save(changeDate.getTime());
+					.save(specificDate.getTime());
 		}
 	}
 
