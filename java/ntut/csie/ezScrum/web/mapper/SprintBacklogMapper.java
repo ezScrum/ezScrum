@@ -414,7 +414,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void deleteTask(long id, long parentId) {
+	public void deleteTask(long id) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.delete();

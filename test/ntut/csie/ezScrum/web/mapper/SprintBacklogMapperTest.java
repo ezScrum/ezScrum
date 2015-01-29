@@ -583,5 +583,18 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testDeleteTask() {
+		// get all tasks id
+		ArrayList<Long> tasksId = mATTS.getTasksId();
+		
+		// delete the tasks
+		for (long taskId : tasksId) {
+			mSprintBacklogMapper.deleteTask(taskId);
+		}
+		
+		// all tasks should be deleted
+		for (long taskId : tasksId) {
+			TaskObject task = TaskObject.get(taskId);
+			assertEquals(null, task);
+		}
 	}
 }
