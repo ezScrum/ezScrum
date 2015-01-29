@@ -103,8 +103,7 @@ public class CreateProject {
 			// save in the Role
 			createRole(projectName);
 
-			// copy scrum role
-			copyScrumRoleSetting(project.getFullPath().getPathString());
+//			copyScrumRoleSetting(project.getFullPath().getPathString());
 
 			// save in DB
 			try {
@@ -248,23 +247,23 @@ public class CreateProject {
 	}
 
 	// 複製 ScrumRole 檔案
-	private void copyScrumRoleSetting(String ectpprojectpathath) {
-		File srcScrumRolePath = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
-		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
-
-		try {
-			InputStream in = new FileInputStream(srcScrumRolePath);
-			OutputStream out = new FileOutputStream(destScrumRolePath);
-
-			byte[] buf = new byte[1024];		// buffer
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		} catch (Exception e) {
-			log.debug("copyScrumRoleSetting error" + e.toString());
-		}
-	}
+//	private void copyScrumRoleSetting(String ectpprojectpathath) {
+//		File srcScrumRolePath = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
+//		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
+//
+//		try {
+//			InputStream in = new FileInputStream(srcScrumRolePath);
+//			OutputStream out = new FileOutputStream(destScrumRolePath);
+//
+//			byte[] buf = new byte[1024];		// buffer
+//			int len;
+//			while ((len = in.read(buf)) > 0) {
+//				out.write(buf, 0, len);
+//			}
+//			in.close();
+//			out.close();
+//		} catch (Exception e) {
+//			log.debug("copyScrumRoleSetting error" + e.toString());
+//		}
+//	}
 }
