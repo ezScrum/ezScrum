@@ -450,7 +450,7 @@ public class SprintBacklogMapperTest {
 		assertEquals("TEST_TASK_1", oldTask.getName());
 		assertEquals(-1, oldTask.getHandlerId());
 		assertEquals(8, oldTask.getEstimate());
-		assertEquals(0, oldTask.getRemains());
+		assertEquals(8, oldTask.getRemains());
 		assertEquals(0, oldTask.getActual());
 		assertEquals("TEST_TASK_NOTES_1", oldTask.getNotes());
 		assertEquals(0, oldTask.getPartnersId().size());
@@ -735,6 +735,7 @@ public class SprintBacklogMapperTest {
 		// assert status, default status should be UNCHECK
 		TaskObject task = mATTS.getTasks().get(0);
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
+		assertEquals(8, task.getRemains());
 
 		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE,
 				SPECIFIC_DATE);

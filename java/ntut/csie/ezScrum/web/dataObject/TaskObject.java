@@ -491,6 +491,9 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		// remains equals estimate when create a new task
+		mRemains = mEstimate;
+		
 		mId = TaskDAO.getInstance().create(this);
 
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
