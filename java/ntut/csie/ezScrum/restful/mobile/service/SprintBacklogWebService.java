@@ -69,14 +69,14 @@ public class SprintBacklogWebService extends ProjectWebService {
 	public String getTaskHsitoryList(String taskID) throws JSONException,
 			SQLException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue taskByID = this.sprintBacklogLogic.getTaskById(Long
+		IIssue taskByID = this.sprintBacklogLogic.getTask(Long
 				.parseLong(taskID));
 
 		List<HistoryObject> taskHistoryList = taskByID.getHistories();
 		List<String> remainsList = new ArrayList<String>();
 		String lastRemainsHour = "0";
 		for (HistoryObject history : taskHistoryList) {
-			String date = parseDate(history.getModifiedTime());
+			String date = parseDate(history.getCreateTime());
 			lastRemainsHour = getTaskRemains(new Date(date), taskByID);
 			remainsList.add(lastRemainsHour);
 		}
@@ -101,7 +101,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 		
 		String remains = "0";
 		for (HistoryObject history : histories) {
-			if (history.getModifiedTime() <= date.getTime() && history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
+			if (history.getCreateTime() <= date.getTime() && history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
 				remains = history.getNewValue();
 			}
 		}

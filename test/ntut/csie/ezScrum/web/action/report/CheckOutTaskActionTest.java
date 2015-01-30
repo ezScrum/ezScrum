@@ -92,7 +92,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
+		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
 		
 		// ================== set parameter info ====================
@@ -151,7 +151,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
+		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
 		
 		// ================== set parameter info ====================
@@ -196,7 +196,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
+		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
 
 		// ================== set parameter info ====================

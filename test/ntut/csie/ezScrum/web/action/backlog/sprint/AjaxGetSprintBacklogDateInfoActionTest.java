@@ -99,7 +99,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		int availableDays = new SprintBacklogLogic(this.project, this.userSession, this.sprintID).getSprintAvailableDays(this.sprintID);
+		int availableDays = new SprintBacklogLogic(this.project, this.userSession, this.sprintID).getSprintAvailableDays(Long.parseLong(sprintID));
 		List<String> dateList = this.getWorkDate(this.CS.Today, availableDays);
 		String expectedResponseText = "{\"Dates\":[";
 		for(int i = 0; i < dateList.size(); i++){

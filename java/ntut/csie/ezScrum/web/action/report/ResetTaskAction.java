@@ -47,7 +47,7 @@ public class ResetTaskAction extends PermissionAction {
 		sprintBacklogHelper.resetTask(issueID, name, bugNote, changeDate);
 
 		// return reset task的相關資訊
-		IIssue issue = sprintBacklogHelper.getIssue(issueID);
+		IIssue issue = sprintBacklogHelper.getStory(issueID);
 		StringBuilder result = new StringBuilder("");
 		result.append(new Translation().translateTaskboardIssueToJson(issue));
 

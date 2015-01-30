@@ -11,10 +11,11 @@ import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
-import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -25,25 +26,50 @@ import ntut.csie.jcis.resource.core.IProject;
 import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
-	private IProject mProject;
+	private IProject mIProject;
+	private ProjectObject mProject;
 	private IUserSession mUserSession;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
-	private String mSprintId;
+	private long mSprintId;
 
 	/**
-	 * for web service
+	 * 待刪
 	 */
+	@Deprecated
 	public SprintBacklogHelper(IProject project, IUserSession userSession) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
-		mSprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession,
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
 				null);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
+	
+	// 等 IProject 拿掉，就可以用此建構子
+	public SprintBacklogHelper(ProjectObject project, IUserSession userSession) {
+		mProject = project;
+		mUserSession = userSession;
+		mSprintBacklogLogic = new SprintBacklogLogic(project, userSession, 0);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
+	}
 
+	/**
+	 * 待刪
+	 */
+	@Deprecated
 	public SprintBacklogHelper(IProject project, IUserSession userSession,
 			String sprintId) {
+		mIProject = project;
+		mUserSession = userSession;
+		mSprintId = Long.parseLong(sprintId);
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
+				sprintId);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
+	}
+	
+	// 等 IProject 拿掉，就可以用此建構子
+	public SprintBacklogHelper(ProjectObject project, IUserSession userSession,
+			long sprintId) {
 		mProject = project;
 		mUserSession = userSession;
 		mSprintId = sprintId;
@@ -52,116 +78,71 @@ public class SprintBacklogHelper {
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	public IIssue getIssue(long issueId) {
-		return mSprintBacklogMapper.getStory(issueId);
-	}
-
-	public IIssue[] getStoryInSprint(String sprintId) {
-		return mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintId));
-	}
-
-	public IIssue[] getTaskInStory(String storyId) {
-		if (mSprintBacklogMapper != null) {
-			return mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(storyId));
+	
+	/**
+	 * ----- Story -----
+	 */
+	
+	/**
+	 * Add exist story to sprint
+	 * @param storiesId
+	 * @param releaseId
+	 */
+	public void addExistingStory(List<Long> storiesId, String releaseId) {
+		ProductBacklogLogic helper = new ProductBacklogLogic(mUserSession,
+				mIProject);
+		
+		if ((mSprintId != 0) && (mSprintId != -1)) {
+			// 將 Story 加入 Sprint 當中
+			helper.addIssueToSprint(storiesId, String.valueOf(mSprintId));
+			
+			// 檢查 Sprint 是否有存在於某個 Release 中
+			ReleasePlanHelper releasePlan = new ReleasePlanHelper(mIProject);
+			String sprintReleaseId = releasePlan.getReleaseID(String.valueOf(mSprintId));
+			
+			// 如果有的話，將所有 Story 加入 Release
+			if (!(sprintReleaseId.equals("0"))) {
+				helper.addReleaseTagToIssue(storiesId, sprintReleaseId);
+			}
+		} else {
+			helper.addReleaseTagToIssue(storiesId, releaseId);
 		}
-		return null;
 	}
 	
-	public ArrayList<TaskObject> getWildTasks(long projectId)
-			throws SQLException {
-		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
+	public IIssue getStory(long issueId) {
+		return mSprintBacklogMapper.getStory(issueId);
 	}
-
-	public void addExistedTask(String storyId, String[] selectedTaskIds) {
-		long[] taskIds = new long[selectedTaskIds.length];
-		for (int i = 0; i < selectedTaskIds.length; i++) {
-			taskIds[i] = Long.parseLong(selectedTaskIds[i]);
-		}
-		if (mSprintBacklogMapper != null) {
-			Date date = DateUtil.dayFillter(DateUtil.getToday(),
-					DateUtil._8DIGIT_DATE_2);
-			mSprintBacklogMapper.addExistingTask(taskIds,
-					Long.parseLong(storyId), date);
-		}
+	
+	public IIssue[] getStoryInSprint(long sprintId) {
+		return mSprintBacklogMapper.getStoriesBySprintId(sprintId);
 	}
-
-	public TaskObject createTaskInStory(TaskInfo taskInfo) {
-		TaskObject task = null;
-		if (mSprintBacklogMapper != null) {
-			long taskId = mSprintBacklogLogic.addTask(taskInfo.projectId,
-					taskInfo.name, taskInfo.notes, taskInfo.estiamte, taskInfo.handlerId, null,
-					taskInfo.storyId, new Date());
-			task = TaskObject.get(taskId);
-		}
-		return task;
-	}
-
-	/**
-	 * 根據 id 取得 task
-	 */
-	public IIssue getTaskById(long id) {
-		List<IIssue> tasks = mSprintBacklogMapper.getAllTasks();
-		for (IIssue task : tasks) {
-			if (task.getIssueID() == id) {
-				return task;
-			}
-		}
-		return null;
-	}
-
-	public void deleteTask(String taskId, String storyId) {
-		if (mSprintBacklogMapper != null) {
-			mSprintBacklogMapper.deleteTask(Long.parseLong(taskId),
-					Long.parseLong(storyId));
-		}
-	}
-
-	public void dropTask(String taskId, String storyId) {
-		if (mSprintBacklogMapper != null) {
-			mSprintBacklogMapper.dropTask(Long.parseLong(taskId),
-					Long.parseLong(storyId));
-		}
-	}
-
-	public boolean editTask(TaskObject task) {
-		if (mSprintBacklogMapper != null) {
-			Date date = DateUtil.dayFillter(DateUtil.getToday(),
-					DateUtil._8DIGIT_DATE_2);
-			// partner 暫時沒寫
-			return mSprintBacklogLogic.editTask(Long.parseLong(task.id),
-					task.name, task.estimation, task.remains, task.handler, "",
-					task.actual, task.notes, date);
-		}
-		return false;
-	}
-
-	public List<IIssue> getStoriesByImportance() {
+	
+	public ArrayList<IIssue> getStoriesByImportance() {
 		return mSprintBacklogLogic.getStoriesByImp();
 	}
-
+	
 	/**
-	 * 取得尚未被施工的所有 Story
+	 * Get existing stories by release id
+	 * @param releaseId
+	 * @return IStory list
 	 */
-	public List<IStory> getExistedStories(String releaseId) throws SQLException {
-		List<IStory> stories = null;
-		ProductBacklogLogic productBacklogHelper = new ProductBacklogLogic(
-				mUserSession, mProject);
-		if ((mSprintId != null) && (!mSprintId.isEmpty())
-				&& (!mSprintId.equals("-1"))) {
-			if (Integer.parseInt(mSprintId) > 0) {
-				// get release ID by sprint ID
-				ReleasePlanHelper rphelper = new ReleasePlanHelper(mProject);
-				releaseId = rphelper.getReleaseID(mSprintId);
-				// get stories that exist in
-				stories = productBacklogHelper.getAddableStories(mSprintId,
-						releaseId);
-			}
+	public ArrayList<IStory> getExistingStories(String releaseId) throws SQLException {
+		ArrayList<IStory> stories = null;
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
+				mUserSession, mIProject);
+		if ((mSprintId != 0) && (mSprintId != -1)) {
+			// get release ID by sprint ID
+			ReleasePlanHelper rphelper = new ReleasePlanHelper(mIProject);
+			releaseId = rphelper.getReleaseID(String.valueOf(mSprintId));
+			// get stories that exist in
+			stories = productBacklogLogic.getAddableStories(String.valueOf(mSprintId),
+					releaseId);
 		} else if ((releaseId != null) && (!releaseId.isEmpty())
 				&& (!releaseId.equals("-1"))) {
 			// Select from Release Plan
 			// get stories that exist in
 			if (Integer.parseInt(releaseId) > 0) {
-				stories = productBacklogHelper.getAddableStories();
+				stories = productBacklogLogic.getAddableStories();
 			}
 		} else {
 			stories = null;
@@ -170,32 +151,44 @@ public class SprintBacklogHelper {
 	}
 
 	/**
-	 * 新增以存在的 Story 至專案中
+	 * ----- Task -----
 	 */
-	public void addExistedStory(List<Long> list, String releaseId) {
-		ProductBacklogLogic helper = new ProductBacklogLogic(mUserSession,
-				mProject);
+	
+	public TaskObject addTask(long projectId, TaskInfo taskInfo) {
+		long taskId = mSprintBacklogMapper.addTask(projectId, taskInfo);
+		return TaskObject.get(taskId);
+	}
+	
+	public void addExistingTask(ArrayList<Long> tasksId, long storyId) {
+		mSprintBacklogMapper.addExistingTasks(tasksId, storyId);
+	}
 
-		if ((mSprintId != null) && (!mSprintId.isEmpty())
-				&& (!mSprintId.equals("-1"))) {
-			// 將 Story 加入 Sprint 當中
-			helper.addIssueToSprint(list, mSprintId);
+	public TaskObject getTask(long taskId) {
+		return mSprintBacklogMapper.getTask(taskId);
+	}
+	
+	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
+		return mSprintBacklogMapper.getTasksByStoryId(storyId);
+	}
+	
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
+		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
+	}
 
-			// 檢查 Sprint 是否有存在於某個 Release 中
-			ReleasePlanHelper releasePlan = new ReleasePlanHelper(mProject);
-			String sprintReleaseId = releasePlan.getReleaseID(mSprintId);
+	public void updateTask(TaskInfo taskInfo) {
+		mSprintBacklogMapper.updateTask(taskInfo);;
+	}
+	
+	public void deleteTask(long taskId) {
+		mSprintBacklogMapper.deleteTask(taskId);
+	}
 
-			// 如果有的話，將所有 Story 加入 Release
-			if (!(sprintReleaseId.equals("0"))) {
-				helper.addReleaseTagToIssue(list, sprintReleaseId);
-			}
-		} else {
-			helper.addReleaseTagToIssue(list, releaseId);
-		}
+	public void dropTask(long taskId) {
+		mSprintBacklogMapper.dropTask(taskId);
 	}
 
 	/**
-	 * ------ 處理Action的response information ------
+	 * ------ 處理 Action 的 response information ------
 	 */
 
 	/**
@@ -205,28 +198,28 @@ public class SprintBacklogHelper {
 	 * @return
 	 */
 	public String getSprintBacklogListInfoText() {
-		List<SprintBacklogTreeStructure> SBtree = new ArrayList<SprintBacklogTreeStructure>();
+		ArrayList<SprintBacklogTreeStructure> SBtree = new ArrayList<SprintBacklogTreeStructure>();
 		if (mSprintBacklogMapper != null) {
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic
 					.getSprintAvailableDays(mSprintId);
 
 			if (this.mSprintBacklogMapper.getSprintPlanId() > 0) {
-				List<IIssue> stories = getStoriesByImportance();
-				Map<Long, IIssue[]> map = mSprintBacklogMapper.getTasksMap();
+				ArrayList<IIssue> stories = getStoriesByImportance();
+				Map<Long, ArrayList<TaskObject>> storyTaskMap = mSprintBacklogMapper.getTasksMap();
 
 				// 取得 Sprint 日期的 Column
-				List<SprintBacklogDateColumn> cols = null;
-				if (this.mSprintBacklogLogic.getCurrentDateColumns() == null)
+				ArrayList<SprintBacklogDateColumn> cols = null;
+				if (mSprintBacklogLogic.getCurrentDateColumns() == null)
 					cols = mSprintBacklogLogic.calculateSprintBacklogDateList(
-							this.mSprintBacklogMapper.getSprintStartDate(),
+							mSprintBacklogMapper.getSprintStartDate(),
 							availableDays);
 				else
 					cols = mSprintBacklogLogic.getCurrentDateColumns();
 
 				for (IIssue story : stories) {
 					SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							story, map.get(Long.valueOf(story.getIssueID())),
+							story, storyTaskMap.get(Long.valueOf(story.getIssueID())),
 							mSprintBacklogLogic.getCurrentDateList());
 					SBtree.add(tree);
 				}
@@ -266,7 +259,7 @@ public class SprintBacklogHelper {
 					.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
-					mProject);
+					mIProject);
 			releaseId = Integer.parseInt(releasePlanHelper.getReleaseID(Integer
 					.toString(currentSprintId)));
 
@@ -296,7 +289,7 @@ public class SprintBacklogHelper {
 			Date StartDate = mSprintBacklogMapper.getSprintStartDate();
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic
-					.getSprintAvailableDays(mSprintId);
+					.getSprintAvailableDays(Long.parseLong(mSprintId));
 
 			List<SprintBacklogDateColumn> cols = mSprintBacklogLogic
 					.calculateSprintBacklogDateList(StartDate, availableDays);
@@ -361,7 +354,7 @@ public class SprintBacklogHelper {
 	 * class: AjaxRemoveSprintTaskTest
 	 */
 	public void removeTask(long issueId, long parentId) {
-		String name = getIssue(issueId).getSummary();
+		String name = getStory(issueId).getSummary();
 
 		// reset status, handler
 		resetTask(issueId, name, null, "");
@@ -388,8 +381,8 @@ public class SprintBacklogHelper {
 		if (mSprintBacklogMapper != null) {
 			mSprintBacklogMapper.resetTask(id, name, bugNote, changeDate);
 		}
-		TaskObject taskObj = new TaskObject(getIssue(id));
-		editTask(taskObj);
+		TaskObject taskObj = new TaskObject(getStory(id));
+		updateTask(taskObj);
 	}
 
 	/**

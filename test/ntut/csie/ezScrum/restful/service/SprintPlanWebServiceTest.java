@@ -150,7 +150,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 
 		StoryWebService mStoryWebService = new StoryWebService(userObject, projectID);
 
-		List<IStory> storyList = SPBhelper.getExistedStories(Realease.getID());
+		List<IStory> storyList = SPBhelper.getExistingStories(Realease.getID());
 
 		for (int i = 0; i < storyList.size(); i++) {
 			JSONArray taskJSONArray = new JSONArray(mStoryWebService.getTaskInStory(String.valueOf(storyList.get(i).getStoryId()))); // 從WebService取得Json

@@ -101,7 +101,7 @@ public class HistoryDAOTest extends TestCase {
 						result.getString(HistoryEnum.NEW_VALUE));
 				assertEquals(history.getOldValue(),
 						result.getString(HistoryEnum.OLD_VALUE));
-				assertEquals(history.getModifiedTime(),
+				assertEquals(history.getCreateTime(),
 						result.getLong(HistoryEnum.MODIFIED_TIME));
 				assertEquals(id, result.getLong(HistoryEnum.ID));
 				assertEquals(history.getNewValue(),

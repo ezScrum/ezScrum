@@ -27,7 +27,8 @@ import org.apache.commons.logging.LogFactory;
 public class SprintBacklogMapper {
 	private static Log log = LogFactory.getLog(SprintBacklogMapper.class);
 	private int mSprintPlanId = 0;
-	private IProject mProject;
+	private IProject mIProject;
+	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
 	private Date mEndDate;
@@ -53,7 +54,7 @@ public class SprintBacklogMapper {
 	 * @param userSession
 	 */
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
@@ -73,7 +74,7 @@ public class SprintBacklogMapper {
 	 */
 	public SprintBacklogMapper(IProject project, IUserSession userSession,
 			long sprintId) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
@@ -141,15 +142,28 @@ public class SprintBacklogMapper {
 		return mTasks;
 	}
 
-	public Map<Long, ArrayList<TaskObject>> getDropedTasksMap() {
+	public Map<Long, ArrayList<TaskObject>> getDroppedTasksMap() {
 		if (mMapDropedStoryTasks == null) {
-			getDroppedStories();
+			IIssue[] droppedStories = getDroppedStories();
+			// 取得這些被 Dropped Story 的 Task
+			mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
+			for (IIssue dropedStory : droppedStories) {
+				ArrayList<TaskObject> droppedTasks = new ArrayList<TaskObject>();
+				List<Long> droppedTasksId = dropedStory.getChildrenId();
+				for (Long droppedTaskId : droppedTasksId) {
+					TaskObject droppedTask = TaskObject.get(droppedTaskId);
+					if (droppedTask != null){
+						droppedTasks.add(droppedTask);
+					}
+				}
+				mMapDropedStoryTasks.put(dropedStory.getIssueID(), droppedTasks);
+			}
 		}
 		return mMapDropedStoryTasks;
 	}
 
 	// 上層如果 call 到這個 function, 要判斷傳入引數，如果是 Task 的話要改用 getAllTasks()
-	public List<IIssue> getAllStories(String category) {
+	public ArrayList<IIssue> getAllStories(String category) {
 		refresh();
 		return mStories;
 	}
@@ -163,40 +177,34 @@ public class SprintBacklogMapper {
 	public IIssue[] getStoriesBySprintId(long sprintId) {
 		mMantisService.openConnect();
 		IIssue[] stories = mMantisService
-				.getIssues(mProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
+				.getIssues(mIProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
 						null, Long.toString(sprintId), null);
 		mMantisService.closeConnect();
 		return stories;
 	}
 
 	/**
-	 * 取得 story 內的 tasks 與 sprint 無關
-	 * for ezScrum 1.8
+	 * 取得 story 內的 tasks 與 sprint 無關 for ezScrum 1.8
 	 * 
 	 * @param storyId
 	 */
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		IIssue story = getStory(storyId);
-
-		if (story == null) {
-			return null;
-		}
-
-		List<Long> taskIds = story.getChildrenId();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-
-		for (long taskId : taskIds) {
-			TaskObject task = TaskObject.get(taskId);
-			if (task != null) {
-				tasks.add(task);
+		if (story != null) {
+			List<Long> taskIds = story.getChildrenId();
+			for (long taskId : taskIds) {
+				TaskObject task = TaskObject.get(taskId);
+				if (task != null) {
+					tasks.add(task);
+				}
 			}
 		}
-
 		return tasks;
 	}
 
 	/**
-	 * 取得在這個 Sprint 中曾經被 Drop 掉的 Story
+	 * 取得在這個 Sprint 中被 Drop 掉的 Story
 	 */
 	public IIssue[] getDroppedStories() {
 		if (mDropedStories == null) {
@@ -204,67 +212,49 @@ public class SprintBacklogMapper {
 		} else {
 			return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 		}
-
-		String iter = Integer.toString(mSprintPlanId);
+		String sprintIdString = Integer.toString(mSprintPlanId);
 		Date startDate = getSprintStartDate();
 		Date endDate = getSprintEndDate();
-
 		mMantisService.openConnect();
-
 		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
-		IIssue[] tmpIIssues = mMantisService.getIssues(mProject.getName(),
+		IIssue[] sprintStories = mMantisService.getIssues(mIProject.getName(),
 				ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
-
 		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
-		if (tmpIIssues != null) {
-			for (IIssue issue : tmpIIssues) {
-				Map<Date, String> map = issue.getTagValueList("Iteration");
-
-				if (!issue.getSprintID().equals(iter)) {
-					mDropedStories.add(issue);
+		if (sprintStories != null) {
+			for (IIssue story : sprintStories) {
+				if (!story.getSprintID().equals(sprintIdString)) {
+					mDropedStories.add(story);
 				}
 			}
 		}
-
-		// 取得這些被 Dropped Story 的 Task
-		mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
-		ArrayList<TaskObject> tmpList = new ArrayList<TaskObject>();
-		for (IIssue issue : mDropedStories) {
-			tmpList.clear();
-
-			List<Long> childList = issue.getChildrenId();
-
-			for (Long id : childList) {
-				TaskObject tmp = TaskObject.get(id);
-				if (tmp != null)
-					tmpList.add(tmp);
-			}
-			mMapDropedStoryTasks.put(issue.getIssueID(), tmpList);
-		}
-
 		mMantisService.closeConnect();
 		return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 	}
 
 	public IIssue getStory(long storyId) {
 		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(storyId);
+		IIssue story = mMantisService.getIssue(storyId);
 		mMantisService.closeConnect();
-		return issue;
+		return story;
 	}
-	
+
 	public TaskObject getTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
+		if (task != null) {
+			return task;
+		}
 		return null;
 	}
 
 	// for ezScrum 1.8
 	// TaskInfo should include task id
 	public void updateTask(TaskInfo taskInfo) {
-
 		TaskObject task = TaskObject.get(taskInfo.taskId);
 		if (task != null) {
-			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate)
-					.setRemains(taskInfo.remains).setActual(taskInfo.actualHour).setNotes(taskInfo.notes)
+			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId)
+					.setEstimate(taskInfo.estimate)
+					.setRemains(taskInfo.remains).setActual(taskInfo.actual)
+					.setNotes(taskInfo.notes)
 					.setPartnersId(taskInfo.partnersId).save();
 		}
 	}
@@ -272,28 +262,33 @@ public class SprintBacklogMapper {
 	// for ezScrum 1.8
 	public long addTask(long projectId, TaskInfo taskInfo) {
 		TaskObject task = new TaskObject(projectId);
-		task.setName(taskInfo.name).setNotes(taskInfo.notes).setStoryId(taskInfo.storyId)
-				.setHandlerId(taskInfo.handlerId).setEstimate(taskInfo.estimate).setActual(0)
-				.setPartnersId(taskInfo.partnersId).setCreateTime(taskInfo.specificTime).save();
+		task.setName(taskInfo.name).setNotes(taskInfo.notes)
+				.setStoryId(taskInfo.storyId).setHandlerId(taskInfo.handlerId)
+				.setEstimate(taskInfo.estimate).setRemains(taskInfo.estimate)
+				.setActual(0).setCreateTime(taskInfo.specificTime).save();
+
+		for (long partnerId : taskInfo.partnersId) {
+			task.addPartner(partnerId);
+		}
+
 		mUpdateFlag = true;
 		return task.getId();
 	}
 
 	// for ezScrum 1.8
-	public void addExistngTask(long[] taskIds, long storyId, Date date) {
+	public void addExistingTasks(ArrayList<Long> taskIds, long storyId) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
 				task.setStoryId(storyId);
-				task.save();				
+				task.save();
 			}
 		}
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		mUpdateFlag = true;
 	}
-	
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId)
-			throws SQLException {
+
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
 		ProjectObject project = ProjectObject.get(projectId);
 		return project.getTasksWithNoParent();
 	}
@@ -303,13 +298,13 @@ public class SprintBacklogMapper {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
-				task.delete();				
+				task.delete();
 			}
 		}
 		mUpdateFlag = true;
 	}
 
-	public void dropTask(long taskId, long parentId) {
+	public void dropTask(long taskId) {
 		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
 			task.setStoryId(TaskObject.NO_PARENT).save();
@@ -326,7 +321,7 @@ public class SprintBacklogMapper {
 	}
 
 	public IProject getProject() {
-		return mProject;
+		return mIProject;
 	}
 
 	public Date getSprintStartDate() {
@@ -345,7 +340,7 @@ public class SprintBacklogMapper {
 		return mIterPlanDesc.getGoal();
 	}
 
-	public void closeStory(long id, String bugNote, String changeDate) {
+	public void closeStory(long id, String notes, String changeDate) {
 		Date closeDate = null;
 
 		if (changeDate != null && !changeDate.equals("")) {
@@ -355,58 +350,103 @@ public class SprintBacklogMapper {
 
 		mMantisService.openConnect();
 		mMantisService.changeStatusToClosed(id, ITSEnum.FIXED_RESOLUTION,
-				bugNote, closeDate);
+				notes, closeDate);
 		mMantisService.closeConnect();
 	}
-	
-	public void reopenStory(long id, String name, String bugNote, String changeDate) {
-		
+
+	public void reopenStory(long id, String name, String bugNote,
+			String changeDate) {
+		Date closeDate = null;
+
+		if (changeDate != null && !changeDate.equals("")) {
+			closeDate = DateUtil.dayFillter(changeDate,
+					DateUtil._16DIGIT_DATE_TIME);
+		} else {
+			closeDate = new Date();
+		}
+
+		mMantisService.openConnect();
+		mMantisService.resetStatusToNew(id, name, bugNote, closeDate);
+		mMantisService.closeConnect();
 	}
 
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
-	// for ezScrum 1.8
-	public void closeTask(long id, String name, String notes, Date changeDate) {
+	/**
+	 * To DONE
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void closeTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
-					.setUpdateTime(changeDate.getTime()).save();
+					.setUpdateTime(specificDate.getTime())
+					.save(specificDate.getTime());
 		}
 	}
 
-	// for ezScrum 1.8
-	public void resetTask(long id, String name, String notes, Date reopenDate) {
+	/**
+	 * From CHECK to UNCHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void resetTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_UNCHECK)
-					.setUpdateTime(reopenDate.getTime()).save();
-		}
-	}
-	
-	// for ezScrum 1.8
-	public void reopenTask(long id, String name, String notes, Date reopenDate) {
-		TaskObject task = TaskObject.get(id);
-		if (task != null) {
-			task.setName(name).setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.setUpdateTime(reopenDate.getTime()).save();
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_UNCHECK)
+					.save(specificDate.getTime());
 		}
 	}
 
-	// for ezScrum 1.8
+	/**
+	 * From DONE to CHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void reopenTask(long id, String name, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_CHECK)
+					.save(specificDate.getTime());
+		}
+	}
+
+	/**
+	 * From UNCHECK to CHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
 	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date changeDate) {
+			ArrayList<Long> partners, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.setUpdateTime(changeDate.getTime()).save();
+					.save(specificDate.getTime());
 		}
 	}
 
 	// for ezScrum 1.8
-	public void deleteTask(long id, long parentId) {
+	public void deleteTask(long id) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.delete();
@@ -421,7 +461,8 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mMapStoryTasks == null || mUpdateFlag) {
+		if (mStories == null || mTasks == null || mMapStoryTasks == null
+				|| mUpdateFlag) {
 			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}

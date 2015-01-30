@@ -97,7 +97,7 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		private String ModifiedDate = "";
 
 		public IssueHistoryList(HistoryObject history) {
-			parseDate(history.getModifiedTime());
+			parseDate(history.getCreateTime());
 			Description = history.getDescription();
 			HistoryType = history.getHistoryTypeString();
 		}

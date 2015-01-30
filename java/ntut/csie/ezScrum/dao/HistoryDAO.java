@@ -32,7 +32,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 		valueSet.addInsertValue(HistoryEnum.OLD_VALUE, objectInfo.getOldValue());
 		valueSet.addInsertValue(HistoryEnum.NEW_VALUE, objectInfo.getNewValue());
 		valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
-				objectInfo.getModifiedTime());
+				objectInfo.getCreateTime());
 		String query = valueSet.getInsertQuery();
 
 		return mControl.executeInsert(query);

@@ -51,7 +51,7 @@ public class ShowExistedStoryAction extends PermissionAction {
     	boolean NumberError = false;
     	// Select from Sprint Backlog
     	try{
-    		stories = sprintBacklogHelper.getExistedStories(releaseID);
+    		stories = sprintBacklogHelper.getExistingStories(releaseID);
 		} catch (SQLException e) {
 			System.out.println("class : ShowExistedStoryAction, method : execute, exception : " + e.toString());
     		NumberError = true;

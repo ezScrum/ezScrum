@@ -70,7 +70,7 @@ public class TaskBoard {
 		mTaskMap = mSprintBacklogMapper.getTasksMap();
 		// 取得從經被drop掉的Story與其底下的Task
 		mDropedStories = mSprintBacklogMapper.getDroppedStories();
-		mDropedTaskMap = mSprintBacklogMapper.getDropedTasksMap();
+		mDropedTaskMap = mSprintBacklogMapper.getDroppedTasksMap();
 
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊

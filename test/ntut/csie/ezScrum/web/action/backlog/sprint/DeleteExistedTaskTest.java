@@ -160,9 +160,9 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		// Story加入1個Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, this.mAddStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
-		String[] taskIDs = new String[addTaskToStory.getTaskIDList().size()];
-		for(int i = 0; i < addTaskToStory.getTaskIDList().size(); i++ ){
-			taskIDs[i] = String.valueOf(addTaskToStory.getTaskIDList().get(i));
+		String[] taskIDs = new String[addTaskToStory.getTasksId().size()];
+		for(int i = 0; i < addTaskToStory.getTasksId().size(); i++ ){
+			taskIDs[i] = String.valueOf(addTaskToStory.getTasksId().get(i));
 		}
 		return taskIDs;
     }

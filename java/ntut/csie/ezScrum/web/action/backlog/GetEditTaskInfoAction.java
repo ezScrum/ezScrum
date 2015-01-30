@@ -45,7 +45,7 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
 		
 		StringBuilder result = new StringBuilder();
-		IIssue issue = sprintBacklogHelper.getIssue(issueID);
+		IIssue issue = sprintBacklogHelper.getStory(issueID);
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		result.append("<EditTask><Task>");
 		result.append("<Id>" + issue.getIssueID() + "</Id>");

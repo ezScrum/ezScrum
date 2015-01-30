@@ -89,7 +89,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 	public void testDoneIssue_Task() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ATS.getTaskList().get(0); // 取得Task資訊
+		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = issue.getIssueID();
 
 		// ================== set parameter info ====================

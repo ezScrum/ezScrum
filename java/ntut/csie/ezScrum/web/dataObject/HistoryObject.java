@@ -37,7 +37,7 @@ public class HistoryObject {
 	private long mIssueId;
 	private int mIssueType;
 	private int mHistoryType;
-	private long mModifiedTime;
+	private long mCreateTime;
 	private String mOldValue = "";
 	private String mNewValue = "";
 
@@ -85,7 +85,7 @@ public class HistoryObject {
 	}
 
 	public HistoryObject setModifiedTime(long modifiedTime) {
-		mModifiedTime = modifiedTime;
+		mCreateTime = modifiedTime;
 		return this;
 	}
 
@@ -271,13 +271,13 @@ public class HistoryObject {
 		return "";
 	}
 	
-	public long getModifiedTime() {
-		return mModifiedTime;
+	public long getCreateTime() {
+		return mCreateTime;
 	}
 	
 	public String getFormattedModifiedTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
-		return sdf.format(new Date(mModifiedTime));
+		return sdf.format(new Date(mCreateTime));
 	}
 
 	public JSONObject toJSON() throws JSONException {
@@ -287,7 +287,7 @@ public class HistoryObject {
 				.put(HistoryEnum.ISSUE_TYPE, getIssueType())
 				.put(HistoryEnum.HISTORY_TYPE, getHistoryType())
 				.put(HistoryEnum.DESCRIPTION, getDescription())
-				.put(HistoryEnum.MODIFIED_TIME, getModifiedTime());
+				.put(HistoryEnum.MODIFIED_TIME, getCreateTime());
 		return object;
 	}
 }
