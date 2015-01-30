@@ -402,7 +402,7 @@ public class SprintBacklogMapper {
 	public void resetTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes)
+			task.setName(name).setNotes(notes).setHandlerId(-1)
 					.setStatus(TaskObject.STATUS_UNCHECK)
 					.save(specificDate.getTime());
 		}

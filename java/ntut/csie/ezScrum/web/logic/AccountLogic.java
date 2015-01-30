@@ -22,7 +22,7 @@ public class AccountLogic {
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
 		AccountObject account = userSession.getAccount();
-		if (!account.getEnable().equals("true")) {
+		if (account.getEnable()) {
 			return false;
 		}
 //		ScrumRole sr = SessionManager.getScrumRole(request, project, account);

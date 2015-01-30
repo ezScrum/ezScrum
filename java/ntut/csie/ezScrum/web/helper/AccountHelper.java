@@ -31,7 +31,7 @@ public class AccountHelper {
 	
 	public AccountHelper(IUserSession userSession) {
 		mUserSession = userSession;
-		mAccountMapper = new AccountMapper(null, mUserSession);
+		mAccountMapper = new AccountMapper(mUserSession);
 	}
 
 	public String validateAccountID(String id) {
@@ -123,24 +123,24 @@ public class AccountHelper {
 		
 		return assignRoleInfo.toString();
 	}
-	public AccountObject assignRole_add(String id, String res, String op) throws Exception {
+	public AccountObject assignRole_add(long accountId, long projectId, String op) throws Exception {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
-			account = mAccountMapper.addSystemRole(Long.parseLong(id));
+			account = mAccountMapper.addSystemRole(accountId);
 		} else {
-			account = mAccountMapper.addProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
+			account = mAccountMapper.addProjectRole(projectId, accountId, RoleEnum.valueOf(op));
 		}
 		return account;
 	}
 
-	public AccountObject assignRole_remove(String id, String res, String op) throws Exception {
+	public AccountObject assignRole_remove(String id, String projectId, String op) throws Exception {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (op.equals("admin")) {
 			account = mAccountMapper.removeSystemRole(Long.parseLong(id));
 		} else {
-			account = mAccountMapper.removeProjectRole(Long.parseLong(res), Long.parseLong(id), RoleEnum.valueOf(op));
+			account = mAccountMapper.removeProjectRole(Long.parseLong(projectId), Long.parseLong(id), RoleEnum.valueOf(op));
 		}
 		return account;
 	}

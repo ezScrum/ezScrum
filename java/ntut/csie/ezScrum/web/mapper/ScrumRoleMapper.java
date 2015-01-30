@@ -103,21 +103,21 @@ public class ScrumRoleMapper {
 		XmlFileUtil.SaveXmlFile(path, doc); 
 	}
 	
-	// ezScrum v1.8
-	public void updateScrumRoleForDb(String projectId, ScrumRole scrumRole) {
-		update(scrumRole);	// 過度期，更改Rolebase.xml, DB全數改為即可刪掉
-		mService.openConnect();
-		mService.updateScrumRole(projectId, RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
-		mService.closeConnect();
-	}
-	
-	// ezScrum v1.8
-	public ScrumRole getScrumRoleForDb(String id, String projectId, String roleName) {
-		mService.openConnect();
-		ScrumRole scrumRole = mService.convertScrumRole(id, projectId, RoleEnum.valueOf(roleName));
-		mService.closeConnect();
-		return scrumRole;
-	}
+//	// ezScrum v1.8
+//	public void updateScrumRoleForDb(String projectId, ScrumRole scrumRole) {
+//		update(scrumRole);	// 過度期，更改Rolebase.xml, DB全數改為即可刪掉
+//		mService.openConnect();
+//		mService.updateScrumRole(projectId, RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
+//		mService.closeConnect();
+//	}
+//	
+//	// ezScrum v1.8
+//	public ScrumRole getScrumRoleForDb(String id, String projectId, String roleName) {
+//		mService.openConnect();
+//		ScrumRole scrumRole = mService.convertScrumRole(id, projectId, RoleEnum.valueOf(roleName));
+//		mService.closeConnect();
+//		return scrumRole;
+//	}
 	
 //	// return 某個專案角色的權限
 //	public ScrumRole getPermission(String resource, String rolename) {

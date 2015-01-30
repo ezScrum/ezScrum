@@ -81,45 +81,40 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Product Owner 角色
 	 */
 	public void exe_PO() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
-		updateAccount(res, op);
+		long projectId = this.projectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Scrum Team 角色
 	 */
 	public void exe_ST() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_SCRUMTEAM;
-		updateAccount(res, op);
+		long projectId = this.projectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMTEAM);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Scrum Master 角色
 	 */
 	public void exe_SM() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_SCRUMMASTER;
-		updateAccount(res, op);
+		long projectId = this.projectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMMASTER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Stakeholder 角色
 	 */
 	public void exe_Sh() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_STAKEHOLDER;
-		updateAccount(res, op);
+		long projectId = this.projectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_STAKEHOLDER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Guest 角色
 	 */
 	public void exe_Guest() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_GUEST;
-		updateAccount(res, op);
+		long projectId = this.projectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_GUEST);
 	}
 
 	/**
@@ -149,11 +144,11 @@ public class AddUserToRole {
 		helper.updateAccount(user);
 	}
 
-	private void updateAccount(String res, String role) {
+	private void updateAccount(long projectId, String role) {
 		// ezScrum v1.8
 		AccountHelper helper = new AccountHelper(configuration.getUserSession());
 		try {
-			helper.assignRole_add(theAccount.getId(), res, role);
+			helper.assignRole_add(theAccount.getId(), projectId, role);
 		} catch (LogonException e) {
 			e.printStackTrace();
 			System.out.println("class: AddUserToRole, method: updateAccount, Logon_exception: " + e.toString());
