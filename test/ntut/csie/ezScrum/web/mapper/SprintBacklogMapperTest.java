@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
@@ -20,6 +21,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -162,7 +164,22 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetDropedTasksMap() {
+	public void testGetDroppedTasksMap() {
+		// check dropped stories before test
+		Map<Long, ArrayList<TaskObject>> droppedTasksMap = mSprintBacklogMapper.getDroppedTasksMap();
+		assertEquals(0, droppedTasksMap.size());
+		// create product backlog helper
+		IProject project = mCP.getProjectList().get(0);
+		IUserSession userSession = mConfiguration.getUserSession();
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
+		// remove story 2 from sprint
+		productBacklogHelper.removeStoryFromSprint(1);
+		// check dropped stories after add a dropped story
+		droppedTasksMap = mSprintBacklogMapper.getDroppedTasksMap();
+		assertEquals(3, droppedTasksMap.get(1).size());
+		assertEquals(1, droppedTasksMap.get(1).get(0).getId());
+		assertEquals(2, droppedTasksMap.get(1).get(1).getId());
+		assertEquals(3, droppedTasksMap.get(1).get(2).getId());
 	}
 
 	@Test
@@ -272,6 +289,26 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetDroppedStories() {
+		// check dropped stories before test
+		IIssue[] droppedStories = mSprintBacklogMapper.getDroppedStories();
+		assertEquals(0, droppedStories.length);
+		List<IIssue> allStories = mSprintBacklogMapper.getAllStories("Story");
+		assertEquals("1", allStories.get(0).getSprintID());
+		assertEquals("1", allStories.get(1).getSprintID());
+		assertEquals("1", allStories.get(2).getSprintID());
+		// create product backlog helper
+		IProject project = mCP.getProjectList().get(0);
+		IUserSession userSession = mConfiguration.getUserSession();
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
+		// remove story 2 from sprint
+		productBacklogHelper.removeStoryFromSprint(1);
+		// check dropped stories after add a dropped story
+		droppedStories = mSprintBacklogMapper.getDroppedStories();
+		allStories = mSprintBacklogMapper.getAllStories("Story");
+		assertEquals("1", allStories.get(0).getSprintID());
+		assertEquals("0", allStories.get(1).getSprintID());
+		assertEquals("1", allStories.get(2).getSprintID());
+		assertEquals(1, droppedStories.length);
 	}
 
 	@Test

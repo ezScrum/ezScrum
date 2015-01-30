@@ -142,12 +142,12 @@ public class SprintBacklogMapper {
 		return mTasks;
 	}
 
-	public Map<Long, ArrayList<TaskObject>> getDropedTasksMap() {
+	public Map<Long, ArrayList<TaskObject>> getDroppedTasksMap() {
 		if (mMapDropedStoryTasks == null) {
-			mDropedStories = getDroppedStories();
+			IIssue[] droppedStories = getDroppedStories();
 			// 取得這些被 Dropped Story 的 Task
 			mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
-			for (IIssue dropedStory : mDropedStories) {
+			for (IIssue dropedStory : droppedStories) {
 				ArrayList<TaskObject> droppedTasks = new ArrayList<TaskObject>();
 				List<Long> droppedTasksId = dropedStory.getChildrenId();
 				for (Long droppedTaskId : droppedTasksId) {
@@ -206,11 +206,11 @@ public class SprintBacklogMapper {
 	/**
 	 * 取得在這個 Sprint 中被 Drop 掉的 Story
 	 */
-	public ArrayList<IIssue> getDroppedStories() {
+	public IIssue[] getDroppedStories() {
 		if (mDropedStories == null) {
 			mDropedStories = new ArrayList<IIssue>();
 		} else {
-			return mDropedStories;
+			return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 		}
 		String sprintIdString = Integer.toString(mSprintPlanId);
 		Date startDate = getSprintStartDate();
@@ -228,7 +228,7 @@ public class SprintBacklogMapper {
 			}
 		}
 		mMantisService.closeConnect();
-		return mDropedStories;
+		return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 	}
 
 	public IIssue getStory(long storyId) {
