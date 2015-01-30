@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
@@ -10,6 +11,12 @@ import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountMapper {
+	
+	private IUserSession mUserSession = null;
+	
+	public AccountMapper(IUserSession userSession) {
+		mUserSession = userSession;
+	}
 
 	public AccountMapper() {}
 

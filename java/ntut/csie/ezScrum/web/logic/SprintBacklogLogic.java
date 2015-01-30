@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -31,11 +32,14 @@ public class SprintBacklogLogic {
 	private ArrayList<SprintBacklogDateColumn> mCurrentCols = null;
 	private ArrayList<Date> mDateList = null;
 
-	public SprintBacklogLogic() {}
+	public SprintBacklogLogic() {
+	}
 
 	/**
 	 * 要換成用 ProjectObject 的建構子
-	 * @param project IProject
+	 * 
+	 * @param project
+	 *            IProject
 	 * @param userSession
 	 * @param sprintID
 	 */
@@ -44,9 +48,10 @@ public class SprintBacklogLogic {
 			String sprintID) {
 		mIProject = project;
 		mUserSession = userSession;
-		mSprintBacklogMapper = createSprintBacklogMapper(Long.parseLong(sprintID));
+		mSprintBacklogMapper = createSprintBacklogMapper(Long
+				.parseLong(sprintID));
 	}
-	
+
 	public SprintBacklogLogic(ProjectObject project, IUserSession userSession,
 			long sprintId) {
 		mProject = project;
@@ -60,6 +65,7 @@ public class SprintBacklogLogic {
 
 	/**
 	 * 依據 sprintId 取得 SprintBacklogMapper
+	 * 
 	 * @param sprintId
 	 * @return SprintBacklogMapper
 	 */
@@ -77,43 +83,54 @@ public class SprintBacklogLogic {
 	}
 
 	// for ezScrum 1.8
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, String changeDate) {
-		Date closeDate = null;
+	public void checkOutTask(long id, String name, String handlerUsername,
+			String partners, String notes, String changeDate) {
+		Date closeDate = new Date();
 		if (changeDate != null && !changeDate.equals("")) {
 			closeDate = DateUtil.dayFillter(changeDate,
 					DateUtil._16DIGIT_DATE_TIME);
-		} else {
-			closeDate = new Date();
 		}
 
-		mSprintBacklogMapper.checkOutTask(id, name, handlerId, partners,
+		AccountObject handler = AccountObject.get(handlerUsername);
+		long handlerId = -1;
+		if (handler != null) {
+			handlerId = handler.getId();
+		}
+
+		ArrayList<Long> partnersId = new ArrayList<Long>();
+
+		for (String partnerUsername : partners.split(";")) {
+			AccountObject partner = AccountObject.get(partnerUsername);
+			if (partner != null) {
+				partnersId.add(partner.getId());
+			}
+		}
+
+		mSprintBacklogMapper.checkOutTask(id, name, handlerId, partnersId,
 				notes, closeDate);
 	}
 
-	// for ezScrum 1.8
-	private void closeTask(long id, String name, String notes,
-			Date changeDate) {
-		mSprintBacklogMapper.closeTask(id, name, notes, changeDate);
+	public void closeStory(long id, String notes, String changeDate) {
+		mSprintBacklogMapper.closeStory(id, notes, changeDate);
 	}
-
-	// for ezScrum 1.8
-	public void doneIssue(long id, int issueType, String name, String notes,
-			String changeDate, String actualHour) {
-		
-		Date closeDate = null;
-		if (changeDate != null && !changeDate.equals("")) {
-			closeDate = DateUtil.dayFillter(changeDate,
-					DateUtil._16DIGIT_DATE_TIME);
-		} else {
-			closeDate = new Date();
-		}
-		
-		if (issueType == IssueTypeEnum.TYPE_TASK) { // Done Task
-			closeTask(id, name, notes, closeDate);
-		} else { // Done Story
-			mSprintBacklogMapper.closeStory(id, notes, changeDate);
-		}
+	
+	public void reopenStory(long id, String name, String notes, String changeDate) {
+		mSprintBacklogMapper.reopenStory(id, name, notes, changeDate);
+	}
+	
+	public void reopenTask(long id, String name, String notes, String changeDate) {
+		Date closeDate = parseToDate(changeDate);
+		mSprintBacklogMapper.reopenTask(id, name, notes, closeDate);
+	}
+	
+	public void resetTask(long id, String name, String notes, String changeDate) {
+		Date closeDate = parseToDate(changeDate);
+		mSprintBacklogMapper.resetTask(id, name, notes, closeDate);
+	}
+	
+	public void closeTask(long id, String name, String notes, String changeDate) {
+		Date closeDate = parseToDate(changeDate);
+		mSprintBacklogMapper.closeTask(id, name, notes, closeDate);
 	}
 
 	/**
@@ -248,9 +265,10 @@ public class SprintBacklogLogic {
 		return (new Date().getTime() > (getSprintEndWorkDate().getTime()
 				+ OneDay - 1));
 	}
-	
+
 	/**
 	 * Get all tasks estimate point
+	 * 
 	 * @return task estimate point
 	 */
 	public double getTaskCurrentEstimatePoint() {
@@ -264,6 +282,7 @@ public class SprintBacklogLogic {
 
 	/**
 	 * Get issue estimate point (task 已被抽出來，story 完成後就可以拿掉)
+	 * 
 	 * @param Issuetype
 	 * @return issue estimate point
 	 */
@@ -283,9 +302,10 @@ public class SprintBacklogLogic {
 
 		return point;
 	}
-	
+
 	/**
 	 * Get all tasks remains point
+	 * 
 	 * @return task remains point
 	 */
 	public double getTaskCurrnetRemainsPoint() {
@@ -302,6 +322,7 @@ public class SprintBacklogLogic {
 
 	/**
 	 * Get issue remains point (task 已被抽出來，story 完成後就可以拿掉)
+	 * 
 	 * @param Issuetype
 	 * @return issue remains point
 	 */
@@ -389,6 +410,15 @@ public class SprintBacklogLogic {
 		}
 
 		return sortedList;
+	}
+	
+	private Date parseToDate(String dateString) {
+		Date closeDate = new Date();
+		if (dateString != null && !dateString.equals("")) {
+			closeDate = DateUtil.dayFillter(dateString,
+					DateUtil._16DIGIT_DATE_TIME);
+		}
+		return closeDate;
 	}
 
 	public class SprintBacklogDateColumn {

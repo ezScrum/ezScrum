@@ -187,6 +187,30 @@ public class TaskObject implements IBaseObject {
 		return mStatus;
 	}
 
+	public int getStatus(Date date) {
+		long lastSeconds;
+		try {
+			lastSeconds = getLastSeconds(date);
+		} catch (ParseException e) {
+			lastSeconds = date.getTime();
+		}
+		int status = TaskObject.STATUS_UNCHECK;
+		
+		for (HistoryObject history : mHistories) {
+			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+					&& history.getCreateTime() <= lastSeconds) {
+				if (history.getNewValue().equals(String.valueOf(STATUS_CHECK))) {
+					status = STATUS_CHECK;
+				} else if (history.getNewValue().equals(String.valueOf(STATUS_DONE))) {
+					status = STATUS_DONE;
+				} else if (history.getNewValue().equals(String.valueOf(STATUS_UNCHECK))) {
+					status = STATUS_UNCHECK;
+				}
+			}
+		}
+		return status;
+	}
+
 	/*
 	 * 之後要拔掉,為了符合目前的IIssue
 	 */
@@ -200,28 +224,6 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
-	// public int getStatus(Date date) {
-	// long time = date.getTime();
-	// time += 1000 * 60 * 60 * 24 - 1;
-	// date = new Date(time);
-	//
-	// int status = TaskObject.STATUS_UNCHECK;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-	// && (new Date(history.getModifiedTime()).before(date))) {
-	// if (history.getNewValue().equals("\"Checked Out\"")) {
-	// status = TaskObject.STATUS_CHECK;
-	// } else if (history.getNewValue().equals("\"Done\"")) {
-	// status = TaskObject.STATUS_DONE;
-	// }
-	// }
-	// }
-	// return status;
-	// }
-	//
-	// public int getRemainsByDate(Date date) {
-	// return searchValue(HistoryObject.TYPE_REMAIMS, date);
-	// }
 	//
 	// public int getEstimateByDate(Date date) {
 	// return searchValue(HistoryObject.TYPE_ESTIMATE, date);
@@ -279,10 +281,11 @@ public class TaskObject implements IBaseObject {
 		String dateString = sdf.format(date);
 		Date newDate = sdf.parse(dateString);
 		long lastSeconds = newDate.getTime();
-		lastSeconds += 86399999; // move to 23 hours 59 minutes 59 seconds the last second in one day
+		lastSeconds += 86399999; // move to 23 hours 59 minutes 59 seconds the
+									// last second in one day
 		return lastSeconds;
 	}
-	
+
 	public double getRemains(Date date) {
 		long lastSeconds = date.getTime();
 		try {
@@ -290,7 +293,7 @@ public class TaskObject implements IBaseObject {
 		} catch (ParseException e) {
 			lastSeconds = date.getTime();
 		}
-		
+
 		ArrayList<HistoryObject> histories = getHistories();
 
 		double remain = 0.0;
@@ -410,22 +413,6 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
-	public void checkOut() {
-		mStatus = TaskObject.STATUS_CHECK;
-		mActual = 0; // Check Out 時, Actual Hour 必須設成 0
-		save();
-	}
-
-	public void done() {
-		mStatus = TaskObject.STATUS_DONE;
-		save();
-	}
-
-	public void renew() {
-		mStatus = TaskObject.STATUS_UNCHECK;
-		save();
-	}
-
 	@Override
 	public void save() {
 		if (recordExists()) {
@@ -491,9 +478,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void doCreate() {
-		// remains equals estimate when create a new task
+		// default remains hour should equal to estimate
 		mRemains = mEstimate;
-		
 		mId = TaskDAO.getInstance().create(this);
 
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間

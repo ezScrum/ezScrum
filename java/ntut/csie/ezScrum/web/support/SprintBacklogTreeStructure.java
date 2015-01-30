@@ -105,19 +105,10 @@ public class SprintBacklogTreeStructure {
 	// 取得當天 Task 的時數
 	private String getTaskPoint(Date date, TaskObject task) {
 		double point = 0;
-
 		try {
-			point = Double.parseDouble(task
-					.getTagValue(ScrumEnum.REMAINS, date));
+			point = task.getRemains(date);
 		} catch (Exception e) {
-			try {
-				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION八
-				point = Double.parseDouble(task.getTagValue(
-						ScrumEnum.ESTIMATION, date));
-			} catch (Exception e1) {
-				// 如果還是沒有，那就回傳 0
-				return "0.0";
-			}
+			return "0.0";
 		}
 		return String.valueOf(point);
 	}
@@ -143,50 +134,9 @@ public class SprintBacklogTreeStructure {
 		}
 	}
 
-	// child 建構用
-	private SprintBacklogTreeStructure(String type, String ID, String tag,
-			String name, String handler, String value, String est, String imp,
-			String status, String note, String link, String sprintID,
-			String releaseID, ArrayList<Date> dates, String icon, boolean ep,
-			boolean leaf) {
-		this.Type = type;
-		this.ID = ID;
-		this.Tag = tag;
-		this.Name = HandleSpecialChar(name);
-		this.Handler = TranslateNull(handler);
-		this.Value = TranslateNull(value);
-		this.Estimate = TranslateNull(est);
-		this.Importance = TranslateNull(imp);
-		this.Status = status;
-		this.Notes = HandleSpecialChar(note);
-		this.Link = link;
-
-		this.leaf = leaf;
-		this.cls = icon;
-		// this.expanded = ep;
-		this.id = ID;
-
-		this.children = null;
-		this.dateList = dates;
-	}
-
 	private String HandleSpecialChar(String str) {
 		if (str.contains("\n")) {
 			str = str.replaceAll("\n", "<br/>");
-		}
-
-		return str;
-	}
-
-	private String TranslateNull(String str) {
-		// null case
-		if ((str == null) || (str.length() == 0) || (str.isEmpty())) {
-			return "";
-		}
-
-		// zero case
-		if (str.equals("0")) {
-			return "";
 		}
 
 		return str;
