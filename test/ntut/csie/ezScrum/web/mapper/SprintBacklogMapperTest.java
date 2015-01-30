@@ -530,7 +530,8 @@ public class SprintBacklogMapperTest {
 		assertEquals(-1, newTask.getStoryId());
 		assertEquals(10, newTask.getId());
 		// add new task to story
-		long[] tasksId = { 10 };
+		ArrayList<Long> tasksId = new ArrayList<Long>();
+		tasksId.add(10L);
 		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
@@ -573,7 +574,9 @@ public class SprintBacklogMapperTest {
 		assertEquals(-1, newTask2.getStoryId());
 		assertEquals(11, newTask2.getId());
 		// add new task 1 and new task 2 to story
-		long[] tasksId = { 10, 11 };
+		ArrayList<Long> tasksId = new ArrayList<Long>();
+		tasksId.add(10L);
+		tasksId.add(11L);
 		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
