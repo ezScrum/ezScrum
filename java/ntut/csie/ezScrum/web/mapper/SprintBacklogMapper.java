@@ -389,6 +389,7 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
+		mUpdateFlag = true;
 	}
 
 	/**
