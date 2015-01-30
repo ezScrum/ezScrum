@@ -594,7 +594,7 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetTasksWithNoParent() {
-		long projectId = mCP.getProjects().get(0).getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";
@@ -637,7 +637,7 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testDeleteExistingTask() {
-		long projectId = mCP.getProjects().get(0).getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";

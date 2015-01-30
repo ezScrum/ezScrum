@@ -240,4 +240,17 @@ public class AccountObject implements IBaseObject {
 	private void doUpdate() {
 		AccountDAO.getInstance().update(this);
 	}
+
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		JSONObject account = new JSONObject();
+
+		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
+				.put(AccountEnum.PASSWORD, mPassword)
+				.put(AccountEnum.EMAIL, mEmail)
+				.put(AccountEnum.NICK_NAME, mNickName)
+				.put(AccountEnum.ENABLE, mEnable).put("project_role", "");
+
+		return account;
+	}
 }
