@@ -188,6 +188,10 @@ public class SprintBacklogHelper {
 	}
 
 	public void dropTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
+		// reset status, handler
+		resetTask(taskId, task.getName(), task.getNotes(), null);
+		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
 	}
 	
@@ -225,19 +229,6 @@ public class SprintBacklogHelper {
 	 */
 	public void resetTask(long id, String name, String notes, String changeDate) {
 		mSprintBacklogLogic.resetTask(id, name, notes, changeDate);
-	}
-	
-	/**
-	 * path: AjaxRemoveSprintTask.do class: AjaxRemoveSprintTaskAction Test
-	 * class: AjaxRemoveSprintTaskTest
-	 */
-	public void removeTask(long taskId) {
-		TaskObject task = TaskObject.get(taskId);
-
-		// reset status, handler
-		resetTask(taskId, task.getName(), null, "");
-		// remove relation
-		dropTask(taskId);
 	}
 
 	/**
