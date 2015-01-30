@@ -121,7 +121,7 @@ public class SprintBacklogLogicTest {
 	}
 	
 	@Test
-	public void testDoneIssue(){
+	public void testCloseTask(){
 		String DONE_NAME = "CHECKOUT_NAME";
 		String DONE_NOTE = "CHECKOUT_NOTE";
 		String CHECKOUT_TIME = "2015/01/29-16:00:00";
