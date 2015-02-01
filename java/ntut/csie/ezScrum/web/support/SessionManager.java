@@ -126,7 +126,7 @@ public class SessionManager {
 	 * @param request client端傳上來的request
 	 * @time 2014/2/24
 	 */
-	public static final void setProjectObject(HttpServletRequest request, ProjectObject project) {
+	public void setProjectObject(HttpServletRequest request, ProjectObject project) {
 		HttpSession session = request.getSession();
 		session.removeAttribute(project.getName() + "_new");		// 當IProject完全改完，把new拿掉
 		session.setAttribute(project.getName() + "_new", project);	// 當IProject完全改完，把new拿掉

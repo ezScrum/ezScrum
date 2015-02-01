@@ -6,8 +6,13 @@ import java.util.HashMap;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.jcis.account.core.AccountFactory;
+import ntut.csie.jcis.account.core.IAccountManager;
+import ntut.csie.jcis.account.core.IPermission;
+import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountMapper {
@@ -177,5 +182,63 @@ public class AccountMapper {
 	public boolean isAccountExist(String userName) {
 		AccountObject account = AccountObject.get(userName);
 		return account != null;
+	}
+	
+	
+	/**
+	 * 建立 rolebase 的各專案的 permission
+	 * @throws Exception
+	 */
+	public void createPermission(ProjectObject project) throws Exception {
+		String projectName = project.getName();
+
+		IAccountManager am = getManager();
+		for (RoleEnum role : RoleEnum.values()) {
+			String name = projectName + "_" + role.name();
+			IPermission oriPerm = am.getPermission(name);
+			if (oriPerm == null) {
+				IPermission perm = AccountFactory.createPermission(name,
+						projectName, role.name());
+				am.addPermission(perm);
+				perm = am.getPermission(name);
+
+				// 若 perm 為空代表沒新增成功
+				if (perm == null) {
+					am.referesh();
+					throw new Exception("建立 Permission 失敗!!");
+				}
+
+				am.save();
+			}
+		}
+	}
+	
+	public void createRole(ProjectObject project) throws Exception {
+		String projectName = project.getName();
+
+		IAccountManager am = getManager();
+		for (RoleEnum role : RoleEnum.values()) {
+			String name = projectName + "_" + role.name();
+			IRole oriRole = AccountFactory.getManager().getRole(name);
+			if (oriRole == null) {
+				IRole irole = AccountFactory.createRole(name, name);
+				am.addRole(irole);
+				ArrayList<String> permissionNameList = new ArrayList<String>();
+				permissionNameList.add(name);
+				// 加入成功則進行群組成員與 Role 的設置
+				if (am.getRole(name) != null) {
+					am.updateRolePermission(name, permissionNameList);
+				} else {
+					throw new Exception("建立Role失敗!!");
+				}
+				// 儲存檔案
+				am.save();
+			}
+		}
+	}
+	
+	@Deprecated
+	private IAccountManager getManager() {
+		return AccountFactory.getManager();
 	}
 }

@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -160,6 +162,15 @@ public class ProjectObject implements IBaseObject {
 			mTasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
 		}
 		return mTasksWithNoParent;
+	}
+	
+	public ScrumRole getScrumRole(RoleEnum role) {
+		return ProjectDAO.getInstance().getScrumRole(mId, mName, role);
+	}
+	
+	public void updateScrumRole(ScrumRole scrumRole) {
+		ProjectDAO.getInstance().updateScrumRole(mId, 
+				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
 	}
 	
 	@Override
