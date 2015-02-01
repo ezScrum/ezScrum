@@ -111,32 +111,34 @@ public class ProjectHelper {
 			if (fromPage.equals("createProject")) {
 				sb.append("<CreateProjectResult>");
 
-				IProject project = null;
+				IProject iproject = null;
+				ProjectObject project = null;
 				try {
 					// 轉換格式
 					ProjectInfoForm projectInfoForm = convertProjectInfo(projectInfo);
 
-					project = projectMapper.createProject(userSession, projectInfoForm);
+					iproject = projectMapper.createProject(userSession, projectInfoForm);
 
-					// 重新設定權限, 當專案被建立時, 重新讀取此User的權限資訊
-					SessionManager projectSessionManager = new SessionManager(request);
-					projectSessionManager.setProject(project);
+					// 重新設定權限, 當專案被建立時, 重新讀取此 User 的權限資訊
+					SessionManager sessionManager = new SessionManager(request);
+					sessionManager.setProject(iproject);
 					AccessPermissionManager.setupPermission(request, userSession);
-
+					
+					// -- ezScrum v1.8 --
+					long projectId = projectMapper.createProject(projectInfo.name, projectInfo);
+					project = ProjectObject.get(projectId);
+					sessionManager.setProjectObject(request, project);
+					
 					// 建立專案角色和權限的外部檔案
 					AccountMapper accountMapper = new AccountMapper();
 					accountMapper.createPermission(project);
 					accountMapper.createRole(project);
-					
-					// -- ezScrum v1.8 --
-					projectInformation = projectMapper.createProjectForDb(projectInformation);
-					projectMapper.createScrumRole(projectInformation.getId());
-					
+
 					sb.append("<Result>Success</Result>");
-					sb.append("<ID>" + projectInformation.getNickName() + "</ID>");
+					sb.append("<ID>" + project.getName() + "</ID>");
 					// -- ezScrum v1.8 --
 				} catch (Exception e) {
-					projectMapper.deleteProject(projectInformation.getNickName());
+					projectMapper.deleteProject(project.getId());
                     e.printStackTrace();
                 }
 

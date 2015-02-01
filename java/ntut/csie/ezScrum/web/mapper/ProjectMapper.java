@@ -158,10 +158,10 @@ public class ProjectMapper {
 		Configuration config = new Configuration();
 		// save in the workspace，並且建立Project資料夾
 		// 這樣後續的設定檔複製儲存動作才能正常進行
-		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, config);
+		IProject project = createProjectWorkspace(userSession, projectInfoForm, config);
 
 		// 建立專案資訊 in database
-		this.createProjectDB(config, project, userSession);
+		createProjectDB(config, project, userSession);
 
 		return project;
 	}

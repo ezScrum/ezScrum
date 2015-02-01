@@ -5,6 +5,7 @@ import java.io.File;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.sqlService.MySQLService;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
@@ -100,24 +101,22 @@ public class ScrumRoleMapper {
 		}
 
 		//save file
-		XmlFileUtil.SaveXmlFile(path, doc); 
+		XmlFileUtil.SaveXmlFile(path, doc);
 	}
 	
-//	// ezScrum v1.8
-//	public void updateScrumRoleForDb(String projectId, ScrumRole scrumRole) {
-//		update(scrumRole);	// 過度期，更改Rolebase.xml, DB全數改為即可刪掉
-//		mService.openConnect();
-//		mService.updateScrumRole(projectId, RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
-//		mService.closeConnect();
-//	}
-//	
-//	// ezScrum v1.8
-//	public ScrumRole getScrumRoleForDb(String id, String projectId, String roleName) {
-//		mService.openConnect();
-//		ScrumRole scrumRole = mService.convertScrumRole(id, projectId, RoleEnum.valueOf(roleName));
-//		mService.closeConnect();
-//		return scrumRole;
-//	}
+	// ezScrum v1.8
+	public void updateScrumRole(long projectId, ScrumRole scrumRole) {
+		update(scrumRole);	// 過度期，更改Rolebase.xml, DB全數改為即可刪掉
+		ProjectObject project = ProjectObject.get(projectId);
+		project.updateScrumRole(scrumRole);
+	}
+	
+	// ezScrum v1.8
+	public ScrumRole getScrumRole(long projectId, String projectName, String roleName) {
+		ProjectObject project = ProjectObject.get(projectId);
+		ScrumRole scrumRole = project.getScrumRole(RoleEnum.valueOf(roleName));
+		return scrumRole;
+	}
 	
 //	// return 某個專案角色的權限
 //	public ScrumRole getPermission(String resource, String rolename) {

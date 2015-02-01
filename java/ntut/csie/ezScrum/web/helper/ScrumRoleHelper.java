@@ -40,13 +40,13 @@ public class ScrumRoleHelper {
 		}
 	}
 
-	public String getScrumRolePermissionList(String id, String projectId, String scrumRole) {
+	public String getScrumRolePermissionList(long projectId, String projectName, String scrumRole) {
 		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectObject project = projectMapper.getProject(id);
+		ProjectObject project = projectMapper.getProject(projectId);
 
 		Gson gson = new Gson();
 		if (project != null) {
-			ScrumRole scrumrole = new ScrumRoleMapper().getScrumRoleForDb(id, projectId, scrumRole);
+			ScrumRole scrumrole = new ScrumRoleMapper().getScrumRole(projectId, projectName, scrumRole);
 			return gson.toJson(new AccessPermissionUI(scrumrole));
 		} else {
 			return gson.toJson(new AccessPermissionUI(null));
@@ -71,7 +71,7 @@ public class ScrumRoleHelper {
 			scrumrole.setEditProject(permissionUI.AccessEditProject);
 
 			ScrumRoleMapper srm = new ScrumRoleMapper();
-			srm.updateScrumRoleForDb(id, scrumrole);
+			srm.updateScrumRole(Long.parseLong(id), scrumrole);
 		}
 	}
 

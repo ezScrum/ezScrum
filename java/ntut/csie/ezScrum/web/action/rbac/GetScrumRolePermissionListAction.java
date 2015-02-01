@@ -18,7 +18,7 @@ public class GetScrumRolePermissionListAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		//取得專案及角色
-		String id = request.getParameter("id");
+		long id = Long.parseLong(request.getParameter("id"));
 		String projectName = request.getParameter("projectName");
 		String scrumRole = request.getParameter("scrumRole");
 
