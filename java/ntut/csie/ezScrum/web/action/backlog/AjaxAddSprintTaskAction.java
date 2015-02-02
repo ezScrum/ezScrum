@@ -11,7 +11,6 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -34,26 +33,30 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
 		// get parameter info
-		String sprintId = request.getParameter("sprintId");
-		String storyId = request.getParameter("issueID");
-
+		Long sprintId = Long.parseLong(request.getParameter("sprintId"));
+		
+		long storyId = Long.parseLong(request.getParameter("issueID"));
+		int estimate = Integer.parseInt(request.getParameter("Estimate"));
+		String name = request.getParameter("Name");
+		String notes = request.getParameter("Notes");
+		long specificTime = Long.parseLong(request.getParameter("SpecificTime"));
+		
 		// 表格的資料
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.name = request.getParameter("Name");
-		taskInfo.projectId = projectObject.getId();
-		taskInfo.storyId = Long.parseLong(storyId);
-		taskInfo.estimate = Integer.parseInt(request.getParameter("Estimate"));
-		taskInfo.notes = request.getParameter("Notes");
-		taskInfo.specificTime = Long.parseLong(request.getParameter("SpecificTime"));
+		taskInfo.name = name;
+		taskInfo.storyId = storyId;
+		taskInfo.estimate = estimate;
+		taskInfo.notes = notes;
+		taskInfo.specificTime = specificTime;
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project, session, sprintId);
-		TaskObject task = sprintBacklogHelper.createTaskInStory(taskInfo);
+		TaskObject task = sprintBacklogHelper.addTask(project.getId(), taskInfo);
 
 		// 組出回傳資訊
 		StringBuilder sb = new StringBuilder();

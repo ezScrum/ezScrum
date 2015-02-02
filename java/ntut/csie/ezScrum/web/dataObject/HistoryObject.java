@@ -112,7 +112,6 @@ public class HistoryObject {
 	}
 
 	public String getDescription() {
-		// TODO 判斷 type 來輸出成特定的 desc
 		switch (mHistoryType) {
 		case TYPE_CREATE:
 			return getCreateDesc();

@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,16 +34,17 @@ public class AddExistedTaskAction extends PermissionAction {
 		log.info("Add wild tasks in AddExistedTaskAction");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
 		String[] selectedTaskIds = request.getParameterValues("selected");
-		String sprintId = request.getParameter("sprintID");
-		String storyId = request.getParameter("issueID");
+		Long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		Long storyId = Long.parseLong(request.getParameter("issueID"));
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintId);
-		sprintBacklogHelper.addExistingTask(storyId, selectedTaskIds);
+		
+		sprintBacklogHelper.addExistingTask(selectedTaskIds, storyId);
 		return new StringBuilder("");
 	}
 }

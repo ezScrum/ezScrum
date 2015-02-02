@@ -152,11 +152,12 @@ public class SprintBacklogMapper {
 				List<Long> droppedTasksId = dropedStory.getChildrenId();
 				for (Long droppedTaskId : droppedTasksId) {
 					TaskObject droppedTask = TaskObject.get(droppedTaskId);
-					if (droppedTask != null){
+					if (droppedTask != null) {
 						droppedTasks.add(droppedTask);
 					}
 				}
-				mMapDropedStoryTasks.put(dropedStory.getIssueID(), droppedTasks);
+				mMapDropedStoryTasks
+						.put(dropedStory.getIssueID(), droppedTasks);
 			}
 		}
 		return mMapDropedStoryTasks;
@@ -383,12 +384,13 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+	public void closeTask(long id, String name, String notes, int actual,
+			Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
-					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+			task.setName(name).setNotes(notes).setActual(actual)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
 		mUpdateFlag = true;
@@ -443,6 +445,26 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setNotes(notes).setHandlerId(noHandler)
 					.setStatus(TaskObject.STATUS_UNCHECK)
+					.save(specificDate.getTime());
+		}
+	}
+	
+	/**
+	 * From Not Checkout to Check
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}
 	}

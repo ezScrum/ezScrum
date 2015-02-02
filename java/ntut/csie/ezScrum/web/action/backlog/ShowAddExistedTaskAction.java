@@ -40,20 +40,15 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		log.info("Show wild Tasks in ShowAddExistedTaskAction");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		long projectId = projectObject.getId();
-		ArrayList<TaskObject> wildedTasks = null;
+		long projectId = project.getId();
+		ArrayList<TaskObject> existingTasks = null;
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
 		
-		try {
-			wildedTasks = sprintBacklogHelper.getTasksWithNoParent(projectId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		existingTasks = sprintBacklogHelper.getTasksWithNoParent(projectId);
 		
 		// 封裝 Task 成 XML
     	StringBuilder sb = new StringBuilder();
@@ -65,9 +60,9 @@ public class ShowAddExistedTaskAction extends PermissionAction {
     		 * @author Zam, Alex
     		 * @time 2013/2/6
     		 */
-    		if (wildedTasks != null) {
-	    		for(int i = 0; i < wildedTasks.size(); i++) {
-	    			TaskObject task = wildedTasks.get(i);
+    		if (existingTasks != null) {
+	    		for(int i = 0; i < existingTasks.size(); i++) {
+	    			TaskObject task = existingTasks.get(i);
 					sb.append("<Task>")
 					  .append("<Id>").append(task.getId()).append("</Id>")
 					  .append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getId()).append("</Link>")

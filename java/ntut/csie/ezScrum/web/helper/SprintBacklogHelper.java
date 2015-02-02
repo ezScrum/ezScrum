@@ -21,7 +21,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
@@ -163,6 +162,14 @@ public class SprintBacklogHelper {
 		return TaskObject.get(taskId);
 	}
 
+	public void addExistingTask(String[] selectedTaskIds, long storyId) {
+		ArrayList<Long> tasksId = new ArrayList<Long>();
+		for (String task : selectedTaskIds) {
+			tasksId.add(Long.parseLong(task));
+		}
+		mSprintBacklogMapper.addExistingTasks(tasksId, storyId);
+	}
+
 	public TaskObject getTask(long taskId) {
 		return mSprintBacklogMapper.getTask(taskId);
 	}
@@ -173,6 +180,27 @@ public class SprintBacklogHelper {
 
 	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
 		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
+	}
+
+	public void updateTask(TaskInfo taskInfo, String handlerUsername, String partnersUsername) {
+		AccountObject handler = AccountObject.get(handlerUsername);
+		long handlerId = -1;
+		if (handler != null) {
+			handlerId = handler.getId();
+		}
+		
+		ArrayList<Long> partnersId = new ArrayList<Long>();
+		for (String parnerUsername : partnersUsername.split(";")) {
+			AccountObject partner = AccountObject.get(parnerUsername);
+			if (partner != null) {
+				partnersId.add(partner.getId());
+			}
+		}
+		
+		taskInfo.handlerId = handlerId;
+		taskInfo.partnersId = partnersId;
+		
+		mSprintBacklogMapper.updateTask(taskInfo);
 	}
 
 	public void deleteTask(long taskId) {
@@ -236,8 +264,8 @@ public class SprintBacklogHelper {
 				notes, changeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, String changeDate) {
-		mSprintBacklogLogic.closeTask(id, name, notes, changeDate);
+	public void closeTask(long id, String name, String notes, int actual, String changeDate) {
+		mSprintBacklogLogic.closeTask(id, name, notes, actual, changeDate);
 	}
 
 	public void reopenTask(long taskId, String name, String notes,

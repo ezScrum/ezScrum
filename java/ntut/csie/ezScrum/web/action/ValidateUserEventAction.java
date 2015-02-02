@@ -85,7 +85,7 @@ public class ValidateUserEventAction extends Action {
 		IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
 		AccountObject acc = userSession.getAccount();
-		if (!acc.getEnable().equals("true")) {
+		if (!acc.getEnable()) {
 			return false;
 		}
 		ScrumRole sr = SessionManager.getScrumRole(request, project, acc);

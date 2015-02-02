@@ -7,11 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -51,10 +50,10 @@ public class SprintBacklogWebService extends ProjectWebService {
 
 	public String getTaskIDList(String storyID) throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue[] taskIDList = sprintBacklog.getTasksMap().get(
+		ArrayList<TaskObject> tasks = sprintBacklog.getTasksMap().get(
 				Long.parseLong(storyID));
 		String taskIDListJsonString = csb
-				.convertTaskIDList(storyID, taskIDList);
+				.convertTaskIDList(storyID, tasks);
 		return taskIDListJsonString;
 	}
 
@@ -69,15 +68,14 @@ public class SprintBacklogWebService extends ProjectWebService {
 	public String getTaskHsitoryList(String taskID) throws JSONException,
 			SQLException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue taskByID = this.sprintBacklogLogic.getTask(Long
-				.parseLong(taskID));
+		TaskObject task = TaskObject.get(Long.parseLong(taskID));
 
-		List<HistoryObject> taskHistoryList = taskByID.getHistories();
+		List<HistoryObject> taskHistoryList = task.getHistories();
 		List<String> remainsList = new ArrayList<String>();
 		String lastRemainsHour = "0";
 		for (HistoryObject history : taskHistoryList) {
 			String date = parseDate(history.getCreateTime());
-			lastRemainsHour = getTaskRemains(new Date(date), taskByID);
+			lastRemainsHour = task.getRemains(new Date(date)) + "";
 			remainsList.add(lastRemainsHour);
 		}
 		String taskHistoryJsonString = csb.convertTaskHistory(taskHistoryList,
@@ -92,12 +90,8 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 * @param task
 	 * @return
 	 */
-	private String getTaskRemains(Date date, IIssue task) {
-		ArrayList<HistoryObject> histories = null;
-		try {
-			histories = task.getHistories();
-		} catch (SQLException e) {
-		}
+	private String getTaskRemains(Date date, TaskObject task) {
+		ArrayList<HistoryObject> histories = task.getHistories();;
 		
 		String remains = "0";
 		for (HistoryObject history : histories) {
@@ -105,21 +99,6 @@ public class SprintBacklogWebService extends ProjectWebService {
 				remains = history.getNewValue();
 			}
 		}
-//		double point = 0;
-//
-//		try {
-//			point = Double.parseDouble(task
-//					.getTagValue(ScrumEnum.REMAINS, date));
-//		} catch (Exception e) {
-//			try {
-//				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION八
-//				point = Double.parseDouble(task.getTagValue(
-//						ScrumEnum.ESTIMATION, date));
-//			} catch (Exception e1) {
-//				// 如果還是沒有，那就回傳 0
-//				return "0.0";
-//			}
-//		}
 		return remains;
 	}
 

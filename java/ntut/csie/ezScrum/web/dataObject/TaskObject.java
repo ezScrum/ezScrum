@@ -224,57 +224,18 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
-	//
-	// public int getEstimateByDate(Date date) {
-	// return searchValue(HistoryObject.TYPE_ESTIMATE, date);
-	// }
-	//
-	// private int searchValue(int searchType, Date date) {
-	// int value = -1;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == searchType
-	// && (new Date(history.getModifiedTime()).before(date))) {
-	// value = Integer.parseInt(history.getNewValue());
-	// }
-	// }
-	// return value;
-	// }
-	//
-	// public int getDateStatus(Date date) {
-	// int status = -1;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
-	// status = Integer.parseInt(history.getOldValue());
-	// }
-	// }
-	// return status;
-	// }
-	//
-	// public long getAssignedTime() {
-	// long assignedTime = 0;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-	// && history.getNewValue().equals("\"Checked Out\"")) {
-	// if (assignedTime < history.getModifiedTime()) {
-	// assignedTime = history.getModifiedTime();
-	// }
-	// }
-	// }
-	// return assignedTime;
-	// }
-	//
-	// public long getDoneTime() {
-	// long doneTime = 0;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-	// && history.getNewValue().equals("\"Done\"")) {
-	// if (doneTime < history.getModifiedTime()) {
-	// doneTime = history.getModifiedTime();
-	// }
-	// }
-	// }
-	// return doneTime;
-	// }
+	public long getDoneTime() {
+		long doneTime = 0;
+		for (HistoryObject history : mHistories) {
+			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+					&& history.getNewValue().equals(String.valueOf(STATUS_DONE))) {
+				if (doneTime < history.getCreateTime()) {
+					doneTime = history.getCreateTime();
+				}
+			}
+		}
+		return doneTime;
+	}
 
 	private long getLastSeconds(Date date) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");

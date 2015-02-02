@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,20 +35,25 @@ public class ReopenIssueAction extends PermissionAction {
 		log.info("Reopen Issue in ReopenIssueAction.");
 
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("Id"));
+		long issueId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
-		String bugNote = request.getParameter("Notes");
+		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
+		String issueType = request.getParameter("IssueType");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
-		sprintBacklogHelper.reopenIssue(issueID, name, bugNote, changeDate);
+		if (issueType.equals("Story")) {
+			sprintBacklogHelper.reopenStory(issueId, name, notes, changeDate);
+		} else if (issueType.equals("Task")) {
+			sprintBacklogHelper.reopenTask(issueId, name, notes, changeDate);
+		}
 
 		// return re open 的 issue的相關資訊
-		IIssue issue = sprintBacklogHelper.getStory(issueID);
+		IIssue issue = sprintBacklogHelper.getStory(issueId);
 		StringBuilder result = new StringBuilder("");
 		result.append(new Translation().translateTaskboardIssueToJson(issue));
 
