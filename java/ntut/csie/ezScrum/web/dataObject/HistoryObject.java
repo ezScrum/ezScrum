@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
