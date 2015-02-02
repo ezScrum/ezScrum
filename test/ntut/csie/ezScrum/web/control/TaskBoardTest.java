@@ -65,9 +65,6 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mSB = mSprintBacklogLogic.getSprintBacklogMapper();
 		
 		mTB = new TaskBoard(mSprintBacklogLogic, mSB);
-		
-//		this.SB = new SprintBacklogMapper(this.CP.getProjectList().get(0), this.config.getUserSession());
-//		this.TB = new TaskBoard(this.SB);
 
 		// 為了使 Story 建立時間與修改時間分開而停下
 		Thread.sleep(1000);
@@ -118,28 +115,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		IIssue[] stories = storyList.toArray(new IIssue[storyList.size()]);
 		// 驗證 Story 數量
 		assertEquals(this.mStoryCount, stories.length);
-		// 修改 Story 的 Importance 順序
-//		ProductBacklogHelper helper = new ProductBacklogHelper(this.CP.getProjectList().get(0), this.config.getUserSession());
-//		boolean isSuccess = false;
-//		isSuccess = helper.edit(stories[0].getIssueID(), stories[0]
-//				.getSummary(), "10", "10", stories[0].getEstimated(),
-//				stories[0].getHowToDemo(), stories[0].getNotes());
-//		assertEquals(true, isSuccess);
-//		isSuccess = helper.edit(stories[1].getIssueID(), stories[1]
-//				.getSummary(), "10", "20", stories[1].getEstimated(),
-//				stories[1].getHowToDemo(), stories[1].getNotes());
-//		assertEquals(true, isSuccess);
-//		isSuccess = helper.edit(stories[2].getIssueID(), stories[2]
-//				.getSummary(), "10", "30", stories[2].getEstimated(),
-//				stories[2].getHowToDemo(), stories[2].getNotes());
-//		assertEquals(true, isSuccess);
-//		isSuccess = helper.edit(stories[3].getIssueID(), stories[3]
-//				.getSummary(), "10", "40", stories[3].getEstimated(),
-//				stories[3].getHowToDemo(), stories[3].getNotes());
-//		assertEquals(true, isSuccess);
-//		isSuccess = helper.edit(stories[4].getIssueID(), stories[4]
-//				.getSummary(), "10", "50", stories[4].getEstimated(),
-//				stories[4].getHowToDemo(), stories[4].getNotes());
+		
 		ProductBacklogHelper helper = new ProductBacklogHelper(mConfiguration.getUserSession(), this.mCP.getProjectList().get(0));
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0].getSummary(), "10", "10", stories[0].getEstimated(),
