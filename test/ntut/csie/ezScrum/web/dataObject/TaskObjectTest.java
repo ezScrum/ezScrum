@@ -77,7 +77,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testSetPartnersId_withTwoPartners() {
+	public void testSetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
@@ -101,7 +101,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testSetPartnersId_withTwoPartnersAddOneAndRemoveOnePartner() {
+	public void testSetPartnersId_WithTwoPartnersAddOneAndRemoveOnePartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
@@ -146,7 +146,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testAddPartner_withExistPartner() {
+	public void testAddPartner_WithExistPartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
@@ -188,7 +188,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testRemovePartner_withTwoPartners() {
+	public void testRemovePartner_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
@@ -261,7 +261,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testGetPartnersId_withTwoPartners() {
+	public void testGetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
 		TaskObject task = new TaskObject(TEST_TASK_ID);
@@ -305,7 +305,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testGetPartners_withTwoPartners() {
+	public void testGetPartners_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		String FIRST_USERNAME = "test_first_username";
 		String SECOND_USERNAME = "test_second_username";
@@ -357,7 +357,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testGetPartnersUsername_withTwoPartners() {
+	public void testGetPartnersUsername_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		String FIRST_USERNAME = "test_first_username";
 		String SECOND_USERNAME = "test_second_username";
@@ -407,6 +407,30 @@ public class TaskObjectTest {
 				.setHandlerId(TEST_HANDLER).setStoryId(TEST_STORY_ID).save();
 
 		assertEquals(9, task.getHistories().size());
+	}
+	
+	@Test
+	public void testGetHistories_WithSetNoParent() {
+		String TEST_NAME = "TEST_NAME";
+		String TEST_NOTE = "TEST_NOTE";
+		int TEST_ESTIMATE = 1;
+		int TEST_ACTUAL = 3;
+		int TEST_REMAIN = 5;
+		int TEST_STATUS = TaskObject.STATUS_UNCHECK;
+		long TEST_STORY_ID = 2;
+		long TEST_STORY_ID_NO_PARENT = -1;
+
+		TaskObject task = new TaskObject(1);
+		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
+				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
+				.setStatus(TEST_STATUS).setStoryId(TEST_STORY_ID).save();
+
+		task.setStoryId(TEST_STORY_ID_NO_PARENT).save();
+
+		assertEquals(3, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
+		assertEquals(HistoryObject.TYPE_DROP, task.getHistories().get(2).getHistoryType());
 	}
 
 	@Test
@@ -528,7 +552,7 @@ public class TaskObjectTest {
 		assertEquals(TEST_NOTE, json.getString(TaskEnum.NOTES));
 		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.ESTIMATE));
 		assertEquals(TEST_ACTUAL, json.getInt(TaskEnum.ACTUAL));
-		assertEquals(TEST_REMAIN, json.getInt(TaskEnum.REMAIN));
+		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.REMAIN));
 		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
 		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
@@ -553,10 +577,10 @@ public class TaskObjectTest {
 	 * 測試新增一個 task
 	 */
 	@Test
-	public void testSave_createANewTask() {
+	public void testSave_CreateANewTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
+				.setActual(0);
 
 		task.save();
 
@@ -565,7 +589,7 @@ public class TaskObjectTest {
 		assertEquals("TEST_NAME", task.getName());
 		assertEquals("TEST_NOTES", task.getNotes());
 		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
+		assertEquals(10, task.getRemains());
 		assertEquals(0, task.getActual());
 	}
 
@@ -573,10 +597,10 @@ public class TaskObjectTest {
 	 * 測試一個已存在的 task
 	 */
 	@Test
-	public void testSave_updateTask() {
+	public void testSave_UpdateTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
+				.setActual(0);
 
 		task.save();
 
@@ -585,7 +609,7 @@ public class TaskObjectTest {
 		assertEquals("TEST_NAME", task.getName());
 		assertEquals("TEST_NOTES", task.getNotes());
 		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
+		assertEquals(10, task.getRemains());
 		assertEquals(0, task.getActual());
 
 		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
@@ -606,7 +630,7 @@ public class TaskObjectTest {
 	public void testDelete() throws SQLException {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
+				.setActual(0);
 
 		task.save();
 
@@ -615,7 +639,7 @@ public class TaskObjectTest {
 		assertEquals("TEST_NAME", task.getName());
 		assertEquals("TEST_NOTES", task.getNotes());
 		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
+		assertEquals(10, task.getRemains());
 		assertEquals(0, task.getActual());
 
 		boolean deleteSuccess = task.delete();
@@ -630,7 +654,7 @@ public class TaskObjectTest {
 	public void testReload() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setRemains(8).setActual(0);
+				.setActual(0);
 
 		task.save();
 
@@ -639,7 +663,7 @@ public class TaskObjectTest {
 		assertEquals("TEST_NAME", task.getName());
 		assertEquals("TEST_NOTES", task.getNotes());
 		assertEquals(10, task.getEstimate());
-		assertEquals(8, task.getRemains());
+		assertEquals(10, task.getRemains());
 		assertEquals(0, task.getActual());
 
 		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
@@ -661,7 +685,7 @@ public class TaskObjectTest {
 			assertEquals("TEST_NAME", task.getName());
 			assertEquals("TEST_NOTES", task.getNotes());
 			assertEquals(10, task.getEstimate());
-			assertEquals(8, task.getRemains());
+			assertEquals(10, task.getRemains());
 			assertEquals(0, task.getActual());
 		} catch (Exception e) {
 		}
@@ -674,7 +698,7 @@ public class TaskObjectTest {
 		for (int i = 1; i <= 3; i++) {
 			TaskObject task = new TaskObject(1);
 			task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i)
-					.setEstimate(10).setRemains(8).setActual(0);
+					.setEstimate(10).setActual(0);
 			if (i != 2) {
 				task.setStoryId(storyId);
 			}
@@ -687,13 +711,13 @@ public class TaskObjectTest {
 		assertEquals("TEST_NAME_1", tasks.get(0).getName());
 		assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
 		assertEquals(10, tasks.get(0).getEstimate());
-		assertEquals(8, tasks.get(0).getRemains());
+		assertEquals(10, tasks.get(0).getRemains());
 		assertEquals(0, tasks.get(0).getActual());
 
 		assertEquals("TEST_NAME_3", tasks.get(1).getName());
 		assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
 		assertEquals(10, tasks.get(1).getEstimate());
-		assertEquals(8, tasks.get(1).getRemains());
+		assertEquals(10, tasks.get(1).getRemains());
 		assertEquals(0, tasks.get(1).getActual());
 	}
 }

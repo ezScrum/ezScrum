@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
@@ -162,10 +163,6 @@ public class SprintBacklogHelper {
 		return TaskObject.get(taskId);
 	}
 
-	public void addExistingTask(ArrayList<Long> tasksId, long storyId) {
-		mSprintBacklogMapper.addExistingTasks(tasksId, storyId);
-	}
-
 	public TaskObject getTask(long taskId) {
 		return mSprintBacklogMapper.getTask(taskId);
 	}
@@ -178,19 +175,48 @@ public class SprintBacklogHelper {
 		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
 	}
 
-	public void updateTask(TaskInfo taskInfo) {
-		mSprintBacklogMapper.updateTask(taskInfo);
-		;
-	}
-
 	public void deleteTask(long taskId) {
 		mSprintBacklogMapper.deleteTask(taskId);
 	}
 
 	public void dropTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
+		// reset status, handler
+		resetTask(taskId, task.getName(), task.getNotes(), null);
+		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
 	}
-	
+
+	public void updateTask(TaskInfo taskInfo, String handlerUsername,
+			String rawPartnersUsername) {
+		AccountObject handler = AccountObject.get(handlerUsername);
+		long handlerId = -1;
+		if (handler != null) {
+			handlerId = handler.getId();
+		}
+		ArrayList<Long> partnersId = new ArrayList<Long>();
+		// split raw partners' user name by symbol ;
+		String[] partnersUsername = rawPartnersUsername.split(";");
+		for (String partnerUsername : partnersUsername) {
+			AccountObject partner = AccountObject.get(partnerUsername);
+			if (partner != null) {
+				partnersId.add(partner.getId());
+			}
+		}
+		taskInfo.handlerId = handlerId;
+		taskInfo.partnersId = partnersId;
+		mSprintBacklogMapper.updateTask(taskInfo);
+	}
+
+	public void addExistingTask(String[] selectedTasksStringId, long storyId) {
+		ArrayList<Long> tasksId = new ArrayList<Long>();
+		for (String taskStringId : selectedTasksStringId) {
+			long taskId = Long.parseLong(taskStringId);
+			tasksId.add(taskId);
+		}
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
+	}
+
 	public void closeStory(long id, String notes, String changeDate) {
 		mSprintBacklogMapper.closeStory(id, notes, changeDate);
 	}
@@ -199,7 +225,7 @@ public class SprintBacklogHelper {
 			String changeDate) {
 		mSprintBacklogLogic.reopenStory(issueId, name, bugNote, changeDate);
 	}
-	
+
 	/**
 	 * Task 從 Not Check Out -> Check Out path: CheckOutTask.do class:
 	 * CheckOutTaskAction Test class: CheckOutTaskActionTest
@@ -225,19 +251,6 @@ public class SprintBacklogHelper {
 	 */
 	public void resetTask(long id, String name, String notes, String changeDate) {
 		mSprintBacklogLogic.resetTask(id, name, notes, changeDate);
-	}
-	
-	/**
-	 * path: AjaxRemoveSprintTask.do class: AjaxRemoveSprintTaskAction Test
-	 * class: AjaxRemoveSprintTaskTest
-	 */
-	public void removeTask(long taskId) {
-		TaskObject task = TaskObject.get(taskId);
-
-		// reset status, handler
-		resetTask(taskId, task.getName(), null, "");
-		// remove relation
-		dropTask(taskId);
 	}
 
 	/**
