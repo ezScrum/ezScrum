@@ -12,6 +12,8 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -106,7 +108,7 @@ public class TaskboardHelper {
 
 		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintPlanId() > 0)) {
 			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
-			Map<Long, IIssue[]> taskMap = sprintBacklogMapper.getTasksMap(); 	// 取出Sprint中所有的task
+			Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklogMapper.getTasksMap(); 	// 取出Sprint中所有的task
 			stories = this.filterStory(stories, taskMap, name);					// filter story
 
 			for (IIssue story : stories) {
@@ -146,7 +148,7 @@ public class TaskboardHelper {
 		}
 	}
 	
-	private List<IIssue> filterStory(List<IIssue> stories, Map<Long, IIssue[]> taskmap, String filtername) {
+	private List<IIssue> filterStory(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskmap, String filtername) {
 		List<IIssue> filterissues = new LinkedList<IIssue>();
 		// All member, return all story
 		if (filtername.equals("ALL") || filtername.length() == 0) {
@@ -154,19 +156,19 @@ public class TaskboardHelper {
 		} else {
 			// filter member name by handler, return the story and task map relation
 			for (IIssue story : stories) {
-				IIssue[] tasks = taskmap.get(story.getIssueID());
+				ArrayList<TaskObject> tasks = taskmap.get(story.getIssueID());
 				if (tasks != null) {
-					List<IIssue> filtertask = new LinkedList<IIssue>();
+					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
 
-					for (IIssue task : tasks) {
-						if (checkParent(filtername, task.getPartners(), task.getAssignto())) {
+					for (TaskObject task : tasks) {
+						if (checkParent(filtername, task.getPartnersUsername(), task.getHandler().getUsername())) {
 							filtertask.add(task);
 						}
 					}
 
 					if (filtertask.size() > 0) {
 						// cover new filter map
-						taskmap.put(story.getIssueID(), filtertask.toArray(new IIssue[filtertask.size()]));
+						taskmap.put(story.getIssueID(), filtertask);
 						filterissues.add(story);
 					}
 				}
@@ -187,11 +189,11 @@ public class TaskboardHelper {
 		return false;
 	}
 
-	private TaskBoard_Story create_TaskBoard_Story(IIssue story, IIssue[] tasks) {
+	private TaskBoard_Story create_TaskBoard_Story(IIssue story, ArrayList<TaskObject> tasks) {
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
 
 		if (tasks != null) {
-			for (IIssue task : tasks) {
+			for (TaskObject task : tasks) {
 				TB_Story.Tasks.add(new TaskBoard_Task(task));
 			}
 		}
@@ -260,18 +262,18 @@ public class TaskboardHelper {
 		String Partners;
 		String Link;
 		String Actual;
-
-		public TaskBoard_Task(IIssue task) {
-			Id = Long.toString(task.getIssueID());
-			Name = HandleSpecialChar(task.getSummary());
-			Estimate = task.getEstimated();
-			RemainHours = task.getRemains();
-			Actual = task.getActualHour();
-			Handler = task.getAssignto();
-			Partners = task.getPartners();
-			Status = task.getStatus();
+		
+		public TaskBoard_Task(TaskObject task) {
+			Id = Long.toString(task.getId());
+			Name = HandleSpecialChar(task.getName());
+			Estimate = String.valueOf(task.getEstimate());
+			RemainHours = String.valueOf(task.getRemains());
+			Actual = String.valueOf(task.getActual());
+			Handler = task.getHandler().getUsername();
+			Partners = task.getPartnersUsername();
+			Status = task.getStatusString();
 			Notes = HandleSpecialChar(task.getNotes());
-			Link = task.getIssueLink();
+			Link = "";
 			AttachFileList = getAttachFilePath(task, task.getAttachFiles());
 			if (!AttachFileList.isEmpty()) Attach = true;
 			else Attach = false;
@@ -296,13 +298,26 @@ public class TaskboardHelper {
 		}
 	}
 
-	// 嚙諄抬蕭嚙緻IIssue嚙踝蕭AttachFile嚙踝蕭Path
+
 	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, List<AttachFileObject> list) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
 		for (AttachFileObject file : list) {
 			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
 			        + story.getProjectName() + "&fileId=" + file.getId() + "&fileName=" + file.getName()
+			        , new Date(file.getCreateTime())));
+		}
+		return array;
+	}
+	
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(TaskObject task, List<AttachFileObject> list) {
+
+		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
+		for (AttachFileObject file : list) {
+			ProjectObject project = ProjectObject.get(task.getProjectId());
+			String projectName = project.getName();
+			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
+			        + projectName + "&fileId=" + file.getId() + "&fileName=" + file.getName()
 			        , new Date(file.getCreateTime())));
 		}
 		return array;
