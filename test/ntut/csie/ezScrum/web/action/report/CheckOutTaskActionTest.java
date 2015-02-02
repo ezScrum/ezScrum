@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -92,15 +93,15 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = issue.getIssueID();
+		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
+		Long taskId = task.getId();
 		
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
-		addRequestParameter("Name", issue.getSummary());
+		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID
+		addRequestParameter("Name", task.getName());
 		addRequestParameter("Handler", configuration.USER_ID);
 		addRequestParameter("Partners", partners);
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
@@ -115,32 +116,32 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
+		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		
-		assertEquals(String.valueOf(TaskID), Long.toString(issue.getIssueID()));
-		assertEquals(configuration.USER_ID, issue.getAssignto());
-		assertEquals(partners, issue.getPartners());
-		assertEquals("TEST_TASK_NOTES_1", issue.getNotes());
-		assertEquals(0, issue.getDoneDate());
+		assertEquals(String.valueOf(taskId), Long.toString(task.getId()));
+		assertEquals(configuration.USER_ID, task.getHandler().getUsername());
+		assertEquals(partners, task.getPartners());
+		assertEquals("TEST_TASK_NOTES_1", task.getNotes());
+		assertEquals(0, task.getDoneTime());
 
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 		        			.append("\"success\":true,")
 		        			.append("\"Issue\":{")
-		        			.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
-		        			.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
-		        			.append("\"Name\":\"").append(issue.getSummary()).append("\",")
-		        			.append("\"Handler\":\"").append(issue.getAssignto()).append("\",")
+		        			.append("\"Id\":").append(String.valueOf(taskId)).append(",")
+		        			.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(taskId)).append("\",")
+		        			.append("\"Name\":\"").append(task.getName()).append("\",")
+		        			.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
 		        			.append("\"Partners\":\"").append(partners).append("\"}")
 		        			.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals("assigned", issue.getStatus()); // 判斷Task是不是已經assigned了
+		assertEquals("assigned", task.getStatus()); // 判斷Task是不是已經assigned了
 
 		// ============= release ==============
 		project = null;
 		sprintBacklogMapper = null;
-		issue = null;
+		task = null;
 	}
 
 	
@@ -151,15 +152,15 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = issue.getIssueID();
+		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
+		Long taskId = task.getId();
 		
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
-		addRequestParameter("Name", issue.getSummary());
+		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID
+		addRequestParameter("Name", task.getName());
 		addRequestParameter("Handler", "XXX");
 		addRequestParameter("Partners", partners);
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "");
 		
 		// ================ set session info ========================
@@ -174,19 +175,19 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
+		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		
-		assertEquals(String.valueOf(TaskID), Long.toString(issue.getIssueID()));
-		assertEquals("TEST_TASK_1", issue.getSummary());
-		assertEquals("", issue.getAssignto());					// 因為 Handler 參數有誤，不應該寫入資訊
-		assertEquals(partners, issue.getPartners());
-		assertEquals("TEST_TASK_NOTES_1", issue.getNotes());	// ============= 無法更正 note ============
-		assertEquals(0, issue.getDoneDate());
+		assertEquals(String.valueOf(taskId), Long.toString(task.getId()));
+		assertEquals("TEST_TASK_1", task.getName());
+		assertEquals("", task.getHandler().getUsername());					// 因為 Handler 參數有誤，不應該寫入資訊
+		assertEquals(partners, task.getPartners());
+		assertEquals("TEST_TASK_NOTES_1", task.getNotes());	// ============= 無法更正 note ============
+		assertEquals(0, task.getDoneTime());
 		
 		// ============= release ==============
 		project = null;
 		sprintBacklogMapper = null;
-		issue = null;
+		task = null;
 	}
 
 	/**
@@ -196,15 +197,15 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		String partners = "py2k; oph; taoyu;";
-		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = issue.getIssueID();
+		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
+		Long taskId = task.getId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
-		addRequestParameter("Name", issue.getSummary());
+		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID
+		addRequestParameter("Name", task.getName());  
 		addRequestParameter("Handler", configuration.USER_ID);
 		addRequestParameter("Partners", partners);
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "XXXX"); // Unparsed date "XXXX"
 
 		// ================ set session info ========================
@@ -223,7 +224,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		
 		// ============= release ==============
 		project = null;
-		issue = null;
+		task = null;
 	}
 
 	/**

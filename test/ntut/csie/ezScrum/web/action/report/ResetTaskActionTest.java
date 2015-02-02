@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.action.report;
 import java.io.File;
 import java.io.IOException;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -13,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -87,15 +87,15 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 	public void testResetTask() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = issue.getIssueID();
+		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
+		Long TaskID = task.getId();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
-		addRequestParameter("Name", issue.getSummary());
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Name", task.getName());
+		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
@@ -105,30 +105,30 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 
 		// ================ 執行 action ==============================
 		// 先設定Task為assigned的狀態 在測試
-		sprintBacklogLogic.checkOutTask(issue.getIssueID(), issue.getSummary(), configuration.USER_ID, "", issue.getNotes(), "");
+		sprintBacklogLogic.checkOutTask(task.getId(), task.getName(), configuration.USER_ID, "", task.getNotes(), "");
 		actionPerform();
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
+		task = TaskObject.get(TaskID); // 重新取得Task資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
 							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
-							.append("\"Name\":\"").append(issue.getSummary()).append("\",")
-							.append("\"Handler\":\"").append(issue.getAssignto()).append("\",")
-							.append("\"Partners\":\"").append(issue.getPartners()).append("\"}")
+							.append("\"Name\":\"").append(task.getName()).append("\",")
+							.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
+							.append("\"Partners\":\"").append(task.getPartners()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals(ITSEnum.S_NEW_STATUS, issue.getStatus()); // 判斷Task狀態是不是回到new了
+		assertEquals(ITSEnum.S_NEW_STATUS, task.getStatus()); // 判斷Task狀態是不是回到new了
 
 		// ============= release ==============
 		project = null;
 		sprintBacklogLogic = null;
 		sprintBacklogMapper = null;
-		issue = null;
+		task = null;
 	}
 }

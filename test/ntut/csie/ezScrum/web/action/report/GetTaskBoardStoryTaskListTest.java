@@ -22,6 +22,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
@@ -226,8 +227,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, addStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
 		
-		IIssue task = addTaskToStory.getTasks().get(0);
-		long taskId = task.getIssueID();
+		TaskObject task = addTaskToStory.getTasks().get(0);
+		long taskId = task.getId();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -266,8 +267,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Tasks\":[{")
 		        .append("\"Id\":\"").append(taskId).append("\",")
-		        .append("\"Name\":\"").append(task.getSummary()).append("\",")
-		        .append("\"Estimate\":\"").append(task.getEstimated()).append("\",")
+		        .append("\"Name\":\"").append(task.getName()).append("\",")
+		        .append("\"Estimate\":\"").append(task.getEstimate()).append("\",")
 		        .append("\"RemainHours\":\"").append(task.getRemains()).append("\",")
 		        .append("\"Handler\":\"\",")
 		        .append("\"Notes\":\"").append(task.getNotes()).append("\",")
@@ -276,7 +277,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"Status\":\"").append(task.getStatus()).append("\",")
 		        .append("\"Partners\":\"\",")
 		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(taskId).append("\",")
-		        .append("\"Actual\":\"").append(task.getActualHour()).append("\"")
+		        .append("\"Actual\":\"").append(task.getActual()).append("\"")
 		        .append("}]}],")
 		        .append("\"success\":true,\"Total\":1}");
 		assertEquals(expectedResponseText.toString(), result);
@@ -308,14 +309,14 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), null);
 		// 將第一個 story 跟 task 全都拉到 done, 用 TEST_ACCOUNT_ID_1 checkout task
-		List<IIssue> tasks = addTaskToStory.getTasks();
+		List<TaskObject> tasks = addTaskToStory.getTasks();
 		List<IIssue> stories = addStoryToSprint.getStories();
-		sprintBacklogLogic.checkOutTask(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), createAccount.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
+		sprintBacklogLogic.checkOutTask(tasks.get(0).getId(), tasks.get(0).getName(), createAccount.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
 		Thread.sleep(1000);
-		sprintBacklogLogic.doneIssue(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), tasks.get(0).getNotes(), null, null);
+		sprintBacklogLogic.doneIssue(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), null, null);
 		sprintBacklogLogic.doneIssue(stories.get(0).getIssueID(), stories.get(0).getSummary(), stories.get(0).getNotes(), null, null);
 		// 將第三個 task check out，用 TEST_ACCOUNT_ID_1 checkout task
-		sprintBacklogLogic.checkOutTask(tasks.get(2).getIssueID(), tasks.get(2).getSummary(), createAccount.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
+		sprintBacklogLogic.checkOutTask(tasks.get(2).getId(), tasks.get(2).getName(), createAccount.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -339,8 +340,9 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ArrayList<LinkedHashTreeMap<String, Object>> taskList;
 		Number total = (Number) resultMap.get("Total");
 		List<IIssue> expectedStories = addStoryToSprint.getStories();
-		List<IIssue> expectedTasks = addTaskToStory.getTasks();
-		IIssue expectedStory, expectedTask;
+		List<TaskObject> expectedTasks = addTaskToStory.getTasks();
+		IIssue expectedStory;
+		TaskObject expectedTask;
 
 		/**
 		 * 一個 Story and task 被 TEST_ACCOUNT_ID_1 拉到 Done
@@ -373,9 +375,9 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(false, storyList.get(i).get("Attach"));
 			assertEquals(expectedStory.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			for (int j = 0; j < taskList.size(); j++) {
-				assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(j).get("Id"));
-				assertEquals(expectedTask.getSummary(), taskList.get(j).get("Name"));
-				assertEquals(expectedTask.getEstimated(), taskList.get(j).get("Estimate"));
+				assertEquals(String.valueOf(expectedTask.getId()), taskList.get(j).get("Id"));
+				assertEquals(expectedTask.getName(), taskList.get(j).get("Name"));
+				assertEquals(expectedTask.getEstimate(), taskList.get(j).get("Estimate"));
 				assertEquals(createAccount.getAccount_ID(1), taskList.get(j).get("Handler"));
 				assertEquals(expectedTask.getNotes(), taskList.get(j).get("Notes"));
 				assertEquals(expectedTask.getAttachFiles(), taskList.get(j).get("AttachFileList"));
@@ -388,8 +390,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 					assertEquals(expectedTask.getRemains(), taskList.get(j).get("RemainHours"));
 				}
 				assertEquals(expectedTask.getPartners(), taskList.get(j).get("Partners"));
-				assertEquals(expectedTask.getIssueLink(), taskList.get(j).get("Link"));
-				assertEquals(expectedTask.getActualHour(), taskList.get(j).get("Actual"));
+				assertEquals("", taskList.get(j).get("Link"));
+				assertEquals(expectedTask.getActual(), taskList.get(j).get("Actual"));
 			}
 		}
 	}
@@ -491,8 +493,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, addStoryToSprint, mCreateProject);
 		addTaskToStory.exe();
 		
-		IIssue task = addTaskToStory.getTasks().get(0);
-		long taskId = task.getIssueID();
+		TaskObject task = addTaskToStory.getTasks().get(0);
+		long taskId = task.getId();
 		
 		// attach file
 		final String FILE_NAME = "ezScrumTestFile";

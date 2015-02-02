@@ -159,8 +159,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getIssueID(), ATS.getTasks().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -211,8 +211,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getIssueID(), ATS.getTasks().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -268,8 +268,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getIssueID(), ATS.getTasks().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================ set session info ========================
@@ -315,8 +315,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getIssueID(), ATS.getTasks().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -373,7 +373,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		// 1個story設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
 		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -424,7 +424,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
 		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -481,7 +481,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
 		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getIssueID(), ATS.getTasks().get(1).getSummary(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================

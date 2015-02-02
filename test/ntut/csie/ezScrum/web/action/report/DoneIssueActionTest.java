@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -89,15 +90,15 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 	public void testDoneIssue_Task() {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = issue.getIssueID();
+		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
+		Long TaskID = task.getId();
 
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
-		addRequestParameter("Name", issue.getSummary());
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Name", task.getName());
+		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "");
-		addRequestParameter("Actualhour", issue.getActualHour());
+		addRequestParameter("Actualhour", String.valueOf(task.getActual()));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
@@ -111,7 +112,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		issue = sprintBacklogMapper.getStory(TaskID); // 重新取得Task資訊
+		task = sprintBacklogMapper.getTask(TaskID); // 重新取得Task資訊
 
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
@@ -119,19 +120,19 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
 							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
-							.append("\"Name\":\"").append(issue.getSummary()).append("\",")
-							.append("\"Handler\":\"").append(issue.getAssignto()).append("\",")
-							.append("\"Partners\":\"").append(issue.getPartners()).append("\"}")
+							.append("\"Name\":\"").append(task.getName()).append("\",")
+							.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
+							.append("\"Partners\":\"").append(task.getPartners()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals("closed", issue.getStatus()); // 判斷Task是不是已經closed了
+		assertEquals("closed", task.getStatus()); // 判斷Task是不是已經closed了
 
 		// ============= release ==============
 		project = null;
 		sprintBacklogLogic = null;
 		sprintBacklogMapper = null;
-		issue = null;
+		task = null;
 	}
 
 	// 測試Story拉到Done時的狀況
