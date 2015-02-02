@@ -28,13 +28,13 @@ public class TaskBoard {
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private List<IIssue> mStories;
-	private Map<Long, ArrayList<TaskObject>> mTaskMap;
-	private IIssue[] mDropedStories;
-	private Map<Long, ArrayList<TaskObject>> mDropedTaskMap;
-	private LinkedHashMap<Date, Double> mStoryIdealPointMap;
-	private LinkedHashMap<Date, Double> mStoryRealPointMap;
-	private LinkedHashMap<Date, Double> mTaskIdealPointMap;
-	private LinkedHashMap<Date, Double> mTaskRealPointMap;
+	private Map<Long, ArrayList<TaskObject>> mStoryIdToTasks;
+	private IIssue[] mDroppedStories;
+	private Map<Long, ArrayList<TaskObject>> mDroppedStoryIdToTasks;
+	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
+	private LinkedHashMap<Date, Double> mDateToStoryPoint;
+	private LinkedHashMap<Date, Double> mDateToTaskIdealPoint;
+	private LinkedHashMap<Date, Double> mDateToTaskRealPoint;
 	private Date mCurrentDate = new Date();
 	private Date mGeneratedTime = new Date();
 	private String mIteration = "0";
@@ -49,19 +49,19 @@ public class TaskBoard {
 
 	// ======================= for unit test ===========================
 	public LinkedHashMap<Date, Double> getstoryRealPointMap() {
-		return mStoryRealPointMap;
+		return mDateToStoryPoint;
 	}
 
 	public LinkedHashMap<Date, Double> gettaskRealPointMap() {
-		return mTaskRealPointMap;
+		return mDateToTaskRealPoint;
 	}
 
 	public LinkedHashMap<Date, Double> getstoryIdealPointMap() {
-		return mStoryIdealPointMap;
+		return mDateToStoryIdealPoint;
 	}
 
 	public LinkedHashMap<Date, Double> gettaskIdealPointMap() {
-		return mTaskIdealPointMap;
+		return mDateToTaskIdealPoint;
 	}
 
 	// ======================= for unit test ===========================
@@ -69,10 +69,10 @@ public class TaskBoard {
 	private void init() {
 		// 取得目前最新的Story與Task狀態
 		mStories = mSprintBacklogLogic.getStoriesByImp();
-		mTaskMap = mSprintBacklogMapper.getTasksMap();
+		mStoryIdToTasks = mSprintBacklogMapper.getTasksMap();
 		// 取得從經被drop掉的Story與其底下的Task
-		mDropedStories = mSprintBacklogMapper.getDroppedStories();
-		mDropedTaskMap = mSprintBacklogMapper.getDroppedTasksMap();
+		mDroppedStories = mSprintBacklogMapper.getDroppedStories();
+		mDroppedStoryIdToTasks = mSprintBacklogMapper.getDroppedTasksMap();
 
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
@@ -84,10 +84,10 @@ public class TaskBoard {
 			indexDate.setTime(iter_Start_Work_Date);
 			long endTime = iter_End_Work_Date.getTime();
 
-			mStoryIdealPointMap = new LinkedHashMap<Date, Double>();	// Story的理想線
-			mTaskIdealPointMap = new LinkedHashMap<Date, Double>();	// Task的理想線
-			mStoryRealPointMap = new LinkedHashMap<Date, Double>();	// Story的真實線
-			mTaskRealPointMap = new LinkedHashMap<Date, Double>();		// Task的真實線
+			mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>();	// Story的理想線
+			mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>();	// Task的理想線
+			mDateToStoryPoint = new LinkedHashMap<Date, Double>();	// Story的真實線
+			mDateToTaskRealPoint = new LinkedHashMap<Date, Double>();		// Task的真實線
 			double[] initPoint = getPointByDate(iter_Start_Work_Date);	// 第一天Story與Task的點數
 			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays();	// 扣除假日後，Sprint的總天數
 			int num = 0;	// Sprint中第幾天的Counter
@@ -104,18 +104,18 @@ public class TaskBoard {
 				if (!DateUtil.isHoliday(key)) {
 					// 記錄Story與Task理想線的點數
 					// 理想線直線方程式 y = - (起始點數 / 總天數) * 第幾天 + 起始點數
-					mStoryIdealPointMap.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
-					mTaskIdealPointMap.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
+					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
+					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
 
 					// 記錄Story與Task實際線的點數
 					// 只取出今天以前的資料
 					if (indexDate.getTimeInMillis() < today) {
 						double point[] = getPointByDate(key);
-						mStoryRealPointMap.put(key, point[0]);
-						mTaskRealPointMap.put(key, point[1]);
+						mDateToStoryPoint.put(key, point[0]);
+						mDateToTaskRealPoint.put(key, point[1]);
 					} else {
-						mStoryRealPointMap.put(key, null);
-						mTaskRealPointMap.put(key, null);
+						mDateToStoryPoint.put(key, null);
+						mDateToTaskRealPoint.put(key, null);
 					}
 					num++;
 				}
@@ -124,13 +124,13 @@ public class TaskBoard {
 		}
 	}
 
-	private double getStoryPoint(Date date, IIssue issue) throws Exception {
+	private double getStoryPoint(Date date, IIssue story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		String issue_iter = issue.getTagValue("Iteration", date);
+		String issue_iter = story.getTagValue("Iteration", date);
 		if (issue_iter != null && issue_iter.equals(mIteration)) {
 			try {
-				point = Double.parseDouble(issue.getTagValue(ScrumEnum.ESTIMATION, date));
+				point = Double.parseDouble(story.getTagValue(ScrumEnum.ESTIMATION, date));
 			} catch (Exception e) {
 				// 表示這個Story沒有設定Estimation
 				return 0;
@@ -170,11 +170,11 @@ public class TaskBoard {
 		Date dueDate = new Date(date.getTime() + mOneDay);
 
 		// 尋訪現有的所有Story
-		for (IIssue issue : mStories) {
+		for (IIssue story : mStories) {
 			double estimation;
 
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (issue.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) {
+			if (story.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) {
 				continue;
 			}
 
@@ -182,13 +182,13 @@ public class TaskBoard {
 				/***************
 				 * 計算Story點數
 				 ***************/
-				point[0] += getStoryPoint(dueDate, issue);
+				point[0] += getStoryPoint(dueDate, story);
 
 				/***************
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				ArrayList<TaskObject> tmpTasks = mTaskMap.get(issue.getIssueID());
+				ArrayList<TaskObject> tmpTasks = mStoryIdToTasks.get(story.getIssueID());
 				for (TaskObject task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
 					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE) 
@@ -203,7 +203,7 @@ public class TaskBoard {
 		}
 
 		// 尋訪現有的所有Droped Story
-		for (IIssue issue : mDropedStories) {
+		for (IIssue issue : mDroppedStories) {
 			double estimation;
 
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
@@ -219,7 +219,7 @@ public class TaskBoard {
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				ArrayList<TaskObject> tmpTasks = mDropedTaskMap.get(issue.getIssueID());
+				ArrayList<TaskObject> tmpTasks = mDroppedStoryIdToTasks.get(issue.getIssueID());
 				for (TaskObject task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
 					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE)
@@ -270,7 +270,7 @@ public class TaskBoard {
 	}
 
 	public Map<Long, ArrayList<TaskObject>> getTaskMap() {
-		return mTaskMap;
+		return mStoryIdToTasks;
 	}
 
 	public String getStoryChartLink() {
@@ -319,11 +319,11 @@ public class TaskBoard {
 
 		// TODO:要新增的data set
 		if (type.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			chartUtil.addDataSet("current", mTaskRealPointMap);
-			chartUtil.addDataSet("ideal", mTaskIdealPointMap);
+			chartUtil.addDataSet("current", mDateToTaskRealPoint);
+			chartUtil.addDataSet("ideal", mDateToTaskIdealPoint);
 		} else {
-			chartUtil.addDataSet("current", mStoryRealPointMap);
-			chartUtil.addDataSet("ideal", mStoryIdealPointMap);
+			chartUtil.addDataSet("current", mDateToStoryPoint);
+			chartUtil.addDataSet("ideal", mDateToStoryIdealPoint);
 		}
 		chartUtil.setInterval(1);
 		chartUtil.setValueAxisLabel(Y_axis_value);
@@ -366,6 +366,6 @@ public class TaskBoard {
 	}
 
 	public void setM_taskMap(Map<Long, ArrayList<TaskObject>> map) {
-		mTaskMap = map;
+		mStoryIdToTasks = map;
 	}
 }
