@@ -42,28 +42,28 @@ import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.time.SimpleTimePeriod;
 
 public class ScheduleReport {
-	private final long OneDay = 24 * 3600 * 1000;
-	private Date m_startDate = new Date();
-	private Date m_endDate = new Date();
-	private int m_interval = 7;
-	private DateTickUnit m_dtu = null;;
-	private IProject project = null;
-	private IUserSession session;
-	private int iteration = -1;
-	private String folderName = "ScheduleReport"; 
-	private String fileName = "ScheduleReport.png";
-	private String chartPath ="";
-	private String sprintGoal = "";
-	private int size = 0;
+	private final long mOneDay = 24 * 3600 * 1000;
+	private Date mStartDate = new Date();
+	private Date mEndDate = new Date();
+	private int mInterval = 7;
+	private DateTickUnit mDtu = null;;
+	private IProject mProject = null;
+	private IUserSession mSession;
+	private int mIteration = -1;
+	private String mFolderName = "ScheduleReport"; 
+	private String mFileName = "ScheduleReport.png";
+	private String mChartPath ="";
+	private String mSprintGoal = "";
+	private int mSize = 0;
 	public ScheduleReport(IProject project, IUserSession session, int iteration){
-		this.project = project;
-		this.session = session;
-		this.iteration = iteration;
+		mProject = project;
+		mSession = session;
+		mIteration = iteration;
 	}
 	
 	public ScheduleReport(IProject project, IUserSession session){
-		this.project = project;
-		this.session = session;
+		mProject = project;
+		mSession = session;
 	}
 	
 	public void generateChart(){
@@ -86,34 +86,34 @@ public class ScheduleReport {
 	}
 	
 	public String getPath(){
-		String link = "./Workspace/" + project.getName() + "/"
-		+ IProject.METADATA + "/" + folderName +"/Sprint"+iteration+"/"+fileName;
+		String link = "./Workspace/" + mProject.getName() + "/"
+		+ IProject.METADATA + "/" + mFolderName +"/Sprint"+mIteration+"/"+mFileName;
 		return link;
 	}
 	
 	private IntervalCategoryDataset createDataset(){
 //		SprintBacklogMapper sb = null;
 //		TaskSeriesCollection collection = null;
-//		if(this.iteration!=-1){
+//		if(iteration!=-1){
 //			sb = new SprintBacklogMapper(project, session, iteration);
 //		}
 //		else{
 //			sb = new SprintBacklogMapper(project, session);
-//			this.iteration = sb.getSprintPlanId();
+//			iteration = sb.getSprintPlanId();
 //		}
 		
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, String.valueOf(iteration));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSession, String.valueOf(mIteration));
 		SprintBacklogMapper sb = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskSeriesCollection collection = null;
-		if(this.iteration==-1){
-			this.iteration = sb.getSprintPlanId();
+		if(mIteration==-1){
+			mIteration = sb.getSprintPlanId();
 		}
 		
 		if(sb!=null){
 			//設定抓取iter 時間
-			this.m_startDate = sb.getSprintStartDate();
-			this.m_endDate = sb.getSprintEndDate();
-			this.sprintGoal = sb.getSprintGoal();
+			mStartDate = sb.getSprintStartDate();
+			mEndDate = sb.getSprintEndDate();
+			mSprintGoal = sb.getSprintGoal();
 			collection = initTaskCollection(sprintBacklogLogic, sb);
 
 		}
@@ -124,7 +124,7 @@ public class ScheduleReport {
 		//塞入資料
 //		List<IIssue> stories = sb.getStories();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
-		this.size = stories.size();
+		mSize = stories.size();
 		Map<Long, ArrayList<TaskObject>> taskMap = sb.getTasksMap();
 		/** 
 		* Creating a task series 
@@ -216,11 +216,11 @@ public class ScheduleReport {
 		 * 以下為調整日期顯示的間隔
 		 */
 
-		int totalDays = (int) ((m_endDate.getTime() - this.m_startDate
-				.getTime()) / OneDay);
+		int totalDays = (int) ((mEndDate.getTime() - mStartDate
+				.getTime()) / mOneDay);
 
 		//自動產生
-			int intervalNum = totalDays / m_interval;
+			int intervalNum = totalDays / mInterval;
 			/**
 			 * 這裡有bug by ninja31312
 			 * int intervalNum = totalDays / m_interval;
@@ -238,15 +238,15 @@ public class ScheduleReport {
 				intervalNum = 1;
 			}
 			if (intervalNum <= 30)
-				m_dtu = new DateTickUnit(DateTickUnit.DAY, intervalNum);
+				mDtu = new DateTickUnit(DateTickUnit.DAY, intervalNum);
 			else {
 				// if ((intervalNum / 30 + 1) * m_interval > 7)
-				m_dtu = new DateTickUnit(DateTickUnit.DAY, m_interval
+				mDtu = new DateTickUnit(DateTickUnit.DAY, mInterval
 						* (intervalNum / 30 + 1));
 			}
 
-		da.setTickUnit(m_dtu);
-		da.setRange(this.m_startDate, this.m_endDate);
+		da.setTickUnit(mDtu);
+		da.setRange(mStartDate, mEndDate);
 
 		// 去掉六日
 		SegmentedTimeline timeLine = SegmentedTimeline
@@ -256,22 +256,22 @@ public class ScheduleReport {
 	}
 	
 	private void saveChart(JFreeChart chart){
-		chartPath = project.getFolder(IProject.METADATA).getFullPath()
-				+ File.separator + this.folderName 
-				+ File.separator + "Sprint"+this.iteration
-				+ File.separator + this.fileName;
+		mChartPath = mProject.getFolder(IProject.METADATA).getFullPath()
+				+ File.separator + mFolderName 
+				+ File.separator + "Sprint"+mIteration
+				+ File.separator + mFileName;
 		
-		File f = new File(chartPath);
+		File f = new File(mChartPath);
 		
 		FileOutputStream fos = null;
 		try {
 			// 預防資料夾尚未被建起
-			File folder = new File(chartPath).getParentFile();
+			File folder = new File(mChartPath).getParentFile();
 			if (folder != null && !folder.exists())
 				folder.mkdirs();
 
 			// 將圖表檔輸出
-			fos = new FileOutputStream(chartPath);
+			fos = new FileOutputStream(mChartPath);
 			ChartUtilities.writeChartAsPNG(fos, chart, 800, 600);
 			fos.close();
 			while (!f.exists()) {
@@ -285,20 +285,20 @@ public class ScheduleReport {
 		}
 	}
 	public String getSprintGoal(){
-		return this.sprintGoal;
+		return mSprintGoal;
 	}
 	
 	public String getDuration(){
-		String startDate = DateUtil.format(this.m_startDate , DateUtil._8DIGIT_DATE_1);
-		String endtDate = DateUtil.format(this.m_endDate , DateUtil._8DIGIT_DATE_1);
+		String startDate = DateUtil.format(mStartDate , DateUtil._8DIGIT_DATE_1);
+		String endtDate = DateUtil.format(mEndDate , DateUtil._8DIGIT_DATE_1);
 		String duration = startDate +" ~ "+endtDate;		
 		return duration;
 	}
 	public int getIteration(){
-		return this.iteration;
+		return mIteration;
 	}
 	
 	public int getStorySize(){
-		return this.size;
+		return mSize;
 	}
 }
