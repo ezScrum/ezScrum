@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateSprint {
-	// private static Log log = LogFactory.getLog(CreateSprint.class);
 
 	private int SprintCount = 1;
 	private CreateProject CP = null;
