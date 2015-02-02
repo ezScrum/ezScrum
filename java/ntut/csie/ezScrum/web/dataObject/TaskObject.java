@@ -481,10 +481,14 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
+			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
+				addHistoryOfTaskDropFromStory(mStoryId, mId); // for task
+				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId); // for story
+			} 
+			// task append to story
+			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
 				addHistoryOfAddRelation(mStoryId, mId);
-			} else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-				addHistoryOfRemoveRelation(mStoryId, mId);
 			}
 		}
 		if (mHandlerId != oldTask.getHandlerId()) {
@@ -500,11 +504,14 @@ public class TaskObject implements IBaseObject {
 				String.valueOf(mId), System.currentTimeMillis());
 		HistoryDAO.getInstance().create(history);
 	}
+	
+	private void addHistoryOfTaskDropFromStory(long storyId, long taskId) {
+		addHistory(HistoryObject.TYPE_DROP, "", String.valueOf(mStoryId));
+	}
 
-	private void addHistoryOfRemoveRelation(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId));
-		HistoryObject history = new HistoryObject(mStoryId,
-				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
+	private void addHistoryOfStoryRemoveTask(long storyId, long taskId) {
+		HistoryObject history = new HistoryObject(storyId,
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
 				String.valueOf(mId), System.currentTimeMillis());
 		HistoryDAO.getInstance().create(history);
 	}

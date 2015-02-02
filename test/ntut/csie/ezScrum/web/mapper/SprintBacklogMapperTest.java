@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
@@ -22,7 +21,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -594,7 +592,7 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetTasksWithNoParent() {
-		long projectId = mCP.getProjects().get(0).getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";
@@ -637,7 +635,7 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testDeleteExistingTask() {
-		long projectId = mCP.getProjects().get(0).getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
 		String TEST_NAME = "NEW_TEST_TASK_NAME_";

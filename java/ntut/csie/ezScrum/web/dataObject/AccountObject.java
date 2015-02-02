@@ -87,23 +87,29 @@ public class AccountObject implements IBaseObject {
 	}
 
 	public HashMap<String, ProjectRole> getRoles() {
-	    return AccountDAO.getInstance().getProjectRoleMap(mId);
-    }
+		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleMap(mId);
+		if (roles == null) {
+			roles = new HashMap<String, ProjectRole>();
+		}
+		return roles; 
+	}
 
 	/**
 	 * Get account by account id
 	 * 
-	 * @param id account id
+	 * @param id
+	 *            account id
 	 * @return AccountObject
 	 */
 	public static AccountObject get(long id) {
 		return AccountDAO.getInstance().get(id);
 	}
-	
+
 	/**
 	 * Get account by account user name
 	 * 
-	 * @param username account user name
+	 * @param username
+	 *            account user name
 	 * @return AccountObject
 	 */
 	public static AccountObject get(String username) {
@@ -129,7 +135,7 @@ public class AccountObject implements IBaseObject {
 	public boolean createProjectRole(long projectId, RoleEnum role) {
 		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
 	}
-	
+
 	/**
 	 * Get account access mapping each attend project
 	 * 
@@ -138,7 +144,7 @@ public class AccountObject implements IBaseObject {
 	public HashMap<String, ProjectRole> getProjectRoleMap() {
 		return AccountDAO.getInstance().getProjectRoleMap(mId);
 	}
-	
+
 	/**
 	 * Delete account's role in project
 	 * 
@@ -149,7 +155,7 @@ public class AccountObject implements IBaseObject {
 	public boolean deleteProjectRole(long projectId, RoleEnum role) {
 		return AccountDAO.getInstance().deleteProjectRole(projectId, mId, role);
 	}
-	
+
 	/**
 	 * Create project system role
 	 * 
@@ -158,7 +164,7 @@ public class AccountObject implements IBaseObject {
 	public boolean createSystemRole() {
 		return AccountDAO.getInstance().createSystemRole(mId);
 	}
-	
+
 	/**
 	 * 藉由 account id 判斷是否取出專案下的管理者帳號
 	 * 
@@ -176,7 +182,7 @@ public class AccountObject implements IBaseObject {
 	public boolean deleteSystemRole() {
 		return AccountDAO.getInstance().deleteSystemRole(mId);
 	}
-	
+
 	/**
 	 * Use username and password to get account
 	 * 
@@ -187,7 +193,7 @@ public class AccountObject implements IBaseObject {
 	public static AccountObject confirmAccount(String username, String password) {
 		return AccountDAO.getInstance().confirmAccount(username, password);
 	}
-	
+
 	@Override
 	public boolean delete() {
 		boolean success = AccountDAO.getInstance().delete(mId);
@@ -243,7 +249,14 @@ public class AccountObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject account = new JSONObject();
+
+		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
+				.put(AccountEnum.PASSWORD, mPassword)
+				.put(AccountEnum.EMAIL, mEmail)
+				.put(AccountEnum.ENABLE, mEnable)
+				.put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
+
+		return account;
 	}
 }

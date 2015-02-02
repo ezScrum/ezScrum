@@ -375,10 +375,12 @@ public class SprintBacklogMapper {
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
 	/**
-	 * To DONE
+	 * From Not Checked Out to Checked Out
 	 * 
 	 * @param id
 	 * @param name
+	 * @param handlerId
+	 * @param partners
 	 * @param notes
 	 * @param specificDate
 	 */
@@ -391,27 +393,29 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
+		mUpdateFlag = true;
 	}
-
+	
 	/**
-	 * From CHECK to UNCHECK
+	 * From Checked Out to Done
 	 * 
 	 * @param id
 	 * @param name
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void resetTask(long id, String name, String notes, Date specificDate) {
+	public void closeTask(long id, String name, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes).setHandlerId(-1)
-					.setStatus(TaskObject.STATUS_UNCHECK)
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
 	}
-
+	
 	/**
-	 * From DONE to CHECK
+	 * From Done to Checked Out
 	 * 
 	 * @param id
 	 * @param name
@@ -428,21 +432,19 @@ public class SprintBacklogMapper {
 	}
 
 	/**
-	 * From UNCHECK to CHECK
+	 * From Checked Out to Not Checked Out
 	 * 
 	 * @param id
 	 * @param name
-	 * @param handlerId
-	 * @param partners
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+	public void resetTask(long id, String name, String notes, Date specificDate) {
+		long noHandler = -1;
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
-					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+			task.setName(name).setNotes(notes).setHandlerId(noHandler)
+					.setStatus(TaskObject.STATUS_UNCHECK)
 					.save(specificDate.getTime());
 		}
 	}

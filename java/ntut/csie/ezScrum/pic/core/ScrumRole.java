@@ -19,11 +19,6 @@ public class ScrumRole {
 	private Boolean mReport = false;
 	private Boolean mEditProject = false;
 
-	private Boolean mKanbanBacklog = false;
-	private Boolean mManageStatus = false;
-	private Boolean mKanbanBoard = false;
-	private Boolean mKanbanReport = false;
-
 	// add for guest permission
 	private Boolean mIsGuest = false;
 	private Boolean mIsAdmin = false;
@@ -178,23 +173,6 @@ public class ScrumRole {
 		return mEditProject;
 	}
 
-	// Kanban
-	public Boolean getAccessKanbanBacklog() {
-		return mKanbanBacklog;
-	}
-
-	public Boolean getAccessManageStatus() {
-		return mManageStatus;
-	}
-
-	public Boolean getAccessKanbanBoard() {
-		return mKanbanBoard;
-	}
-
-	public Boolean getAccessKanbanReport() {
-		return mKanbanReport;
-	}
-
 	// add for guest permission
 	public Boolean isGuest() {
 		return mIsGuest;
@@ -237,42 +215,7 @@ public class ScrumRole {
 		mEditProject = permission;
 	}
 
-	// Kanban
-	public void setAccessKanbanBacklog(Boolean permission) {
-		mKanbanBacklog = permission;
-	}
-
-	public void setAccessManageStatus(Boolean permission) {
-		mManageStatus = permission;
-	}
-
-	public void setAccessKanbanBoard(Boolean permission) {
-		mKanbanBoard = permission;
-	}
-
-	public void setAccessKanbanReport(Boolean permission) {
-		mKanbanReport = permission;
-	}
-
 	public void setisGuest(Boolean permission) {
 		mIsGuest = permission;
-	}
-
-	// 使用Kanban流程則Scrum流程的權限全部設為False
-	public void setToKanbanPermission() {
-		mProductBacklog = false;
-		mReleasePlan = false;
-		mSprintPlan = false;
-		mTaskboard = false;
-		mSprintBacklog = false;
-		mUnplanned = false;
-		mRetrospective = false;
-	}
-
-	// 使用Scrum流程則Kanban流程的權限全部設為False
-	public void setToScrumPermission() {
-		mKanbanBacklog = false;
-		mManageStatus = false;
-		mKanbanBoard = false;
 	}
 }

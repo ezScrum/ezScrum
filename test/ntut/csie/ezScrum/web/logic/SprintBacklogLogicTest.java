@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.logic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -15,7 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -91,6 +90,8 @@ public class SprintBacklogLogicTest {
 		boolean enable = true;
 		String CHECKOUT_NAME = "CHECKOUT_NAME";
 		String CHECKOUT_NOTE = "CHECKOUT_NOTE";
+		String CHECKOUT_TIME = "2015/01/29-16:00:00";
+		
 		// create 2 account
 		for(int i = 0; i < 2; i++){
 			AccountObject account = new AccountObject(username + (i+1));
@@ -102,34 +103,36 @@ public class SprintBacklogLogicTest {
 		}
 		
 		TaskObject checkOutTask = mATTS.getTasks().get(0);
-		long checkoutHandlerId = 2L;
+		String checkoutHandlerUserName = "TEST_ACCOUNT_1";
 		
 		// prepare partnerList
-		ArrayList<Long> partnerList = new ArrayList<Long>();
-		partnerList.add(3L);
+		StringBuilder partnerUserNameBuilder = new StringBuilder();
+		partnerUserNameBuilder.append("TEST_ACCOUNT_2");
 		
 		// check out task 
-		mSprintBacklogLogic.checkOutTask(checkOutTask.getId(), CHECKOUT_NAME, checkoutHandlerId, partnerList, CHECKOUT_NOTE, "2015/01/29-16:00:00");
+		mSprintBacklogLogic.checkOutTask(checkOutTask.getId(), CHECKOUT_NAME, checkoutHandlerUserName, partnerUserNameBuilder.toString(), CHECKOUT_NOTE, CHECKOUT_TIME);
 		checkOutTask.reload();
 		// assert
 		assertEquals(TaskObject.STATUS_CHECK, checkOutTask.getStatus());
 		assertEquals("assigned", checkOutTask.getStatusString());
-		assertEquals(checkoutHandlerId, checkOutTask.getHandlerId());
-		assertEquals(partnerList.get(0), checkOutTask.getPartnersId().get(0));
+		assertEquals(2, checkOutTask.getHandlerId());
+		assertEquals(3, checkOutTask.getPartnersId().get(0));
+		assertEquals(DateUtil.dayFillter(CHECKOUT_TIME, DateUtil._16DIGIT_DATE_TIME).getTime(), checkOutTask.getUpdateTime());
 	}
 	
 	@Test
-	public void testDoneIssue(){
+	public void testCloseTask(){
 		String DONE_NAME = "CHECKOUT_NAME";
 		String DONE_NOTE = "CHECKOUT_NOTE";
+		String CHECKOUT_TIME = "2015/01/29-16:00:00";
 		
 		TaskObject task = mATTS.getTasks().get(0);
 		TaskObject task2 = mATTS.getTasks().get(1);
 		TaskObject task3 = mATTS.getTasks().get(2);
 		
 		// Done Issue
-		mSprintBacklogLogic.doneIssue(task.getId(), IssueTypeEnum.TYPE_TASK, DONE_NAME, DONE_NOTE, "2015/01/29-16:00:00", "4");
-		mSprintBacklogLogic.doneIssue(task2.getId(), IssueTypeEnum.TYPE_TASK, DONE_NAME, DONE_NOTE, "2015/01/29-16:00:00", "4");
+		mSprintBacklogLogic.closeTask(task.getId(), DONE_NAME, DONE_NOTE, CHECKOUT_TIME);
+		mSprintBacklogLogic.closeTask(task2.getId(), DONE_NAME, DONE_NOTE, CHECKOUT_TIME);
 		
 		task.reload();
 		task2.reload();
@@ -142,18 +145,21 @@ public class SprintBacklogLogicTest {
 		assertEquals(DONE_NAME, task.getName());
 		assertEquals(DONE_NOTE, task.getNotes());
 		assertEquals(0, task.getRemains());
+		assertEquals(DateUtil.dayFillter(CHECKOUT_TIME, DateUtil._16DIGIT_DATE_TIME).getTime(), task.getUpdateTime());
 		// Task 2
 		assertEquals(TaskObject.STATUS_DONE, task2.getStatus());
 		assertEquals("closed", task2.getStatusString());
 		assertEquals(DONE_NAME, task2.getName());
 		assertEquals(DONE_NOTE, task2.getNotes());
 		assertEquals(0, task2.getRemains());
+		assertEquals(DateUtil.dayFillter(CHECKOUT_TIME, DateUtil._16DIGIT_DATE_TIME).getTime(), task2.getUpdateTime());
 		// Task 3
 		assertEquals(TaskObject.STATUS_UNCHECK, task3.getStatus());
 		assertEquals("new", task3.getStatusString());
 		assertTrue(task3.getName() != DONE_NAME);
 		assertTrue(task3.getNotes() != DONE_NOTE);
 		assertEquals(8, task3.getRemains());
+		assertTrue(DateUtil.dayFillter(CHECKOUT_TIME, DateUtil._16DIGIT_DATE_TIME).getTime() != task3.getUpdateTime());
 	}
 	
 	@Test
