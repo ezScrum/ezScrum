@@ -75,7 +75,7 @@ public class TaskWebServiceController {
 			decoder.decodeProjectID(projectID);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			existedTaskListJson = mTaskWebService.getNoParentTasks();
+			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
 		} catch (LogonException e) {
 			System.out
 					.println("class: TaskWebServiceController, "

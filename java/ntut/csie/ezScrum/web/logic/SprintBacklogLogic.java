@@ -128,9 +128,9 @@ public class SprintBacklogLogic {
 		mSprintBacklogMapper.resetTask(id, name, notes, closeDate);
 	}
 	
-	public void closeTask(long id, String name, String notes, String changeDate) {
+	public void closeTask(long id, String name, String notes, int actual, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeTask(id, name, notes, closeDate);
+		mSprintBacklogMapper.closeTask(id, name, notes, actual, closeDate);
 	}
 
 	/**

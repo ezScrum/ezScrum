@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -32,7 +34,7 @@ public class ShowPrintableReleaseAction extends Action {
 		
 		HashMap<String, Float> tatolStoryPoints;
 		HashMap<String, List<IIssue>> stories;
-		LinkedHashMap<Long, IIssue[]> TaskMap;
+		LinkedHashMap<Long, ArrayList<TaskObject>> TaskMap;
 		
 		// get session info
 		IProject project = (IProject) SessionManager.getProject(request);
@@ -56,7 +58,7 @@ public class ShowPrintableReleaseAction extends Action {
     	SprintPlanHelper SPhelper = new SprintPlanHelper(project);
     	stories = new HashMap<String, List<IIssue>>();
     	tatolStoryPoints = new HashMap<String, Float>();
-    	TaskMap = new LinkedHashMap<Long, IIssue[]>();
+    	TaskMap = new LinkedHashMap<Long, ArrayList<TaskObject>>();
     	//get sprints information of the release(release id) 
     	
     	try {

@@ -240,4 +240,10 @@ public class AccountObject implements IBaseObject {
 	private void doUpdate() {
 		AccountDAO.getInstance().update(this);
 	}
+
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

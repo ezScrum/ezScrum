@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -114,7 +112,6 @@ public class HistoryObject {
 	}
 
 	public String getDescription() {
-		// TODO 判斷 type 來輸出成特定的 desc
 		switch (mHistoryType) {
 		case TYPE_CREATE:
 			return getCreateDesc();

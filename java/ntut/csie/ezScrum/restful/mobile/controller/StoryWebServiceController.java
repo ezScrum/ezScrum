@@ -131,12 +131,6 @@ public class StoryWebServiceController {
 							+ "method: getTaskInStory, " + "exception: "
 							+ e.toString());
 			e.printStackTrace();
-		} catch (JSONException e) {
-			System.out
-					.println("class: StoryWebServiceController, "
-							+ "method: getTaskInStory, " + "exception: "
-							+ e.toString());
-			e.printStackTrace();
 		} catch (IOException e) {
 			jsonString += "IOException";
 			System.out.println("class: StoryWebServiceController, "

@@ -6,6 +6,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -34,7 +35,7 @@ public class TaskWebService extends ProjectWebService {
 	
 	private void initialize(long projectId) {
 		UserSession userSession = new UserSession(super.getAccount());
-		mSprintBacklogHelper = new SprintBacklogHelper(super.getProjectList().get(0), userSession);
+		mSprintBacklogHelper = new SprintBacklogHelper(mProject, userSession);
 		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
 		mProjectHelper = new ProjectHelper();
 		mProject = mProjectHelper.getProject(projectId);
@@ -45,17 +46,10 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getNoParentTasks() throws SQLException {
-		IIssue[] existedTask = mProductBacklogHelper.getWildTasks();
-		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
-		for (IIssue task : existedTask)
-			existedTaskList.add(new TaskObject(task));
+	public String getTasksWithNoParent() throws SQLException {
+		ArrayList<TaskObject> existedTask = mProductBacklogHelper.getTasksWithNoParent();
 		Gson gson = new Gson();
-		return gson.toJson(existedTaskList);
-	}
-	
-	public String getWildTask() throws NumberFormatException, SQLException {
-		return mSprintBacklogHelper.getTasksWithNoParent(mProject.getId());
+		return gson.toJson(existedTask);
 	}
 	
 	/**
@@ -64,8 +58,9 @@ public class TaskWebService extends ProjectWebService {
 	 * @param task
 	 * @return
 	 */
-	public String createTaskInStory(String storyId, TaskObject task) {
-		return Long.toString(mSprintBacklogHelper.addTask(storyId, task).getIssueID());
+	public String createTaskInStory(TaskInfo taskInfo) {
+		TaskObject task = mSprintBacklogHelper.addTask(mProject.getId(), taskInfo);
+		return String.valueOf(task.getId());
 	}
 	
 	/**
@@ -91,9 +86,8 @@ public class TaskWebService extends ProjectWebService {
 	 * @param taskJson
 	 * @return
 	 */
-	public String updateTask(String taskJson) {
-		Gson gson = new Gson();
-		TaskObject task = gson.fromJson(taskJson, TaskObject.class);
-		return Boolean.toString(mSprintBacklogHelper.updateTask(task));
+	public String updateTask(TaskInfo taskInfo, String handlerUsername, String partnersUsername) {
+		mSprintBacklogHelper.updateTask(taskInfo, handlerUsername, partnersUsername);
+		return "true";
 	}
 }

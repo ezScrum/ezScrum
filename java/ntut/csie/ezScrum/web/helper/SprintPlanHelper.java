@@ -289,17 +289,9 @@ public class SprintPlanHelper {
 		for (IIssue storyIssue : storyIIssues) {
 			StoryObject story = new StoryObject(storyIssue);
 			// 找出 story 中所有的 task
-			IIssue[] taskIIssues = mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(story.id));
-			for (IIssue taskIssue : taskIIssues) {
-				TaskObject taskObject = new TaskObject(taskIssue);
-				if (taskIssue.getHistories().size() > 0) {
-					for (HistoryObject history : taskIssue.getHistories()) {
-						if (history.getHistoryType() == HistoryObject.TYPE_STATUS && history.getNewValue().equals("90")) {
-							taskObject.doneTime = history.getCreateTime();
-						}
-					}
-				}
-				story.addTask(taskObject);
+			ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(story.id));
+			for (TaskObject task : tasks) {
+				story.addTask(task);
 			}
 			sprint.addStory(story);
 		}
