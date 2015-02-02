@@ -228,14 +228,16 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetTasksByStoryId_WithNotExistStory() {
+		long notExistStoryId = -1;
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper
-				.getTasksByStoryId(-1);
+				.getTasksByStoryId(notExistStoryId);
 		assertEquals(0, tasks.size());
 	}
 
 	@Test
 	public void testGetTasksByStoryId_WithStory1() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(1);
+		long story1Id = 1;
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(story1Id);
 		assertEquals(3, tasks.size());
 		// check project id
 		assertEquals(1, tasks.get(0).getProjectId());
@@ -253,7 +255,8 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetTasksByStoryId_WithStory2() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(2);
+		long story2Id = 2;
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(story2Id);
 		assertEquals(3, tasks.size());
 		// check project id
 		assertEquals(1, tasks.get(0).getProjectId());
@@ -271,7 +274,8 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetTasksByStoryId_WithStory3() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(3);
+		long story3Id = 3;
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(story3Id);
 		assertEquals(3, tasks.size());
 		// check project id
 		assertEquals(1, tasks.get(0).getProjectId());
@@ -313,7 +317,8 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testGetStory_WithNotExistStoryId() {
-		IIssue story = mSprintBacklogMapper.getStory(-1);
+		long notExistStoryId = -1;
+		IIssue story = mSprintBacklogMapper.getStory(notExistStoryId);
 		assertEquals(null, story);
 	}
 
@@ -443,8 +448,9 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testUpdateTask() {
-		// get old task id = 1
-		TaskObject oldTask = TaskObject.get(1);
+		long taskId = 1;
+		// get old task
+		TaskObject oldTask = TaskObject.get(taskId);
 		// check task status before update task
 		assertEquals(1, oldTask.getId());
 		assertEquals("TEST_TASK_1", oldTask.getName());
@@ -510,11 +516,12 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testAddExistingTasks() {
+	public void testAddExistingTasksToStory() {
+		long storyId = 1;
 		// get story
 		MantisService mantisService = new MantisService(mConfiguration);
 		mantisService.openConnect();
-		IIssue story = mantisService.getIssue(1);
+		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
 		// check story tasks status before test
 		List<Long> oldTaskIds = story.getChildrenId();
@@ -529,15 +536,15 @@ public class SprintBacklogMapperTest {
 		assertEquals(1, newTask.getProjectId());
 		assertEquals(-1, newTask.getStoryId());
 		assertEquals(10, newTask.getId());
-		// add new task to story
+		// add new existing task to story
 		ArrayList<Long> tasksId = new ArrayList<Long>();
 		tasksId.add(10L);
-		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
-		story = mantisService.getIssue(1);
+		story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
-		// check story tasks status after add new task
+		// check story tasks status after add new existing task
 		List<Long> newTaskIds = story.getChildrenId();
 		assertEquals(4, newTaskIds.size());
 		assertEquals(1, newTaskIds.get(0));
@@ -547,11 +554,12 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testAddExistingTasks_WithTwoExistingTasks() {
+	public void testAddExistingTasksToStory_WithTwoExistingTasks() {
+		long storyId = 1;
 		// get story
 		MantisService mantisService = new MantisService(mConfiguration);
 		mantisService.openConnect();
-		IIssue story = mantisService.getIssue(1);
+		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
 		// check story tasks status before test
 		List<Long> oldTaskIds = story.getChildrenId();
@@ -569,7 +577,7 @@ public class SprintBacklogMapperTest {
 		// create a new task 2
 		TaskObject newTask2 = new TaskObject(1);
 		newTask2.save();
-		// check new task status before be added to story
+		// check new existing task status before be added to story
 		assertEquals(1, newTask2.getProjectId());
 		assertEquals(-1, newTask2.getStoryId());
 		assertEquals(11, newTask2.getId());
@@ -577,12 +585,12 @@ public class SprintBacklogMapperTest {
 		ArrayList<Long> tasksId = new ArrayList<Long>();
 		tasksId.add(10L);
 		tasksId.add(11L);
-		mSprintBacklogMapper.addExistingTasks(tasksId, 1);
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, 1);
 		// get story again
 		mantisService.openConnect();
-		story = mantisService.getIssue(1);
+		story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
-		// check story tasks status after add new task
+		// check story tasks status after add existing new tasks
 		List<Long> newTaskIds = story.getChildrenId();
 		assertEquals(5, newTaskIds.size());
 		assertEquals(1, newTaskIds.get(0));
