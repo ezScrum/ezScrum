@@ -418,8 +418,8 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, username);
-		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
-		valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
+		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, password);
+		valueSet.addEqualCondition(AccountEnum.ENABLE, 1); 
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		AccountObject account = null;

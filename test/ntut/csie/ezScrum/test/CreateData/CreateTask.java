@@ -87,7 +87,7 @@ public class CreateTask {
 		return (TEST_TASK_NOTE + Integer.toString(i));
 	}
 
-	public List<TaskObject> getTaskList() {
+	public ArrayList<TaskObject> getTaskList() {
 		return mTasks;
 	}
 

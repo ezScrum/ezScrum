@@ -1,13 +1,9 @@
 package ntut.csie.ezScrum.restful.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
-
-
-import ntut.csie.ezScrum.issue.core.IIssue;
+import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
@@ -21,12 +17,15 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
-import junit.framework.TestCase;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 
 public class SprintPlanWebServiceTest extends TestCase {
 	private int ProjectCount = 1;
@@ -95,13 +94,14 @@ public class SprintPlanWebServiceTest extends TestCase {
 	}
 
 	public void testgetAllSprint() throws Exception {
-		AccountObject userObject = new AccountObject();
-		userObject.setUsername("admin");
-		userObject.setPassword("admin");
+		AccountObject account = new AccountObject("TEST_ACCOUNT");
+		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
+		account.save();
+		
 		String projectID = project.getName();
 
 		// 沒有Sprint的時候
-		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(userObject, projectID);
+		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, projectID);
 		assertEquals(mSprintPlanWebService.getAllSprint(), "[]");
 
 		// 有Sprint的時候
@@ -109,7 +109,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 		CS = new CreateSprint(SprintCount, CP);
 		CS.exe();	    // 新增 Sprint
 
-		mSprintPlanWebService = new SprintPlanWebService(userObject, projectID);
+		mSprintPlanWebService = new SprintPlanWebService(account, projectID);
 
 		List<SprintObject> sprintlist = SPhelper.getAllSprint();
 		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprint()); // 從WebService取得Json
@@ -132,9 +132,9 @@ public class SprintPlanWebServiceTest extends TestCase {
 	@SuppressWarnings("deprecation")
     public void testgetSprintWithAllItem() throws Exception {
 		// User Object
-		AccountObject userObject = new AccountObject();
-		userObject.setUsername("admin");
-		userObject.setPassword("admin");
+		AccountObject account = new AccountObject("TEST_ACCOUNT");
+		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
+		account.save();
 
 		String projectID = project.getName();
 
@@ -148,22 +148,22 @@ public class SprintPlanWebServiceTest extends TestCase {
 		CT = new CreateTask(TaskCount, CP);
 		CT.exe(); 
 
-		StoryWebService mStoryWebService = new StoryWebService(userObject, projectID);
+		StoryWebService mStoryWebService = new StoryWebService(account, projectID);
 
 		List<IStory> storyList = SPBhelper.getExistingStories(Realease.getID());
 
 		for (int i = 0; i < storyList.size(); i++) {
 			JSONArray taskJSONArray = new JSONArray(mStoryWebService.getTaskInStory(String.valueOf(storyList.get(i).getStoryId()))); // 從WebService取得Json
-			List<IIssue> tasksList = CT.getTaskList();
+			ArrayList<TaskObject> tasksList = CT.getTaskList();
 			
 			for (int j = 0; j < taskJSONArray.length(); j++) {
 				JSONObject storyJSONObject = (JSONObject) taskJSONArray.get(j);
-				assertEquals(String.valueOf(tasksList.get(j).getIssueID()), storyJSONObject.get("id"));
-				assertEquals(tasksList.get(j).getEstimated(), storyJSONObject.get("estimation"));
+				assertEquals(String.valueOf(tasksList.get(j).getId()), storyJSONObject.get("id"));
+				assertEquals(tasksList.get(j).getEstimate(), storyJSONObject.get("estimation"));
 				assertEquals(tasksList.get(j).getStatus(), storyJSONObject.get("status"));
 				assertEquals(tasksList.get(j).getPartners(), storyJSONObject.get("partners"));
 				assertEquals(tasksList.get(j).getRemains(), storyJSONObject.get("remains"));
-				assertEquals(tasksList.get(j).getActualHour(), storyJSONObject.get("actual"));
+				assertEquals(tasksList.get(j).getActual(), storyJSONObject.get("actual"));
 				assertEquals(tasksList.get(j).getNotes(), storyJSONObject.get("notes"));
 			}
 		}
