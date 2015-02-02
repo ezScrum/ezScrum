@@ -8,12 +8,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.CloseStreamUtil;
@@ -123,7 +125,7 @@ public class ScheduleReport {
 //		List<IIssue> stories = sb.getStories();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
 		this.size = stories.size();
-		Map<Long, IIssue[]> taskMap = sb.getTasksMap();
+		Map<Long, ArrayList<TaskObject>> taskMap = sb.getTasksMap();
 		/** 
 		* Creating a task series 
 		* And adding planned tasks dates on the series. 
@@ -138,7 +140,7 @@ public class ScheduleReport {
 		collection.add(seriesOne); 
 		for(IIssue story: stories){
 			String summary = story.getSummary();
-			IIssue[] tasks = taskMap.get(story.getIssueID());
+			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
 			
 			//因為Story下面有時候會沒有Task所以如果沒有Task就跳過?
 			if (tasks == null)
@@ -146,10 +148,10 @@ public class ScheduleReport {
 			
 			long openDate = 0;
 			long doneDate = 0;
-			for(IIssue task: tasks){
-				task.getActualHour();
-				long assignedDate = task.getAssignedDate();
-				long closedDate = task.getCloseDate();
+			for(TaskObject task: tasks){
+				task.getActual();
+				long assignedDate = task.getCreateTime();
+				long closedDate = task.getDoneTime();
 				if(closedDate ==0){
 					doneDate = 0;
 					break;
