@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.control;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.ChartUtil;
@@ -26,9 +28,9 @@ public class TaskBoard {
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private List<IIssue> mStories;
-	private Map<Long, IIssue[]> mTaskMap;
+	private Map<Long, ArrayList<TaskObject>> mTaskMap;
 	private IIssue[] mDropedStories;
-	private Map<Long, IIssue[]> mDropedTaskMap;
+	private Map<Long, ArrayList<TaskObject>> mDropedTaskMap;
 	private LinkedHashMap<Date, Double> mStoryIdealPointMap;
 	private LinkedHashMap<Date, Double> mStoryRealPointMap;
 	private LinkedHashMap<Date, Double> mTaskIdealPointMap;
@@ -128,8 +130,7 @@ public class TaskBoard {
 		String issue_iter = issue.getTagValue("Iteration", date);
 		if (issue_iter != null && issue_iter.equals(mIteration)) {
 			try {
-				point = Double.parseDouble(issue.getTagValue(
-				        ScrumEnum.ESTIMATION, date));
+				point = Double.parseDouble(issue.getTagValue(ScrumEnum.ESTIMATION, date));
 			} catch (Exception e) {
 				// 表示這個Story沒有設定Estimation
 				return 0;
@@ -141,17 +142,15 @@ public class TaskBoard {
 		return point;
 	}
 
-	private double getTaskPoint(Date date, IIssue task) {
+	private double getTaskPoint(Date date, TaskObject task) {
 		double point = 0;
 
 		try {
-			point = Double.parseDouble(task
-			        .getTagValue(ScrumEnum.REMAINS, date));
+			point = task.getRemains(date);
 		} catch (Exception e) {
 			try {
-				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION八
-				point = Double.parseDouble(task.getTagValue(
-				        ScrumEnum.ESTIMATION, date));
+				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION
+				point = task.getEstimate();
 			} catch (Exception e1) {
 				// 如果還是沒有，那就回傳 0
 				return 0;
@@ -189,10 +188,11 @@ public class TaskBoard {
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				IIssue[] tmpTasks = mTaskMap.get(issue.getIssueID());
-				for (IIssue task : tmpTasks) {
+				ArrayList<TaskObject> tmpTasks = mTaskMap.get(issue.getIssueID());
+				for (TaskObject task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
-					if (task.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) continue;
+					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE) 
+						continue;
 					point[1] += getTaskPoint(dueDate, task);
 				}
 			} catch (Exception e) {
@@ -219,10 +219,11 @@ public class TaskBoard {
 				 * 計算Task點數
 				 ***************/
 				// 取得這個Story底下的Task點數
-				IIssue[] tmpTasks = mDropedTaskMap.get(issue.getIssueID());
-				for (IIssue task : tmpTasks) {
+				ArrayList<TaskObject> tmpTasks = mDropedTaskMap.get(issue.getIssueID());
+				for (TaskObject task : tmpTasks) {
 					// 已經closed的task就不用算他的點數啦
-					if (task.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) continue;
+					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE)
+						continue;
 					point[1] += getTaskPoint(dueDate, task);
 				}
 			} catch (Exception e) {
@@ -247,19 +248,12 @@ public class TaskBoard {
 		return mSprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
 		        + " / "
 		        + mSprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
-		// return sprintBacklogMapper
-		// .getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
-		// + " / "
-		// + sprintBacklogMapper.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
 	}
 
 	public String getTaskPoint() {
-		return mSprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
+		return mSprintBacklogLogic.getTaskCurrnetRemainsPoint()
 		        + " / "
-		        + mSprintBacklogLogic.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
-		// return sprintBacklogMapper.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE)
-		// + " / "
-		// + sprintBacklogMapper.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
+		        + mSprintBacklogLogic.getTaskCurrentEstimatePoint();
 	}
 
 	public String getInitialStoryPoint() {
@@ -275,7 +269,7 @@ public class TaskBoard {
 		return mStories;
 	}
 
-	public Map<Long, IIssue[]> getTaskMap() {
+	public Map<Long, ArrayList<TaskObject>> getTaskMap() {
 		return mTaskMap;
 	}
 
@@ -340,27 +334,11 @@ public class TaskBoard {
 		float[] dashes = {8f};
 		BasicStroke[] strokes = {
 		        new BasicStroke(1.5f),
-		        new BasicStroke(1.5f, BasicStroke.CAP_ROUND,
-		                BasicStroke.JOIN_ROUND, 16f, dashes, 0.f)};
+		        new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 16f, dashes, 0.f)};
 		chartUtil.setStrokes(strokes);
 
 		// 產生圖表
 		chartUtil.createChart(chartPath);
-	}
-
-	public IIssue getItem(long id) {
-
-		List<IIssue> items = getStories();
-		for (IIssue item : items) {
-			if (item.getIssueID() == id) return item;
-		}
-
-		items = mSprintBacklogMapper.getAllTasks();
-		for (IIssue item : items) {
-			if (item.getIssueID() == id) return item;
-		}
-
-		return null;
 	}
 
 	public Map<Integer, String> getResolutionMap() {
@@ -387,7 +365,7 @@ public class TaskBoard {
 		mStories = storylist;
 	}
 
-	public void setM_taskMap(Map<Long, IIssue[]> map) {
+	public void setM_taskMap(Map<Long, ArrayList<TaskObject>> map) {
 		mTaskMap = map;
 	}
 }
