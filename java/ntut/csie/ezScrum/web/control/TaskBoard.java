@@ -161,7 +161,6 @@ public class TaskBoard {
 
 	private double[] getPointByDate(Date date) {
 		double[] point = {0, 0};
-		IIssue[] items;
 
 		/************************************************************
 		 * 依照Type取出當天的Story或者是Task來進行計算
@@ -171,8 +170,6 @@ public class TaskBoard {
 
 		// 尋訪現有的所有Story
 		for (IIssue story : mStories) {
-			double estimation;
-
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
 			if (story.getStatusUpdated(dueDate, ITSEnum.CLOSED_STATUS) != null) {
 				continue;
