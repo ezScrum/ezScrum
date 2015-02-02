@@ -134,13 +134,13 @@ public class AccountHelper {
 		return account;
 	}
 
-	public AccountObject assignRole_remove(String id, String projectId, String op) throws Exception {
+	public AccountObject assignRole_remove(long accountId, long projectId, String role) throws Exception {
 		// ezScrum v1.8
 		AccountObject account = null;
-		if (op.equals("admin")) {
-			account = mAccountMapper.removeSystemRole(Long.parseLong(id));
+		if (role.equals("admin")) {
+			account = mAccountMapper.removeSystemRole(accountId);
 		} else {
-			account = mAccountMapper.removeProjectRole(Long.parseLong(projectId), Long.parseLong(id), RoleEnum.valueOf(op));
+			account = mAccountMapper.removeProjectRole(projectId, accountId, RoleEnum.valueOf(role));
 		}
 		return account;
 	}

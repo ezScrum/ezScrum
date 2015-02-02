@@ -74,8 +74,8 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// ================ assert ========================
 		//	assert response text
 		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectObject projectOne = projectMapper.getProjectByPidForDb("TEST_PROJECT_1");
-		ProjectObject projectTwo = projectMapper.getProjectByPidForDb("TEST_PROJECT_2");
+		ProjectObject projectOne = projectMapper.getProject("TEST_PROJECT_1");
+		ProjectObject projectTwo = projectMapper.getProject("TEST_PROJECT_2");
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String expectResponseText = 

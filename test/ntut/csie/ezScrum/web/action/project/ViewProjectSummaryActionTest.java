@@ -21,13 +21,12 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -120,12 +119,12 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		//	設定專案資訊
-		String projectID = "test";
+		String projectName = "test";
 		String projectDisplayName = "Project for Test Create Project";
 		String comment = "";
 		String projectManager = "ezScrum tester";
 		String attachFileSize = "";
-		addRequestParameter("Name", projectID);
+		addRequestParameter("Name", projectName);
 		addRequestParameter("DisplayName", projectDisplayName);
 		addRequestParameter("Comment", comment);
 		addRequestParameter("ProjectManager", projectManager);
@@ -158,21 +157,12 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		//	assert database information
 		ProjectMapper projectMapper = new ProjectMapper();
-		IProject project = projectMapper.getProjectByID(projectID);
-		IProjectDescription projectDesc = project.getProjectDesc();
-		assertEquals(projectID, projectDesc.getName());
-		assertEquals(projectDisplayName, projectDesc.getDisplayName());
-		assertEquals("2", projectDesc.getAttachFileSize());
-		assertEquals(comment, projectDesc.getComment());
-		assertEquals(projectManager, projectDesc.getProjectManager());
-
-		//	assert 外部檔案路徑及檔名
-		//		IWorkspace workspace = ResourceFacade.getWorkspace();
-		//		IWorkspaceRoot root = workspace.getRoot();
-		//    	IProject Actual = root.getProject(projectID);
-		//    	
-		//    	assertEquals(Actual.getName(), project.getName());
-		//    	assertEquals(Actual.getFullPath(), project.getFullPath());
+		ProjectObject project = projectMapper.getProject(projectName);
+		assertEquals(projectName, project.getName());
+		assertEquals(projectDisplayName, project.getDisplayName());
+		assertEquals("2", project.getAttachFileSize());
+		assertEquals(comment, project.getComment());
+		assertEquals(projectManager, project.getManager());
 
 		/**
 		 * 2. admin 瀏覽專案
@@ -185,7 +175,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectID);
+		addRequestParameter("PID", projectName);
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -217,8 +207,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		//	=============== common data ============================
 		AccountObject account = this.CA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		String userId = account.getId();		// 取得第一筆 Account ID
-		String projectId = this.CP.getAllProjects().get(0).getId();
+		long userId = account.getId();		// 取得第一筆 Account ID
+		long projectId = this.CP.getAllProjects().get(0).getId();
 		String pid = this.CP.getAllProjects().get(0).getName();
 
 		/**
@@ -233,8 +223,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		String scrumRole = "ScrumTeam";
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", projectId);
+		addRequestParameter("id", String.valueOf(userId));
+		addRequestParameter("resource", String.valueOf(projectId));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
@@ -250,15 +240,12 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		//	assert response text
 		String expectedUserRole_ST = (new TestTool()).getRole(pid, scrumRole);
 		//		String expectedUserRole_USER = "user";
-		String expectedUserId = account.getId();
+		long expectedUserId = account.getId();
 		String expectedUserAccount = account.getUsername();
 		String expectedUserName = account.getNickName();
 		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
-		String expectedUserEnable = account.getEnable();
-		//    	account.addRole(new Role(expectedUserRole_ST, expectedUserRole_ST));
-		//    	HashMap<String, ProjectRole> roleArr = account.getRoles();
-		//    	String expectedUserRole = roleArr[0].getRoleId() + ", " + roleArr[1].getRoleId();
+		boolean expectedUserEnable = account.getEnable();
 		StringBuilder addUserExpectedResponseText = new StringBuilder();
 		addUserExpectedResponseText.append("<Accounts>")
 		        .append("<AccountInfo>")
@@ -295,19 +282,6 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		}
 		assertEquals(roleMap.size(), 1);	// ScrumTeam
 		assertTrue(isExisted);				// ScrumTeam
-		//		String[] userRole = {expectedUserRole_USER, expectedUserRole_ST};
-		//		for (String roleID : userRole) {
-		//			boolean isExisted = false;
-		//			for (IRole role : roleArr) {
-		//				if (roleID.equals(role.getRoleId())) {
-		//					isExisted = true;
-		//					break;
-		//				}
-		//			}
-		//			assertEquals(true, isExisted);
-		//		}
-		//		IRole[] roles = account.getRoles();
-		//		assertEquals(roleMap.size(), 1);		//	include ProductOwner
 
 		/**
 		 * 4. user login ezScrum
@@ -354,7 +328,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		String expectedProjectID = projectObject.getId();
+		long expectedProjectID = projectObject.getId();
 		String expectedProjectName = projectObject.getName();
 		String expectedProjectDisplayName = projectObject.getDisplayName();
 		String expectedProjectComment = projectObject.getComment();

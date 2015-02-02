@@ -129,11 +129,6 @@ public class ProjectHelper {
 					project = ProjectObject.get(projectId);
 					sessionManager.setProjectObject(request, project);
 					
-					// 建立專案角色和權限的外部檔案
-					AccountMapper accountMapper = new AccountMapper();
-					accountMapper.createPermission(project);
-					accountMapper.createRole(project);
-
 					sb.append("<Result>Success</Result>");
 					sb.append("<ID>" + project.getName() + "</ID>");
 					// -- ezScrum v1.8 --

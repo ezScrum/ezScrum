@@ -115,9 +115,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			.append(" pr.").append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
 			.append(" and pr.").append(ProjectRoleEnum.ROLE).append(" = sr.").append(ScrumRoleEnum.ROLE)
 			.append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(accountId);
+		
+		String queryString  = query.toString();
 		HashMap<String, ProjectRole> map = new HashMap<String, ProjectRole>();
 		ProjectRole systemRole = getSystemRole(accountId);
-		ResultSet result = mControl.executeQuery(query.toString());
+		ResultSet result = mControl.executeQuery(queryString);
 		
 		try {
 			if (systemRole != null) {
@@ -278,7 +280,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		ArrayList<AccountObject> members = new ArrayList<AccountObject>();
 		try {
 			while (result.next()) {
-				members.add(convertAccount(result));
+				members.add(convertAccount2(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -436,6 +438,26 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 
 	public AccountObject convertAccount(ResultSet result) throws SQLException {
 		long id = result.getLong(AccountEnum.ID);
+		String username = result.getString(AccountEnum.USERNAME);
+		String nickName = result.getString(AccountEnum.NICK_NAME);
+		String password = result.getString(AccountEnum.PASSWORD);
+		String email = result.getString(AccountEnum.EMAIL);
+		boolean enable = result.getBoolean(AccountEnum.ENABLE);
+
+		AccountObject account = new AccountObject(id, username);
+		account.setPassword(password).setNickName(nickName).setEmail(email)
+				.setEnable(enable);
+		return account;
+	}
+	
+	/**
+	 * For getProjectMembers 因為 join 出來的欄位是 ACCOUNT_ID
+	 * @param result
+	 * @return AccountObject
+	 * @throws SQLException
+	 */
+	public AccountObject convertAccount2(ResultSet result) throws SQLException {
+		long id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
 		String username = result.getString(AccountEnum.USERNAME);
 		String nickName = result.getString(AccountEnum.NICK_NAME);
 		String password = result.getString(AccountEnum.PASSWORD);
