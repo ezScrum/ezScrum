@@ -430,6 +430,26 @@ public class SprintBacklogMapper {
 					.save(specificDate.getTime());
 		}
 	}
+	
+	/**
+	 * From UNCHECK to CHECK
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+					.save(specificDate.getTime());
+		}
+	}
 
 	/**
 	 * From Checked Out to Not Checked Out

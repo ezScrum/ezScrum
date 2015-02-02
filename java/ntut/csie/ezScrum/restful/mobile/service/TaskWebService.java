@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
@@ -53,12 +56,24 @@ public class TaskWebService extends ProjectWebService {
 	}
 	
 	/**
-	 * 在 story 中加入新的 task
+	 * 在 story 中加入新的 task (TaskInfo 可能不完全，待檢查!!!)
 	 * @param storyId
 	 * @param task
 	 * @return
+	 * @throws JSONException 
 	 */
-	public String createTaskInStory(TaskInfo taskInfo) {
+	public String createTaskInStory(long storyId, String taskJSonString) throws JSONException {
+		JSONObject taskJSon = new JSONObject(taskJSonString);
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.name = taskJSon.getString("name");
+		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
+		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
+		taskInfo.notes = taskJSon.getString("notes");
+		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		taskInfo.storyId = storyId;
+		taskInfo.projectId = mProject.getId();
+		
 		TaskObject task = mSprintBacklogHelper.addTask(mProject.getId(), taskInfo);
 		return String.valueOf(task.getId());
 	}
@@ -82,12 +97,22 @@ public class TaskWebService extends ProjectWebService {
 	}
 	
 	/**
-	 * 編輯 task
+	 * 編輯 task (TaskInfo 可能不完全，待檢查!!!)
 	 * @param taskJson
 	 * @return
+	 * @throws JSONException 
 	 */
-	public String updateTask(TaskInfo taskInfo, String handlerUsername, String partnersUsername) {
-		mSprintBacklogHelper.updateTask(taskInfo, handlerUsername, partnersUsername);
+	public String updateTask(String taskJSonString) throws JSONException {
+		JSONObject taskJSon = new JSONObject(taskJSonString);
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.name = taskJSon.getString("name");
+		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
+		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
+		taskInfo.notes = taskJSon.getString("notes");
+		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		
+		mSprintBacklogHelper.updateTask(taskInfo, taskJSon.getString("handler"), taskJSon.getString("partner"));
 		return "true";
 	}
 }
