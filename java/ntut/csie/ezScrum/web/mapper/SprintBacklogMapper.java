@@ -276,7 +276,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistingTasks(ArrayList<Long> taskIds, long storyId) {
+	public void addExistingTasksToStory(ArrayList<Long> taskIds, long storyId) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
