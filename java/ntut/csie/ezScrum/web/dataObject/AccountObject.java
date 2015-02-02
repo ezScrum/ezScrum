@@ -87,7 +87,11 @@ public class AccountObject implements IBaseObject {
 	}
 
 	public HashMap<String, ProjectRole> getRoles() {
-		return AccountDAO.getInstance().getProjectRoleMap(mId);
+		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleMap(mId);
+		if (roles == null) {
+			roles = new HashMap<String, ProjectRole>();
+		}
+		return roles; 
 	}
 
 	/**

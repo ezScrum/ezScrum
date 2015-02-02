@@ -15,7 +15,6 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;

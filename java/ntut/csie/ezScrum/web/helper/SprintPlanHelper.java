@@ -11,7 +11,6 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -28,60 +27,64 @@ public class SprintPlanHelper {
 	private SprintPlanMapper mSprintPlanMapper;
 	private SprintPlanLogic mSprintPlanLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
-	
-	public SprintPlanHelper(IProject project){
-		this.mSprintPlanMapper = new SprintPlanMapper(project);
-		this.mSprintPlanLogic = new SprintPlanLogic(project);
-		this.mSprintBacklogMapper = (new SprintBacklogLogic(project, null, String.valueOf(this.getCurrentSprintID()))).getSprintBacklogMapper();
+
+	public SprintPlanHelper(IProject project) {
+		mSprintPlanMapper = new SprintPlanMapper(project);
+		mSprintPlanLogic = new SprintPlanLogic(project);
+		mSprintBacklogMapper = (new SprintBacklogLogic(project, null,
+				String.valueOf(getCurrentSprintID())))
+				.getSprintBacklogMapper();
 	}
-	
-	public List<ISprintPlanDesc> loadListPlans(){
+
+	public List<ISprintPlanDesc> loadListPlans() {
 		return this.mSprintPlanLogic.getSprintPlanListAndSortByStartDate();
 	}
-	
-	public int getCurrentSprintID(){
+
+	public int getCurrentSprintID() {
 		return this.mSprintPlanLogic.getCurrentSprintID();
 	}
-	
-	//load the last plan, so perhaps the return is not the current plan.
-	public ISprintPlanDesc loadCurrentPlan(){
+
+	// load the last plan, so perhaps the return is not the current plan.
+	public ISprintPlanDesc loadCurrentPlan() {
 		return this.mSprintPlanLogic.loadCurrentPlan();
-	} 
-	
-	//get next demoDate
-	public String getNextDemoDate(){
-		List<ISprintPlanDesc> descs = this.mSprintPlanLogic.getSprintPlanListAndSortById();
+	}
+
+	// get next demoDate
+	public String getNextDemoDate() {
+		List<ISprintPlanDesc> descs = this.mSprintPlanLogic
+				.getSprintPlanListAndSortById();
 		if (descs.size() == 0)
 			return null;
-		if(!String.valueOf(this.getCurrentSprintID()).equals("-1")){
-			ISprintPlanDesc sprintPlanDesc = mSprintPlanMapper.getSprintPlan(String.valueOf(this.getCurrentSprintID()));
-			if(sprintPlanDesc.getDemoDate().equals(""))
+		if (!String.valueOf(this.getCurrentSprintID()).equals("-1")) {
+			ISprintPlanDesc sprintPlanDesc = mSprintPlanMapper
+					.getSprintPlan(String.valueOf(this.getCurrentSprintID()));
+			if (sprintPlanDesc.getDemoDate().equals(""))
 				return null;
 			else
 				return sprintPlanDesc.getDemoDate();
 		}
-		String demoDate=null;	
+		String demoDate = null;
 		Date current = new Date();
 		// compare the demo date to find the closed date
-		for (ISprintPlanDesc desc:descs){
-			String descDemoDate = desc.getDemoDate(); 
-			if(descDemoDate.equals(""))
+		for (ISprintPlanDesc desc : descs) {
+			String descDemoDate = desc.getDemoDate();
+			if (descDemoDate.equals(""))
 				continue;
-			// judge whether the descDemoDate is larger than now 
-			if (DateUtil.dayFilter(descDemoDate).getTime() > current.getTime()){
-				if(demoDate==null)
+			// judge whether the descDemoDate is larger than now
+			if (DateUtil.dayFilter(descDemoDate).getTime() > current.getTime()) {
+				if (demoDate == null)
 					demoDate = descDemoDate;
 				// judge whether the demoDate is larger than descDemoDate
-				else
-					if (DateUtil.dayFilter(demoDate).getTime() > DateUtil.dayFilter(descDemoDate).getTime()){
-						demoDate = descDemoDate;
-					}
+				else if (DateUtil.dayFilter(demoDate).getTime() > DateUtil
+						.dayFilter(descDemoDate).getTime()) {
+					demoDate = descDemoDate;
+				}
 			}
 		}
 		return demoDate;
 	}
-	
-	public void editIterationPlanForm(IterationPlanForm form){
+
+	public void editIterationPlanForm(IterationPlanForm form) {
 		SprintPlanDesc desc = new SprintPlanDesc();
 		desc.setInterval(form.getIterIterval());
 		desc.setMemberNumber(form.getIterMemberNumber());
@@ -93,10 +96,10 @@ public class SprintPlanHelper {
 		desc.setDemoDate(form.getDemoDate());
 		desc.setNotes(form.getNotes());
 		desc.setDemoPlace(form.getDemoPlace());
-		mSprintPlanMapper.updateSprintPlan(desc);	
+		mSprintPlanMapper.updateSprintPlan(desc);
 	}
-			
-	public void saveIterationPlanForm(IterationPlanForm form){
+
+	public void saveIterationPlanForm(IterationPlanForm form) {
 		SprintPlanDesc desc = new SprintPlanDesc();
 		desc.setInterval(form.getIterIterval());
 		desc.setMemberNumber(form.getIterMemberNumber());
@@ -110,196 +113,204 @@ public class SprintPlanHelper {
 		desc.setDemoPlace(form.getDemoPlace());
 		mSprintPlanMapper.addSprintPlan(desc);
 	}
-	
+
 	/**
 	 * 只取得一筆 sprint
+	 * 
 	 * @param lastsprint
 	 * @param sprintID
-	 * @return 
+	 * @return
 	 */
-	public ISprintPlanDesc getOneSprintInformation(String lastsprint, String sprintID){
+	public ISprintPlanDesc getOneSprintInformation(String lastsprint,
+			String sprintID) {
 		int SprintID = -1;
 		if (lastsprint != null && Boolean.parseBoolean(lastsprint)) {
 			SprintID = this.getLastSprintId();
 		} else if (sprintID != null) {
 			SprintID = Integer.parseInt(sprintID);
 		}
-		
+
 		if (SprintID > 0) {
 			return this.loadPlan(SprintID);
 		} else {
 			return new SprintPlanDesc();
 		}
 	}
-	
+
 	public Date getProjectStartDate() {
 		List<ISprintPlanDesc> sprintList = this.loadListPlans();
-		return  DateUtil.dayFilter(sprintList.get(0).getStartDate());
+		return DateUtil.dayFilter(sprintList.get(0).getStartDate());
 	}
 
 	public Date getProjectEndDate() {
 		List<ISprintPlanDesc> sprintList = this.loadListPlans();
-		
+
 		if (sprintList.size() > 0) {
-			return  DateUtil.dayFilter(sprintList.get(sprintList.size()-1).getEndDate());
+			return DateUtil.dayFilter(sprintList.get(sprintList.size() - 1)
+					.getEndDate());
 		} else {
 			return null;
 		}
 	}
 
 	public int getLastSprintId() {
-		List<ISprintPlanDesc> descs = this.mSprintPlanLogic.getSprintPlanListAndSortById();
-		if(descs.size() == 0)
+		List<ISprintPlanDesc> descs = this.mSprintPlanLogic
+				.getSprintPlanListAndSortById();
+		if (descs.size() == 0)
 			return -1;
 		else
-			return Integer.parseInt(descs.get(descs.size()-1).getID());
+			return Integer.parseInt(descs.get(descs.size() - 1).getID());
 	}
-	
+
 	public int getSprintIDbyDate(Date date) {
 		int sprintID = -1;
-		List<ISprintPlanDesc> sprints = this.mSprintPlanLogic.getSprintPlanListAndSortByStartDate();
-			
-		for ( ISprintPlanDesc sp : sprints ) {
+		List<ISprintPlanDesc> sprints = this.mSprintPlanLogic
+				.getSprintPlanListAndSortByStartDate();
+
+		for (ISprintPlanDesc sp : sprints) {
 			// 此 sprint 的結束日期在 date 之後
-			if ( DateUtil.dayFilter(sp.getEndDate()).getTime() >= (DateUtil.dayFilter(date)).getTime() ) {
+			if (DateUtil.dayFilter(sp.getEndDate()).getTime() >= (DateUtil
+					.dayFilter(date)).getTime()) {
 				// 此 sprint 的開始日期在使用者設定之前
 				// 兩者成立表示此使用者設定的日期在這個 sprint 區間內，回傳此 sprint ID
-				if ( DateUtil.dayFilter(date).getTime() >= (DateUtil.dayFilter(sp.getStartDate())).getTime() ) {
+				if (DateUtil.dayFilter(date).getTime() >= (DateUtil
+						.dayFilter(sp.getStartDate())).getTime()) {
 					sprintID = Integer.parseInt(sp.getID());
-				break;
+					break;
 				}
 			}
 		}
-			
-		return sprintID;	
+
+		return sprintID;
 	}
-	
+
 	/*
 	 * from AjaxMoveSprintAction
 	 */
-	public void moveSprintPlan(IProject project, IUserSession session, int oldId, int newId) {		
+	public void moveSprintPlan(IProject project, IUserSession session,
+			int oldId, int newId) {
 		List<ISprintPlanDesc> descs = this.loadListPlans();
 		this.moveSprint(oldId, newId);
-				
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session,
+				project);
 		Map<String, ArrayList<IIssue>> map = PBHelper.getSprintHashMap();
-		
+
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		//取出需要修改的sprint ID 
-		if(oldId > newId){
-			for(int i = newId; i<= oldId;i++){
-				if(this.isSprintPlan(descs, i))
+		// 取出需要修改的sprint ID
+		if (oldId > newId) {
+			for (int i = newId; i <= oldId; i++) {
+				if (this.isSprintPlan(descs, i))
 					list.add(i);
 			}
-		}
-		else{
-			for(int i = 0; i<= newId - oldId;i++){
-				if(this.isSprintPlan(descs, newId-i))
-					list.add(newId-i);
+		} else {
+			for (int i = 0; i <= newId - oldId; i++) {
+				if (this.isSprintPlan(descs, newId - i))
+					list.add(newId - i);
 			}
 		}
-		
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);
-		//將story的中sprint id做修改
-		if(list.size()!=0){
-			for(int i = 0;i<list.size(); i++){
-				if((i+1)!=list.size()){
+
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
+				session, project);
+		// 將story的中sprint id做修改
+		if (list.size() != 0) {
+			for (int i = 0; i < list.size(); i++) {
+				if ((i + 1) != list.size()) {
 					String sprintID = String.valueOf(list.get(i));
-					String nextSprintID = String.valueOf(list.get(i+1));
+					String nextSprintID = String.valueOf(list.get(i + 1));
 					List<IIssue> stories = map.get(sprintID);
-					if(stories!=null){
+					if (stories != null) {
 						ArrayList<Long> total = convertTolong(stories);
-						productBacklogLogic.addIssueToSprint(total, nextSprintID);
+						productBacklogLogic.addIssueToSprint(total,
+								nextSprintID);
 					}
-				}
-				else{
+				} else {
 					String sprintID = String.valueOf(list.get(i));
 					String nextSprintID = String.valueOf(list.get(0));
 					List<IIssue> stories = map.get(sprintID);
-					if(stories!=null){
+					if (stories != null) {
 						ArrayList<Long> total = convertTolong(stories);
-						productBacklogLogic.addIssueToSprint(total, nextSprintID);
+						productBacklogLogic.addIssueToSprint(total,
+								nextSprintID);
 					}
 				}
 			}
-		}		
+		}
 	}
 
-	private ArrayList<Long> convertTolong(List<IIssue> stories){
+	private ArrayList<Long> convertTolong(List<IIssue> stories) {
 		ArrayList<Long> total = new ArrayList<Long>();
-		for(IIssue story:stories){
+		for (IIssue story : stories) {
 			total.add(story.getIssueID());
 		}
 		return total;
 	}
-	
-	private boolean isSprintPlan(List<ISprintPlanDesc> descs, int iteration){
+
+	private boolean isSprintPlan(List<ISprintPlanDesc> descs, int iteration) {
 		String iter = String.valueOf(iteration);
-		for(ISprintPlanDesc desc: descs){
-			if(desc.getID().equals(iter)){
+		for (ISprintPlanDesc desc : descs) {
+			if (desc.getID().equals(iter)) {
 				return Boolean.TRUE;
 			}
 		}
 		return Boolean.FALSE;
 	}
-	
-	public ISprintPlanDesc loadPlan(String ID){
+
+	public ISprintPlanDesc loadPlan(String ID) {
 		return mSprintPlanMapper.getSprintPlan(ID);
 	}
-	
+
 	/*
 	 * move from Mapper
 	 */
 	// move the specific sprint to other sprint
 	public void moveSprint(int oldID, int newID) {
-		//移動iterPlan.xml的資訊
+		// 移動iterPlan.xml的資訊
 		mSprintPlanMapper.moveSprintPlan(oldID, newID);
 	}
-	
-	public ISprintPlanDesc loadPlan(int iteration){
+
+	public ISprintPlanDesc loadPlan(int iteration) {
 		return mSprintPlanMapper.getSprintPlan(Integer.toString(iteration));
 	}
-	
-	public void editSprintPlanForActualCost(String sprintID, String actualCost) {		
+
+	public void editSprintPlanForActualCost(String sprintID, String actualCost) {
 		ISprintPlanDesc sprintPlan = this.loadPlan(sprintID);
-		sprintPlan.setActualCost(actualCost);		
+		sprintPlan.setActualCost(actualCost);
 		mSprintPlanMapper.updateSprintPlanForActualCost(sprintPlan);
 	}
-	
+
 	public void createSprint(SprintObject sprint) {
-		mSprintPlanMapper.addSprintPlan(ConvertSprint.convertSprintObjectToDesc(sprint));
+		mSprintPlanMapper.addSprintPlan(ConvertSprint
+				.convertSprintObjectToDesc(sprint));
 	}
-	
+
 	public void deleteSprint(String id) {
 		mSprintPlanMapper.deleteSprintPlan(id);
 	}
-	
+
 	public void updateSprint(SprintObject sprintObject) {
-		mSprintPlanMapper.updateSprintPlan(ConvertSprint.convertSprintObjectToDesc(sprintObject));
+		mSprintPlanMapper.updateSprintPlan(ConvertSprint
+				.convertSprintObjectToDesc(sprintObject));
 	}
-	
+
 	public List<SprintObject> getAllSprint() {
-		return ConvertSprint.convertSprintDescToObject(mSprintPlanMapper.getSprintPlanList());
+		return ConvertSprint.convertSprintDescToObject(mSprintPlanMapper
+				.getSprintPlanList());
 	}
-	
-	public SprintObject getSprintWithAllItem(String sprintID) throws SQLException {
+
+	public SprintObject getSprintWithAllItem(String sprintID)
+			throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintID));
 		// 找出 sprint 中所有的 story
-		IIssue[] storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintID));
+		IIssue[] storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long
+				.parseLong(sprintID));
 		for (IIssue storyIssue : storyIIssues) {
 			StoryObject story = new StoryObject(storyIssue);
 			// 找出 story 中所有的 task
-			IIssue[] taskIIssues = mSprintBacklogMapper.getTasksByStoryId(Long.parseLong(story.id));
-			for (IIssue taskIssue : taskIIssues) {
-				TaskObject taskObject = new TaskObject(taskIssue);
-				if (taskIssue.getHistories().size() > 0) {
-					for (HistoryObject history : taskIssue.getHistories()) {
-						if (history.getHistoryType() == HistoryObject.TYPE_STATUS && history.getNewValue().equals("90")) {
-							taskObject.doneTime = history.getCreateTime();
-						}
-					}
-				}
-				story.addTask(taskObject);
+			ArrayList<TaskObject> tasks = mSprintBacklogMapper
+					.getTasksByStoryId(Long.parseLong(story.id));
+			for (TaskObject task : tasks) {
+				story.addTask(task);
 			}
 			sprint.addStory(story);
 		}
