@@ -2,17 +2,8 @@ package ntut.csie.ezScrum.web.helper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.tools.javac.comp.Check;
-
-import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
@@ -24,11 +15,12 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SprintBacklogHelperTest{
 	private SprintBacklogHelper mSprintBacklogHelper;

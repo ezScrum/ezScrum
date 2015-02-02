@@ -220,7 +220,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// 一個Task Done
 		TaskObject task1 = mATTS.getTasks().get(0);
 		String DONE_TIME = "2015/02/02-12:00:00";
-		mSprintBacklogLogic.closeTask(task1.getId(), task1.getName(), task1.getNotes(), DONE_TIME);
+		mSprintBacklogLogic.closeTask(task1.getId(), task1.getName(), task1.getNotes(), task1.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTB.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / " 
@@ -229,7 +229,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		
 		// 兩個 Task Done
 		TaskObject task2 = mATTS.getTasks().get(1);
-		mSprintBacklogLogic.closeTask(task2.getId(), task2.getName(), task2.getNotes(), DONE_TIME);
+		mSprintBacklogLogic.closeTask(task2.getId(), task2.getName(), task2.getNotes(), task2.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTB.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / "
@@ -237,8 +237,8 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 全部Task Done
-		for(TaskObject taskObject : mATTS.getTasks()){
-			mSprintBacklogLogic.closeTask(taskObject.getId(), taskObject.getName(), taskObject.getNotes(), DONE_TIME);
+		for(TaskObject task : mATTS.getTasks()){
+			mSprintBacklogLogic.closeTask(task.getId(), task.getName(), task.getNotes(), task.getActual(), DONE_TIME);
 		}
 		// assert
 		actualTaskPointString = mTB.getTaskPoint();

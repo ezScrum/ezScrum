@@ -167,7 +167,7 @@ public class SprintBacklogHelper {
 		for (String task : selectedTaskIds) {
 			tasksId.add(Long.parseLong(task));
 		}
-		mSprintBacklogMapper.addExistingTasks(tasksId, storyId);
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
 	}
 
 	public TaskObject getTask(long taskId) {
@@ -213,36 +213,6 @@ public class SprintBacklogHelper {
 		resetTask(taskId, task.getName(), task.getNotes(), null);
 		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
-	}
-
-	public void updateTask(TaskInfo taskInfo, String handlerUsername,
-			String rawPartnersUsername) {
-		AccountObject handler = AccountObject.get(handlerUsername);
-		long handlerId = -1;
-		if (handler != null) {
-			handlerId = handler.getId();
-		}
-		ArrayList<Long> partnersId = new ArrayList<Long>();
-		// split raw partners' user name by symbol ;
-		String[] partnersUsername = rawPartnersUsername.split(";");
-		for (String partnerUsername : partnersUsername) {
-			AccountObject partner = AccountObject.get(partnerUsername);
-			if (partner != null) {
-				partnersId.add(partner.getId());
-			}
-		}
-		taskInfo.handlerId = handlerId;
-		taskInfo.partnersId = partnersId;
-		mSprintBacklogMapper.updateTask(taskInfo);
-	}
-
-	public void addExistingTask(String[] selectedTasksStringId, long storyId) {
-		ArrayList<Long> tasksId = new ArrayList<Long>();
-		for (String taskStringId : selectedTasksStringId) {
-			long taskId = Long.parseLong(taskStringId);
-			tasksId.add(taskId);
-		}
-		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
 	}
 
 	public void closeStory(long id, String notes, String changeDate) {
