@@ -62,9 +62,9 @@ public class TaskboardHelper {
 			if (taskBoard != null) {
 				Translation tans = new Translation();
 				if (type.equals("story")) {
-					responseText = tans.translateBurndownChartDataToJson(taskBoard.getstoryIdealPointMap(), taskBoard.getstoryRealPointMap());
+					responseText = tans.translateBurndownChartDataToJson(taskBoard.getStoryIdealPointMap(), taskBoard.getStoryRealPointMap());
 				} else if (type.equals("task")) {
-					responseText = tans.translateBurndownChartDataToJson(taskBoard.gettaskIdealPointMap(), taskBoard.gettaskRealPointMap());
+					responseText = tans.translateBurndownChartDataToJson(taskBoard.getTaskIdealPointMap(), taskBoard.getTaskRealPointMap());
 				}
 			}
 		} else {

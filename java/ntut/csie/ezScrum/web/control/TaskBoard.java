@@ -48,19 +48,19 @@ public class TaskBoard {
 	}
 
 	// ======================= for unit test ===========================
-	public LinkedHashMap<Date, Double> getstoryRealPointMap() {
+	public LinkedHashMap<Date, Double> getStoryRealPointMap() {
 		return mDateToStoryPoint;
 	}
 
-	public LinkedHashMap<Date, Double> gettaskRealPointMap() {
+	public LinkedHashMap<Date, Double> getTaskRealPointMap() {
 		return mDateToTaskRealPoint;
 	}
 
-	public LinkedHashMap<Date, Double> getstoryIdealPointMap() {
+	public LinkedHashMap<Date, Double> getStoryIdealPointMap() {
 		return mDateToStoryIdealPoint;
 	}
 
-	public LinkedHashMap<Date, Double> gettaskIdealPointMap() {
+	public LinkedHashMap<Date, Double> getTaskIdealPointMap() {
 		return mDateToTaskIdealPoint;
 	}
 

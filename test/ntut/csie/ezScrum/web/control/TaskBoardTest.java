@@ -20,11 +20,11 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class TaskBoardTest extends MockStrutsTestCase {
 	private TaskBoard mTB;
-	private SprintBacklogMapper mSB;
+	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private AddStoryToSprint mASS;
+	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
@@ -54,17 +54,17 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mCS.exe();
 
 		// 新增Story
-		mASS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASS.exe();
+		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();
 		
 		// 新增 Task
-		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASS, mCP);
+		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASTS, mCP);
 		mATTS.exe();
 
 		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mConfiguration.getUserSession(), mCS.getSprintIDList().get(0));
-		mSB = mSprintBacklogLogic.getSprintBacklogMapper();
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 		
-		mTB = new TaskBoard(mSprintBacklogLogic, mSB);
+		mTB = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 
 		// 為了使 Story 建立時間與修改時間分開而停下
 		Thread.sleep(1000);
@@ -88,7 +88,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試1
-	public void testgetStrories1() throws Exception {
+	public void testGetStrories_SortByImportance1() throws Exception {
 		// Story 建立時即為遞減排序測試
 		List<IIssue> stories = mTB.getStories();
 		// 驗證 Story 數量
@@ -109,7 +109,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試2
-	public void testgetStrories2() throws Exception {
+	public void testGetStrories_SortByImportance2() throws Exception {
 		// Story 建立時即為遞增排序測試
 		List<IIssue> storyList = this.mTB.getStories();
 		IIssue[] stories = storyList.toArray(new IIssue[storyList.size()]);
@@ -136,9 +136,9 @@ public class TaskBoardTest extends MockStrutsTestCase {
 				.getSummary(), "10", "50", stories[4].getEstimated(),
 				stories[4].getHowToDemo(), stories[4].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 
-		this.mTB = new TaskBoard(this.mSprintBacklogLogic, this.mSB);
+		this.mTB = new TaskBoard(this.mSprintBacklogLogic, this.mSprintBacklogMapper);
 		storyList = this.mTB.getStories();
 		stories = storyList.toArray(new IIssue[storyList.size()]);
 		// 驗證 Story 是否依 Importance 排列
@@ -157,68 +157,42 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試3
-	public void testgetStrories3() throws Exception {
+	public void testGetStrories_SortByImportance() throws Exception {
 		// Story 建立時即為任意順序測試
 		List<IIssue> storyList = this.mTB.getStories();
 		IIssue[] stories = storyList.toArray(new IIssue[storyList.size()]);
 		// 驗證 Story 數量
 		assertEquals(this.mStoryCount, stories.length);
 
-		// 修改 Story 的 Importance 順序
-//		ProductBacklogHelper helper = new ProductBacklogHelper(this.CP.getProjectList().get(0), this.config.getUserSession());
-//		boolean isSuccess = false;
-//		isSuccess = helper.edit(stories[0].getIssueID(), stories[0]
-//				.getSummary(), "10", "40", stories[0].getEstimated(),
-//				stories[0].getHowToDemo(), stories[0].getNotes());
-//		assertEquals(true, isSuccess);
-//		this.SB.forceRefresh();
-//		isSuccess = helper.edit(stories[1].getIssueID(), stories[1]
-//				.getSummary(), "10", "30", stories[1].getEstimated(),
-//				stories[1].getHowToDemo(), stories[1].getNotes());
-//		assertEquals(true, isSuccess);
-//		this.SB.forceRefresh();
-//		isSuccess = helper.edit(stories[2].getIssueID(), stories[2]
-//				.getSummary(), "10", "10", stories[2].getEstimated(),
-//				stories[2].getHowToDemo(), stories[2].getNotes());
-//		assertEquals(true, isSuccess);
-//		this.SB.forceRefresh();
-//		isSuccess = helper.edit(stories[3].getIssueID(), stories[3]
-//				.getSummary(), "10", "30", stories[3].getEstimated(),
-//				stories[3].getHowToDemo(), stories[3].getNotes());
-//		assertEquals(true, isSuccess);
-//		this.SB.forceRefresh();
-//		isSuccess = helper.edit(stories[4].getIssueID(), stories[4]
-//				.getSummary(), "10", "40", stories[4].getEstimated(),
-//				stories[4].getHowToDemo(), stories[4].getNotes());
 		ProductBacklogHelper helper = new ProductBacklogHelper(mConfiguration.getUserSession(), this.mCP.getProjectList().get(0));
 		IIssue issue = null;
 		issue = helper.editStory(stories[0].getIssueID(), stories[0]
 				.getSummary(), "10", "40", stories[0].getEstimated(),
 				stories[0].getHowToDemo(), stories[0].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 		issue = helper.editStory(stories[1].getIssueID(), stories[1]
 				.getSummary(), "10", "30", stories[1].getEstimated(),
 				stories[1].getHowToDemo(), stories[1].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 		issue = helper.editStory(stories[2].getIssueID(), stories[2]
 				.getSummary(), "10", "10", stories[2].getEstimated(),
 				stories[2].getHowToDemo(), stories[2].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 		issue = helper.editStory(stories[3].getIssueID(), stories[3]
 				.getSummary(), "10", "30", stories[3].getEstimated(),
 				stories[3].getHowToDemo(), stories[3].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 		issue = helper.editStory(stories[4].getIssueID(), stories[4]
 				.getSummary(), "10", "40", stories[4].getEstimated(),
 				stories[4].getHowToDemo(), stories[4].getNotes(), true);
 		assertNotNull(issue);
-		this.mSB.forceRefresh();
+		this.mSprintBacklogMapper.forceRefresh();
 
-		this.mTB = new TaskBoard(this.mSprintBacklogLogic, this.mSB);
+		this.mTB = new TaskBoard(this.mSprintBacklogLogic, this.mSprintBacklogMapper);
 		storyList = this.mTB.getStories();
 		stories = storyList.toArray(new IIssue[storyList.size()]);
 		// 驗證 Story 是否依 Importance 排列
