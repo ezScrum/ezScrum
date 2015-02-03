@@ -68,7 +68,6 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     	super.tearDown();
     	
     	// ============= release ==============
-    	this.accountMapper.releaseManager();
     	ini = null;
     	copyProject = null;
     	this.CP = null;
@@ -82,7 +81,7 @@ public class DeleteAccountActionTest extends MockStrutsTestCase {
     public void testDeleteAccountAction() throws LogonException {
 		
     	// ================ set initial data =======================
-		String userId = this.CA.getAccountList().get(0).getId();
+		String userId = this.CA.getAccountList().get(0).getId() + "";
 		
     	// ================== set parameter info ====================
     	addRequestParameter("id", userId);

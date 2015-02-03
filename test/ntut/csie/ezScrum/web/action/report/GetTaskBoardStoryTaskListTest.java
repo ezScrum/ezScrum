@@ -313,8 +313,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		List<IIssue> stories = addStoryToSprint.getStories();
 		sprintBacklogLogic.checkOutTask(tasks.get(0).getId(), tasks.get(0).getName(), createAccount.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
 		Thread.sleep(1000);
-		sprintBacklogLogic.doneIssue(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), null, null);
-		sprintBacklogLogic.doneIssue(stories.get(0).getIssueID(), stories.get(0).getSummary(), stories.get(0).getNotes(), null, null);
+		sprintBacklogLogic.closeTask(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), 0, "");
+		sprintBacklogLogic.closeStory(stories.get(0).getIssueID(), stories.get(0).getNotes(), "");
 		// 將第三個 task check out，用 TEST_ACCOUNT_ID_1 checkout task
 		sprintBacklogLogic.checkOutTask(tasks.get(2).getId(), tasks.get(2).getName(), createAccount.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
 

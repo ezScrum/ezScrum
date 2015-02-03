@@ -91,7 +91,6 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		// ============= release ==============
-		this.accountMapper.releaseManager();
 		ini = null;
 		projectManager = null;
 		this.CP = null;

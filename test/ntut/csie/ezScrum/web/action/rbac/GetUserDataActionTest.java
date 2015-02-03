@@ -70,8 +70,6 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		// ============= release ==============
-		// AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		copyProject = null;
 		this.CP = null;

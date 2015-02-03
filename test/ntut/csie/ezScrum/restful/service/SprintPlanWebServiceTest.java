@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
 import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -55,6 +56,7 @@ public class SprintPlanWebServiceTest extends TestCase {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
+		configuration = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe(); // 初始化 SQL

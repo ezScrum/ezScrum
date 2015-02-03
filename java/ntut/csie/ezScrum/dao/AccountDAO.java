@@ -414,11 +414,20 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return accounts;
 	}
 
-	public AccountObject confirmAccount(String username, String password) {
+	/**
+	 * Use username and password to get the account.
+	 * 
+	 * NOTICE: password already be md5 hashed
+	 * 
+	 * @param username
+	 * @param passwordMd5
+	 * @return AccountObject
+	 */
+	public AccountObject confirmAccount(String username, String passwordMd5) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, username);
-		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, password);
+		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, passwordMd5);
 		valueSet.addEqualCondition(AccountEnum.ENABLE, 1); 
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
@@ -470,7 +479,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return account;
 	}
 
-	private String getMd5(String str) {
+	public String getMd5(String str) {
 		MessageDigest md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");

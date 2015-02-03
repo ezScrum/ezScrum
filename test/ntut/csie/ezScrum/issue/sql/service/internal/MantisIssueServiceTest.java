@@ -42,7 +42,6 @@ public class MantisIssueServiceTest extends TestCase {
 		this.CP = new CreateProject(this.ProjectCount);
 		this.CP.exeCreate();
 		
-		IProject project = this.CP.getProjectList().get(0);
 		this.MService = new MantisService(configuration);
 		this.MISservice = new MantisIssueService(this.MService.getControl(), configuration);
 		
@@ -50,7 +49,6 @@ public class MantisIssueServiceTest extends TestCase {
 		
 		// ============= release ==============
 		ini = null;
-		project = null;
 	}
 	
 	protected void tearDown() throws Exception {

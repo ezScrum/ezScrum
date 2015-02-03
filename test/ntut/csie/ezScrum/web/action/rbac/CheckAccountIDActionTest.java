@@ -63,8 +63,6 @@ public class CheckAccountIDActionTest extends MockStrutsTestCase {
     	super.tearDown();    	
     	
     	// ============= release ==============
-//    	AccountFactory.releaseManager();
-    	(new AccountMapper()).releaseManager();
     	ini = null;
     	copyProject = null;
     	this.CP = null;

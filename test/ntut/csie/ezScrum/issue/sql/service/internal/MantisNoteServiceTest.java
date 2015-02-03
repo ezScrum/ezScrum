@@ -13,13 +13,12 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -31,7 +30,6 @@ public class MantisNoteServiceTest extends TestCase {
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
 	private Configuration configuration;
-	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
 	
 	private MantisService MSservice;
 	private MantisIssueService MISservice;
@@ -43,9 +41,10 @@ public class MantisNoteServiceTest extends TestCase {
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration(userSession);
+		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
+		configuration = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
@@ -55,7 +54,6 @@ public class MantisNoteServiceTest extends TestCase {
 		this.CP.exeCreate();
 		
 		// 建立MantisTagService
-		IProject project = this.CP.getProjectList().get(0);
 		this.MSservice = new MantisService(configuration);
 		MNService = new MantisNoteService(MSservice.getControl(), configuration);
 		MISservice = new MantisIssueService(MSservice.getControl(), configuration);
@@ -64,7 +62,6 @@ public class MantisNoteServiceTest extends TestCase {
 		
 		// ============= release ==============
 		ini = null;
-		project = null;
 	}
 	
 	protected void tearDown() throws Exception {

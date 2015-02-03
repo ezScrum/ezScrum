@@ -23,9 +23,11 @@ import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZTRACK_TYPEFIE
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZTRACK_TYPEFIELD_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.QUERY_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class TableCreaterTest extends TestCase {
@@ -42,6 +44,7 @@ public class TableCreaterTest extends TestCase {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
+		configuration = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);

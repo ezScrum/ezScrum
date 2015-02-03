@@ -28,6 +28,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -44,7 +45,7 @@ public class MantisServiceTest extends TestCase {
 	private int mStoryCount = 1;
 	private IProject mProject;
 	private Configuration mConfig;
-	private IUserSession mUserSession = new UserSession(new AccountMapper().getAccount("admin"));
+	private IUserSession mUserSession;
 	private MantisService mMantisService;
 
 	public MantisServiceTest(String testMethod) {
@@ -52,9 +53,12 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-		mConfig = new Configuration(mUserSession);
+		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
+
+		mUserSession = new UserSession(AccountObject.get("admin"));
+		mConfig = new Configuration(mUserSession);
 
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -1280,93 +1284,6 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
-	public void testUpdateHandler_history() throws SQLException {
-		mMantisService.openConnect();
-
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-		long taskId = mMantisService.newIssue(task);
-		assertEquals(taskId, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-
-		ArrayList<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date date = new Date();
-		date.setTime(date.getTime() + 1000);
-		mMantisService.updateHandler(taskOne, "admin", date);
-		int adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-		
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		date.setTime(date.getTime() + 1000);
-		// 測試塞入一樣狀態的 history，但是會發生日期無法塞進去，所以只好暫停一下進廣告
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		mMantisService.updateHandler(taskOne, "admin", date);
-		adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-		
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		mMantisService.closeConnect();
-	}
 
 	public void testUpdateName_history() throws SQLException {
 		IIssue task = new Issue();
@@ -1443,128 +1360,6 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
-	public void testChangeStatusToClosed_hisotry() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date d = new Date();
-		d.setTime(d.getTime() + 1000);
-		mMantisService.updateHandler(taskOne, "admin", d);
-
-		int adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		d.setTime(d.getTime() + 1000);
-		// 測試塞入一樣狀態的 history，但是會發生日期無法塞進去，所以只好暫停一下進廣告
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		mMantisService.updateHandler(taskOne, "admin", d);
-
-		adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-
-		d.setTime(d.getTime() + 1000);
-		mMantisService.changeStatusToClosed(taskID, ITSEnum.FIXED_RESOLUTION, "Task_New_Note", d);
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(4).getDescription(), "Check Out => Done");
-		assertEquals(histories.get(4).getNewValue(), "90");
-		assertEquals(histories.get(4).getOldValue(), "50");
-		assertEquals(histories.get(4).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		// close connection
-		mMantisService.closeConnect();
-	}
 
 	public void testInsertBugNote_hisotry() throws SQLException {
 		IIssue task = new Issue();

@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -118,7 +119,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		int taskEst = 2;
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
 		addTaskToStory.exe();
-		IIssue task = addTaskToStory.getTasks().get(0);
+		TaskObject task = addTaskToStory.getTasks().get(0);
 		
 		String expectedSprintID = idList.get(0);
 		String issueID = String.valueOf(addTaskToStory.getTasksId().get(0));		
@@ -147,7 +148,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		this.vaildateShowExistedTasks(expectedSprintID, expectedStoryID, task);
 	}
 	
-	private void vaildateShowExistedTasks(String expectedSprintID, String expectedStoryID, IIssue task){
+	private void vaildateShowExistedTasks(String expectedSprintID, String expectedStoryID, TaskObject task){
 		// clear response information and request parameter
 		this.response.reset();
 		clearRequestParameters();
@@ -170,12 +171,12 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Tasks><Task><Id>").append(task.getIssueID()).append("</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getIssueID()).append("</Link>")
-							.append("<Name>").append(task.getSummary()).append("</Name>")
+		expectedResponseText.append("<Tasks><Task><Id>").append(task.getId()).append("</Id>")
+							.append("<Link></Link>")
+							.append("<Name>").append(task.getName()).append("</Name>")
 							.append("<Status>").append("new").append("</Status>")
-							.append("<Estimate>").append(task.getEstimated()).append("</Estimate>")
-							.append("<Actual>").append(task.getActualHour()).append("</Actual>")
+							.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
+							.append("<Actual>").append(task.getActual()).append("</Actual>")
 							.append("<Handler></Handler>")
 							.append("<Partners></Partners>")
 							.append("<Notes>").append(task.getNotes()).append("</Notes>")
