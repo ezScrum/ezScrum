@@ -91,8 +91,7 @@ public class SprintBacklogTreeStructure {
 				value = "";
 			}
 			// 以日期當作 Key
-			// this.dateToHourMap.put(this.currentCols.get(i).GetColumnName(),
-			// value);
+			// this.dateToHourMap.put(this.currentCols.get(i).GetColumnName(), value);
 			// 以 TreeGrid Column 當作 Key
 			mDateToHourMap.put("Date_" + String.valueOf(i + 1), value);
 		}
