@@ -47,6 +47,9 @@ public class SprintBacklogLogic {
 			String sprintID) {
 		mIProject = project;
 		mUserSession = userSession;
+		if (sprintID == null || sprintID.equals("")) {
+			sprintID = "-1";
+		}
 		mSprintBacklogMapper = createSprintBacklogMapper(Long
 				.parseLong(sprintID));
 	}
@@ -71,12 +74,16 @@ public class SprintBacklogLogic {
 	private SprintBacklogMapper createSprintBacklogMapper(long sprintId) {
 		SprintBacklogMapper sprintBacklogMapper = null;
 
-		if (sprintId == -1 || sprintId == 0) {
-			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-					mUserSession);
-		} else {
-			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-					mUserSession, sprintId);
+		try {
+			if (sprintId == -1 || sprintId == 0) {
+				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+						mUserSession);
+			} else {
+				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+						mUserSession, sprintId);
+			}			
+		} catch (Exception e) {
+			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
 	}

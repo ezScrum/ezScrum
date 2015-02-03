@@ -15,6 +15,7 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
 	private Configuration mConfig;
+	CreateProject CP;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
@@ -30,7 +31,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		ini.exe();
 		
 		// 新增一測試專案
-		CreateProject CP = new CreateProject(2);
+		CP = new CreateProject(2);
 		CP.exeCreate();
 		
 		super.setUp();
@@ -81,16 +82,16 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		String expectResponseText = 
 			"<Projects>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_1</ID>" +
-					"<Name>TEST_PROJECT_1</Name>" +
+					"<ID>" + projectOne.getName() + "</ID>" +
+					"<Name>" + projectOne.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 1</Comment>" +
 					"<ProjectManager>Project_Manager_1</ProjectManager>" +
 					"<CreateDate>" + dateFormat.format(projectOne.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_2</ID>" +
-					"<Name>TEST_PROJECT_2</Name>" +
+					"<ID>" + projectTwo.getName() + "</ID>" +
+					"<Name>" + projectTwo.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 2</Comment>" +
 					"<ProjectManager>Project_Manager_2</ProjectManager>" +
 					"<CreateDate>" + dateFormat.format(projectTwo.getCreateTime()) + "</CreateDate>" +

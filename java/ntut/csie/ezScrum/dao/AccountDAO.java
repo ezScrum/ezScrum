@@ -434,7 +434,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		AccountObject account = null;
 		
 		try {
-			if (result.next()) {
+			while (result.next()) {
 				account = convertAccount(result);
 			}
 		} catch (SQLException e) {

@@ -60,8 +60,8 @@ public class SprintBacklogMapper {
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
 			mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
-			initSprintInformation();
 		}
+		initSprintInformation();
 		initConfig();
 	}
 
@@ -88,9 +88,9 @@ public class SprintBacklogMapper {
 	 */
 	private void initSprintInformation() {
 		try {
-			if (mIterPlanDesc.getStartDate().equals("")) {
-				throw new RuntimeException();
-			}
+//			if (mIterPlanDesc.getStartDate().equals("")) {
+//				throw new RuntimeException();
+//			}
 			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
 			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
 			String aDays = mIterPlanDesc.getAvailableDays();

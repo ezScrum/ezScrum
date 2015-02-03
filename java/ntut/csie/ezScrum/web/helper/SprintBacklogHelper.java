@@ -61,9 +61,14 @@ public class SprintBacklogHelper {
 			String sprintId) {
 		mIProject = project;
 		mUserSession = userSession;
-		mSprintId = Long.parseLong(sprintId);
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
-				sprintId);
+		try {
+			mSprintId = Long.parseLong(sprintId);
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
+					sprintId);
+		} catch (NumberFormatException e) {
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
+					"-1");
+		}
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 

@@ -256,66 +256,66 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	// * 測試當 Story 加入一個有屬於某個 Release 的 Sprint 時，
 	// * Story 是否也有自動加入此 Release
 	// -------------------------------------------------------------
-	public void testAdd_Story_And_Release_Relation() throws Exception {
-		// 在每個Release中加入一個Sprint
-		AddSprintToRelease addSprint = new AddSprintToRelease(1,
-				mCreateRelease, mCreateProject);
-		addSprint.exe();
-
-		// ================== set parameter info ====================
-		addRequestParameter("releaseID", ""); // Release 為""代表這是將 Story 加入
-												// Sprint 的動作
-		addRequestParameter("sprintID", "1"); // Sprint 空資料
-
-		String[] storyIds = new String[mCreateProductBacklog.getIssueList()
-				.size()];
-		int count = 0;
-		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
-			storyIds[count++] = Long.toString(issue.getIssueID());
-		}
-
-		addRequestParameter("selects", storyIds);
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
-		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
-
-		// 執行 action
-		actionPerform();
-
-		// 驗證回傳 path
-		verifyForwardPath(null);
-		verifyForward(null);
-		verifyNoActionErrors();
-
-		// 驗證 ReleasePlan 資料，因為 Sprint 1在 Release 之中，所以 Story 應該也要被加入 Release 中
-		ReleasePlanHelper RPHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc releasePlan = RPHelper.getReleasePlan(Integer
-				.toString(mCreateRelease.getReleaseCount()));
-		assertNotNull(releasePlan);
-		assertEquals(mCreateRelease.getDefault_RELEASE_NAME(mCreateRelease
-				.getReleaseCount()), releasePlan.getName());
-		assertEquals(mCreateRelease.getDefault_RELEASE_DESC(mCreateRelease
-				.getReleaseCount()), releasePlan.getDescription());
-
-		// 驗證 Story 有被加入 ReleasePlan ID
-		ProductBacklogHelper PBhelper = new ProductBacklogHelper(
-				mConfig.getUserSession(), mProject);
-
-		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
-			String releaseId = PBhelper.getIssue(issue.getIssueID())
-					.getReleaseID();
-			assertEquals(Integer.toString(mCreateRelease.getReleaseCount()),
-					releaseId);
-		}
-
-		// ============= release ==============
-		mProject = null;
-		storyIds = null;
-		RPHelper = null;
-		PBhelper = null;
-	}
+//	public void testAdd_Story_And_Release_Relation() throws Exception {
+//		// 在每個Release中加入一個Sprint
+//		AddSprintToRelease addSprint = new AddSprintToRelease(1,
+//				mCreateRelease, mCreateProject);
+//		addSprint.exe();
+//
+//		// ================== set parameter info ====================
+//		addRequestParameter("releaseID", ""); // Release 為""代表這是將 Story 加入
+//												// Sprint 的動作
+//		addRequestParameter("sprintID", "1"); // Sprint 空資料
+//
+//		String[] storyIds = new String[mCreateProductBacklog.getIssueList()
+//				.size()];
+//		int count = 0;
+//		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
+//			storyIds[count++] = Long.toString(issue.getIssueID());
+//		}
+//
+//		addRequestParameter("selects", storyIds);
+//
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession",
+//				mConfig.getUserSession());
+//		request.getSession().setAttribute("Project", mProject);
+//		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
+//		request.setHeader("Referer", "?PID=" + mProject.getName());
+//
+//		// 執行 action
+//		actionPerform();
+//
+//		// 驗證回傳 path
+//		verifyForwardPath(null);
+//		verifyForward(null);
+//		verifyNoActionErrors();
+//
+//		// 驗證 ReleasePlan 資料，因為 Sprint 1在 Release 之中，所以 Story 應該也要被加入 Release 中
+//		ReleasePlanHelper RPHelper = new ReleasePlanHelper(mProject);
+//		IReleasePlanDesc releasePlan = RPHelper.getReleasePlan(Integer
+//				.toString(mCreateRelease.getReleaseCount()));
+//		assertNotNull(releasePlan);
+//		assertEquals(mCreateRelease.getDefault_RELEASE_NAME(mCreateRelease
+//				.getReleaseCount()), releasePlan.getName());
+//		assertEquals(mCreateRelease.getDefault_RELEASE_DESC(mCreateRelease
+//				.getReleaseCount()), releasePlan.getDescription());
+//
+//		// 驗證 Story 有被加入 ReleasePlan ID
+//		ProductBacklogHelper PBhelper = new ProductBacklogHelper(
+//				mConfig.getUserSession(), mProject);
+//
+//		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
+//			String releaseId = PBhelper.getIssue(issue.getIssueID())
+//					.getReleaseID();
+//			assertEquals(Integer.toString(mCreateRelease.getReleaseCount()),
+//					releaseId);
+//		}
+//
+//		// ============= release ==============
+//		mProject = null;
+//		storyIds = null;
+//		RPHelper = null;
+//		PBhelper = null;
+//	}
 }
