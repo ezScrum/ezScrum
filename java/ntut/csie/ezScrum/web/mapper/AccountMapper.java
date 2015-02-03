@@ -6,13 +6,8 @@ import java.util.HashMap;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.jcis.account.core.AccountFactory;
-import ntut.csie.jcis.account.core.IAccountManager;
-import ntut.csie.jcis.account.core.IPermission;
-import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountMapper {

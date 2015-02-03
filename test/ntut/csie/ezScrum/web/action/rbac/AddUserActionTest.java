@@ -16,9 +16,9 @@ import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -26,21 +26,23 @@ import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AddUserActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateAccount CA;
-	private int ProjectCount = 1;
-	private int AccountCount = 1;
-	private String ActionPath_AddUser = "/addUser";	// defined in "struts-config.xml"
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private int mProjectCount = 1;
+	private int mAccountCount = 1;
+	// defined in "struts-config.xml"
+	private String mActionPath_AddUser = "/addUser";
 
-	private Configuration configuration;
-	private AccountMapper accountMapper;
+	private Configuration mConfig;
+	private AccountMapper mAccountMapper;
 
 	public AddUserActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -50,26 +52,27 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	private void cleanActionInformation() {
 		clearRequestParameters();
-		this.response.reset();
+		response.reset();
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		// 新增 Project
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
-		this.accountMapper = new AccountMapper();
+		mAccountMapper = new AccountMapper();
 
 		super.setUp();
 		// ============= release ==============
@@ -77,119 +80,105 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CA = null;
-		this.config = null;
-		this.accountMapper = null;
-		configuration = null;
+		mCP = null;
+		mCA = null;
+		mAccountMapper = null;
+		mConfig = null;
 	}
 
 	// 以一般使用者身分執行
 	public void testAddUserAction_user() throws LogonException {
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(mActionPath_AddUser);
 
 		// ================ set initial data =======================
-		long id = this.CA.getAccountList().get(0).getId();		// 取得第一筆 Account ID
-		long Project_ID = this.CP.getAllProjects().get(0).getId();
-		String pid = this.CP.getAllProjects().get(0).getName();
-		String Actor = RoleEnum.ProductOwner.name();	// ?
+		long accountId = mCA.getAccountList().get(0).getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String pid = mCP.getAllProjects().get(0).getName();
+		String roleName = RoleEnum.ProductOwner.name();
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", String.valueOf(id));
-		addRequestParameter("resource", String.valueOf(Project_ID));
-		addRequestParameter("operation", Actor);
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
+		addRequestParameter("operation", roleName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + pid);
 
 		// 執行 action
 		actionPerform();
 
-		/*
-		 * Verify:
-		 */
-
-		AccountObject account = this.accountMapper.getAccount(id);
+		AccountObject account = mAccountMapper.getAccount(accountId);
 		assertNotNull(account);
-		assertEquals(this.CA.getAccount_ID(1), account.getUsername());
-		assertEquals(this.CA.getAccount_RealName(1), account.getNickName());
+		assertEquals(mCA.getAccount_ID(1), account.getUsername());
+		assertEquals(mCA.getAccount_RealName(1), account.getNickName());
 		assertEquals("true", account.getEnable());
 
-		assertEquals((new TestTool()).getMd5(this.CA.getAccount_PWD(1)), account.getPassword());
-		assertEquals(this.CA.getAccount_Mail(1), account.getEmail());
+		assertEquals((new TestTool()).getMd5(mCA.getAccount_PWD(1)), account.getPassword());
+		assertEquals(mCA.getAccount_Mail(1), account.getEmail());
 
 		// 測試 Role 是否正確
-		//		String expectedUserRole_PO = (new TestTool()).getRole(Project_ID, Actor);
-		//		String expectedUserRole_USER = "user";
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
-		//		String[] userRole = {expectedUserRole_USER, expectedUserRole_PO};
-		//		for (String roleID : userRole) {
 		boolean isExisted = false;
 		for (Entry<String, ProjectRole> role : roleMap.entrySet()) {
-			if (Actor.equals(role.getValue().getScrumRole().getRoleName())) {
+			if (roleName.equals(role.getValue().getScrumRole().getRoleName())) {
 				isExisted = true;
 				break;
 			}
 		}
 		assertTrue(isExisted);
-		//		}
-		assertEquals(roleMap.size(), 1);		// ProductOwner
+		assertEquals(roleMap.size(), 1);// ProductOwner
 	}
 
 	// 以系統管理員身分執行
 	public void testAddUserAction_admin() throws LogonException {
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(this.mActionPath_AddUser);
 
 		// ================ set initial data =======================
-		String id = "1";			// 取得第一筆 Account ID
-		String accountId = "admin";	// 取得第一筆 Account ID
-		long Project_ID = this.CP.getAllProjects().get(0).getId();
-		String projectName = this.CP.getAllProjects().get(0).getName();
+		String accountId = "1";
+		String username = "admin";
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String Actor = "ProductOwner";	// ?
-		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", String.valueOf(Project_ID));
+		addRequestParameter("id", accountId);
+		addRequestParameter("resource", String.valueOf(projectId));
 		addRequestParameter("operation", Actor);
-		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + projectName);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
-		/*
-		 * Verify:
-		 */
-		AccountObject account = this.accountMapper.getAccount(accountId);
-
+		AccountObject account = mAccountMapper.getAccount(username);
 		assertNotNull(account);
-		assertEquals(accountId, account.getUsername());
+		assertEquals(username, account.getUsername());
 		assertEquals(ScrumEnum.SCRUMROLE_ADMIN, account.getNickName());
 		assertEquals("true", account.getEnable());
 
@@ -204,18 +193,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		assertEquals(roleMap.size(), 2);	// PO and admin
 
 		assertEquals(Actor, roleMap.get(projectName).getScrumRole().getRoleName());
-		assertEquals(accountId, roleMap.get("system").getScrumRole().getRoleName());
-		// 測試專案的 Role 是否正確加入，並且沒有移除 admin 權限
-		//		String[] Role_ID = new String[roleMap.length];
-		//		for (int i = 0; i < roleMap.length; i++) {
-		//			Role_ID[i] = roleMap[i].getRoleId();
-		//		}
-		// 利用 Rold ID 抽出來後排序，再做比對
-		//		Arrays.sort(Role_ID);
-
-		//		assertEquals(Role_ID[0], (new TestTool()).getRole(Project_ID, Actor));
-		//		assertEquals(Role_ID[1], ScrumEnum.SCRUMROLE_ADMIN);
-		//		assertEquals(Role_ID[2], "user");
+		assertEquals(username, roleMap.get("system").getScrumRole().getRoleName());
 	}
 
 	/**
@@ -231,32 +209,32 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_IntegrationTest() throws InterruptedException {
 		//	=============== common data ============================
-		AccountObject account = this.CA.getAccountList().get(0);
+		AccountObject account = mCA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		long userId = account.getId();		// 取得第一筆 Account ID
-		long projectID = this.CP.getAllProjects().get(0).getId();
-		String projectName = this.CP.getAllProjects().get(0).getName();
+		long accountId = account.getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String projectName = mCP.getAllProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project
 		 */
-
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(mActionPath_AddUser);
 
 		// ================ set initial data =======================
 		String scrumRole = "ProductOwner";
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", String.valueOf(userId));
-		addRequestParameter("resource", String.valueOf(projectID));
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + projectName);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ 執行 add user action ======================
 		actionPerform();
@@ -264,15 +242,12 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		//	assert response text
 		String expectedUserRole_PO = (new TestTool()).getRole(projectName, scrumRole);
-		//		String expectedUserRole_USER = "user";
 		long expectedUserId = account.getId();
 		String expectedUserAccount = account.getUsername();
 		String expectedUserName = account.getNickName();
-		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
+		String expectedUserPassword = (new TestTool()).getMd5(mCA.getAccount_PWD(1));
 		String expectedUserMail = account.getEmail();
 		boolean expectedUserEnable = account.getEnable();
-		//		account.addRole(new Role(expectedUserRole_PO, expectedUserRole_PO));
-		//		String expectedUserRole = roleArr[0].getRoleId() + ", " + roleArr[1].getRoleId();
 		StringBuilder addUserExpectedResponseText = new StringBuilder();
 		addUserExpectedResponseText.append("<Accounts>")
 		        .append("<AccountInfo>")
@@ -284,11 +259,11 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		        .append("<Enable>").append(expectedUserEnable).append("</Enable>")
 		        .append("</AccountInfo>")
 		        .append("</Accounts>");
-		String addUserActualResponseText = this.response.getWriterBuffer().toString();
+		String addUserActualResponseText = response.getWriterBuffer().toString();
 		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
 
 		//	assert database information
-		AccountObject actualAccount = this.accountMapper.getAccount(userId);
+		AccountObject actualAccount = mAccountMapper.getAccount(accountId);
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 		assertNotNull(account);
 		assertEquals(expectedUserId, actualAccount.getId());
@@ -322,7 +297,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 		LogonForm logonForm = new LogonForm();
 		logonForm.setUserId(account.getUsername());
-		logonForm.setPassword(this.CA.getAccount_PWD(1));
+		logonForm.setPassword(mCA.getAccount_PWD(1));
 		setActionForm(logonForm);
 
 		// ================ 執行 login action ======================
@@ -334,7 +309,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		/**
 		 * 5. view project list
 		 */
-		account = accountMapper.getAccount(userId);
+		account = mAccountMapper.getAccount(accountId);
 		userSession = getUserSession(account);
 		// ================ clean previous action info ========================
 		cleanActionInformation();
@@ -351,7 +326,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ assert ========================
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		ProjectObject expectedProject = this.CP.getAllProjects().get(0);
+		ProjectObject expectedProject = mCP.getAllProjects().get(0);
 		String expectedProjectDemoDate = "No Plan!";
 		//	assert response text
 		StringBuilder viewProjectListExpectedResponseText = new StringBuilder();
@@ -365,7 +340,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		        .append("<DemoDate>").append(expectedProjectDemoDate).append("</DemoDate>")
 		        .append("</Project>")
 		        .append("</Projects>");
-		String viewProjectListActualResponseText = this.response.getWriterBuffer().toString();
+		String viewProjectListActualResponseText = response.getWriterBuffer().toString();
 		assertEquals(viewProjectListExpectedResponseText.toString(), viewProjectListActualResponseText);
 
 		/**
@@ -399,9 +374,9 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddUserAction_NullID_RequestParameter() {
 		//	=============== common data ============================
-		AccountObject account = this.CA.getAccountList().get(0);
-		long projectID = this.CP.getAllProjects().get(0).getId();
-		String pid = this.CP.getAllProjects().get(0).getName();
+		AccountObject account = mCA.getAccountList().get(0);
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String scrumRole = "ProductOwner";
 
 		/**
@@ -409,44 +384,39 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		 */
 
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(mActionPath_AddUser);
 
 		// ================== set parameter info ====================
-		//    	addRequestParameter("id", userId);
-		addRequestParameter("resource", String.valueOf(projectID));
+		addRequestParameter("resource", String.valueOf(projectId));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ 執行 add user action ======================
 		actionPerform();
 
 		// ================ assert ========================
-		//	assert response text
 		verifyNoActionMessages();
 
-		//	assert database information
-		// 	測試 Role 是否正確
 		HashMap<String, ProjectRole> roles = account.getRoles();
 		assertEquals(roles.size(), 0);
-		//		assertEquals("user", roles[0].getRoleId());
 	}
 
 	/**
-	 * 當request parameter 不完整無法將該使用者加入到特定專案中。 request parameter包含 
+	 * 當 request parameter 不完整無法將該使用者加入到特定專案中。 request parameter 包含 
 	 * 1. id (O) 
 	 * 2. resource (X) 
 	 * 3. operation (O)
 	 */
 	public void testAddUserAction_NullResource_RequestParameter() {
 		//	=============== common data ============================
-		AccountObject account = this.CA.getAccountList().get(0);
-		String userId = this.CA.getAccount_ID(1);
-		String projectID = this.CP.getProjectList().get(0).getName();
+		AccountObject account = mCA.getAccountList().get(0);
+		long accountId = account.getId();
 		String scrumRole = "ProductOwner";
 
 		/**
@@ -454,76 +424,68 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		 */
 
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(mActionPath_AddUser);
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		//    	addRequestParameter("resource", projectID);
+		addRequestParameter("id", String.valueOf(accountId));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 add user action ======================
 		actionPerform();
 
 		// ================ assert ========================
-		//	assert response text
 		verifyNoActionMessages();
 
 		//	assert database information
 		// 	測試 Role 是否正確
 		HashMap<String, ProjectRole> roles = account.getRoles();
 		assertEquals(roles.size(), 0);
-		//		assertEquals("user", roles[0].getRoleId());
 	}
 
 	/**
-	 * 當request parameter 不完整無法將該使用者加入到特定專案中。 request parameter包含 
+	 * 當request parameter 不完整無法將該使用者加入到特定專案中。 request parameter 包含 
 	 * 1. id (O) 
 	 * 2. resource (O) 
 	 * 3. operation (X)
 	 */
 	public void testAddUserAction_NullOperation_RequestParameter() {
 		//	=============== common data ============================
-		AccountObject account = this.CA.getAccountList().get(0);
-		String userId = this.CA.getAccount_ID(1);
-		long projectID = this.CP.getAllProjects().get(0).getId();
-		String pid = this.CP.getAllProjects().get(0).getName();
+		AccountObject account = mCA.getAccountList().get(0);
+		long accountId = account.getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String pid = mCP.getAllProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project
 		 */
 
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_AddUser);
+		setRequestPathInformation(mActionPath_AddUser);
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", String.valueOf(projectID));
-		//    	addRequestParameter("operation", scrumRole);
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + pid);
 
 		// ================ 執行 add user action ======================
 		actionPerform();
 
 		// ================ assert ========================
-		//	assert response text
 		verifyNoActionMessages();
 
 		//	assert database information
 		// 	測試 Role 是否正確
 		HashMap<String, ProjectRole> roles = account.getRoles();
 		assertEquals(roles.size(), 0);
-		//		assertEquals("user", roles[0].getRoleId());
 	}
 
 	private IUserSession getUserSession(AccountObject account) {

@@ -19,7 +19,7 @@ import org.apache.struts.action.ActionMapping;
 public class AddUserAction extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+	        HttpServletRequest request, HttpServletResponse response) {
 
 		long id = Long.parseLong(request.getParameter("id"));
 		long projectId = Long.parseLong(request.getParameter("resource"));
@@ -37,6 +37,8 @@ public class AddUserAction extends Action {
 				response.getWriter().write(accountHelper.getAccountXML(account));
 				response.getWriter().close();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
