@@ -23,6 +23,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -400,11 +401,11 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //		IssueID.add(this.ATS.getTaskIDList().get(1)); // 加入第二筆
 
 //		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
-		List<IIssue> IssueID = new ArrayList<IIssue>();
-		IssueID.add(this.ATS.getTasks().get(0)); // 加入第一筆
-		IssueID.add(this.ATS.getTasks().get(1)); // 加入第二筆
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(this.ATS.getTasks().get(0)); // 加入第一筆
+		tasks.add(this.ATS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
+		CheckOutIssue COI = new CheckOutIssue(tasks, this.CP);
 		COI.exeCheckOut_Issues(); // 將此兩筆 Task Check-out
 		// =============== set move action ======================
 
@@ -456,7 +457,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		project = null;
-		IssueID = null;
+		tasks = null;
 		COI = null;
 		ExpectedTB = null;
 	}
@@ -479,11 +480,11 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //		IssueID.add(this.ATS.getTaskIDList().get(1)); // 加入第二筆
 //
 //		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
-		List<IIssue> issueList = new ArrayList<IIssue>();
-		issueList.add(this.ATS.getTasks().get(0)); // 加入第一筆
-		issueList.add(this.ATS.getTasks().get(1)); // 加入第二筆
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(this.ATS.getTasks().get(0)); // 加入第一筆
+		tasks.add(this.ATS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(issueList, this.CP);
+		CheckOutIssue COI = new CheckOutIssue(tasks, this.CP);
 		COI.exeDone_Issues(); // 將此兩筆 Task Done
 		// =============== set move action ======================
 
@@ -534,7 +535,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		project = null;
-		issueList = null;
+		tasks = null;
 		COI = null;
 		ExpectedTB = null;
 
@@ -614,7 +615,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //			CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP, Today);
 			List<IIssue> issueList = new ArrayList<IIssue>();
 			issueList.add(TaskList.get(i));
-			CheckOutIssue COI = new CheckOutIssue(issueList, this.CP, Today);
+			CheckOutIssue COI = 
+issueList, this.CP, Today);
 			COI.exeDone_Issues(); // 將此天的一筆 Task Done
 			Today = getNextDay(Today); // 日期取得下一天
 		}
