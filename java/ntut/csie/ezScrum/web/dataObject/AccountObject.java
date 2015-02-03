@@ -256,11 +256,13 @@ public class AccountObject implements IBaseObject {
 	public JSONObject toJSON() throws JSONException {
 		JSONObject account = new JSONObject();
 
-		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
-				.put(AccountEnum.PASSWORD, mPassword)
-				.put(AccountEnum.EMAIL, mEmail)
-				.put(AccountEnum.ENABLE, mEnable)
-				.put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
+		account.put(AccountEnum.ID, mId)
+		       .put(AccountEnum.USERNAME, mUsername)
+		       .put(AccountEnum.NICK_NAME, mNickName)
+			   .put(AccountEnum.PASSWORD, mPassword)
+			   .put(AccountEnum.EMAIL, mEmail)
+			   .put(AccountEnum.ENABLE, mEnable)
+			   .put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
 
 		return account;
 	}

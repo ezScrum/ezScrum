@@ -16,7 +16,10 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.account.core.LogonException;
+import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
 
@@ -38,10 +41,11 @@ public class TaskWebService extends ProjectWebService {
 	
 	private void initialize(long projectId) {
 		UserSession userSession = new UserSession(super.getAccount());
-		mSprintBacklogHelper = new SprintBacklogHelper(mProject, userSession);
-		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
 		mProjectHelper = new ProjectHelper();
 		mProject = mProjectHelper.getProject(projectId);
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		mSprintBacklogHelper = new SprintBacklogHelper(iProject, userSession);
+		mProductBacklogHelper = new ProductBacklogHelper(userSession, iProject);
 	}
 	
 	/**
