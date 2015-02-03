@@ -57,10 +57,10 @@ public class RemainingWorkReport {
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
-		if (category.compareTo(ScrumEnum.TASK_ISSUE_TYPE) == 0) {
+		if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
 			init(sprintid);
 			createTaskDataBySprint(sprintid);
-		} else if (category.compareTo(ScrumEnum.STORY_ISSUE_TYPE) == 0) {
+		} else if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 			init(sprintid);
 			createStoryDataBySprint(sprintid);
 		} else {
@@ -78,10 +78,10 @@ public class RemainingWorkReport {
 		mCategory = category;
 		mToday = setDate;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
-		if (category.compareTo(ScrumEnum.TASK_ISSUE_TYPE) == 0) {
+		if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
 			init(sprintid);
 			createTaskDataBySprint(sprintid);
-		} else if (category.compareTo(ScrumEnum.STORY_ISSUE_TYPE) == 0) {
+		} else if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 			init(sprintid);
 			createStoryDataBySprint(sprintid);
 		} else {
@@ -245,7 +245,9 @@ public class RemainingWorkReport {
 		mIITS.closeConnect();
 		List<IIssue> temp = new ArrayList<IIssue>();
 		for (IIssue issue : issues) {
-			if (issue.getCategory().compareTo(mCategory) == 0) temp.add(issue);
+			if (issue.getCategory().equals(mCategory)) {
+				temp.add(issue);
+			}
 		}
 		Date timeNode = new Date(mChartStartDate.getTime());
 		while (timeNode.getTime() <= mToday.getTime()) {
