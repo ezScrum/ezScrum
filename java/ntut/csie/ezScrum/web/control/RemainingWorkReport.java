@@ -183,24 +183,24 @@ public class RemainingWorkReport {
 
 	}
 
-	private void createTaskDataBySprint(int sprintid) {
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(sprintid))).getSprintBacklogMapper();
-		ArrayList<TaskObject> issues = backlog.getAllTasks();
+	private void createTaskDataBySprint(int sprintId) {
+		SprintBacklogMapper backlog = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(sprintId))).getSprintBacklogMapper();
+		ArrayList<TaskObject> tasks = backlog.getAllTasks();
 		Date timeNode = new Date(mChartStartDate.getTime());
 		while (timeNode.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
 			if ((mToday.getDate() == timeNode.getDate()) &&
 			        (Math.abs(mToday.getTime() - timeNode.getTime()) <= mOneDay)) {
-				countStatusChange(issues, mToday);
+				countStatusChange(tasks, mToday);
 				break;
 			} else {
-				countStatusChange(issues, timeNode);
+				countStatusChange(tasks, timeNode);
 			}
 			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
 		}
 	}
 
-	private void countStatusChange(List<IIssue> issues, Date date) {
+	private void countStatusChange(ArrayList<TaskObject> tasks, Date date) {
 		int Donecount = 0, AssignCount = 0, NonCount = 0;
 		Date dateKey = new Date(date.getTime());
 		if (date.getTime() != mToday.getTime()) {
@@ -214,16 +214,16 @@ public class RemainingWorkReport {
 			}
 			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
 		}
-		if (issues != null) {
-			for (IIssue issue : issues) {
-				switch (issue.getDateStatus(date)) {
-					case ITSEnum.NEW_STATUS:
+		if (tasks != null) {
+			for (TaskObject task : tasks) {
+				switch (task.getStatus(date)) {
+					case TaskObject.STATUS_UNCHECK:
 						NonCount++;
 						break;
-					case ITSEnum.ASSIGNED_STATUS:
+					case TaskObject.STATUS_CHECK:
 						AssignCount++;
 						break;
-					case ITSEnum.CLOSED_STATUS:
+					case TaskObject.STATUS_DONE:
 						Donecount++;
 						break;
 					default:
