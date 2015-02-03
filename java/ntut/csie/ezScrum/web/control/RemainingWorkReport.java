@@ -243,22 +243,20 @@ public class RemainingWorkReport {
 		mIITS.openConnect();
 		IIssue[] issues = mIITS.getIssues(mProject.getName());
 		mIITS.closeConnect();
-		List<IIssue> temp = new ArrayList<IIssue>();
+		List<IIssue> tempIssues = new ArrayList<IIssue>();
 		for (IIssue issue : issues) {
 			if (issue.getCategory().equals(mCategory)) {
-				temp.add(issue);
+				tempIssues.add(issue);
 			}
 		}
 		Date timeNode = new Date(mChartStartDate.getTime());
 		while (timeNode.getTime() <= mToday.getTime()) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateStr = format.format(timeNode);
-			Date dateKey;
+			String dateString = format.format(timeNode);
+			Date date;
 			try {
-
-				dateKey = format.parse(dateStr);
-				countStatusChange(temp, dateKey);
-
+				date = format.parse(dateString);
+				countStatusChange(tempIssues, date);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
