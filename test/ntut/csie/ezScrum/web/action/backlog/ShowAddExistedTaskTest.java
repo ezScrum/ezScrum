@@ -76,44 +76,44 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		configuration = null;
 	}
 	
-	/**
-	 * 測試沒有Droped Task的情況
-	 */
-	public void testShowAddExistTask_1() throws Exception {
-		// 加入1個Sprint
-		int sprintID = Integer.valueOf(this.CS.getSprintIDList().get(0));
-		// Sprint加入1個Story
-		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, sprintID, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStory_Sprint.exe();
-		// Story加入1個Task
-		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
-		addTask_Story.exe();
-
-		
-		// ================ set request info ========================
-		String projectName = this.project.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
-		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);	
-		// 設定新增Task所需的資訊
-		String expectedStoryID = "1";
-		String expectedSprintID = "1";
-		
-		addRequestParameter("sprintID", expectedSprintID);
-		addRequestParameter("issueID", expectedStoryID);
-
-		// ================ 執行 action ======================
-		actionPerform();
-
-		// ================ assert ========================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Tasks></Tasks>");
-		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
-	}
+//	/**
+//	 * 測試沒有Droped Task的情況
+//	 */
+//	public void testShowAddExistTask_1() throws Exception {
+//		// 加入1個Sprint
+//		int sprintID = Integer.valueOf(this.CS.getSprintIDList().get(0));
+//		// Sprint加入1個Story
+//		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, sprintID, CP, CreateProductBacklog.TYPE_ESTIMATION);
+//		addStory_Sprint.exe();
+//		// Story加入1個Task
+//		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
+//		addTask_Story.exe();
+//
+//		
+//		// ================ set request info ========================
+//		String projectName = this.project.getName();
+//		request.setHeader("Referer", "?PID=" + projectName);
+//		// 設定Session資訊
+//		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+//		request.getSession().setAttribute("Project", project);	
+//		// 設定新增Task所需的資訊
+//		String expectedStoryID = "1";
+//		String expectedSprintID = "1";
+//		
+//		addRequestParameter("sprintID", expectedSprintID);
+//		addRequestParameter("issueID", expectedStoryID);
+//
+//		// ================ 執行 action ======================
+//		actionPerform();
+//
+//		// ================ assert ========================
+//		verifyNoActionErrors();
+//		verifyNoActionMessages();
+//		StringBuilder expectedResponseText = new StringBuilder();
+//		expectedResponseText.append("<Tasks></Tasks>");
+//		String actualResponseText = response.getWriterBuffer().toString();
+//		assertEquals(expectedResponseText.toString(), actualResponseText);
+//	}
 	
 	/**
 	 * 測試有一個Droped Task的情況
@@ -128,7 +128,7 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
 		addTask_Story.exe();
 		// drop Task from story
-		DropTask dropTask = new DropTask(CP, 1, 1, 2);
+		DropTask dropTask = new DropTask(CP, 1, 1, 1);
 		dropTask.exe();
 		
 		// ================ set request info ========================
@@ -154,8 +154,8 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Tasks><Task><Id>").append(2)	
-							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)
+		expectedResponseText.append("<Tasks><Task><Id>").append(1)	
+							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(1)
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Status>").append("new")
 							.append("</Status><Estimate>").append(expectedTaskEstimation)

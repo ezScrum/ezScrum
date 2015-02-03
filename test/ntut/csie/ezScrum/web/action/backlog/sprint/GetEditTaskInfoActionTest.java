@@ -85,12 +85,12 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		
 		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
 		createProductBacklog.exe();
-		String issueID = String.valueOf(addTaskToStory.getTasksId().get(0));
+		String taskId = String.valueOf(addTaskToStory.getTasksId().get(0));
 		// ================ set request info ========================
 		String projectName = this.project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
-		addRequestParameter("issueID", issueID);
+		addRequestParameter("issueID", taskId);
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
 		// ================  執行 action ==============================
@@ -106,7 +106,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		String expectedTaskNote = addTaskToStory.getTasks().get(0).getNotes();
 		
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("<EditTask><Task><Id>" + issueID + "</Id>");
+		expectedResponseTest.append("<EditTask><Task><Id>" + taskId + "</Id>");
 		expectedResponseTest.append("<Name>" + expectedTaskName	+ "</Name>");
 		expectedResponseTest.append("<Estimate>" + expectedTaskEstimation + "</Estimate>");
 		expectedResponseTest.append("<Actual>" + expectedTaskActualHour + "</Actual><Handler></Handler>");

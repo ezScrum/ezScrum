@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -137,6 +138,12 @@ public class SprintBacklogLogic {
 	public void closeTask(long id, String name, String notes, int actual, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
 		mSprintBacklogMapper.closeTask(id, name, notes, actual, closeDate);
+	}
+	
+	// for ezScrum 1.8
+	// TaskInfo should include task id
+	public void updateTask(TaskInfo taskInfo) {
+		mSprintBacklogMapper.updateTask(taskInfo);
 	}
 
 	/**

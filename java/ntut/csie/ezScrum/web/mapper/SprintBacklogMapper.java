@@ -86,9 +86,6 @@ public class SprintBacklogMapper {
 	 */
 	private void initSprintInformation() {
 		try {
-//			if (mIterPlanDesc.getStartDate().equals("")) {
-//				throw new RuntimeException();
-//			}
 			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
 			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
 			String aDays = mIterPlanDesc.getAvailableDays();
