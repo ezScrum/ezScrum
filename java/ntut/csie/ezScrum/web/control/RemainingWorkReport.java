@@ -28,37 +28,37 @@ import ntut.csie.jcis.core.util.ChartUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class RemainingWorkReport {
-	final private String mNAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
-	final private long mOneDay = 24 * 3600 * 1000;
-	private IProject mProject;
-	private Date mChartStartDate = null;
-	private Date mChartEndDate = null;
-	private int mInterval = 1;
-	private IITSService mIITS;
-	private IUserSession mSession;
-	private String mCategory;
-	private Configuration mConfiguration;
+	final private String NAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
+	final private long OneDay = 24 * 3600 * 1000;
+	private IProject project;
+	private Date m_chartStartDate = null;
+	private Date m_chartEndDate = null;
+	private int m_interval = 1;
+	private IITSService IITS;
+	private IUserSession session;
+	private String category;
+	private Configuration config;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
 	private final static String REMAININGWORK_CHART_FILE2 = "RemainingWork2.png";
-	private String mChartPath = "";
-	private int mAssignedQuantity;
-	private int mTotalQuantity;
-	private int mDoneQuantity;
-	private int mNonAssignQuantity;
-	private int mSprintID;
+	private String ChartPath = "";
+	private int assignedQuantity;
+	private int totalQuantity;
+	private int doneQuantity;
+	private int nonAssignQuantity;
+	private int sprintID;
 
-	private Map<Date, Integer> mNonAssignMap = new TreeMap<Date, Integer>();
-	private Map<Date, Integer> mAssignedMap = new TreeMap<Date, Integer>();
-	private Map<Date, Integer> mDoneMap = new TreeMap<Date, Integer>();
+	private Map<Date, Integer> m_nonAssignMap = new TreeMap<Date, Integer>();
+	private Map<Date, Integer> m_AssignedMap = new TreeMap<Date, Integer>();
+	private Map<Date, Integer> m_DoneMap = new TreeMap<Date, Integer>();
 
-	private Date mToday = new Date();
+	private Date Today = new Date();
 
 	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid) {
-		mSprintID = sprintid;
-		mProject = project;
-		mSession = userSession;
-		mConfiguration = new Configuration(userSession);
-		mCategory = category;
+		this.sprintID = sprintid;
+		this.project = project;
+		this.session = userSession;
+		this.config = new Configuration(userSession);
+		this.category = category;
 
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
 		if (category.compareTo(ScrumEnum.TASK_ISSUE_TYPE) == 0) {
@@ -76,13 +76,13 @@ public class RemainingWorkReport {
 	}
 
 	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid, Date setDate) {
-		mSprintID = sprintid;
-		mProject = project;
-		mSession = userSession;
-		mConfiguration = new Configuration(userSession);
-		mCategory = category;
+		this.sprintID = sprintid;
+		this.project = project;
+		this.session = userSession;
+		this.config = new Configuration(userSession);
+		this.category = category;
 
-		mToday = setDate;
+		this.Today = setDate;
 
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
 		if (category.compareTo(ScrumEnum.TASK_ISSUE_TYPE) == 0) {
@@ -100,59 +100,59 @@ public class RemainingWorkReport {
 	}
 
 	private void init() {
-		mAssignedQuantity = 0;
-		mTotalQuantity = 0;
-		mDoneQuantity = 0;
-		mNonAssignQuantity = 0;
-		SprintPlanHelper spHelper = new SprintPlanHelper(mProject);
+		assignedQuantity = 0;
+		totalQuantity = 0;
+		doneQuantity = 0;
+		nonAssignQuantity = 0;
+		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		// 設計sprint NO.
 		// 設計起始時間
-		mChartStartDate = spHelper.getProjectStartDate();
+		this.m_chartStartDate = spHelper.getProjectStartDate();
 		// 設計結束時間
-		mChartEndDate = spHelper.getProjectEndDate();
+		this.m_chartEndDate = spHelper.getProjectEndDate();
 		nowExistReport();
 	}
 
 	private void init(int sprintid) {
-		mAssignedQuantity = 0;
-		mTotalQuantity = 0;
-		mDoneQuantity = 0;
-		mNonAssignQuantity = 0;
+		assignedQuantity = 0;
+		totalQuantity = 0;
+		doneQuantity = 0;
+		nonAssignQuantity = 0;
 		// 設計sprint NO.
-		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mSession, String.valueOf(sprintid))).getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, session, String.valueOf(sprintid))).getSprintBacklogMapper();
 		// 設定起始時間
-		mChartStartDate = sprintBacklogMapper.getSprintStartDate();
+		this.m_chartStartDate = sprintBacklogMapper.getSprintStartDate();
 		// 設定結束時間
-		mChartEndDate = sprintBacklogMapper.getSprintEndDate();
+		this.m_chartEndDate = sprintBacklogMapper.getSprintEndDate();
 		nowExistReport();
 
 	}
 
 	private void createStoryDataBySprint(int sprintid) {
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSession, String.valueOf(mSprintID));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, String.valueOf(sprintID));
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
-		Map<Long, ArrayList<TaskObject>> TaskMap = backlog.getTasksMap();
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mChartEndDate.getTime()) {
+		Map<Long, IIssue[]> TaskMap = backlog.getTasksMap();
+		Date timeNode = new Date(this.m_chartStartDate.getTime());
+		while (timeNode.getTime() <= this.m_chartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
-			if ((mToday.getDate() == timeNode.getDate()) &&
-			        (Math.abs(mToday.getTime() - timeNode.getTime()) <= mOneDay)) {
-				countStroyStatusChange(stories, TaskMap, mToday);
+			if ((this.Today.getDate() == timeNode.getDate()) &&
+			        (Math.abs(this.Today.getTime() - timeNode.getTime()) <= OneDay)) {
+				this.countStroyStatusChange(stories, TaskMap, this.Today);
 				break;
 			} else {
-				countStroyStatusChange(stories, TaskMap, timeNode);
+				this.countStroyStatusChange(stories, TaskMap, timeNode);
 			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
+			timeNode = new Date(timeNode.getTime() + this.m_interval * OneDay);
 		}
 	}
 
-	private void countStroyStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
+	private void countStroyStatusChange(List<IIssue> stories, Map<Long, IIssue[]> taskMap, Date date) {
 		int Donecount = 0, AssignCount = 0, NonCount = 0;
 
 		Date dateKey = new Date(date.getTime());
 
-		if (date.getTime() != mToday.getTime()) {
+		if (date.getTime() != this.Today.getTime()) {
 			// 當日期不為當天時，要做處理
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 			String dateFormat = format.format(date);
@@ -167,19 +167,19 @@ public class RemainingWorkReport {
 
 		boolean flag = false;
 		for (IIssue story : stories) {
-			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
+			IIssue[] tasks = taskMap.get(story.getIssueID());
 			// skip the story that without any task
 			if (tasks == null) {
 				NonCount++; // story count +1
 				continue;
 			}
-			for (TaskObject task : tasks) {
+			for (IIssue task : tasks) {
 				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
 					Donecount++;
 					flag = true;
 					break;
-				} else if (task.getStatus(date) == TaskObject.STATUS_CHECK
-				        || task.getStatus(date) == TaskObject.STATUS_DONE) {
+				} else if (task.getDateStatus(date) == ITSEnum.ASSIGNED_STATUS
+				        || task.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
 					AssignCount++;
 					flag = true;
 					break;
@@ -188,78 +188,36 @@ public class RemainingWorkReport {
 			if (!flag) NonCount++;
 			flag = false;
 		}
-		mNonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
-		mDoneMap.put(dateKey, Donecount);
-		mAssignedMap.put(dateKey, AssignCount + Donecount);
+		this.m_nonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
+		this.m_DoneMap.put(dateKey, Donecount);
+		this.m_AssignedMap.put(dateKey, AssignCount + Donecount);
 		saveQuantity(NonCount, Donecount, AssignCount);
 
 	}
 
 	private void createTaskDataBySprint(int sprintid) {
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(mProject, mSession, String.valueOf(sprintid))).getSprintBacklogMapper();
-		ArrayList<TaskObject> tasks = backlog.getAllTasks();
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mChartEndDate.getTime()) {
+		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, String.valueOf(sprintid))).getSprintBacklogMapper();
+		ArrayList<TaskObject> issues = backlog.getAllTasks();
+		Date timeNode = new Date(this.m_chartStartDate.getTime());
+		while (timeNode.getTime() <= this.m_chartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
-			if ((mToday.getDate() == timeNode.getDate()) &&
-			        (Math.abs(mToday.getTime() - timeNode.getTime()) <= mOneDay)) {
-				countStatusChangeForTask(tasks, mToday);
+			if ((this.Today.getDate() == timeNode.getDate()) &&
+			        (Math.abs(this.Today.getTime() - timeNode.getTime()) <= OneDay)) {
+				this.countStatusChange(issues, this.Today);
 				break;
 			} else {
-				countStatusChangeForTask(tasks, timeNode);
+				this.countStatusChange(issues, timeNode);
 			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
+			timeNode = new Date(timeNode.getTime() + this.m_interval * OneDay);
 		}
 	}
-	
-	// for stories
-	private void countStatusChangeForIssues(List<IIssue> issues, Date date) {
+
+	private void countStatusChange(List<IIssue> issues, Date date) {
 		int Donecount = 0, AssignCount = 0, NonCount = 0;
 
 		Date dateKey = new Date(date.getTime());
 
-		if (date.getTime() != mToday.getTime()) {
-			// �嗆���箇憭拇�嚗�����
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateFormat = format.format(date);
-			try {
-				date = format.parse(dateFormat);	// �駁���澆�
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
-			date = new Date(date.getTime() + 24 * 3599999);		// �嗅予�交��� 23:59:59嚗�璅��蝞靘��梯”��嗆���
-		}
-
-		if (issues != null) for (IIssue issue : issues) {
-			switch (issue.getDateStatus(date)) {
-				case ITSEnum.NEW_STATUS:
-					NonCount++;
-					break;
-				case ITSEnum.ASSIGNED_STATUS:
-					AssignCount++;
-					break;
-				case ITSEnum.CLOSED_STATUS:
-					Donecount++;
-					break;
-				default:
-					break;
-			}
-		}
-
-		this.mNonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
-		this.mDoneMap.put(dateKey, Donecount);
-		this.mAssignedMap.put(dateKey, AssignCount + Donecount);
-		saveQuantity(NonCount, Donecount, AssignCount);
-	}
-
-	// for task
-	private void countStatusChangeForTask(List<TaskObject> tasks, Date date) {
-		int Donecount = 0, AssignCount = 0, NonCount = 0;
-
-		Date dateKey = new Date(date.getTime());
-
-		if (date.getTime() != mToday.getTime()) {
+		if (date.getTime() != this.Today.getTime()) {
 			// 當日期不為當天時，要做處理
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 			String dateFormat = format.format(date);
@@ -272,16 +230,16 @@ public class RemainingWorkReport {
 			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
 		}
 
-		if (tasks != null) {
-			for (TaskObject task : tasks) {
-				switch (task.getStatus(date)) {
-					case TaskObject.STATUS_UNCHECK:
+		if (issues != null) {
+			for (IIssue issue : issues) {
+				switch (issue.getDateStatus(date)) {
+					case ITSEnum.NEW_STATUS:
 						NonCount++;
 						break;
-					case TaskObject.STATUS_CHECK:
+					case ITSEnum.ASSIGNED_STATUS:
 						AssignCount++;
 						break;
-					case TaskObject.STATUS_DONE:
+					case ITSEnum.CLOSED_STATUS:
 						Donecount++;
 						break;
 					default:
@@ -290,141 +248,139 @@ public class RemainingWorkReport {
 			}
 		}
 
-		mNonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
-		mDoneMap.put(dateKey, Donecount);
-		mAssignedMap.put(dateKey, AssignCount + Donecount);
+		this.m_nonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
+		this.m_DoneMap.put(dateKey, Donecount);
+		this.m_AssignedMap.put(dateKey, AssignCount + Donecount);
 		saveQuantity(NonCount, Donecount, AssignCount);
 	}
 
 	private void createData() {
-		mIITS = ITSServiceFactory.getInstance().getService(
-		        ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
-		mIITS.openConnect();
-		IIssue[] issues = mIITS.getIssues(mProject.getName());
-		mIITS.closeConnect();
+		IITS = ITSServiceFactory.getInstance().getService(
+		        ITSEnum.MANTIS_SERVICE_ID, config);
+		IITS.openConnect();
+		IIssue[] issues = IITS.getIssues(project.getName());
+		IITS.closeConnect();
 		List<IIssue> temp = new ArrayList<IIssue>();
 		for (IIssue issue : issues) {
-			if (issue.getCategory().compareTo(mCategory) == 0) {
-				temp.add(issue);
-			}
+			if (issue.getCategory().compareTo(category) == 0) temp.add(issue);
 		}
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mToday.getTime()) {
+		Date timeNode = new Date(this.m_chartStartDate.getTime());
+		while (timeNode.getTime() <= this.Today.getTime()) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 			String dateStr = format.format(timeNode);
 			Date dateKey;
 			try {
 
 				dateKey = format.parse(dateStr);
-				countStatusChangeForIssues(temp, dateKey);
+				this.countStatusChange(temp, dateKey);
 
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
+			timeNode = new Date(timeNode.getTime() + this.m_interval * OneDay);
 		}
 	}
 
 	private void saveQuantity(int nonAssign, int done, int Assigned) {
-		mDoneQuantity = done;
-		mAssignedQuantity = Assigned;
-		mNonAssignQuantity = nonAssign;
-		mTotalQuantity = done + Assigned + nonAssign;
+		doneQuantity = done;
+		assignedQuantity = Assigned;
+		nonAssignQuantity = nonAssign;
+		totalQuantity = done + Assigned + nonAssign;
 	}
 
 	private void drawGraph() {
-		// 設定圖表內容
-		ChartUtil chartUtil = new ChartUtil(mProject.getName()
-		        + " Work Activity", mChartStartDate, mChartEndDate);
+		// 閮剖��”�批捆
+		ChartUtil chartUtil = new ChartUtil(project.getName()
+		        + " Work Activity", this.m_chartStartDate, this.m_chartEndDate);
 
 		chartUtil.setChartType(ChartUtil.AREALINECHART);
 
-		chartUtil.addDataSet("Done", mDoneMap);
-		chartUtil.addDataSet("Assigned", mAssignedMap);
-		chartUtil.addDataSet("non-Assign", mNonAssignMap);
-		chartUtil.setInterval(mInterval);
+		chartUtil.addDataSet("Done", this.m_DoneMap);
+		chartUtil.addDataSet("Assigned", this.m_AssignedMap);
+		chartUtil.addDataSet("non-Assign", this.m_nonAssignMap);
+		chartUtil.setInterval(this.m_interval);
 		chartUtil.setValueAxisLabel("Num. of Tasks ");
 
 		Color[] colors = {Color.GREEN, Color.BLUE, Color.RED};
 
 		chartUtil.setColor(colors);
 
-		// 產生圖表
+		// �Ｙ��”
 		File f = new File(getReportPath());
 		chartUtil.createChart(getReportPath());
 
 	}
 
 	private void nowExistReport() {
-		String chartPath1 = mProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath1 = project.getFolder(IProject.METADATA).getFullPath()
+		        + File.separator + this.NAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE1;
-		String chartPath2 = mProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath2 = project.getFolder(IProject.METADATA).getFullPath()
+		        + File.separator + this.NAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE2;
 		File f1 = new File(chartPath1);
 		File f2 = new File(chartPath2);
 		if (f1.exists() && f2.exists()) {
-			mChartPath = REMAININGWORK_CHART_FILE1;
+			ChartPath = REMAININGWORK_CHART_FILE1;
 		} else if (f1.exists()) {
 			f1.delete();
-			mChartPath = REMAININGWORK_CHART_FILE2;
+			ChartPath = REMAININGWORK_CHART_FILE2;
 		} else if (f2.exists()) {
 			f2.delete();
-			mChartPath = REMAININGWORK_CHART_FILE1;
-		} else mChartPath = REMAININGWORK_CHART_FILE1;
+			ChartPath = REMAININGWORK_CHART_FILE1;
+		} else ChartPath = REMAININGWORK_CHART_FILE1;
 	}
 
 	private String getReportPath() {
 		// 圖片儲存的真正路徑
 		// workspace/project/_metadata/RemainingWork/
 
-		String chartPath = mProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
-		        + File.separator + mChartPath;
+		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
+		        + File.separator + this.NAME + File.separator + "Report"
+		        + File.separator + ChartPath;
 
 		return chartPath;
 	}
 
 	public String getRemainingWorkChartPath() {
 		// web用的路徑
-		String link = "./Workspace/" + mProject.getName() + "/"
-		        + IProject.METADATA + "/" + mNAME + "/Report" + "/" + mChartPath;
+		String link = "./Workspace/" + project.getName() + "/"
+		        + IProject.METADATA + "/" + NAME + "/Report" + "/" + ChartPath;
 
 		return link;
 	}
 
 	public IScrumReport getScrumReport() {
 		ConvertRemainingWorkReport report = new ConvertRemainingWorkReport();
-		report.setChartEndDate(mChartEndDate.getTime());
-		report.setChartStartDate(mChartStartDate.getTime());
-		report.setInterval(mInterval);
-		report.setM_AssignedMap(mAssignedMap);
-		report.setM_DoneMap(mDoneMap);
-		report.setM_nonAssignMap(mNonAssignMap);
-		report.setProjectName(mProject.getName());
-		report.setAssigned(mAssignedQuantity + "");
-		report.setCategory(mCategory);
-		report.setDone(mDoneQuantity + "");
-		report.setTotal(mTotalQuantity + "");
-		report.setNonAssign(mNonAssignQuantity + "");
-		report.setSprintID(mSprintID + "");
+		report.setChartEndDate(this.m_chartEndDate.getTime());
+		report.setChartStartDate(this.m_chartStartDate.getTime());
+		report.setInterval(this.m_interval);
+		report.setM_AssignedMap(this.m_AssignedMap);
+		report.setM_DoneMap(this.m_DoneMap);
+		report.setM_nonAssignMap(this.m_nonAssignMap);
+		report.setProjectName(this.project.getName());
+		report.setAssigned(assignedQuantity + "");
+		report.setCategory(category);
+		report.setDone(doneQuantity + "");
+		report.setTotal(totalQuantity + "");
+		report.setNonAssign(nonAssignQuantity + "");
+		report.setSprintID(sprintID + "");
 		return report;
 	}
 
 	public int getAssignedQuantity() {
-		return mAssignedQuantity;
+		return assignedQuantity;
 	}
 
 	public int getTotalQuantity() {
-		return mTotalQuantity;
+		return totalQuantity;
 	}
 
 	public int getDoneQuantity() {
-		return mDoneQuantity;
+		return doneQuantity;
 	}
 
 	public int getNonAssignQuantity() {
-		return mNonAssignQuantity;
+		return nonAssignQuantity;
 	}
 }
