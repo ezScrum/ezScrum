@@ -81,8 +81,6 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	super.tearDown();    	
     	
     	// ============= release ==============
-//    	AccountFactory.releaseManager();
-    	this.accountMapper.releaseManager();
     	ini = null;
     	copyProject = null;
     	this.CP = null;
@@ -101,7 +99,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
     	String projectId = this.CP.getProjectList().get(0).getName();
     	// User Information
     	
-    	String userId = this.CA.getAccountList().get(0).getId();
+    	String userId = this.CA.getAccountList().get(0).getId() + "";
     	// ================ set initial data =======================    	
     	
     	// ================== set parameter info ==================== 	    

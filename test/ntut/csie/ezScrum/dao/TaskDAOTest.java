@@ -1,8 +1,14 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -17,18 +23,16 @@ import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
-public class TaskDAOTest extends TestCase {
+public class TaskDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
 	private CreateProject mCreateProject;
 	private int mProjectCount = 2;
 	private static long projectId;
 
-	public TaskDAOTest(String testMethod) {
-		super(testMethod);
-	}
 
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -43,11 +47,10 @@ public class TaskDAOTest extends TestCase {
 		mControl.connection();
 
 		projectId = mCreateProject.getAllProjects().get(0).getId();
-
-		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -62,10 +65,9 @@ public class TaskDAOTest extends TestCase {
 		mCreateProject = null;
 		mConfig = null;
 		mControl = null;
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testCreate() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
@@ -106,6 +108,7 @@ public class TaskDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGet() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
@@ -141,6 +144,7 @@ public class TaskDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testUpdate() throws SQLException {
 		TaskObject task = new TaskObject(projectId);
 		task.setName("TEST_TASK_1")
@@ -172,6 +176,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(theTask.getActual(), task.getActual());
 	}
 
+	@Test
 	public void testDelete() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
@@ -209,6 +214,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(2, tasks.size());
 	}
 
+	@Test
 	public void testGetTasksByStory() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
@@ -232,6 +238,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(2, tasks.size());
 	}
 	
+	@Test
 	public void testGetTasksWithNoParent() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
@@ -253,6 +260,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(2, tasks.size());
 	}
 	
+	@Test
 	public void testGetPartnersId_withOnePartner() {
 		long TEST_TASK_ID = 3;
 		long TEST_PARTNER_ID = 5;
@@ -277,6 +285,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(5, partnersId.get(0).longValue());
 	}
 	
+	@Test
 	public void testGetPartnersId_withTwoPartners() {
 		long TEST_TASK_ID = 3;
 		long TEST_FIRST_PARTNER_ID = 5;
@@ -313,6 +322,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(7, partnersId.get(1).longValue());
 	}
 	
+	@Test
 	public void testAddPartner() {
 		long TEST_TASK_ID = 3;
 		long TEST_PARTNER_ID = 5;
@@ -358,6 +368,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(5, partnerIdList.get(0).longValue());
 	}
 	
+	@Test
 	public void testRemovePartner() throws SQLException {
 		long TEST_TASK_ID = 1;
 		long TEST_PARTNER_ID = 2;
@@ -405,6 +416,7 @@ public class TaskDAOTest extends TestCase {
 		assertEquals(0, size);
 	}
 
+	@Test
 	public void testPartnerExists() {
 		long TEST_TASK_ID = 1;
 		long TEST_PARTNER_ID = 2;
@@ -429,6 +441,7 @@ public class TaskDAOTest extends TestCase {
 		assertTrue(exists);
 	}
 	
+	@Test
 	public void testConvert() throws SQLException {
 		String TEST_NAME = "TEST_NAME";
 		String TEST_NOTES = "TEST_NOTES";

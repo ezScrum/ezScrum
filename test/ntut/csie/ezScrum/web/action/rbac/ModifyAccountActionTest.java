@@ -80,8 +80,6 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		// ============= release ==============
-		// AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		projectManager = null;
 		this.CP = null;
@@ -149,7 +147,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		// User Information
 		String postfix = "_update";
 		AccountObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
+		String userId = user.getId() + "";			// 取得第一筆 ID
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = "modify@test.com";
@@ -201,7 +199,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String postfix = "_update";
 
 		AccountObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
+		String userId = user.getId() + "";			// 取得第一筆 ID
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userMail = "modify@test.com";
 		String userName = user.getNickName() + postfix;
@@ -269,12 +267,12 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String postfix = "_update";
 
 		AccountObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
+		String userId = user.getId() + "";			// 取得第一筆 ID
 		String userAccount = user.getUsername();	// 取得第一筆 Account ID
 		String userPw = user.getPassword() + postfix;
 		String userMail = user.getEmail();
 		String userName = user.getNickName();
-		String userEnable = user.getEnable();	// default is true
+		String userEnable = user.getEnable() + "";	// default is true
 		String userIsEdit = "true";				// false 代表是新增帳號
 
 		// ================== set parameter info ====================
@@ -407,7 +405,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String updateUserIsEdit = "true";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", account.getId());
+		addRequestParameter("id", account.getId() + "");
 		addRequestParameter("account", account.getUsername());
 		addRequestParameter("name", updateUserName);
 		addRequestParameter("passwd", updateUserPwd);
@@ -555,7 +553,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		String updateUserIsEdit = "true";		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", account.getId());
+		addRequestParameter("id", account.getId() + "");
 		addRequestParameter("account", userAccount);
 		addRequestParameter("name", userName);
 		addRequestParameter("passwd", userPwd);

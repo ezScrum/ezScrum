@@ -22,12 +22,12 @@ public class BurndownChartWebService extends ProjectWebService{
 	
 	public String getRESTFulStoryRealPointMapResponseString() throws JSONException{
 		ConvertBurndownChart convertBurndownChart = new ConvertBurndownChart();
-		convertBurndownChart.convertStoryRealPointMap( taskBoard.getstoryRealPointMap() ) ;
+		convertBurndownChart.convertStoryRealPointMap( taskBoard.getStoryRealPointMap() ) ;
 		return convertBurndownChart.getStoryRealPointMapJSONString();
 	}
 	public String getRESTFulTaskRealPointMapResponseString() throws JSONException {
 		ConvertBurndownChart convertBurndownChart = new ConvertBurndownChart();
-		convertBurndownChart.convertTaskRealPointMap( taskBoard.gettaskRealPointMap() );
+		convertBurndownChart.convertTaskRealPointMap( taskBoard.getTaskRealPointMap() );
 		return convertBurndownChart.getTaskRealPointMapJSONString();
 	}
 }

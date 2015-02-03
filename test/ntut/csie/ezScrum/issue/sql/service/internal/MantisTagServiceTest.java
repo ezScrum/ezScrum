@@ -9,11 +9,13 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -41,6 +43,7 @@ public class MantisTagServiceTest extends TestCase {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
+		configuration = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL

@@ -277,7 +277,7 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistingTasks(ArrayList<Long> taskIds, long storyId) {
+	public void addExistingTasksToStory(ArrayList<Long> taskIds, long storyId) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
@@ -430,26 +430,6 @@ public class SprintBacklogMapper {
 					.save(specificDate.getTime());
 		}
 	}
-	
-	/**
-	 * From UNCHECK to CHECK
-	 * 
-	 * @param id
-	 * @param name
-	 * @param handlerId
-	 * @param partners
-	 * @param notes
-	 * @param specificDate
-	 */
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
-		TaskObject task = TaskObject.get(id);
-		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
-					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.save(specificDate.getTime());
-		}
-	}
 
 	/**
 	 * From Checked Out to Not Checked Out
@@ -465,6 +445,26 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setNotes(notes).setHandlerId(noHandler)
 					.setStatus(TaskObject.STATUS_UNCHECK)
+					.save(specificDate.getTime());
+		}
+	}
+	
+	/**
+	 * From Not Checked Out to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}
 	}

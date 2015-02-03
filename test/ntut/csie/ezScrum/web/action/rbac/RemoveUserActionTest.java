@@ -92,8 +92,6 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		// ============= release ==============
-		//    	AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		projectManager = null;
 		this.CP = null;

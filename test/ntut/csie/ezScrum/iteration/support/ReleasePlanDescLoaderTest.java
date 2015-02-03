@@ -5,10 +5,12 @@ import java.util.List;
 import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -27,6 +29,7 @@ public class ReleasePlanDescLoaderTest extends TestCase {
 		configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();
+		configuration = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		super.setUp();
 		

@@ -109,8 +109,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		addRequestParameter("issueID", issueId);
-		String expectedTaskName = addTaskToStory.getTasks().get(0).getSummary();
-		String expectedIssueType = addTaskToStory.getTasks().get(0).getCategory();
+		String expectedTaskName = addTaskToStory.getTasks().get(0).getName();
+		String expectedIssueType = "Task";
 		String expectedLink = "/ezScrum/showIssueInformation.do?issueID=" + issueId;
 		List<String> expectedDescription = genArrayList("Create Task #2", "Append to Story #1");
 		List<String> expectedHistoryType = genArrayList("", "");

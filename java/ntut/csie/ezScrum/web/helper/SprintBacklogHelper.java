@@ -167,7 +167,7 @@ public class SprintBacklogHelper {
 		for (String task : selectedTaskIds) {
 			tasksId.add(Long.parseLong(task));
 		}
-		mSprintBacklogMapper.addExistingTasks(tasksId, storyId);
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
 	}
 
 	public TaskObject getTask(long taskId) {
@@ -214,7 +214,7 @@ public class SprintBacklogHelper {
 		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
 	}
-	
+
 	public void closeStory(long id, String notes, String changeDate) {
 		mSprintBacklogMapper.closeStory(id, notes, changeDate);
 	}
@@ -223,7 +223,7 @@ public class SprintBacklogHelper {
 			String changeDate) {
 		mSprintBacklogLogic.reopenStory(issueId, name, bugNote, changeDate);
 	}
-	
+
 	/**
 	 * Task 從 Not Check Out -> Check Out path: CheckOutTask.do class:
 	 * CheckOutTaskAction Test class: CheckOutTaskActionTest

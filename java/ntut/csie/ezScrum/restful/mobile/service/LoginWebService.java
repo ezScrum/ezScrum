@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.service;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;

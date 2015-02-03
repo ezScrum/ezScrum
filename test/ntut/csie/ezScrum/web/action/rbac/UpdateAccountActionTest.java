@@ -65,7 +65,6 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	super.tearDown();    	
     	
     	// ============= release ==============
-    	(new AccountMapper()).releaseManager();
     	ini = null;
     	copyProject = null;
     	this.CP = null;
@@ -85,7 +84,7 @@ public class UpdateAccountActionTest extends MockStrutsTestCase {
     	// User Information
     	String postfix = "_update";
     	AccountObject account = CA.getAccountList().get(0);
-    	String userId = account.getId();		// 取得第一筆 Account ID
+    	String userId = account.getId() + "";		// 取得第一筆 Account ID
     	String userAccount = account.getUsername();		// 取得第一筆 Account ID
     	String userPw = account.getPassword() + postfix;
     	String userMail = "modify@test.com";

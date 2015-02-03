@@ -99,7 +99,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
-		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
+		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 
@@ -149,11 +149,11 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
-		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
+		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將story移到done
-		sprintBacklogLogic.doneIssue(addStoryToSprint.getStories().get(0).getIssueID(), addStoryToSprint.getStories().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.closeStory(addStoryToSprint.getStories().get(0).getIssueID(), "", "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());
@@ -215,7 +215,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
-		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
+		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 
@@ -258,11 +258,11 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
-		LinkedHashMap<Date, Double> ideal = taskBoard.getstoryIdealPointMap();
+		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將task拉到done
-		sprintBacklogLogic.doneIssue(addTaskToStory.getTasksId().get(0), addTaskToStory.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.closeTask(addTaskToStory.getTasksId().get(0), addTaskToStory.getTasks().get(0).getName(), "", 0, "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());

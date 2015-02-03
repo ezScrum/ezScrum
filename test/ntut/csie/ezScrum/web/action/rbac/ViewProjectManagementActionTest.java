@@ -55,8 +55,6 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
     	super.tearDown();    	
     	
     	// ============= release ==============
-//    	AccountFactory.releaseManager();
-    	(new AccountMapper()).releaseManager();
     	ini = null;
     	this.CA = null;
     	this.config = null;

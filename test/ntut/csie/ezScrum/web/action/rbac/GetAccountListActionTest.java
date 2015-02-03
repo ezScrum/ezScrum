@@ -69,8 +69,6 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		// ============= release ==============
-		// AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		copyProject = null;
 		this.CP = null;
