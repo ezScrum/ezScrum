@@ -60,8 +60,8 @@ public class SprintBacklogMapper {
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
 			mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
+			initSprintInformation();
 		}
-		initSprintInformation();
 		initConfig();
 	}
 

@@ -41,7 +41,7 @@ public class SprintBacklogHelper {
 		mIProject = project;
 		mUserSession = userSession;
 		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
-				null);
+				"-1");
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
