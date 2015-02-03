@@ -123,7 +123,7 @@ public class RemainingWorkReport {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId));
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
-		Map<Long, IIssue[]> TaskMap = backlog.getTasksMap();
+		Map<Long, ArrayList<TaskObject>> TaskMap = backlog.getTasksMap();
 		Date timeNode = new Date(mChartStartDate.getTime());
 		while (timeNode.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
@@ -138,7 +138,7 @@ public class RemainingWorkReport {
 		}
 	}
 
-	private void countStroyStatusChange(List<IIssue> stories, Map<Long, IIssue[]> taskMap, Date date) {
+	private void countStroyStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
 		int Donecount = 0, AssignCount = 0, NonCount = 0;
 		Date dateKey = new Date(date.getTime());
 		if (date.getTime() != mToday.getTime()) {
@@ -155,19 +155,19 @@ public class RemainingWorkReport {
 		}
 		boolean flag = false;
 		for (IIssue story : stories) {
-			IIssue[] tasks = taskMap.get(story.getIssueID());
+			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
 			// skip the story that without any task
 			if (tasks == null) {
 				NonCount++; // story count +1
 				continue;
 			}
-			for (IIssue task : tasks) {
+			for (TaskObject task : tasks) {
 				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
 					Donecount++;
 					flag = true;
 					break;
-				} else if (task.getDateStatus(date) == ITSEnum.ASSIGNED_STATUS
-				        || task.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
+				} else if (task.getStatus(date) == TaskObject.STATUS_CHECK
+				        || task.getStatus(date) == TaskObject.STATUS_DONE) {
 					AssignCount++;
 					flag = true;
 					break;
