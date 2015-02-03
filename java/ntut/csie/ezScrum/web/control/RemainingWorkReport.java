@@ -57,15 +57,15 @@ public class RemainingWorkReport {
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
-		if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			init(sprintid);
-			createTaskDataBySprint(sprintid);
-		} else if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			init(sprintid);
-			createStoryDataBySprint(sprintid);
+		if (mCategory.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
+			init(mSprintId);
+			createTaskDataBySprint();
+		} else if (mCategory.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
+			init(mSprintId);
+			createStoryDataBySprint();
 		} else {
 			init();
-			createData();
+			createIssueData();
 		}
 		drawGraph();
 	}
@@ -78,15 +78,15 @@ public class RemainingWorkReport {
 		mCategory = category;
 		mToday = setDate;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
-		if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			init(sprintid);
-			createTaskDataBySprint(sprintid);
-		} else if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			init(sprintid);
-			createStoryDataBySprint(sprintid);
+		if (mCategory.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
+			init(mSprintId);
+			createTaskDataBySprint();
+		} else if (mCategory.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
+			init(mSprintId);
+			createStoryDataBySprint();
 		} else {
 			init();
-			createData();
+			createIssueData();
 		}
 		drawGraph();
 	}
@@ -119,90 +119,25 @@ public class RemainingWorkReport {
 		nowExistReport();
 	}
 
-	private void createStoryDataBySprint(int sprintid) {
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId));
-		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		List<IIssue> stories = sprintBacklogLogic.getStories();
-		Map<Long, ArrayList<TaskObject>> TaskMap = backlog.getTasksMap();
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mChartEndDate.getTime()) {
+	private void createTaskDataBySprint() {
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId))).getSprintBacklogMapper();
+		ArrayList<TaskObject> tasks = sprintBacklogMapper.getAllTasks();
+		Date timeStamp = new Date(mChartStartDate.getTime());
+		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
-			if ((mToday.getDate() == timeNode.getDate()) &&
-			        (Math.abs(mToday.getTime() - timeNode.getTime()) <= mOneDay)) {
-				countStroyStatusChange(stories, TaskMap, mToday);
+			if ((mToday.getDate() == timeStamp.getDate()) &&
+			        (Math.abs(mToday.getTime() - timeStamp.getTime()) <= mOneDay)) {
+				countTaskStatusChange(tasks, mToday);
 				break;
 			} else {
-				countStroyStatusChange(stories, TaskMap, timeNode);
+				countTaskStatusChange(tasks, timeStamp);
 			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
+			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
 		}
 	}
 
-	private void countStroyStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
-		int Donecount = 0, AssignCount = 0, NonCount = 0;
-		Date dateKey = new Date(date.getTime());
-		if (date.getTime() != mToday.getTime()) {
-			// 當日期不為當天時，要做處理
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateFormat = format.format(date);
-			try {
-				date = format.parse(dateFormat);	// 去除分秒格式
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
-			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
-		}
-		boolean flag = false;
-		for (IIssue story : stories) {
-			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
-			// skip the story that without any task
-			if (tasks == null) {
-				NonCount++; // story count +1
-				continue;
-			}
-			for (TaskObject task : tasks) {
-				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
-					Donecount++;
-					flag = true;
-					break;
-				} else if (task.getStatus(date) == TaskObject.STATUS_CHECK
-				        || task.getStatus(date) == TaskObject.STATUS_DONE) {
-					AssignCount++;
-					flag = true;
-					break;
-				}
-			}
-			if (!flag) NonCount++;
-			flag = false;
-		}
-		mNonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
-		mDoneMap.put(dateKey, Donecount);
-		mAssignedMap.put(dateKey, AssignCount + Donecount);
-		saveQuantity(NonCount, Donecount, AssignCount);
-
-	}
-
-	private void createTaskDataBySprint(int sprintId) {
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(sprintId))).getSprintBacklogMapper();
-		ArrayList<TaskObject> tasks = backlog.getAllTasks();
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mChartEndDate.getTime()) {
-			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
-			if ((mToday.getDate() == timeNode.getDate()) &&
-			        (Math.abs(mToday.getTime() - timeNode.getTime()) <= mOneDay)) {
-				countStatusChange(tasks, mToday);
-				break;
-			} else {
-				countStatusChange(tasks, timeNode);
-			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
-		}
-	}
-
-	private void countStatusChange(ArrayList<TaskObject> tasks, Date date) {
-		int Donecount = 0, AssignCount = 0, NonCount = 0;
-		Date dateKey = new Date(date.getTime());
+	private void countTaskStatusChange(ArrayList<TaskObject> tasks, Date date) {
+		int doneCount = 0, assignCount = 0, nonCount = 0;
 		if (date.getTime() != mToday.getTime()) {
 			// 當日期不為當天時，要做處理
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
@@ -218,26 +153,89 @@ public class RemainingWorkReport {
 			for (TaskObject task : tasks) {
 				switch (task.getStatus(date)) {
 					case TaskObject.STATUS_UNCHECK:
-						NonCount++;
+						nonCount++;
 						break;
 					case TaskObject.STATUS_CHECK:
-						AssignCount++;
+						assignCount++;
 						break;
 					case TaskObject.STATUS_DONE:
-						Donecount++;
+						doneCount++;
 						break;
 					default:
 						break;
 				}
 			}
 		}
-		mNonAssignMap.put(dateKey, NonCount + Donecount + AssignCount);
-		mDoneMap.put(dateKey, Donecount);
-		mAssignedMap.put(dateKey, AssignCount + Donecount);
-		saveQuantity(NonCount, Donecount, AssignCount);
+		Date dateKey = new Date(date.getTime());
+		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);
+		mDoneMap.put(dateKey, doneCount);
+		mAssignedMap.put(dateKey, assignCount + doneCount);
+		saveQuantity(nonCount, doneCount, assignCount);
+	}
+	
+	private void createStoryDataBySprint() {
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId));
+		SprintBacklogMapper sprintBacklog = sprintBacklogLogic.getSprintBacklogMapper();
+		List<IIssue> stories = sprintBacklogLogic.getStories();
+		Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklog.getTasksMap();
+		Date timeStamp = new Date(mChartStartDate.getTime());
+		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
+			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
+			if ((mToday.getDate() == timeStamp.getDate()) &&
+			        (Math.abs(mToday.getTime() - timeStamp.getTime()) <= mOneDay)) {
+				countStroyStatusChange(stories, taskMap, mToday);
+				break;
+			} else {
+				countStroyStatusChange(stories, taskMap, timeStamp);
+			}
+			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
+		}
 	}
 
-	private void createData() {
+	private void countStroyStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
+		int doneCount = 0, assignCount = 0, nonCount = 0;
+		if (date.getTime() != mToday.getTime()) {
+			// 當日期不為當天時，要做處理
+			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+			String dateFormat = format.format(date);
+			try {
+				date = format.parse(dateFormat);	// 去除分秒格式
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
+		}
+		boolean flag = false;
+		for (IIssue story : stories) {
+			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
+			// skip the story that without any task
+			if (tasks == null) {
+				nonCount++; // story count +1
+				continue;
+			}
+			for (TaskObject task : tasks) {
+				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
+					doneCount++;
+					flag = true;
+					break;
+				} else if (task.getStatus(date) == TaskObject.STATUS_CHECK
+				        || task.getStatus(date) == TaskObject.STATUS_DONE) {
+					assignCount++;
+					flag = true;
+					break;
+				}
+			}
+			if (!flag) nonCount++;
+			flag = false;
+		}
+		Date dateKey = new Date(date.getTime());
+		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);
+		mDoneMap.put(dateKey, doneCount);
+		mAssignedMap.put(dateKey, assignCount + doneCount);
+		saveQuantity(nonCount, doneCount, assignCount);
+	}
+	
+	private void createIssueData() {
 		mIITS = ITSServiceFactory.getInstance().getService(
 		        ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		mIITS.openConnect();
@@ -249,19 +247,56 @@ public class RemainingWorkReport {
 				tempIssues.add(issue);
 			}
 		}
-		Date timeNode = new Date(mChartStartDate.getTime());
-		while (timeNode.getTime() <= mToday.getTime()) {
+		Date timeStamp = new Date(mChartStartDate.getTime());
+		while (timeStamp.getTime() <= mToday.getTime()) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateString = format.format(timeNode);
+			String dateString = format.format(timeStamp);
 			Date date;
 			try {
 				date = format.parse(dateString);
-				countStatusChange(tempIssues, date);
+				countIssueStatusChange(tempIssues, date);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			timeNode = new Date(timeNode.getTime() + mInterval * mOneDay);
+			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
 		}
+	}
+	
+	private void countIssueStatusChange(List<IIssue> issues, Date date) {
+		int doneCount = 0, assignCount = 0, nonCount = 0;
+		if (date.getTime() != mToday.getTime()) {
+			// 當日期不為當天時，要做處理
+			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+			String dateFormat = format.format(date);
+			try {
+				date = format.parse(dateFormat);	// 去除分秒格式
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
+		}
+		if (issues != null) {
+			for (IIssue issue : issues) {
+				switch (issue.getDateStatus(date)) {
+					case ITSEnum.NEW_STATUS:
+						nonCount++;
+						break;
+					case ITSEnum.ASSIGNED_STATUS:
+						assignCount++;
+						break;
+					case ITSEnum.CLOSED_STATUS:
+						doneCount++;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		Date dateKey = new Date(date.getTime());
+		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);
+		mDoneMap.put(dateKey, doneCount);
+		mAssignedMap.put(dateKey, assignCount + doneCount);
+		saveQuantity(nonCount, doneCount, assignCount);
 	}
 
 	private void saveQuantity(int nonAssign, int done, int Assigned) {

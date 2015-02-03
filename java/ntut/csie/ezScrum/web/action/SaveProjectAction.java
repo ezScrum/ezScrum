@@ -51,8 +51,13 @@ public class SaveProjectAction extends Action {
 		String displayName = request.getParameter("DisplayName");
 		String comment = request.getParameter("Comment");
 		String manager = request.getParameter("ProjectManager");
-		long attachFileSize = Long.parseLong(request.getParameter("AttachFileSize"));
-
+		String attachFileSizeString = request.getParameter("AttachFileSize");
+		long attachFileSize;
+		try {
+			attachFileSize = Long.parseLong(attachFileSizeString);
+		} catch (Exception e) {
+			attachFileSize = 0;
+		}
 		if (attachFileSize == 0) attachFileSize = 2;
 		if (comment == null) comment = "";
 		if (manager == null) manager = "";
