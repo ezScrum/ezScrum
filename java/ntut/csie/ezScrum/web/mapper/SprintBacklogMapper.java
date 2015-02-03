@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -28,7 +27,6 @@ public class SprintBacklogMapper {
 	private static Log log = LogFactory.getLog(SprintBacklogMapper.class);
 	private int mSprintPlanId = 0;
 	private IProject mIProject;
-	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
 	private Date mEndDate;
@@ -412,6 +410,7 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
+		mUpdateFlag = true;
 	}
 	
 	/**

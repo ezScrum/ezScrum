@@ -555,22 +555,18 @@ public class TaskObjectTest {
 		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.REMAIN));
 		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
 		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
+		
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
-		assertEquals(handler.getUsername(),
-				handlerJson.getString(AccountEnum.USERNAME));
-		assertEquals(handler.getEmail(),
-				handlerJson.getString(AccountEnum.EMAIL));
-		assertEquals(handler.getNickName(),
-				handlerJson.getString(AccountEnum.NICK_NAME));
+		assertEquals(handler.getUsername(), handlerJson.getString(AccountEnum.USERNAME));
+		assertEquals(handler.getEmail(), handlerJson.getString(AccountEnum.EMAIL));
+		assertEquals(handler.getNickName(), handlerJson.getString(AccountEnum.NICK_NAME));
+		
 		JSONObject partnerJosn = json.getJSONArray("partners").getJSONObject(0);
 		assertEquals(partner.getId(), partnerJosn.getLong(AccountEnum.ID));
-		assertEquals(partner.getUsername(),
-				partnerJosn.getString(AccountEnum.USERNAME));
-		assertEquals(partner.getEmail(),
-				partnerJosn.getString(AccountEnum.EMAIL));
-		assertEquals(partner.getNickName(),
-				partnerJosn.getString(AccountEnum.NICK_NAME));
+		assertEquals(partner.getUsername(), partnerJosn.getString(AccountEnum.USERNAME));
+		assertEquals(partner.getEmail(), partnerJosn.getString(AccountEnum.EMAIL));
+		assertEquals(partner.getNickName(), partnerJosn.getString(AccountEnum.NICK_NAME));
 	}
 
 	/**
@@ -579,9 +575,7 @@ public class TaskObjectTest {
 	@Test
 	public void testSave_CreateANewTask() {
 		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setActual(0);
-
+		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
