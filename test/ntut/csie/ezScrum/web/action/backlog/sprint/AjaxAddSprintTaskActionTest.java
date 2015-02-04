@@ -113,8 +113,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
-							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
+		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(1)	// task = story id + 1
+							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(1)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Estimate>").append(expectedTaskEstimation)
 							.append("</Estimate><Actual>").append(0)
@@ -163,8 +163,8 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(2)	// task = story id + 1
-							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)	// task = story id + 1
+		expectedResponseText.append("<AddNewTask><Result>true</Result><Task><Id>").append(1)	// task = story id + 1
+							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(1)	// task = story id + 1
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Estimate>").append(0)
 							.append("</Estimate><Actual>").append("0")

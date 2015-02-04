@@ -255,7 +255,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Importance\":\"\"")
 							.append(",\"Status\":\"" + TaskStatus + "\"")
 							.append(",\"Notes\":\"" + TaskNotes + "\"")
-							.append(",\"Link\":" + TaskLink)
+							.append(",\"Link\":\"" + TaskLink + "\"")
 							.append(",\"SprintID\":\"\"")
 							.append(",\"ReleaseID\":\"\"")
 							.append(",\"dateList\":[");

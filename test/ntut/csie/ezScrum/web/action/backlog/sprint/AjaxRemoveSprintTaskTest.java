@@ -172,7 +172,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("<Tasks><Task><Id>").append(task.getId()).append("</Id>")
-							.append("<Link></Link>")
+							.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getId()).append("</Link>")
 							.append("<Name>").append(task.getName()).append("</Name>")
 							.append("<Status>").append("new").append("</Status>")
 							.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")

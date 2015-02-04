@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
+import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -30,11 +30,11 @@ public class AjaxRemoveSprintTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		//  get session info
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		//  get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		String sprintId = request.getParameter("sprintID");
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		long parentId = Long.parseLong(request.getParameter("parentID"));
 

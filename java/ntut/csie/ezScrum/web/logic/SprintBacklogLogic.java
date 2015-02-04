@@ -82,9 +82,10 @@ public class SprintBacklogLogic {
 			} else {
 				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
 						mUserSession, sprintId);
-			}			
+			}
 		} catch (Exception e) {
-			sprintBacklogMapper = null;
+			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+					mUserSession);
 		}
 		return sprintBacklogMapper;
 	}

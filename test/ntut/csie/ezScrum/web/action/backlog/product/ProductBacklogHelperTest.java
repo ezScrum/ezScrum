@@ -380,7 +380,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		this.CPB.exe();	// 新增十筆 Story
 		
 		CreateSprint CS = new CreateSprint(1, this.CP);
-		CS.exe();		// 新增一 Sprint
+		CS.exe();		// 新增一 Sprint 
 		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), configuration.getUserSession(), null);
 		
