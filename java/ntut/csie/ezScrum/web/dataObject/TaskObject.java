@@ -250,7 +250,7 @@ public class TaskObject implements IBaseObject {
 
 	public double getRemains(Date date) {
 		long lastSecondOfTheDate = getLastSecond(date);
-		double remains = 0.0;
+		double remains = mRemains;
 		ArrayList<HistoryObject> histories = getHistories();
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();

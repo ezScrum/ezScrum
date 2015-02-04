@@ -317,7 +317,7 @@ public class HistoryObject implements IBaseObject {
 				.put(HistoryEnum.ISSUE_TYPE, getIssueType())
 				.put(HistoryEnum.HISTORY_TYPE, getHistoryType())
 				.put(HistoryEnum.DESCRIPTION, getDescription())
-				.put(HistoryEnum.MODIFIED_TIME, getCreateTime());
+				.put(HistoryEnum.CREATE_TIME, getCreateTime());
 		return object;
 	}
 }

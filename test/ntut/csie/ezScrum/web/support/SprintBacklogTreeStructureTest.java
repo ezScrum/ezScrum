@@ -66,32 +66,7 @@ public class SprintBacklogTreeStructureTest {
 	// Sprint Date 沒有跳過假日
 	@Test
 	public void testRemainingBySprintDaysCase_1() {
-//		// Remaining Hours History 1
-//		Element history1 = new Element(ScrumEnum.HISTORY_TAG);
-//		history1.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100712171219");
-//		Element remains1 = new Element(ScrumEnum.REMAINS);
-//		remains1.setText("5");
-//		history1.addContent(remains1);
-//		// Remaining Hours History 2
-//		Element history2 = new Element(ScrumEnum.HISTORY_TAG);
-//		history2.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100713171219");
-//		Element remains2 = new Element(ScrumEnum.REMAINS);
-//		remains2.setText("0");
-//		history2.addContent(remains2);
-//		// 加入 History root
-//		mRoot.addContent(history1);
-//		mRoot.addContent(history2);
-//		// 歷史紀錄的時間
-//		Date hisDate1 = DateUtil.dayFillter(
-//				history1.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-//				DateUtil._16DIGIT_DATE_TIME_2);
-//		Date hisDate2 = DateUtil.dayFillter(
-//				history2.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-//				DateUtil._16DIGIT_DATE_TIME_2);
-//		// 將歷史紀錄設定至 Task
-//		mTask.setTagContent(mRoot);
-//		assertEquals("5", mTask.getTagValue(ScrumEnum.REMAINS, hisDate1));
-//		assertEquals("0", mTask.getTagValue(ScrumEnum.REMAINS, hisDate2));
+		
 		mSprintBacklogLogic.calculateSprintBacklogDateList(new Date(
 				"2010/07/12"), 5);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();

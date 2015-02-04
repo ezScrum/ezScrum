@@ -32,7 +32,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 				historyInfo.getHistoryType());
 		valueSet.addInsertValue(HistoryEnum.OLD_VALUE, historyInfo.getOldValue());
 		valueSet.addInsertValue(HistoryEnum.NEW_VALUE, historyInfo.getNewValue());
-		valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+		valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 				historyInfo.getCreateTime());
 		String query = valueSet.getInsertQuery();
 
@@ -79,6 +79,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 		valueSet.addTableName(HistoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(HistoryEnum.ISSUE_ID, issueId);
 		valueSet.addEqualCondition(HistoryEnum.ISSUE_TYPE, issueType);
+		valueSet.setOrderBy(HistoryEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
@@ -111,7 +112,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 				.setHistoryType(result.getInt(HistoryEnum.HISTORY_TYPE))
 				.setOldValue(result.getString(HistoryEnum.OLD_VALUE))
 				.setNewValue(result.getString(HistoryEnum.NEW_VALUE))
-				.setModifiedTime(result.getLong(HistoryEnum.MODIFIED_TIME));
+				.setModifiedTime(result.getLong(HistoryEnum.CREATE_TIME));
 		return history;
 	}
 }

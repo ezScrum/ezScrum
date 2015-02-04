@@ -9,5 +9,5 @@ public class HistoryEnum {
 	public static final String DESCRIPTION = "description";
 	public static final String OLD_VALUE = "old_value";
 	public static final String NEW_VALUE = "new_value";
-	public static final String MODIFIED_TIME = "modified_time";
+	public static final String CREATE_TIME = "create_time";
 }
