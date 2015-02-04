@@ -79,14 +79,14 @@ public class SprintBacklogTreeStructure {
 	}
 
 	// 根據日期設定 Task 的 Remaining Hours
-	private void SetRemainByDate(TaskObject task) {
+	private void SetRemainsByDate(TaskObject task) {
 		String value = "";
 		// 使用時間來取得 Remaining Hours 然後用 DateColumns 來當作 Key
 		for (int i = 0; dataList.size() > i; i++) {
 			// 超過今天日期的則不計算
 			if (dataList.get(i).getTime() <= new Date().getTime()) {
 				// remain
-				value = getTaskPoint(dataList.get(i), task);
+				value = getTaskRemains(dataList.get(i), task);
 			} else {
 				value = "";
 			}
@@ -98,7 +98,7 @@ public class SprintBacklogTreeStructure {
 	}
 
 	// 取得當天 Task 的時數
-	private String getTaskPoint(Date date, TaskObject task) {
+	private String getTaskRemains(Date date, TaskObject task) {
 		double point = 0;
 		try {
 			point = task.getRemains(date);
@@ -114,7 +114,7 @@ public class SprintBacklogTreeStructure {
 			for (TaskObject task : tasks) {
 				SprintBacklogTreeStructure taskStructure = new SprintBacklogTreeStructure(
 						task, dataList);
-				taskStructure.SetRemainByDate(task);
+				taskStructure.SetRemainsByDate(task);
 				children.add(taskStructure);
 				taskStructure = null; // release
 			}

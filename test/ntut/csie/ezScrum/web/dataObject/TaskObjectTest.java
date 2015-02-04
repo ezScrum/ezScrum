@@ -29,37 +29,40 @@ import org.junit.Test;
  */
 public class TaskObjectTest {
 
-	private Configuration mConfig = null;
-	private CreateProject CP = null;
-
+	private Configuration mConfiguration = null;
+	private CreateProject mCP = null;
 	private final static int PROJECT_COUNT = 1;
+	private long mProjectId = -1;
 
 	@Before
 	public void setUp() throws Exception {
-		mConfig = new Configuration();
-		mConfig.setTestMode(true);
-		mConfig.save();
+		mConfiguration = new Configuration();
+		mConfiguration.setTestMode(true);
+		mConfiguration.save();
 
-		InitialSQL ini = new InitialSQL(mConfig);
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();
 
-		CP = new CreateProject(PROJECT_COUNT);
-		CP.exeCreate();
+		mCP = new CreateProject(PROJECT_COUNT);
+		mCP.exeCreate();
+		
+		mProjectId = mCP.getAllProjects().get(0).getId();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();
-		mConfig = null;
+		mConfiguration = null;
 	}
 
 	@Test
 	public void testSetPartnersId() {
 		long TEST_TASK_ID = 1;
+		long projectId = mCP.getAllProjects().get(0).getId();
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(projectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before testSetPartnersId
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
@@ -80,8 +83,8 @@ public class TaskObjectTest {
 	public void testSetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before testSetPartnersId
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
@@ -104,8 +107,8 @@ public class TaskObjectTest {
 	public void testSetPartnersId_WithTwoPartnersAddOneAndRemoveOnePartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// set two partners
 		ArrayList<Long> oldPartnersId = new ArrayList<Long>();
@@ -130,8 +133,8 @@ public class TaskObjectTest {
 	public void testAddPartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check status before add partner
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
@@ -149,8 +152,8 @@ public class TaskObjectTest {
 	public void testAddPartner_WithExistPartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		task.addPartner(1);
 		// check status before test
@@ -170,8 +173,8 @@ public class TaskObjectTest {
 	public void testRemovePartner() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// add a partner
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
@@ -191,8 +194,8 @@ public class TaskObjectTest {
 	public void testRemovePartner_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// add two partners
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
@@ -213,10 +216,9 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetHandler_UnassignHandler() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// testGetHandler
 		assertEquals(null, task.getHandler());
@@ -224,7 +226,6 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetHandler() {
-		long TEST_TASK_ID = 1;
 		String USERNAME = "test_username";
 		String PASSWORD = "test_password";
 		boolean ENABLE = true;
@@ -233,8 +234,8 @@ public class TaskObjectTest {
 		account.setPassword(PASSWORD).setEnable(ENABLE);
 		account.save();
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0)
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0)
 				.setHandlerId(account.getId());
 		task.save();
 		// testGetHandler
@@ -245,8 +246,8 @@ public class TaskObjectTest {
 	public void testGetPartnersId() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check status before get partners id
 		List<Long> partnersId = task.getPartnersId();
@@ -264,8 +265,8 @@ public class TaskObjectTest {
 	public void testGetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check status before get partners id
 		List<Long> partnersId = task.getPartnersId();
@@ -288,8 +289,8 @@ public class TaskObjectTest {
 		String PASSWORD = "test_password";
 		boolean ENABLE = true;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before add a partner
 		assertEquals(0, task.getPartners().size());
@@ -312,8 +313,8 @@ public class TaskObjectTest {
 		String PASSWORD = "test_password";
 		boolean ENABLE = true;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before add partners
 		assertEquals(0, task.getPartners().size());
@@ -341,8 +342,8 @@ public class TaskObjectTest {
 		String PASSWORD = "test_password";
 		boolean ENABLE = true;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before add a partner get partners username
 		assertEquals("", task.getPartnersUsername());
@@ -364,8 +365,8 @@ public class TaskObjectTest {
 		String PASSWORD = "test_password";
 		boolean ENABLE = true;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before add partners
 		assertEquals("", task.getPartnersUsername());
@@ -728,10 +729,9 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetStatus_WithSpecificDate() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		Date specificDate = new Date(2015, 2, 4);
@@ -752,10 +752,9 @@ public class TaskObjectTest {
 	
 	@Test
 	public void testGetStatus_WithSpecificDateChangeStatusTwoTimes() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		Date specificDate = new Date(2015, 2, 4);
@@ -789,10 +788,9 @@ public class TaskObjectTest {
 	 */
 	@Test
 	public void testGetStatusString() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		assertEquals("new", task.getStatusString());
@@ -809,10 +807,9 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetDoneTime() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		assertEquals(0, task.getDoneTime());
@@ -832,10 +829,9 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetDoneTime_WithTwoDoneHistoriesInSameDay() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		assertEquals(0, task.getDoneTime());
@@ -865,10 +861,9 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetDoneTime_WithTwoDoneHistoriesInDifferentDay() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		assertEquals(0, task.getDoneTime());
@@ -898,14 +893,13 @@ public class TaskObjectTest {
 
 	@Test
 	public void testGetRemains_WithSpecificDate() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		Date specificDate = new Date(2015, 2, 4);
-		assertEquals(0, task.getRemains(specificDate));
+		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history
 		Date changeStatusDate = new Date(2015, 2, 4, 13, 14, 1);
 		long changeStatusTime = changeStatusDate.getTime();
@@ -922,14 +916,13 @@ public class TaskObjectTest {
 	
 	@Test
 	public void testGetRemains_WithSpecificDateChangeRemainsTwoTimes() {
-		long TEST_TASK_ID = 1;
 		// create a task
-		TaskObject task = new TaskObject(TEST_TASK_ID);
-		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check task status before test
 		Date specificDate = new Date(2015, 2, 4);
-		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history1
 		Date changeRemainsDate1 = new Date(2015, 2, 4, 13, 14, 1);
 		long changeRemainsTime1 = changeRemainsDate1.getTime();
@@ -952,5 +945,72 @@ public class TaskObjectTest {
 		history2.save();
 		// check task remains after add two change remains histories
 		assertEquals(8, task.getRemains(specificDate));
+	}
+	
+	@Test
+	public void testGetRemains_WithChangeRemainsInFiveDates() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
+		task.save();
+		// check task status before test
+		Date date1 = new Date(2015, 2, 4);
+		assertEquals(10, task.getRemains(date1));
+		// create a update task remains history1
+		Date changeRemainsDate1 = new Date(2015, 2, 4);
+		long changeRemainsTime1 = changeRemainsDate1.getTime();
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(10))
+				.setNewValue(String.valueOf(10))
+				.setModifiedTime(changeRemainsTime1);
+		history1.save();
+		// create a update task remains history2
+		Date changeRemainsDate2 = new Date(2015, 2, 5);
+		long changeRemainsTime2 = changeRemainsDate2.getTime();
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(10))
+				.setNewValue(String.valueOf(9))
+				.setModifiedTime(changeRemainsTime2);
+		history2.save();
+		// create a update task remains history3
+		Date changeRemainsDate3 = new Date(2015, 2, 6);
+		long changeRemainsTime3 = changeRemainsDate3.getTime();
+		HistoryObject history3 = new HistoryObject();
+		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(9))
+				.setNewValue(String.valueOf(8))
+				.setModifiedTime(changeRemainsTime3);
+		history3.save();
+		// create a update task remains history4
+		Date changeRemainsDate4 = new Date(2015, 2, 7);
+		long changeRemainsTime4 = changeRemainsDate4.getTime();
+		HistoryObject history4 = new HistoryObject();
+		history4.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(8))
+				.setNewValue(String.valueOf(7))
+				.setModifiedTime(changeRemainsTime4);
+		history4.save();
+		// create a update task remains history5
+		Date changeRemainsDate5 = new Date(2015, 2, 8);
+		long changeRemainsTime5 = changeRemainsDate5.getTime();
+		HistoryObject history5 = new HistoryObject();
+		history5.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(7))
+				.setNewValue(String.valueOf(6))
+				.setModifiedTime(changeRemainsTime5);
+		history5.save();
+		// check task remains after add five change remains histories
+		assertEquals(10, task.getRemains(changeRemainsDate1));
+		assertEquals(9, task.getRemains(changeRemainsDate2));
+		assertEquals(8, task.getRemains(changeRemainsDate3));
+		assertEquals(7, task.getRemains(changeRemainsDate4));
+		assertEquals(6, task.getRemains(changeRemainsDate5));
 	}
 }

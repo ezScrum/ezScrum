@@ -42,8 +42,11 @@ public class SprintBacklogTreeStructureTest {
 		mStory.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 		mHandler = new AccountObject("account_handler");
 		mHandler.save();
+		// create a task
 		mTask = new TaskObject(projectId);
 		mTask.setHandlerId(mHandler.getId());
+		mTask.setEstimate(10);
+		mTask.save();
 		mSprintBacklogLogic = new SprintBacklogLogic();
 	}
 
