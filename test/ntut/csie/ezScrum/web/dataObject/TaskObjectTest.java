@@ -957,60 +957,50 @@ public class TaskObjectTest {
 		Date date1 = new Date(2015, 2, 4);
 		assertEquals(10, task.getRemains(date1));
 		// create a update task remains history1
-		Date changeRemainsDate1 = new Date(2015, 2, 4);
+		Date changeRemainsDate1 = new Date(2015, 2, 5);
 		long changeRemainsTime1 = changeRemainsDate1.getTime();
 		HistoryObject history1 = new HistoryObject();
 		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(10))
-				.setNewValue(String.valueOf(10))
+				.setNewValue(String.valueOf(9))
 				.setModifiedTime(changeRemainsTime1);
 		history1.save();
 		// create a update task remains history2
-		Date changeRemainsDate2 = new Date(2015, 2, 5);
+		Date changeRemainsDate2 = new Date(2015, 2, 6);
 		long changeRemainsTime2 = changeRemainsDate2.getTime();
 		HistoryObject history2 = new HistoryObject();
 		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(10))
-				.setNewValue(String.valueOf(9))
+				.setOldValue(String.valueOf(9))
+				.setNewValue(String.valueOf(8))
 				.setModifiedTime(changeRemainsTime2);
 		history2.save();
 		// create a update task remains history3
-		Date changeRemainsDate3 = new Date(2015, 2, 6);
+		Date changeRemainsDate3 = new Date(2015, 2, 7);
 		long changeRemainsTime3 = changeRemainsDate3.getTime();
 		HistoryObject history3 = new HistoryObject();
 		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(9))
-				.setNewValue(String.valueOf(8))
+				.setOldValue(String.valueOf(8))
+				.setNewValue(String.valueOf(7))
 				.setModifiedTime(changeRemainsTime3);
 		history3.save();
 		// create a update task remains history4
-		Date changeRemainsDate4 = new Date(2015, 2, 7);
+		Date changeRemainsDate4 = new Date(2015, 2, 8);
 		long changeRemainsTime4 = changeRemainsDate4.getTime();
 		HistoryObject history4 = new HistoryObject();
 		history4.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(8))
-				.setNewValue(String.valueOf(7))
-				.setModifiedTime(changeRemainsTime4);
-		history4.save();
-		// create a update task remains history5
-		Date changeRemainsDate5 = new Date(2015, 2, 8);
-		long changeRemainsTime5 = changeRemainsDate5.getTime();
-		HistoryObject history5 = new HistoryObject();
-		history5.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(7))
 				.setNewValue(String.valueOf(6))
-				.setModifiedTime(changeRemainsTime5);
-		history5.save();
+				.setModifiedTime(changeRemainsTime4);
+		history4.save();
 		// check task remains after add five change remains histories
-		assertEquals(10, task.getRemains(changeRemainsDate1));
-		assertEquals(9, task.getRemains(changeRemainsDate2));
-		assertEquals(8, task.getRemains(changeRemainsDate3));
-		assertEquals(7, task.getRemains(changeRemainsDate4));
-		assertEquals(6, task.getRemains(changeRemainsDate5));
+		assertEquals(10, task.getRemains(date1));
+		assertEquals(9, task.getRemains(changeRemainsDate1));
+		assertEquals(8, task.getRemains(changeRemainsDate2));
+		assertEquals(7, task.getRemains(changeRemainsDate3));
+		assertEquals(6, task.getRemains(changeRemainsDate4));
 	}
 }
