@@ -32,8 +32,8 @@ public class SprintBacklogTreeStructure {
 	// Task of Story is a leaf
 	List<SprintBacklogTreeStructure> children = null;
 
-	private ArrayList<Date> mDates = null;
-	private HashMap<String, String> mDateToHourMap = new HashMap<String, String>();
+	private ArrayList<Date> dataList = null;
+	private HashMap<String, String> dateToHourMap = new HashMap<String, String>();
 
 	public SprintBacklogTreeStructure() {
 		// initial empty function
@@ -60,7 +60,7 @@ public class SprintBacklogTreeStructure {
 		id = Long.toString(story.getIssueID());
 		children = new ArrayList<SprintBacklogTreeStructure>();
 		// 設定 Sprint 時間
-		mDates = dates;
+		dataList = dates;
 		// 將 child 建構成樹狀
 		TranslateTaskSturct(tasks);
 	}
@@ -75,25 +75,25 @@ public class SprintBacklogTreeStructure {
 		Notes = task.getNotes();
 		leaf = true;
 		cls = "file";
-		mDates = dates;
+		dataList = dates;
 	}
 
 	// 根據日期設定 Task 的 Remaining Hours
 	private void SetRemainByDate(TaskObject task) {
 		String value = "";
 		// 使用時間來取得 Remaining Hours 然後用 DateColumns 來當作 Key
-		for (int i = 0; mDates.size() > i; i++) {
+		for (int i = 0; dataList.size() > i; i++) {
 			// 超過今天日期的則不計算
-			if (mDates.get(i).getTime() <= new Date().getTime()) {
+			if (dataList.get(i).getTime() <= new Date().getTime()) {
 				// remain
-				value = getTaskPoint(mDates.get(i), task);
+				value = getTaskPoint(dataList.get(i), task);
 			} else {
 				value = "";
 			}
 			// 以日期當作 Key
 			// this.dateToHourMap.put(this.currentCols.get(i).GetColumnName(), value);
 			// 以 TreeGrid Column 當作 Key
-			mDateToHourMap.put("Date_" + String.valueOf(i + 1), value);
+			dateToHourMap.put("Date_" + String.valueOf(i + 1), value);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class SprintBacklogTreeStructure {
 		if ((tasks != null) && (tasks.size() > 0)) {
 			for (TaskObject task : tasks) {
 				SprintBacklogTreeStructure taskStructure = new SprintBacklogTreeStructure(
-						task, mDates);
+						task, dataList);
 				taskStructure.SetRemainByDate(task);
 				children.add(taskStructure);
 				taskStructure = null; // release
@@ -140,6 +140,6 @@ public class SprintBacklogTreeStructure {
 	}
 
 	public HashMap<String, String> GetDatetoRemainMap() {
-		return mDateToHourMap;
+		return dateToHourMap;
 	}
 }
