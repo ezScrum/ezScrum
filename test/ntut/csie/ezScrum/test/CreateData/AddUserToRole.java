@@ -121,9 +121,6 @@ public class AddUserToRole {
 	 * 將目前 Account 指定為系統管理員
 	 */
 	public void setNowAccountIsSystem() {
-//		IAccountManager am = AccountFactory.getManager();
-//		UserObject account = am.getAccount(ScrumEnum.SCRUMROLE_ADMIN);
-		
 		this.theAccount = new AccountMapper().getAccount("admin");;
 	}
 
@@ -136,7 +133,7 @@ public class AddUserToRole {
 		AccountHelper helper = new AccountHelper(configuration.getUserSession());
 		AccountInfo user = new AccountInfo();
 		user.id = account.getId();
-		user.userName = account.getUsername();
+		user.username = account.getUsername();
 		user.nickName = account.getNickName();
 		user.password = account.getPassword();
 		user.email = account.getEmail();
@@ -148,10 +145,7 @@ public class AddUserToRole {
 		// ezScrum v1.8
 		AccountHelper helper = new AccountHelper(configuration.getUserSession());
 		try {
-			helper.assignRole_add(theAccount.getId(), projectId, role);
-		} catch (LogonException e) {
-			e.printStackTrace();
-			System.out.println("class: AddUserToRole, method: updateAccount, Logon_exception: " + e.toString());
+			helper.addAssignedRole(theAccount.getId(), projectId, role);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("class: AddUserToRole, method: updateAccount, exception: " + e.toString());

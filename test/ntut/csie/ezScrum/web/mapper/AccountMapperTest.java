@@ -71,7 +71,7 @@ public class AccountMapperTest extends TestCase {
 		String email = "account@mail.com";
 		
 		AccountInfo userInfo = new AccountInfo();
-		userInfo.userName = userName;
+		userInfo.username = userName;
 		userInfo.password = password;
 		userInfo.nickName = nickName;
 		userInfo.email = email;
@@ -133,7 +133,7 @@ public class AccountMapperTest extends TestCase {
 		
 		AccountInfo userInfo = new AccountInfo();
 		userInfo.id = id;
-		userInfo.userName = userName;
+		userInfo.username = userName;
 		userInfo.password = password;
 		userInfo.nickName = nickName;
 		userInfo.email = email;

@@ -41,7 +41,7 @@ public class CreateAccount {
 			String Acc_PWD = Account_PWD + ID;
 			String Acc_Mail = Account_Mail + ID;
 			user = new AccountInfo();
-			user.userName = Acc_userNmae;
+			user.username = Acc_userNmae;
 			user.nickName = Acc_nickName;
 			user.password = Acc_PWD;
 			user.email = Acc_Mail;
@@ -108,7 +108,7 @@ public class CreateAccount {
 		String nickname = Account_NAME + "NEW_" + id;
 		AccountInfo user = new AccountInfo();
 		user.id = id;
-		user.userName = username;
+		user.username = username;
 		user.nickName = nickname;
 		user.password = password;
 		user.email = mail;

@@ -1,143 +1,129 @@
 package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
-// 一般使用者更新資料
 public class GetAssignedProjectActionTest extends MockStrutsTestCase {
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private AddUserToRole mAddUserToRole;
+	private int mProjectCount = 1;
+	private int mAccountCount = 1;
+	private String mActionPath = "/getAssignedProject";
+	private Configuration mConfig;
+	private AccountMapper mAccountMapper;
 
-	private CreateProject CP;
-	private CreateAccount CA;
-	private AddUserToRole AUTR;
-	
-	private int ProjectCount = 1;
-	private int AccountCount = 1;
-	
-	private String actionPath = "/getAssignedProject";	// defined in "struts-config.xml"
-	
-	private Configuration configuration;
-	private AccountMapper accountMapper;
-	
 	public GetAssignedProjectActionTest(String testMethod) {
-        super(testMethod);
-    }
-	
+		super(testMethod);
+	}
+
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
-		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
-		
-		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
-		
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
-		
-		// 用來指派Scrum角色
-		this.AUTR = new AddUserToRole(this.CP, this.CA);		
-		
-		this.accountMapper = new AccountMapper();
-		
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+
+		// 新增 Project
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
+
+		// 新增 User
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
+
+		// 用來指派 Scrum 角色
+		mAddUserToRole = new AddUserToRole(mCP, mCA);
+
+		mAccountMapper = new AccountMapper();
+
 		super.setUp();
-		
-		// 固定行為可抽離
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
-    	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo(this.actionPath);
-    	
-    	// ============= release ==============
-    	ini = null;
-    }
 
-    protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
-		
-		CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
-    	
-    	configuration.setTestMode(false);
-		configuration.save();
-    	
-    	super.tearDown();    	
-    	
-    	// ============= release ==============
-    	ini = null;
-    	copyProject = null;
-    	this.CP = null;
-    	this.CA = null;
-    	this.config = null;
-    	this.accountMapper = null;
-    	configuration = null;
-    }
-    
-    // 
-    public void testGetAssignedProjectAction() throws LogonException {		
-    	// 先加入 PO 角色
-    	this.AUTR.exe_PO();
-    	
-    	// ================ set initial data =======================
-    	String projectId = this.CP.getProjectList().get(0).getName();
-    	// User Information
-    	
-    	String userId = this.CA.getAccountList().get(0).getId() + "";
-    	// ================ set initial data =======================    	
-    	
-    	// ================== set parameter info ==================== 	    
-    	addRequestParameter("accountID", userId);   	
-    	// ================== set parameter info ====================
-    	    	
-    	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
-    	// ================ set session info ========================
-    	
-    	// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-    	// ================ set URL parameter ========================
+		/**
+		 * 設定讀取的 struts-config 檔案路徑
+		 * GetAssignedProjectAction
+		 */
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
+		setServletConfigFile("/WEB-INF/struts-config.xml");
+		setRequestPathInfo(mActionPath);
 
-    	actionPerform();		// 執行 action
-    	
-    	/*
-    	 * Verify:
-    	 */
-    	AccountObject account = this.accountMapper.getAccount(userId);
+		// ============= release ==============
+		ini = null;
+	}
+
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+		projectManager.initialRoleBase(mConfig.getDataPath());
+
+		mConfig.setTestMode(false);
+		mConfig.save();
+
+		super.tearDown();
+
+		// ============= release ==============
+		ini = null;
+		projectManager = null;
+		mCP = null;
+		mCA = null;
+		mAccountMapper = null;
+		mConfig = null;
+	}
+
+	//
+	public void testGetAssignedProjectAction() {
+		// 先加入 PO 角色
+		mAddUserToRole.exe_PO();
+
+		// ================ set initial data =======================
+		String projectName = mCP.getProjectList().get(0).getName();
+		long accountId = mCA.getAccountList().get(0).getId();
+
+		// ================== set parameter info ====================
+		addRequestParameter("accountID", String.valueOf(accountId));
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 		
+		// 執行 action
+		actionPerform();
+
+		/**
+		 * Verify:
+		 */
+		AccountObject account = mAccountMapper.getAccount(accountId);
+
 		assertNotNull(account);
-		
+
 		// role
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
-    	
-		assertEquals(1, roleMap.size());	// PO
-		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(projectId).getScrumRole().getRoleName());	
-//		IPermission[] permissons = roles[0].getPermisions();
-//		String roleA = permissons[0].getPermissionName();	// actual role
-//		permissons = roles[1].getPermisions();
-//		String roleB = permissons[0].getPermissionName();	// actual role
-//		
-//		String res = this.AUTR.getNowProject().getName();	// project
-//		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;	// scrum role
-//		String roleE = res + "_" + op;	// expected role		
-//		
-//		assertEquals("system_read", roleA);	
-//		assertEquals(roleE, roleB);	
-    }		
+
+		assertEquals(1, roleMap.size()); // PO
+		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(projectName)
+				.getScrumRole().getRoleName());
+	}
 }

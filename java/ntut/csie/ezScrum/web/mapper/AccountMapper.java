@@ -21,7 +21,7 @@ public class AccountMapper {
 	public AccountMapper() {}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
-		AccountObject account = new AccountObject(accountInfo.userName);
+		AccountObject account = new AccountObject(accountInfo.username);
 		account.setEmail(accountInfo.email).setPassword(accountInfo.password)
 				.setNickName(accountInfo.nickName).setEnable(true).save();
 		return account;
@@ -82,7 +82,10 @@ public class AccountMapper {
 	 */
 	public boolean deleteAccount(long id) {
 		AccountObject account = AccountObject.get(id);
-		boolean result = account.delete();
+		boolean result = false;
+		if (account != null) {
+			result = account.delete();
+		}
 		return result;
 	}
 
@@ -125,7 +128,9 @@ public class AccountMapper {
 	public AccountObject addProjectRole(long projectId, long accountId,
 			RoleEnum role) {
 		AccountObject account = AccountObject.get(accountId);
-		account.createProjectRole(projectId, role);
+		if (account != null) {
+			account.createProjectRole(projectId, role);
+		}
 		return account;
 	}
 	

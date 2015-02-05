@@ -2,30 +2,26 @@ package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
-public class GetAccountListActionTest extends MockStrutsTestCase {
+// admin 新增使用者之前會先做此檢查
+public class CheckUsernameActionTest extends MockStrutsTestCase {
 
 	private CreateProject mCP;
 	private CreateAccount mCA;
 	private int mProjectCount = 1;
-	private int mAccountCount = 5;
-	private String mActionPath = "/getAccountList";
+	private int mAccountCount = 1;
+	private String mActionPath = "/checkAccountID";
 	private Configuration mConfig;
-	private AccountMapper mAccountMapper;
 
-	public GetAccountListActionTest(String testMethod) {
+	public CheckUsernameActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -42,13 +38,11 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
 
-		mAccountMapper = new AccountMapper();
-
 		super.setUp();
 
 		/**
 		 * 設定讀取的 struts-config 檔案路徑
-		 * GetAccountListAction
+		 * CheckUsernameAction
 		 */
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
@@ -77,85 +71,100 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		ini = null;
 		mCP = null;
 		mCA = null;
-		mAccountMapper = null;
-		projectManager = null;
 		mConfig = null;
+		projectManager = null;
 	}
 
-	// One
-	public void testGetAccountListAction() {
-		mCA = new CreateAccount(1);
-		mCA.exe();
-
-		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
-
-		// ================ set URL parameter ========================
-		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
-		
-		// 執行 action
-		actionPerform();
-
-		/**
-		 * Verify:
-		 */
-		ArrayList<AccountObject> accounts = mAccountMapper.getAccounts();
-		assertEquals(2, accounts.size()); // 包含 admin
-		
-		AccountObject account = mAccountMapper.getAccount(mCA
-				.getAccount_ID(1));
-		assertNotNull(account);
-		assertEquals(account.getUsername(), mCA.getAccount_ID(1));
-		assertEquals(account.getPassword(),
-				(new TestTool()).getMd5(mCA.getAccount_PWD(1)));
-		assertEquals(account.getEmail(), mCA.getAccount_Mail(1));
-		assertEquals(account.getNickName(), mCA.getAccount_RealName(1));
-		assertEquals(account.getEnable(), true);
-	}
-
-	// multiple
-	public void testGetAccountListActionX() throws LogonException {
+	// 測試欲新增加的帳號已重複
+	public void testCheckUsernameAction_existed() {
+		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
 		mCA.exe();
 
 		// ================ set initial data =======================
 		String projectName = mCP.getProjectList().get(0).getName();
+		String username = mCA.getAccount_ID(1);
+
+		// ================== set parameter info ====================
+		addRequestParameter("id", username);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + projectName);
 		
+		// ================ set URL parameter ========================
+
 		// 執行 action
 		actionPerform();
 
 		/**
 		 * Verify:
 		 */
-		ArrayList<AccountObject> accounts = mAccountMapper.getAccounts();
+		verifyNoActionErrors();
+		String result = response.getWriterBuffer().toString();
 
-		assertEquals(mAccountCount + 1, accounts.size()); // 包含 admin
-
-		for (int i = 1; i < mAccountCount + 1; i++) {
-			AccountObject account = mAccountMapper.getAccount(mCA
-					.getAccount_ID(i));
-			assertNotNull(account);
-			assertEquals(account.getUsername(), mCA.getAccount_ID(i));
-			assertEquals(account.getPassword(),
-					(new TestTool()).getMd5(mCA.getAccount_PWD(i)));
-			assertEquals(account.getEmail(), mCA.getAccount_Mail(i));
-			assertEquals(account.getNickName(), mCA.getAccount_RealName(i));
-			assertEquals(account.getEnable(), true);
-		}
-
+		assertEquals("false", result); // 帳號已存在
 	}
 
+	// 測試新增加的帳號
+	public void testCheckUsernameAction_New() throws LogonException {
+
+		// ================ set initial data =======================
+		String projectName = this.mCP.getProjectList().get(0).getName();
+		String username = "testNewID";
+
+		// ================== set parameter info ====================
+		addRequestParameter("id", username);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
+
+		// 執行 action
+		actionPerform();
+
+		/**
+		 * Verify:
+		 */
+		verifyNoActionErrors();
+		String result = response.getWriterBuffer().toString();
+
+		assertEquals("true", result); // 帳號未存在
+	}
+
+	// 測試欲新增加的帳號為 empty
+	public void testCheckUsernameAction_New1() {
+
+		// ================ set initial data =======================
+		String projectName = mCP.getProjectList().get(0).getName();
+		String username = "";
+
+		// ================== set parameter info ====================
+		addRequestParameter("id", username);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
+
+		// 執行 action
+		actionPerform();
+
+		/**
+		 * Verify:
+		 */
+		verifyNoActionErrors();
+		String result = response.getWriterBuffer().toString();
+
+		assertEquals("false", result); // 帳號 NG
+	}
 }

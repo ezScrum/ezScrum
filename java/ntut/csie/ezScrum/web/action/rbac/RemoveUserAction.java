@@ -19,8 +19,19 @@ public class RemoveUserAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		long accountId = Long.parseLong(request.getParameter("id"));
-		long projectId = Long.parseLong(request.getParameter("resource"));
+		long accountId, projectId;
+		
+		try {
+			accountId = Long.parseLong(request.getParameter("id"));
+			projectId = Long.parseLong(request.getParameter("resource"));
+		} catch (NumberFormatException e) {
+			accountId = 0;
+			if (request.getParameter("resource").equals("system")) {
+				projectId = 0;
+			} else {
+				projectId = -1;
+			}
+		}
 		String role = request.getParameter("operation");
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
@@ -28,7 +39,7 @@ public class RemoveUserAction extends Action {
 		
 		if (accountId > 0 && projectId > 0 && role != null) {
 			try {
-				AccountObject account = accountHelper.assignRole_remove(accountId, projectId, role);
+				AccountObject account = accountHelper.removeAssignRole(accountId, projectId, role);
 				
 				// 刪除Session中關於該使用者的所有專案權限。
 				SessionManager.removeScrumRolesMap(request, account);
