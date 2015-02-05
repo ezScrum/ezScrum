@@ -161,7 +161,11 @@ public class TaskboardHelper {
 					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
 
 					for (TaskObject task : tasks) {
-						if (checkParent(filtername, task.getPartnersUsername(), task.getHandler().getUsername())) {
+						String handlerUserName = "";
+						if(task.getHandler() != null){
+							handlerUserName = task.getHandler().getUsername();
+						}
+						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
 							filtertask.add(task);
 						}
 					}
@@ -254,7 +258,7 @@ public class TaskboardHelper {
 		String Name;
 		String Estimate;
 		String RemainHours;
-		String Handler;
+		String HandlerUserName;
 		String Notes;
 		List<TaskBoard_AttachFile> AttachFileList;
 		Boolean Attach;
@@ -269,7 +273,7 @@ public class TaskboardHelper {
 			Estimate = String.valueOf(task.getEstimate());
 			RemainHours = String.valueOf(task.getRemains());
 			Actual = String.valueOf(task.getActual());
-			Handler = task.getHandler().getUsername();
+			HandlerUserName = task.getHandler() == null ? "" : task.getHandler().getUsername();
 			Partners = task.getPartnersUsername();
 			Status = task.getStatusString();
 			Notes = HandleSpecialChar(task.getNotes());

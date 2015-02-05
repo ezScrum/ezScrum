@@ -270,13 +270,13 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"Name\":\"").append(task.getName()).append("\",")
 		        .append("\"Estimate\":\"").append(task.getEstimate()).append("\",")
 		        .append("\"RemainHours\":\"").append(task.getRemains()).append("\",")
-		        .append("\"Handler\":\"\",")
+		        .append("\"HandlerUserName\":\"\",")
 		        .append("\"Notes\":\"").append(task.getNotes()).append("\",")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Attach\":false,")
-		        .append("\"Status\":\"").append(task.getStatus()).append("\",")
+		        .append("\"Status\":\"").append(task.getStatusString()).append("\",")
 		        .append("\"Partners\":\"\",")
-		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(taskId).append("\",")
+		        .append("\"Link\":\"").append("\",")
 		        .append("\"Actual\":\"").append(task.getActual()).append("\"")
 		        .append("}]}],")
 		        .append("\"success\":true,\"Total\":1}");
@@ -377,8 +377,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			for (int j = 0; j < taskList.size(); j++) {
 				assertEquals(String.valueOf(expectedTask.getId()), taskList.get(j).get("Id"));
 				assertEquals(expectedTask.getName(), taskList.get(j).get("Name"));
-				assertEquals(expectedTask.getEstimate(), taskList.get(j).get("Estimate"));
-				assertEquals(createAccount.getAccount_ID(1), taskList.get(j).get("Handler"));
+				assertEquals(String.valueOf(expectedTask.getEstimate()), taskList.get(j).get("Estimate"));
+				assertEquals(createAccount.getAccount_ID(1), taskList.get(j).get("HandlerUserName"));
 				assertEquals(expectedTask.getNotes(), taskList.get(j).get("Notes"));
 				assertEquals(expectedTask.getAttachFiles(), taskList.get(j).get("AttachFileList"));
 				assertEquals(false, taskList.get(j).get("Attach"));
@@ -387,11 +387,11 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 					assertEquals("0", taskList.get(j).get("RemainHours"));
 				} else {
 					assertEquals(ITSEnum.ASSIGNED, taskList.get(j).get("Status"));
-					assertEquals(expectedTask.getRemains(), taskList.get(j).get("RemainHours"));
+					assertEquals(String.valueOf(expectedTask.getRemains()), taskList.get(j).get("RemainHours"));
 				}
-				assertEquals(expectedTask.getPartners(), taskList.get(j).get("Partners"));
+				assertEquals(expectedTask.getPartnersUsername(), taskList.get(j).get("Partners"));
 				assertEquals("", taskList.get(j).get("Link"));
-				assertEquals(expectedTask.getActual(), taskList.get(j).get("Actual"));
+				assertEquals(String.valueOf(expectedTask.getActual()), taskList.get(j).get("Actual"));
 			}
 		}
 	}
@@ -516,7 +516,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		pbHelper.addAttachFile(attachFileInfo, file);
 		
 		IIssue expectedStory = pbHelper.getIssue(stroyId);
-		IIssue expectedTask = pbHelper.getIssue(taskId);
+		task.reload();
 		
 		try {
 			FileUtil.delete(targetPath);
@@ -555,22 +555,20 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
 		assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
 		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
-		assertEquals(expectedStory.getAttachFiles(), storyList.get(0).get("AttachFileList"));
+		ArrayList<LinkedHashTreeMap<String, Object>> attachFileListTreeMap = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("AttachFileList");
+		assertEquals(Double.valueOf(expectedStory.getAttachFiles().get(0).getId()), (double)attachFileListTreeMap.get(0).get("FileId"));
+		assertEquals(expectedStory.getAttachFiles().get(0).getName(), attachFileListTreeMap.get(0).get("FileName"));
 		
 		ArrayList<LinkedHashTreeMap<String, Object>> taskList = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("Tasks");
-		assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(0).get("Id"));
-		assertEquals(expectedTask.getSummary(), taskList.get(0).get("Name"));
-		assertEquals(expectedTask.getEstimated(), taskList.get(0).get("Estimate"));
-		assertEquals(expectedTask.getNotes(), taskList.get(0).get("Notes"));
-		assertEquals(expectedTask.getStatus(), taskList.get(0).get("Status"));
-		assertEquals(expectedTask.getRemains(), taskList.get(0).get("RemainHours"));
-		assertEquals(expectedTask.getPartners(), taskList.get(0).get("Partners"));
-		assertEquals(expectedTask.getIssueLink(), taskList.get(0).get("Link"));
-		assertEquals(expectedTask.getActualHour(), taskList.get(0).get("Actual"));
-		assertEquals(!expectedTask.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
-		
-		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) taskList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedTask.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedTask.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
+		assertEquals(String.valueOf(task.getId()), taskList.get(0).get("Id"));
+		assertEquals(task.getName(), taskList.get(0).get("Name"));
+		assertEquals(String.valueOf(task.getEstimate()), taskList.get(0).get("Estimate"));
+		assertEquals(task.getNotes(), taskList.get(0).get("Notes"));
+		assertEquals(task.getStatusString(), taskList.get(0).get("Status"));
+		assertEquals(String.valueOf(task.getRemains()), taskList.get(0).get("RemainHours"));
+		assertEquals(task.getPartnersUsername(), taskList.get(0).get("Partners"));
+		assertEquals("", taskList.get(0).get("Link"));
+		assertEquals(String.valueOf(task.getActual()), taskList.get(0).get("Actual"));
+		assertEquals(!task.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
 	}
 }
