@@ -120,7 +120,7 @@ public class ReleaseBacklogTest extends TestCase {
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
 			if (stories[i].getStoryId() != stories.length) {
-				sprintBacklogLogic.doneIssue(stories[i].getStoryId(), stories[i].getSummary(), stories[i].getNotes(), "", stories[i].getActualHour());
+				sprintBacklogLogic.closeStory(stories[i].getStoryId(), stories[i].getNotes(), "2015/02/03-16:00:00");
 				// 每做完一筆 story done 就更新 release 裡面 story 的資訊
 				mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
 			}
@@ -164,7 +164,7 @@ public class ReleaseBacklogTest extends TestCase {
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
 			if (stories[i].getStoryId() != stories.length) {
-				sprintBacklogLogic.doneIssue(stories[i].getStoryId(), stories[i].getSummary(), stories[i].getNotes(), "", stories[i].getActualHour());
+				sprintBacklogLogic.closeStory(stories[i].getStoryId(), stories[i].getNotes(), "2015/01/29-16:00:00");
 				// 每做完一筆 story done 就更新 release 裡面 story 的資訊
 				mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
 			}
@@ -175,7 +175,7 @@ public class ReleaseBacklogTest extends TestCase {
 		assertEquals(1.0, mReleaseBacklog.getReleaseAllStoryDone());
 
 		// 讓 story 的 close date 為 sprint endDate 的後一天
-		sprintBacklogLogic.doneIssue(lastStory.getStoryId(), lastStory.getSummary(), lastStory.getNotes(), getDate(theDate, 1), lastStory.getActualHour());
+		sprintBacklogLogic.closeStory(lastStory.getStoryId(), lastStory.getNotes(), getDate(theDate, 1));
 		// 更新 release 裡面 story 的資訊
 		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
 		assertEquals(0.0, mReleaseBacklog.getReleaseAllStoryDone());

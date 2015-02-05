@@ -197,8 +197,7 @@ public class TaskObject implements IBaseObject {
 		int status = TaskObject.STATUS_UNCHECK;
 		
 		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-					&& history.getCreateTime() <= lastSeconds) {
+			if (history.getHistoryType() == HistoryObject.TYPE_STATUS && history.getCreateTime() <= lastSeconds) {
 				if (history.getNewValue().equals(String.valueOf(STATUS_CHECK))) {
 					status = STATUS_CHECK;
 				} else if (history.getNewValue().equals(String.valueOf(STATUS_DONE))) {
@@ -441,6 +440,7 @@ public class TaskObject implements IBaseObject {
 	private void doCreate() {
 		// default remains hour should equal to estimate
 		mRemains = mEstimate;
+		
 		mId = TaskDAO.getInstance().create(this);
 
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
@@ -458,6 +458,7 @@ public class TaskObject implements IBaseObject {
 
 	private void doUpdate() {
 		TaskObject oldTask = TaskObject.get(mId);
+		
 		TaskDAO.getInstance().update(this);
 
 		if (!mName.equals(oldTask.getName())) {
@@ -474,8 +475,7 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual);
 		}
 		if (mRemains != oldTask.getRemains()) {
-			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-					mRemains);
+			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(), mRemains);
 		}
 		if (mStatus != oldTask.getStatus()) {
 			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);

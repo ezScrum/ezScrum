@@ -35,8 +35,7 @@ public class AddTaskToStory {
 			for (int j = 0; j < mSprintCount; j++) {
 				for (int k = 0; k < mStoryCount; k++) {
 					long StoryID = j * mStoryCount + (k + 1);
-					CreateTask CT = new CreateTask(mTaskCount, mEstValue,
-							StoryID, mCP);
+					CreateTask CT = new CreateTask(mTaskCount, mEstValue, StoryID, mCP);
 					CT.exe();
 
 					mTasks.addAll(CT.getTaskList());

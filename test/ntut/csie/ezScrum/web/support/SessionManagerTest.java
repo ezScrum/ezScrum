@@ -120,7 +120,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		request.getSession().setAttribute(projectName, project);
 
 		mSessionManager = new SessionManager(request);
-		SessionManager.setProjectObject(request, project);
+		mSessionManager.setProjectObject(request, project);
 		
 		// assert
 		ProjectObject projectObject = (ProjectObject) request.getSession().getAttribute(project.getName());

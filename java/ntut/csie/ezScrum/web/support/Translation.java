@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class Translation {
 	public Translation() { /* empty */}
@@ -254,6 +253,23 @@ public class Translation {
 		jsonIssue.append("Name", TranslateChar.TranslateJSONChar((issue.getSummary())));
 		jsonIssue.append("Handler", issue.getAssignto());
 		jsonIssue.append("Partners", issue.getPartners());
+
+		obj.append("Issue", jsonIssue);
+
+		return obj.toString();
+	}
+	
+	public String translateTaskboardTaskToJson(TaskObject task) {
+		JsonObject obj = new JsonObject();
+		obj.append("success", true);
+
+		JsonObject jsonIssue = new JsonObject();
+		// 若需要其他欄位請再新增
+		jsonIssue.append("Id", task.getId());
+		jsonIssue.append("Link", "");
+		jsonIssue.append("Name", task.getName());
+		jsonIssue.append("Handler", task.getHandler().getUsername());
+		jsonIssue.append("Partners", task.getPartnersUsername());
 
 		obj.append("Issue", jsonIssue);
 

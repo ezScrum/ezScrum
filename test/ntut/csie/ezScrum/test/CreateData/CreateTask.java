@@ -3,29 +3,13 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
 
 public class CreateTask {
 	private static Log log = LogFactory.getLog(CreateTask.class);
@@ -37,7 +21,6 @@ public class CreateTask {
 	private String TEST_TASK_NOTE = "TEST_TASK_NOTES_"; // Task Notes
 	private int TEST_TASK_EST = 2; // Task estimation
 	private long TEST_HANDLER = -1;
-	private ArrayList<Long> TEST_PARTNERS_ID = new ArrayList<Long>();
 	private Date mSpecificTime;
 
 	private CreateProject mCP;

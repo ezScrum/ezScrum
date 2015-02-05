@@ -148,6 +148,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Task_1() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -159,7 +161,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -200,6 +202,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Task_2() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -211,7 +215,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -257,6 +261,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Task_3() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -268,7 +274,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -304,6 +310,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Task_4() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -315,7 +323,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", null, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -361,6 +369,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Story_1() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -372,7 +382,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 1個story設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -412,6 +422,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Story_2() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -423,7 +435,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
@@ -469,6 +481,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	public void testShowRemainingReport_Story_3() throws Exception {
 		// ================ set initial data =======================
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
+		String DONE_TIME = "2015/01/29-16:00:00";
+		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
 		CS.exe(); 	// 新增兩個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -480,7 +494,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.doneIssue(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getSummary(), "", null, null);
+		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 

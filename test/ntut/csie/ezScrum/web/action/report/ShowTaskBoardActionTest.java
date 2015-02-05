@@ -132,10 +132,9 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story/Task Point 計算是否正確
 //		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklogMapper(project, CreateUserSession(), this.CS.getSprintCount() - 1));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(this.CS.getSprintCount() - 1));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), CS.getSprintIDList().get(0));
 		TaskBoard ExpectedTB = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute(
-				"TaskBoard");
+		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
 		assertEquals("10.0 / -", ActualTB.getInitialTaskPoint());
 		assertEquals(ExpectedTB.getM_stories().size(),ActualTB.getM_stories().size());
@@ -146,8 +145,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB.getM_stories()[i].getIssueID());
 //		}
 		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
-				.getSprintGoal());
+		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
 		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
 		assertEquals(1, ActualTB.getSprintID());
 		assertEquals(ExpectedTB.getStories().size(),ActualTB.getStories().size());
@@ -285,8 +283,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals(0,ActualTB.getM_stories().size());
 		
 		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
-				.getSprintGoal());
+		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
 		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
 		assertEquals(1, ActualTB.getSprintID());
 		
@@ -301,15 +298,13 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
 		List<ISprintPlanDesc> ExpectedPlans = helper.loadListPlans();
-		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest()
-				.getAttribute("SprintPlans");
+		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());
 		}
 
 		List<String> ExpectedActorList = new LinkedList<String>();
-		List<String> ActualActorList = (List<String>) getMockRequest()
-				.getAttribute("ActorList");
+		List<String> ActualActorList = (List<String>) getMockRequest().getAttribute("ActorList");
 		ExpectedActorList.add("ALL");
 		for (int i = 0; i < ExpectedActorList.size(); i++) {
 			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
@@ -449,8 +444,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
 //			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB.getStories()[i].getIssueID());
 //		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
-				.getStoryChartLink());
+		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB.getStoryChartLink());
 		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
 		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
 		assertEquals("10.0 / 10.0", ActualTB.getTaskPoint());
@@ -485,7 +479,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		tasks.add(this.ATS.getTasks().get(1)); // 加入第二筆
 
 		CheckOutIssue COI = new CheckOutIssue(tasks, this.CP);
-		COI.exeDone_Issues(); // 將此兩筆 Task Done
+		COI.exeDone_Tasks(); // 將此兩筆 Task Done
 		// =============== set move action ======================
 
 		// ================ set session info ========================
@@ -516,8 +510,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB.getM_stories()[i].getIssueID());
 //		}
 		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
-				.getSprintGoal());
+		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
 		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
 		assertEquals(1, ActualTB.getSprintID());
 		assertEquals(ExpectedTB.getStories().size(), ActualTB.getStories().size());
