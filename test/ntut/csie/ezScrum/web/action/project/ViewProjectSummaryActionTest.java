@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
+import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -25,6 +26,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -104,87 +106,87 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		mConfig = null;
 	}
 
-//	/**
-//	 * 1. admin 建立專案
-//	 * 2. admin 瀏覽專案
-//	 */
-//	public void testAdminViewProjectSummary() {
-//		/**
-//		 * 1. admin 建立專案
-//		 */
-//		// ================ set action info ========================
-//		String actionPath = "/AjaxCreateProject";
-//		setRequestPathInformation(actionPath);
-//
-//		// ================ set session info ========================
-//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-//
-//		// ================ set request info ========================
-//		String projectName = "test";
-//		String projectDisplayName = "Project for Test Create Project";
-//		String comment = "";
-//		String projectManager = "ezScrum tester";
-//		String attachFileSize = "";
-//		addRequestParameter("Name", projectName);
-//		addRequestParameter("DisplayName", projectDisplayName);
-//		addRequestParameter("Comment", comment);
-//		addRequestParameter("ProjectManager", projectManager);
-//		addRequestParameter("AttachFileSize", attachFileSize);
-//		addRequestParameter("from", "createProject");
-//
-//		// 執行 action
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		StringBuilder expectedResponse = new StringBuilder();
-//		expectedResponse
-//			.append("<Root>")
-//		        .append("<CreateProjectResult>")
-//			        .append("<Result>Success</Result>")
-//			        .append("<ID>test</ID>")
-//		        .append("</CreateProjectResult>")
-//		    .append("</Root>");
-//
-//		String actualResponseText = response.getWriterBuffer().toString();
-//		assertEquals(expectedResponse.toString(), actualResponseText);
-//
-//		//	assert database information
-//		ProjectMapper projectMapper = new ProjectMapper();
-//		ProjectObject project = projectMapper.getProject(projectName);
-//		assertEquals(projectName, project.getName());
-//		assertEquals(projectDisplayName, project.getDisplayName());
-//		assertEquals(2, project.getAttachFileSize());
-//		assertEquals(comment, project.getComment());
-//		assertEquals(projectManager, project.getManager());
-//
-//		/**
-//		 * 2. admin 瀏覽專案
-//		 */
-//		// ================ set action info ========================
-//		cleanActionInformation();
-//		actionPath = "/viewProject";
-//		setRequestPathInformation(actionPath);
-//
-//		// ================ set session info ========================
-//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-//
-//		// ================ set request info ========================
-//		addRequestParameter("PID", projectName);
-//
-//		// 執行 action
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		verifyForward("SummaryView");
-//		verifyForwardPath("/Pages/ezScrumContent.jsp");
-//
-//		String expectIsGuest = "false";
-//		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
-//		assertEquals(expectIsGuest, actualIsGuest);
-//
-//		verifyNoActionMessages();
-//		verifyNoActionErrors();
-//	}
+	/**
+	 * 1. admin 建立專案
+	 * 2. admin 瀏覽專案
+	 */
+	public void testAdminViewProjectSummary() {
+		/**
+		 * 1. admin 建立專案
+		 */
+		// ================ set action info ========================
+		String actionPath = "/AjaxCreateProject";
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set request info ========================
+		String projectName = "test";
+		String projectDisplayName = "Project for Test Create Project";
+		String comment = "";
+		String projectManager = "ezScrum tester";
+		String attachFileSize = "";
+		addRequestParameter("Name", projectName);
+		addRequestParameter("DisplayName", projectDisplayName);
+		addRequestParameter("Comment", comment);
+		addRequestParameter("ProjectManager", projectManager);
+		addRequestParameter("AttachFileSize", attachFileSize);
+		addRequestParameter("from", "createProject");
+
+		// 執行 action
+		actionPerform();
+
+		// ================ assert ======================
+		StringBuilder expectedResponse = new StringBuilder();
+		expectedResponse
+			.append("<Root>")
+		        .append("<CreateProjectResult>")
+			        .append("<Result>Success</Result>")
+			        .append("<ID>test</ID>")
+		        .append("</CreateProjectResult>")
+		    .append("</Root>");
+
+		String actualResponseText = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponseText);
+
+		//	assert database information
+		ProjectMapper projectMapper = new ProjectMapper();
+		ProjectObject project = projectMapper.getProject(projectName);
+		assertEquals(projectName, project.getName());
+		assertEquals(projectDisplayName, project.getDisplayName());
+		assertEquals(2, project.getAttachFileSize());
+		assertEquals(comment, project.getComment());
+		assertEquals(projectManager, project.getManager());
+
+		/**
+		 * 2. admin 瀏覽專案
+		 */
+		// ================ set action info ========================
+		cleanActionInformation();
+		actionPath = "/viewProject";
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set request info ========================
+		addRequestParameter("PID", projectName);
+
+		// 執行 action
+		actionPerform();
+
+		// ================ assert ======================
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
+
+		String expectIsGuest = "false";
+		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		assertEquals(expectIsGuest, actualIsGuest);
+
+		verifyNoActionMessages();
+		verifyNoActionErrors();
+	}
 
 	/**
 	 * Integration Test
@@ -381,9 +383,6 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		        .append("\"ProjectCreateDate\":\"").append(expectedCreateDate).append("\"")
 		        .append("}");
 		actualResponse = response.getWriterBuffer().toString();
-		System.out.println("builder = " + expectedResponse.toString());
-		System.out.println("actual = " + actualResponse);
-		System.out.println("JSON = " + project.toString());
 		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
@@ -536,7 +535,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		/**
 		 * 6.5 user select project
 		 */
-		// ================ clean previous action info ========================
+		// ================ clean previous action info ==============
 		cleanActionInformation();
 
 		// ================ set action info ========================
@@ -573,124 +572,121 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 	}
 
-//	/**
-//	 * 比對資料庫中是否存在此專案的PID
-//	 * 1. assert 不存在
-//	 * 2. assert 存在
-//	 */
-//	public void testPIDIsExisted() {
-//		String pathViewProjectSummary = "/viewProject";
-//
-//		/**
-//		 * project ID does not existed 
-//		 */
-//		String notexistedProjectID = "testNotExisted";
-//		setRequestPathInformation(pathViewProjectSummary);
-//
-//		// ================ set session info ========================
-//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-//
-//		// ================ set request info ========================
-//		addRequestParameter("PID", notexistedProjectID);
-//
-//		// ================ 執行 action ======================
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		verifyForward("error");					//	define in ViewProjectSummaryAction.java
-//		verifyForwardPath("/Error.jsp");	//	define in tiles-defs.xml
-//
-//		verifyNoActionMessages();
-//		verifyNoActionErrors();
-//
-//		/**
-//		 * project ID existed
-//		 */
-//		this.cleanActionInformation();
-//		String existedProjectID = "TEST_PROJECT_1";
-//		setRequestPathInformation(pathViewProjectSummary);
-//
-//		// ================ set session info ========================
-//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-//
-//		// ================ set request info ========================
-//		addRequestParameter("PID", existedProjectID);
-//
-//		// ================ 執行 action ======================
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-//		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
-//
-//		String expectIsGuest = "false";
-//		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
-//		assertEquals(expectIsGuest, actualIsGuest);
-//
-//		verifyNoActionMessages();
-//		verifyNoActionErrors();
-//	}
-//
-//	/**
-//	 * 判斷該使用者是否存在於專案中
-//	 * 1. assert user(ScrumTeam) 不存在於專案
-//	 * 2. assert user(ScrumTeam) 存在於專案
-//	 */
-//	public void testUserIsInProject() {
-//		String pathViewProjectSummary = "/viewProject";
-//		String projectID = "TEST_PROJECT_1";
-//
-//		/**
-//		 * Permission Denied
-//		 */
-//		setRequestPathInformation(pathViewProjectSummary);
-//
-//		// ================ set session info ========================
-//		IUserSession userSession = this.getUserSession(this.mCA.getAccountList().get(0));
-//		request.getSession().setAttribute("UserSession", userSession);
-//
-//		// ================ set request info ========================
-//		addRequestParameter("PID", projectID);
-//
-//		// ================ 執行 action ======================
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		verifyForward("permissionDenied");					//	define in ViewProjectSummaryAction.java
-//		verifyForwardPath("/PermissionDenied.jsp");	//	define in tiles-defs.xml
-//
-//		verifyNoActionMessages();
-//		verifyNoActionErrors();
-//
-//		/**
-//		 * user(ScrumTeam) 存在於專案
-//		 */
-//		this.cleanActionInformation();
-//		AddUserToRole addUserToRole = new AddUserToRole(this.mCP, this.mCA);
-//		addUserToRole.exe_SM();
-//
-//		setRequestPathInformation(pathViewProjectSummary);
-//
-//		// ================ set session info ========================
-//		AccountObject account = new AccountMapper().getAccount(mCA.getAccountList().get(0).getUsername());
-//		userSession = getUserSession(account);
-//		request.getSession().setAttribute("UserSession", userSession);
-//
-//		// ================ set request info ========================
-//		addRequestParameter("PID", projectID);
-//
-//		// ================ 執行 action ======================
-//		actionPerform();
-//
-//		// ================ assert ======================
-//		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-//		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
-//
-//		String expectIsGuest = "false";
-//		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
-//		assertEquals(expectIsGuest, actualIsGuest);
-//
-//		verifyNoActionMessages();
-//		verifyNoActionErrors();
-//	}
+	/**
+	 * 比對資料庫中是否存在此專案的 project name
+	 * 1. assert 不存在
+	 * 2. assert 存在
+	 */
+	public void testPIDIsExisted() {
+		String actionPath = "/viewProject";
+
+		/**
+		 * project name does not existed 
+		 */
+		String notExistedProjectName = "testNotExisted";
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set request info ========================
+		addRequestParameter("PID", notExistedProjectName);
+
+		// ================ 執行 action ======================
+		actionPerform();
+
+		// ================ assert ======================
+		verifyForward("error");
+		verifyForwardPath("/Error.jsp");
+		verifyNoActionMessages();
+		verifyNoActionErrors();
+
+		/**
+		 * project name existed
+		 */
+		// ================ clean previous action info ==============
+		cleanActionInformation();
+		String existedProjectName = "TEST_PROJECT_1";
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set request info ========================
+		addRequestParameter("PID", existedProjectName);
+
+		// 執行 view Project action
+		actionPerform();
+
+		// ================ assert ======================
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
+
+		String expectIsGuest = "false";
+		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		assertEquals(expectIsGuest, actualIsGuest);
+		verifyNoActionMessages();
+		verifyNoActionErrors();
+	}
+
+	/**
+	 * 判斷該使用者是否存在於專案中
+	 * 1. assert user(ScrumTeam) 不存在於專案
+	 * 2. assert user(ScrumTeam) 存在於專案
+	 */
+	public void testUserIsInProject() {
+		String actionPath = "/viewProject";
+		String projectName = "TEST_PROJECT_1";
+
+		/**
+		 * Permission Denied
+		 */
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		IUserSession userSession = getUserSession(mCA.getAccountList().get(0));
+		request.getSession().setAttribute("UserSession", userSession);
+
+		// ================ set request info ========================
+		addRequestParameter("PID", projectName);
+
+		// 執行 view Project action
+		actionPerform();
+
+		// ================ assert ======================
+		verifyForward("permissionDenied");
+		verifyForwardPath("/PermissionDenied.jsp");
+		verifyNoActionMessages();
+		verifyNoActionErrors();
+
+		/**
+		 * user(ScrumTeam) 存在於專案
+		 */
+		cleanActionInformation();
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, mCA);
+		addUserToRole.exe_SM();
+
+		setRequestPathInformation(actionPath);
+
+		// ================ set session info ========================
+		AccountObject account = mCA.getAccountList().get(0);
+		userSession = getUserSession(account);
+		request.getSession().setAttribute("UserSession", userSession);
+
+		// ================ set request info ========================
+		addRequestParameter("PID", projectName);
+
+		// ================ 執行 action ======================
+		actionPerform();
+
+		// ================ assert ======================
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
+
+		String expectIsGuest = "false";
+		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		assertEquals(expectIsGuest, actualIsGuest);
+		verifyNoActionMessages();
+		verifyNoActionErrors();
+	}
 }
