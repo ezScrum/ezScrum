@@ -97,7 +97,7 @@ public class ProjectHelper {
 	 */
 	public List<AccountObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectScrumWorkers(project.getId());
+		return projectMapper.getProjectWorkers(project.getId());
 	}
 
 	public String getCreateProjectXML(HttpServletRequest request,

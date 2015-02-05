@@ -135,7 +135,7 @@ public class ProjectMapperTest{
 	@Test
 	public void testGetProjectScrumWorkersUsername(){
 		// check status before test
-		assertEquals(0, mProjectMapper.getProjectScrumWorkersUsername(mProjectId).size());
+		assertEquals(0, mProjectMapper.getProjectWorkersUsername(mProjectId).size());
 		
 		// test account data
 		String accountName = "TEST_ACCOUNT_NAME";
@@ -154,7 +154,7 @@ public class ProjectMapperTest{
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
-		ArrayList<String> userNameList = mProjectMapper.getProjectScrumWorkersUsername(mProjectId);
+		ArrayList<String> userNameList = mProjectMapper.getProjectWorkersUsername(mProjectId);
 		assertEquals(1, userNameList.size());
 		assertEquals(accountName, userNameList.get(0));
 	}

@@ -82,7 +82,7 @@ public class AccountHelperTest extends TestCase {
 		ca.exe();
 
 		List<String> accountsId = mProjectMapper
-				.getProjectScrumWorkersUsername(mProject.getId());
+				.getProjectWorkersUsername(mProject.getId());
 		assertEquals(0, accountsId.size());
 
 		AddUserToRole autr = new AddUserToRole(this.mCP, ca);
@@ -101,14 +101,14 @@ public class AccountHelperTest extends TestCase {
 		updatePermission(project, "ProductOwner", false); // 將 PO 角色設定成不能存取 TaskBoard
 
 		accountsId = this.mProjectMapper
-				.getProjectScrumWorkersUsername(this.mProject.getId());
+				.getProjectWorkersUsername(this.mProject.getId());
 		assertEquals(2, accountsId.size()); // 可以領取工作的角色剩下兩個
 		assertTrue(accountsId.contains(ca.getAccount_ID(3)));
 		assertTrue(accountsId.contains(ca.getAccount_ID(4)));
 
 		updatePermission(project, "ProductOwner", true); // 將 PO 角色設定成能存取 TaskBoard
 		accountsId = this.mProjectMapper
-				.getProjectScrumWorkersUsername(this.mProject.getId());
+				.getProjectWorkersUsername(this.mProject.getId());
 		assertEquals(3, accountsId.size()); // 可以領取工作的角色剩下四個
 		assertTrue(accountsId.contains(ca.getAccount_ID(2)));
 		assertTrue(accountsId.contains(ca.getAccount_ID(3)));

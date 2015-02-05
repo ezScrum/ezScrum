@@ -68,7 +68,7 @@ public class ShowSprintInformationAction extends Action {
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintPlanId());
 		request.setAttribute("SprintPlan", plan);
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkersUsername(projectObject.getId()));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(projectObject.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "
