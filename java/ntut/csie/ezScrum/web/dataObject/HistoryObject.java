@@ -48,13 +48,13 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	public HistoryObject(long issueId, int issueType, int historyType,
-			String oldValue, String newValue, long modifiedTime) {
+			String oldValue, String newValue, long createTime) {
 		setIssueId(issueId);
 		setIssueType(issueType);
 		setHistoryType(historyType);
 		setOldValue(oldValue);
 		setNewValue(newValue);
-		setModifiedTime(modifiedTime);
+		setCreateTime(createTime);
 	}
 
 	public HistoryObject setId(long id) {
@@ -87,8 +87,8 @@ public class HistoryObject implements IBaseObject {
 		return this;
 	}
 
-	public HistoryObject setModifiedTime(long modifiedTime) {
-		mCreateTime = modifiedTime;
+	public HistoryObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
 		return this;
 	}
 

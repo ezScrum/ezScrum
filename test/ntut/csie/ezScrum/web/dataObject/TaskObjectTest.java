@@ -744,7 +744,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
-				.setModifiedTime(changeStatusDate.getTime());
+				.setCreateTime(changeStatusDate.getTime());
 		history.save();
 		// check task status after add a history
 		assertEquals(TaskObject.STATUS_CHECK, task.getStatus(specificDate));
@@ -766,7 +766,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
-				.setModifiedTime(changeStatusDate1.getTime());
+				.setCreateTime(changeStatusDate1.getTime());
 		history1.save();
 		// create check task out history2
 		Date changeStatusDate2 = DateUtil.dayFillter("2015/02/04-16:14:01", DateUtil._16DIGIT_DATE_TIME);
@@ -775,7 +775,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(changeStatusDate2.getTime());
+				.setCreateTime(changeStatusDate2.getTime());
 		history2.save();
 		// check task status after add two change status histories
 		assertEquals(TaskObject.STATUS_DONE, task.getStatus(specificDate));
@@ -818,7 +818,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(specificDate.getTime());
+				.setCreateTime(specificDate.getTime());
 		history.save();
 		// check task status after close task
 		assertEquals(specificDate.getTime(), task.getDoneTime());
@@ -839,7 +839,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(specificDate1.getTime());
+				.setCreateTime(specificDate1.getTime());
 		history1.save();
 		// create a close task history
 		Date specificDate2 = DateUtil.dayFillter("2015/02/04-13:15:02", DateUtil._16DIGIT_DATE_TIME);
@@ -848,7 +848,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(specificDate2.getTime());
+				.setCreateTime(specificDate2.getTime());
 		history2.save();
 		// check task status after close task
 		assertEquals(specificDate2.getTime(), task.getDoneTime());
@@ -869,7 +869,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(specificDate1.getTime());
+				.setCreateTime(specificDate1.getTime());
 		history1.save();
 		// create a close task history
 		Date specificDate2 = DateUtil.dayFillter("2015/02/06-09:05:01", DateUtil._16DIGIT_DATE_TIME);
@@ -878,7 +878,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_STATUS)
 				.setOldValue(String.valueOf(task.getStatus()))
 				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
-				.setModifiedTime(specificDate2.getTime());
+				.setCreateTime(specificDate2.getTime());
 		history2.save();
 		// check task status after close task
 		assertEquals(specificDate2.getTime(), task.getDoneTime());
@@ -900,7 +900,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(task.getRemains()))
 				.setNewValue(String.valueOf(5))
-				.setModifiedTime(changeStatusDate.getTime());
+				.setCreateTime(changeStatusDate.getTime());
 		history.save();
 		// check task remains after add a update task remains history
 		assertEquals(5, task.getRemains(specificDate));
@@ -922,7 +922,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(task.getRemains()))
 				.setNewValue(String.valueOf(5))
-				.setModifiedTime(changeRemainsDate1.getTime());
+				.setCreateTime(changeRemainsDate1.getTime());
 		history1.save();
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/04-16:14:01", DateUtil._16DIGIT_DATE_TIME);
@@ -931,7 +931,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(5))
 				.setNewValue(String.valueOf(8))
-				.setModifiedTime(changeRemainsDate2.getTime());
+				.setCreateTime(changeRemainsDate2.getTime());
 		history2.save();
 		// check task remains after add two change remains histories
 		assertEquals(8, task.getRemains(specificDate));
@@ -953,7 +953,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(10))
 				.setNewValue(String.valueOf(9))
-				.setModifiedTime(changeRemainsDate1.getTime());
+				.setCreateTime(changeRemainsDate1.getTime());
 		history1.save();
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
@@ -962,7 +962,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(9))
 				.setNewValue(String.valueOf(8))
-				.setModifiedTime(changeRemainsDate2.getTime());
+				.setCreateTime(changeRemainsDate2.getTime());
 		history2.save();
 		// create a update task remains history3
 		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/07", DateUtil._8DIGIT_DATE_1);
@@ -971,7 +971,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(8))
 				.setNewValue(String.valueOf(7))
-				.setModifiedTime(changeRemainsDate3.getTime());
+				.setCreateTime(changeRemainsDate3.getTime());
 		history3.save();
 		// create a update task remains history4
 		Date changeRemainsDate4 = DateUtil.dayFillter("2015/02/08", DateUtil._8DIGIT_DATE_1);
@@ -980,7 +980,7 @@ public class TaskObjectTest {
 				.setHistoryType(HistoryObject.TYPE_REMAIMS)
 				.setOldValue(String.valueOf(7))
 				.setNewValue(String.valueOf(6))
-				.setModifiedTime(changeRemainsDate4.getTime());
+				.setCreateTime(changeRemainsDate4.getTime());
 		history4.save();
 		// check task remains after add five change remains histories
 		assertEquals(10, task.getRemains(firstDate));

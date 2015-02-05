@@ -112,7 +112,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 				.setHistoryType(result.getInt(HistoryEnum.HISTORY_TYPE))
 				.setOldValue(result.getString(HistoryEnum.OLD_VALUE))
 				.setNewValue(result.getString(HistoryEnum.NEW_VALUE))
-				.setModifiedTime(result.getLong(HistoryEnum.CREATE_TIME));
+				.setCreateTime(result.getLong(HistoryEnum.CREATE_TIME));
 		return history;
 	}
 }

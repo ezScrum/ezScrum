@@ -76,7 +76,7 @@ public class HistoryDAOTest extends TestCase {
 		HistoryObject history = new HistoryObject();
 		history.setHistoryType(HistoryObject.TYPE_IMPORTANCE)
 				.setNewValue(oldValue).setOldValue(newValue)
-				.setModifiedTime(modifiedTime)
+				.setCreateTime(modifiedTime)
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setIssueId(1);
 
 		long id = mHistoryDao.create(history);

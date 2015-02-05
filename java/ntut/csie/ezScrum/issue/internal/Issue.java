@@ -595,8 +595,7 @@ public class Issue implements IIssue {
 	 * for ezScrum v1.8 temp function
 	 */
 	public ArrayList<HistoryObject> getHistories() throws SQLException {
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		mHistories = historyDao.getHistoriesByIssue(mId, getIssueType());
+		mHistories = HistoryDAO.getInstance().getHistoriesByIssue(mId, getIssueType());
 		return mHistories;
 	}
 

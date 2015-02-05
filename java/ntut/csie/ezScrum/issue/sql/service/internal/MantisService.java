@@ -711,7 +711,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 				HistoryObject.TYPE_NAME,
 				oldSummary,
 				name,
-				System.currentTimeMillis());
+				modifyDate.getTime());
 		nameHistory.save();
 	}
 
