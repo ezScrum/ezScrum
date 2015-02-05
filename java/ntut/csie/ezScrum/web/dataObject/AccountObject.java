@@ -210,7 +210,7 @@ public class AccountObject implements IBaseObject {
 
 	@Override
 	public void save() {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			doUpdate();
 		} else {
 			doCreate();
@@ -218,17 +218,16 @@ public class AccountObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() throws Exception {
-		if (recordExists()) {
+	public void reload() {
+		if (isRecordExist()) {
 			AccountObject account = AccountDAO.getInstance().get(mId);
-			if (account != null) {
-				resetData(account);
-			}
+			resetData(account);
 		}
 	}
 
-	private boolean recordExists() {
-		return mId > 0;
+	private boolean isRecordExist() {
+		AccountObject account = AccountDAO.getInstance().get(mId);
+		return account != null;
 	}
 
 	private void resetData(AccountObject account) {
@@ -242,10 +241,7 @@ public class AccountObject implements IBaseObject {
 
 	private void doCreate() {
 		mId = AccountDAO.getInstance().create(this);
-		try {
-			reload();
-		} catch (Exception e) {
-		}
+		reload();
 	}
 
 	private void doUpdate() {

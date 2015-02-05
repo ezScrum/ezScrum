@@ -188,6 +188,7 @@ public class AccountObjectTest{
 
 		json.put(AccountEnum.ID, account.getId())
 		        .put(AccountEnum.USERNAME, account.getUsername())
+		        .put(AccountEnum.NICK_NAME, account.getNickName())
 		        .put(AccountEnum.PASSWORD, account.getPassword())
 		        .put(AccountEnum.EMAIL, account.getEmail())
 		        .put(AccountEnum.ENABLE, account.getEnable())
