@@ -1,11 +1,15 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import static org.junit.Assert.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -16,10 +20,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class UnplannedItemMapperTest extends TestCase {
+public class UnplannedItemMapperTest {
 	private CreateProject mCreateProject;
 	private CreateSprint mCreateSprint;
 	private CreateUnplannedItem mCreateUnplanned; 
@@ -28,11 +31,8 @@ public class UnplannedItemMapperTest extends TestCase {
 	private IProject mProject;
 	private UnplannedItemMapper mUnplannedMapper;
 
-	public UnplannedItemMapperTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws InterruptedException {
+	@Before
+	public void setUp() throws InterruptedException {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -65,7 +65,8 @@ public class UnplannedItemMapperTest extends TestCase {
 		ini = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -83,10 +84,9 @@ public class UnplannedItemMapperTest extends TestCase {
     	mCreateProject = null;
     	projectManager = null;
     	mConfig = null;
-    	
-    	super.tearDown();
 	}
 	
+	@Test
 	public void testUpdate_History() throws SQLException {
 		long issueId = mCreateUnplanned.getIdList().get(0);
 		String name = "快接 task 啦";
@@ -131,7 +131,7 @@ public class UnplannedItemMapperTest extends TestCase {
 		// check 2th history
 		assertEquals(16, histories.get(1).getHistoryType());
 		assertEquals("Append to Sprint #1", histories.get(1).getDescription());
-//		// check 3th history
+		// check 3th history
 		assertEquals(2, histories.get(2).getHistoryType());
 		assertEquals("\"p1s1_TEST_UNPLANNED_1\" => \"快接 task 啦\"", histories.get(2).getDescription());
 		// check 4th history
