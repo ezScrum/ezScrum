@@ -268,9 +268,8 @@ public class Translation {
 		jsonIssue.append("Id", task.getId());
 		jsonIssue.append("Link", "");
 		jsonIssue.append("Name", task.getName());
-		jsonIssue.append("Handler", task.getHandler().getUsername());
+		jsonIssue.append("Handler", task.getHandler() == null ? "" : task.getHandler().getUsername());
 		jsonIssue.append("Partners", task.getPartnersUsername());
-
 		obj.append("Issue", jsonIssue);
 
 		return obj.toString();

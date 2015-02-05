@@ -84,8 +84,7 @@ public class SprintBacklogLogic {
 						mUserSession, sprintId);
 			}
 		} catch (Exception e) {
-			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-					mUserSession);
+			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
 	}

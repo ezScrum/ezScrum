@@ -183,16 +183,16 @@ public class RemainingWorkReport {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
 			if ((mToday.getDate() == timeStamp.getDate()) &&
 			        (Math.abs(mToday.getTime() - timeStamp.getTime()) <= mOneDay)) {
-				countStroyStatusChange(stories, taskMap, mToday);
+				countStoryStatusChange(stories, taskMap, mToday);
 				break;
 			} else {
-				countStroyStatusChange(stories, taskMap, timeStamp);
+				countStoryStatusChange(stories, taskMap, timeStamp);
 			}
 			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
 		}
 	}
 
-	private void countStroyStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
+	private void countStoryStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
 		int doneCount = 0, assignCount = 0, nonCount = 0;
 		if (date.getTime() != mToday.getTime()) {
 			// 當日期不為當天時，要做處理

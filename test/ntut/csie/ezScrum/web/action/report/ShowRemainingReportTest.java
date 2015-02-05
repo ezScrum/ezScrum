@@ -372,7 +372,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
-		CS.exe(); 	// 新增兩個 Sprint
+		CS.exe(); 	// 新增1個 Sprint
 		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
 		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
@@ -382,9 +382,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintID = CS.getSprintIDList().get(0);
 		// 1個story設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.closeStory(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getNotes(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
-		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
 		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
@@ -430,14 +429,12 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
 		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
-		Thread.sleep(1000);
 
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
 		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
-		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd-HH:mm");

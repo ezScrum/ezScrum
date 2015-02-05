@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -89,7 +90,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		IProject project = this.CP.getProjectList().get(0);
 		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
 		Long TaskID = task.getId();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
@@ -116,14 +117,14 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
+							.append("\"Link\":\"").append("\",")
 							.append("\"Name\":\"").append(task.getName()).append("\",")
-							.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
-							.append("\"Partners\":\"").append(task.getPartners()).append("\"}")
+							.append("\"Handler\":\"").append("").append("\",")
+							.append("\"Partners\":\"").append(task.getPartnersUsername()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals(ITSEnum.S_NEW_STATUS, task.getStatus()); // 判斷Task狀態是不是回到new了
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus()); // 判斷Task狀態是不是回到Uncheck了
 
 		// ============= release ==============
 		project = null;

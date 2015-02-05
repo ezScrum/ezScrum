@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -97,6 +98,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
 		addRequestParameter("Name", task.getName());
 		addRequestParameter("Notes", task.getNotes());
+		addRequestParameter("IssueType", "Task");
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
@@ -112,18 +114,23 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		// 驗證是否正確存入資料
 		task = TaskObject.get(TaskID); // 重新取得Task資訊
 		StringBuilder expectedResponseText = new StringBuilder();
+		String handlerUsername = "";
+		AccountObject handler = task.getHandler();
+		if (handler != null) {
+			handlerUsername = handler.getUsername();
+		}
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
+							.append("\"Link\":\"").append("\",")
 							.append("\"Name\":\"").append(task.getName()).append("\",")
-							.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
-							.append("\"Partners\":\"").append(task.getPartners()).append("\"}")
+							.append("\"Handler\":\"").append(handlerUsername).append("\",")
+							.append("\"Partners\":\"").append(task.getPartnersUsername()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals(ITSEnum.S_ASSIGNED_STATUS, task.getStatus()); // 判斷Task狀態是不是回到assigned了
+		assertEquals(TaskObject.STATUS_CHECK, task.getStatus()); // 判斷Task狀態是不是回到assigned了
 
 		// ============= release ==============
 		project = null;
@@ -138,13 +145,14 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		IProject project = this.CP.getProjectList().get(0);
 		IIssue issue = this.ASS.getStories().get(0); // 取得Story資訊
 		Long StoryID = issue.getIssueID();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(StoryID));
 		addRequestParameter("Name", issue.getSummary());
 		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("IssueType", "Story");
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
