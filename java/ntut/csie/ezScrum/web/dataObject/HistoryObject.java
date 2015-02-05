@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
@@ -327,7 +328,7 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	private void doCreate() {
-		HistoryDAO.getInstance().create(this);
+		mId =  HistoryDAO.getInstance().create(this);
 	}
 
 	@Override

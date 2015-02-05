@@ -254,23 +254,23 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			issueType = IssueTypeEnum.TYPE_RETROSPECTIVE;
 		}
 		
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							issueId, 
-							issueType, 
-							HistoryObject.TYPE_CREATE,
-							"",
-							"",
-							System.currentTimeMillis()));
-		
+		HistoryObject createHisytory = new HistoryObject(
+				issueId, 
+				issueType, 
+				HistoryObject.TYPE_CREATE,
+				"",
+				"",
+				System.currentTimeMillis());
+		createHisytory.save();
 		if (issue.getParentId() > 0) {
-			historyDao.create(new HistoryObject(
-								issueId, 
-								issueType, 
-								HistoryObject.TYPE_APPEND,
-								"",
-								String.valueOf(issue.getParentId()),
-								System.currentTimeMillis()));
+			HistoryObject appendHistory = new HistoryObject(
+					issueId, 
+					issueType, 
+					HistoryObject.TYPE_APPEND,
+					"",
+					String.valueOf(issue.getParentId()),
+					System.currentTimeMillis());
+			appendHistory.save();
 		}
 		
 		return issueId;
@@ -585,23 +585,22 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 		
 		if (type == ITSEnum.PARENT_RELATIONSHIP) {
-			HistoryDAO historyDao = HistoryDAO.getInstance();
-			
-			historyDao.create(new HistoryObject(
-								sourceId, 
-								IssueTypeEnum.TYPE_STORY, 
-								HistoryObject.TYPE_ADD,
-								"",
-								String.valueOf(targetId),
-								date.getTime()));
-			
-			historyDao.create(new HistoryObject(
-								targetId, 
-								IssueTypeEnum.TYPE_TASK, 
-								HistoryObject.TYPE_APPEND,
-								"",
-								String.valueOf(sourceId),
-								date.getTime()));
+			HistoryObject addTaskHistory = new HistoryObject(
+					sourceId, 
+					IssueTypeEnum.TYPE_STORY, 
+					HistoryObject.TYPE_ADD,
+					"",
+					String.valueOf(targetId),
+					date.getTime());
+			addTaskHistory.save();
+			HistoryObject appendedToStoryHistory = new HistoryObject(
+					targetId, 
+					IssueTypeEnum.TYPE_TASK, 
+					HistoryObject.TYPE_APPEND,
+					"",
+					String.valueOf(sourceId),
+					date.getTime());
+			appendedToStoryHistory.save();
 		}
 	}
 
@@ -620,23 +619,23 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			getControl().execute(query);
 			
 			long time = System.currentTimeMillis();
-			HistoryDAO historyDao = HistoryDAO.getInstance();
+			HistoryObject dropTaskHistory = new HistoryObject(
+					sourceId, 
+					IssueTypeEnum.TYPE_STORY, 
+					HistoryObject.TYPE_DROP,
+					"",
+					String.valueOf(targetId),
+					time);
+			dropTaskHistory.save();
 			
-			historyDao.create(new HistoryObject(
-								sourceId, 
-								IssueTypeEnum.TYPE_STORY, 
-								HistoryObject.TYPE_DROP,
-								"",
-								String.valueOf(targetId),
-								time));
-			
-			historyDao.create(new HistoryObject(
-								targetId, 
-								IssueTypeEnum.TYPE_TASK, 
-								HistoryObject.TYPE_REMOVE,
-								"",
-								String.valueOf(sourceId),
-								time));
+			HistoryObject removedFromStoryHistory = new HistoryObject(
+					targetId, 
+					IssueTypeEnum.TYPE_TASK, 
+					HistoryObject.TYPE_REMOVE,
+					"",
+					String.valueOf(sourceId),
+					time);
+			removedFromStoryHistory.save();
 		}
 	}
 
@@ -661,22 +660,20 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		String updateQuery = valueSet.getUpdateQuery();
 
 		getControl().execute(updateQuery);
-
-		HistoryDAO historyDao = HistoryDAO.getInstance();
 		String newActor = getUserID(handler) + "";
 		String oldActorString = "";
 		if (oldActor > 0) {
 			oldActorString = String.valueOf(oldActor);
 		}
-		historyDao.create(new HistoryObject(
-							issue.getIssueID(), 
-							issue.getIssueType(), 
-							HistoryObject.TYPE_HANDLER,
-							// issue 沒有 actor 會回傳 0, 如果 actor == 0 則存入空字串
-							oldActorString,
-							newActor,
-							System.currentTimeMillis()));
-
+		HistoryObject history = new HistoryObject(
+				issue.getIssueID(), 
+				issue.getIssueType(), 
+				HistoryObject.TYPE_HANDLER,
+				// issue 沒有 actor 會回傳 0, 如果 actor == 0 則存入空字串
+				oldActorString,
+				newActor,
+				System.currentTimeMillis());
+		history.save();
 //		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
 //			historyDao.add(new HistoryObject(
 //								issue.getIssueID(), 
@@ -708,14 +705,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(updateQuery);
 
 		// 新增歷史記錄
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							issue.getIssueID(), 
-							issue.getIssueType(), 
-							HistoryObject.TYPE_NAME,
-							oldSummary,
-							name,
-							System.currentTimeMillis()));
+		HistoryObject nameHistory = new HistoryObject(
+				issue.getIssueID(), 
+				issue.getIssueType(), 
+				HistoryObject.TYPE_NAME,
+				oldSummary,
+				name,
+				System.currentTimeMillis());
+		nameHistory.save();
 	}
 
 	@Override
@@ -736,15 +733,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							issue.getIssueID(), 
-							issue.getIssueType(), 
-							HistoryObject.TYPE_STATUS,
-							String.valueOf(oldStatus),
-							String.valueOf(ITSEnum.CLOSED_STATUS),
-							System.currentTimeMillis()));
-
+		HistoryObject history = new HistoryObject(
+				issue.getIssueID(), 
+				issue.getIssueType(), 
+				HistoryObject.TYPE_STATUS,
+				String.valueOf(oldStatus),
+				String.valueOf(ITSEnum.CLOSED_STATUS),
+				System.currentTimeMillis());
+		history.save();
 		if (bugNote != null && !bugNote.equals("")) {
 			issue.addIssueNote(bugNote);
 			updateBugNote(issue);
@@ -754,14 +750,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	public void insertBugNote(long issueId, String note) {
 		IIssue issue = getIssue(issueId);
 		mNoteService.insertBugNote(issueId, note);
-		
-		HistoryDAO.getInstance().create(new HistoryObject(
-										issueId,
-										issue.getIssueType(),
-										HistoryObject.TYPE_STATUS,
-										String.valueOf(ITSEnum.NEW_STATUS),
-										String.valueOf(ITSEnum.ASSIGNED_STATUS),
-										System.currentTimeMillis()));
+		HistoryObject statusHistory = new HistoryObject(
+				issueId,
+				issue.getIssueType(),
+				HistoryObject.TYPE_STATUS,
+				String.valueOf(ITSEnum.NEW_STATUS),
+				String.valueOf(ITSEnum.ASSIGNED_STATUS),
+				System.currentTimeMillis());
+		statusHistory.save();
 	}
 
 	@Override
@@ -787,15 +783,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		getControl().execute(query);
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							issue.getIssueID(), 
-							issue.getIssueType(), 
-							HistoryObject.TYPE_STATUS,
-							String.valueOf(oldStatus),
-							String.valueOf(ITSEnum.ASSIGNED_STATUS),
-							reopenDate.getTime()));
-
+		HistoryObject statusHistory = new HistoryObject(
+				issue.getIssueID(), 
+				issue.getIssueType(), 
+				HistoryObject.TYPE_STATUS,
+				String.valueOf(oldStatus),
+				String.valueOf(ITSEnum.ASSIGNED_STATUS),
+				reopenDate.getTime());
+		statusHistory.save();
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
 			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR,
@@ -845,15 +840,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個 resolution 的 history ,因為不是很重要,就暫時沒加入
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(
-							issue.getIssueID(), 
-							issue.getIssueType(), 
-							HistoryObject.TYPE_STATUS,
-							String.valueOf(oldStatus),
-							String.valueOf(ITSEnum.NEW_STATUS),
-							resetDate.getTime()));
-
+		HistoryObject statusHistory = new HistoryObject(
+				issue.getIssueID(), 
+				issue.getIssueType(), 
+				HistoryObject.TYPE_STATUS,
+				String.valueOf(oldStatus),
+				String.valueOf(ITSEnum.NEW_STATUS),
+				resetDate.getTime());
+		statusHistory.save();
 		if (bugNote != null && !bugNote.equals("")) {
 			Element history = new Element(ScrumEnum.HISTORY_TAG);
 			history.setAttribute(ScrumEnum.ID_HISTORY_ATTR,
