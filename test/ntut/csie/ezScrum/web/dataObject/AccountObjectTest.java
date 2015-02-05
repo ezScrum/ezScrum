@@ -19,7 +19,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
@@ -27,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AccountObjectTest{
-	private MySQLService mService;
 	private MySQLControl mControl = null;
 	private Configuration configuration = null;
 
@@ -39,8 +37,6 @@ public class AccountObjectTest{
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
-		mService = new MySQLService(configuration);
-		mService.openConnect();
 		
 		mControl = new MySQLControl(configuration);
 		mControl.connection();
@@ -50,7 +46,6 @@ public class AccountObjectTest{
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();
-		mService.closeConnect();
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
@@ -59,7 +54,6 @@ public class AccountObjectTest{
 		configuration.setTestMode(false);
 		configuration.save();
 		mControl = null;
-		mService = null;
 		configuration = null;
 	}
 	
