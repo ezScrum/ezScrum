@@ -111,6 +111,32 @@ public class SprintBacklogTreeStructureTest {
 			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_5"));
 		}
 	}
+	
+	@Test
+	public void testTaskRemainsByHistories_2() {
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		// add a change remains history on 2010/7/12
+		mTask.setRemains(5);
+		mTask.save(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history on 2010/7/14
+		mTask.setRemains(0);
+		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
+		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(mTask);
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
+				mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree
+				.GetTasksTreeListForTest();
+		for (SprintBacklogTreeStructure taskTree : trees) {
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+		}
+	}
 
 	// Sprint Date 有跳過假日
 	@Test
@@ -146,19 +172,13 @@ public class SprintBacklogTreeStructureTest {
 			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_5"));
 		}
 	}
-
+	
 	// History 沒有 Remain 將以 ESTIMATION 代替
 	@Test
-	public void testTaskRemainsByHistories_2() {
+	public void testTaskRemainsByHistories_WithNoChangeRemainsHistory() {
 		// check task remains before test
 		Date taskCreateDate = new Date(mTask.getCreateTime());
 		assertEquals(10.0, mTask.getRemains(taskCreateDate));
-		// add a change remains history on 2010/7/12
-		mTask.setRemains(5);
-		mTask.save(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1).getTime());
-		// add a change remains history on 2010/7/14
-		mTask.setRemains(0);
-		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
 		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
@@ -168,30 +188,9 @@ public class SprintBacklogTreeStructureTest {
 		List<SprintBacklogTreeStructure> trees = tree
 				.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
-			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_3"));
 		}
 	}
-	
-	// History 沒有 Remain 將以 ESTIMATION 代替
-		@Test
-		public void testTaskRemainsByHistories_WithNoChangeRemainsHistory() {
-			// check task remains before test
-			Date taskCreateDate = new Date(mTask.getCreateTime());
-			assertEquals(10.0, mTask.getRemains(taskCreateDate));
-			mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
-			ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
-			ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-			tasks.add(mTask);
-			SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-					mStory, tasks, dates);
-			List<SprintBacklogTreeStructure> trees = tree
-					.GetTasksTreeListForTest();
-			for (SprintBacklogTreeStructure taskTree : trees) {
-				assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-				assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-				assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_3"));
-			}
-		}
 }
