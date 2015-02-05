@@ -225,7 +225,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		mAddUserToRole.exe_PO();
 
 		// ================ set initial data =======================
-		long accountId = 1; 			// admin
+		long accountId = 1;
 		long projectId = mAddUserToRole.getNowProjectObject().getId();
 		String projectName = mAddUserToRole.getNowProjectObject().getName();
 		String scrumRole = ScrumEnum.SCRUMROLE_ADMIN;
@@ -340,7 +340,6 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		String viewProjectListExpected = "<Projects></Projects>";
 		String viewProjectListActual = response.getWriterBuffer().toString();
 		assertEquals(viewProjectListExpected, viewProjectListActual);
-
 	}
 
 	private IUserSession getUserSession(AccountObject account) {

@@ -25,10 +25,11 @@ public class RemoveUserAction extends Action {
 			accountId = Long.parseLong(request.getParameter("id"));
 			projectId = Long.parseLong(request.getParameter("resource"));
 		} catch (NumberFormatException e) {
-			accountId = 0;
 			if (request.getParameter("resource").equals("system")) {
+				accountId = Long.parseLong(request.getParameter("id"));
 				projectId = 0;
 			} else {
+				accountId = 0;
 				projectId = -1;
 			}
 		}
@@ -37,11 +38,11 @@ public class RemoveUserAction extends Action {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountHelper accountHelper = new AccountHelper(session);
 		
-		if (accountId > 0 && projectId > 0 && role != null) {
+		if (accountId > 0 && projectId > -1 && role != null) {
 			try {
 				AccountObject account = accountHelper.removeAssignRole(accountId, projectId, role);
 				
-				// 刪除Session中關於該使用者的所有專案權限。
+				// 刪除 Session 中關於該使用者的所有專案權限。
 				SessionManager.removeScrumRolesMap(request, account);
 				response.setContentType("text/xml; charset=utf-8");
 				response.getWriter().write(accountHelper.getAccountXML(account));				
