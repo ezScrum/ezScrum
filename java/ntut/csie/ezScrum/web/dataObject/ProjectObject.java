@@ -165,7 +165,7 @@ public class ProjectObject implements IBaseObject {
 	
 	@Override
     public void save() {
-		if (isRecordExist()) {
+		if (exists()) {
 			doUpdate();			
 		} else {
 			doCreate();
@@ -174,7 +174,7 @@ public class ProjectObject implements IBaseObject {
 
 	@Override
     public void reload() {
-		if (isRecordExist()) {
+		if (exists()) {
 			ProjectObject project = ProjectDAO.getInstance().get(mId);
 			resetData(project);
 		}
@@ -189,7 +189,7 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean isRecordExist() {
+	private boolean exists() {
 		ProjectObject project = ProjectDAO.getInstance().get(mId);
 		return project != null;
 	}

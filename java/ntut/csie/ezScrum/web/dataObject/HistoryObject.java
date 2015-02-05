@@ -284,7 +284,7 @@ public class HistoryObject implements IBaseObject {
 		return sdf.format(new Date(mCreateTime));
 	}
 	
-	private boolean recordExists() {
+	private boolean exists() {
 		HistoryObject history = HistoryDAO.getInstance().get(mId);
 		return history != null;
 	}
@@ -295,7 +295,7 @@ public class HistoryObject implements IBaseObject {
 
 	@Override
 	public void save() {
-		if (!recordExists()) {
+		if (!exists()) {
 			doCreate();
 		}
 	}
