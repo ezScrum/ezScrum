@@ -102,7 +102,7 @@ public class HistoryDAOTest extends TestCase {
 				assertEquals(history.getOldValue(),
 						result.getString(HistoryEnum.OLD_VALUE));
 				assertEquals(history.getCreateTime(),
-						result.getLong(HistoryEnum.MODIFIED_TIME));
+						result.getLong(HistoryEnum.CREATE_TIME));
 				assertEquals(id, result.getLong(HistoryEnum.ID));
 				assertEquals(history.getNewValue(),
 						result.getString(HistoryEnum.NEW_VALUE));
@@ -126,7 +126,7 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
 			mControl.execute(query, true);
@@ -162,7 +162,7 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
 			mControl.execute(query, true);
@@ -202,7 +202,7 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
 			mControl.execute(query, true);
@@ -242,7 +242,7 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
 			mControl.execute(query, true);
