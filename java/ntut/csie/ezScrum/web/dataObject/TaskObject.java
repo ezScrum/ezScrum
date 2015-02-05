@@ -370,7 +370,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public void save() {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
@@ -384,7 +384,7 @@ public class TaskObject implements IBaseObject {
 	 * @param specificTime
 	 */
 	public void save(long specificTime) {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			mUpdateTime = specificTime;
 			doUpdate(specificTime);
 		} else {
@@ -394,7 +394,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public void reload() {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			TaskObject task = TaskDAO.getInstance().get(mId);
 			resetData(task);
 		}
@@ -410,7 +410,7 @@ public class TaskObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean recordExists() {
+	private boolean isRecordExist() {
 		TaskObject task = TaskDAO.getInstance().get(mId);
 		return task != null;
 	}

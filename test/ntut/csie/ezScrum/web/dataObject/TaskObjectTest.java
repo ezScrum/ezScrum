@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Sam Huang 2014/12/23
+ * @author samhuang 2014/12/23
  * 
  */
 public class TaskObjectTest {

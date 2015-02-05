@@ -21,7 +21,6 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class ProjectObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
-
 	private long mId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mDisplayName = "";
@@ -30,9 +29,6 @@ public class ProjectObject implements IBaseObject {
 	private long mAttachFileSize = DEFAULT_VALUE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-	private ArrayList<AccountObject> mMembers = null;
-	private ArrayList<AccountObject> mWorkers = null;
-	private ArrayList<TaskObject> mTasksWithNoParent = null;
 	
 	public ProjectObject(String name) {
 		mName = name;
@@ -144,24 +140,18 @@ public class ProjectObject implements IBaseObject {
 	}
 	
 	public ArrayList<AccountObject> getProjectMembers() {
-		if (mMembers == null) {
-			mMembers = AccountDAO.getInstance().getProjectMembers(mId);
-		}
-		return mMembers;
+		ArrayList<AccountObject> projectMembers = AccountDAO.getInstance().getProjectMembers(mId);
+		return projectMembers;
 	}
 	
 	public ArrayList<AccountObject> getProjectWorkers() {
-		if (mWorkers == null) {
-			mWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
-		}
-		return mWorkers;
+		ArrayList<AccountObject> projectWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
+		return projectWorkers;
 	}
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {
-		if (mTasksWithNoParent == null) {
-			mTasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
-		}
-		return mTasksWithNoParent;
+		ArrayList<TaskObject> tasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
+		return tasksWithNoParent;
 	}
 	
 	public ScrumRole getScrumRole(RoleEnum role) {
@@ -175,7 +165,7 @@ public class ProjectObject implements IBaseObject {
 	
 	@Override
     public void save() {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			doUpdate();			
 		} else {
 			doCreate();
@@ -184,11 +174,9 @@ public class ProjectObject implements IBaseObject {
 
 	@Override
     public void reload() {
-		if (recordExists()) {
+		if (isRecordExist()) {
 			ProjectObject project = ProjectDAO.getInstance().get(mId);
-			if (project != null) {
-				resetData(project);
-			}
+			resetData(project);
 		}
     }
 
@@ -201,8 +189,9 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean recordExists() {
-		return mId > 0;
+	private boolean isRecordExist() {
+		ProjectObject project = ProjectDAO.getInstance().get(mId);
+		return project != null;
 	}
 	
 	private void resetData(ProjectObject project) {
@@ -214,17 +203,11 @@ public class ProjectObject implements IBaseObject {
 		mManager = project.getManager();
 		mCreateTime = project.getCreateTime();
 		mUpdateTime = project.getUpdateTime();
-		mMembers = null;
-		mWorkers = null;
-		mTasksWithNoParent = null;
 	}
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
-		try {
-	        reload();
-        } catch (Exception e) {
-        }
+        reload();
 	}
 	
 	private void doUpdate() {
