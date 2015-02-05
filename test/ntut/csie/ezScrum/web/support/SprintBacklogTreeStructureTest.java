@@ -10,13 +10,13 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 
-import org.jdom.Element;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +27,12 @@ public class SprintBacklogTreeStructureTest {
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private Configuration mConfiguration = null;
 	private AccountObject mHandler;
+	private CreateProject mCP = null;
+	private final static int PROJECT_COUNT = 1;
+	private long mProjectId = -1;
 	
 	@Before
 	public void setUp() {
-		long projectId = 1;
 		// initialize database
 		mConfiguration = new Configuration();
 		mConfiguration.setTestMode(true);
@@ -38,12 +40,18 @@ public class SprintBacklogTreeStructureTest {
 		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();// 初始化 SQL
 		ini = null;
+		// create project
+		mCP = new CreateProject(PROJECT_COUNT);
+		mCP.exeCreate();
+		mProjectId = mCP.getAllProjects().get(0).getId();
+		// create story
 		mStory = new Issue();
 		mStory.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
+		// create handler
 		mHandler = new AccountObject("account_handler");
 		mHandler.save();
 		// create a task
-		mTask = new TaskObject(projectId);
+		mTask = new TaskObject(mProjectId);
 		mTask.setHandlerId(mHandler.getId());
 		mTask.setEstimate(10);
 		mTask.save();
@@ -69,9 +77,25 @@ public class SprintBacklogTreeStructureTest {
 	// Sprint Date 沒有跳過假日
 	@Test
 	public void testRemainingBySprintDaysCase_1() {
-		
-		mSprintBacklogLogic.calculateSprintBacklogDateList(new Date(
-				"2010/07/12"), 5);
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		// add a change remains history
+		mTask.setRemains(9);
+		mTask.save(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(8);
+		mTask.save(DateUtil.dayFillter("2010/07/13", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(7);
+		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(6);
+		mTask.save(DateUtil.dayFillter("2010/07/15", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(5);
+		mTask.save(DateUtil.dayFillter("2010/07/16", DateUtil._8DIGIT_DATE_1).getTime());
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 5);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
@@ -80,11 +104,11 @@ public class SprintBacklogTreeStructureTest {
 		List<SprintBacklogTreeStructure> trees = tree
 				.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
-			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
-			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_4"));
-			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_5"));
+			assertEquals("9.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("8.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("7.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+			assertEquals("6.0", taskTree.GetDatetoRemainMap().get("Date_4"));
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_5"));
 		}
 	}
 

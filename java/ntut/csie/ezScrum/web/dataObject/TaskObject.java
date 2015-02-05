@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.google.appengine.repackaged.org.apache.commons.httpclient.util.DateUtil;
 
 public class TaskObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = 1;
@@ -179,7 +182,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public int getStatus(Date date) {
-		long lastSecondOfTheDate = getLastSecond(date);
+		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = TaskObject.STATUS_UNCHECK;
 		ArrayList<HistoryObject> histories = getHistories();
 		for (HistoryObject history : histories) {
@@ -231,25 +234,25 @@ public class TaskObject implements IBaseObject {
 		return doneTime;
 	}
 
-	private long getLastSecond(Date date) {
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/M/yyyy");
-		String formattedDateString = dateFormatter.format(date);
-		long lastSecondOfTheDate = new Date().getTime();
-		try {
-			Date formattedDate = dateFormatter.parse(formattedDateString);
-			long firstSecondOfTheDate = formattedDate.getTime();
-			// move to 23 hours 59 minutes 59 seconds the
-			// last second in one day
-			// (24 hours = 86400 seconds = 86400000 milliseconds)
-			lastSecondOfTheDate = firstSecondOfTheDate + 86399999;
-		} catch (ParseException parseException) {
-			parseException.printStackTrace();
+	private long getLastMillisecondOfDate(Date date) {
+		if (date == null) {
+			date = new Date();
 		}
-		return lastSecondOfTheDate;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY,
+		calendar.getMaximum(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+		calendar.set(Calendar.MILLISECOND,
+		calendar.getMaximum(Calendar.MILLISECOND));
+		Date endOfDate = calendar.getTime();
+		long lastSecondOfDate = endOfDate.getTime();
+		return lastSecondOfDate;
 	}
 
 	public double getRemains(Date date) {
-		long lastSecondOfTheDate = getLastSecond(date);
+		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		double remains = mRemains;
 		ArrayList<HistoryObject> histories = getHistories();
 		for (HistoryObject history : histories) {
@@ -312,8 +315,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<HistoryObject> getHistories() {
-		ArrayList<HistoryObject> histories = HistoryDAO.getInstance().getHistoriesByIssue(mId,
-				IssueTypeEnum.TYPE_TASK);
+		ArrayList<HistoryObject> histories = HistoryDAO.getInstance()
+				.getHistoriesByIssue(mId, IssueTypeEnum.TYPE_TASK);
 		return histories;
 	}
 
