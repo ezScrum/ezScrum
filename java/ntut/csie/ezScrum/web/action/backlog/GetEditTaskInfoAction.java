@@ -3,9 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -38,60 +39,30 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
-		long issueID = Long.parseLong(request.getParameter("issueID"));
+		String sprintId = request.getParameter("sprintID");
+		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
-//		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintId);
 		
 		StringBuilder result = new StringBuilder();
-		IIssue issue = sprintBacklogHelper.getStory(issueID);
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
+		
+		String handlerUsername = "";
+		AccountObject handler = task.getHandler();
+		if (handler != null) {
+			handlerUsername = handler.getUsername();
+		}
 		result.append("<EditTask><Task>");
-		result.append("<Id>" + issue.getIssueID() + "</Id>");
-		result.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
-		result.append("<Estimate>" + issue.getEstimated() + "</Estimate>");
-		result.append("<Actual>" + issue.getActualHour() + "</Actual>");
-		result.append("<Handler>" + tsc.TranslateXMLChar(issue.getAssignto()) + "</Handler>");
-		result.append("<Remains>" + issue.getRemains() + "</Remains>");
-		result.append("<Partners>" + tsc.TranslateXMLChar(issue.getPartners()) + "</Partners>");
-		result.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes()) + "</Notes>");
+		result.append("<Id>" + task.getId() + "</Id>");
+		result.append("<Name>" + tsc.TranslateXMLChar(task.getName()) + "</Name>");
+		result.append("<Estimate>" + task.getEstimate() + "</Estimate>");
+		result.append("<Actual>" + task.getActual() + "</Actual>");
+		result.append("<Handler>" + tsc.TranslateXMLChar(handlerUsername) + "</Handler>");
+		result.append("<Remains>" + task.getRemains() + "</Remains>");
+		result.append("<Partners>" + tsc.TranslateXMLChar(task.getPartnersUsername()) + "</Partners>");
+		result.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes()) + "</Notes>");
 		result.append("</Task></EditTask>");
-		
-		
-//		SprintBacklog backlog;
-//    	try {
-//	    	if (sprintID==null||sprintID.equals("")) {	    		
-//	    		backlog = new SprintBacklog(project,userSession);
-//	    	} else {
-//	    		backlog = new SprintBacklog(project,userSession,Integer.parseInt(sprintID));
-//	    	}
-//	    } catch (Exception e){
-//	    	backlog = null;
-//	    }
-		
-//	    StringBuilder result = new StringBuilder();
-//	    if (backlog != null) {
-//			
-//			IIssue issue = backlog.getIssue(issueID);
-//			TranslateSpecialChar tsc = new TranslateSpecialChar();
-//			
-//			result.append("<EditTask><Task>");
-//			result.append("<Id>" + issue.getIssueID() + "</Id>");
-//			result.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");
-//			result.append("<Estimation>" + issue.getEstimated() + "</Estimation>");
-//			result.append("<Actual>" + issue.getActualHour() + "</Actual>");
-//			result.append("<Handler>" + tsc.TranslateXMLChar(issue.getAssignto()) + "</Handler>");
-//	
-//			MantisAccountMapper helper = new MantisAccountMapper(project, userSession);
-//			
-//			result.append("<Remains>" + issue.getRemains() + "</Remains>");
-//			result.append("<Partners>" + tsc.TranslateXMLChar(issue.getPartners()) + "</Partners>");
-//			result.append("<Notes>" + tsc.TranslateXMLChar(issue.getNotes()) + "</Notes>");
-//			result.append("</Task></EditTask>");
-//	    } else {
-//	    	result = null;
-//	    }
 		
 		return result;
 	}

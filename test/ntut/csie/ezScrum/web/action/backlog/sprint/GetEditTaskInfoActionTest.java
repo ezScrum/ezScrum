@@ -16,34 +16,34 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
 	private final String ACTION_PATH = "/getEditTaskInfo";
-	private IProject project;
+	private IProject mProject;
 	
 	public GetEditTaskInfoActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();// 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		this.mCP = new CreateProject(1);
+		this.mCP.exeCreate();// 新增一測試專案
+		this.mProject = this.mCP.getProjectList().get(0);
 		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
+		this.mCS = new CreateSprint(2, this.mCP);
+		this.mCS.exe();
 		
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo( this.ACTION_PATH );
 		
@@ -51,62 +51,62 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 	}
 	
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CS = null;
-		configuration = null;
+		this.mCP = null;
+		this.mCS = null;
+		mConfig = null;
 	}
 	
 	public void testGetEditTaskInfo() throws Exception {
-		List<String> idList = this.CS.getSprintIDList();
-		int sprintID = Integer.parseInt(idList.get(0));
+		List<String> sprintIds = this.mCS.getSprintIDList();
+		int sprintID = Integer.parseInt(sprintIds.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, storyEst, sprintID, this.mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
-		addTaskToStory.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(taskCount, taskEst, ASTS, this.mCP);
+		ATTS.exe();
 		
-		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
-		createProductBacklog.exe();
-		String issueID = String.valueOf(addTaskToStory.getTasksId().get(0));
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, this.mCP);
+		CPB.exe();
+		String taskId = String.valueOf(ATTS.getTasksId().get(0));
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = this.mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
-		addRequestParameter("issueID", issueID);
+		addRequestParameter("sprintID", sprintIds.get(0));
+		addRequestParameter("issueID", taskId);
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================  執行 action ==============================
 		actionPerform();
 		// ================    assert    =============================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedTaskName = addTaskToStory.getTasks().get(0).getName();
-		String expectedTaskEstimation= addTaskToStory.getTasks().get(0).getEstimate() + "";
-		String expectedTaskActualHour = addTaskToStory.getTasks().get(0).getActual() + "";
-		String expectedTaskRemains = addTaskToStory.getTasks().get(0).getRemains() + "";
-		String expectedTaskNote = addTaskToStory.getTasks().get(0).getNotes();
+		String expectedTaskName = ATTS.getTasks().get(0).getName();
+		String expectedTaskEstimation= ATTS.getTasks().get(0).getEstimate() + "";
+		String expectedTaskActualHour = ATTS.getTasks().get(0).getActual() + "";
+		String expectedTaskRemains = ATTS.getTasks().get(0).getRemains() + "";
+		String expectedTaskNote = ATTS.getTasks().get(0).getNotes();
 		
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("<EditTask><Task><Id>" + issueID + "</Id>");
+		expectedResponseTest.append("<EditTask><Task><Id>" + taskId + "</Id>");
 		expectedResponseTest.append("<Name>" + expectedTaskName	+ "</Name>");
 		expectedResponseTest.append("<Estimate>" + expectedTaskEstimation + "</Estimate>");
 		expectedResponseTest.append("<Actual>" + expectedTaskActualHour + "</Actual><Handler></Handler>");

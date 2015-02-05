@@ -109,8 +109,13 @@ public class ShowTaskBoardAction extends Action {
 			if (taskarray != null) {
 				tasklist = new ArrayList<TaskObject>();
 				for (TaskObject task : taskarray) {
-					if (checkParent(name, task.getPartnersUsername(), task.getHandler().getUsername()))
-						tasklist.add(task);
+					if(task.getHandler() != null){
+						if (checkParent(name, task.getPartnersUsername(), task.getHandler().getUsername()))
+							tasklist.add(task);
+					} else {
+						if (checkParent(name, task.getPartnersUsername(), ""))
+							tasklist.add(task);
+					}
 				}
 				taskMap.put(story.getIssueID(), tasklist);
 				if (tasklist.size() != 0) {

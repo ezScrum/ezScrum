@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.EditUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -339,9 +340,17 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = taskId;
+		taskInfo.name = "崩潰啦";
+		taskInfo.estimate = 13;
+		taskInfo.actual = 2;
+		taskInfo.remains = 8;
+		taskInfo.notes = "煩死啦";
+		
 		// edit task info
-		SprintBacklogLogic SBLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), Long.toString(sprintId));
-		SBLogic.editTask(taskId, "崩潰啦", "13", "13", "admin", "", "13", "煩死啦", null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		sprintBacklogLogic.updateTask(taskInfo);
 		
 		// ================ set request info ========================
 		// 設定 Session 資訊
@@ -394,19 +403,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
-		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getStory(taskId);
-		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", task.getPartnersUsername(), task.getNotes(), "");
 		// task Check Out -> Done
-		task = SBHelper.getStory(taskId);
-		SBHelper.doneIssue(taskId, task.getSummary(), task.getNotes(), "", task.getActualHour());
+		task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.closeTask(taskId, task.getName(), task.getNotes(), task.getActual(), "");
 		// task Done -> Check Out
-		task = SBHelper.getStory(taskId);
-		SBHelper.reopenIssue(taskId, task.getSummary(), task.getNotes(), "");
+		task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.reopenTask(taskId, task.getName(), task.getNotes(), "");
 		// task Check Out -> Not Check Out
-		task = SBHelper.getStory(taskId);
-		SBHelper.resetTask(taskId, task.getSummary(), task.getNotes(), "");
+		task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.resetTask(taskId, task.getName(), task.getNotes(), "");
 		// ================ set request info ========================
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
@@ -468,13 +477,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
-		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getStory(taskId);
-		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
-		// change task handler
-		task.setAssignto(createAccount.getAccountList().get(0).getUsername());
-		SBHelper.updateTask(new TaskObject(task));
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", task.getPartnersUsername(), task.getNotes(), "");
+		
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = task.getId();
+		taskInfo.name = task.getName();
+		taskInfo.notes = task.getNotes();
+		taskInfo.estimate = task.getEstimate();
+		taskInfo.actual = task.getActual();
+		taskInfo.remains = task.getRemains();
+		sprintBacklogHelper.updateTask(taskInfo, "admin", "");
 		
 		// ================ set request info ========================
 		// 設定 Session 資訊

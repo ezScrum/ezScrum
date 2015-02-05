@@ -3,8 +3,8 @@ package ntut.csie.ezScrum.web.dataObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
@@ -408,7 +408,7 @@ public class TaskObjectTest {
 
 		assertEquals(9, task.getHistories().size());
 	}
-	
+
 	@Test
 	public void testGetHistories_WithSetNoParent() {
 		String TEST_NAME = "TEST_NAME";
@@ -428,9 +428,12 @@ public class TaskObjectTest {
 		task.setStoryId(TEST_STORY_ID_NO_PARENT).save();
 
 		assertEquals(3, task.getHistories().size());
-		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
-		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
-		assertEquals(HistoryObject.TYPE_DROP, task.getHistories().get(2).getHistoryType());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0)
+				.getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1)
+				.getHistoryType());
+		assertEquals(HistoryObject.TYPE_DROP, task.getHistories().get(2)
+				.getHistoryType());
 	}
 
 	@Test
@@ -455,17 +458,17 @@ public class TaskObjectTest {
 		String TEST_FILE_PATH = "/TEST_PATH";
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
-		
+
 		AttachFileObject.Builder builder = new AttachFileObject.Builder();
 		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
-				.setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setName(TEST_FILE_NAME).setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
+				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
 		AttachFileObject attachFile = builder.build();
 		AttachFileDAO.getInstance().create(attachFile);
-		
+
 		assertEquals(1, task.getAttachFiles().size());
 	}
-	
+
 	@Test
 	public void testGetAttachFiles_TwoFiles() {
 		String TEST_NAME = "TEST_NAME";
@@ -488,26 +491,27 @@ public class TaskObjectTest {
 		String TEST_FILE_PATH = "/TEST_PATH";
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
-		
+
 		AttachFileObject.Builder builder = new AttachFileObject.Builder();
 		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
-				.setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setName(TEST_FILE_NAME).setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
+				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
 		AttachFileObject attachFile = builder.build();
 		AttachFileDAO.getInstance().create(attachFile);
-		
+
 		String TEST_FILE2_NAME = "TEST_FILE_NAME";
 		String TEST_FILE2_PATH = "/TEST_PATH";
 		String TEST_FILE2_CONTENT_TYPE = "jpg";
-		
+
 		// second attach file
 		AttachFileObject.Builder builder2 = new AttachFileObject.Builder();
-		builder2.setContentType(TEST_FILE2_CONTENT_TYPE).setIssueId(task.getId())
-				.setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH).setCreateTime(TEST_CREATE_TIME);
+		builder2.setContentType(TEST_FILE2_CONTENT_TYPE)
+				.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH)
+				.setCreateTime(TEST_CREATE_TIME);
 		AttachFileObject attachFile2 = builder2.build();
 		AttachFileDAO.getInstance().create(attachFile2);
-		
+
 		assertEquals(2, task.getAttachFiles().size());
 	}
 
@@ -555,18 +559,24 @@ public class TaskObjectTest {
 		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.REMAIN));
 		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
 		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
-		
+
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
-		assertEquals(handler.getUsername(), handlerJson.getString(AccountEnum.USERNAME));
-		assertEquals(handler.getEmail(), handlerJson.getString(AccountEnum.EMAIL));
-		assertEquals(handler.getNickName(), handlerJson.getString(AccountEnum.NICK_NAME));
-		
+		assertEquals(handler.getUsername(),
+				handlerJson.getString(AccountEnum.USERNAME));
+		assertEquals(handler.getEmail(),
+				handlerJson.getString(AccountEnum.EMAIL));
+		assertEquals(handler.getNickName(),
+				handlerJson.getString(AccountEnum.NICK_NAME));
+
 		JSONObject partnerJosn = json.getJSONArray("partners").getJSONObject(0);
 		assertEquals(partner.getId(), partnerJosn.getLong(AccountEnum.ID));
-		assertEquals(partner.getUsername(), partnerJosn.getString(AccountEnum.USERNAME));
-		assertEquals(partner.getEmail(), partnerJosn.getString(AccountEnum.EMAIL));
-		assertEquals(partner.getNickName(), partnerJosn.getString(AccountEnum.NICK_NAME));
+		assertEquals(partner.getUsername(),
+				partnerJosn.getString(AccountEnum.USERNAME));
+		assertEquals(partner.getEmail(),
+				partnerJosn.getString(AccountEnum.EMAIL));
+		assertEquals(partner.getNickName(),
+				partnerJosn.getString(AccountEnum.NICK_NAME));
 	}
 
 	/**
@@ -575,7 +585,8 @@ public class TaskObjectTest {
 	@Test
 	public void testSave_CreateANewTask() {
 		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
+		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+				.setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -621,7 +632,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testDelete() throws SQLException {
+	public void testDelete() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
 				.setActual(0);
@@ -686,7 +697,7 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testGetTasksByStory() throws SQLException {
+	public void testGetTasksByStory() {
 		long storyId = 1;
 		// 新增三筆 task 但有兩筆在 story 下
 		for (int i = 1; i <= 3; i++) {
@@ -713,5 +724,233 @@ public class TaskObjectTest {
 		assertEquals(10, tasks.get(1).getEstimate());
 		assertEquals(10, tasks.get(1).getRemains());
 		assertEquals(0, tasks.get(1).getActual());
+	}
+
+	@Test
+	public void testGetStatus_WithSpecificDate() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		Date specificDate = new Date(2015, 2, 4);
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		// create a check task out history
+		Date changeStatusDate = new Date(2015, 2, 4, 13, 14, 1);
+		long changeStatusTime = changeStatusDate.getTime();
+		HistoryObject history = new HistoryObject();
+		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setModifiedTime(changeStatusTime);
+		history.save();
+		// check task status after add a history
+		assertEquals(TaskObject.STATUS_CHECK, task.getStatus(specificDate));
+	}
+	
+	@Test
+	public void testGetStatus_WithSpecificDateChangeStatusTwoTimes() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		Date specificDate = new Date(2015, 2, 4);
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		// create check task out history1
+		Date changeStatusDate1 = new Date(2015, 2, 4, 13, 14, 1);
+		long changeStatusTime1 = changeStatusDate1.getTime();
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setModifiedTime(changeStatusTime1);
+		history1.save();
+		// create check task out history2
+		Date changeStatusDate2 = new Date(2015, 2, 4, 16, 14, 1);
+		long changeStatusTime2 = changeStatusDate2.getTime();
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(changeStatusTime2);
+		history2.save();
+		// check task status after add two change status histories
+		assertEquals(TaskObject.STATUS_DONE, task.getStatus(specificDate));
+	}
+
+	/*
+	 * 之後要拔掉,為了符合目前的IIssue
+	 */
+	@Test
+	public void testGetStatusString() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals("new", task.getStatusString());
+		// check task status after check it out
+		task.setStatus(TaskObject.STATUS_CHECK);
+		assertEquals("assigned", task.getStatusString());
+		// check task status after close it
+		task.setStatus(TaskObject.STATUS_DONE);
+		assertEquals("closed", task.getStatusString());
+		// check task status after reopen it
+		task.setStatus(TaskObject.STATUS_UNCHECK);
+		assertEquals("new", task.getStatusString());
+	}
+
+	@Test
+	public void testGetDoneTime() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getDoneTime());
+		// create a close task history
+		Date specificDate = new Date(2015, 2, 4, 13, 15, 1);
+		long specificTime = specificDate.getTime();
+		HistoryObject history = new HistoryObject();
+		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(specificTime);
+		history.save();
+		// check task status after close task
+		assertEquals(specificTime, task.getDoneTime());
+	}
+
+	@Test
+	public void testGetDoneTime_WithTwoDoneHistoriesInSameDay() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getDoneTime());
+		// create a close task history
+		Date specificDate1 = new Date(2015, 2, 4, 13, 15, 1);
+		long specificTime1 = specificDate1.getTime();
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(specificTime1);
+		history1.save();
+		// create a close task history
+		Date specificDate2 = new Date(2015, 2, 4, 13, 15, 2);
+		long specificTime2 = specificDate2.getTime();
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(specificTime2);
+		history2.save();
+		// check task status after close task
+		assertEquals(specificTime2, task.getDoneTime());
+	}
+
+	@Test
+	public void testGetDoneTime_WithTwoDoneHistoriesInDifferentDay() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getDoneTime());
+		// create a close task history
+		Date specificDate1 = new Date(2015, 2, 4, 13, 15, 1);
+		long specificTime1 = specificDate1.getTime();
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(specificTime1);
+		history1.save();
+		// create a close task history
+		Date specificDate2 = new Date(2015, 2, 6, 9, 5, 1);
+		long specificTime2 = specificDate2.getTime();
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_DONE))
+				.setModifiedTime(specificTime2);
+		history2.save();
+		// check task status after close task
+		assertEquals(specificTime2, task.getDoneTime());
+	}
+
+	@Test
+	public void testGetRemains_WithSpecificDate() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		Date specificDate = new Date(2015, 2, 4);
+		assertEquals(0, task.getRemains(specificDate));
+		// create a update task remains history
+		Date changeStatusDate = new Date(2015, 2, 4, 13, 14, 1);
+		long changeStatusTime = changeStatusDate.getTime();
+		HistoryObject history = new HistoryObject();
+		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(task.getRemains()))
+				.setNewValue(String.valueOf(5))
+				.setModifiedTime(changeStatusTime);
+		history.save();
+		// check task remains after add a update task remains history
+		assertEquals(5, task.getRemains(specificDate));
+	}
+	
+	@Test
+	public void testGetRemains_WithSpecificDateChangeRemainsTwoTimes() {
+		long TEST_TASK_ID = 1;
+		// create a task
+		TaskObject task = new TaskObject(TEST_TASK_ID);
+		task.setName("TEST_NAME").setEstimate(10).setRemains(8).setActual(0);
+		task.save();
+		// check task status before test
+		Date specificDate = new Date(2015, 2, 4);
+		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		// create a update task remains history1
+		Date changeRemainsDate1 = new Date(2015, 2, 4, 13, 14, 1);
+		long changeRemainsTime1 = changeRemainsDate1.getTime();
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(task.getRemains()))
+				.setNewValue(String.valueOf(5))
+				.setModifiedTime(changeRemainsTime1);
+		history1.save();
+		// create a update task remains history2
+		Date changeRemainsDate2 = new Date(2015, 2, 4, 16, 14, 1);
+		long changeRemainsTime2 = changeRemainsDate2.getTime();
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(5))
+				.setNewValue(String.valueOf(8))
+				.setModifiedTime(changeRemainsTime2);
+		history2.save();
+		// check task remains after add two change remains histories
+		assertEquals(8, task.getRemains(specificDate));
 	}
 }

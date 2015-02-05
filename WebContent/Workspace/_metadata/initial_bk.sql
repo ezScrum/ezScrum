@@ -1233,7 +1233,7 @@ CREATE TABLE `history` (
   `type` INT NULL,
   `old_value` TEXT NULL,
   `new_value` TEXT NULL,
-  `modified_time` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

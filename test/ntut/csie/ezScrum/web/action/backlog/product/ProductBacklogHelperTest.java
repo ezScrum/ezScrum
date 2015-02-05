@@ -380,12 +380,12 @@ public class ProductBacklogHelperTest extends TestCase {
 		this.CPB.exe();	// 新增十筆 Story
 		
 		CreateSprint CS = new CreateSprint(1, this.CP);
-		CS.exe();		// 新增一 Sprint
+		CS.exe();		// 新增一 Sprint 
 		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(this.CP.getProjectList().get(0), configuration.getUserSession(), null);
 		
 		// 將第一筆 Story Done
-		sprintBacklogLogic.doneIssue(this.CPB.getIssueList().get(0).getIssueID(), "Story_"+0, this.CPB.TEST_STORY_NOTES + "1", null, Integer.toString(0));
+		sprintBacklogLogic.closeStory(this.CPB.getIssueList().get(0).getIssueID(), this.CPB.TEST_STORY_NOTES + "1", null);
 		
 		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
@@ -399,7 +399,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		}
 		
 		// 將第十筆 Story Done
-		sprintBacklogLogic.doneIssue(this.CPB.getIssueList().get(9).getIssueID(), "Story_"+9, this.CPB.TEST_STORY_NOTES + "10", null, Integer.toString(0));
+		sprintBacklogLogic.closeStory(this.CPB.getIssueList().get(9).getIssueID(), this.CPB.TEST_STORY_NOTES + "10", null);
 		
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(8, AvailabelIssue.size());
@@ -582,7 +582,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		// 將第三筆 ~ 九筆 Story Done
 		for (int i=2 ; i<9 ; i++) {
 			Long ID = this.CPB.getIssueList().get(i).getIssueID();
-			sprintBacklogLogic.doneIssue(ID, "Story_"+i, this.CPB.TEST_STORY_NOTES + "1", null, Integer.toString(0));
+			sprintBacklogLogic.closeStory(ID, this.CPB.TEST_STORY_NOTES + "1", null);
 		}
 		
 		// 驗證取出 0 筆資料

@@ -348,7 +348,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addEqualCondition(AccountEnum.ID, id);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-
 		AccountObject account = null;
 		try {
 			if (result.next()) {

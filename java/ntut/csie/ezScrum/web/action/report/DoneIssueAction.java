@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -48,16 +49,18 @@ public class DoneIssueAction extends PermissionAction {
 		String issueType = request.getParameter("IssueType");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
+		StringBuilder result = new StringBuilder("");
+		
 		if (issueType.equals("Story")) {
-			sprintBacklogHelper.closeStory(issueId, notes, changeDate);		
+			sprintBacklogHelper.closeStory(issueId, notes, changeDate);
+			// return done issue 相關相關資訊
+			IIssue issue = sprintBacklogHelper.getStory(issueId);
+			result.append(new Translation().translateTaskboardIssueToJson(issue));
 		} else if (issueType.equals("Task")) {
 			sprintBacklogHelper.closeTask(issueId, name, notes, actual, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(issueId);
+			result.append(new Translation().translateTaskboardTaskToJson(task));
 		}
-
-		// return done issue 相關相關資訊
-		IIssue issue = sprintBacklogHelper.getStory(issueId);
-		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateTaskboardIssueToJson(issue));
 
 		return result;
 	}
