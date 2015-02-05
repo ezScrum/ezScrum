@@ -114,6 +114,14 @@ public class ProjectObject implements IBaseObject {
 		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
 		return object;
 	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
 
 	/**
 	 * Get project by id
