@@ -457,6 +457,9 @@ public class TaskObject implements IBaseObject {
 		if (!mNotes.equals(oldTask.getNotes())) {
 			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
 		}
+		if (mStatus != oldTask.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
+		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
 					mEstimate);
@@ -466,9 +469,6 @@ public class TaskObject implements IBaseObject {
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(), mRemains);
-		}
-		if (mStatus != oldTask.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story

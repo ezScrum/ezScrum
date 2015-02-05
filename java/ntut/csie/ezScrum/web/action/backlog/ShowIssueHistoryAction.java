@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -48,6 +49,7 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		// get parameter info
 		String issueId = request.getParameter("issueID");
+		String issueType = request.getParameter("issueType");
 		Long id = -1L;
 		if ((issueId != null) && (!issueId.equals("-1"))) {
 			id = Long.parseLong(issueId);
@@ -55,14 +57,22 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 		// 用Gson轉換issue為json格式傳出
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-		IIssue issue = PBHelper.getIssue(id);
+		
 		IssueHistoryUI ihui = null;
-		try {
-			ihui = new IssueHistoryUI(issue);
-		} catch (SQLException e) {
+		if (issueType.equals("Task")) {
+			TaskObject task = TaskObject.get(id);
+			if (task != null) {
+				ihui = new IssueHistoryUI(task);
+			}
+		} else {
+			IIssue issue = PBHelper.getIssue(id);
+			try {
+				ihui = new IssueHistoryUI(issue);
+			} catch (SQLException e) {
+			}
 		}
 		Gson gson = new Gson();
-		return new StringBuilder(gson.toJson(ihui));
+		return new StringBuilder(gson.toJson(ihui));			
 	}
 
 	private class IssueHistoryUI {
@@ -87,6 +97,17 @@ public class ShowIssueHistoryAction extends PermissionAction {
 						}
 					}
 				}
+			}
+		}
+		
+		public IssueHistoryUI(TaskObject task) {
+			this.Id = task.getId();
+			this.Link = "";
+			this.Name = task.getName();
+			this.IssueType = "Task";
+			
+			for (HistoryObject history : task.getHistories()) {
+				this.IssueHistories.add(new IssueHistoryList(history));
 			}
 		}
 	}

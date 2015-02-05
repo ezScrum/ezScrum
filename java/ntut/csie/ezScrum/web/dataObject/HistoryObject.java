@@ -196,29 +196,66 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	private String getHandlerDesc() {
-		if (mOldValue.equals("") && !mNewValue.equals("")) {
-			String newUsername = AccountDAO.getInstance()
-					.get(Long.parseLong(mNewValue)).getUsername();
-			return newUsername;
+		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
+			if (mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return newUsername;
+			}
+			
+			if (!mOldValue.equals("-1") && mNewValue.equals("-1")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mOldValue)).getUsername();
+				return "Remove handler " + newUsername;
+			}
+			
+			if (!mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+				AccountObject oldUser = AccountDAO.getInstance().get(Long.parseLong(mOldValue));
+				AccountObject newUser = AccountDAO.getInstance().get(Long.parseLong(mNewValue));
+				String oldUsername = "";
+				String newUsername = "";
+				if (oldUser != null) {
+					oldUsername = oldUser.getUsername();
+				}
+				
+				if (newUser != null) {
+					newUsername = newUser.getUsername();
+				}
+				return oldUsername + " => " + newUsername;
+			}
+		} else {
+			if (mOldValue.equals("") && !mNewValue.equals("")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return newUsername;
+			}
+			
+			if (!mOldValue.equals("") && !mNewValue.equals("")) {
+				String oldUsername = "";
+				String newUsername = "";
+				oldUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mOldValue)).getUsername();
+				newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return oldUsername + " => " + newUsername;
+			}			
 		}
-
-		if (!mOldValue.equals("") && !mNewValue.equals("")) {
-			String oldUsername = "";
-			String newUsername = "";
-			oldUsername = AccountDAO.getInstance()
-					.get(Long.parseLong(mOldValue)).getUsername();
-			newUsername = AccountDAO.getInstance()
-					.get(Long.parseLong(mNewValue)).getUsername();
-			return oldUsername + " => " + newUsername;
-		}
+		
 		return "";
 	}
 
 	private String getStatusDesc() {
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("10", "Not Check Out");
-		map.put("50", "Check Out");
-		map.put("90", "Done");
+		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
+			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
+		} else {
+			map.put("10", "Not Check Out");
+			map.put("50", "Check Out");
+			map.put("90", "Done");			
+		}
+		
 		return map.get(mOldValue) + " => " + map.get(mNewValue);
 	}
 
