@@ -438,9 +438,9 @@ public class TaskObject implements IBaseObject {
 		mId = TaskDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
-		HistoryObject createTaskHistory = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
-				HistoryObject.TYPE_CREATE, "", "", mCreateTime);
-		createTaskHistory.save();
+		HistoryDAO.getInstance().create(
+				new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
 		// add task relation history
 		if (mStoryId > 0) {
 			addHistoryOfAddRelation(mStoryId, mId);
@@ -473,8 +473,8 @@ public class TaskObject implements IBaseObject {
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskDropFromStory(mStoryId, mId); // for task
-				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId); // for
+				addHistoryOfTaskRemoveFromStory(mStoryId, mId); // for task
+				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId); // for
 																		// story
 			}
 			// task append to story
@@ -519,7 +519,7 @@ public class TaskObject implements IBaseObject {
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskDropFromStory(mStoryId, mId, specificTime); // for
+				addHistoryOfTaskRemoveFromStory(mStoryId, mId, specificTime); // for
 																			// task
 				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
 						specificTime); // for story
@@ -540,7 +540,7 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mStoryId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
 				String.valueOf(mId), System.currentTimeMillis());
-		history.save();
+		HistoryDAO.getInstance().create(history);
 	}
 
 	// addHistoryOfAddRelation for specific time
@@ -550,25 +550,25 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mStoryId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
 				String.valueOf(mId), specificTime);
-		history.save();
+		HistoryDAO.getInstance().create(history);
 	}
 
-	private void addHistoryOfTaskDropFromStory(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_DROP, "", String.valueOf(mStoryId));
+	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId) {
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId));
 	}
 
 	// addHistoryOfTaskDropFromStory for specific time
-	private void addHistoryOfTaskDropFromStory(long storyId, long taskId,
+	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId,
 			long specificTime) {
-		addHistory(HistoryObject.TYPE_DROP, "", String.valueOf(mStoryId),
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId),
 				specificTime);
 	}
 
-	private void addHistoryOfStoryRemoveTask(long storyId, long taskId) {
+	private void addHistoryOfStoryDropTask(long storyId, long taskId) {
 		HistoryObject history = new HistoryObject(storyId,
-				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
 				String.valueOf(mId), System.currentTimeMillis());
-		history.save();
+		HistoryDAO.getInstance().create(history);
 	}
 
 	// addHistoryOfStoryRemoveTask for specific time
@@ -577,8 +577,8 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(storyId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
 				String.valueOf(mId), specificTime);
-		history.save();
-	}
+		HistoryDAO.getInstance().create(history);
+	}	
 
 	private void addHistory(int type, long oldValue, long newValue) {
 		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
@@ -594,7 +594,7 @@ public class TaskObject implements IBaseObject {
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, System.currentTimeMillis());
-		history.save();
+		HistoryDAO.getInstance().create(history);
 	}
 
 	// add history for specific time
@@ -602,6 +602,6 @@ public class TaskObject implements IBaseObject {
 			long specificTime) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
-		history.save();
+		HistoryDAO.getInstance().create(history);
 	}
 }

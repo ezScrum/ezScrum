@@ -266,7 +266,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println(actualResponseText);
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
@@ -426,7 +425,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println(actualResponseText);
 		JSONObject historyObj = new JSONObject(actualResponseText);
 		List<String> expectedDescription = genArrayList("Create Task #1",
 												        "Append to Story #1",
@@ -558,20 +556,20 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 
 		// 新增一個 UnplannedItem
 		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
 		mCreateUnplanned.exe();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		
 		EditUnplannedItem EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
 		EU.exe_CO();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		
 		String issueID = String.valueOf(mCreateUnplanned.getIdList().get(0));
 
@@ -618,23 +616,24 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
+		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		
 		// 新增一個UnplannedItem
 		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
 		mCreateUnplanned.exe();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 
 		EditUnplannedItem EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
 		EU.exe_CO();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 
 		EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
 		EU.exe_DONE();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		
 		String issueId = String.valueOf(mCreateUnplanned.getIdList().get(0));
 
@@ -662,6 +661,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        "\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"", "Check Out => Done");
 		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note", "Status");
 		String actualResponseText = response.getWriterBuffer().toString();
+		System.out.println(actualResponseText);
 		JSONObject object = new JSONObject(actualResponseText);
 
 		assertEquals(mCreateUnplanned.getIssueList().get(0).getCategory(), object.get("IssueType"));
