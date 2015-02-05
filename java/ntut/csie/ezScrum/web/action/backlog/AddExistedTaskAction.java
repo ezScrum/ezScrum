@@ -44,7 +44,7 @@ public class AddExistedTaskAction extends PermissionAction {
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintId);
 		
-		sprintBacklogHelper.addExistingTask(selectedTaskIds, storyId);
+		sprintBacklogHelper.addExistingTasksToStory(selectedTaskIds, storyId);
 		return new StringBuilder("");
 	}
 }

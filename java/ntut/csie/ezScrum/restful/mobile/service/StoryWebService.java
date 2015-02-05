@@ -99,6 +99,6 @@ public class StoryWebService extends ProjectWebService{
 	public void addExistedTask(String storyId, String taskIdsJson) {
 		Gson gson = new Gson();
 		String[] taskIds = gson.fromJson(taskIdsJson, String[].class);
-		mSprintBacklogHelper.addExistingTask(taskIds, Long.parseLong(storyId));
+		mSprintBacklogHelper.addExistingTasksToStory(taskIds, Long.parseLong(storyId));
 	}
 }

@@ -223,7 +223,7 @@ public class SprintBacklogHelperTest{
 		// add new existing task
 		String newTaskStringId = String.valueOf(newTask.getId());
 		String[] selectedTasksStringId = {newTaskStringId};
-		mSprintBacklogHelper.addExistingTask(selectedTasksStringId, storyId);
+		mSprintBacklogHelper.addExistingTasksToStory(selectedTasksStringId, storyId);
 		// get story again
 		mantisService.openConnect();
 		story = mantisService.getIssue(storyId);
@@ -263,7 +263,7 @@ public class SprintBacklogHelperTest{
 		String newTask1StringId = String.valueOf(newTask1.getId());
 		String newTask2StringId = String.valueOf(newTask2.getId());
 		String[] selectedTasksStringId = {newTask1StringId, newTask2StringId};
-		mSprintBacklogHelper.addExistingTask(selectedTasksStringId, storyId);
+		mSprintBacklogHelper.addExistingTasksToStory(selectedTasksStringId, storyId);
 		// get story again
 		mantisService.openConnect();
 		story = mantisService.getIssue(storyId);

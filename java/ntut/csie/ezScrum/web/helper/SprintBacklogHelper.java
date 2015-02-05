@@ -167,7 +167,7 @@ public class SprintBacklogHelper {
 		return TaskObject.get(taskId);
 	}
 
-	public void addExistingTask(String[] selectedTaskIds, long storyId) {
+	public void addExistingTasksToStory(String[] selectedTaskIds, long storyId) {
 		ArrayList<Long> tasksId = new ArrayList<Long>();
 		for (String task : selectedTaskIds) {
 			tasksId.add(Long.parseLong(task));
