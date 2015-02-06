@@ -146,7 +146,7 @@ public class ProductBacklogHelper {
 	 * @return IIssue
 	 */
 	public IIssue editStory(long issueId, String name, String value, String importance, String estimate, String howToDemo, String notes, boolean addHistory) {
-		mProductBacklogMapper.modifyName(issueId, name, null);
+		mProductBacklogMapper.modifyName(issueId, name, new Date());
 		Element history = translateIssueToXML(value, importance, estimate, howToDemo, notes);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
