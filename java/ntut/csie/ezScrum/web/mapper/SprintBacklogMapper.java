@@ -85,20 +85,16 @@ public class SprintBacklogMapper {
 	 * 初始化 Sprint 的資訊l
 	 */
 	private void initSprintInformation() {
-		try {
-			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
-			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-			String aDays = mIterPlanDesc.getAvailableDays();
-			// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
-			// 的機制移除
-			// 改為只計算 aDay:hours can commit * focus factor
-			if (aDays != null && !aDays.equals("")) {
-				mLimitedPoint = Integer.parseInt(aDays)
-						* Integer.parseInt(mIterPlanDesc.getFocusFactor())
-						/ 100;
-			}
-		} catch (NumberFormatException e) {
-			log.info("non-exist sprint");
+		mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
+		mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
+		String aDays = mIterPlanDesc.getAvailableDays();
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除
+		// 改為只計算 aDay:hours can commit * focus factor
+		if (aDays != null && !aDays.equals("")) {
+			mLimitedPoint = Integer.parseInt(aDays)
+					* Integer.parseInt(mIterPlanDesc.getFocusFactor())
+					/ 100;
 		}
 	}
 

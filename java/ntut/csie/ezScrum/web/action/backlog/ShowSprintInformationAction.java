@@ -53,7 +53,8 @@ public class ShowSprintInformationAction extends Action {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
-		if (backlog == null) {
+		long sprintId = backlog.getSprintPlanId();
+		if (backlog == null || sprintId == -1 || sprintId == 0) {
 			return mapping.findForward("error");
 		}
 		
