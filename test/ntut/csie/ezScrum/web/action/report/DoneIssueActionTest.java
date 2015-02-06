@@ -97,8 +97,9 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
 		addRequestParameter("Name", task.getName());
 		addRequestParameter("Notes", task.getNotes());
-		addRequestParameter("ChangeDate", "");
+		addRequestParameter("ChangeDate", "2015/02/06-12:00:00");
 		addRequestParameter("Actualhour", String.valueOf(task.getActual()));
+		addRequestParameter("IssueType", "Task");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());
@@ -115,18 +116,22 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		task = sprintBacklogMapper.getTask(TaskID); // 重新取得Task資訊
 
 		StringBuilder expectedResponseText = new StringBuilder();
+		String handlerUserName = "";
+		if(task.getHandler() != null){
+			handlerUserName = task.getHandler().getUsername();
+		}
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(TaskID)).append("\",")
+							.append("\"Link\":\"").append("\",")
 							.append("\"Name\":\"").append(task.getName()).append("\",")
-							.append("\"Handler\":\"").append(task.getHandler().getUsername()).append("\",")
-							.append("\"Partners\":\"").append(task.getPartners()).append("\"}")
+							.append("\"Handler\":\"").append(handlerUserName).append("\",")
+							.append("\"Partners\":\"").append(task.getPartnersUsername()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals("closed", task.getStatus()); // 判斷Task是不是已經closed了
+		assertEquals(TaskObject.STATUS_DONE, task.getStatus()); // 判斷Task是不是已經closed了
 
 		// ============= release ==============
 		project = null;
@@ -146,8 +151,9 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("Id", String.valueOf(StoryID));
 		addRequestParameter("Name", issue.getSummary());
 		addRequestParameter("Notes", issue.getNotes());
-		addRequestParameter("ChangeDate", "");
+		addRequestParameter("ChangeDate", "2015/02/06-12:00:00");
 		addRequestParameter("Actualhour", issue.getActualHour());
+		addRequestParameter("IssueType", "Story");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", configuration.getUserSession());

@@ -463,8 +463,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		// 觀看回來的NonCheckOut, CheckOut, Done數量是否正確
 		assertEquals(STORY_COUNT, report.getTotalQuantity());
 		assertEquals(STORY_COUNT - 2, report.getNonAssignQuantity());
-		assertEquals(1, report.getAssignedQuantity());
-		assertEquals(1, report.getDoneQuantity());
+		assertEquals(2, report.getAssignedQuantity()); // task checkout or done 的數量
+		assertEquals(0, report.getDoneQuantity()); // story done 的數量
 
 		assertEquals(CS.getSprintIDList().get(0), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
@@ -522,8 +522,8 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		// 觀看回來的NonCheckOut, CheckOut, Done數量是否正確
 		assertEquals(STORY_COUNT, report.getTotalQuantity());
 		assertEquals(STORY_COUNT - 2, report.getNonAssignQuantity());
-		assertEquals(1, report.getAssignedQuantity());
-		assertEquals(1, report.getDoneQuantity());
+		assertEquals(2, report.getAssignedQuantity()); // task checkout or done 的數量
+		assertEquals(0, report.getDoneQuantity());  // story done 的數量
 
 		assertEquals(CS.getSprintIDList().get(0), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));

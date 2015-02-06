@@ -40,8 +40,7 @@ public class SprintBacklogHelper {
 	public SprintBacklogHelper(IProject project, IUserSession userSession) {
 		mIProject = project;
 		mUserSession = userSession;
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
-				"-1");
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession, "-1");
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 

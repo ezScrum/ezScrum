@@ -37,7 +37,7 @@ public class DoneIssueAction extends PermissionAction {
 		log.info("Done Issue in DoneIssueAction.");
 
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
