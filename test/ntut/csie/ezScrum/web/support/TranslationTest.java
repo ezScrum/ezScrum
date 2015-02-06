@@ -1,8 +1,11 @@
 package ntut.csie.ezScrum.web.support;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -14,7 +17,11 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class TranslationTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class TranslationTest{
 	private CreateProject mCreateProject;
 	private CreateSprint mCreateSprint;
 	private CreateProductBacklog mCreateProjectBacklog;
@@ -23,11 +30,8 @@ public class TranslationTest extends TestCase {
 	private Configuration mConfig = null;
 	private IProject mProject;
 
-	public TranslationTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -51,14 +55,14 @@ public class TranslationTest extends TestCase {
 		mProject = mCreateProject.getProjectList().get(0);
 
 		// 為了不讓 SQL 跑太快而沒有正確更新值進去
-		Thread.sleep(1000);
+		Thread.sleep(500);
 
-		super.setUp();
 		// ============= release ==============
 		ini = null;
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -77,8 +81,6 @@ public class TranslationTest extends TestCase {
 		mCreateSprint = null;
 		mCreateProjectBacklog = null;
 		mConfig = null;
-
-		super.tearDown();
 	}
 
 	// // 測試 translateStoryToJson(IIssue[] stories)
@@ -122,6 +124,7 @@ public class TranslationTest extends TestCase {
 	// }
 
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
+	@Test
 	public void testtranslateStoryToJson2() throws Exception {
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		IIssue[] stories = new IIssue[1];
@@ -134,6 +137,7 @@ public class TranslationTest extends TestCase {
 			assertEquals("0", issue.getEstimated());
 			assertEquals("0", issue.getImportance());
 			assertEquals("0", issue.getValue());
+			Thread.sleep(500);
 		}
 
 		StringBuilder ActualSB = new StringBuilder();
