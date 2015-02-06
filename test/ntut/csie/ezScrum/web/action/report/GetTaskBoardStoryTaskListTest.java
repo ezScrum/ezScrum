@@ -28,6 +28,10 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
 import ntut.csie.jcis.resource.core.IPath;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
@@ -540,35 +544,43 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
-		LinkedHashMap<String, Object> resultMap = gson.fromJson(result, LinkedHashMap.class);
-		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
-		assertEquals(String.valueOf(expectedStory.getIssueID()), storyList.get(0).get("Id"));
-		assertEquals(expectedStory.getSummary(), storyList.get(0).get("Name"));
-		assertEquals(expectedStory.getValue(), storyList.get(0).get("Value"));
-		assertEquals(expectedStory.getEstimated(), storyList.get(0).get("Estimate"));
-		assertEquals(expectedStory.getImportance(), storyList.get(0).get("Importance"));
-		assertEquals("", storyList.get(0).get("Tag"));
-		assertEquals(expectedStory.getStatus(), storyList.get(0).get("Status"));
-		assertEquals(expectedStory.getNotes(), storyList.get(0).get("Notes"));
-		assertEquals(expectedStory.getHowToDemo(), storyList.get(0).get("HowToDemo"));
-		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
-		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
-		assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
-		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
-		ArrayList<LinkedHashTreeMap<String, Object>> attachFileListTreeMap = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("AttachFileList");
-		assertEquals(Double.valueOf(expectedStory.getAttachFiles().get(0).getId()), (double)attachFileListTreeMap.get(0).get("FileId"));
-		assertEquals(expectedStory.getAttachFiles().get(0).getName(), attachFileListTreeMap.get(0).get("FileName"));
+		System.out.println(result);
 		
-		ArrayList<LinkedHashTreeMap<String, Object>> taskList = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("Tasks");
-		assertEquals(String.valueOf(task.getId()), taskList.get(0).get("Id"));
-		assertEquals(task.getName(), taskList.get(0).get("Name"));
-		assertEquals(String.valueOf(task.getEstimate()), taskList.get(0).get("Estimate"));
-		assertEquals(task.getNotes(), taskList.get(0).get("Notes"));
-		assertEquals(task.getStatusString(), taskList.get(0).get("Status"));
-		assertEquals(String.valueOf(task.getRemains()), taskList.get(0).get("RemainHours"));
-		assertEquals(task.getPartnersUsername(), taskList.get(0).get("Partners"));
-		assertEquals("", taskList.get(0).get("Link"));
-		assertEquals(String.valueOf(task.getActual()), taskList.get(0).get("Actual"));
-		assertEquals(!task.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
+		JSONObject json = new JSONObject(result);
+		
+		JSONArray stories = json.getJSONArray("Stories");
+		assertEquals(1, stories.length());
+		
+		JSONObject actualStory = stories.getJSONObject(0);
+		assertEquals(expectedStory.getSummary(), actualStory.getString("Name"));
+		assertEquals(expectedStory.getIssueID() + "", actualStory.getString("Id"));
+		assertEquals(expectedStory.getValue(), actualStory.getString("Value"));
+		assertEquals(expectedStory.getEstimated(), actualStory.getString("Estimate"));
+		assertEquals(expectedStory.getImportance(), actualStory.getString("Importance"));
+		assertEquals(expectedStory.getImportance(), actualStory.getString("Importance"));
+		assertEquals(expectedStory.getStatus(), actualStory.getString("Status"));
+		assertEquals(expectedStory.getNotes(), actualStory.getString("Notes"));
+		assertEquals(expectedStory.getHowToDemo(), actualStory.getString("HowToDemo"));
+		assertEquals(expectedStory.getIssueLink(), actualStory.getString("Link"));
+		assertEquals(expectedStory.getReleaseID(), actualStory.getString("Release"));
+		
+		JSONArray actualAttachFiles = actualStory.getJSONArray("AttachFileList");
+		assertEquals(1, actualAttachFiles.length());
+		
+		JSONObject actualAttachFile = actualAttachFiles.getJSONObject(0);
+		assertEquals(expectedStory.getAttachFiles().get(0).getId(), actualAttachFile.getLong("FileId"));
+		assertEquals(expectedStory.getAttachFiles().get(0).getName(), actualAttachFile.getString("FileName"));
+		
+		JSONArray actualTasks = actualStory.getJSONArray("Tasks");
+		assertEquals(1, actualTasks.length());
+		
+		JSONObject actualTask = actualTasks.getJSONObject(0);
+		assertEquals(task.getId(), actualTask.getLong("Id"));
+		assertEquals(task.getName(), actualTask.getString("Name"));
+		assertEquals(task.getEstimate(), actualTask.getInt("Estimate"));
+		assertEquals(task.getRemains(), actualTask.getInt("RemainHours"));
+		assertEquals(task.getActual(), actualTask.getInt("Actual"));
+		assertEquals(task.getNotes(), actualTask.getString("Notes"));
+		assertEquals(task.getStatusString(), actualTask.getString("Status"));
 	}
 }
