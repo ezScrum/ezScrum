@@ -434,7 +434,7 @@ public class TaskObjectTest {
 				.getHistoryType());
 		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1)
 				.getHistoryType());
-		assertEquals(HistoryObject.TYPE_DROP, task.getHistories().get(2)
+		assertEquals(HistoryObject.TYPE_REMOVE, task.getHistories().get(2)
 				.getHistoryType());
 	}
 
