@@ -11,29 +11,31 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class SprintBacklogTreeStructure {
 	// Issue info
-	String Type = "";
-	String ID = "";
-	String Tag = "";
-	String Name = "";
-	String Handler = "";
-	String Value = "";
-	String Estimate = "";
-	String Importance = "";
-	String Status = "";
-	String Notes = "";
-	String Link = "";
-	String SprintID = "";
-	String ReleaseID = "";
-	// Ext-JS attribute
-	boolean leaf = false;
-	boolean expanded = false;
-	String id = "";
-	String cls = "folder";
-	// Task of Story is a leaf
-	List<SprintBacklogTreeStructure> children = null;
-
-	private ArrayList<Date> dataList = null;
-	private HashMap<String, String> dateToHourMap = new HashMap<String, String>();
+		String Type = "";
+		String ID = "";
+		String Tag = "";
+		String Name = "";
+		String Handler = "";
+		String Value = "";
+		String Estimate = "";
+		String Importance = "";
+		String Status = "";
+		String Notes = "";
+		String Link = "";
+		String SprintID = "";
+		String ReleaseID = "";
+		
+		private ArrayList<Date> dateList = null;
+		private HashMap<String, String> dateToHourMap = new HashMap<String, String>();
+		
+		// Ext-JS attribute
+		boolean leaf = false;
+		boolean expanded = false;
+		String id = "";
+		String cls = "folder";
+		
+		// Task of Story is a leaf
+		List<SprintBacklogTreeStructure> children = null;
 
 	public SprintBacklogTreeStructure() {
 		// initial empty function
@@ -60,7 +62,7 @@ public class SprintBacklogTreeStructure {
 		id = Long.toString(story.getIssueID());
 		children = new ArrayList<SprintBacklogTreeStructure>();
 		// 設定 Sprint 時間
-		dataList = dates;
+		dateList = dates;
 		// 將 child 建構成樹狀
 		TranslateTaskSturct(tasks);
 	}
@@ -69,24 +71,25 @@ public class SprintBacklogTreeStructure {
 		Type = ScrumEnum.TASK_ISSUE_TYPE;
 		ID = String.valueOf(task.getId());
 		Name = task.getName();
-		Handler = task.getHandler().getUsername();
+		Handler = task.getHandler() != null ? task.getHandler().getUsername() : "";
 		Estimate = String.valueOf(task.getEstimate());
 		Status = task.getStatusString();
 		Notes = task.getNotes();
 		leaf = true;
 		cls = "file";
-		dataList = dates;
+		id = ID;
+		dateList = dates;
 	}
 
 	// 根據日期設定 Task 的 Remaining Hours
 	private void SetRemainsByDate(TaskObject task) {
 		String value = "";
 		// 使用時間來取得 Remaining Hours 然後用 DateColumns 來當作 Key
-		for (int i = 0; dataList.size() > i; i++) {
+		for (int i = 0; dateList.size() > i; i++) {
 			// 超過今天日期的則不計算
-			if (dataList.get(i).getTime() <= new Date().getTime()) {
+			if (dateList.get(i).getTime() <= new Date().getTime()) {
 				// remain
-				value = getTaskRemains(dataList.get(i), task);
+				value = getTaskRemains(dateList.get(i), task);
 			} else {
 				value = "";
 			}
@@ -113,7 +116,7 @@ public class SprintBacklogTreeStructure {
 		if ((tasks != null) && (tasks.size() > 0)) {
 			for (TaskObject task : tasks) {
 				SprintBacklogTreeStructure taskStructure = new SprintBacklogTreeStructure(
-						task, dataList);
+						task, dateList);
 				taskStructure.SetRemainsByDate(task);
 				children.add(taskStructure);
 				taskStructure = null; // release
