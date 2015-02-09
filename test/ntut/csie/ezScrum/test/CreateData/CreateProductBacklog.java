@@ -234,7 +234,7 @@ public class CreateProductBacklog {
 	// set story column value of IMP, EST, HowToDemo, Note
 	public void editStory(long issueID, String name, String value, String importance,
 	        String estimation, String howToDemo, String note, boolean addHistory) {
-		this.productBacklogMapper.modifyName(issueID, name, null);
+		this.productBacklogMapper.modifyName(issueID, name, new Date());
 		Element history = this.translateIssueToXML(value, importance, estimation, howToDemo, note);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = this.productBacklogMapper.getIssue(issueID);
