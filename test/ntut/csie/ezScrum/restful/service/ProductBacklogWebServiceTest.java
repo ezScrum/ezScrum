@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.restful.service;
 
+import static org.junit.Assert.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,76 +33,72 @@ import ntut.csie.jcis.resource.core.IProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.gson.Gson;
 
-public class ProductBacklogWebServiceTest extends TestCase {
-	private int ProjectCount = 1;
-	private int ReleaseCount = 1;
-	private int StoryCount = 3;
-	private int Estimate = 90;
-	private CreateProject CP;
-	private CreateRelease CR;
-	private CreateProductBacklog CPB;
-	private IProject project;
-	private Configuration configuration;
-	private ProductBacklogHelper productBacklogHelper;
+public class ProductBacklogWebServiceTest {
+	private int mProjectCount = 1;
+	private int mReleaseCount = 1;
+	private int mStoryCount = 3;
+	private int mEstimate = 90;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private CreateProductBacklog mCPB;
+	private IProject mProject;
+	private Configuration mConfiguration;
+	private ProductBacklogHelper mProductBacklogHelper;
 
-	public ProductBacklogWebServiceTest(String testMethod) {
-		super(testMethod);
-	}
+	@Before
+	public void setUp() throws Exception {
+		mConfiguration = new Configuration();
+		mConfiguration.setTestMode(true);
+		mConfiguration.save();
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
-
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe(); // 初始化 SQL
 
-		CP = new CreateProject(ProjectCount);
-		CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate(); // 新增一測試專案
 
-		CR = new CreateRelease(ReleaseCount, CP);
-		CR.exe();
+		mCR = new CreateRelease(mReleaseCount, mCP);
+		mCR.exe();
 
-		project = CP.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 		ini = null;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		InitialSQL ini = new InitialSQL(configuration);
+	@After
+	public void tearDown() throws Exception {
+		InitialSQL ini = new InitialSQL(mConfiguration);
 		ini.exe();											// 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(CP);
+		CopyProject copyProject = new CopyProject(mCP);
 		copyProject.exeDelete_Project();					// 刪除測試檔案
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfiguration.setTestMode(false);
+		mConfiguration.save();
 
 		copyProject = null;
-		CP = null;
-		CR = null;
-		configuration = null;
+		mCP = null;
+		mCR = null;
+		mConfiguration = null;
 		ini = null;
 	}
 
+	@Test
 	public void testcreateStory() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
 		String TEST_STORY_NAME = "TEST_STORY_";			// Story Name
 		String TEST_STORY_VALUE = "50";					// Business Value
@@ -124,31 +122,32 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		productBacklogWebService.createStory(new JSONObject(gson.toJson(storyInformation)));
 	
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
-		assertTrue(storyList.length == StoryCount + 1);
+		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		assertTrue(storyList.length == mStoryCount + 1);
 	}
 
+	@Test
 	public void testreadStory() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
 		// call RESTFUL method
 		productBacklogWebService.readStory(null);
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// JSON to JSONArray 
 		JSONArray storyJSONArray = new JSONArray(response);
 
-		for (int i = 0; i < StoryCount; i++) {
+		for (int i = 0; i < mStoryCount; i++) {
 			JSONObject JSONObject = (JSONObject) storyJSONArray.get(i);
 			assertEquals(String.valueOf(storyList[i].getStoryId()), JSONObject.get("id"));
 			assertEquals(storyList[i].getName(), JSONObject.get("name"));
@@ -165,16 +164,17 @@ public class ProductBacklogWebServiceTest extends TestCase {
 
 	}
 
+	@Test
 	public void testupdateStory() throws LogonException, JSONException, SQLException{
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 		
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(0, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(0, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 		
 		String TEST_STORY_NAME = "TEST_STORY_";			// Story Name
 		String TEST_STORY_VALUE = "50";					// Business Value
@@ -185,7 +185,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		String TEST_STORY_NOTES = "TEST_STORY_NOTE_";	    // Story notes
 		String TEST_STORY_DESCRIPTION = "TEST_DESCRIPTION_";// Story description
 		
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, mConfiguration.getUserSession());
 
 		StoryInfo storyInformation = new StoryInfo
 		               (TEST_STORY_NAME,
@@ -198,7 +198,7 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		
 		IIssue story = productBacklogMapper.addStory(storyInformation);
 		
-		CPB.editStory(story.getIssueID(),
+		mCPB.editStory(story.getIssueID(),
 		        TEST_STORY_NAME + "1",
 		        TEST_STORY_VALUE,
 		        TEST_STORY_IMP,
@@ -216,56 +216,58 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		productBacklogWebService.updateStory(new JSONObject(gson.toJson(storyObject)));
 
 		// call local method
-		IStory[] storyArray = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
+		IStory[] storyArray = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// assert
 		assertEquals(TEST_STORY_NAME + "1", storyArray[0].getName());
 	}
 
+	@Test
 	public void testdeleteStory() throws LogonException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
 		// call RESTFUL method
-		productBacklogWebService.deleteStory(String.valueOf(CPB.getIssueIDList().get(0)));
+		productBacklogWebService.deleteStory(String.valueOf(mCPB.getIssueIDList().get(0)));
 		// get all story
-		IStory[] storyList = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// assert
-		assertTrue(storyList.length == StoryCount - 1);
+		assertTrue(storyList.length == mStoryCount - 1);
 		
 		// get History
 		HistoryDAO historyDAO = HistoryDAO.getInstance();
 		ArrayList<HistoryObject> historyList = new ArrayList<HistoryObject>();
-		historyList = historyDAO.getHistoriesByIssue(CPB.getIssueIDList().get(0), IssueTypeEnum.TYPE_STORY);
+		historyList = historyDAO.getHistoriesByIssue(mCPB.getIssueIDList().get(0), IssueTypeEnum.TYPE_STORY);
 
 		// assert
-		assertTrue(storyList.length == StoryCount - 1);
+		assertTrue(storyList.length == mStoryCount - 1);
 		assertTrue(historyList.size() == 0);
 	}
 
+	@Test
 	public void testreadStoryByID() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
 		// call RESTFUL method
-		productBacklogWebService.readStoryById(CPB.getIssueIDList().get(0));
+		productBacklogWebService.readStoryById(mCPB.getIssueIDList().get(0));
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
 
 		JSONObject JSONObject = new JSONObject(response);
 		assertEquals(String.valueOf(storyList[0].getStoryId()), JSONObject.get("id"));
@@ -281,24 +283,25 @@ public class ProductBacklogWebServiceTest extends TestCase {
 		assertEquals(storyList[0].getDescription(), JSONObject.get("description"));
 	}
 
+	@Test
 	public void testgetTagList() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
 		// call RESTFUL method
 		productBacklogWebService.readAllTags();
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		productBacklogHelper = new ProductBacklogHelper(configuration.getUserSession(), project);
-		ArrayList<TagObject> iIssueTagList = productBacklogHelper.getTagList();
+		mProductBacklogHelper = new ProductBacklogHelper(mConfiguration.getUserSession(), mProject);
+		ArrayList<TagObject> iIssueTagList = mProductBacklogHelper.getTagList();
 		// JSON to JSONArray 
 		JSONArray tagJSONArray = new JSONArray(response);
 
@@ -310,26 +313,27 @@ public class ProductBacklogWebServiceTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGetStoryHistory() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
+		String projectID = mProject.getName();
 
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
 		// 建立 ProductBacklog
-		CPB = new CreateProductBacklog(StoryCount, Estimate, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		CPB.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB.exe();
 
-		for (int i = 0; i < StoryCount; i++) {
+		for (int i = 0; i < mStoryCount; i++) {
 			// call RESTFUL method
-			productBacklogWebService.readStoryHistory(CPB.getIssueIDList().get(i));
+			productBacklogWebService.readStoryHistory(mCPB.getIssueIDList().get(i));
 			// get JSON 
 			String response = productBacklogWebService.getRESTFulResponseString();
 //			System.out.println(response);
 			// call local method
-			productBacklogHelper = new ProductBacklogHelper(configuration.getUserSession(), project);
-			List<HistoryObject> iIssuehistorys = productBacklogHelper.getIssue(CPB.getIssueIDList().get(i)).getHistories();
+			mProductBacklogHelper = new ProductBacklogHelper(mConfiguration.getUserSession(), mProject);
+			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getIssue(mCPB.getIssueIDList().get(i)).getHistories();
 
 			// JSON to JSONObject
 			JSONObject historyJSONObject = new JSONObject(response);
