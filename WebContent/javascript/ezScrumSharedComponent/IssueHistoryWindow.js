@@ -27,17 +27,17 @@ var IssueHistoryListStore = new Ext.data.Store({
 });
 
 ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
-	url: 'showIssueHistory.do',
-	issueID: '-1',
-	store: IssueHistoryListStore,
-	colModel: IssueHistoryListColumnModel,
-	title: ' ',
-	height: 500,
-	stripeRows: false,
-	frame: false,
-	viewConfig: {
-		forceFit: true,
-		getRowClass: function(record, index, rowParams, store) {
+	url			: 'showIssueHistory.do',
+	issueID		: '-1',
+	store		: IssueHistoryListStore,
+	colModel	: IssueHistoryListColumnModel,
+	title		: ' ',
+	height		: 500,
+	stripeRows	: false,
+	frame		: false,
+	viewConfig	: {
+		forceFit	: true,
+		getRowClass	: function(record, index, rowParams, store) {
 			var key_Css = ['Importance', 'Estimate', 'Sprint', 'Status', 'Add', 'Drop', 'Append', 'Remove', 'ActualHour'];
 
 			for ( var i = 0; i < key_Css.length; i++) {

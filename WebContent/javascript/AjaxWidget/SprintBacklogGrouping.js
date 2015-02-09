@@ -437,7 +437,8 @@ var masterWidget = new Ext.Panel({
     showHistory:function() {
         if(TreeWidget.getSelectionModel().getSelectedNode() != null) {
             var id = TreeWidget.getSelectionModel().getSelectedNode().attributes['ID'];
-            document.location.href  = "showIssueHistory.do?issueID=" + id + "&type=sprint&sprintID=" + thisSprintStore.getAt(0).get('Id');
+            console.log(TreeWidget.getSelectionModel().getSelectedNode());
+            document.location.href  = "showIssueHistory.do?issueID=" + id + "&issueType=" + "Story" + "&type=sprint&sprintID=" + thisSprintStore.getAt(0).get('Id');
         }
     },
     

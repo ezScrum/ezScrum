@@ -50,7 +50,7 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		// get parameter info
 		String issueId = request.getParameter("issueID");
 		String issueType = request.getParameter("issueType");
-		Long id = -1L;
+		long id = -1L;
 		if ((issueId != null) && (!issueId.equals("-1"))) {
 			id = Long.parseLong(issueId);
 		}
