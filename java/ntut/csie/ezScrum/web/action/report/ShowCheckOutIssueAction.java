@@ -47,14 +47,14 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		try {
 			long issueId = Long.parseLong(request.getParameter("issueID"));
 			String issueType = request.getParameter("issueType");
-			if (issueType.equals("Story")) {
+			if (issueType.equalsIgnoreCase("Story")) {
 				IIssue item = PBHelper.getIssue(issueId);
 				if (item != null) {
 					result.append(getJsonString(item, defaultHandler));
 				} else {
 					result.append(getJsonString(null, defaultHandler));
 				}				
-			} else if (issueType.equals("Task")) {
+			} else if (issueType.equalsIgnoreCase("Task")) {
 				TaskObject task = sprintBacklogHelper.getTask(issueId);
 				result.append(getJsonString(task));
 			}

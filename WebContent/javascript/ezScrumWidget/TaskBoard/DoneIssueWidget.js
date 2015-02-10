@@ -7,6 +7,7 @@ var IssueStore_ForDoneIssue = new Ext.data.Store({
 	id		: 0,
 	fields	:[
 		{name : 'Id'},
+		{name : 'IssueType'},
 		{name : 'Name'},
 		{name : 'Notes'},
 		{name : 'Partners'}
@@ -73,7 +74,6 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     submit: function() {
         var form = this.getForm();
         var obj = this;
-        console.log(form.getValues());
         
         Ext.Ajax.request({
 			url     : this.url,
@@ -107,13 +107,16 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     	if (ConfirmWidget.confirmAction()) {
     		IssueStore_ForDoneIssue.loadData(Ext.decode(response.responseText));		// load issue info
 			var record = IssueStore_ForDoneIssue.getAt(0);
+			console.log(response);
 			if(record) {
 				this.getForm().setValues({
-					Id: record.data['Id'],
-					Name: record.data['Name'], 
-					Partners: record.data['Partners'], 
-					Notes: record.data['Notes'],
-					Actualhour: 0
+					Id			: record.data['Id'],
+//					IssueType	: record.data['IssueType'],
+					IssueType	: 'Task',
+					Name		: record.data['Name'], 
+					Partners	: record.data['Partners'], 
+					Notes		: record.data['Notes'],
+					Actualhour	: 0
 				});
 				
 				// append issueID to window title. "DoneIssueWindow" define in TaskBoardCardFormPanel.js

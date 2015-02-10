@@ -50,8 +50,6 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	},
 	loadDataModel: function() {
 		var obj = this;
-		console.log(obj.issueID);
-		console.log(obj.issueType);
 
 		Ext.Ajax.request({
 			url: obj.url,

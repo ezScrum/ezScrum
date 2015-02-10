@@ -61,7 +61,6 @@ function renderNotes(notes, value) {
  ******************************************************************************/
 function createStoryContent(story) {
 	// 幾個動作Icon的超連結
-	console.log(story);
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
 	var historyIcon = '<a href="javascript:showHistory(' + story.id + ', "Story")" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
 	var uploadIcon = '<a href="javascript:attachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
@@ -123,7 +122,7 @@ function createStoryCard(story) {
 				// 取得 Story 底下所有的 Task
 				var tasks = story.get('Tasks');
 				for ( var k = tasks.length-1 ; k >= 0; k--) {
-					var taskStatus = Ext.getCmp( tasks[k].Id ).draggable.status; 
+					var taskStatus = Ext.getCmp( 'Task:' + tasks[k].Id ).draggable.status; 
 					// 若有任一 Task 不為 done，則 Story 無法移至 done
 					if( taskStatus != 'closed' ){
 						Ext.MessageBox.alert('warning!', 'Please check all the tasks of Story #' + story.id + ' are done.');
