@@ -42,21 +42,20 @@ function renderAttachFile(record) {
 }
 
 // 顯示Name與Estimate
-function taskRenderDescription(description,value , valueName) {
+function taskRenderDescription(description, value, valueName) {
 	return String.format(
 			'<tr><td class="TaskCard_Description"><h1>{0}</h1></td>'
 			+'<td class="TaskCard_Value" >{1} hr</td>'
 			+'</tr>',description,value);
 }
 // 顯示Remain Hours與 Handler
-function taskRenderRHH(handler,partners) {
-	if(handler.length > 0)
-	{
+function taskRenderRHH(handler, partners) {
+	if(handler.length > 0) {
 	    var handler = String.format(
-	            '<tr><td>By\t<span class="TaskCard_Handler">{0}</span>',handler);
+	            '<tr><td>By\t<span class="TaskCard_Handler">{0}</span>', handler);
 	    if(partners.length > 0)
-	    	handler+=' + '+partners;
-	    handler+='</td></tr>';
+	    	handler += ' + ' + partners;
+	    handler += '</td></tr>';
 	    return handler;
 	}
 	else
@@ -74,9 +73,9 @@ function createTaskContent(task)
                 + renderTaskHeader(task, editIcon, historyIcon, uploadIcon)
                 + '</td></tr>'
                 // ============ Story的描述內容 ==============
-                +taskRenderDescription(task.Name,task.RemainHours,'RemainHours')
+                +taskRenderDescription(task.Name, task.RemainHours, 'RemainHours')
                 // ============ Handler與Remain Hours
-                +taskRenderRHH(task.Handler,task.Partners)
+                +taskRenderRHH(task.HandlerUserName, task.Partners)
                 // ============ 附加檔案 ==============
                 +'<tr><td colspan="2">' 
                 + renderAttachFile(task)
@@ -87,10 +86,10 @@ function createTaskContent(task)
 function createTaskCard(task, storyID) {
 
 	var taskCard = new Ext.Panel( {
-		id : task.Id,
-		data:task,
-		borderBorder : false,
-		border : false,
+		id				: task.Id,
+		data			: task,
+		borderBorder	: false,
+		border			: false,
         setHandlerPartners:function(handler, partners) {//set handler and partners
             var data = this.data;
             data.Handler = handler;
@@ -136,15 +135,15 @@ function createTaskCard(task, storyID) {
 		} ]
 	});
 	
-    // 設定TaskCard的拖拉物件
+    // 設定 TaskCard 的拖拉物件
     taskCard.draggable = {
-        realObject:taskCard,
-        taskId : task.Id,
-        issueType:'task',
-        status : task.Status,
-        ddGroup: storyID,
-        parentId: storyID,
-        afterDragDrop : function(target, e, targetID) {
+        realObject		: taskCard,
+        taskId			: task.Id,
+        issueType		: 'Task',
+        status			: task.Status,
+        ddGroup			: storyID,
+        parentId		: storyID,
+        afterDragDrop	: function(target, e, targetID) {
             var status = this.status;
             // 如果Status都一樣的話，不做任何動作
             if(target.status == status) {

@@ -1,21 +1,5 @@
 Ext.ns('ezScrum');
 
-/* useless
-var expander = new Ext.ux.grid.RowExpander({
-	tpl : new Ext.XTemplate(
-		'<br><p><b>Name:</b><br /> {Name:nl2br}</p>',
-		'<tpl if="Notes"><p><b>Notes:</b><br /> {Notes:nl2br}</p></tpl>',
-		'<tpl if="HowToDemo"><p><b>How To Demo:</b><br /> {HowToDemo:nl2br}</p></tpl>',
-		'<tpl for="AttachFileList"><p><b>Attach Files:</b><br /><a href="{DownloadPath}" target="_blank">{FileName}</a> <tpl if="this.hasPermission()">[<a href="#" onclick="Ext.getCmp(\'BacklogWidget\').deleteAttachFile({FileId}, {IssueId}); return false;">Delete</a>]</tpl><br /></tpl>',
-		'<br />',
-		{
-			hasPermission:function() { return Ext.getCmp('BacklogWidget').editStoryPermission;}
-		}
-	),
-	enableCaching :false
-});
-*/
-
 // =============== other widget define =================
 var createStoryWidget = new ezScrum.AddNewStoryWidget({
 	listeners:{
@@ -41,7 +25,6 @@ var editStoryWidget = new ezScrum.EditStoryWidget({
 		LoadFailure:function(win, form, response, issueId) {
 			this.hide();
 			alert('Load Story Failure.');
-			//Ext.example.msg('Load Story', 'Load Story Failure.');
 		},
 		EditSuccess:function(win, form, response, record) {
 			this.hide();
@@ -52,7 +35,6 @@ var editStoryWidget = new ezScrum.EditStoryWidget({
 		EditFailure:function(win, form, response, issueId) {
 			this.hide();
 			alert('Edit Story Failure.');
-			//Ext.example.msg('Edit Story', 'Edit Story Failure.');
 		}
 	}
 });
@@ -68,7 +50,6 @@ var dropStoryWidget = new ezScrum.DropStoryWidget({
 		DropFailure:function(win, response, issueId){
 			this.hide();
 			alert('Drop Story Failure.');
-			//Ext.example.msg('Drop Story', 'Drop Story Failure.');
 		}
 	}
 });
@@ -82,8 +63,6 @@ var moveStoryWidget = new ezScrum.MoveStoreWidget({
 		},
 		MoveFailure:function(issueId){
 			this.hide();
-			//alert('Move Story Failure.');
-			//Ext.example.msg('Move Story', 'Move Story Failure.');
 		}
 	}
 });
@@ -98,7 +77,6 @@ var createTaskWidget = new ezScrum.AddNewTaskWidget({
 		CreateFailure:function(win, form, response, issueId){
 			this.hide();
 			alert('Create Task Failure.');
-			//Ext.example.msg('Create Task', 'Create Task Failure.');
 		}
 	}
 });
@@ -120,7 +98,6 @@ var editTaskWidget = new ezScrum.EditTaskWidget({
 		EditFailure:function(win, form, response, issueId){
 			this.hide();
 			alert('Edit Task Failure.');
-			//Ext.example.msg('Edit Task', 'Edit Task Failure.');
 		}
 	}
 });
@@ -188,7 +165,6 @@ var sprintComboStore = new Ext.data.Store({
 });
 
 var comboInGrid = new Ext.form.ComboBox({
-//	tpl           : '<tpl for="."><div ext:qtip="{Goal}" class="x-combo-list-item">Sprint {Id}</div></tpl>',
 	typeAhead: true,
 	triggerAction: 'all',
 	lazyRender: true,
@@ -267,26 +243,22 @@ ezScrum.Treepannel = Ext.extend(Ext.ux.tree.TreeGrid, {
 });
 
 var TreeWidget = new ezScrum.Treepannel({
-	id: "BacklogTree",
-    frame: true,
-    title: 'Story & Task List',
-    region: 'center',
-	autoScroll: true,
-	animate: true,
-	border: false,
-    enableSort: false,
+	id			: "BacklogTree",
+    frame		: true,
+    title		: 'Story & Task List',
+    region		: 'center',
+	autoScroll	: true,
+	animate		: true,
+	border		: false,
+    enableSort	: false,
     enableHdMenu: false,
-    columns: SprintBacklogColumns,
-    dataUrl: 'showSprintBacklogTreeListInfo.do',
+    columns		: SprintBacklogColumns,
+    dataUrl		: 'showSprintBacklogTreeListInfo.do',
     singleExpand: false,
-    stateEvents : ['collapsenode', 'expandnode'],
-    stateId : 'tree-panel-state-id',
-    stateful : true,
-    //ninja31312
-//	tpl: new Ext.XTemplate(
-//		'<br><p><b>ID:</b><br /> {ID}</p>'
-//	),
-    setNewUrl: function() {
+    stateEvents	: ['collapsenode', 'expandnode'],
+    stateId		: 'tree-panel-state-id',
+    stateful	: true,
+    setNewUrl	: function() {
     	var currentSprintID = thisSprintStore.getAt(0).get('Id');
 
 		//when no sprint exist, currentSprintID = 0
@@ -297,7 +269,7 @@ var TreeWidget = new ezScrum.Treepannel({
     		set_Sprint_Permission_disableAll(true);
     	}
 		this.getLoader().dataUrl = newUrl;
-		TreeWidget.expandAll();//換一個sprint時初始將全部的story展開
+		TreeWidget.expandAll(); //換一個sprint時初始將全部的story展開
     },
     getState : function () {//紀錄操作動作前樹的狀態
         var nodes = [];
@@ -310,10 +282,6 @@ var TreeWidget = new ezScrum.Treepannel({
             var storeTreeState = function (node, expandedNodes) {
                 if(node.isExpanded() ) {
                     expandedNodes.push(node.getPath());
-                    //只有兩層-->一層story 和一層 task所以捨棄掉遞迴的方法
-                    //node.eachChild(function (child) {
-                        //storeTreeState(child, expandedNodes);
-                    //});
                 }
             };
             storeTreeState(child, nodes);
@@ -337,9 +305,9 @@ var TreeWidget = new ezScrum.Treepannel({
     },
     updateRootData: function() {
     	var that = this;
-    	var state = this.getState();//抓取之前存起來的狀態
+    	var state = this.getState(); //抓取之前存起來的狀態
     	this.getLoader().load(this.getRootNode(), function () {
-            that.applyState(state);//在樹load完之後restore樹的狀態 							
+            that.applyState(state); //在樹load完之後restore樹的狀態 							
     	});
     }
 });

@@ -29,6 +29,7 @@ var IssueHistoryListStore = new Ext.data.Store({
 ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	url			: 'showIssueHistory.do',
 	issueID		: '-1',
+	issueType	: '',
 	store		: IssueHistoryListStore,
 	colModel	: IssueHistoryListColumnModel,
 	title		: ' ',
@@ -53,7 +54,8 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		Ext.Ajax.request({
 			url: obj.url,
 			params: {
-				issueID: obj.issueID
+				issueID		: obj.issueID,
+				issueType	: obj.issueType
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
@@ -71,6 +73,9 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	},
 	setIssueID: function(id) {
 		this.issueID = id;
+	},
+	setIssueType: function(type) {
+		this.issueType = type;
 	},
 	notifyTitle: function(record) {
 		var title_info = '＜' + record.get('IssueType') + '＞ ' + '#' + record.get('Id') + ' ' + record.get('Name');
@@ -104,8 +109,9 @@ ezScrum.window.IssueHistoryWindow = Ext.extend(ezScrum.layout.Window, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.window.IssueHistoryWindow.superclass.initComponent.apply(this, arguments);
 	},
-	showTheWindow: function(issueID) {
-		this.items.get(0).setIssueID(issueID);
+	showTheWindow: function(issueId, issueType) {
+		this.items.get(0).setIssueID(issueId);
+		this.items.get(0).setIssueType(issueType);
 		this.items.get(0).loadDataModel();
 
 		this.show();
