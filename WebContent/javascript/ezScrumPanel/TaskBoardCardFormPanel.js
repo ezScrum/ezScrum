@@ -371,8 +371,8 @@ function attachFile(issueID) {
 }
 
 // show issue history
-function showHistory(issueID) {
-	IssueHistory_Window.showTheWindow(issueID);
+function showHistory(issueId, issueType) {
+	IssueHistory_Window.showTheWindow(issueId, issueType);
 }
 
 // delete file
