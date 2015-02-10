@@ -56,10 +56,11 @@ public class SprintBacklogTreeStructure {
 		Link = story.getIssueLink();
 		SprintID = story.getSprintID();
 		ReleaseID = story.getReleaseID();
+		
 		leaf = false;
-		// expanded = true;
+		expanded = true;
 		cls = "folder";
-		id = Long.toString(story.getIssueID());
+		id = "Story:" + ID; // for ext tree panel to recognize node
 		children = new ArrayList<SprintBacklogTreeStructure>();
 		// 設定 Sprint 時間
 		dateList = dates;
@@ -75,9 +76,12 @@ public class SprintBacklogTreeStructure {
 		Estimate = String.valueOf(task.getEstimate());
 		Status = task.getStatusString();
 		Notes = task.getNotes();
+		
 		leaf = true;
 		cls = "file";
-		id = ID;
+		id = "Task:" + ID; // for ext tree panel to recognize node
+		
+		children = null;
 		dateList = dates;
 	}
 
