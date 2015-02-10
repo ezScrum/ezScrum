@@ -25,30 +25,30 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
                         fieldLabel	: 'ID',
                         name      	: 'Id',
                         readOnly	: true,
-                        xtype: 'hidden'
-                    },
-                    {
+                        xtype		: 'hidden'
+                    }, {
+                    	fieldLabel	: 'IssueType',
+                    	name		: 'IssueType',
+                    	xtype		: 'hidden'
+                    }, {
                         fieldLabel	: 'Name',
                         name      	: 'Name',
                         allowBlank	: false
-                    },
-                    {
+                    }, {
                     	fieldLabel	: 'Actual Hour',
                     	name      	: 'Actualhour'
-                    },
-                    {
+                    }, {
                         fieldLabel	: 'Notes',
                         xtype     	: 'textarea',
                         name      	: 'Notes',
                         height    	: 150
-                    },
-                    {
+                    }, {
                     	allowBlank	: true,
                     	fieldLabel	: 'Specific Done Time',
                     	name		: 'ChangeDate',
                     	format 		: 'Y/m/d-H:i:s',
                     	xtype		: 'datefield'
-                    },{
+                    }, {
                     	xtype: 'RequireFieldLabel'
                     }],
             buttons : 
@@ -73,6 +73,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     submit: function() {
         var form = this.getForm();
         var obj = this;
+        console.log(form.getValues());
         
         Ext.Ajax.request({
 			url     : this.url,
@@ -127,14 +128,14 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     reset: function() {
         this.getForm().reset();
     },
-    loadIssue: function(id) {
+    loadIssue: function(id, type) {
         var obj = this;
         
     	Ext.Ajax.request({
 			url: this.loadUrl,
 			success: function(response) { obj.onLoadSuccess(response); },
 			failure: function(response) { obj.onLoadFailure(response); },
-			params : {issueID : id}
+			params : {issueID : id, issueType : type}
 		});
     }
 });
@@ -157,9 +158,9 @@ ezScrum.window.DoneIssueWindow = Ext.extend(ezScrum.layout.Window, {
 		this.items.get(0).on('DOFailure', function(obj, response) { this.fireEvent('DoneFailure', this, response); }, this);
 		this.items.get(0).on('LoadIssueFailure', function(obj, response) { this.fireEvent('LoadFailure', this, response); }, this);
 	},
-	showWidget : function(taskID) {
+	showWidget : function(issueId, issueType) {
 		this.items.get(0).reset();
-		this.items.get(0).loadIssue(taskID);
+		this.items.get(0).loadIssue(issueId, issueType);
 		this.show();
 	}
 });

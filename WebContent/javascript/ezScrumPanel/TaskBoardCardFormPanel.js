@@ -353,16 +353,16 @@ function showReCheckOutTask(id, card) {
 	RE_CheckOutTaskWindow.showWidget(id);
 }
 
-// show done task
+// show done issue
 function showDoneIssue(id, card) {
 	DoneIssueWindow.setCard(card);
-	DoneIssueWindow.showWidget(id);
+	DoneIssueWindow.showWidget(id, card.issueType);
 }
 
 // show reopen issue
 function showReOpenIssue(id, card) {
 	RE_OpenIssueWindow.setCard(card);
-	RE_OpenIssueWindow.showWidget(id);
+	RE_OpenIssueWindow.showWidget(id, card.issueType);
 }
 
 // attach file

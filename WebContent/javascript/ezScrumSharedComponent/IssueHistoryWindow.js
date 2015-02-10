@@ -50,6 +50,8 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	},
 	loadDataModel: function() {
 		var obj = this;
+		console.log(obj.issueID);
+		console.log(obj.issueType);
 
 		Ext.Ajax.request({
 			url: obj.url,
@@ -118,10 +120,8 @@ ezScrum.window.IssueHistoryWindow = Ext.extend(ezScrum.layout.Window, {
 	}
 });
 
-/*
+/**
  * call method 1. showTheWindow: function(issueID)
- * 
- * 
  * shared with: 1. ProductBacklog 2. SprintBacklog 3. Unplanned 4. TaskBoard
  */
 var IssueHistory_Window = new ezScrum.window.IssueHistoryWindow();

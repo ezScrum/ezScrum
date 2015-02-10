@@ -207,7 +207,7 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
         var obj = this;
     	Ext.Ajax.request({
 			url: obj.loadUrl,
-			params : {issueID : id},
+			params : {issueID : id, issueType : 'Task'},
 			success: function(response) { 
 				obj.onLoadSuccess(response);
 			},

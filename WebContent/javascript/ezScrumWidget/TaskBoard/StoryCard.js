@@ -63,7 +63,7 @@ function createStoryContent(story) {
 	// 幾個動作Icon的超連結
 	console.log(story);
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
-	var historyIcon = '<a href="javascript:showHistory(' + story.id + ')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
+	var historyIcon = '<a href="javascript:showHistory(' + story.id + ', "Story")" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
 	var uploadIcon = '<a href="javascript:attachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
 	
 	return '<table class="StoryCard_Table">'
