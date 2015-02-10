@@ -61,6 +61,7 @@ function renderNotes(notes, value) {
  ******************************************************************************/
 function createStoryContent(story) {
 	// 幾個動作Icon的超連結
+	console.log(story);
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
 	var historyIcon = '<a href="javascript:showHistory(' + story.id + ')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
 	var uploadIcon = '<a href="javascript:attachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
@@ -81,14 +82,14 @@ function createStoryContent(story) {
 function createStoryCard(story) {
 
 	var storyCard = new Ext.Panel({
-		id : story.id,
-		data : story,
-		bodyBorder : false,
-		border : false,
-		items : [{
-			bodyBorder : false,
-			border : false,
-			html : createStoryContent(story)
+		id			: 'Story:' + story.id,
+		data		: story,
+		bodyBorder	: false,
+		border		: false,
+		items		: [{
+			bodyBorder	: false,
+			border		: false,
+			html		: createStoryContent(story)
 		}],
 		// 在 taskboard 上編輯 story 後, update card 內容
 		updateData_Edit : function(name, point) {

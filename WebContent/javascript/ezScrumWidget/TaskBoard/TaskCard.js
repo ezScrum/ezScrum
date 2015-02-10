@@ -86,7 +86,7 @@ function createTaskContent(task)
 function createTaskCard(task, storyID) {
 
 	var taskCard = new Ext.Panel( {
-		id				: task.Id,
+		id				: 'Task:' + task.Id,
 		data			: task,
 		borderBorder	: false,
 		border			: false,
