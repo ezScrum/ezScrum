@@ -26,7 +26,7 @@ import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 public class TaskDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
-	private CreateProject mCreateProject;
+	private CreateProject mCP;
 	private int mProjectCount = 2;
 	private static long projectId;
 
@@ -40,13 +40,13 @@ public class TaskDAOTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 
-		projectId = mCreateProject.getAllProjects().get(0).getId();
+		projectId = mCP.getAllProjects().get(0).getId();
 	}
 
 	@After
@@ -58,11 +58,10 @@ public class TaskDAOTest {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		// ============= release ==============
 		ini = null;
-		mCreateProject = null;
+		mCP = null;
 		mConfig = null;
 		mControl = null;
 	}

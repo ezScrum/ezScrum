@@ -1,10 +1,11 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -16,18 +17,19 @@ import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
-public class HistoryDAOTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class HistoryDAOTest {
 	private Configuration mConfig;
-	private CreateProject mCreateProject;
+	private CreateProject mCP;
 	private int mProjectCount = 1;
 	private HistoryDAO mHistoryDao = null;
 	private MySQLControl mControl = null;
 
-	public HistoryDAOTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -35,17 +37,16 @@ public class HistoryDAOTest extends TestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		mHistoryDao = HistoryDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
-
-		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -53,21 +54,19 @@ public class HistoryDAOTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		mCreateProject = null;
+		mCP = null;
 		mConfig = null;
 		mHistoryDao = null;
 		mControl = null;
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testAdd() {
 		String oldValue = "1";
 		String newValue = "0";
@@ -112,6 +111,7 @@ public class HistoryDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGet() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();
@@ -149,6 +149,7 @@ public class HistoryDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetHistoriesByIssue() throws SQLException {
 		long ISSUE_ID = 1;
 
@@ -188,6 +189,7 @@ public class HistoryDAOTest extends TestCase {
 		assertEquals(0, histories.size());
 	}
 
+	@Test
 	public void testDelete() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();
@@ -228,6 +230,7 @@ public class HistoryDAOTest extends TestCase {
 						IssueTypeEnum.TYPE_STORY).size());
 	}
 
+	@Test
 	public void testDeleteByIssue() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();

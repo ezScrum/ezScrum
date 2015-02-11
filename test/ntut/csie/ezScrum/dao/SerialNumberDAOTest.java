@@ -1,9 +1,10 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -11,16 +12,17 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 
-public class SerialNumberDAOTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class SerialNumberDAOTest {
 	private Configuration mConfig;
 	private SerialNumberDAO mSerialNumberDao = null;
 	private MySQLControl mControl = null;
 
-	public SerialNumberDAOTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -32,11 +34,10 @@ public class SerialNumberDAOTest extends TestCase {
 		mSerialNumberDao = SerialNumberDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
-
-		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -44,7 +45,6 @@ public class SerialNumberDAOTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -54,10 +54,9 @@ public class SerialNumberDAOTest extends TestCase {
 		mConfig = null;
 		mSerialNumberDao = null;
 		mControl = null;
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testCreate() {
 		long projectId = 1;
 		long id = mSerialNumberDao.create(new SerialNumberObject(projectId,
@@ -65,6 +64,7 @@ public class SerialNumberDAOTest extends TestCase {
 		assertNotSame(-1, id);
 	}
 
+	@Test
 	public void testGet() throws SQLException {
 		long projectId = 1;
 
@@ -84,6 +84,7 @@ public class SerialNumberDAOTest extends TestCase {
 		assertEquals(1, serialNumber.getUnplannedId());
 	}
 
+	@Test
 	public void testUpdate() throws SQLException {
 		// create 3筆 SerialNumberObject
 		long projectId = 2;
@@ -112,6 +113,7 @@ public class SerialNumberDAOTest extends TestCase {
 		assertEquals(editSerialNumber.getRetrospectiveId(), serialNumber.getRetrospectiveId());
 	}
 
+	@Test
 	public void testUpdateByColumn() throws SQLException {
 		// create 3筆 SerialNumberObject
 		long projectId = 2;
@@ -145,6 +147,7 @@ public class SerialNumberDAOTest extends TestCase {
 		assertEquals(editSerialNumber.getRetrospectiveId(), serialNumber.getRetrospectiveId());
 	}
 	
+	@Test
 	public void testDelete() throws SQLException {
 		int projectCount = 3;
 		long projectId = 3;

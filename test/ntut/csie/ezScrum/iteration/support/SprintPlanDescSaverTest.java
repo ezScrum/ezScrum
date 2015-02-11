@@ -1,88 +1,88 @@
 package ntut.csie.ezScrum.iteration.support;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class SprintPlanDescSaverTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	private Configuration configuration = null;
-	private CreateProject CP = null;
-	private IProject project = null;
-	private SprintPlanMapper saver = null;
+public class SprintPlanDescSaverTest {
 
-	public SprintPlanDescSaverTest(String method) {
-		super(method);
-	}
+	private Configuration mConfig = null;
+	private CreateProject mCP = null;
+	private IProject mProject = null;
+	private SprintPlanMapper mSprintPlanMapper = null;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 
 		// create project
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 
 		// initial loader
-		this.saver = new SprintPlanMapper(this.project);
+		mSprintPlanMapper = new SprintPlanMapper(mProject);
 
 		// release
 		init = null;
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 
 		// copy and delete test project
-		CopyProject cp = new CopyProject(this.CP);
-		cp.exeDelete_Project();
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		// release
 		init = null;
-		cp = null;
-		this.CP = null;
-		this.project = null;
-		configuration = null;
-
-		super.tearDown();
+		mCP = null;
+		mProject = null;
+		mConfig = null;
 	}
 
-	public void testsave_empty() {
+	@Test
+	public void testSave_empty() {
 		// 測試讀取資料尚未存入不會出錯
 		ISprintPlanDesc ActualDesc_1 = new SprintPlanDesc();
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 	}
 
-	public void testsave() {
+	@Test
+	public void testSave() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -101,10 +101,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -133,10 +133,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testsave_duplicate() {
+	@Test
+	public void testSave_duplicate() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -155,10 +156,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -186,12 +187,12 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), ActualDesc_1.getDemoPlace());
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -220,16 +221,18 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_empty() {
+	@Test
+	public void testEdit_empty() {
 		// 測試讀取資料尚未存入不會出錯
 		ISprintPlanDesc ActualDesc_1 = new SprintPlanDesc();
-		this.saver.updateSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
 	}
 
-	public void testedit_ID() {
+	@Test
+	public void testEdit_ID() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -248,10 +251,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -281,8 +284,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setID("2");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -311,10 +314,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_Goal() {
+	@Test
+	public void testEdit_Goal() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -333,10 +337,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -366,8 +370,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setGoal("New Goal - 2");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -396,10 +400,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_Interval() {
+	@Test
+	public void testEdit_Interval() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -418,10 +423,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -451,8 +456,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setInterval("4");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -481,10 +486,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_MemberNumber() {
+	@Test
+	public void testEdit_MemberNumber() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -503,10 +509,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -536,8 +542,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setMemberNumber("100");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -566,10 +572,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_FocusFactor() {
+	@Test
+	public void testEdit_FocusFactor() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -588,10 +595,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -621,8 +628,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setFocusFactor("50");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -650,11 +657,12 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), ActualDesc_1.getDemoPlace());
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
-
-	public void testedit_AvailableDay() {
+	
+	@Test
+	public void testEdit_AvailableDay() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -673,10 +681,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -706,8 +714,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setAvailableDays("25");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -736,10 +744,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_Notes() {
+	@Test
+	public void testEdit_Notes() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -758,10 +767,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -791,8 +800,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setNotes("New Notes - 2");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -821,10 +830,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_StartDate() {
+	@Test
+	public void testEdit_StartDate() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -843,10 +853,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -877,8 +887,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setNotes("New Notes - 2");
 		ActualDesc_1.setStartDate(getDate(today, 10));
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -907,10 +917,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_DemoDate() {
+	@Test
+	public void testEdit_DemoDate() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -929,10 +940,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -965,8 +976,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 10));
 		ActualDesc_1.setDemoDate(getDate(today, 30));
 		ActualDesc_1.setDemoPlace("去全家 Demo");
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -995,10 +1006,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "去全家 Demo");
 	}
 
-	public void testedit_DemoPlace() {
+	@Test
+	public void testEdit_DemoPlace() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -1017,10 +1029,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1052,8 +1064,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setNotes("New Notes - 2");
 		ActualDesc_1.setStartDate(getDate(today, 10));
 		ActualDesc_1.setDemoDate(getDate(today, 30));
-		this.saver.updateSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1082,10 +1094,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testedit_ActualCost() {
+	@Test
+	public void testEdit_ActualCost() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -1104,10 +1117,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 28));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1140,8 +1153,8 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 10));
 		ActualDesc_1.setDemoDate(getDate(today, 30));
 		ActualDesc_1.setActualCost("300");
-		this.saver.updateSprintPlanForActualCost(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.updateSprintPlanForActualCost(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1171,16 +1184,18 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getActualCost(), "300.0");
 	}
 
-	public void testdelete_empty() {
+	@Test
+	public void testDelete_empty() {
 		// 測試讀取資料尚未存入不會出錯
 		ISprintPlanDesc ActualDesc_1 = new SprintPlanDesc();
-		this.saver.deleteSprintPlan("1");
+		mSprintPlanMapper.deleteSprintPlan("1");
 	}
 
-	public void testdelete_1() {
+	@Test
+	public void testDelete_1() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -1199,10 +1214,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1230,12 +1245,12 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), ActualDesc_1.getDemoPlace());
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1265,14 +1280,14 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 新加入一筆一樣的資料但是 ID 不一樣
 		ActualDesc_1.setID("2");
-		this.saver.addSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 
 		// 測試刪除第二筆
-		this.saver.deleteSprintPlan("2");
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.deleteSprintPlan("2");
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1301,10 +1316,11 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testdelete_2() {
+	@Test
+	public void testDelete_2() {
 		// 測試讀取資料尚未存入
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -1323,10 +1339,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setDemoDate(getDate(today, 14));
 		ActualDesc_1.setDemoPlace("Lab 1321");
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ISprintPlanDesc ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1354,12 +1370,12 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), ActualDesc_1.getDemoPlace());
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
-		this.saver.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
 
 		// 驗證加入的資料是否正確
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1389,14 +1405,14 @@ public class SprintPlanDescSaverTest extends TestCase {
 
 		// 新加入一筆一樣的資料但是 ID 不一樣
 		ActualDesc_1.setID("2");
-		this.saver.addSprintPlan(ActualDesc_1);
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.addSprintPlan(ActualDesc_1);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 
 		// 測試刪除第一筆
-		this.saver.deleteSprintPlan("1");
-		descs = this.getSprintPlanListAndSortById(loader);
+		mSprintPlanMapper.deleteSprintPlan("1");
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "2");
@@ -1425,30 +1441,32 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "Lab 1321");
 	}
 
-	public void testmoveSprint_empty() {
+	@Test
+	public void testMoveSprint_empty() {
 		// 測試讀取資料尚未存入不會出錯
 		ISprintPlanDesc ActualDesc_1 = new SprintPlanDesc();
-		this.saver.moveSprintPlan(1, 2);
+		mSprintPlanMapper.moveSprintPlan(1, 2);
 
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 	}
 
-	public void testmoveSprint_1() {
+	@Test
+	public void testMoveSprint_1() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 建立五筆資料
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 
 		ISprintPlanDesc ExpectedDesc = null;
@@ -1476,10 +1494,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		}
 
 		// 將第二筆移動到第五筆
-		this.saver.moveSprintPlan(2, 5);
+		mSprintPlanMapper.moveSprintPlan(2, 5);
 
 		// 檢查是否 2-5 全部交換
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1557,20 +1575,21 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 
-	public void testmoveSprint_2() {
+	@Test
+	public void testMoveSprint_2() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 建立五筆資料
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 
 		ISprintPlanDesc ExpectedDesc = null;
@@ -1598,10 +1617,10 @@ public class SprintPlanDescSaverTest extends TestCase {
 		}
 
 		// 將第二筆移動到第五筆
-		this.saver.moveSprintPlan(5, 2);
+		mSprintPlanMapper.moveSprintPlan(5, 2);
 
 		// 檢查是否 2-5 全部交換
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -1679,20 +1698,21 @@ public class SprintPlanDescSaverTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 
-	public void testmoveSprint_3() {
+	@Test
+	public void testMoveSprint_3() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 建立五筆資料
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 
 		ISprintPlanDesc ExpectedDesc = null;
@@ -1720,7 +1740,7 @@ public class SprintPlanDescSaverTest extends TestCase {
 		}
 
 		// 將第一筆移動到第五筆，可是不能被移動，因為 sprint 已經開始了
-		this.saver.moveSprintPlan(5, 1);
+		mSprintPlanMapper.moveSprintPlan(5, 1);
 		for (int i = 0; i < descs.size(); i++) {
 			String ID = Integer.toString(i + 1);
 			ExpectedDesc = descs.get(i);
@@ -1745,20 +1765,21 @@ public class SprintPlanDescSaverTest extends TestCase {
 		}
 	}
 
-	public void testmoveSprint_4() {
+	@Test
+	public void testMoveSprint_4() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 
-		SprintPlanMapper loader = new SprintPlanMapper(this.project);
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById(loader);
+		SprintPlanMapper loader = new SprintPlanMapper(mProject);
+		List<ISprintPlanDesc> descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 0);
 
 		// 建立五筆資料
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		descs = this.getSprintPlanListAndSortById(loader);
+		descs = getSprintPlanListAndSortById(loader);
 		assertEquals(descs.size(), 5);
 
 		ISprintPlanDesc ExpectedDesc = null;
@@ -1786,7 +1807,7 @@ public class SprintPlanDescSaverTest extends TestCase {
 		}
 
 		// 將第一筆移動到第五筆，可是不能被移動，因為 sprint 已經開始了
-		this.saver.moveSprintPlan(1, 5);
+		mSprintPlanMapper.moveSprintPlan(1, 5);
 		for (int i = 0; i < descs.size(); i++) {
 			String ID = Integer.toString(i + 1);
 			ExpectedDesc = descs.get(i);
