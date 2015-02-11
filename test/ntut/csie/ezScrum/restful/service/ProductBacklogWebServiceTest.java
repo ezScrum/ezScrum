@@ -5,21 +5,17 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -29,7 +25,6 @@ import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -48,16 +43,16 @@ public class ProductBacklogWebServiceTest {
 	private CreateRelease mCR;
 	private CreateProductBacklog mCPB;
 	private IProject mProject;
-	private Configuration mConfiguration;
+	private Configuration mConfig;
 	private ProductBacklogHelper mProductBacklogHelper;
 
 	@Before
 	public void setUp() throws Exception {
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(mProjectCount);
@@ -67,25 +62,28 @@ public class ProductBacklogWebServiceTest {
 		mCR.exe();
 
 		mProject = mCP.getProjectList().get(0);
-		ini = null;
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfiguration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();											
 
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();					// 刪除測試檔案
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		mConfiguration.setTestMode(false);
-		mConfiguration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
-		copyProject = null;
+		// release
 		mCP = null;
 		mCR = null;
-		mConfiguration = null;
-		ini = null;
+		mCPB = null;
+		mProject = null;
+		mConfig = null;
+		mProductBacklogHelper = null;
 	}
 
 	@Test
@@ -104,10 +102,8 @@ public class ProductBacklogWebServiceTest {
 		String TEST_STORY_VALUE = "50";					// Business Value
 		String TEST_STORY_IMP = "100";					// Story importance
 		String TEST_STORY_EST = "2";					// Story estimation
-		
 		String TEST_STORY_HOW_TO_DEMO = "TEST_STORY_DEMO_";	// How to demo
 		String TEST_STORY_NOTES = "TEST_STORY_NOTE_";	    // Story notes
-
 		StoryInfo storyInformation = new StoryInfo
 		        (TEST_STORY_NAME,
 		         TEST_STORY_IMP,
@@ -122,7 +118,7 @@ public class ProductBacklogWebServiceTest {
 		productBacklogWebService.createStory(new JSONObject(gson.toJson(storyInformation)));
 	
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 		assertTrue(storyList.length == mStoryCount + 1);
 	}
 
@@ -143,7 +139,7 @@ public class ProductBacklogWebServiceTest {
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// JSON to JSONArray 
 		JSONArray storyJSONArray = new JSONArray(response);
 
@@ -180,12 +176,11 @@ public class ProductBacklogWebServiceTest {
 		String TEST_STORY_VALUE = "50";					// Business Value
 		String TEST_STORY_IMP = "100";					// Story importance
 		String TEST_STORY_EST = "2";					// Story estimation
-		
 		String TEST_STORY_HOW_TO_DEMO = "TEST_STORY_DEMO_";	// How to demo
 		String TEST_STORY_NOTES = "TEST_STORY_NOTE_";	    // Story notes
 		String TEST_STORY_DESCRIPTION = "TEST_DESCRIPTION_";// Story description
 		
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, mConfiguration.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, mConfig.getUserSession());
 
 		StoryInfo storyInformation = new StoryInfo
 		               (TEST_STORY_NAME,
@@ -216,7 +211,7 @@ public class ProductBacklogWebServiceTest {
 		productBacklogWebService.updateStory(new JSONObject(gson.toJson(storyObject)));
 
 		// call local method
-		IStory[] storyArray = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		IStory[] storyArray = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// assert
 		assertEquals(TEST_STORY_NAME + "1", storyArray[0].getName());
 	}
@@ -236,7 +231,7 @@ public class ProductBacklogWebServiceTest {
 		// call RESTFUL method
 		productBacklogWebService.deleteStory(String.valueOf(mCPB.getIssueIDList().get(0)));
 		// get all story
-		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// assert
 		assertTrue(storyList.length == mStoryCount - 1);
 		
@@ -267,7 +262,7 @@ public class ProductBacklogWebServiceTest {
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		IStory[] storyList = (new ProductBacklogLogic(mConfiguration.getUserSession(), mProject)).getStoriesByFilterType(null);
+		IStory[] storyList = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 
 		JSONObject JSONObject = new JSONObject(response);
 		assertEquals(String.valueOf(storyList[0].getStoryId()), JSONObject.get("id"));
@@ -300,7 +295,7 @@ public class ProductBacklogWebServiceTest {
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
-		mProductBacklogHelper = new ProductBacklogHelper(mConfiguration.getUserSession(), mProject);
+		mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		ArrayList<TagObject> iIssueTagList = mProductBacklogHelper.getTagList();
 		// JSON to JSONArray 
 		JSONArray tagJSONArray = new JSONArray(response);
@@ -330,9 +325,8 @@ public class ProductBacklogWebServiceTest {
 			productBacklogWebService.readStoryHistory(mCPB.getIssueIDList().get(i));
 			// get JSON 
 			String response = productBacklogWebService.getRESTFulResponseString();
-//			System.out.println(response);
 			// call local method
-			mProductBacklogHelper = new ProductBacklogHelper(mConfiguration.getUserSession(), mProject);
+			mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getIssue(mCPB.getIssueIDList().get(i)).getHistories();
 
 			// JSON to JSONObject

@@ -41,8 +41,10 @@ public class MantisNoteServiceTest {
 		mConfig = new Configuration(new UserSession(AccountObject.get("admin")));
 		mConfig.setTestMode(true);
 		mConfig.save();
+		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
+		ini.exe();											
 		
 		// 新增Project
 		mCP = new CreateProject(ProjectCount);
