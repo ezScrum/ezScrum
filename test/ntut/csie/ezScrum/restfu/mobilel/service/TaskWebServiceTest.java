@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.restfu.mobilel.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -19,36 +18,33 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 
 public class TaskWebServiceTest {
-	private TaskWebService mTaskWebService;
-	private CreateProject mCP;
-	private CreateSprint mCS;
-	private AddStoryToSprint mASS;
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
 	private int mStoryCount = 5;
-	
-	private MySQLControl mControl = null;
-	private Configuration mConfiguration = null;
+	private TaskWebService mTaskWebService;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private MySQLControl mControl;
+	private Configuration mConfiguration;
 	
 	@Before
 	public void setUp() throws Exception{
 		mConfiguration = new Configuration();
 		mConfiguration.setTestMode(true);
 		mConfiguration.save();
-		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfiguration);
-		ini.exe(); // 初始化 SQL
+		ini.exe(); 
 
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
@@ -59,8 +55,8 @@ public class TaskWebServiceTest {
 		mCS.exe();
 
 		// 新增Story
-		mASS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASS.exe();
+		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();
 		
 		mControl = new MySQLControl(mConfiguration);
 		mControl.connection();
@@ -91,16 +87,17 @@ public class TaskWebServiceTest {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfiguration.getDataPath());
 
 		mConfiguration.setTestMode(false);
 		mConfiguration.save();
 		
 		// release
-		mControl = null;
-		projectManager = null;
-		mConfiguration = null;
 		mTaskWebService = null;
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mControl = null;
+		mConfiguration = null;
 	}
 	
 	@Test
@@ -183,7 +180,6 @@ public class TaskWebServiceTest {
 		long TEST_TASK_ESTIMATE_NEW = 18;
 		long TEST_TASK_REMAIN_NEW = 5;
 		long TEST_TASK_ACTUAL_NEW = 5;
-		
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("id", task.getId());
@@ -194,12 +190,10 @@ public class TaskWebServiceTest {
 		jsonObject.put("actual", TEST_TASK_ACTUAL_NEW);
 		jsonObject.put("handler", TEST_ACCOUNT_NAME);
 		jsonObject.put("partner", "");
-		
 		boolean updateStatus = Boolean.valueOf(mTaskWebService.updateTask(jsonObject.toString()));
 		
 		// assert
 		Assert.assertTrue(updateStatus);
-		
 		// Query
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
@@ -216,5 +210,4 @@ public class TaskWebServiceTest {
 		Assert.assertEquals(TEST_TASK_REMAIN_NEW, taskObject.getRemains());
 		Assert.assertEquals(TEST_ACCOUNT_NAME, taskObject.getHandler().getUsername());
 	}
-
 }
