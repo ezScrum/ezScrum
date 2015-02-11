@@ -106,14 +106,14 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
 		SprintInfoUIObject sprintInfo = gson.fromJson(result, SprintInfoUIObject.class);
-		Double storyPoint = sprintInfo.mCurrentStoryPoint;
-		Double taskPoint = sprintInfo.mCurrentTaskPoint;
-		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.mId));
-		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.mSprintGoal);
+		Double storyPoint = sprintInfo.CurrentStoryPoint;
+		Double taskPoint = sprintInfo.CurrentTaskPoint;
+		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.SprintGoal);
 		assertEquals(STORY_COUNT * STORY_EST, storyPoint.intValue());
 		assertEquals(STORY_COUNT * TASK_COUNT * TASK_EST, taskPoint.intValue());
-		assertEquals("Release #0", sprintInfo.mReleaseID);
-		assertEquals(true, sprintInfo.mIsCurrentSprint);
+		assertEquals("Release #0", sprintInfo.ReleaseID);
+		assertEquals(true, sprintInfo.isCurrentSprint);
 	}
 
 	/**
@@ -152,13 +152,13 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
 		SprintInfoUIObject sprintInfo = gson.fromJson(result, SprintInfoUIObject.class);
-		Double storyPoint = sprintInfo.mCurrentStoryPoint;
-		Double taskPoint = sprintInfo.mCurrentTaskPoint;
-		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.mId));
-		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.mSprintGoal);
+		Double storyPoint = sprintInfo.CurrentStoryPoint;
+		Double taskPoint = sprintInfo.CurrentTaskPoint;
+		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.SprintGoal);
 		assertEquals((STORY_COUNT - 1) * STORY_EST, storyPoint.intValue());				// done 1個story
 		assertEquals((STORY_COUNT * TASK_COUNT - 2) * TASK_EST, taskPoint.intValue());	// done 2個task
-		assertEquals("Release #0", sprintInfo.mReleaseID);
-		assertEquals(true, sprintInfo.mIsCurrentSprint);
+		assertEquals("Release #0", sprintInfo.ReleaseID);
+		assertEquals(true, sprintInfo.isCurrentSprint);
 	}
 }
