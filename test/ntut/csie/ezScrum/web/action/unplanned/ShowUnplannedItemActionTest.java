@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
@@ -14,71 +14,74 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private CreateUnplannedItem CU;
-	private Configuration configuration;
-	private String actionPath = "/GetUnplannedItems";
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private CreateUnplannedItem mCUI;
+	private Configuration mConfig;
+	private String mActionPath = "/GetUnplannedItems";
 
 	// 測試用的假資料
-	private String TEST_NAME = "TEST_UNPLANNED_";
-	private String TEST_EST = "2";
-	private String TEST_LINK = "/ezScrum/showIssueInformation.do?issueID=";
-	private String TEST_HANDLER = "";
-	private String TEST_PARTNER = "";
-	private String TEST_NOTE = "TEST_UNPLANNED_NOTES_";
+	private String mTEST_NAME = "TEST_UNPLANNED_";
+	private String mTEST_EST = "2";
+	private String mTEST_LINK = "/ezScrum/showIssueInformation.do?issueID=";
+	private String mTEST_HANDLER = "";
+	private String mTEST_PARTNER = "";
+	private String mTEST_NOTE = "TEST_UNPLANNED_NOTES_";
 
 	public ShowUnplannedItemActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config
 		// 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.actionPath);
+		setRequestPathInfo(mActionPath);
 
 		// ============= release ==============
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
-		
-		configuration.setTestMode(false);
-		configuration.save();
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CS = null;
-		configuration = null;
+		projectManager = null;
+		mCP = null;
+		mCS = null;
+		mCUI = null;
+		mConfig = null;
 	}
 
 	// case 1: No sprint
 	public void testNoSprint() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -86,7 +89,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
@@ -105,11 +108,11 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 
 	// case 2: One sprint with No UnplannedItem
 	public void testOneSprint() throws Exception {
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint
 
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -117,7 +120,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -136,14 +139,14 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 	
 	// case 3: One sprint with One UnplannedItem
 	public void testOneSprint1ui() throws Exception {
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
-		this.CU = new CreateUnplannedItem(1, CP, CS);
-		this.CU.exe(); // 新增一個UnplannedItem
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe(); // 新增一個UnplannedItem
 
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -151,7 +154,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -164,20 +167,20 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = this.genXML("1", 1, 1);
+		String expected = genXML("1", 1, 1);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
 	// case 4: One sprint with Two UnplannedItem
 	public void testOneSprint2ui() throws Exception {
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
-		this.CU = new CreateUnplannedItem(2, CP, CS);
-		this.CU.exe(); // 新增兩個UnplannedItem
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe(); // 新增兩個UnplannedItem
 
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -185,7 +188,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -198,22 +201,22 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = this.genXML("1", 1, 2);
+		String expected = genXML("1", 1, 2);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}	
 
 	// case 5: Two sprint with One UnplannedItem
 	public void testTwoSprint1ui() throws Exception {
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
-		this.CU = new CreateUnplannedItem(1, CP, CS);
-		this.CU.exe(); // 新增一個UnplannedItem
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe(); // 新增一個UnplannedItem
 
 		// (I) test Sprint 1
 		
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -221,7 +224,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -234,7 +237,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = this.genXML("1", 1, 1);
+		String expected = genXML("1", 1, 1);
 		assertEquals(expected, response.getWriterBuffer().toString());
 		
 		// (II) test Sprint 2
@@ -244,7 +247,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		response.reset();
 		
 		// ================ set initial data =======================
-		project = this.CP.getProjectList().get(0);
+		project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -252,7 +255,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -265,22 +268,22 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = this.genXML("2", 2, 1);
+		expected = genXML("2", 2, 1);
 		assertEquals(expected, response.getWriterBuffer().toString());		
 	}
 	
 	// case 6: Two sprint with Two UnplannedItem
 	public void testTwoSprint2ui() throws Exception {
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
-		this.CU = new CreateUnplannedItem(2, CP, CS);
-		this.CU.exe(); // 新增一個UnplannedItem
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe(); // 新增一個UnplannedItem
 
 		// (I) test Sprint 1
 		
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -288,7 +291,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -301,7 +304,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = this.genXML("1", 1, 2);
+		String expected = genXML("1", 1, 2);
 		assertEquals(expected, response.getWriterBuffer().toString());
 		
 		// (II) test Sprint 2
@@ -311,7 +314,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		response.reset();
 		
 		// ================ set initial data =======================
-		project = this.CP.getProjectList().get(0);
+		project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -319,7 +322,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -332,7 +335,7 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = this.genXML("2", 3, 2);
+		expected = genXML("2", 3, 2);
 		assertEquals(expected, response.getWriterBuffer().toString());		
 	}
 	
@@ -352,15 +355,15 @@ public class ShowUnplannedItemActionTest extends MockStrutsTestCase {
 		{		
 			result.append("<UnplannedItem>");	 		
 			result.append("<Id>" + String.valueOf(startIssueID+i) + "</Id>");
-			result.append("<Link>" + tsc.TranslateXMLChar(this.TEST_LINK + String.valueOf(startIssueID+i)) + "</Link>");		
-			result.append("<Name>" + "p1s" + sprintID + "_" + this.TEST_NAME + String.valueOf(i+1) + "</Name>");
+			result.append("<Link>" + tsc.TranslateXMLChar(mTEST_LINK + String.valueOf(startIssueID+i)) + "</Link>");		
+			result.append("<Name>" + "p1s" + sprintID + "_" + mTEST_NAME + String.valueOf(i+1) + "</Name>");
 			result.append("<SprintID>" + sprintID + "</SprintID>");
-			result.append("<Estimate>" + this.TEST_EST + "</Estimate>");
+			result.append("<Estimate>" + mTEST_EST + "</Estimate>");
 			result.append("<Status>" + "new" + "</Status>");
 			result.append("<ActualHour>" + "0" + "</ActualHour>");
-			result.append("<Handler>" + this.TEST_HANDLER + "</Handler>");
-			result.append("<Partners>" + this.TEST_PARTNER + "</Partners>");	
-			result.append("<Notes>" + this.TEST_NOTE + String.valueOf(i+1) + "</Notes>");			
+			result.append("<Handler>" + mTEST_HANDLER + "</Handler>");
+			result.append("<Partners>" + mTEST_PARTNER + "</Partners>");	
+			result.append("<Notes>" + mTEST_NOTE + String.valueOf(i+1) + "</Notes>");			
 		result.append("</UnplannedItem>");	
 		}		
 		//

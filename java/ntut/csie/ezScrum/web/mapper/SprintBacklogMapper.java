@@ -210,7 +210,7 @@ public class SprintBacklogMapper {
 		mMantisService.openConnect();
 		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
 		IIssue[] sprintStories = mMantisService.getIssues(mIProject.getName(),
-				ScrumEnum.STORY_ISSUE_TYPE, null, "0", startDate, endDate);
+				ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
 		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
 		if (sprintStories != null) {
 			for (IIssue story : sprintStories) {
