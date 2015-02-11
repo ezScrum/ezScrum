@@ -23,7 +23,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private final String ACTION_PATH = "/showSprintBacklogTreeListInfo";
+	private final String mACTION_PATH = "/showSprintBacklogTreeListInfo";
 	private IProject mProject;
 	
 	public ShowSprintBacklogListInfoActionTest(String testName) {
@@ -51,7 +51,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		// ================ set action info ========================
 		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( ACTION_PATH );
+		setRequestPathInfo( mACTION_PATH );
 		
 		ini = null;
 	}
@@ -64,8 +64,8 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 

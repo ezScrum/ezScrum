@@ -13,10 +13,10 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowExistedStoryActionTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
+	private CreateProject mCP;
+	private CreateSprint mCS;
 	private Configuration mConfig;
-	private final String ACTION_PATH = "/showExistedStory";
+	private final String mACTION_PATH = "/showExistedStory";
 	private IProject mProject;
 
 	public ShowExistedStoryActionTest(String testName) {
@@ -33,21 +33,21 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		ini.exe();
 
 		// 新增 Project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
 		// 新增 Sprint
-		mCreateSprint = new CreateSprint(2, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 		
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
 		// ================ set action info ========================
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(ACTION_PATH);
+		setRequestPathInfo(mACTION_PATH);
 
 		ini = null;
 	}
@@ -60,7 +60,6 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -69,7 +68,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 
 		ini = null;
 		projectManager = null;
-		mCreateProject = null;
+		mCP = null;
+		mCS = null;
 		mConfig = null;
 	}
 
@@ -77,7 +77,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 * no story
 	 */
 	public void testShowExistedStory_1() {
-		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -105,10 +105,10 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowExistedStory_2() {
 		int storycount = 2;
-		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCreateProject);
+		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCP);
 		CPB.exe();
 
-		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -224,7 +224,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String sprintId = "";
 		String releaseId = "";
 		// ================ set request info ========================
-		String projectName = this.mProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
