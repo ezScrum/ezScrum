@@ -1,37 +1,37 @@
 package ntut.csie.ezScrum.pluginLoader;
 
+import static org.junit.Assert.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
 import ntut.csie.protocal.Action;
 import ntut.csie.ui.protocol.UIConfig;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class PluginManagerTest extends TestCase{
+public class PluginManagerTest {
+	private final String mPluginTestDataPath = "./TestData/PluginData/";
+	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
+	private final String mPluginName = "redminePlugin.war";
+	private final String mPluginInPluginWorkspacePath = mPluginWorkspacePath + mPluginName.replace(".war", "") + "/";
+	private final String mConfigFileName = "config.conf";
+	private PluginManager mPluginManager;
 	
-	private final String pluginTestDataPath = "./TestData/PluginData/";
-	private final String pluginWorkspacePath = "./WebContent/pluginWorkspace/";
-	private final String pluginName = "redminePlugin.war";
-	private final String pluginInPluginWorkspacePath = pluginWorkspacePath + pluginName.replace(".war", "") + "/";
-	private final String configFileName = "config.conf";
-	private PluginManager pluginManager;
-	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		PluginMockDataHelper.createResourcePropertyFile();
-		pluginManager = new PluginManager();
+		mPluginManager = new PluginManager();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		//	刪除檔案
 		PluginMockDataHelper.deleteResourcePropertyFile();
-		this.deleteMockFile();
-		pluginManager = null;
+		deleteMockFile();
+		// release resource
+		mPluginManager = null;
 	}
 
 	/**
@@ -39,23 +39,22 @@ public class PluginManagerTest extends TestCase{
 	 */
 	@Test
 	public void testAddPlugin(){
-		String outsidePluginPath = pluginTestDataPath + pluginName;
-		pluginManager.addPlugin( outsidePluginPath );
-		
-		String pluginNamePath = pluginWorkspacePath + pluginName.replace(".war", "");
+		String outsidePluginPath = mPluginTestDataPath + mPluginName;
+		mPluginManager.addPlugin( outsidePluginPath );
+		String pluginNamePath = mPluginWorkspacePath + mPluginName.replace(".war", "");
 		File pluginFile = new File( pluginNamePath );
 		assertEquals( true, pluginFile.exists() );
 	}
 	
 	@Test
 	public void testRemovePlugin(){
-		String pluginPath = pluginTestDataPath + pluginName;
-		pluginManager.addPlugin( pluginPath );
+		String pluginPath = mPluginTestDataPath + mPluginName;
+		mPluginManager.addPlugin( pluginPath );
 		
-		String insidePluginPath = pluginInPluginWorkspacePath;
-		pluginManager.removePlugin( insidePluginPath );
+		String insidePluginPath = mPluginInPluginWorkspacePath;
+		mPluginManager.removePlugin( insidePluginPath );
 		
-		File pluginFile = new File( pluginInPluginWorkspacePath );
+		File pluginFile = new File( mPluginInPluginWorkspacePath );
 		assertEquals( false, pluginFile.exists() );
 	}
 	
@@ -66,21 +65,21 @@ public class PluginManagerTest extends TestCase{
 	public void testGetUIConfigList(){
 		List<UIConfig> uiConfigList = new ArrayList<UIConfig>();
 		int defaultUIConfigListSize;
-		uiConfigList = pluginManager.getUIConfigList();
+		uiConfigList = mPluginManager.getUIConfigList();
 		defaultUIConfigListSize = uiConfigList.size();
 		
 		//	未安裝前 config.conf 不存在
-		String uiConfigFilePath = this.pluginInPluginWorkspacePath + configFileName;
+		String uiConfigFilePath = mPluginInPluginWorkspacePath + mConfigFileName;
 		File uiConfigFile = new File( uiConfigFilePath );
 		assertEquals( false, uiConfigFile.exists() );
 		
 		//	安裝後 config.conf 存在
-		String testPluginPath = this.pluginTestDataPath + this.pluginName;
-		pluginManager.addPlugin( testPluginPath );
+		String testPluginPath = mPluginTestDataPath + mPluginName;
+		mPluginManager.addPlugin( testPluginPath );
 		assertEquals( true, uiConfigFile.exists() );
 		
-		pluginManager = new PluginManager();
-		uiConfigList = pluginManager.getUIConfigList();
+		mPluginManager = new PluginManager();
+		uiConfigList = mPluginManager.getUIConfigList();
 		int correctUIConfigListSize = defaultUIConfigListSize+1;
 		assertEquals( correctUIConfigListSize, uiConfigList.size() );
 		
@@ -94,10 +93,10 @@ public class PluginManagerTest extends TestCase{
 	public void testGetActionList(){
 		List<Action> actionList = new ArrayList<Action>();
 		
-		String pluginPath = pluginTestDataPath + pluginName;
-		pluginManager.addPlugin( pluginPath );
-		pluginManager = new PluginManager();
-		actionList = pluginManager.getActionList();
+		String pluginPath = mPluginTestDataPath + mPluginName;
+		mPluginManager.addPlugin( pluginPath );
+		mPluginManager = new PluginManager();
+		actionList = mPluginManager.getActionList();
 		assertEquals( 1, actionList.size() );	//	目前只安裝redmine
 		boolean isActionExisted = false;
 		for( Action action: actionList ){
@@ -112,7 +111,7 @@ public class PluginManagerTest extends TestCase{
 	}
 	
 	private void deleteMockFile(){
-		String folderPath = pluginWorkspacePath + pluginName.replace(".war", "");
+		String folderPath = mPluginWorkspacePath + mPluginName.replace(".war", "");
 		File file = new File( folderPath );
 		PluginMockDataHelper.isMockFileExisted( file );
 	}

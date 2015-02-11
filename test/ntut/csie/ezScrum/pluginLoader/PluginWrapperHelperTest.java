@@ -1,28 +1,26 @@
 package ntut.csie.ezScrum.pluginLoader;
 
+import static org.junit.Assert.*;
 import java.io.File;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class PluginWrapperHelperTest extends TestCase{
-	private final String pluginTestDataPath = "./TestData/PluginData/";
-	private final String pluginWorkspacePath = "./WebContent/pluginWorkspace/";
-	private final String pluginName = "redminePlugin.war";
+public class PluginWrapperHelperTest {
+	private final String mPluginTestDataPath = "./TestData/PluginData/";
+	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
+	private final String mPluginName = "redminePlugin.war";
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		addPluginToWorkspace();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		this.deletePluginFolder();
+	@After
+	public void tearDown() throws Exception {
+		deletePluginFolder();
 	}
 	
 	@Test
@@ -40,17 +38,16 @@ public class PluginWrapperHelperTest extends TestCase{
 	}
 	
 	private void addPluginToWorkspace() {
-		String outsidePluginPath = pluginTestDataPath + pluginName;
+		String outsidePluginPath = mPluginTestDataPath + mPluginName;
 		PluginManager pluginManager = new PluginManager();
 		pluginManager.addPlugin( outsidePluginPath );
 		pluginManager = null;
 	}
 	
 	private void deletePluginFolder(){
-		String folderPath = pluginWorkspacePath + pluginName.replace(".war", "");
+		String folderPath = mPluginWorkspacePath + mPluginName.replace(".war", "");
 		File file = new File( folderPath );
 		PluginMockDataHelper.isMockFileExisted( file );
 		file = null;
 	}
-
 }

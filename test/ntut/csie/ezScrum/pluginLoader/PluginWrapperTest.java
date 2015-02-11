@@ -1,45 +1,40 @@
 package ntut.csie.ezScrum.pluginLoader;
 
-
+import static org.junit.Assert.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
 import ntut.csie.protocal.Action;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.PluginUI;
 import ntut.csie.ui.protocol.UIConfig;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class PluginWrapperTest extends TestCase{
-	private final String pluginTestDataPath = "./TestData/PluginData/";
-	private final String pluginWorkspacePath = "./WebContent/pluginWorkspace/";
-	private final String pluginName = "redminePlugin.war";
-	private Map<String,String> pluginWrapperMapList;
-	private PluginWrapper pluginWrapper;
-	private String pluginDirPath;
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.addPluginToWorkspace();
-		this.createPluginWrapperMapList();
-		
-		pluginWrapper = new PluginWrapper(pluginDirPath, pluginWrapperMapList);
+public class PluginWrapperTest {
+	private final String mPluginTestDataPath = "./TestData/PluginData/";
+	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
+	private final String mPluginName = "redminePlugin.war";
+	private String mPluginDirPath;
+	private Map<String,String> mPluginWrapperMapList;
+	private PluginWrapper mPluginWrapper;
+	
+	@Before
+	public void setUp() throws Exception {
+		addPluginToWorkspace();
+		createPluginWrapperMapList();
+		mPluginWrapper = new PluginWrapper(mPluginDirPath, mPluginWrapperMapList);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		this.deletePluginFolder();
-		pluginWrapper = null;
-		pluginWrapperMapList = null;
+	@After
+	public void tearDown() throws Exception {
+		deletePluginFolder();
+		// release resource
+		mPluginWrapper = null;
 	}
 	
 	/**
@@ -49,7 +44,7 @@ public class PluginWrapperTest extends TestCase{
 	public void testGetPluginWithAction(){
 		//	Action
 		try {
-			Action action = (Action)pluginWrapper.getPlugin("Action");
+			Action action = (Action)mPluginWrapper.getPlugin("Action");
 			assertEquals( "redmine", action.getUrlName() );
 		} catch (InstantiationException e) {
 			System.out.println( "Class:PluginWrapperTest.java, method:testGetPlugin, exception:InstantiationException, " + e.toString());
@@ -66,9 +61,9 @@ public class PluginWrapperTest extends TestCase{
 	@Test
 	public void testGetPluginWithUIConfig(){
 		//	UIConfig
-		String correctPluginID = pluginName.replace(".war", "");
+		String correctPluginID = mPluginName.replace(".war", "");
 		try {
-			UIConfig uiConfig = (UIConfig)pluginWrapper.getPlugin("UIConfig");
+			UIConfig uiConfig = (UIConfig)mPluginWrapper.getPlugin("UIConfig");
 			List<EzScrumUI> ezScrumUIList = new ArrayList<EzScrumUI>();
 			uiConfig.setEzScrumUIList( ezScrumUIList );
 			
@@ -88,21 +83,21 @@ public class PluginWrapperTest extends TestCase{
 	}
 	
 	private void addPluginToWorkspace() {
-		String outsidePluginPath = pluginTestDataPath + pluginName;
+		String outsidePluginPath = mPluginTestDataPath + mPluginName;
 		PluginManager pluginManager = new PluginManager();
 		pluginManager.addPlugin( outsidePluginPath );
 		pluginManager = null;
 	}
 	
 	private void createPluginWrapperMapList() {
-		pluginWrapperMapList = new HashMap<String, String>();
-		pluginWrapperMapList.put( "UIConfig", "plugin.redmine.protocol.PluginImp" );
-		pluginWrapperMapList.put( "Action", "plugin.redmine.protocol.RedmineAction" );
-		pluginDirPath = pluginWorkspacePath + pluginName.replace(".war", "");
+		mPluginWrapperMapList = new HashMap<String, String>();
+		mPluginWrapperMapList.put( "UIConfig", "plugin.redmine.protocol.PluginImp" );
+		mPluginWrapperMapList.put( "Action", "plugin.redmine.protocol.RedmineAction" );
+		mPluginDirPath = mPluginWorkspacePath + mPluginName.replace(".war", "");
 	}
 	
 	private void deletePluginFolder(){
-		String folderPath = pluginWorkspacePath + pluginName.replace(".war", "");
+		String folderPath = mPluginWorkspacePath + mPluginName.replace(".war", "");
 		File file = new File( folderPath );
 		PluginMockDataHelper.isMockFileExisted( file );
 		file = null;
