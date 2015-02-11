@@ -1,40 +1,43 @@
 package ntut.csie.ezScrum.plugin.util;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
 import ntut.csie.protocal.PluginConfig;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 
-public class PluginConfigManagerTest extends TestCase{
+public class PluginConfigManagerTest {
 	
 	private final String folderNamePath = "./WebContent/Workspace";
 	private final String projectName = "/PluginForTest";
 	private final String metadataFolderName = "/_metadata";
 	private final String configFileName = "/pluginConfig.conf";
 	private final String pluginID = "plugin";
-	private PluginConfigManager pluginConfigManager;
-	private String pluginConfigfileContent;
-	@Override
-	protected void setUp() throws Exception {
+	private PluginConfigManager mPluginConfigManager;
+	private String mPluginConfigfileContent;
+
+	@Before
+	public void setUp() throws Exception {
 		PluginMockDataHelper.createResourcePropertyFile();
-		pluginConfigManager  = new PluginConfigManager( projectName );
+		mPluginConfigManager  = new PluginConfigManager( projectName );
 		
 		//	新增專案資料夾
-		pluginConfigfileContent = PluginMockDataHelper.createPluginConfigFile();
+		mPluginConfigfileContent = PluginMockDataHelper.createPluginConfigFile();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		pluginConfigManager = null;
+	@Test
+	public void tearDown() throws Exception {
+		mPluginConfigManager = null;
 		
 		//	刪除檔案
 		PluginMockDataHelper.deleteResourcePropertyFile();
@@ -49,16 +52,16 @@ public class PluginConfigManagerTest extends TestCase{
 		PluginConfig pluginConfig;
 		
 		//	測試在專案底下有啟用的plugin id
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"1" );
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"1" );
 		assertEquals( pluginID+"1", pluginConfig.getId() );
 		assertEquals( true, pluginConfig.isAvailable() );
 		
 		//	測試在專案底下有啟用過，後來在取消的plugin id
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"2" );
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"2" );
 		assertNull( pluginConfig );
 		
 		//	測試在專案底下沒有啟用的plugin id
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId("not existed");
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId("not existed");
 		assertNull( pluginConfig );
 	}
 	
@@ -69,8 +72,8 @@ public class PluginConfigManagerTest extends TestCase{
 	public void testRemoveConfigUIByPluginUIId(){
 		PluginConfig pluginConfig;
 		
-		pluginConfigManager.removeConfigUIByPluginUIId( pluginID+"2" );
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"2" );
+		mPluginConfigManager.removeConfigUIByPluginUIId( pluginID+"2" );
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId( pluginID+"2" );
 		assertNull( pluginConfig );
 	}
 	
@@ -83,8 +86,8 @@ public class PluginConfigManagerTest extends TestCase{
 		PluginConfig pluginConfig;
 		
 		//	pluginConfig.conf檔案存在
-		pluginConfigManager.replaceFileContent( content );
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId( pluginID );
+		mPluginConfigManager.replaceFileContent( content );
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId( pluginID );
 		assertEquals( pluginID, pluginConfig.getId() );
 		assertEquals( true, pluginConfig.isAvailable() );
 		
@@ -94,8 +97,8 @@ public class PluginConfigManagerTest extends TestCase{
 		if( configFile.exists() ){
 			configFile.delete();
 		}
-		pluginConfigManager.replaceFileContent( content );
-		pluginConfig = pluginConfigManager.getAvailablePluginConfigByPluginId( pluginID );
+		mPluginConfigManager.replaceFileContent( content );
+		pluginConfig = mPluginConfigManager.getAvailablePluginConfigByPluginId( pluginID );
 		assertEquals( pluginID, pluginConfig.getId() );
 		assertEquals( true, pluginConfig.isAvailable() );
 	}
@@ -105,8 +108,8 @@ public class PluginConfigManagerTest extends TestCase{
 	 */
 	@Test
 	public void testReadFileContent(){
-		String testContent = pluginConfigManager.readFileContent();
-		String correctContent = this.pluginConfigfileContent;
+		String testContent = mPluginConfigManager.readFileContent();
+		String correctContent = this.mPluginConfigfileContent;
 		assertEquals(correctContent, testContent);
 	}
 	
@@ -116,9 +119,9 @@ public class PluginConfigManagerTest extends TestCase{
 	@Test
 	public void testGetPluginConfigList(){
 		try {
-			Method getPluginConfigList = pluginConfigManager.getClass().getDeclaredMethod( "getPluginConfigList" );
+			Method getPluginConfigList = mPluginConfigManager.getClass().getDeclaredMethod( "getPluginConfigList" );
 			getPluginConfigList.setAccessible(true);
-			List<PluginConfig> pluginConfigList = (List<PluginConfig>) getPluginConfigList.invoke(pluginConfigManager);
+			List<PluginConfig> pluginConfigList = (List<PluginConfig>) getPluginConfigList.invoke(mPluginConfigManager);
 			getPluginConfigList.setAccessible(false);
 			assertEquals( 2, pluginConfigList.size() );
 		} catch (IllegalAccessException e) {

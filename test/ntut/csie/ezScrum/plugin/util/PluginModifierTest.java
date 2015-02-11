@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.plugin.util;
 
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -9,33 +11,33 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
-
-import ntut.csie.ezScrum.plugin.util.PluginModifier;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class PluginModifierTest extends TestCase{
+public class PluginModifierTest {
 	private String pluginPath = "plugin/redmine";
 	private String testFilePath = "./ImportPluginJSList.jsp";
-	private String importJSPath = "<jsp:include page=\"../pluginWorkspace/"+pluginPath+"/import.jsp\"/>";
-	private PluginModifier pluginModifier;
+	private String importJSPath = "<jsp:include page=\"../pluginWorkspace/" + pluginPath + "/import.jsp\"/>";
+	private PluginModifier mPluginModifier;
 	
+	@Before
 	public void setUp()throws Exception {
 		createMockFile();//建立測試檔案
-		pluginModifier = new PluginModifier();
-		pluginModifier.setTestFilePath( testFilePath );
+		mPluginModifier = new PluginModifier();
+		mPluginModifier.setTestFilePath( testFilePath );
 	}
 	
+	@After
 	public void tearDown(){
-		pluginModifier = null;
+		mPluginModifier = null;
 		removeMockFile();//刪除測試檔案
 	}
 	
 	@Test
 	public void testAddPluginImportPath() throws Exception {
 		try {
-			pluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(pluginPath);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -69,8 +71,8 @@ public class PluginModifierTest extends TestCase{
 	@Test
 	public void testAddDuplicatedPluginImportPath() throws Exception {
 		try {
-			pluginModifier.addPluginImportPath(pluginPath);
-			pluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(pluginPath);
 		} catch (Exception e) {
 			assertEquals( "plugin is existed", e.getMessage() );
 		}
@@ -80,8 +82,8 @@ public class PluginModifierTest extends TestCase{
 	public void testRemovePluginImportPath() throws Exception {
 		//add import plugin path and remove
 		try {
-			pluginModifier.addPluginImportPath(pluginPath);
-			pluginModifier.removePluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.removePluginImportPath(pluginPath);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -115,8 +117,8 @@ public class PluginModifierTest extends TestCase{
 	@Test
 	public void testRemoveNoExistPluginImportPath() throws Exception {
 		try {
-			pluginModifier.removePluginImportPath(pluginPath);
-			pluginModifier.removePluginImportPath(pluginPath);
+			mPluginModifier.removePluginImportPath(pluginPath);
+			mPluginModifier.removePluginImportPath(pluginPath);
 		} catch (Exception e) {
 			assertEquals( "plugin is already removed", e.getMessage() );
 		}
