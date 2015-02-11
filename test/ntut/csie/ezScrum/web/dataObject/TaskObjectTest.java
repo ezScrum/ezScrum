@@ -10,6 +10,7 @@ import java.util.List;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
@@ -24,27 +25,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
  * @author samhuang 2014/12/23
- * 
  */
 public class TaskObjectTest {
-
-	private Configuration mConfiguration = null;
+	private Configuration mConfig = null;
 	private CreateProject mCP = null;
-	private final static int PROJECT_COUNT = 1;
+	private final static int mPROJECT_COUNT = 1;
 	private long mProjectId = -1;
 
 	@Before
 	public void setUp() throws Exception {
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		mCP = new CreateProject(PROJECT_COUNT);
+		mCP = new CreateProject(mPROJECT_COUNT);
 		mCP.exeCreate();
 		
 		mProjectId = mCP.getAllProjects().get(0).getId();
@@ -52,9 +50,19 @@ public class TaskObjectTest {
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mConfiguration = null;
+		
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
+		mConfig = null;
+		mCP = null;
 	}
 
 	@Test
@@ -66,8 +74,7 @@ public class TaskObjectTest {
 		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before testSetPartnersId
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 		// set one partner
 		ArrayList<Long> testPartnersId = new ArrayList<Long>();
@@ -88,8 +95,7 @@ public class TaskObjectTest {
 		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// before testSetPartnersId
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 		// set two partners
 		ArrayList<Long> testPartnersId = new ArrayList<Long>();
@@ -121,8 +127,7 @@ public class TaskObjectTest {
 		newPartnersId.add(2L);
 		newPartnersId.add(3L);
 		task.setPartnersId(newPartnersId);
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		partnersId.clear();
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
@@ -138,8 +143,7 @@ public class TaskObjectTest {
 		task.setName("TEST_NAME").setEstimate(10).setActual(0);
 		task.save();
 		// check status before add partner
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 		// testAddPartner
 		task.addPartner(1);
@@ -158,8 +162,7 @@ public class TaskObjectTest {
 		task.save();
 		task.addPartner(1);
 		// check status before test
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(1, partnersId.size());
 		assertEquals(1L, partnersId.get(0));
 		// testAddPartner_withExistPartner
@@ -180,8 +183,7 @@ public class TaskObjectTest {
 		// add a partner
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
 		// check status before test
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(1, partnersId.size());
 		assertEquals(1L, partnersId.get(0));
 		// testRemovePartner
@@ -202,8 +204,7 @@ public class TaskObjectTest {
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 1);
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, 2);
 		// check status before test
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(
-				TEST_TASK_ID);
+		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
 		assertEquals(1L, partnersId.get(0));
 		assertEquals(2L, partnersId.get(1));
@@ -237,7 +238,7 @@ public class TaskObjectTest {
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);
 		task.setName("TEST_NAME").setEstimate(10).setActual(0)
-				.setHandlerId(account.getId());
+			.setHandlerId(account.getId());
 		task.save();
 		// testGetHandler
 		assertEquals(account.getId(), task.getHandler().getId());
@@ -383,8 +384,7 @@ public class TaskObjectTest {
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, firstAccount.getId());
 		TaskDAO.getInstance().addPartner(TEST_TASK_ID, secondAccount.getId());
 		// testGetPartnersUsername_withTwoPartners
-		assertEquals("test_first_username;test_second_username",
-				task.getPartnersUsername());
+		assertEquals("test_first_username;test_second_username", task.getPartnersUsername());
 	}
 
 	@Test
@@ -430,12 +430,9 @@ public class TaskObjectTest {
 		task.setStoryId(TEST_STORY_ID_NO_PARENT).save();
 
 		assertEquals(3, task.getHistories().size());
-		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0)
-				.getHistoryType());
-		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1)
-				.getHistoryType());
-		assertEquals(HistoryObject.TYPE_REMOVE, task.getHistories().get(2)
-				.getHistoryType());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
+		assertEquals(HistoryObject.TYPE_REMOVE, task.getHistories().get(2).getHistoryType());
 	}
 
 	@Test
@@ -564,21 +561,15 @@ public class TaskObjectTest {
 
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
-		assertEquals(handler.getUsername(),
-				handlerJson.getString(AccountEnum.USERNAME));
-		assertEquals(handler.getEmail(),
-				handlerJson.getString(AccountEnum.EMAIL));
-		assertEquals(handler.getNickName(),
-				handlerJson.getString(AccountEnum.NICK_NAME));
+		assertEquals(handler.getUsername(), handlerJson.getString(AccountEnum.USERNAME));
+		assertEquals(handler.getEmail(), handlerJson.getString(AccountEnum.EMAIL));
+		assertEquals(handler.getNickName(), handlerJson.getString(AccountEnum.NICK_NAME));
 
 		JSONObject partnerJosn = json.getJSONArray("partners").getJSONObject(0);
 		assertEquals(partner.getId(), partnerJosn.getLong(AccountEnum.ID));
-		assertEquals(partner.getUsername(),
-				partnerJosn.getString(AccountEnum.USERNAME));
-		assertEquals(partner.getEmail(),
-				partnerJosn.getString(AccountEnum.EMAIL));
-		assertEquals(partner.getNickName(),
-				partnerJosn.getString(AccountEnum.NICK_NAME));
+		assertEquals(partner.getUsername(), partnerJosn.getString(AccountEnum.USERNAME));
+		assertEquals(partner.getEmail(), partnerJosn.getString(AccountEnum.EMAIL));
+		assertEquals(partner.getNickName(), partnerJosn.getString(AccountEnum.NICK_NAME));
 	}
 
 	/**
@@ -588,7 +579,7 @@ public class TaskObjectTest {
 	public void testSave_CreateANewTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setActual(0);
+			.setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -607,8 +598,7 @@ public class TaskObjectTest {
 	public void testSave_UpdateTask() {
 		TaskObject task = new TaskObject(1);
 		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setActual(0);
-
+			.setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -620,8 +610,7 @@ public class TaskObjectTest {
 		assertEquals(0, task.getActual());
 
 		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
-				.setRemains(5).setActual(1);
-
+			.setRemains(5).setActual(1);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -636,9 +625,7 @@ public class TaskObjectTest {
 	@Test
 	public void testDelete() {
 		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setActual(0);
-
+		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -660,9 +647,7 @@ public class TaskObjectTest {
 	@Test
 	public void testReload() {
 		TaskObject task = new TaskObject(1);
-		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-				.setActual(0);
-
+		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
 		task.save();
 
 		assertEquals(1, task.getId());
@@ -673,8 +658,7 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains());
 		assertEquals(0, task.getActual());
 
-		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
-				.setRemains(3).setActual(1);
+		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5).setRemains(3).setActual(1);
 
 		assertEquals(1, task.getId());
 		assertEquals(1, task.getSerialId());
@@ -704,8 +688,7 @@ public class TaskObjectTest {
 		// 新增三筆 task 但有兩筆在 story 下
 		for (int i = 1; i <= 3; i++) {
 			TaskObject task = new TaskObject(1);
-			task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i)
-					.setEstimate(10).setActual(0);
+			task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i).setEstimate(10).setActual(0);
 			if (i != 2) {
 				task.setStoryId(storyId);
 			}

@@ -1,14 +1,10 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
@@ -22,10 +18,14 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.jcis.resource.core.IProject;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 public class UnplannedItemMapperTest {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
-	private CreateUnplannedItem mCreateUnplanned; 
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private CreateUnplannedItem mCUI; 
 	private Configuration mConfig;
 	private MySQLControl mControl;
 	private IProject mProject;
@@ -45,18 +45,18 @@ public class UnplannedItemMapperTest {
 		ini.exe();
 
 		// 新增 Project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
 		// 新增 Sprint
-		mCreateSprint = new CreateSprint(1, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
 		
 		// 新增 Unplanned
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
 
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 		mUnplannedMapper = new UnplannedItemMapper(mProject, mConfig.getUserSession());
 		
 		// 為了使 Story 建立時間與修改時間分開而停下
@@ -74,31 +74,34 @@ public class UnplannedItemMapperTest {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	mCreateProject = null;
+    	mCP = null;
+    	mCS = null;
+    	mCUI = null;
     	projectManager = null;
+    	mUnplannedMapper = null;
     	mConfig = null;
+    	mControl = null;
 	}
 	
-	@Test
+    @Test
 	public void testUpdate_History() throws SQLException {
-		long issueId = mCreateUnplanned.getIdList().get(0);
+		long issueId = mCUI.getIdList().get(0);
 		String name = "快接 task 啦";
 		String handler = "admin";
 		String partners = "Sam, Jay";
 		String estimate = "6";
 		String actualHour = "6";
 		String notes = "已哭";
-		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		Date date = new Date(System.currentTimeMillis());
-		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS,
-				partners, estimate, actualHour, notes, sprintId, date);
+		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS, partners, estimate, actualHour, notes, sprintId, date);
 		// assert issue info
 		IIssue unplanned = mUnplannedMapper.getById(issueId);
 		assertEquals(issueId, unplanned.getIssueID());

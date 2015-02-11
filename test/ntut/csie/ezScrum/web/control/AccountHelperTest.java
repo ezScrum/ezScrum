@@ -1,13 +1,14 @@
 package ntut.csie.ezScrum.web.control;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -18,19 +19,19 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 
-public class AccountHelperTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class AccountHelperTest {
 	private CreateProject mCP;
 	private int mProjectCount = 1;
 	private ProjectMapper mProjectMapper = null;
 	private Configuration mConfig;
-	private IUserSession mUserSession = null;
 	private ProjectObject mProject = null;
 
-	public AccountHelperTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -45,16 +46,14 @@ public class AccountHelperTest extends TestCase {
 
 		// 建構 helper
 		mProjectMapper = new ProjectMapper();
-		mUserSession = mConfig.getUserSession();
 		mProject = mCP.getAllProjects().get(0);
-
-		super.setUp();
-
+		
 		// release
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	@After
+	public void tearDown() throws IOException, Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -62,27 +61,26 @@ public class AccountHelperTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
-
+		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
-
-		super.tearDown();
 
 		// release
 		ini = null;
 		mCP = null;
 		mProjectMapper = null;
 		mConfig = null;
+		mProject = null;
 	}
 
-	public void testgetScrumWorkerList() {
+	@Test
+	public void testGetScrumWorkerList() {
 		// create 4 accounts
 		CreateAccount ca = new CreateAccount(4);
 		ca.exe();
 
-		List<String> accountsId = mProjectMapper
-				.getProjectWorkersUsername(mProject.getId());
+		List<String> accountsId = mProjectMapper.getProjectWorkersUsername(mProject.getId());
 		assertEquals(0, accountsId.size());
 
 		AddUserToRole autr = new AddUserToRole(this.mCP, ca);
@@ -97,26 +95,23 @@ public class AccountHelperTest extends TestCase {
 
 		ProjectObject project = mCP.getAllProjects().get(0);
 		updatePermission(project, "Stakeholder", false); // 將 Stakeholder 角色設定成不能存取
-													// TaskBoard
+													      // TaskBoard
 		updatePermission(project, "ProductOwner", false); // 將 PO 角色設定成不能存取 TaskBoard
 
-		accountsId = this.mProjectMapper
-				.getProjectWorkersUsername(this.mProject.getId());
+		accountsId = mProjectMapper.getProjectWorkersUsername(this.mProject.getId());
 		assertEquals(2, accountsId.size()); // 可以領取工作的角色剩下兩個
 		assertTrue(accountsId.contains(ca.getAccount_ID(3)));
 		assertTrue(accountsId.contains(ca.getAccount_ID(4)));
 
 		updatePermission(project, "ProductOwner", true); // 將 PO 角色設定成能存取 TaskBoard
-		accountsId = this.mProjectMapper
-				.getProjectWorkersUsername(this.mProject.getId());
+		accountsId = mProjectMapper.getProjectWorkersUsername(this.mProject.getId());
 		assertEquals(3, accountsId.size()); // 可以領取工作的角色剩下四個
 		assertTrue(accountsId.contains(ca.getAccount_ID(2)));
 		assertTrue(accountsId.contains(ca.getAccount_ID(3)));
 		assertTrue(accountsId.contains(ca.getAccount_ID(4)));
 	}
 
-	private void updatePermission(ProjectObject project, String role,
-			boolean accessTaskBoard) {
+	private void updatePermission(ProjectObject project, String role, boolean accessTaskBoard) {
 		List<String> permissionsList = new LinkedList<String>();
 		permissionsList.add(ScrumEnum.ACCESS_PRODUCTBACKLOG);
 		permissionsList.add(ScrumEnum.ACCESS_RELEASEPLAN);
@@ -138,9 +133,7 @@ public class AccountHelperTest extends TestCase {
 		try {
 			scrumRoleMapper.updateScrumRole(project.getId(), scrumrole);
 		} catch (Exception e) {
-			System.out
-					.println("class: AccountHelperTest, method: updatePermission, exception: "
-							+ e.toString());
+			System.out.println("class: AccountHelperTest, method: updatePermission, exception: " + e.toString());
 			e.printStackTrace();
 		}
 	}

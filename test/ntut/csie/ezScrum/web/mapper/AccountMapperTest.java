@@ -1,9 +1,12 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
@@ -16,13 +19,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AccountMapperTest extends TestCase {
+public class AccountMapperTest{
 	private AccountMapper mAccountMapper;
 	private Configuration mConfig = null;
-
-	public AccountMapperTest(String testMethod) {
-		super(testMethod);
-	}
 
 	@Before
 	protected void setUp() throws Exception {
@@ -38,7 +37,6 @@ public class AccountMapperTest extends TestCase {
 		
 		// ============= release ==============
 		ini = null;
-		super.setUp();
 	}
 
 	@After
@@ -50,8 +48,8 @@ public class AccountMapperTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -60,7 +58,6 @@ public class AccountMapperTest extends TestCase {
 		projectManager = null;
 		mAccountMapper = null;
 		mConfig = null;
-		super.tearDown();
 	}
 	
 	@Test

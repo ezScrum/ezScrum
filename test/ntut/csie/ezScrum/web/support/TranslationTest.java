@@ -22,9 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TranslationTest{
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
-	private CreateProductBacklog mCreateProjectBacklog;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private CreateProductBacklog mCPB;
 	private int mProjectCount = 1;
 	private int mStoryCount = 10;
 	private Configuration mConfig = null;
@@ -41,18 +41,18 @@ public class TranslationTest{
 		ini.exe();
 
 		// 新增 Project
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		// 新增 Sprint
-		mCreateSprint = new CreateSprint(1, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
 
 		// 新增 Story
-		mCreateProjectBacklog = new CreateProductBacklog(mStoryCount, mCreateProject);
-		mCreateProjectBacklog.exe();
+		mCPB = new CreateProductBacklog(mStoryCount, mCP);
+		mCPB.exe();
 		
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 
 		// 為了不讓 SQL 跑太快而沒有正確更新值進去
 		Thread.sleep(500);
@@ -70,58 +70,19 @@ public class TranslationTest{
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		mCreateProject = null;
-		mCreateSprint = null;
-		mCreateProjectBacklog = null;
+		mCP = null;
+		mCS = null;
+		mCPB = null;
 		mConfig = null;
+		mProject = null;
 	}
-
-	// // 測試 translateStoryToJson(IIssue[] stories)
-	// public void testtranslateStoryToJson1() throws LogonException {
-	// // ================ set initial data =======================
-	// String file_path = this.config.getInitialSQLPath();
-	//
-	// IProject project = this.CP.getProjectList().get(0);
-	// ProductBacklog backlog = new ProductBacklog(project, config.getUserSession());
-	// long issueID = this.CPB.getIssueList().get(0).getIssueID();
-	//
-	// backlog.addAttachFile(issueID, file_path); // 將 TestData/MyWorkspace/initial_bk.sql 上傳測試
-	// // ================ set initial data =======================
-	//
-	// IIssue[] stories = new IIssue[1];
-	// stories[0] = backlog.getIssue(issueID);
-	//
-	// StringBuilder ExpectedSB = new StringBuilder();
-	//
-	// // 尚未寫
-	// ExpectedSB.append("????????????");
-	//
-	// StringBuilder ActualSB = new StringBuilder();
-	// ActualSB.append(new Translation().translateStoryToJson(stories));
-	//
-	// // 先測試檔案上傳部份，所以測試是否有此檔案名稱
-	// assertEquals(true, ActualSB.toString().contains("initial_bk.sql"));
-	// assertEquals(true, ActualSB.toString().contains("fileDownload"));
-	//
-	// /**
-	// * !! 注意 !! 正確測試要測試為 透過 JasonObject 所合成的 Jason 字串
-	// * 但是這個 story 只是先測試檔案名稱是否有正確顯示
-	// */
-	//
-	//
-	// // ============= release ==============
-	// backlog = null;
-	// stories = null;
-	// ExpectedSB = null;
-	// ActualSB = null;
-	// }
 
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
 	@Test
@@ -131,8 +92,8 @@ public class TranslationTest{
 
 		// initial data
 		for (int i = 0; i < 10; i++) {
-			PBHelper.editStory(mCreateProjectBacklog.getIssueList().get(i).getIssueID(), "0", "0", "0", "0", "0", "0", true);
-			IIssue issue = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			PBHelper.editStory(mCPB.getIssueList().get(i).getIssueID(), "0", "0", "0", "0", "0", "0", true);
+			IIssue issue = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 
 			assertEquals("0", issue.getEstimated());
 			assertEquals("0", issue.getImportance());
@@ -142,7 +103,7 @@ public class TranslationTest{
 
 		StringBuilder ActualSB = new StringBuilder();
 		for (int i = 0; i < 10; i++) {
-			stories[0] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[0] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -151,11 +112,11 @@ public class TranslationTest{
 		}
 
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
-		issueList.add(mCreateProjectBacklog.getIssueList().get(0));
-		issueList.add(mCreateProjectBacklog.getIssueList().get(1));
-		issueList.add(mCreateProjectBacklog.getIssueList().get(2));
-		issueList.add(mCreateProjectBacklog.getIssueList().get(3));
-		CheckOutIssue coi = new CheckOutIssue(issueList, mCreateProject);
+		issueList.add(mCPB.getIssueList().get(0));
+		issueList.add(mCPB.getIssueList().get(1));
+		issueList.add(mCPB.getIssueList().get(2));
+		issueList.add(mCPB.getIssueList().get(3));
+		CheckOutIssue coi = new CheckOutIssue(issueList, mCP);
 		// 將前四筆狀態 done
 		coi.exeDone_Issues();
 
@@ -163,7 +124,7 @@ public class TranslationTest{
 
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertTrue(ActualSB.toString().contains("DONE"));
@@ -173,7 +134,7 @@ public class TranslationTest{
 
 		// 驗證 backlog 狀態
 		for (int i = 4; i < 9; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -183,22 +144,22 @@ public class TranslationTest{
 
 		// 驗證 detail 狀態
 		for (int i = 0; i < 10; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DETAIL"));
 		}
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
-		PBHelper.editStory(mCreateProjectBacklog.getIssueList().get(4).getIssueID(), "", "1", "1", "1", "", "", true);
+		PBHelper.editStory(mCPB.getIssueList().get(4).getIssueID(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 
-		PBHelper.editStory(mCreateProjectBacklog.getIssueList().get(5).getIssueID(), "", "1", "1", "1", "", "", true);
+		PBHelper.editStory(mCPB.getIssueList().get(5).getIssueID(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 		
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertTrue(ActualSB.toString().contains("DONE"));
@@ -208,7 +169,7 @@ public class TranslationTest{
 
 		// 驗證 detail 狀態
 		for (int i = 4; i < 6; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -218,7 +179,7 @@ public class TranslationTest{
 
 		// 驗證 backlog 狀態
 		for (int i = 7; i < 10; i++) {
-			stories[i] = PBHelper.getIssue(mCreateProjectBacklog.getIssueList().get(i).getIssueID());
+			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));

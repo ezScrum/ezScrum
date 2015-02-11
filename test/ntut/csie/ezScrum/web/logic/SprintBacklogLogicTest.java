@@ -7,6 +7,7 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -23,7 +24,7 @@ import org.junit.Test;
 
 public class SprintBacklogLogicTest {
 	private SprintBacklogLogic mSprintBacklogLogic = null;
-	private Configuration mConfiguration = null;
+	private Configuration mConfig = null;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -32,10 +33,10 @@ public class SprintBacklogLogicTest {
     @Before
 	public void setUp() throws Exception{
 		// initialize database
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();// 初始化 SQL
 
 		// create test data
@@ -60,7 +61,7 @@ public class SprintBacklogLogicTest {
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfiguration.getUserSession();
+		IUserSession userSession = mConfig.getUserSession();
 		
 		String sprintId = mCS.getSprintIDList().get(0);
 		mSprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintId);
@@ -68,12 +69,19 @@ public class SprintBacklogLogicTest {
 	
 	@After
 	public void tearDown(){
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		mConfiguration.setTestMode(false);
-		mConfiguration.save();
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
 		mSprintBacklogLogic = null;
+		mConfig = null;
 		ini = null;
 		mCP = null;
 		mCS = null;

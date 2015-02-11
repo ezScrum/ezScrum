@@ -1,13 +1,15 @@
 package ntut.csie.ezScrum.web.control;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -15,46 +17,52 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 
-public class SprintPlanHelperTest extends TestCase {
-	private SprintPlanHelper helper;
-	private CreateProject CP;
-	private CreateSprint CS;
-	private int ProjectCount = 1;
-	private int SprintCount = 3;
-	private Configuration configuration = null;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class SprintPlanHelperTest {
+	private SprintPlanHelper mSprintPlanHelper;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private int mProjectCount = 1;
+	private int mSprintCount = 3;
+	private Configuration mConfig = null;
 	
-	public SprintPlanHelperTest(String testMethod) {
-        super(testMethod);
-    }
-	
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		this.mCP = new CreateProject(this.mProjectCount);
+		this.mCP.exeCreate();
 		
-		this.CS = new CreateSprint(this.SprintCount, this.CP);
-		this.CS.exe();
+		this.mCS = new CreateSprint(this.mSprintCount, this.mCP);
+		this.mCS.exe();
     }
 
-    protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+	@After
+    public void tearDown() throws IOException, Exception {
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-		CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
-    	
-    	configuration.setTestMode(false);
-		configuration.save();
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		// release
-		copyProject = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		projectManager = null;
+		mConfig = null;
     }
     
 //	public void testcurrentSprintID() {
@@ -283,8 +291,8 @@ public class SprintPlanHelperTest extends TestCase {
 	/*-----------------------------------------------------------
 	*	測試Focus Factor與AvaliableDays輸入為0的處理方式
 	-------------------------------------------------------------*/
-	public void testFocusFactorAndAvailableDays()
-	{
+	@Test
+	public void testFocusFactorAndAvailableDays() {
 		System.out.println("testFocusFactorAndAvailableDays: 請找時間把測試失敗原因找出來~");
 /*		
 		this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
@@ -363,7 +371,8 @@ public class SprintPlanHelperTest extends TestCase {
 */		
 	}
 	
-    public void testdeleteIterationPlan() {
+	@Test
+    public void testDeleteIterationPlan() {
 		System.out.println("testdeleteIterationPlan: 請找時間把測試失敗原因找出來~");
 /*    	
     	this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
@@ -386,74 +395,78 @@ public class SprintPlanHelperTest extends TestCase {
 */
     }
     
-	public void testgetProjectStartDate() throws Exception {
-		CopyProject copyProject = new CopyProject(this.CP);
+	@Test
+	public void testGetProjectStartDate() throws Exception {
+		CopyProject copyProject = new CopyProject(this.mCP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		this.mCP = new CreateProject(this.mProjectCount);
+		this.mCP.exeCreate();
 		
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe();
+		this.mCS = new CreateSprint(1, this.mCP);
+		this.mCS.exe();
 		
-		this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
+		this.mSprintPlanHelper = new SprintPlanHelper(this.mCP.getProjectList().get(0));
 		
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		Date Today = cal.getTime();
-		assertEquals(format.format(Today), format.format(this.helper.getProjectStartDate()));
+		assertEquals(format.format(Today), format.format(this.mSprintPlanHelper.getProjectStartDate()));
 	}
     
-	public void testgetProjectEndDate() throws Exception {
-    	this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
-    	int lastID = this.helper.getLastSprintId();
+	@Test
+	public void testGetProjectEndDate() throws Exception {
+    	this.mSprintPlanHelper = new SprintPlanHelper(this.mCP.getProjectList().get(0));
+    	int lastID = this.mSprintPlanHelper.getLastSprintId();
     	
-    	ISprintPlanDesc SprintPlan = this.helper.loadPlan(lastID);
-    	Date ProjectEndDate = this.helper.getProjectEndDate();
+    	ISprintPlanDesc SprintPlan = this.mSprintPlanHelper.loadPlan(lastID);
+    	Date ProjectEndDate = this.mSprintPlanHelper.getProjectEndDate();
     	
     	SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
     	assertEquals(SprintPlan.getEndDate(), format.format(ProjectEndDate).toString());
     	
     	// 清空 sprint
-    	CopyProject copyProject = new CopyProject(this.CP);
+    	CopyProject copyProject = new CopyProject(this.mCP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		this.mCP = new CreateProject(this.mProjectCount);
+		this.mCP.exeCreate();
 		
 		// 除錯
-		this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
-		Date nullProjectEndDate = this.helper.getProjectEndDate();				// ==========================
+		this.mSprintPlanHelper = new SprintPlanHelper(this.mCP.getProjectList().get(0));
+		Date nullProjectEndDate = this.mSprintPlanHelper.getProjectEndDate();				// ==========================
 		assertEquals(null, nullProjectEndDate);									// ==========================
 	}    
     
-	public void testgetLastSprintId() throws Exception {
-    	this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
-    	int lastID = this.helper.getLastSprintId();
+	@Test
+	public void testGetLastSprintId() throws Exception {
+    	this.mSprintPlanHelper = new SprintPlanHelper(this.mCP.getProjectList().get(0));
+    	int lastID = this.mSprintPlanHelper.getLastSprintId();
     	
-    	assertEquals(this.CS.getSprintCount(), lastID);
+    	assertEquals(this.mCS.getSprintCount(), lastID);
     	
     	// 清空 sprint
-    	CopyProject copyProject = new CopyProject(this.CP);
+    	CopyProject copyProject = new CopyProject(this.mCP);
     	copyProject.exeDelete_Project();					// 刪除測試檔案
     	
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		this.mCP = new CreateProject(this.mProjectCount);
+		this.mCP.exeCreate();
 		
-		lastID = this.helper.getLastSprintId();
+		lastID = this.mSprintPlanHelper.getLastSprintId();
 		assertEquals(-1, lastID);
 	}
     
-	public void testgetLastSprintPlanNumber() throws Exception {
+	@Test
+	public void testGetLastSprintPlanNumber() throws Exception {
 		System.out.println("testgetLastSprintPlanNumber: 請找時間把測試失敗原因找出來~");
 /*		
     	this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
@@ -476,7 +489,8 @@ public class SprintPlanHelperTest extends TestCase {
 */		
 	}
     
-	public void testgetSprintIDbyDate() {
+	@Test
+	public void testGetSprintIDbyDate() {
 		System.out.println("testgetSprintIDbyDate: 請找時間把測試失敗原因找出來~");
 /*		
 		this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
@@ -504,16 +518,17 @@ public class SprintPlanHelperTest extends TestCase {
 */				
 	}
     
-    public void testmoveSprint() {
-    	this.helper = new SprintPlanHelper(this.CP.getProjectList().get(0));
+	@Test
+    public void testMoveSprint() {
+    	this.mSprintPlanHelper = new SprintPlanHelper(this.mCP.getProjectList().get(0));
     	
     	// EndSprint 是要被交換的 sprint
-    	ISprintPlanDesc OldSprint = this.helper.loadPlan(this.CS.getSprintCount());
+    	ISprintPlanDesc OldSprint = this.mSprintPlanHelper.loadPlan(this.mCS.getSprintCount());
     	
     	// 再新增一筆 sprint 4 用來移動
     	// 設定參數資料
     	IterationPlanForm form = new IterationPlanForm();
-    	form.setID(Integer.toString(this.CS.getSprintCount()+1));
+    	form.setID(Integer.toString(this.mCS.getSprintCount()+1));
     	form.setAvailableDays("10");
     	form.setDemoPlace("1321 LUB");
     	form.setFocusFactor("200");
@@ -535,17 +550,17 @@ public class SprintPlanHelperTest extends TestCase {
     	cal.add(Calendar.DAY_OF_YEAR, 14);		// 兩個禮拜
     	form.setDemoDate(format.format(cal.getTime()));
     
-    	this.helper.saveIterationPlanForm(form);	// 存入成為一筆新的 sprint
-    	ISprintPlanDesc NewSprint = this.helper.loadPlan(this.helper.getLastSprintId());
+    	this.mSprintPlanHelper.saveIterationPlanForm(form);	// 存入成為一筆新的 sprint
+    	ISprintPlanDesc NewSprint = this.mSprintPlanHelper.loadPlan(this.mSprintPlanHelper.getLastSprintId());
     	
     	// 移動 sprint 3 與 sprint 4
-    	int oldID = this.CS.getSprintCount();
-    	int newID = this.helper.getLastSprintId();
+    	int oldID = this.mCS.getSprintCount();
+    	int newID = this.mSprintPlanHelper.getLastSprintId();
     	
-    	this.helper.moveSprint(oldID, newID);
+    	this.mSprintPlanHelper.moveSprint(oldID, newID);
     	
     	// old ID 的資訊應該變成 sprint 4 資訊
-    	ISprintPlanDesc oldID_sprintInfo = this.helper.loadPlan(oldID);
+    	ISprintPlanDesc oldID_sprintInfo = this.mSprintPlanHelper.loadPlan(oldID);
     	assertEquals(Integer.toString(oldID), oldID_sprintInfo.getID());
     	assertEquals("10", oldID_sprintInfo.getAvailableDays());
     	assertEquals(OldSprint.getStartDate(), oldID_sprintInfo.getStartDate());
@@ -558,7 +573,7 @@ public class SprintPlanHelperTest extends TestCase {
     	
     		
     	// new Id 的資訊應該變成 sprint 3 資訊
-    	ISprintPlanDesc newID_sprintInfo = this.helper.loadPlan(newID);
+    	ISprintPlanDesc newID_sprintInfo = this.mSprintPlanHelper.loadPlan(newID);
     	assertEquals(Integer.toString(newID), newID_sprintInfo.getID());
     	assertEquals(OldSprint.getAvailableDays(), newID_sprintInfo.getAvailableDays());
     	// 日期是正常的，所以時間不會移動

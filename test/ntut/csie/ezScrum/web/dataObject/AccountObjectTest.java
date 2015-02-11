@@ -27,34 +27,36 @@ import org.junit.Test;
 
 public class AccountObjectTest{
 	private MySQLControl mControl = null;
-	private Configuration configuration = null;
+	private Configuration mConfig = null;
 
 	@Before
 	public void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		mControl = new MySQLControl(configuration);
+		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
+		projectManager = null;
 		mControl = null;
-		configuration = null;
+		mConfig = null;
 	}
 	
 	@Test

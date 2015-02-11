@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -25,23 +26,25 @@ public class SprintBacklogTreeStructureTest {
 	private IIssue mStory;
 	private TaskObject mTask;
 	private SprintBacklogLogic mSprintBacklogLogic;
-	private Configuration mConfiguration = null;
-	private AccountObject mHandler;
+	private Configuration mConfig = null;
+	private AccountObject mHandler = null;
 	private CreateProject mCP = null;
-	private final static int PROJECT_COUNT = 1;
+	private final static int mPROJECT_COUNT = 1;
 	private long mProjectId = -1;
 	
 	@Before
 	public void setUp() {
 		// initialize database
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+		
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();// 初始化 SQL
 		ini = null;
+		
 		// create project
-		mCP = new CreateProject(PROJECT_COUNT);
+		mCP = new CreateProject(mPROJECT_COUNT);
 		mCP.exeCreate();
 		mProjectId = mCP.getAllProjects().get(0).getId();
 		// create story
@@ -60,15 +63,24 @@ public class SprintBacklogTreeStructureTest {
 
 	@After
 	public void tearDown() {
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
+
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
 		ini = null;
-		mConfiguration.setTestMode(false);
-		mConfiguration.save();
+		mCP = null;
 		mStory = null;
 		mTask = null;
+		mHandler = null;
 		mSprintBacklogLogic = null;
-		mConfiguration = null;
+		mConfig = null;
 	}
 
 	/*-----------------------------------------------------------
@@ -99,10 +111,8 @@ public class SprintBacklogTreeStructureTest {
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
-		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-				mStory, tasks, dates);
-		List<SprintBacklogTreeStructure> trees = tree
-				.GetTasksTreeListForTest();
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
 			assertEquals("9.0", taskTree.GetDatetoRemainMap().get("Date_1"));
 			assertEquals("8.0", taskTree.GetDatetoRemainMap().get("Date_2"));
@@ -127,10 +137,8 @@ public class SprintBacklogTreeStructureTest {
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
-		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-				mStory, tasks, dates);
-		List<SprintBacklogTreeStructure> trees = tree
-				.GetTasksTreeListForTest();
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
 			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
 			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_2"));
@@ -160,10 +168,8 @@ public class SprintBacklogTreeStructureTest {
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
-		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-				mStory, tasks, dates);
-		List<SprintBacklogTreeStructure> trees = tree
-				.GetTasksTreeListForTest();
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
 			assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_1"));
 			assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_2"));
@@ -183,10 +189,8 @@ public class SprintBacklogTreeStructureTest {
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
-		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-				mStory, tasks, dates);
-		List<SprintBacklogTreeStructure> trees = tree
-				.GetTasksTreeListForTest();
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
 		for (SprintBacklogTreeStructure taskTree : trees) {
 			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_1"));
 			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_2"));

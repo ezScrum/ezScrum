@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.control;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -28,20 +29,21 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ReleaseBacklogTest extends TestCase {
-	private CreateProject mCreateProject;
-	private CreateRelease mCreateRelease;
-	private CreateSprint mCreateSprint;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ReleaseBacklogTest {
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private CreateSprint mCS;
 	private ReleaseBacklog mReleaseBacklog;
 	private IUserSession mUserSession = null;
 	private IProject mProject = null;
 	private Configuration mConfig = null;
 
-	public ReleaseBacklogTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -51,21 +53,20 @@ public class ReleaseBacklogTest extends TestCase {
 		ini.exe();
 
 		// 新增一個Project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
 		// 新增一個Release
-		mCreateRelease = new CreateRelease(1, mCreateProject);
-		mCreateRelease.exe();
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe();
 
 		mUserSession = mConfig.getUserSession();
-		mProject = mCreateProject.getProjectList().get(0);
-
-		super.setUp();
+		mProject = mCP.getProjectList().get(0);
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	@After
+	public void tearDown() throws IOException, Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -73,16 +74,16 @@ public class ReleaseBacklogTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 
-		super.tearDown();
-
 		// release
 		ini = null;
-		mCreateProject = null;
+		mCP = null;
+		mCR = null;
+		mCS = null;
 		projectManager = null;
 		mReleaseBacklog = null;
 		mProject = null;
@@ -93,12 +94,13 @@ public class ReleaseBacklogTest extends TestCase {
 	/**
 	 * 把除了最後一筆 story 以外的 story 都設成 done，所以 releaseBacklog 的 getReleaseAllStoryDone 應該要為 "1.0"
 	 */
+	@Test
 	public void testReleaseBacklog_1() throws Exception {
 		// 新增三筆 sprints
-		mCreateSprint = new CreateSprint(3, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(3, mCP);
+		mCS.exe();
 		// 每個Sprint中新增2筆Story
-		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCreateSprint, mCreateProject, "EST");
+		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCS, mCP, "EST");
 		ASS.exe();
 
 		String releaseId = "1";
@@ -116,7 +118,7 @@ public class ReleaseBacklogTest extends TestCase {
 		// 把 Story 加入 release plan 1 中
 		productBacklogLogic.addReleaseTagToIssue(storyIdList, releaseId);
 		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCreateSprint.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintIDList().get(0));
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
 			if (stories[i].getStoryId() != stories.length) {
@@ -131,12 +133,13 @@ public class ReleaseBacklogTest extends TestCase {
 	/**
 	 * 讓 story 在 sprint 結束後才 closed，getReleaseAllStoryDone 也應該要把 story 視為 done，並且 real point 也要扣掉
 	 */
+	@Test
 	public void testReleaseBacklog_2() throws Exception {
 		// 新增三筆 sprints
-		mCreateSprint = new CreateSprint(3, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(3, mCP);
+		mCS.exe();
 		// 每個 Sprint 中新增2筆 Story
-		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCreateSprint, mCreateProject, "EST");
+		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCS, mCP, "EST");
 		ASS.exe();
 
 		String releaseId = "1";
@@ -149,7 +152,7 @@ public class ReleaseBacklogTest extends TestCase {
 		SprintPlanMapper spMapper = new SprintPlanMapper(mProject);
 		List<ISprintPlanDesc> descs = spMapper.getSprintPlanList();
 		// 用來設定最後一個 story 的 close date
-		String theDate = descs.get(mCreateSprint.getSprintCount() - 1).getEndDate();
+		String theDate = descs.get(mCS.getSprintCount() - 1).getEndDate();
 
 		IStory[] stories = productBacklogLogic.getStories();
 		ArrayList<Long> storyIDList = new ArrayList<Long>();
@@ -159,7 +162,7 @@ public class ReleaseBacklogTest extends TestCase {
 
 		// 把 Story 加入 relaseplan 1 中
 		productBacklogLogic.addReleaseTagToIssue(storyIDList, releaseId);
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCreateSprint.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintIDList().get(0));
 		IStory lastStory = null;
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
