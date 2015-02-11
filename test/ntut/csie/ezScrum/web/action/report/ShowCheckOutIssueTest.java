@@ -12,6 +12,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -84,8 +86,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		IProject project = this.CP.getProjectList().get(0);
 		long issueID = ATS.getTasksId().get(0);
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
-		IIssue item = productBacklogMapper.getIssue(issueID);
+		TaskObject item = TaskObject.get(issueID);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
@@ -95,6 +96,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 
 		addRequestParameter("issueID", String.valueOf(issueID));
+		addRequestParameter("issueType", "Task");
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -105,11 +107,11 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("{\"Task\":{")
-							.append("\"Id\":\"").append(item.getIssueID()).append("\",")
-							.append("\"Name\":\"").append(item.getSummary()).append("\",")
+							.append("\"Id\":\"").append(item.getId()).append("\",")
+							.append("\"Name\":\"").append(item.getName()).append("\",")
 							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
 							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
+							.append("\"Handler\":\"").append("").append("\"")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
@@ -131,6 +133,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 
 		addRequestParameter("issueID", String.valueOf(issueID));
+		addRequestParameter("issueType", "Story");
 
 		// ================ 執行 action ==============================
 		actionPerform();
