@@ -14,10 +14,10 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -33,11 +33,11 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowTaskBoardActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private AddStoryToSprint ASS;
-	private AddTaskToStory ATS;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
+	private Configuration mConfig;
 
 	public ShowTaskBoardActionTest(String testMethod) {
         super(testMethod);
@@ -46,32 +46,32 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生一個Project、產生兩個Sprint、各個Sprint產生五個Story、每個Story設定點數兩點
 	// 並且已經將Story加入到各個Sprint內、每個 Story 產生兩個一點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
 
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe(); // 新增兩個 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe(); // 新增兩個 Sprint
 
 		int Story_Count = 5;
 		int Story_Estimation = 2;
-		this.ASS = new AddStoryToSprint(Story_Count, Story_Estimation, this.CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		this.ASS.exe(); // 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe(); // 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		// 10
 
 		int Task_Count = 2;
-		this.ATS = new AddTaskToStory(Task_Count, 1, this.ASS, this.CP);
-		this.ATS.exe(); // 新增兩筆 Task 到各個 Stories 內
+		mATTS = new AddTaskToStory(Task_Count, 1, mASTS, mCP);
+		mATTS.exe(); // 新增兩筆 Task 到各個 Stories 內
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config
 		// 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
@@ -82,42 +82,41 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CS = null;
-		this.ASS = null;
-		this.ATS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
+		mConfig = null;
 	}
 
 	// 正常執行
 	// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 	public void testexecute() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", Integer.toString(this.CS
+		addRequestParameter("sprintID", Integer.toString(mCS
 				.getSprintCount() - 1)); // 取得第一筆 SprintPlan
 		addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());	
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -131,35 +130,28 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story/Task Point 計算是否正確
-//		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklogMapper(project, CreateUserSession(), this.CS.getSprintCount() - 1));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), CS.getSprintIDList().get(0));
-		TaskBoard ExpectedTB = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("10.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().size(),ActualTB.getM_stories().size());
-		for( IIssue issue:ExpectedTB.getM_stories() ) {
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), mCS.getSprintIDList().get(0));
+		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().size(),actualTaskBoard.getM_stories().size());
+		for( IIssue issue:exceptedTaskBoard.getM_stories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-//			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB.getM_stories()[i].getIssueID());
-//		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().size(),ActualTB.getStories().size());
-		for(IIssue issue: ExpectedTB.getStories() ) {
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
+		for(IIssue issue: exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-//			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB.getStories()[i].getIssueID());
-//		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
@@ -180,83 +172,81 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		project = null;
-		ExpectedTB = null;
-		ActualTB = null;
+		exceptedTaskBoard = null;
+		actualTaskBoard = null;
 		helper = null;
 		ExpectedPlans = null;
 		ActualPlans = null;
 	}
 
-/*	
- * 待修改: ShowTaskBoardAction.java #86 未處理好產生  null pointer
-	// 測試代入超出範圍的 Sprint 參數
-	public void testWrongParameter1() throws Exception {
-		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		// ================ set initial data =======================
-
-		// ================== set parameter info ====================
-		addRequestParameter("sprintID", "100"); // 代入超出範圍的 Sprint ID
-		addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
-		// ================== set parameter info ====================
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());		
-		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-
-		actionPerform(); // 執行 action
-
-		// 驗證回傳 path
-		verifyForwardPath("/Layout/SubLayout.jsp");
-		verifyForward("success");
-		verifyNoActionErrors();
-
-		// 測試回傳物件為 null
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute(
-				"TaskBoard");
-		assertNull(ActualTB);
-
-		// 測試其餘 request
-		ISprintPlanDesc[] ActualPlans = (ISprintPlanDesc[]) getMockRequest()
-				.getAttribute("SprintPlans");
-		assertEquals(this.CS.getSprintCount(), ActualPlans.length);
-
-		List<String> ExpectedActorList = new LinkedList<String>();
-		List<String> ActualActorList = (List<String>) getMockRequest()
-				.getAttribute("ActorList");
-		ExpectedActorList.add("ALL");
-		for (int i = 0; i < ExpectedActorList.size(); i++) {
-			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
-		}
-
-		assertEquals("ALL", getMockRequest().getAttribute("User"));
-
-		// ============= release ==============
-		project = null;
-		ActualActorList = null;
-		ActualTB = null;
-		ActualPlans = null;
-		ExpectedActorList = null;
-	}
-*/
+//	// 待修改: ShowTaskBoardAction.java #86 未處理好產生  null pointer
+//	// 測試代入超出範圍的 Sprint 參數
+//	public void testWrongParameter1() throws Exception {
+//		// ================ set initial data =======================
+//		IProject project = mCP.getProjectList().get(0);
+//		// ================ set initial data =======================
+//
+//		// ================== set parameter info ====================
+//		addRequestParameter("sprintID", "100"); // 代入超出範圍的 Sprint ID
+//		addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
+//		// ================== set parameter info ====================
+//
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());		
+//		request.getSession().setAttribute("Project", project);
+//		// ================ set session info ========================
+//		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//
+//		actionPerform(); // 執行 action
+//
+//		// 驗證回傳 path
+//		verifyForwardPath("/Layout/SubLayout.jsp");
+//		verifyForward("success");
+//		verifyNoActionErrors();
+//
+//		// 測試回傳物件為 null
+//		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
+//				"TaskBoard");
+//		assertNull(actualTaskBoard);
+//
+//		// 測試其餘 request
+//		ISprintPlanDesc[] ActualPlans = (ISprintPlanDesc[]) getMockRequest()
+//				.getAttribute("SprintPlans");
+//		assertEquals(mCS.getSprintCount(), ActualPlans.length);
+//
+//		List<String> ExpectedActorList = new LinkedList<String>();
+//		List<String> ActualActorList = (List<String>) getMockRequest()
+//				.getAttribute("ActorList");
+//		ExpectedActorList.add("ALL");
+//		for (int i = 0; i < ExpectedActorList.size(); i++) {
+//			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
+//		}
+//
+//		assertEquals("ALL", getMockRequest().getAttribute("User"));
+//
+//		// ============= release ==============
+//		project = null;
+//		ActualActorList = null;
+//		actualTaskBoard = null;
+//		ActualPlans = null;
+//		ExpectedActorList = null;
+//	}
 
 	// 測試代入錯誤的 User 參數
 	public void testWrongParameter2() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		String UserID = "NoBody but you";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", Integer.toString(this.CS
+		addRequestParameter("sprintID", Integer.toString(mCS
 				.getSprintCount() - 1)); // 取得第一筆 SprintPlan
 		addRequestParameter("UserID", UserID); // 代入錯誤的 ID
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -270,30 +260,29 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story Point 計算是否正確
-//		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklogMapper(project, CreateUserSession(UserID), this.CS.getSprintCount() - 1));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(UserID), String.valueOf(this.CS.getSprintCount() - 1));
-		TaskBoard ExpectedTB = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(UserID), String.valueOf(mCS.getSprintCount() - 1));
+		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		// 因為沒有此使用者，所以回傳跟此使用者有關的Story Point為0
-		assertEquals("0.0 / 10.0", ActualTB.getInitialStoryPoint());
+		assertEquals("0.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
 
-		assertEquals("0.0 / -", ActualTB.getInitialTaskPoint());
+		assertEquals("0.0 / -", actualTaskBoard.getInitialTaskPoint());
 		
 		// 因為沒有此使用者，所以沒有跟此使用者有關的Story
-		assertEquals(0,ActualTB.getM_stories().size());
+		assertEquals(0,actualTaskBoard.getM_stories().size());
 		
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
 		
 		// 因為沒有此使用者，所以沒有跟此使用者有關的Story
-		assertEquals(0,ActualTB.getStories().size());
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(0,actualTaskBoard.getStories().size());
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
@@ -316,73 +305,72 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		project = null;
 		ExpectedActorList = null;
 		ExpectedPlans = null;
-		ExpectedTB = null;
+		exceptedTaskBoard = null;
 		helper = null;
 		ActualActorList = null;
 		ActualPlans = null;
-		ActualTB = null;
+		actualTaskBoard = null;
 	}
 
-/*	
- * 待修改: ShowTaskBoardAction.java #86 未處理好產生  null pointer
- * // 測試代入超出範圍的 Sprint 參數
-	public void testWrongParameter3() throws Exception {
-		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		// ================ set initial data =======================
 
-		// ================== set parameter info ====================
-		addRequestParameter("sprintID", "XXX"); // 代入超出範圍的 Sprint ID
-		addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
-		// ================== set parameter info ====================
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", config.getUserSession());
-		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-
-		actionPerform(); // 執行 action
-
-		// 驗證回傳 path
-		verifyForwardPath("/Layout/SubLayout.jsp");
-		verifyForward("success");
-		verifyNoActionErrors();
-
-		// 測試回傳物件為 null
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute(
-				"TaskBoard");
-		assertNull(ActualTB);
-
-		// 測試其餘 request
-		ISprintPlanDesc[] ActualPlans = (ISprintPlanDesc[]) getMockRequest()
-				.getAttribute("SprintPlans");
-		assertEquals(this.CS.getSprintCount(), ActualPlans.length);
-
-		List<String> ExpectedActorList = new LinkedList<String>();
-		List<String> ActualActorList = (List<String>) getMockRequest()
-				.getAttribute("ActorList");
-		ExpectedActorList.add("ALL");
-		for (int i = 0; i < ExpectedActorList.size(); i++) {
-			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
-		}
-
-		assertEquals("ALL", getMockRequest().getAttribute("User"));
-
-		// ============= release ==============
-		project = null;
-		ActualActorList = null;
-		ActualPlans = null;
-		ActualTB = null;
-		ExpectedActorList = null;
-	}
-*/
+//	// 待修改: ShowTaskBoardAction.java #86 未處理好產生  null pointer
+//	// 測試代入超出範圍的 Sprint 參數
+//	public void testWrongParameter3() throws Exception {
+//		// ================ set initial data =======================
+//		IProject project = mCP.getProjectList().get(0);
+//		// ================ set initial data =======================
+//
+//		// ================== set parameter info ====================
+//		addRequestParameter("sprintID", "XXX"); // 代入超出範圍的 Sprint ID
+//		addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
+//		// ================== set parameter info ====================
+//
+//		// ================ set session info ========================
+//		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+//		request.getSession().setAttribute("Project", project);
+//		// ================ set session info ========================
+//		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//
+//		actionPerform(); // 執行 action
+//
+//		// 驗證回傳 path
+//		verifyForwardPath("/Layout/SubLayout.jsp");
+//		verifyForward("success");
+//		verifyNoActionErrors();
+//
+//		// 測試回傳物件為 null
+//		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
+//				"TaskBoard");
+//		assertNull(actualTaskBoard);
+//
+//		// 測試其餘 request
+//		ISprintPlanDesc[] ActualPlans = (ISprintPlanDesc[]) getMockRequest()
+//				.getAttribute("SprintPlans");
+//		assertEquals(mCS.getSprintCount(), ActualPlans.length);
+//
+//		List<String> ExpectedActorList = new LinkedList<String>();
+//		List<String> ActualActorList = (List<String>) getMockRequest()
+//				.getAttribute("ActorList");
+//		ExpectedActorList.add("ALL");
+//		for (int i = 0; i < ExpectedActorList.size(); i++) {
+//			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
+//		}
+//
+//		assertEquals("ALL", getMockRequest().getAttribute("User"));
+//
+//		// ============= release ==============
+//		project = null;
+//		ActualActorList = null;
+//		ActualPlans = null;
+//		actualTaskBoard = null;
+//		ExpectedActorList = null;
+//	}
 
 	// 測試移動兩筆 Task 到 Check-Out 並且驗證點數
 	public void testMoveTask1() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		String SprintID = Integer.toString(this.CS.getSprintCount() - 1);
+		IProject project = mCP.getProjectList().get(0);
+		String SprintID = Integer.toString(mCS.getSprintCount() - 1);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -391,21 +379,16 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// =============== set move action ======================
-//		ArrayList<Long> IssueID = new ArrayList<Long>();
-//		IssueID.add(this.ATS.getTaskIDList().get(0)); // 加入第一筆
-//		IssueID.add(this.ATS.getTaskIDList().get(1)); // 加入第二筆
-
-//		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		tasks.add(this.ATS.getTasks().get(0)); // 加入第一筆
-		tasks.add(this.ATS.getTasks().get(1)); // 加入第二筆
+		tasks.add(mATTS.getTasks().get(0)); // 加入第一筆
+		tasks.add(mATTS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(tasks, this.CP);
+		CheckOutIssue COI = new CheckOutIssue(tasks, mCP);
 		COI.exeCheckOut_Issues(); // 將此兩筆 Task Check-out
 		// =============== set move action ======================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -418,49 +401,42 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 測試 Story/Task Point 計算是否正確
-//		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklogMapper(project, CreateUserSession(), this.CS.getSprintCount() - 1));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(this.CS.getSprintCount() - 1));
-		TaskBoard ExpectedTB = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("10.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().size(), ActualTB.getM_stories().size());
-		for (IIssue issue:ExpectedTB.getM_stories() ) {
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(mCS.getSprintCount() - 1));
+		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().size(), actualTaskBoard.getM_stories().size());
+		for (IIssue issue:exceptedTaskBoard.getM_stories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-//			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB.getM_stories()[i].getIssueID());
-//		}
 		
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().size(),ActualTB.getStories().size());
-		for (IIssue issue:ExpectedTB.getStories() ) {
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
+		for (IIssue issue:exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-//			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB.getStories()[i].getIssueID());
-//		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard.getStoryChartLink());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// ============= release ==============
 		project = null;
 		tasks = null;
 		COI = null;
-		ExpectedTB = null;
+		exceptedTaskBoard = null;
 	}
 
 	// 測試移動兩筆 Task 到 Done 並且驗證點數
 	public void testMoveTask2() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		String SprintID = Integer.toString(this.CS.getSprintCount() - 1);
+		IProject project = mCP.getProjectList().get(0);
+		String SprintID = Integer.toString(mCS.getSprintCount() - 1);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -469,21 +445,16 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 
 		// =============== set move action ======================
-//		ArrayList<Long> IssueID = new ArrayList<Long>();
-//		IssueID.add(this.ATS.getTaskIDList().get(0)); // 加入第一筆
-//		IssueID.add(this.ATS.getTaskIDList().get(1)); // 加入第二筆
-//
-//		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		tasks.add(this.ATS.getTasks().get(0)); // 加入第一筆
-		tasks.add(this.ATS.getTasks().get(1)); // 加入第二筆
+		tasks.add(mATTS.getTasks().get(0)); // 加入第一筆
+		tasks.add(mATTS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(tasks, this.CP);
+		CheckOutIssue COI = new CheckOutIssue(tasks, mCP);
 		COI.exeDone_Tasks(); // 將此兩筆 Task Done
 		// =============== set move action ======================
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -496,41 +467,34 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 測試 Story/Task Point 計算是否正確
-//		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklogMapper(project, CreateUserSession(), this.CS.getSprintCount() - 1));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(this.CS.getSprintCount() - 1));
-		TaskBoard ExpectedTB = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("8.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().size(), ActualTB.getM_stories().size());
-		for (IIssue issue:ExpectedTB.getM_stories() ) {
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(mCS.getSprintCount() - 1));
+		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("8.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().size(), actualTaskBoard.getM_stories().size());
+		for (IIssue issue:exceptedTaskBoard.getM_stories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-//			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB.getM_stories()[i].getIssueID());
-//		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().size(), ActualTB.getStories().size());
-		for (IIssue issue:ExpectedTB.getStories() ) {
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
+		for (IIssue issue:exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
 		}
-//		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-//			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB.getStories()[i].getIssueID());
-//		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("8.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("8.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// ============= release ==============
 		project = null;
 		tasks = null;
 		COI = null;
-		ExpectedTB = null;
+		exceptedTaskBoard = null;
 
 	}
 
@@ -543,12 +507,12 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
+		CopyProject copyProject = new CopyProject(CP);
 		copyProject.exeDelete_Project(); // 刪除測試檔案
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		IProject project = this.CP.getProjectList().get(0);
+		CP = new CreateProject(1);
+		CP.exeCreate(); // 新增一測試專案
+		IProject project = CP.getProjectList().get(0);
 
 		// 建立一設定過日期的 Sprint
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
@@ -558,7 +522,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		int Story_Count = 5;
 		int Est_Value = 2;
 		CreateProductBacklog CPB = new CreateProductBacklog(Story_Count,
-				Est_Value, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+				Est_Value, CP, CreateProductBacklog.TYPE_ESTIMATION);
 		CPB.exe();
 
 		// 將五筆 Story 加入 Sprint-1
@@ -579,7 +543,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 //		for (int i = 0; i < CPB.getIssueList().size(); i++) {
 //			long StoryID = CPB.getIssueList().get(i).getIssueID();
 //			CreateTask CT = new CreateTask(Task_Count, Task_Value, StoryID,
-//					this.CP);
+//					CP);
 //			CT.exe();
 //			TaskList.addAll(CT.getTaskIDList());
 //		}
@@ -587,7 +551,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		for (int i = 0; i < CPB.getIssueList().size(); i++) {
 			long StoryID = CPB.getIssueList().get(i).getIssueID();
 			CreateTask CT = new CreateTask(Task_Count, Task_Value, StoryID,
-					this.CP);
+					CP);
 			CT.exe();
 			TaskList.addAll(CT.getTaskList());
 		}
@@ -605,11 +569,11 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		for (int i = 0; i < Integer.parseInt(SprintOne.getAvailableDays()); i++) {
 //			ArrayList<Long> IssueID = new ArrayList<Long>();
 //			IssueID.add(TaskList.get(i));
-//			CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP, Today);
+//			CheckOutIssue COI = new CheckOutIssue(IssueID, CP, Today);
 			List<IIssue> issueList = new ArrayList<IIssue>();
 			issueList.add(TaskList.get(i));
 			CheckOutIssue COI = 
-issueList, this.CP, Today);
+issueList, CP, Today);
 			COI.exeDone_Issues(); // 將此天的一筆 Task Done
 			Today = getNextDay(Today); // 日期取得下一天
 		}
@@ -685,8 +649,8 @@ issueList, this.CP, Today);
 		
 /*		
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		String SprintID = Integer.toString(this.CS.getSprintCount() - 1);
+		IProject project = CP.getProjectList().get(0);
+		String SprintID = Integer.toString(CS.getSprintCount() - 1);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -700,13 +664,13 @@ issueList, this.CP, Today);
 		SprintPlanHelper helper = new SprintPlanHelper(project);
 
 //		ArrayList<Long> IssueID = new ArrayList<Long>();
-//		IssueID.add(this.ATS.getTaskIDList().get(0));
-//		CheckOutIssue COI = new CheckOutIssue(IssueID, this.CP);
+//		IssueID.add(ATS.getTaskIDList().get(0));
+//		CheckOutIssue COI = new CheckOutIssue(IssueID, CP);
 //		COI.exeDone_Issues();
 		
 		List<IIssue> issueList = new ArrayList<IIssue>();
-		issueList.add(this.ATS.getTaskList().get(0));
-		CheckOutIssue COI = new CheckOutIssue(issueList, this.CP);
+		issueList.add(ATS.getTaskList().get(0));
+		CheckOutIssue COI = new CheckOutIssue(issueList, CP);
 		COI.exeDone_Issues();
 		// =============== set move action ======================
 
@@ -724,34 +688,34 @@ issueList, this.CP, Today);
 		verifyNoActionErrors();
 
 		// 測試 Story / Task Point 計算是否正確
-		TaskBoard ExpectedTB = new TaskBoard(new SprintBacklog(project,
-				CreateUserSession(), this.CS.getSprintCount() - 1));
-		TaskBoard ActualTB = (TaskBoard) getMockRequest().getAttribute(
+		TaskBoard exceptedTaskBoard = new TaskBoard(new SprintBacklog(project,
+				CreateUserSession(), CS.getSprintCount() - 1));
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
 				"TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("9.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().length,
-				ActualTB.getM_stories().length);
-		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("9.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().length,
+				actualTaskBoard.getM_stories().length);
+		for (int i = 0; i < exceptedTaskBoard.getM_stories().length; i++) {
+			assertEquals(exceptedTaskBoard.getM_stories()[i].getIssueID(), actualTaskBoard
 					.getM_stories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(CS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().length,
-				ActualTB.getStories().length);
-		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().length,
+				actualTaskBoard.getStories().length);
+		for (int i = 0; i < exceptedTaskBoard.getStories().length; i++) {
+			assertEquals(exceptedTaskBoard.getStories()[i].getIssueID(), actualTaskBoard
 					.getStories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("9.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("9.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
 		ISprintPlanDesc[] ExpectedPlans = helper.loadPlans();
@@ -777,11 +741,11 @@ issueList, this.CP, Today);
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// =============== set move action ======================
 		issueList.clear();
-//		issueList.add(this.ATS.getTaskIDList().get(1));
-//		issueList.add(this.ATS.getTaskIDList().get(2));
-		issueList.add(this.ATS.getTaskList().get(1));
-		issueList.add(this.ATS.getTaskList().get(2));
-		COI = new CheckOutIssue(issueList, this.CP);
+//		issueList.add(ATS.getTaskIDList().get(1));
+//		issueList.add(ATS.getTaskIDList().get(2));
+		issueList.add(ATS.getTaskList().get(1));
+		issueList.add(ATS.getTaskList().get(2));
+		COI = new CheckOutIssue(issueList, CP);
 		COI.exeDone_Issues();
 		// =============== set move action ======================
 
@@ -793,33 +757,33 @@ issueList, this.CP, Today);
 		verifyNoActionErrors();
 
 		// 測試 Story / Task Point 計算是否正確
-		ExpectedTB = new TaskBoard(new SprintBacklog(project,
-				CreateUserSession(), this.CS.getSprintCount() - 1));
-		ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("7.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().length,
-				ActualTB.getM_stories().length);
-		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB
+		exceptedTaskBoard = new TaskBoard(new SprintBacklog(project,
+				CreateUserSession(), CS.getSprintCount() - 1));
+		actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("7.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().length,
+				actualTaskBoard.getM_stories().length);
+		for (int i = 0; i < exceptedTaskBoard.getM_stories().length; i++) {
+			assertEquals(exceptedTaskBoard.getM_stories()[i].getIssueID(), actualTaskBoard
 					.getM_stories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(CS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().length,
-				ActualTB.getStories().length);
-		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().length,
+				actualTaskBoard.getStories().length);
+		for (int i = 0; i < exceptedTaskBoard.getStories().length; i++) {
+			assertEquals(exceptedTaskBoard.getStories()[i].getIssueID(), actualTaskBoard
 					.getStories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("7.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("7.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
 		ExpectedPlans = helper.loadPlans();
@@ -845,15 +809,15 @@ issueList, this.CP, Today);
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// =============== set move action ======================
 		issueList.clear();
-//		issueList.add(this.ATS.getTaskIDList().get(3));
-		issueList.add(this.ATS.getTaskList().get(3));
-		COI = new CheckOutIssue(issueList, this.CP);
+//		issueList.add(ATS.getTaskIDList().get(3));
+		issueList.add(ATS.getTaskList().get(3));
+		COI = new CheckOutIssue(issueList, CP);
 		COI.exeDone_Issues();
 
 		issueList.clear();
-//		issueList.add(this.ASS.getIssueIDList().get(0).getIssueID());
-		issueList.add(this.ASS.getIssueList().get(0));
-		COI = new CheckOutIssue(issueList, this.CP);
+//		issueList.add(ASS.getIssueIDList().get(0).getIssueID());
+		issueList.add(ASS.getIssueList().get(0));
+		COI = new CheckOutIssue(issueList, CP);
 		COI.exeDone_Issues();
 		// =============== set move action ======================
 
@@ -865,33 +829,33 @@ issueList, this.CP, Today);
 		verifyNoActionErrors();
 
 		// 測試 Story / Task Point 計算是否正確
-		ExpectedTB = new TaskBoard(new SprintBacklog(project,
-				CreateUserSession(), this.CS.getSprintCount() - 1));
-		ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("8.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("6.0 / -", ActualTB.getInitialTaskPoint());
-		assertEquals(ExpectedTB.getM_stories().length,
-				ActualTB.getM_stories().length);
-		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB
+		exceptedTaskBoard = new TaskBoard(new SprintBacklog(project,
+				CreateUserSession(), CS.getSprintCount() - 1));
+		actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("8.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("6.0 / -", actualTaskBoard.getInitialTaskPoint());
+		assertEquals(exceptedTaskBoard.getM_stories().length,
+				actualTaskBoard.getM_stories().length);
+		for (int i = 0; i < exceptedTaskBoard.getM_stories().length; i++) {
+			assertEquals(exceptedTaskBoard.getM_stories()[i].getIssueID(), actualTaskBoard
 					.getM_stories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(CS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().length,
-				ActualTB.getStories().length);
-		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().length,
+				actualTaskBoard.getStories().length);
+		for (int i = 0; i < exceptedTaskBoard.getStories().length; i++) {
+			assertEquals(exceptedTaskBoard.getStories()[i].getIssueID(), actualTaskBoard
 					.getStories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("8.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("6.0 / 10.0", ActualTB.getTaskPoint());
+		assertEquals("8.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("6.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
 		ExpectedPlans = helper.loadPlans();
@@ -918,17 +882,17 @@ issueList, this.CP, Today);
 		// XXXXXXXXXXXXXXXXXXXXXXX 錯誤 XXXXXXXXXXXXXXXXXXXXXX
 		// =============== set move action ======================
 		issueList.clear();
-//		issueList.add(this.ATS.getTaskIDList().get(1));
-//		issueList.add(this.ATS.getTaskIDList().get(2));
-		issueList.add(this.ATS.getTaskList().get(1));
-		issueList.add(this.ATS.getTaskList().get(2));
-		COI = new CheckOutIssue(issueList, this.CP);
+//		issueList.add(ATS.getTaskIDList().get(1));
+//		issueList.add(ATS.getTaskIDList().get(2));
+		issueList.add(ATS.getTaskList().get(1));
+		issueList.add(ATS.getTaskList().get(2));
+		COI = new CheckOutIssue(issueList, CP);
 		COI.exeReset_Issues();
 
 		issueList.clear();
-//		issueList.add(this.ASS.getIssueIDList().get(0).getIssueID());
-		issueList.add(this.ASS.getIssueList().get(0));
-		COI = new CheckOutIssue(issueList, this.CP);
+//		issueList.add(ASS.getIssueIDList().get(0).getIssueID());
+		issueList.add(ASS.getIssueList().get(0));
+		COI = new CheckOutIssue(issueList, CP);
 		COI.exeReset_Issues();
 		// =============== set move action ======================
 
@@ -940,35 +904,35 @@ issueList, this.CP, Today);
 		verifyNoActionErrors();
 
 		// 測試 Story / Task Point 計算是否正確
-		ExpectedTB = new TaskBoard(new SprintBacklog(project,
-				CreateUserSession(), this.CS.getSprintCount() - 1));
-		ActualTB = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", ActualTB.getInitialStoryPoint());
-		assertEquals("8.0 / -", ActualTB.getInitialTaskPoint()); // ==========
+		exceptedTaskBoard = new TaskBoard(new SprintBacklog(project,
+				CreateUserSession(), CS.getSprintCount() - 1));
+		actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
+		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("8.0 / -", actualTaskBoard.getInitialTaskPoint()); // ==========
 		// 錯誤
 		// ==========
-		assertEquals(ExpectedTB.getM_stories().length,
-				ActualTB.getM_stories().length);
-		for (int i = 0; i < ExpectedTB.getM_stories().length; i++) {
-			assertEquals(ExpectedTB.getM_stories()[i].getIssueID(), ActualTB
+		assertEquals(exceptedTaskBoard.getM_stories().length,
+				actualTaskBoard.getM_stories().length);
+		for (int i = 0; i < exceptedTaskBoard.getM_stories().length; i++) {
+			assertEquals(exceptedTaskBoard.getM_stories()[i].getIssueID(), actualTaskBoard
 					.getM_stories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getSprintGoal(), ActualTB.getSprintGoal());
-		assertEquals(this.CS.TEST_SPRINT_GOAL + "1", ActualTB
+		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
+		assertEquals(CS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(ExpectedTB.getSprintID(), ActualTB.getSprintID());
-		assertEquals(1, ActualTB.getSprintID());
-		assertEquals(ExpectedTB.getStories().length,
-				ActualTB.getStories().length);
-		for (int i = 0; i < ExpectedTB.getStories().length; i++) {
-			assertEquals(ExpectedTB.getStories()[i].getIssueID(), ActualTB
+		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
+		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getStories().length,
+				actualTaskBoard.getStories().length);
+		for (int i = 0; i < exceptedTaskBoard.getStories().length; i++) {
+			assertEquals(exceptedTaskBoard.getStories()[i].getIssueID(), actualTaskBoard
 					.getStories()[i].getIssueID());
 		}
-		assertEquals(ExpectedTB.getStoryChartLink(), ActualTB
+		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
-		assertEquals("10.0 / 10.0", ActualTB.getStoryPoint());
-		assertEquals(ExpectedTB.getTaskChartLink(), ActualTB.getTaskChartLink());
-		assertEquals("8.0 / 10.0", ActualTB.getTaskPoint()); // =========== 錯誤
+		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals("8.0 / 10.0", actualTaskBoard.getTaskPoint()); // =========== 錯誤
 		// ==========
 
 		// 測試其餘 request
@@ -1009,9 +973,6 @@ issueList, this.CP, Today);
 
 	// get user session
 	private IUserSession CreateUserSession() throws LogonException {
-//		IAccount theAccount = null;
-//		theAccount = new Account(config.USER_ID);
-//		IUserSession theUserSession = new UserSession(theAccount);
 		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;
@@ -1020,9 +981,6 @@ issueList, this.CP, Today);
 	// get user session
 	private static IUserSession CreateUserSession(String ID)
 			throws LogonException {
-//		IAccount theAccount = null;
-//		theAccount = new Account(ID);
-//		IUserSession theUserSession = new UserSession(theAccount);
 		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;

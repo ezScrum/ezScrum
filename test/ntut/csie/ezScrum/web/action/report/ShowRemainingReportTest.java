@@ -25,9 +25,9 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowRemainingReportTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private IProject project;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private IProject mProject;
+	private Configuration mConfig;
 
 	public ShowRemainingReportTest(String testMethod) {
 		super(testMethod);
@@ -36,20 +36,20 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生一個Project、產生兩個Sprint、各個Sprint產生五個Story、每個Story設定點數兩點
 	// 並且已經將Story加入到各個Sprint內、每個 Story 產生兩個一點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/showRemainingReport");
@@ -59,24 +59,23 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		this.CP = null;
-		this.project = null;
-		configuration = null;
+		mCP = null;
+		mProject = null;
+		mConfig = null;
 	}
 
 	/**
@@ -84,11 +83,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	 */
 	public void testShowRemainingReport_Error_1() throws Exception {
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -106,20 +105,17 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 	 */
 	public void testShowRemainingReport_Error_2() throws IOException {
 		// ================ set initial data =======================
-		CreateSprint CS = new CreateSprint(1, this.CP);
+		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		IProject project = CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		// 新增帳號
-		CreateAccount testAccount = new CreateAccount(1);
-		testAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(CP, testAccount);
-		addUserToRole.exe_Guest();
+		CreateAccount CA = new CreateAccount(1);
+		CA.exe();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_Guest();
 		// 使用無權限的帳號資訊塞到UserSession
-//		IAccount theAccount = null;
-//		IAccountManager manager = AccountFactory.getManager();
-//		theAccount = manager.getAccount(testAccount.getAccount_ID(1));
-		AccountObject theAccount = new AccountMapper().getAccount(testAccount.getAccount_ID(1));
-		IUserSession theUserSession = new UserSession(theAccount);
+		AccountObject account = new AccountMapper().getAccount(CA.getAccount_ID(1));
+		IUserSession userSession = new UserSession(account);
 
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("System failure!");
@@ -128,7 +124,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", theUserSession);
+		request.getSession().setAttribute("UserSession", userSession);
 		request.getSession().setAttribute("Project", project);
 
 		// ================ 執行 action ==============================
@@ -150,31 +146,31 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", sprintId); // 取得第一筆 SprintPlan
 		addRequestParameter("type", "Task"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -204,19 +200,19 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
 		String sprintID = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), "", 0, DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintID);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -230,11 +226,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		addRequestParameter("type", "Task"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -263,27 +259,27 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -312,19 +308,19 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 2, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -338,11 +334,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		addRequestParameter("type", "Task"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -371,30 +367,30 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增1個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 1個story設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeStory(ASS.getStories().get(0).getIssueID(), ASS.getStories().get(0).getNotes(), DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getIssueID(), ASTS.getStories().get(0).getNotes(), DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", sprintId); // 取得第一筆 SprintPlan
 		addRequestParameter("type", "Story"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -423,18 +419,18 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd-HH:mm");
@@ -447,11 +443,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		addRequestParameter("type", "Story"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -480,19 +476,19 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		final int SPRINT_COUNT = 1, STORY_COUNT = 5, TASK_COUNT = 1, STORY_EST = 2, TASK_EST = 1;
 		String DONE_TIME = "2015/01/29-16:00:00";
 		
-		CreateSprint CS = new CreateSprint(SPRINT_COUNT, this.CP);
+		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
-		AddTaskToStory ATS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASS, this.CP);
-		ATS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
+		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
+		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintIDList().get(0);
+		String sprintId = CS.getSprintIDList().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), sprintID);
-		sprintBacklogLogic.closeTask(ATS.getTasks().get(0).getId(), ATS.getTasks().get(0).getName(), ATS.getTasks().get(0).getNotes(), ATS.getTasks().get(0).getActual(), DONE_TIME);
-		sprintBacklogLogic.checkOutTask(ATS.getTasks().get(1).getId(), ATS.getTasks().get(1).getName(), configuration.USER_ID, "", ATS.getTasks().get(1).getNotes(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
@@ -506,11 +502,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		addRequestParameter("type", "Story"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 

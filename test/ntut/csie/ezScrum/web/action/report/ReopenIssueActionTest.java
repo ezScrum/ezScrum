@@ -6,9 +6,9 @@ import java.io.IOException;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -21,11 +21,11 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ReopenIssueActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private AddStoryToSprint ASS;
-	private AddTaskToStory ATS;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
+	private Configuration mConfig;
 
 	public ReopenIssueActionTest(String testMethod) {
 		super(testMethod);
@@ -34,28 +34,28 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	// 目前 setUp 設定的情境為︰產生1個Project、產生1個Sprint、Sprint產生1個Story、每個Story設定點數1點
 	// 將Story加入到Sprint內、每個 Story 產生1個1點的 Tasks 並且正確加入
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();								// 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate();								// 新增一測試專案
 
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe();										// 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();										// 新增一個 Sprint
 
-		this.ASS = new AddStoryToSprint(1, 1, this.CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		this.ASS.exe();		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
+		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
 
-		this.ATS = new AddTaskToStory(1, 1, this.ASS, this.CP);
-		this.ATS.exe();		// 新增兩筆 Task 到各個 Stories 內
+		mATTS = new AddTaskToStory(1, 1, mASTS, mCP);
+		mATTS.exe();		// 新增兩筆 Task 到各個 Stories 內
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/reopenIssue");
 
@@ -64,45 +64,44 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project();					// 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CS = null;
-		this.ASS = null;
-		this.ATS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
+		mConfig = null;
 	}
 
 	// 測試Task ReOpen時的狀況
 	public void testReopenIssue_Task() {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		TaskObject task = this.ATS.getTasks().get(0); // 取得Task資訊
-		Long TaskID = task.getId();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), "-1");
+		IProject project = mCP.getProjectList().get(0);
+		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
+		Long taskId = task.getId();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(TaskID)); // 取得第一筆 Task ID
+		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID
 		addRequestParameter("Name", task.getName());
 		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("IssueType", "Task");
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -112,7 +111,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		task = TaskObject.get(TaskID); // 重新取得Task資訊
+		task = TaskObject.get(taskId); // 重新取得Task資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		String handlerUsername = "";
 		AccountObject handler = task.getHandler();
@@ -122,7 +121,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
-							.append("\"Id\":").append(String.valueOf(TaskID)).append(",")
+							.append("\"Id\":").append(String.valueOf(taskId)).append(",")
 							.append("\"Link\":\"").append("\",")
 							.append("\"Name\":\"").append(task.getName()).append("\",")
 							.append("\"Handler\":\"").append(handlerUsername).append("\",")
@@ -142,21 +141,21 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	// 測試Story ReOpen時的狀況
 	public void testReopenIssue_Story() {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		IIssue issue = this.ASS.getStories().get(0); // 取得Story資訊
-		Long StoryID = issue.getIssueID();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), "-1");
+		IProject project = mCP.getProjectList().get(0);
+		IIssue issue = mASTS.getStories().get(0); // 取得Story資訊
+		Long storyId = issue.getIssueID();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(StoryID));
+		addRequestParameter("Id", String.valueOf(storyId));
 		addRequestParameter("Name", issue.getSummary());
 		addRequestParameter("Notes", issue.getNotes());
 		addRequestParameter("IssueType", "Story");
 		addRequestParameter("ChangeDate", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -166,13 +165,13 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		// 驗證回傳 path
 		verifyNoActionErrors();
 		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getStory(StoryID); // 重新取得Story資訊
+		issue = sprintBacklogMapper.getStory(storyId); // 重新取得Story資訊
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
-							.append("\"Id\":").append(String.valueOf(StoryID)).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(StoryID)).append("\",")
+							.append("\"Id\":").append(String.valueOf(storyId)).append(",")
+							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(storyId)).append("\",")
 							.append("\"Name\":\"").append(issue.getSummary()).append("\",")
 							.append("\"Handler\":\"").append(issue.getAssignto()).append("\",")
 							.append("\"Partners\":\"").append(issue.getPartners()).append("\"}")
