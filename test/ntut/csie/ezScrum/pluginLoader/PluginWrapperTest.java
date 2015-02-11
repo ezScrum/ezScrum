@@ -1,16 +1,21 @@
 package ntut.csie.ezScrum.pluginLoader;
 
+
 import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
 import ntut.csie.protocal.Action;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.PluginUI;
 import ntut.csie.ui.protocol.UIConfig;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,22 +24,26 @@ public class PluginWrapperTest {
 	private final String mPluginTestDataPath = "./TestData/PluginData/";
 	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
 	private final String mPluginName = "redminePlugin.war";
-	private String mPluginDirPath;
 	private Map<String,String> mPluginWrapperMapList;
 	private PluginWrapper mPluginWrapper;
-	
+	private String mPluginDirPath;
+	private Configuration mConfig  = null;
+
 	@Before
 	public void setUp() throws Exception {
+		mConfig = new Configuration();
 		addPluginToWorkspace();
 		createPluginWrapperMapList();
+		
 		mPluginWrapper = new PluginWrapper(mPluginDirPath, mPluginWrapperMapList);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		deletePluginFolder();
-		// release resource
 		mPluginWrapper = null;
+		mPluginWrapperMapList = null;
+		mConfig = null;
 	}
 	
 	/**
