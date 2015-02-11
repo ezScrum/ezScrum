@@ -6,8 +6,7 @@ import java.io.IOException;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
@@ -18,9 +17,9 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AddExistedStoryActionTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateRelease mCreateRelease;
-	private CreateProductBacklog mCreateProductBacklog;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private CreateProductBacklog mCPB;
 	private Configuration mConfig;
 	private IProject mProject;
 
@@ -38,17 +37,17 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		ini.exe();
 
 		// 新增一測試專案
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
 		// 新增一筆Release Plan
-		mCreateRelease = new CreateRelease(1, mCreateProject);
-		mCreateRelease.exe();
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe();
 
-		mCreateProductBacklog = new CreateProductBacklog(5, mCreateProject);
-		mCreateProductBacklog.exe();
+		mCPB = new CreateProductBacklog(5, mCP);
+		mCPB.exe();
 
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
@@ -77,18 +76,17 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		ini.exe();
 
 		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCreateProject);
-		copyProject.exeDelete_Project();
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		mCreateProject = null;
-		mCreateRelease = null;
-		mCreateProductBacklog = null;
+		mCP = null;
+		mCR = null;
+		mCPB = null;
 		mConfig = null;
 
 		super.tearDown();
@@ -98,14 +96,14 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// ================== set parameter info ====================
 		// 第一筆 Release
 		addRequestParameter("releaseID",
-				Integer.toString(mCreateRelease.getReleaseCount()));
+				Integer.toString(mCR.getReleaseCount()));
 		// Sprint 空資料
 		addRequestParameter("sprintID", "");
 
-		String[] storyIds = new String[mCreateProductBacklog.getIssueList()
+		String[] storyIds = new String[mCPB.getIssueList()
 				.size()];
 		int count = 0;
-		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
+		for (IIssue issue : mCPB.getIssueList()) {
 			storyIds[count++] = Long.toString(issue.getIssueID());
 		}
 
@@ -129,46 +127,46 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證 ReleasePlan 資料
-		ReleasePlanHelper RPHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc releasePlan = RPHelper.getReleasePlan(Integer
-				.toString(mCreateRelease.getReleaseCount()));
+		ReleasePlanHelper releasePlanHepler = new ReleasePlanHelper(mProject);
+		IReleasePlanDesc releasePlan = releasePlanHepler.getReleasePlan(Integer
+				.toString(mCR.getReleaseCount()));
 		assertNotNull(releasePlan);
-		assertEquals(mCreateRelease.getDefault_RELEASE_NAME(mCreateRelease
+		assertEquals(mCR.getDefault_RELEASE_NAME(mCR
 				.getReleaseCount()), releasePlan.getName());
-		assertEquals(mCreateRelease.getDefault_RELEASE_DESC(mCreateRelease
+		assertEquals(mCR.getDefault_RELEASE_DESC(mCR
 				.getReleaseCount()), releasePlan.getDescription());
 
 		// 驗證 Story 有被加入 ReleasePlan ID
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(
 				mConfig.getUserSession(), mProject);
 
-		for (IIssue issue : mCreateProductBacklog.getIssueList()) {
-			String releaseID = PBHelper.getIssue(issue.getIssueID())
+		for (IIssue issue : mCPB.getIssueList()) {
+			String releaseID = productBacklogHelper.getIssue(issue.getIssueID())
 					.getReleaseID();
-			assertEquals(Integer.toString(mCreateRelease.getReleaseCount()),
+			assertEquals(Integer.toString(mCR.getReleaseCount()),
 					releaseID);
 		}
 
 		// ============= release ==============
 		mProject = null;
 		storyIds = null;
-		RPHelper = null;
-		PBHelper = null;
+		releasePlanHepler = null;
+		productBacklogHelper = null;
 	}
 
-	/*
+	/*	
 	 * 待修正: AddExistedStoryAction.java #67 沒有對錯誤 ReleaseID作妥善處理 // 代入錯誤的
 	 * ReleaseID 參數 public void testexecuteNoReleaseParameter() throws Exception
 	 * { // ================ set initial data ======================= IProject
-	 * project = this.CP.getProjectList().get(0); // ================ set
+	 * project = CP.getProjectList().get(0); // ================ set
 	 * initial data =======================
 	 * 
 	 * // ================== set parameter info ====================
 	 * addRequestParameter("releaseID", "XX"); // 錯誤 ReleaseID
 	 * addRequestParameter("sprintID", ""); // Sprint 空資料
 	 * 
-	 * String[] StoryIDs = new String[this.CPB.getIssueList().size()]; int count
-	 * = 0; for (IIssue issue : this.CPB.getIssueList()) { StoryIDs[count++] =
+	 * String[] StoryIDs = new String[CPB.getIssueList().size()]; int count
+	 * = 0; for (IIssue issue : CPB.getIssueList()) { StoryIDs[count++] =
 	 * Long.toString(issue.getIssueID()); }
 	 * 
 	 * addRequestParameter("selects", StoryIDs); // ================== set
@@ -188,17 +186,17 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	 * // 驗證 ReleasePlan 資料 ReleasePlanHelper helper = new
 	 * ReleasePlanHelper((IProject) request
 	 * .getSession().getAttribute("Project")); IReleasePlanDesc ReleasePlan =
-	 * helper.getReleasePlan(Integer .toString(this.CR.getReleaseCount()));
+	 * helper.getReleasePlan(Integer .toString(CR.getReleaseCount()));
 	 * assertNotNull(ReleasePlan); assertEquals(
-	 * this.CR.getDefault_RELEASE_NAME(this.CR.getReleaseCount()),
+	 * CR.getDefault_RELEASE_NAME(CR.getReleaseCount()),
 	 * ReleasePlan.getName()); assertEquals(
-	 * this.CR.getDefault_RELEASE_DESC(this.CR.getReleaseCount()),
+	 * CR.getDefault_RELEASE_DESC(CR.getReleaseCount()),
 	 * ReleasePlan.getDescription());
 	 * 
 	 * // 驗證 Story 沒有被加入 ReleasePlan ID ProductBacklogHelper PBhelper = new
 	 * ProductBacklogHelper(project, config.getUserSession());
 	 * 
-	 * for (IIssue issue : this.CPB.getIssueList()) { String releaseID =
+	 * for (IIssue issue : CPB.getIssueList()) { String releaseID =
 	 * PBhelper.getIssue(issue.getIssueID()).getReleaseID();
 	 * assertEquals(Integer.toString(-1), releaseID); }
 	 * 
@@ -210,7 +208,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	 * 待修正: AddExistedStoryAction.java #48 沒有對空資料sprintID作妥善處理 // 代入錯誤的 Story 參數
 	 * public void testexecuteNoStoryParameter() throws Exception { //
 	 * ================ set initial data ======================= IProject
-	 * project = this.CP.getProjectList().get(0); // ================ set
+	 * project = CP.getProjectList().get(0); // ================ set
 	 * initial data =======================
 	 * 
 	 * // ================== set parameter info ====================
@@ -234,17 +232,17 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	 * // 驗證 ReleasePlan 資料 ReleasePlanHelper helper = new
 	 * ReleasePlanHelper((IProject) request
 	 * .getSession().getAttribute("Project")); IReleasePlanDesc ReleasePlan =
-	 * helper.getReleasePlan(Integer .toString(this.CR.getReleaseCount()));
+	 * helper.getReleasePlan(Integer .toString(CR.getReleaseCount()));
 	 * assertNotNull(ReleasePlan); assertEquals(
-	 * this.CR.getDefault_RELEASE_NAME(this.CR.getReleaseCount()),
+	 * CR.getDefault_RELEASE_NAME(CR.getReleaseCount()),
 	 * ReleasePlan.getName()); assertEquals(
-	 * this.CR.getDefault_RELEASE_DESC(this.CR.getReleaseCount()),
+	 * CR.getDefault_RELEASE_DESC(CR.getReleaseCount()),
 	 * ReleasePlan.getDescription());
 	 * 
 	 * // 驗證 Story 沒有被加入 ReleasePlan ID ProductBacklogHelper PBhelper = new
 	 * ProductBacklogHelper(project, config.getUserSession());
 	 * 
-	 * for (IIssue issue : this.CPB.getIssueList()) { String releaseID =
+	 * for (IIssue issue : CPB.getIssueList()) { String releaseID =
 	 * PBhelper.getIssue(issue.getIssueID()).getReleaseID();
 	 * assertEquals(Integer.toString(-1), releaseID); }
 	 * 
