@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -12,40 +11,40 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateUnplannedItem {
-	private Configuration configuration = new Configuration();
-	private int itemCount = 1;
-	private CreateProject CP = null;
-	private CreateSprint CS = null;
-	private ArrayList<Long> UnplannedItemIdList = new ArrayList<Long>();
-	private ArrayList<IIssue> UnplannedItemList = new ArrayList<IIssue>();
+	private Configuration mConfig = new Configuration();
+	private int mItemCount = 1;
+	private CreateProject mCP = null;
+	private CreateSprint mCS = null;
+	private ArrayList<Long> mUnplannedItemsId = new ArrayList<Long>();
+	private ArrayList<IIssue> mUnplannedItems = new ArrayList<IIssue>();
 	private String TEST_NAME = "TEST_UNPLANNED_";
 	private String TEST_EST = "2";
 	private String TEST_HANDLER = "";
 	private String TEST_PARTNER = "";
 	private String TEST_NOTE = "TEST_UNPLANNED_NOTES_";
 
-	public CreateUnplannedItem(int count, CreateProject cp, CreateSprint cs) {
-		this.itemCount = count;
-		this.CP = cp;
-		this.CS = cs;
+	public CreateUnplannedItem(int count, CreateProject CP, CreateSprint CS) {
+		mItemCount = count;
+		mCP = CP;
+		mCS = CS;
 	}
 
 	public int getCount() {
-		return this.itemCount;
+		return mItemCount;
 	}
 
 	public ArrayList<Long> getIdList() {
-		return this.UnplannedItemIdList;
+		return mUnplannedItemsId;
 	}
 
 	public ArrayList<IIssue> getIssueList() {
-		return this.UnplannedItemList;
+		return mUnplannedItems;
 	}
 
 	public void exe() {
-		IUserSession userSession = configuration.getUserSession();
-		int projectCount = this.CP.getProjectList().size();
-		int sprintCount = this.CS.getSprintCount();
+		IUserSession userSession = mConfig.getUserSession();
+		int projectCount = mCP.getProjectList().size();
+		int sprintCount = mCS.getSprintCount();
 
 		// get parameter info
 		String specificTime = DateUtil.getNow();
@@ -55,23 +54,23 @@ public class CreateUnplannedItem {
 		long unplannedId = 0;
 
 		for (int i = 0; i < projectCount; i++) {
-			IProject project = this.CP.getProjectList().get(i);			// get Project
+			IProject project = mCP.getProjectList().get(i);			// get Project
 			UnplannedItemMapper um = new UnplannedItemMapper(project, userSession);
 
 			for (int j = 0; j < sprintCount; j++) {
-				String sprintID = this.CS.getSprintIDList().get(j);
+				String sprintID = mCS.getSprintIDList().get(j);
 
-				for (int k = 0; k < this.itemCount; k++) {
+				for (int k = 0; k < mItemCount; k++) {
 					// name = p1s1_TEST_NAME_1 -> project N, sprint N, NAME, index N
-					name = "p" + String.valueOf(i + 1) + "s" + String.valueOf(j + 1) + "_" + this.TEST_NAME + String.valueOf(k + 1);
+					name = "p" + String.valueOf(i + 1) + "s" + String.valueOf(j + 1) + "_" + TEST_NAME + String.valueOf(k + 1);
 					unplannedId = um.add(name, TEST_EST, TEST_HANDLER, TEST_PARTNER, TEST_NOTE + String.valueOf(k + 1), date, issueType, sprintID);
-					this.UnplannedItemIdList.add(unplannedId);
-					this.UnplannedItemList.add(um.getById(unplannedId));
+					mUnplannedItemsId.add(unplannedId);
+					mUnplannedItems.add(um.getById(unplannedId));
 				}
-				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintID + " 創建" + this.itemCount + "個unplanned item(s) 成功.");
+				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintID + " 創建" + mItemCount + "個unplanned item(s) 成功.");
 			}
 		}
-		System.out.println("Create " + String.valueOf(projectCount) + " project(s) " + String.valueOf(sprintCount) + " sprint(s)" + String.valueOf(this.itemCount) + " UnplannedItem Finish!");
+		System.out.println("Create " + String.valueOf(projectCount) + " project(s) " + String.valueOf(sprintCount) + " sprint(s)" + String.valueOf(mItemCount) + " UnplannedItem Finish!");
 	}
 
 }

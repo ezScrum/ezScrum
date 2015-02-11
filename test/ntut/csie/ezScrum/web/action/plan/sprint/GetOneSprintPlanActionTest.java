@@ -96,15 +96,15 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"Sprints\":[{");
 		expectedResponseText.append("\"Id\":\"" + this.CS.getSprintIDList().get(0) + "\",");
 		expectedResponseText.append("\"Goal\":\"" + this.CS.TEST_SPRINT_GOAL + 1 + "\",");
-		expectedResponseText.append("\"StartDate\":\"" + testTool.transformDate(this.CS.Today) + "\",");
+		expectedResponseText.append("\"StartDate\":\"" + testTool.transformDate(this.CS.mToday) + "\",");
 		expectedResponseText.append("\"Interval\":\"" + CreateSprint.SPRINT_INTERVAL + "\",");
 		expectedResponseText.append("\"Members\":\"" + CreateSprint.SPRINT_MEMBER + "\",");
 		expectedResponseText.append("\"AvaliableDays\":\"" + CreateSprint.SPRINT_AVAILABLE_DAY + " hours\",");
 		expectedResponseText.append("\"FocusFactor\":\"" + CreateSprint.SPRINT_FOCUS_FACTOR + "\",");
 		expectedResponseText.append("\"DailyScrum\":\"" + this.CS.TEST_SPRINT_NOTE + 1 + "\",");
-		expectedResponseText.append("\"DemoDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.Today) + "\",");
+		expectedResponseText.append("\"DemoDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.mToday) + "\",");
 		expectedResponseText.append("\"DemoPlace\":\"" + CreateSprint.SPRINT_DEMOPLACE + "\",");
-		expectedResponseText.append("\"DueDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.Today) + "\"");
+		expectedResponseText.append("\"DueDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.mToday) + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

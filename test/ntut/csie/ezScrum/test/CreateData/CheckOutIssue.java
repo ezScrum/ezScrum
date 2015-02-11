@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -16,22 +15,21 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CheckOutIssue {
-	private ArrayList<Long> mIssueIDList = new ArrayList<Long>();
-	private List<IIssue> mIssueList;
+	private ArrayList<Long> mIssuesId = new ArrayList<Long>();
+	private List<IIssue> mIssues;
 	private ArrayList<TaskObject> mTasks;
 	private CreateProject mCP;
 	private Date mSetDoneDate = null;
 	private Configuration mConfiguration = new Configuration();
 	private ProjectMapper mProjectMapper = new ProjectMapper();
 
-	
-	public CheckOutIssue(List<IIssue> list, CreateProject CP) {
-		mIssueList = list;
+	public CheckOutIssue(List<IIssue> issues, CreateProject CP) {
+		mIssues = issues;
 		mCP = CP;
 	}
 	
-	public CheckOutIssue(List<IIssue> list, CreateProject CP, Date setDate) {
-		mIssueList = list;
+	public CheckOutIssue(List<IIssue> issues, CreateProject CP, Date setDate) {
+		mIssues = issues;
 		mCP = CP;
 		mSetDoneDate = setDate;
 	}
@@ -43,7 +41,6 @@ public class CheckOutIssue {
 
 	public void exeReset_Issues() throws Exception {
 		IUserSession userSession = mConfiguration.getUserSession();
-
 		for (int i = 0; i < mCP.getProjectList().size(); i++) {
 			String projectName = mCP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
@@ -54,7 +51,7 @@ public class CheckOutIssue {
 			
 			SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, userSession, null)).getSprintBacklogMapper();
 
-			for (long ID : mIssueIDList) {
+			for (long ID : mIssuesId) {
 				if (mSetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
 					sprintBacklogMapper.resetTask(ID, "", format.format(mSetDoneDate), new Date());
@@ -79,7 +76,7 @@ public class CheckOutIssue {
 			
 			SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
 
-			for (long ID : mIssueIDList) {
+			for (long ID : mIssuesId) {
 				if (mSetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
 					sprintBacklogLogic.checkOutTask(ID, mConfiguration.USER_ID, "", "", format.format(mSetDoneDate), "");
@@ -107,7 +104,7 @@ public class CheckOutIssue {
 			SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
 			SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
-			for (IIssue issue : mIssueList) {
+			for (IIssue issue : mIssues) {
 				long ID = issue.getIssueID();
 				String name = issue.getSummary();
 				SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);

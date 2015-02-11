@@ -6,56 +6,53 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class DBBean {
-	private static Log log = LogFactory.getLog(DBBean.class);
+	private static Log mlog = LogFactory.getLog(DBBean.class);
+	private static String mConnectionDriver = "com.mysql.jdbc.Driver";
+	private static String mConnectionURL;
+	private static String mUserId;
+	private static String mUserPassword;
+	private Connection mConnection = null;
+	private Statement mStatement = null;
+	private ResultSet mResultSet = null;
 	
-	private static String connectionDriver = "com.mysql.jdbc.Driver";
-	private static String connectionURL;
-	private static String userid;
-	private static String userpw;
-	
-	private Connection conn = null;
-	private Statement stat = null;
-	private ResultSet rs = null;
-	
-	public DBBean(String IP, String UserId , String UserPw, String DBName) {
-		this.connectionURL = "jdbc:mysql://" + IP + ":3306/" + DBName + "?userUnicode=true";
-		this.userid = UserId;
-		this.userpw = UserPw;
+	public DBBean(String IP, String UserId , String UserPwd, String DBName) {
+		mConnectionURL = "jdbc:mysql://" + IP + ":3306/" + DBName + "?userUnicode=true";
+		mUserId = UserId;
+		mUserPassword = UserPwd;
 	}
 	
 	public Connection getConnectionFromODBC() throws Exception {
 		try {	
-			Class.forName(connectionDriver);
-			this.conn = DriverManager.getConnection(connectionURL , userid , userpw);
+			Class.forName(mConnectionDriver);
+			mConnection = DriverManager.getConnection(mConnectionURL , mUserId , mUserPassword);
 		} catch (ClassNotFoundException cnfe) {
-			this.log.error("method : getConnectionFromODBC, ClassNotFoundException : " + cnfe.toString());
+			mlog.error("method : getConnectionFromODBC, ClassNotFoundException : " + cnfe.toString());
 		} catch (SQLException sqle) {
-			this.log.error("method : getConnectionFromODBC, SQLException : " + sqle.toString());
+			mlog.error("method : getConnectionFromODBC, SQLException : " + sqle.toString());
 		}
 		
-		if (conn == null) {
-			this.log.error("Can't get Connection from ODBC Exception");
+		if (mConnection == null) {
+			mlog.error("Can't get Connection from ODBC Exception");
 			throw new Exception("Can't get Connection from ODBC Exception");
 		}
 		
-	 	return conn;
+	 	return mConnection;
 	}
 	
 	public boolean doSQL(List<String> Ins) throws Exception {
-		this.conn = getConnectionFromODBC();
-		this.stat = this.conn.createStatement();
+		mConnection = getConnectionFromODBC();
+		mStatement = mConnection.createStatement();
 		
 		boolean isSuccess = false;
 		for (String Str : Ins) {
 			if(Str.equals("DELETE `mantis_user_table`;")){
-				deleteUserTableInformation(this.conn, this.stat, "mantis_user_table");
+				deleteUserTableInformation(mConnection, mStatement, "mantis_user_table");
 			}else{
-				this.stat.execute(Str);
+				mStatement.execute(Str);
 			}
 		}
 		
@@ -76,12 +73,12 @@ public class DBBean {
 	
 	// 執行query, 並儲存回傳資料
 	public ResultSet doSQLtest(List<String> Ins) throws Exception {
-		this.conn = getConnectionFromODBC();
-		this.stat = this.conn.createStatement();
+		mConnection = getConnectionFromODBC();
+		mStatement = mConnection.createStatement();
 		ResultSet rs = null;
 		for (String Str : Ins) {
-			this.log.info("[SQL ins ] = " + Str);
-			rs = this.stat.executeQuery(Str);
+			mlog.info("[SQL ins ] = " + Str);
+			rs = mStatement.executeQuery(Str);
 		}
 		
 		return rs;
@@ -90,12 +87,12 @@ public class DBBean {
 	// Close
 	public void close() {
 		try {
-			if(rs != null) rs.close();		
-			if(stat != null) stat.close();
-			if(conn != null) conn.close();
+			if(mResultSet != null) mResultSet.close();		
+			if(mStatement != null) mStatement.close();
+			if(mConnection != null) mConnection.close();
 		} catch(Exception e) {
 			e.printStackTrace();
-			this.log.error("SQL connection close error");
+			mlog.error("SQL connection close error");
 		}
 	}
 }

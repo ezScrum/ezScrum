@@ -1,8 +1,6 @@
 package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class AddTaskToStory {
@@ -10,19 +8,17 @@ public class AddTaskToStory {
 	private int mStoryCount = 1;
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
-
 	private int mEstValue = 1;
-
 	private CreateProject mCP;
 	private ArrayList<Long> mTasksId = new ArrayList<Long>();
 	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
 
-	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASS,
+	public AddTaskToStory(int count, int EstValue, AddStoryToSprint ASTS,
 			CreateProject CP) {
 		mTaskCount = count;
-		mStoryCount = ASS.getStories().size() / ASS.getSprintCount();
+		mStoryCount = ASTS.getStories().size() / ASTS.getSprintCount();
 		mProjectCount = CP.getProjectList().size();
-		mSprintCount = ASS.getSprintCount();
+		mSprintCount = ASTS.getSprintCount();
 
 		mEstValue = EstValue;
 		mCP = CP;

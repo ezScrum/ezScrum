@@ -144,7 +144,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.Today;
+		Date today = createSprint.mToday;
 		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
@@ -217,7 +217,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		List<String> actualActors = (List<String>) request.getAttribute("Actors");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.Today;
+		Date today = createSprint.mToday;
 		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
