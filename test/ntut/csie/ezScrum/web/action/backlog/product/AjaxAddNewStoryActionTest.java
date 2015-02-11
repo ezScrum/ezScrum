@@ -17,57 +17,57 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/ajaxAddNewStory";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private final String mActionPath = "/ajaxAddNewStory";
+	private IProject mProject;
 	
 	public AjaxAddNewStoryActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mActionPath );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
+		projectManager.initialRoleBase(mConfig.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddNewStory_1(){
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String expectedStoryName = "UT for Add New Story for Name";
@@ -97,7 +97,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("TagIDs", expectedTagIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -137,7 +137,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	public void testAddNewStory_2(){
 		// ================ set request info ========================
 		
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
@@ -157,7 +157,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("TagIDs", expectedTagIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -195,12 +195,12 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddNewStory_3(){
 		int tagCount = 2;
-		CreateTag createTag = new CreateTag(tagCount, this.CP);
-		createTag.exe();
-		List<TagObject> tagList = createTag.getTagList();
+		CreateTag CT = new CreateTag(tagCount, mCP);
+		CT.exe();
+		List<TagObject> tagList = CT.getTagList();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
@@ -221,7 +221,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("TagIDs", expectedTagIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -259,16 +259,16 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	 */
 	public void testAddNewStory_4(){
 		int tagCount = 2;
-		CreateTag createTag = new CreateTag(tagCount, this.CP);
-		createTag.exe();
-		List<TagObject> tagList = createTag.getTagList();
+		CreateTag CT = new CreateTag(tagCount, mCP);
+		CT.exe();
+		List<TagObject> tagList = CT.getTagList();
 		
-		CreateSprint createSprint = new CreateSprint(1, this.CP);
-		createSprint.exe();
-		List<String> sprintIDList = createSprint.getSprintIDList();
+		CreateSprint CS = new CreateSprint(1, mCP);
+		CS.exe();
+		List<String> sprintIDList = CS.getSprintIDList();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
@@ -289,7 +289,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("TagIDs", expectedTagIDs);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

@@ -12,62 +12,61 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxEditStoryActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/ajaxEditStory";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private final String mActionPath = "/ajaxEditStory";
+	private IProject mProject;
 	
 	public AjaxEditStoryActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mActionPath );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
 	
 	public void testEditStory() throws InterruptedException{
 		int storyCount = 2;
-		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, this.CP);
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 		
 		// ================ set request info ========================
@@ -78,7 +77,8 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		 *	Sol: 使用sleep確保時間有差距。
 		 */
 		Thread.sleep(1000);	
-		String projectName = this.project.getName();
+		
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		String expectedStoryName = "UT for Update Story for Name";
 		String expectedStoryImportance = "5";
@@ -86,8 +86,8 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryValue = "5";
 		String expectedStoryHoewToDemo = "UT for Update Story for How to Demo";
 		String expectedStoryNote = "UT for Update Story for Notes";
-		String issueID = String.valueOf(CPB.getIssueIDList().get(0));
-		addRequestParameter("issueID", issueID);
+		String storyId = String.valueOf(CPB.getIssueIDList().get(0));
+		addRequestParameter("issueID", storyId);
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
 		addRequestParameter("Estimate", expectedStoryEstimation);
@@ -96,7 +96,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", expectedStoryNote);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -109,7 +109,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(issueID).append(",")
+							.append("\"Id\":").append(storyId).append(",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
 							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
@@ -118,7 +118,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(issueID).append("\",")
+							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(storyId).append("\",")
 							.append("\"Release\":\"None\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"DETAIL\",")

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.backlog.product;
+package ntut.csie.ezScrum.web.helper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ProductBacklogHelperTest extends TestCase {
+public class ProductBacklogHelperTest2 extends TestCase {
 	private ProductBacklogHelper productBacklogHelper1;
 	private ProductBacklogHelper productBacklogHelper2;
 	private CreateProject CP;
@@ -38,7 +38,7 @@ public class ProductBacklogHelperTest extends TestCase {
 	
 	private Configuration configuration;
 	
-	public ProductBacklogHelperTest(String testMethod) {
+	public ProductBacklogHelperTest2(String testMethod) {
         super(testMethod);
     }
 	
