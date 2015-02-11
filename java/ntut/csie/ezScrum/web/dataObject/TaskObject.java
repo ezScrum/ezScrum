@@ -1,7 +1,5 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,8 +16,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.appengine.repackaged.org.apache.commons.httpclient.util.DateUtil;
 
 public class TaskObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = 1;

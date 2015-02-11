@@ -1,48 +1,50 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
 
-public class IssueDescFilterTest extends TestCase {
-	
-	private StoryDataForFilter data = null;
-	private String compareInfo = "IssueDescTest";
-	
-	public IssueDescFilterTest(String testMethod) {
-        super(testMethod);
-    }
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	protected void setUp() {
-		this.data = new StoryDataForFilter(this.compareInfo);
+public class IssueDescFilterTest {
+	
+	private StoryDataForFilter mData = null;
+	private String mCompareInfo = "IssueDescTest";
+	
+	@Before
+	public void setUp() {
+		mData = new StoryDataForFilter(mCompareInfo);
 	}
 	
-	protected void tearDown() {
-		this.data = null;
+	@After
+	public void tearDown() {
+		mData = null;
 	}
 	
+	@Test
 	public void testFilterStories() {
-		AProductBacklogFilter filter = new IssueDescFilter(this.data.getStorirs_byInfo(), this.compareInfo);
+		AProductBacklogFilter filter = new IssueDescFilter(mData.getStorirsByInfo(), this.mCompareInfo);
 		IStory[] filterStories = filter.getStories();
 
 		assertEquals(5, filterStories.length);
-		int id = 6;
 		for (IStory s : filterStories) {
-			assertTrue(s.getDescription().contains(this.compareInfo));
+			assertTrue(s.getDescription().contains(mCompareInfo));
 		}
-		
 		assertNull(filter.getTasks());
 	}
 	
 	public void testFilterTasks() {
-		AProductBacklogFilter filter = new IssueDescFilter(this.data.getTasks_byInfo(), this.compareInfo);
+		AProductBacklogFilter filter = new IssueDescFilter(mData.getTasksByInfo(), mCompareInfo);
 		ITask[] filterTasks = filter.getTasks();
 
 		assertEquals(5, filterTasks.length);
 		for (ITask t : filterTasks) {
-			assertTrue(t.getDescription().contains(this.compareInfo));
+			assertTrue(t.getDescription().contains(mCompareInfo));
 		}
-		
 		assertNull(filter.getStories());
 	}
 }
