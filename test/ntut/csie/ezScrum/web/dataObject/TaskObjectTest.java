@@ -989,4 +989,48 @@ public class TaskObjectTest {
 		assertEquals(7, task.getRemains(changeRemainsDate3));
 		assertEquals(6, task.getRemains(changeRemainsDate4));
 	}
+	
+	@Test
+	public void testGetRemains_WithChangeRemainsThreeTimesInSixDates() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(13).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
+		// create a update task remains history1
+		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/03", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(13))
+				.setNewValue(String.valueOf(8))
+				.setCreateTime(changeRemainsDate1.getTime());
+		history1.save();
+		// create a update task remains history2
+		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(8))
+				.setNewValue(String.valueOf(6))
+				.setCreateTime(changeRemainsDate2.getTime());
+		history2.save();
+		// create a update task remains history3
+		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history3 = new HistoryObject();
+		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_REMAIMS)
+				.setOldValue(String.valueOf(6))
+				.setNewValue(String.valueOf(3))
+				.setCreateTime(changeRemainsDate3.getTime());
+		history3.save();
+		// check task remains after add three change remains histories
+		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
+		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/02", DateUtil._8DIGIT_DATE_1)));
+		assertEquals(8, task.getRemains(DateUtil.dayFillter("2015/02/03", DateUtil._8DIGIT_DATE_1)));
+		assertEquals(8, task.getRemains(DateUtil.dayFillter("2015/02/04", DateUtil._8DIGIT_DATE_1)));
+		assertEquals(6, task.getRemains(DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1)));
+		assertEquals(3, task.getRemains(DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1)));
+	}
 }

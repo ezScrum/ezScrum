@@ -255,12 +255,21 @@ public class TaskObject implements IBaseObject {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		double remains = mRemains;
 		ArrayList<HistoryObject> histories = getHistories();
+		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
 		for (HistoryObject history : histories) {
-			long historyTime = history.getCreateTime();
-			int historyType = history.getHistoryType();
-			if (historyTime <= lastSecondOfTheDate
-					&& historyType == HistoryObject.TYPE_REMAIMS) {
-				String remainsInHistory = history.getNewValue();
+			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS)
+			{
+				remainsHistories.add(history);
+			}
+		}
+		if (remainsHistories.size() > 0)
+		{
+			String firstRemainsOldValue = remainsHistories.get(0).getOldValue();
+			remains = Double.parseDouble(firstRemainsOldValue); // Because create task no remains history, get first remains history old value
+		}
+		for (HistoryObject remainsHistory : remainsHistories) {
+			if (remainsHistory.getCreateTime() <= lastSecondOfTheDate) {
+				String remainsInHistory = remainsHistory.getNewValue();
 				remains = Double.parseDouble(remainsInHistory);
 			}
 		}
