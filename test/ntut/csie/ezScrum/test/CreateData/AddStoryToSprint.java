@@ -22,22 +22,22 @@ public class AddStoryToSprint {
 	private ArrayList<IIssue> mStories = new ArrayList<IIssue>();
 	private Configuration mConfig = new Configuration();
 
-	public AddStoryToSprint(int count, int EstValue, CreateSprint CS,
-			CreateProject CP, String type) throws Exception {
-		mStoryCount = count;
-		mProjectCount = CP.getProjectList().size();
-		mSprintCount = CS.getSprintCount();
-		mCP = CP;
-		CreateStories(EstValue, type);
-	}
-
-	public AddStoryToSprint(int storyCount, int EstValue, int SprintNumber,
+	public AddStoryToSprint(int storyCount, int estimate, CreateSprint CS,
 			CreateProject CP, String type) throws Exception {
 		mStoryCount = storyCount;
 		mProjectCount = CP.getProjectList().size();
-		mSprintCount = SprintNumber;
+		mSprintCount = CS.getSprintCount();
 		mCP = CP;
-		CreateStories(EstValue, type);
+		CreateStories(estimate, type);
+	}
+
+	public AddStoryToSprint(int storyCount, int estimate, int sprintCount,
+			CreateProject CP, String type) throws Exception {
+		mStoryCount = storyCount;
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = sprintCount;
+		mCP = CP;
+		CreateStories(estimate, type);
 	}
 
 	public int getSprintCount() {
