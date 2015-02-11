@@ -3,17 +3,14 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
+import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,11 +37,11 @@ public class AjaxEditTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintId"));
+		String sprintId = request.getParameter("sprintId");
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
 		// 表格的資料
@@ -68,6 +65,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		sprintBacklogHelper.updateTask(taskInfo, handler, partners);
 		
 		TaskObject task = TaskObject.get(taskId);
+		String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
 		
 		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
@@ -77,7 +75,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		result.append("<Name>" + tsc.TranslateXMLChar(task.getName()) + "</Name>");
 		result.append("<Estimate>" + task.getEstimate() + "</Estimate>");
 		result.append("<Actual>" + task.getActual() + "</Actual>");
-		result.append("<Handler>" + task.getHandler().getUsername() + "</Handler>");
+		result.append("<Handler>" + handlerUsername + "</Handler>");
 		result.append("<Partners>" + tsc.TranslateXMLChar(task.getPartnersUsername()) + "</Partners>");
 		result.append("<Remains>" + task.getRemains() + "</Remains>");
 		result.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes()) + "</Notes>");
