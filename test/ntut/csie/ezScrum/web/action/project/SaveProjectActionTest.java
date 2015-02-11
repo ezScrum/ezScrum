@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.action.project;
 
 import java.io.File;
 import java.io.IOException;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
@@ -12,43 +11,39 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveProjectActionTest extends MockStrutsTestCase {
-	private Configuration configuration;
+	private Configuration mConfig;
 	
 	public SaveProjectActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		super.setUp();
-
-		ini = null;
 	}
 	
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase( configuration.getDataPath() );
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
-		ini = null;
-		projectManager = null;
-		configuration = null;
+		// release
+		mConfig = null;
 	}
 	
 //	/**
@@ -70,12 +65,12 @@ public class SaveProjectActionTest extends MockStrutsTestCase {
 	 */
 	public void testCreateProject(){
 		// ================ set action info ========================
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/AjaxCreateProject");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ set request info ========================
 		//	設定專案資訊
@@ -92,12 +87,12 @@ public class SaveProjectActionTest extends MockStrutsTestCase {
 		addRequestParameter("from", "createProject");
 		
 		//	設定ITS參數資料
-		addRequestParameter("ServerUrl", configuration.getServerUrl());
-		addRequestParameter("ServicePath", configuration.getWebServicePath());
-		addRequestParameter("DBAccount", configuration.getDBAccount());
-		addRequestParameter("DBPassword", configuration.getDBPassword());
-		addRequestParameter("SQLType", configuration.getDBType());
-		addRequestParameter("DBName", configuration.getDBName());
+		addRequestParameter("ServerUrl", mConfig.getServerUrl());
+		addRequestParameter("ServicePath", mConfig.getWebServicePath());
+		addRequestParameter("DBAccount", mConfig.getDBAccount());
+		addRequestParameter("DBPassword", mConfig.getDBPassword());
+		addRequestParameter("SQLType", mConfig.getDBType());
+		addRequestParameter("DBName", mConfig.getDBName());
 		
 		// ================ 執行 action ======================
 		actionPerform();

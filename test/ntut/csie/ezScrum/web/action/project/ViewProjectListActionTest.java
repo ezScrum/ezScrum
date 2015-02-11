@@ -15,7 +15,7 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
 	private Configuration mConfig;
-	CreateProject CP;
+	CreateProject mCP;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
@@ -31,13 +31,10 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		ini.exe();
 		
 		// 新增一測試專案
-		CP = new CreateProject(2);
-		CP.exeCreate();
+		mCP = new CreateProject(2);
+		mCP.exeCreate();
 		
 		super.setUp();
-
-		ini = null;
-		CP = null;
 	}
 	
 	protected void tearDown() throws IOException, Exception {
@@ -48,16 +45,15 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
-		ini = null;
-		projectManager = null;
+		// release
 		mConfig = null;
+		mCP = null;
 	}
 	
 	public void testViewProjectList(){
