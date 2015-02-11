@@ -18,7 +18,7 @@ import servletunit.struts.MockStrutsTestCase;
 public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateAccount mCA;
-	private AddUserToRole mAddUserToRole;
+	private AddUserToRole mAUTR;
 	private int mProjectCount = 1;
 	private int mAccountCount = 1;
 	private String mActionPath = "/getAssignedProject";
@@ -47,7 +47,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// 用來指派 Scrum 角色
-		mAddUserToRole = new AddUserToRole(mCP, mCA);
+		mAUTR = new AddUserToRole(mCP, mCA);
 
 		mAccountMapper = new AccountMapper();
 
@@ -73,7 +73,6 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -92,7 +91,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 	//
 	public void testGetAssignedProjectAction() {
 		// 先加入 PO 角色
-		mAddUserToRole.exe_PO();
+		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
 		String projectName = mCP.getProjectList().get(0).getName();

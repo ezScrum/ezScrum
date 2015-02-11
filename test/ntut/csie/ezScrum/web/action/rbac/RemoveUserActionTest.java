@@ -26,7 +26,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	private int mProjectCount = 1;
 	private int mAccountCount = 2;
 	private String mActionPath = "/removeUser";
-	private AddUserToRole mAddUserToRole;
+	private AddUserToRole mAUTR;
 	private Configuration mConfig;
 	private AccountMapper mAccountMapper;
 
@@ -70,7 +70,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// 指派 Scrum 角色
-		mAddUserToRole = new AddUserToRole(mCP, mCA);
+		mAUTR = new AddUserToRole(mCP, mCA);
 
 		mAccountMapper = new AccountMapper();
 
@@ -88,7 +88,6 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -105,11 +104,11 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試正常執行
-	public void testexecute() {
+	public void testExecute() {
 		setRequestPathInformation(mActionPath);
 
 		// 加入 PO 角色
-		mAddUserToRole.exe_PO();
+		mAUTR.exe_PO();
 
 		AccountObject account = mCA.getAccountList().get(0);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
@@ -118,7 +117,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		// ================ set initial data =======================
 		long accountId = account.getId();
-		long projectId = mAddUserToRole.getNowProjectObject().getId();
+		long projectId = mAUTR.getNowProjectObject().getId();
 		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		boolean isExisted = false;
@@ -155,7 +154,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試 Admin 正常移除 System 權限 
-	public void testexecuteAdmin_Remove1() {
+	public void testExecuteAdmin_Remove1() {
 		setRequestPathInformation(mActionPath);
 
 		// ================ set initial data =======================
@@ -182,17 +181,17 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試將 Admin 指派到某個專案的角色，再移除此專案的角色
-	public void testexecuteAdmin_Remove2() {
+	public void testExecuteAdmin_Remove2() {
 		setRequestPathInformation(mActionPath);
 
 		// 將 Admin 加入測試專案一的 PO
-		mAddUserToRole.setNowAccountIsSystem();
-		mAddUserToRole.exe_PO();
+		mAUTR.setNowAccountIsSystem();
+		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
 		long id = 1;	 			// admin
 		String username = "admin"; 	// admin
-		long projectId = mAddUserToRole.getNowProjectObject().getId();
+		long projectId = mAUTR.getNowProjectObject().getId();
 		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		// ================== set parameter info ====================
@@ -217,17 +216,17 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試將 Admin 指派到某個專案的角色，再移除 Admin 權限，該專案的角色不會移除
-	public void testexecuteAdmin_Remove3() {
+	public void testExecuteAdmin_Remove3() {
 		setRequestPathInformation(mActionPath);
 
 		// 將 Admin 加入測試專案一的 PO
-		mAddUserToRole.setNowAccountIsSystem();
-		mAddUserToRole.exe_PO();
+		mAUTR.setNowAccountIsSystem();
+		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
 		long accountId = 1;
-		long projectId = mAddUserToRole.getNowProjectObject().getId();
-		String projectName = mAddUserToRole.getNowProjectObject().getName();
+		long projectId = mAUTR.getNowProjectObject().getId();
+		String projectName = mAUTR.getNowProjectObject().getName();
 		String scrumRole = ScrumEnum.SCRUMROLE_ADMIN;
 
 		// ================== set parameter info ====================
@@ -258,7 +257,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	 * 5. user 登入ezScrum
 	 * 6. 測試user不會看到專案資訊
 	 */
-	public void testexecuteAdmin_Remove_IntegrationTest() {
+	public void testExecuteAdmin_Remove_IntegrationTest() {
 		//	=============== common data ============================
 		AccountObject account = mCA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
@@ -269,8 +268,8 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		/**
 		 * 3. admin 指定 user 到專案中擔任 PO (將 user 加入測試專案一的 PO)
 		 */
-		mAddUserToRole.setAccountIndex(0);
-		mAddUserToRole.exe_PO();
+		mAUTR.setAccountIndex(0);
+		mAUTR.exe_PO();
 
 		/**
 		 * 4. admin 移除 user 在專案中的角色

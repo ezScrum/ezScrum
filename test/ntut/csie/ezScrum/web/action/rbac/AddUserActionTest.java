@@ -86,7 +86,6 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -501,7 +500,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試錯誤不存在的 id
-	public void testexecute_Wrong1() throws LogonException {
+	public void testExecute_Wrong1() throws LogonException {
 		// ================ set initial data =======================
 		long accountId = 8591;
 		long projectId = mCP.getAllProjects().get(0).getId();
@@ -528,7 +527,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試錯誤不存在的專案名稱
-	public void testexecute_Wrong2() throws LogonException {
+	public void testExecute_Wrong2() throws LogonException {
 		// ================ set initial data =======================
 		AccountObject account = mCA.getAccountList().get(0);
 		long accountId = account.getId();
@@ -556,7 +555,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試錯誤不存在的角色權限
-	public void testexecute_Wrong3() throws LogonException {
+	public void testExecute_Wrong3() throws LogonException {
 		// ================ set initial data =======================
 		AccountObject account = mCA.getAccountList().get(0);
 		long accountId = account.getId();
