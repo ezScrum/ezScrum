@@ -107,8 +107,8 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
-		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.SprintGoal);
+		assertEquals(mCS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIDList().get(0), sprintInfo.SprintGoal);
 		assertEquals(STORY_COUNT * STORY_EST, storyPoint.intValue());
 		assertEquals(STORY_COUNT * TASK_COUNT * TASK_EST, taskPoint.intValue());
 		assertEquals("Release #0", sprintInfo.ReleaseID);
@@ -153,8 +153,8 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(CS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
-		assertEquals(CS.TEST_SPRINT_GOAL + CS.getSprintIDList().get(0), sprintInfo.SprintGoal);
+		assertEquals(mCS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIDList().get(0), sprintInfo.SprintGoal);
 		assertEquals((STORY_COUNT - 1) * STORY_EST, storyPoint.intValue());				// done 1個story
 		assertEquals((STORY_COUNT * TASK_COUNT - 2) * TASK_EST, taskPoint.intValue());	// done 2個task
 		assertEquals("Release #0", sprintInfo.ReleaseID);
