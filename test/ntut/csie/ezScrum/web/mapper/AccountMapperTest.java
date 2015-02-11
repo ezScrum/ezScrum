@@ -24,7 +24,7 @@ public class AccountMapperTest{
 	private Configuration mConfig = null;
 
 	@Before
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -40,7 +40,7 @@ public class AccountMapperTest{
 	}
 
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();

@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProductBacklogMapperTest{
+public class ProductBacklogMapperTest {
 	private CreateProject mCP;
 	private CreateProductBacklog mCPB;
 	private int mProjectCount = 1;
@@ -37,7 +37,7 @@ public class ProductBacklogMapperTest{
 	private final String mFILE_TYPE = "sql/plain";
 	
 	@Before
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -67,7 +67,7 @@ public class ProductBacklogMapperTest{
 	}
 	
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();

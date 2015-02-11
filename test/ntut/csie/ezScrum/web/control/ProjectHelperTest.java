@@ -26,7 +26,7 @@ public class ProjectHelperTest {
 	private Configuration mConfig;
 
 	@Before
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -46,7 +46,7 @@ public class ProjectHelperTest {
 	}
 
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();	// 初始化 SQL
 
