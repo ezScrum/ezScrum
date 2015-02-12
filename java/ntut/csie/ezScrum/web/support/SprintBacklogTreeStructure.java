@@ -58,7 +58,7 @@ public class SprintBacklogTreeStructure {
 		ReleaseID = story.getReleaseID();
 		
 		leaf = false;
-		expanded = true;
+		expanded = false;
 		cls = "folder";
 		id = "Story:" + ID; // for ext tree panel to recognize node
 		children = new ArrayList<SprintBacklogTreeStructure>();

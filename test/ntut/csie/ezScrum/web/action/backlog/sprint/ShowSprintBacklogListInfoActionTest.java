@@ -243,7 +243,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		}
 		expectedResponseTest.append(",\"leaf\":false")
 							.append(",\"expanded\":false")
-							.append(",\"id\":\"1\"")
+							.append(",\"id\":\"Story:1\"")
 							.append(",\"cls\":\"folder\"")
 							.append(",\"children\":[{\"Type\":\"" + TaskType + "\"")
 							.append(",\"ID\":\"" + TaskID + "\"")
@@ -278,7 +278,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Date_8\":\"\"")
 							.append(",\"leaf\":true")
 							.append(",\"expanded\":false")
-							.append(",\"id\":\"1\"")
+							.append(",\"id\":\"Task:1\"")
 							.append(",\"cls\":\"file\"}]}]");
 		
 		String actualResponseText = response.getWriterBuffer().toString();
