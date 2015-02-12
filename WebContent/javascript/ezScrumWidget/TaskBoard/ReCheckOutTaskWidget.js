@@ -8,6 +8,7 @@ var TaskStore_ForReCheckOutTask = new Ext.data.Store({
 	fields	:[
 		{name : 'Id'},
 		{name : 'Name'},
+		{name : 'IssueType'},
 		{name : 'Notes'}
 		],
 	reader	: taskJSReader
@@ -27,10 +28,15 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 						xtype: 'hidden'
                     },
                     {
+                    	fieldLabel	: 'IssueType',
+                    	name		: 'IssueType',
+                    	xtype		: 'hidden'
+                    },
+                    {
                         fieldLabel	: 'Task Name',
                         name      	: 'Name',
                         allowBlank	: false
-                    },
+                    }, 
                     {
                         fieldLabel	: 'Notes',
                         xtype     	: 'textarea',
@@ -106,6 +112,7 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				this.getForm().setValues({
 					Id: record.data['Id'],
 					Name: record.data['Name'], 
+					IssueType : record.json['IssueType'],
 					Partners: record.data['Partners'], 
 					Notes: record.data['Notes'] 
 				});
@@ -128,7 +135,7 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			url: obj.loadUrl,
 			success: function(response) { obj.onLoadSuccess(response); },
 			failure: function(response) { obj.onLoadFailure(response); },
-			params : {issueID : id}
+			params : {issueID : id, issueType : 'Task'}
 		});
     }
 });

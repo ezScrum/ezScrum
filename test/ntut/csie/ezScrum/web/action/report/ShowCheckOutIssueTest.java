@@ -111,7 +111,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(item.getName()).append("\",")
 							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
 							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append("").append("\"")
+							.append("\"Handler\":\"").append("").append("\",")
+							.append("\"IssueType\":\"").append("Task").append("\",")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
@@ -148,7 +149,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(item.getSummary()).append("\",")
 							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
 							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
+							.append("\"Handler\":\"").append(configuration.USER_ID).append("\",")
+							.append("\"IssueType\":\"").append("Story").append("\",")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);

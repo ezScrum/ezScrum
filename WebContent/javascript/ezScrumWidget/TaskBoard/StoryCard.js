@@ -81,7 +81,8 @@ function createStoryContent(story) {
 function createStoryCard(story) {
 
 	var storyCard = new Ext.Panel({
-		id			: 'Story:' + story.id,
+		id			: 'Story:' + story.id,	// for front-end
+		stroyId		: story.id,  // for back-end
 		data		: story,
 		bodyBorder	: false,
 		border		: false,
@@ -112,7 +113,8 @@ function createStoryCard(story) {
 	storyCard.draggable = {
 		readObject : storyCard,
 		ddGroup : story.id,
-		issueType:'story',
+		storyId	: story.id,
+		issueType:'Story',
 		status : story.get('Status'),
 		afterDragDrop : function(target, e, targetID) {
 			// 如果狀態沒有轉換，就不作動作
@@ -130,10 +132,10 @@ function createStoryCard(story) {
 					}
 				}
 				// 顯示確認Done Story的視窗，很可怕的是這個function在TaskBoard.jsp上面 
-                Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue, this.id, this);
+                Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue, this.storyId, this);
 			} else if (target.status == 'new') {
 				// 顯示Reopen的視窗
-				Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReOpenIssue, this.id, this);
+				Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReOpenIssue, this.storyId, this);
 			}
 			this.target = target;
 		},

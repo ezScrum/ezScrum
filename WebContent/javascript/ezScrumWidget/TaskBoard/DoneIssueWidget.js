@@ -107,12 +107,10 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     	if (ConfirmWidget.confirmAction()) {
     		IssueStore_ForDoneIssue.loadData(Ext.decode(response.responseText));		// load issue info
 			var record = IssueStore_ForDoneIssue.getAt(0);
-			console.log(response);
 			if(record) {
 				this.getForm().setValues({
 					Id			: record.data['Id'],
-//					IssueType	: record.data['IssueType'],
-					IssueType	: 'Task',
+					IssueType	: record.json['IssueType'],
 					Name		: record.data['Name'], 
 					Partners	: record.data['Partners'], 
 					Notes		: record.data['Notes'],

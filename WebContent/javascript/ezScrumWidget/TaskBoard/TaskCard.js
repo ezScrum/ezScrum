@@ -86,7 +86,8 @@ function createTaskContent(task)
 function createTaskCard(task, storyID) {
 
 	var taskCard = new Ext.Panel( {
-		id				: 'Task:' + task.Id,
+		id				: 'Task:' + task.Id,	// for front-end
+		taskId			: task.Id, // for back-end
 		data			: task,
 		borderBorder	: false,
 		border			: false,
@@ -153,7 +154,7 @@ function createTaskCard(task, storyID) {
                 // 如果taskCard status為closed表示為reopen
                 if(status == 'closed'){
                 	// 取得 Story card 的狀態
-                	var storyStatus = Ext.getCmp(this.parentId).draggable.status;
+                	var storyStatus = Ext.getCmp('Story:' + this.parentId).draggable.status;
                 	if( storyStatus == 'new' ){
                 		Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReOpenIssue,this.taskId,this);
                 	}else if( storyStatus == 'closed' ){

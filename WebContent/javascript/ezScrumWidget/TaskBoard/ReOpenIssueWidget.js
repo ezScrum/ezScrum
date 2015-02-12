@@ -6,10 +6,11 @@ var IssueStore_ForReOpenIssue = new Ext.data.Store( {
 	idIndex : 0,
 	id : 0,
 	fields : [
-	   { name : 'Id'},
-	   { name : 'Name'},
-	   { name : 'Notes'},
-	   { name : 'Partners'}
+		{name : 'Id'},
+		{name : 'IssueType'},
+		{name : 'Name'},
+		{name : 'Notes'},
+		{name : 'Partners'}
 	],
 	reader : taskJSReader
 });
@@ -26,6 +27,10 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				readOnly	: true,
 				xtype: 'hidden'
 			}, {
+            	fieldLabel	: 'IssueType',
+            	name		: 'IssueType',
+            	xtype		: 'hidden'
+            }, {
 				fieldLabel	: 'Name',
 				name		: 'Name',
 				allowBlank	: false
@@ -103,6 +108,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				this.getForm().setValues( {
 					Id : record.data['Id'],
 					Name : record.data['Name'],
+					IssueType : record.json['IssueType'],
 					Partners : record.data['Partners'],
 					Notes : record.data['Notes']
 				});
@@ -119,12 +125,12 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	reset : function() {
 		this.getForm().reset();
 	},
-	loadIssue : function(id) {
+	loadIssue : function(id, type) {
 		var obj = this;
 		
 		Ext.Ajax.request( {
 			url : obj.loadUrl,
-			params : { issueID : id	},
+			params : { issueID : id	, issueType: type},
 			success : function(response) { obj.onLoadSuccess(response);	},
 			failure : function(response) { obj.onLoadFailure(response);	}
 		});
@@ -151,9 +157,9 @@ ezScrum.window.ReOpenIssueWindow = Ext.extend(ezScrum.layout.Window, {
 		this.items.get(0).on('ReOFailure', function(obj, response) { this.fireEvent('ReOpenFailure', this, response); }, this);
 		this.items.get(0).on('LoadIssueFailure', function(obj, response) { this.fireEvent('LoadFailure', this, response); }, this);
 	},
-	showWidget : function(taskID) {
+	showWidget : function(issueId, issueType) {
 		this.items.get(0).reset();
-		this.items.get(0).loadIssue(taskID);
+		this.items.get(0).loadIssue(issueId, issueType);
 		this.show();
 	}
 });
