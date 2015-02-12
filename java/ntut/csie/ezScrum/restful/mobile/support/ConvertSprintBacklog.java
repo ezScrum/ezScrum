@@ -94,7 +94,7 @@ public class ConvertSprintBacklog {
 
 	public String readStoryIDList(SprintBacklogLogic sprintBacklogLogic)
 			throws JSONException {
-		JSONObject storyIDList = new JSONObject();
+		JSONObject storyIds = new JSONObject();
 		JSONArray storyArray = new JSONArray();
 		List<IIssue> stroyArray = sprintBacklogLogic.getStories();
 		for (IIssue item : stroyArray) {
@@ -104,19 +104,19 @@ public class ConvertSprintBacklog {
 			story.put("status", item.getStatus());
 			storyArray.put(story);
 		}
-		storyIDList.put(SprintPlanUtil.TAG_STORYLIST, storyArray);
-		return storyIDList.toString();
+		storyIds.put(SprintPlanUtil.TAG_STORYLIST, storyArray);
+		return storyIds.toString();
 	}
 
 	/**
 	 * 轉換 task id list 的 json string
 	 * 
-	 * @param storyID
+	 * @param storyId
 	 * @param tasks
 	 * @return
 	 * @throws JSONException
 	 */
-	public String convertTaskIDList(String storyID, ArrayList<TaskObject> tasks)
+	public String convertTaskIDList(String storyId, ArrayList<TaskObject> tasks)
 			throws JSONException {
 		JSONObject story = new JSONObject();
 		JSONObject storyProperties = new JSONObject();
@@ -124,7 +124,7 @@ public class ConvertSprintBacklog {
 		for (TaskObject task : tasks) {
 			tasksId.put(task.getId());
 		}
-		storyProperties.put(SprintBacklogUtil.TAG_ID, storyID);
+		storyProperties.put(SprintBacklogUtil.TAG_ID, storyId);
 		storyProperties.put(SprintBacklogUtil.TAG_TASKIDLIST, tasksId);
 
 		story.put(SprintBacklogUtil.TAG_STORY, storyProperties);
@@ -280,7 +280,7 @@ public class ConvertSprintBacklog {
 			stories = this.filterStory(stories, taskMap, handler);
 
 			for (IIssue story : stories) {
-				storyList.add(create_TaskBoard_Story(story,
+				storyList.add(createTaskBoardStory(story,
 						taskMap.get(story.getIssueID())));
 			}
 			storyLength = stories.size();
@@ -348,7 +348,7 @@ public class ConvertSprintBacklog {
 	}
 
 	// 將 tasks 塞到 story裡方便用Gson轉成Json string
-	private TaskBoard_Story create_TaskBoard_Story(IIssue story, ArrayList<TaskObject> tasks) {
+	private TaskBoard_Story createTaskBoardStory(IIssue story, ArrayList<TaskObject> tasks) {
 
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
 

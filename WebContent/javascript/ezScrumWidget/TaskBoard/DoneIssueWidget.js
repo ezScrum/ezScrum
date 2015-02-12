@@ -129,14 +129,14 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     reset: function() {
         this.getForm().reset();
     },
-    loadIssue: function(id, type) {
+    loadIssue: function(id, issueType) {
         var obj = this;
         
     	Ext.Ajax.request({
 			url: this.loadUrl,
 			success: function(response) { obj.onLoadSuccess(response); },
 			failure: function(response) { obj.onLoadFailure(response); },
-			params : {issueID : id, issueType : type}
+			params : {issueID : id, issueType : issueType}
 		});
     }
 });

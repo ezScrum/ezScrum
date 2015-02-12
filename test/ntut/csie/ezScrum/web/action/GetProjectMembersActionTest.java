@@ -157,13 +157,13 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
 
-		AddUserToRole addUserToRole = new AddUserToRole(mCP, CA);
-		addUserToRole.exe_PO();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_PO();
 
-		AccountHelper ah = new AccountHelper(mConfig.getUserSession());
-		ah.removeAssignRole(CA.getAccountList().get(0).getId(), mCP.getAllProjects().get(0).getId(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
+		AccountHelper accountHelper = new AccountHelper(mConfig.getUserSession());
+		accountHelper.removeAssignRole(CA.getAccountList().get(0).getId(), mCP.getAllProjects().get(0).getId(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 
-		addUserToRole.exe_SM();
+		AUTR.exe_SM();
 
 		// ================ set request info ========================
 		String projectName = this.mIProject.getName();
@@ -192,10 +192,10 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
 
-		AddUserToRole addUserToRole = new AddUserToRole(mCP, CA);
-		addUserToRole.exe_SM();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_SM();
 
-		addUserToRole.setEnable(CA, 0, false);
+		AUTR.setEnable(CA, 0, false);
 
 		// ================ set request info ========================
 		String projectName = this.mIProject.getName();

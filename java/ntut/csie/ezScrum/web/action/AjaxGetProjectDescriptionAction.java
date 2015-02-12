@@ -47,13 +47,13 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 
 		public ProjectUI(ProjectObject project) {
 			if (project != null) {
-				this.ID = String.valueOf(project.getId());
-				this.ProjectName = project.getName();
-				this.ProjectDisplayName = project.getDisplayName();
-				this.Commnet = project.getComment();
-				this.ProjectManager = project.getManager();
-				this.AttachFileSize = String.valueOf(project.getAttachFileSize());
-				this.ProjectCreateDate = DateUtil.format(project.getCreateTime(), DateUtil._16DIGIT_DATE_TIME);
+				ID = String.valueOf(project.getId());
+				ProjectName = project.getName();
+				ProjectDisplayName = project.getDisplayName();
+				Commnet = project.getComment();
+				ProjectManager = project.getManager();
+				AttachFileSize = String.valueOf(project.getAttachFileSize());
+				ProjectCreateDate = DateUtil.format(project.getCreateTime(), DateUtil._16DIGIT_DATE_TIME);
 			}
 		}
 	}

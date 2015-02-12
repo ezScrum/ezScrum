@@ -280,7 +280,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		ArrayList<AccountObject> members = new ArrayList<AccountObject>();
 		try {
 			while (result.next()) {
-				members.add(convertAccount2(result));
+				members.add(convertAccountUseAccountId(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -464,7 +464,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * @return AccountObject
 	 * @throws SQLException
 	 */
-	public AccountObject convertAccount2(ResultSet result) throws SQLException {
+	public AccountObject convertAccountUseAccountId(ResultSet result) throws SQLException {
 		long id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
 		String username = result.getString(AccountEnum.USERNAME);
 		String nickName = result.getString(AccountEnum.NICK_NAME);

@@ -105,10 +105,10 @@ public class ShowTaskBoardAction extends Action {
 
 		for (IIssue story : storyarray) {
 			taskMap = board.getTaskMap();
-			ArrayList<TaskObject> taskarray = taskMap.get(story.getIssueID());
-			if (taskarray != null) {
+			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
+			if (tasks != null) {
 				tasklist = new ArrayList<TaskObject>();
-				for (TaskObject task : taskarray) {
+				for (TaskObject task : tasks) {
 					if(task.getHandler() != null){
 						if (checkParent(name, task.getPartnersUsername(), task.getHandler().getUsername()))
 							tasklist.add(task);

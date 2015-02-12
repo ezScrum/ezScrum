@@ -161,10 +161,7 @@ public class TaskboardHelper {
 					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
 
 					for (TaskObject task : tasks) {
-						String handlerUserName = "";
-						if(task.getHandler() != null){
-							handlerUserName = task.getHandler().getUsername();
-						}
+						String handlerUserName = task.getHandler() != null ? task.getHandler().getUsername() : "";
 						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
 							filtertask.add(task);
 						}

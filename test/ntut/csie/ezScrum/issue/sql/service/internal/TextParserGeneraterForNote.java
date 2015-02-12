@@ -24,69 +24,69 @@ public class TextParserGeneraterForNote {
 	}
 	
 	public void parserNoteText(String text){
-		this.mNoteText = text;
-		this.setImportance(getTagValue("Importance"));
-		this.setEstimation(getTagValue("Estimation"));
-		this.setValue(getTagValue("Value"));
-		this.setHowToDemo(getTagValue("HowToDemo"));
-		this.setNotes(getTagValue("Notes"));
+		mNoteText = text;
+		setImportance(getTagValue("Importance"));
+		setEstimation(getTagValue("Estimation"));
+		setValue(getTagValue("Value"));
+		setHowToDemo(getTagValue("HowToDemo"));
+		setNotes(getTagValue("Notes"));
 	}
 	
 	// get latest tag's value
 	private String getTagValue(String tagName){
 		String tagHead = "<"+tagName+">";
 		String tagTail = "</"+tagName+">";
-		int headIndex = this.mNoteText.lastIndexOf(tagHead) + tagHead.length();
-		int tailIndex = this.mNoteText.lastIndexOf(tagTail);
-		String tagValue = this.mNoteText.substring(headIndex, tailIndex);
+		int headIndex = mNoteText.lastIndexOf(tagHead) + tagHead.length();
+		int tailIndex = mNoteText.lastIndexOf(tagTail);
+		String tagValue = mNoteText.substring(headIndex, tailIndex);
 		return tagValue;
 	}
 	
 	public void setId(String textId){
-		this.mId = textId;
+		mId = textId;
 	}
 	
 	public String getId(){
-		return this.mId;
+		return mId;
 	}
 	
 	public void setImportance(String textImportance){
-		this.mImportance = textImportance;
+		mImportance = textImportance;
 	}
 	
 	public String getImportance(){
-		return this.mImportance;
+		return mImportance;
 	}
 
 	public void setEstimation(String textEstimation){
-		this.mEstimation = textEstimation;
+		mEstimation = textEstimation;
 	}
 	
 	public String getEstimation(){
-		return this.mEstimation;
+		return mEstimation;
 	}
 	
 	public void setValue(String textValue){
-		this.mValue = textValue;
+		mValue = textValue;
 	}
 	
 	public String getValue(){
-		return this.mValue;
+		return mValue;
 	}
 	
 	public void setHowToDemo(String textHowToDemo){
-		this.mHowToDemo = textHowToDemo;
+		mHowToDemo = textHowToDemo;
 	}
 	
 	public String getHowToDemo(){
-		return this.mHowToDemo;
+		return mHowToDemo;
 	}
 	
 	public void setNotes(String textNotes){
-		this.mNotes = textNotes;
+		mNotes = textNotes;
 	}
 	
 	public String getNotes(){
-		return this.mNotes;
+		return mNotes;
 	}
 }

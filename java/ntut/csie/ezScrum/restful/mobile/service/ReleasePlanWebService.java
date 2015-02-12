@@ -71,7 +71,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 			List<SprintObject> sprints = releaseObject.getSprintPlan();
 			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
 			for (SprintObject sprint : sprints) {
-				sprintsWithAllItem.add(mSprintPlanHelper.getSprintWithAllItem(sprint.id));
+				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(sprint.id));
 			}
 			releaseObject.setSprintPlan(sprintsWithAllItem);
 			releases.add(releaseObject);

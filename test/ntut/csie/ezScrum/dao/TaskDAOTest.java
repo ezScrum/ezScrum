@@ -28,7 +28,7 @@ public class TaskDAOTest {
 	private Configuration mConfig;
 	private CreateProject mCP;
 	private int mProjectCount = 2;
-	private static long projectId;
+	private static long sProjectId;
 
 
 	@Before
@@ -46,7 +46,7 @@ public class TaskDAOTest {
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 
-		projectId = mCP.getAllProjects().get(0).getId();
+		sProjectId = mCP.getAllProjects().get(0).getId();
 	}
 
 	@After
@@ -58,6 +58,9 @@ public class TaskDAOTest {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
+		
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
@@ -70,7 +73,7 @@ public class TaskDAOTest {
 	public void testCreate() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject(projectId);
+			TaskObject task = new TaskObject(sProjectId);
 			task.setName("TEST_TASK_" + i + 1)
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
@@ -84,7 +87,7 @@ public class TaskDAOTest {
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, sProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
@@ -97,7 +100,7 @@ public class TaskDAOTest {
 			assertEquals(i + 1, tasks.get(i).getSerialId());
 			assertEquals("TEST_TASK_" + i + 1, tasks.get(i).getName());
 			assertEquals("TEST_NOTE_" + i + 1, tasks.get(i).getNotes());
-			assertEquals(projectId, tasks.get(i).getProjectId());
+			assertEquals(sProjectId, tasks.get(i).getProjectId());
 			assertEquals(-1, tasks.get(i).getStoryId());
 			assertEquals(i * 2, tasks.get(i).getEstimate());
 			assertEquals(i * 2, tasks.get(i).getRemains());
@@ -111,7 +114,7 @@ public class TaskDAOTest {
 	public void testGet() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject(projectId);
+			TaskObject task = new TaskObject(sProjectId);
 			task.setName("TEST_TASK_" + i + 1)
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
@@ -133,7 +136,7 @@ public class TaskDAOTest {
 			assertEquals(i + 1, tasks.get(i).getSerialId());
 			assertEquals("TEST_TASK_" + i + 1, tasks.get(i).getName());
 			assertEquals("TEST_NOTE_" + i + 1, tasks.get(i).getNotes());
-			assertEquals(projectId, tasks.get(i).getProjectId());
+			assertEquals(sProjectId, tasks.get(i).getProjectId());
 			assertEquals(-1, tasks.get(i).getStoryId());
 			assertEquals(i * 2, tasks.get(i).getEstimate());
 			assertEquals(i * 2, tasks.get(i).getRemains());
@@ -145,7 +148,7 @@ public class TaskDAOTest {
 
 	@Test
 	public void testUpdate() throws SQLException {
-		TaskObject task = new TaskObject(projectId);
+		TaskObject task = new TaskObject(sProjectId);
 		task.setName("TEST_TASK_1")
 		        .setNotes("TEST_NOTE_1")
 		        .setEstimate(1)
@@ -179,7 +182,7 @@ public class TaskDAOTest {
 	public void testDelete() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject(projectId);
+			TaskObject task = new TaskObject(sProjectId);
 			task.setName("TEST_TASK_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
@@ -204,7 +207,7 @@ public class TaskDAOTest {
 		tasks.clear();
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, sProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
@@ -217,7 +220,7 @@ public class TaskDAOTest {
 	public void testGetTasksByStory() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject(projectId);
+			TaskObject task = new TaskObject(sProjectId);
 			task.setName("TEST_TASK_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
@@ -241,7 +244,7 @@ public class TaskDAOTest {
 	public void testGetTasksWithNoParent() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
-			TaskObject task = new TaskObject(projectId);
+			TaskObject task = new TaskObject(sProjectId);
 			task.setName("TEST_TASK_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
@@ -255,7 +258,7 @@ public class TaskDAOTest {
 		}
 		
 		// get Wild Tasks
-		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(projectId);
+		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(sProjectId);
 		assertEquals(2, tasks.size());
 	}
 	

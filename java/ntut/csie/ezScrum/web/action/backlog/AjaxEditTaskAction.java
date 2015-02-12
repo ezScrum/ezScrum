@@ -70,15 +70,15 @@ public class AjaxEditTaskAction extends PermissionAction {
 		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		result.append("<EditTask><Result>true</Result><Task>");
-		result.append("<Id>" + task.getId() + "</Id>");
-		result.append("<Link>" + "LINK" + "</Link>");
-		result.append("<Name>" + tsc.TranslateXMLChar(task.getName()) + "</Name>");
-		result.append("<Estimate>" + task.getEstimate() + "</Estimate>");
-		result.append("<Actual>" + task.getActual() + "</Actual>");
-		result.append("<Handler>" + handlerUsername + "</Handler>");
-		result.append("<Partners>" + tsc.TranslateXMLChar(task.getPartnersUsername()) + "</Partners>");
-		result.append("<Remains>" + task.getRemains() + "</Remains>");
-		result.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes()) + "</Notes>");
+		result.append("<Id>").append(task.getId()).append("</Id>");
+		result.append("<Link>").append("LINK").append("</Link>");
+		result.append("<Name>").append(tsc.TranslateXMLChar(task.getName())).append("</Name>");
+		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
+		result.append("<Actual>").append(task.getActual()).append("</Actual>");
+		result.append("<Handler>").append(handlerUsername).append("</Handler>");
+		result.append("<Partners>").append(tsc.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
+		result.append("<Remains>").append(task.getRemains()).append("</Remains>");
+		result.append("<Notes>").append(tsc.TranslateXMLChar(task.getNotes())).append("</Notes>");
 		result.append("</Task></EditTask>");
 		
 		return result;

@@ -318,7 +318,6 @@ public class SprintPlanMapper {
 		}
 		
 		Document doc = XmlFileUtil.LoadXmlFile(prefsPath);
-		XmlFileUtil.SaveXmlFile(ITER_PLAN_FILE, doc);
 		
 		if (doc == null) {
 			return null;

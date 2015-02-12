@@ -119,7 +119,7 @@ public class TaskWebServiceController {
 	public String createTaskInStory(@PathParam("projectID") String projectId,
 			@PathParam("storyID") long storyId,
 			@QueryParam("userName") String username,
-			@QueryParam("password") String password, String taskJSon) {
+			@QueryParam("password") String password, String taskJson) {
 		InformationDecoder decoder = new InformationDecoder();
 		String newTaskId = "";
 		try {
@@ -127,7 +127,7 @@ public class TaskWebServiceController {
 			decoder.decodeProjectID(projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			newTaskId = mTaskWebService.createTaskInStory(storyId, taskJSon);
+			newTaskId = mTaskWebService.createTaskInStory(storyId, taskJson);
 		} catch (IOException e) {
 			System.out
 					.println("class: TaskWebServiceController, "

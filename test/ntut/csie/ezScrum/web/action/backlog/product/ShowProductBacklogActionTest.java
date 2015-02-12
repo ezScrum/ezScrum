@@ -21,7 +21,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private Configuration mConfig;
 	private final String mActionPath = "/showProductBacklog2";
-	private IProject project;
+	private IProject mProject;
 	
 	public ShowProductBacklogActionTest(String testName) {
 		super(testName);
@@ -38,7 +38,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		
 		mCP = new CreateProject(1);
 		mCP.exeCreate(); // 新增一測試專案
-		project = mCP.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 		
 		super.setUp();
 		
@@ -72,13 +72,13 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	
 	public void testShowProductBacklogAction_NoStory(){
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		addRequestParameter("FilterType", "");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, project );
+		request.getSession().setAttribute( projectName, mProject );
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
@@ -103,13 +103,13 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		addRequestParameter("FilterType", "");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, project );
+		request.getSession().setAttribute( projectName, mProject );
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
@@ -151,19 +151,19 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Backlog(){
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		List<IIssue> issueList = CPB.getIssueList();
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "BACKLOG";
 		addRequestParameter("FilterType", filterType);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, project );
+		request.getSession().setAttribute( projectName, mProject );
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
@@ -205,9 +205,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Done() throws Exception{
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -222,7 +222,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		COI.exeDone_Issues();
 		
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "DONE";
@@ -236,7 +236,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		String issueId = String.valueOf(ASTS.getStories().get(0).getIssueID());
 		String SprintId = CS.getSprintIDList().get(0);
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, project );
+		request.getSession().setAttribute( projectName, mProject );
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
@@ -275,9 +275,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	
 	public void testShowProductBacklog_Detail() throws Exception{
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -291,7 +291,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CheckOutIssue COI = new CheckOutIssue(issueList, mCP);
 		COI.exeDone_Issues();
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "DETAIL";
@@ -304,7 +304,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		String expectedStoryNote = CPB.getIssueList().get(2).getNotes();
 		String issueID = String.valueOf(CPB.getIssueList().get(2).getIssueID());
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, project );
+		request.getSession().setAttribute( projectName, mProject );
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================

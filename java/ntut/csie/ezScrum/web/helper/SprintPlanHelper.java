@@ -37,27 +37,27 @@ public class SprintPlanHelper {
 	}
 
 	public List<ISprintPlanDesc> loadListPlans() {
-		return this.mSprintPlanLogic.getSprintPlanListAndSortByStartDate();
+		return mSprintPlanLogic.getSprintPlanListAndSortByStartDate();
 	}
 
 	public int getCurrentSprintID() {
-		return this.mSprintPlanLogic.getCurrentSprintID();
+		return mSprintPlanLogic.getCurrentSprintID();
 	}
 
 	// load the last plan, so perhaps the return is not the current plan.
 	public ISprintPlanDesc loadCurrentPlan() {
-		return this.mSprintPlanLogic.loadCurrentPlan();
+		return mSprintPlanLogic.loadCurrentPlan();
 	}
 
 	// get next demoDate
 	public String getNextDemoDate() {
-		List<ISprintPlanDesc> descs = this.mSprintPlanLogic
+		List<ISprintPlanDesc> descs = mSprintPlanLogic
 				.getSprintPlanListAndSortById();
 		if (descs.size() == 0)
 			return null;
-		if (!String.valueOf(this.getCurrentSprintID()).equals("-1")) {
+		if (!String.valueOf(getCurrentSprintID()).equals("-1")) {
 			ISprintPlanDesc sprintPlanDesc = mSprintPlanMapper
-					.getSprintPlan(String.valueOf(this.getCurrentSprintID()));
+					.getSprintPlan(String.valueOf(getCurrentSprintID()));
 			if (sprintPlanDesc.getDemoDate().equals(""))
 				return null;
 			else
@@ -125,25 +125,25 @@ public class SprintPlanHelper {
 			String sprintID) {
 		int SprintID = -1;
 		if (lastsprint != null && Boolean.parseBoolean(lastsprint)) {
-			SprintID = this.getLastSprintId();
+			SprintID = getLastSprintId();
 		} else if (sprintID != null) {
 			SprintID = Integer.parseInt(sprintID);
 		}
 
 		if (SprintID > 0) {
-			return this.loadPlan(SprintID);
+			return loadPlan(SprintID);
 		} else {
 			return new SprintPlanDesc();
 		}
 	}
 
 	public Date getProjectStartDate() {
-		List<ISprintPlanDesc> sprintList = this.loadListPlans();
+		List<ISprintPlanDesc> sprintList = loadListPlans();
 		return DateUtil.dayFilter(sprintList.get(0).getStartDate());
 	}
 
 	public Date getProjectEndDate() {
-		List<ISprintPlanDesc> sprintList = this.loadListPlans();
+		List<ISprintPlanDesc> sprintList = loadListPlans();
 
 		if (sprintList.size() > 0) {
 			return DateUtil.dayFilter(sprintList.get(sprintList.size() - 1)
@@ -154,7 +154,7 @@ public class SprintPlanHelper {
 	}
 
 	public int getLastSprintId() {
-		List<ISprintPlanDesc> descs = this.mSprintPlanLogic
+		List<ISprintPlanDesc> descs = mSprintPlanLogic
 				.getSprintPlanListAndSortById();
 		if (descs.size() == 0)
 			return -1;
@@ -164,7 +164,7 @@ public class SprintPlanHelper {
 
 	public int getSprintIDbyDate(Date date) {
 		int sprintID = -1;
-		List<ISprintPlanDesc> sprints = this.mSprintPlanLogic
+		List<ISprintPlanDesc> sprints = mSprintPlanLogic
 				.getSprintPlanListAndSortByStartDate();
 
 		for (ISprintPlanDesc sp : sprints) {
@@ -189,47 +189,47 @@ public class SprintPlanHelper {
 	 */
 	public void moveSprintPlan(IProject project, IUserSession session,
 			int oldId, int newId) {
-		List<ISprintPlanDesc> descs = this.loadListPlans();
-		this.moveSprint(oldId, newId);
+		List<ISprintPlanDesc> descs = loadListPlans();
+		moveSprint(oldId, newId);
 
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session,
 				project);
 		Map<String, ArrayList<IIssue>> map = PBHelper.getSprintHashMap();
 
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Integer> sprintsId = new ArrayList<Integer>();
 		// 取出需要修改的sprint ID
 		if (oldId > newId) {
 			for (int i = newId; i <= oldId; i++) {
-				if (this.isSprintPlan(descs, i))
-					list.add(i);
+				if (isSprintPlan(descs, i))
+					sprintsId.add(i);
 			}
 		} else {
 			for (int i = 0; i <= newId - oldId; i++) {
-				if (this.isSprintPlan(descs, newId - i))
-					list.add(newId - i);
+				if (isSprintPlan(descs, newId - i))
+					sprintsId.add(newId - i);
 			}
 		}
 
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
 				session, project);
 		// 將story的中sprint id做修改
-		if (list.size() != 0) {
-			for (int i = 0; i < list.size(); i++) {
-				if ((i + 1) != list.size()) {
-					String sprintID = String.valueOf(list.get(i));
-					String nextSprintID = String.valueOf(list.get(i + 1));
+		if (sprintsId.size() != 0) {
+			for (int i = 0; i < sprintsId.size(); i++) {
+				if ((i + 1) != sprintsId.size()) {
+					String sprintID = String.valueOf(sprintsId.get(i));
+					String nextSprintID = String.valueOf(sprintsId.get(i + 1));
 					List<IIssue> stories = map.get(sprintID);
 					if (stories != null) {
-						ArrayList<Long> total = convertTolong(stories);
+						ArrayList<Long> total = convertToLong(stories);
 						productBacklogLogic.addIssueToSprint(total,
 								nextSprintID);
 					}
 				} else {
-					String sprintID = String.valueOf(list.get(i));
-					String nextSprintID = String.valueOf(list.get(0));
+					String sprintID = String.valueOf(sprintsId.get(i));
+					String nextSprintID = String.valueOf(sprintsId.get(0));
 					List<IIssue> stories = map.get(sprintID);
 					if (stories != null) {
-						ArrayList<Long> total = convertTolong(stories);
+						ArrayList<Long> total = convertToLong(stories);
 						productBacklogLogic.addIssueToSprint(total,
 								nextSprintID);
 					}
@@ -238,7 +238,7 @@ public class SprintPlanHelper {
 		}
 	}
 
-	private ArrayList<Long> convertTolong(List<IIssue> stories) {
+	private ArrayList<Long> convertToLong(List<IIssue> stories) {
 		ArrayList<Long> total = new ArrayList<Long>();
 		for (IIssue story : stories) {
 			total.add(story.getIssueID());
@@ -274,7 +274,7 @@ public class SprintPlanHelper {
 	}
 
 	public void editSprintPlanForActualCost(String sprintID, String actualCost) {
-		ISprintPlanDesc sprintPlan = this.loadPlan(sprintID);
+		ISprintPlanDesc sprintPlan = loadPlan(sprintID);
 		sprintPlan.setActualCost(actualCost);
 		mSprintPlanMapper.updateSprintPlanForActualCost(sprintPlan);
 	}
@@ -298,7 +298,7 @@ public class SprintPlanHelper {
 				.getSprintPlanList());
 	}
 
-	public SprintObject getSprintWithAllItem(String sprintID)
+	public SprintObject getSprint(String sprintID)
 			throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintID));
 		// 找出 sprint 中所有的 story

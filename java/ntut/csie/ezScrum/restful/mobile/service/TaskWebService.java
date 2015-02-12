@@ -43,9 +43,9 @@ public class TaskWebService extends ProjectWebService {
 		UserSession userSession = new UserSession(super.getAccount());
 		mProjectHelper = new ProjectHelper();
 		mProject = mProjectHelper.getProject(projectId);
-		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
-		mSprintBacklogHelper = new SprintBacklogHelper(iProject, userSession);
-		mProductBacklogHelper = new ProductBacklogHelper(userSession, iProject);
+		IProject project = new ProjectMapper().getProjectByID(mProject.getName());
+		mSprintBacklogHelper = new SprintBacklogHelper(project, userSession);
+		mProductBacklogHelper = new ProductBacklogHelper(userSession, project);
 	}
 	
 	/**
@@ -54,9 +54,9 @@ public class TaskWebService extends ProjectWebService {
 	 * @throws SQLException 
 	 */
 	public String getTasksWithNoParent() throws SQLException {
-		ArrayList<TaskObject> existedTask = mProductBacklogHelper.getTasksWithNoParent();
+		ArrayList<TaskObject> existingTasks = mProductBacklogHelper.getTasksWithNoParent();
 		Gson gson = new Gson();
-		return gson.toJson(existedTask);
+		return gson.toJson(existingTasks);
 	}
 	
 	/**

@@ -44,18 +44,19 @@ public class GetTasksByStoryIDAction extends Action {
     		Map<Long, ArrayList<TaskObject>> map = backlog.getTasksMap();
     		// 取出 指定 Story 底下的 Tasks
     		ArrayList<TaskObject> tasks = map.get(Long.valueOf(storyID));
-    		if (tasks != null)
-    		{
-	    		for(TaskObject task : tasks){			
+    		if (tasks != null) {
+	    		for(TaskObject task : tasks) {	
+	    			String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
+	    			
 					sb.append("<Task>");
-					sb.append("<Id>" + task.getId() + "</Id>");
-					sb.append("<Link>" + "" + "</Link>");
-					sb.append("<Name>" + tsc.TranslateXMLChar(task.getName()) + "</Name>");
-					sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
-					sb.append("<Actual>" + task.getActual() + "</Actual>");
-					sb.append("<Handler>" + task.getHandler().getUsername() + "</Handler>");
-					sb.append("<Partners>" + tsc.TranslateXMLChar(task.getPartnersUsername()) + "</Partners>");
-					sb.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes()) + "</Notes>");
+					sb.append("<Id>").append(task.getId()).append("</Id>");
+					sb.append("<Link>").append("").append("</Link>");
+					sb.append("<Name>").append(tsc.TranslateXMLChar(task.getName())).append("</Name>");
+					sb.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
+					sb.append("<Actual>").append(task.getActual()).append("</Actual>");
+					sb.append("<Handler>").append(handlerUsername).append("</Handler>");
+					sb.append("<Partners>").append(tsc.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
+					sb.append("<Notes>").append(tsc.TranslateXMLChar(task.getNotes())).append("</Notes>");
 					sb.append("</Task>");
 				}
     		}

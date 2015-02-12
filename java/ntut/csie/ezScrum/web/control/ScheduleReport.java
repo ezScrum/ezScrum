@@ -92,16 +92,6 @@ public class ScheduleReport {
 	}
 	
 	private IntervalCategoryDataset createDataset(){
-//		SprintBacklogMapper sb = null;
-//		TaskSeriesCollection collection = null;
-//		if(iteration!=-1){
-//			sb = new SprintBacklogMapper(project, session, iteration);
-//		}
-//		else{
-//			sb = new SprintBacklogMapper(project, session);
-//			iteration = sb.getSprintPlanId();
-//		}
-		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSession, String.valueOf(mIteration));
 		SprintBacklogMapper sb = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskSeriesCollection collection = null;
@@ -122,7 +112,6 @@ public class ScheduleReport {
 	private TaskSeriesCollection initTaskCollection(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sb){
 		TaskSeriesCollection collection = null;
 		//塞入資料
-//		List<IIssue> stories = sb.getStories();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
 		mSize = stories.size();
 		Map<Long, ArrayList<TaskObject>> taskMap = sb.getTasksMap();
@@ -207,7 +196,6 @@ public class ScheduleReport {
 	
 	private void setDateAxis(DateAxis da){
 		da.setVerticalTickLabels(true);
-//		da.setTickUnit(new DateTickUnit(DateTickUnit.DAY, 1));
 		da.setTickLabelsVisible(true);
 		da.setVisible(true);
 		da.setDateFormatOverride(new SimpleDateFormat("yyyy-MM-dd"));

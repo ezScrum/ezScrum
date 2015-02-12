@@ -32,16 +32,16 @@ public class AccountHelper {
 		mAccountMapper = new AccountMapper(mUserSession);
 	}
 
-	public String validateUsername(String id) {
+	public String validateUsername(String username) {
 
 		// 判斷帳號是否符合只有英文+數字的格式
 		Pattern p = Pattern.compile("[0-9a-zA-Z_]*");
-		Matcher m = p.matcher(id);
+		Matcher m = p.matcher(username);
 		boolean b = m.matches();
 
 		// 若帳號可建立且ID format正確 則回傳true
 		AccountMapper am = new AccountMapper();
-		if (b && !am.isAccountExist(id) && !id.isEmpty()) {
+		if (b && !am.isAccountExist(username) && !username.isEmpty()) {
 			return "true";
 		}
 

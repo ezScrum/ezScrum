@@ -16,16 +16,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PluginModifierTest {
-	private String pluginPath = "plugin/redmine";
-	private String testFilePath = "./ImportPluginJSList.jsp";
-	private String importJSPath = "<jsp:include page=\"../pluginWorkspace/" + pluginPath + "/import.jsp\"/>";
+	private String mPluginPath = "plugin/redmine";
+	private String mTestFilePath = "./ImportPluginJSList.jsp";
+	private String mImportJSPath = "<jsp:include page=\"../pluginWorkspace/" + mPluginPath + "/import.jsp\"/>";
 	private PluginModifier mPluginModifier;
 	
 	@Before
 	public void setUp()throws Exception {
 		createMockFile();//建立測試檔案
 		mPluginModifier = new PluginModifier();
-		mPluginModifier.setTestFilePath( testFilePath );
+		mPluginModifier.setTestFilePath( mTestFilePath );
 	}
 	
 	@After
@@ -37,13 +37,13 @@ public class PluginModifierTest {
 	@Test
 	public void testAddPluginImportPath() throws Exception {
 		try {
-			mPluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(mPluginPath);
 		} catch (Exception e) {
 			throw e;
 		}
 		//將舊的內容讀出
 		try{
-			FileInputStream fstream = new FileInputStream( testFilePath );
+			FileInputStream fstream = new FileInputStream( mTestFilePath );
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
@@ -51,7 +51,7 @@ public class PluginModifierTest {
 			boolean isImportJSPathExisted = false;
 			//Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
-				if( strLine.equals( importJSPath ) ){
+				if( strLine.equals( mImportJSPath ) ){
 					isImportJSPathExisted = true;
 					break;
 				}
@@ -71,8 +71,8 @@ public class PluginModifierTest {
 	@Test
 	public void testAddDuplicatedPluginImportPath() throws Exception {
 		try {
-			mPluginModifier.addPluginImportPath(pluginPath);
-			mPluginModifier.addPluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(mPluginPath);
+			mPluginModifier.addPluginImportPath(mPluginPath);
 		} catch (Exception e) {
 			assertEquals( "plugin is existed", e.getMessage() );
 		}
@@ -82,14 +82,14 @@ public class PluginModifierTest {
 	public void testRemovePluginImportPath() throws Exception {
 		//add import plugin path and remove
 		try {
-			mPluginModifier.addPluginImportPath(pluginPath);
-			mPluginModifier.removePluginImportPath(pluginPath);
+			mPluginModifier.addPluginImportPath(mPluginPath);
+			mPluginModifier.removePluginImportPath(mPluginPath);
 		} catch (Exception e) {
 			throw e;
 		}
 		//將舊的內容讀出
 		try{
-			FileInputStream fstream = new FileInputStream( testFilePath );
+			FileInputStream fstream = new FileInputStream( mTestFilePath );
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
@@ -97,7 +97,7 @@ public class PluginModifierTest {
 			boolean isImportJSPathExisted = false;
 			//Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
-				if( strLine.equals( importJSPath ) ){
+				if( strLine.equals( mImportJSPath ) ){
 					isImportJSPathExisted = true;
 					break;
 				}
@@ -117,8 +117,8 @@ public class PluginModifierTest {
 	@Test
 	public void testRemoveNoExistPluginImportPath() throws Exception {
 		try {
-			mPluginModifier.removePluginImportPath(pluginPath);
-			mPluginModifier.removePluginImportPath(pluginPath);
+			mPluginModifier.removePluginImportPath(mPluginPath);
+			mPluginModifier.removePluginImportPath(mPluginPath);
 		} catch (Exception e) {
 			assertEquals( "plugin is already removed", e.getMessage() );
 		}
@@ -127,7 +127,7 @@ public class PluginModifierTest {
 	private void createMockFile() throws Exception{
         try{
 	    // Create file 
-            FileWriter fstream = new FileWriter( testFilePath );
+            FileWriter fstream = new FileWriter( mTestFilePath );
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write("<%@ page language=\"java\" contentType=\"text/html; charset=UTF-8\" pageEncoding=\"UTF-8\"%>");
 			out.newLine();
@@ -157,7 +157,7 @@ public class PluginModifierTest {
 	}
 
 	private void removeMockFile(){
-		File file = new File( testFilePath );
+		File file = new File( mTestFilePath );
 		if( file.exists() ){
 			file.delete();
 		}

@@ -16,16 +16,16 @@ public class TranslateSpecialCharTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		this.mTranslateSpecialChar = new TranslateSpecialChar();
-		this.mTestStr = new ArrayList<String>();
-		this.mVerifyStr = new ArrayList<String>();
+		mTranslateSpecialChar = new TranslateSpecialChar();
+		mTestStr = new ArrayList<String>();
+		mVerifyStr = new ArrayList<String>();
 	}
 	
 	@After
 	public void tearDown() throws Exception {
-		this.mTranslateSpecialChar = null;
-		this.mTestStr.clear();
-		this.mVerifyStr.clear();
+		mTranslateSpecialChar = null;
+		mTestStr.clear();
+		mVerifyStr.clear();
 	}
 	
 	@Test

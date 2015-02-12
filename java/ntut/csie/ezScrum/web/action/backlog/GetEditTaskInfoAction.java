@@ -48,20 +48,17 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		TaskObject task = sprintBacklogHelper.getTask(taskId);
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		
-		String handlerUsername = "";
-		AccountObject handler = task.getHandler();
-		if (handler != null) {
-			handlerUsername = handler.getUsername();
-		}
+		String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "'";
+
 		result.append("<EditTask><Task>");
-		result.append("<Id>" + task.getId() + "</Id>");
-		result.append("<Name>" + tsc.TranslateXMLChar(task.getName()) + "</Name>");
-		result.append("<Estimate>" + task.getEstimate() + "</Estimate>");
-		result.append("<Actual>" + task.getActual() + "</Actual>");
-		result.append("<Handler>" + tsc.TranslateXMLChar(handlerUsername) + "</Handler>");
-		result.append("<Remains>" + task.getRemains() + "</Remains>");
-		result.append("<Partners>" + tsc.TranslateXMLChar(task.getPartnersUsername()) + "</Partners>");
-		result.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes()) + "</Notes>");
+		result.append("<Id>").append(task.getId()).append("</Id>");
+		result.append("<Name>").append(tsc.TranslateXMLChar(task.getName())).append("</Name>");
+		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
+		result.append("<Actual>").append(task.getActual()).append("</Actual>");
+		result.append("<Handler>").append(tsc.TranslateXMLChar(handlerUsername)).append("</Handler>");
+		result.append("<Remains>").append(task.getRemains()).append("</Remains>");
+		result.append("<Partners>").append(tsc.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
+		result.append("<Notes>").append(tsc.TranslateXMLChar(task.getNotes())).append("</Notes>");
 		result.append("</Task></EditTask>");
 		
 		return result;

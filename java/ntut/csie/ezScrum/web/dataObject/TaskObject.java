@@ -237,11 +237,11 @@ public class TaskObject implements IBaseObject {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR_OF_DAY,
-		calendar.getMaximum(Calendar.HOUR_OF_DAY));
+				calendar.getMaximum(Calendar.HOUR_OF_DAY));
 		calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
 		calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
 		calendar.set(Calendar.MILLISECOND,
-		calendar.getMaximum(Calendar.MILLISECOND));
+				calendar.getMaximum(Calendar.MILLISECOND));
 		Date endOfDate = calendar.getTime();
 		long lastSecondOfDate = endOfDate.getTime();
 		return lastSecondOfDate;
@@ -253,15 +253,19 @@ public class TaskObject implements IBaseObject {
 		ArrayList<HistoryObject> histories = getHistories();
 		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
 		for (HistoryObject history : histories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS)
-			{
+			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
 				remainsHistories.add(history);
 			}
 		}
-		if (remainsHistories.size() > 0)
-		{
+		if (remainsHistories.size() > 0) {
 			String firstRemainsOldValue = remainsHistories.get(0).getOldValue();
-			remains = Double.parseDouble(firstRemainsOldValue); // Because create task no remains history, get first remains history old value
+			remains = Double.parseDouble(firstRemainsOldValue); // Because
+																// create task
+																// no remains
+																// history, get
+																// first remains
+																// history old
+																// value
 		}
 		for (HistoryObject remainsHistory : remainsHistories) {
 			if (remainsHistory.getCreateTime() <= lastSecondOfTheDate) {
@@ -439,7 +443,7 @@ public class TaskObject implements IBaseObject {
 	private void doCreate() {
 		// default remains hour should equal to estimate
 		mRemains = mEstimate;
-		
+
 		mId = TaskDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
@@ -454,7 +458,7 @@ public class TaskObject implements IBaseObject {
 
 	private void doUpdate() {
 		TaskObject oldTask = TaskObject.get(mId);
-		
+
 		TaskDAO.getInstance().update(this);
 		if (!mName.equals(oldTask.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
@@ -473,7 +477,8 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual);
 		}
 		if (mRemains != oldTask.getRemains()) {
-			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(), mRemains);
+			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
+					mRemains);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
@@ -525,7 +530,7 @@ public class TaskObject implements IBaseObject {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
 				addHistoryOfTaskRemoveFromStory(mStoryId, mId, specificTime); // for
-																			// task
+																				// task
 				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
 						specificTime); // for story
 			}
@@ -583,7 +588,7 @@ public class TaskObject implements IBaseObject {
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
 				String.valueOf(mId), specificTime);
 		HistoryDAO.getInstance().create(history);
-	}	
+	}
 
 	private void addHistory(int type, long oldValue, long newValue) {
 		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));

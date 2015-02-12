@@ -70,15 +70,15 @@ public class SprintBacklogWebService extends ProjectWebService {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 		TaskObject task = TaskObject.get(Long.parseLong(taskID));
 
-		List<HistoryObject> taskHistoryList = task.getHistories();
+		List<HistoryObject> taskHistories = task.getHistories();
 		List<String> remainsList = new ArrayList<String>();
 		String lastRemainsHour = "0";
-		for (HistoryObject history : taskHistoryList) {
+		for (HistoryObject history : taskHistories) {
 			String date = parseDate(history.getCreateTime());
 			lastRemainsHour = task.getRemains(new Date(date)) + "";
 			remainsList.add(lastRemainsHour);
 		}
-		String taskHistoryJsonString = csb.convertTaskHistory(taskHistoryList,
+		String taskHistoryJsonString = csb.convertTaskHistory(taskHistories,
 				remainsList);
 		return taskHistoryJsonString;
 	}

@@ -13,9 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PluginWrapperHelperTest {
-	private final String pluginTestDataPath = "./TestData/PluginData/";
-	private final String pluginWorkspacePath = "./WebContent/pluginWorkspace/";
-	private final String pluginName = "redminePlugin.war";
+	private final String mPluginTestDataPath = "./TestData/PluginData/";
+	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
+	private final String mPluginName = "redminePlugin.war";
 	private Configuration mConfig  = null;
 
 	@Before
@@ -47,15 +47,15 @@ public class PluginWrapperHelperTest {
 	}
 
 	private void addPluginToWorkspace() {
-		String outsidePluginPath = pluginTestDataPath + pluginName;
+		String outsidePluginPath = mPluginTestDataPath + mPluginName;
 		PluginManager pluginManager = new PluginManager();
 		pluginManager.addPlugin(outsidePluginPath);
 		pluginManager = null;
 	}
 
 	private void deletePluginFolder() {
-		String folderPath = pluginWorkspacePath
-				+ pluginName.replace(".war", "");
+		String folderPath = mPluginWorkspacePath
+				+ mPluginName.replace(".war", "");
 		File file = new File(folderPath);
 		PluginMockDataHelper.isMockFileExisted(file);
 		file = null;

@@ -58,12 +58,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		if (existingTasks != null) {
     		for(int i = 0; i < existingTasks.size(); i++) {
     			TaskObject task = existingTasks.get(i);
-    			
-    			AccountObject handler = task.getHandler();
-    			String handlerUsername = "";
-    			if (handler != null) {
-    				handlerUsername = handler.getUsername();    				
-    			}
+    			String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
     			
 				sb.append("<Task>")
 				  .append("<Id>").append(task.getId()).append("</Id>")

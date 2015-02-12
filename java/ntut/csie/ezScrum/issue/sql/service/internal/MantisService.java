@@ -468,9 +468,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		List<String> allUserList = getAllUsers();
 
 		List<String> userList = new ArrayList<String>();
-		for (String userName : allUserList) {
-			if (getProjectAccessLevel(getUserID(userName), projectID) >= accessLevel)
-				userList.add(userName);
+		for (String username : allUserList) {
+			if (getProjectAccessLevel(getUserID(username), projectID) >= accessLevel)
+				userList.add(username);
 		}
 
 		return userList.toArray(new String[userList.size()]);
@@ -660,29 +660,20 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		String updateQuery = valueSet.getUpdateQuery();
 
 		getControl().execute(updateQuery);
-		String newActor = getUserID(handler) + "";
+		String newUsername = getUserID(handler) + "";
 		String oldActorString = "";
 		if (oldActor > 0) {
 			oldActorString = String.valueOf(oldActor);
 		}
-		HistoryObject history = new HistoryObject(
+		HistoryObject handlerHistory = new HistoryObject(
 				issue.getIssueID(), 
 				issue.getIssueType(), 
 				HistoryObject.TYPE_HANDLER,
 				// issue 沒有 actor 會回傳 0, 如果 actor == 0 則存入空字串
 				oldActorString,
-				newActor,
+				newUsername,
 				System.currentTimeMillis());
-		history.save();
-//		if (oldStatus != ITSEnum.ASSIGNED_STATUS) {
-//			historyDao.add(new HistoryObject(
-//								issue.getIssueID(), 
-//								issue.getIssueType(),
-//								HistoryObject.TYPE_STATUS,
-//								String.valueOf(oldStatus),
-//								"50",
-//								System.currentTimeMillis()));
-//		}
+		handlerHistory.save();
 	}
 
 	@Override
@@ -733,14 +724,14 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 
 		// 新增歷史記錄,還有一個resolution的history,因為不是很重要,就暫時沒加入
-		HistoryObject history = new HistoryObject(
+		HistoryObject statusHistory = new HistoryObject(
 				issue.getIssueID(), 
 				issue.getIssueType(), 
 				HistoryObject.TYPE_STATUS,
 				String.valueOf(oldStatus),
 				String.valueOf(ITSEnum.CLOSED_STATUS),
 				System.currentTimeMillis());
-		history.save();
+		statusHistory.save();
 		if (bugNote != null && !bugNote.equals("")) {
 			issue.addIssueNote(bugNote);
 			updateBugNote(issue);

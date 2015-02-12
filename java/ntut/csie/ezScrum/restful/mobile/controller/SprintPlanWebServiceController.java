@@ -37,7 +37,7 @@ public class SprintPlanWebServiceController {
 	@Path("create")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createSprint(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String userName,
+			@QueryParam("userName") String username,
 			@QueryParam("password") String password, JSONObject sprintJson) {
 		Gson gson = new Gson();
 		String responseString = "";
@@ -45,11 +45,11 @@ public class SprintPlanWebServiceController {
 			SprintObject sprintObject = gson.fromJson(sprintJson.toString(),
 					SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(userName, password, projectId);
+			decoder.decode(username, password, projectId);
 			// 使用者帳號
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
-			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
+			AccountObject account = new AccountObject(decoder.getDecodeUserName());
+			account.setPassword(decoder.getDecodePwd());
+			mSprintPlanWebService = new SprintPlanWebService(account,
 					decoder.getDecodeProjectID());
 			mSprintPlanWebService.createSprint(sprintObject);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
