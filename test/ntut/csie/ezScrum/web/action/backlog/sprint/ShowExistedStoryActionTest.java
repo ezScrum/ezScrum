@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -13,11 +12,11 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowExistedStoryActionTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
+	private CreateProject mCP;
+	private CreateSprint mCS;
 	private Configuration mConfig;
-	private final String ACTION_PATH = "/showExistedStory";
-	private IProject mProject;
+	private IProject mIProject;
+	private final String mActionPath = "/showExistedStory";
 
 	public ShowExistedStoryActionTest(String testName) {
 		super(testName);
@@ -32,27 +31,27 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 新增 Project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		// create Project
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
-		// 新增 Sprint
-		mCreateSprint = new CreateSprint(2, mCreateProject);
-		mCreateSprint.exe();
+		// create Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 		
-		mProject = mCreateProject.getProjectList().get(0);
+		mIProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
 		// ================ set action info ========================
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(ACTION_PATH);
+		setRequestPathInfo(mActionPath);
 
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -60,7 +59,6 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -69,7 +67,9 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 
 		ini = null;
 		projectManager = null;
-		mCreateProject = null;
+		mCP = null;
+		mCS = null;
+		mIProject = null;
 		mConfig = null;
 	}
 
@@ -77,10 +77,11 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 * no story
 	 */
 	public void testShowExistedStory_1() {
-		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		String releaseId = "-1";
+		
 		// ================ set request info ========================
-		String projectName = mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
@@ -94,7 +95,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		// assert response text
+
 		String expectedResponseText = "<ExistingStories></ExistingStories>";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
@@ -105,13 +106,13 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowExistedStory_2() {
 		int storycount = 2;
-		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCreateProject);
+		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCP);
 		CPB.exe();
 
-		String sprintId = mCreateSprint.getSprintIDList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
-		String projectName = mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
@@ -129,36 +130,37 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String releaseIdAndSprintId = "None";
 		String storyStatus = "new";
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<ExistingStories>")
-		        .append("<Story>")
-		        .append("<Id>" + 1 + "</Id>")
-		        .append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 1 + "</Link>")
-		        .append("<Name>" + CPB.TEST_STORY_NAME + 1 + "</Name>")
-		        .append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
-		        .append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
-		        .append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
-		        .append("<Status>" + storyStatus + "</Status>")
-		        .append("<Notes>" + CPB.TEST_STORY_NOTES + 1 + "</Notes>")
-		        .append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 1 + "</HowToDemo>")
-		        .append("<Release>" + releaseIdAndSprintId + "</Release>")
-		        .append("<Sprint>" + releaseIdAndSprintId + "</Sprint>")
-		        .append("<Tag>" + "" + "</Tag>")
-		        .append("</Story>")
-		        .append("<Story>")
-		        .append("<Id>" + 2 + "</Id>")
-		        .append("<Link>/ezScrum/showIssueInformation.do?issueID=" + 2 + "</Link>")
-		        .append("<Name>" + CPB.TEST_STORY_NAME + 2 + "</Name>")
-		        .append("<Value>" + CPB.TEST_STORY_VALUE + "</Value>")
-		        .append("<Importance>" + CPB.TEST_STORY_IMP + "</Importance>")
-		        .append("<Estimate>" + CPB.TEST_STORY_EST + "</Estimate>")
-		        .append("<Status>" + storyStatus + "</Status>")
-		        .append("<Notes>" + CPB.TEST_STORY_NOTES + 2 + "</Notes>")
-		        .append("<HowToDemo>" + CPB.TEST_STORY_HOW_TO_DEMO + 2 + "</HowToDemo>")
-		        .append("<Release>" + releaseIdAndSprintId + "</Release>")
-		        .append("<Sprint>" + releaseIdAndSprintId + "</Sprint>")
-		        .append("<Tag>" + "" + "</Tag>")
-		        .append("</Story>")
-		        .append("</ExistingStories>");
+		expectedResponseText
+			.append("<ExistingStories>")
+				.append("<Story>")
+					.append("<Id>1</Id>")
+					.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
+					.append("<Name>").append(CPB.TEST_STORY_NAME + 1).append("</Name>")
+					.append("<Value>").append(CPB.TEST_STORY_VALUE).append("</Value>")
+					.append("<Importance>").append(CPB.TEST_STORY_IMP).append("</Importance>")
+					.append("<Estimate>").append(CPB.TEST_STORY_EST).append("</Estimate>")
+					.append("<Status>").append(storyStatus).append("</Status>")
+					.append("<Notes>").append(CPB.TEST_STORY_NOTES + 1).append("</Notes>")
+					.append("<HowToDemo>").append(CPB.TEST_STORY_HOW_TO_DEMO + 1).append("</HowToDemo>")
+					.append("<Release>").append(releaseIdAndSprintId).append("</Release>")
+					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
+					.append("<Tag></Tag>")
+				.append("</Story>")
+				.append("<Story>")
+					.append("<Id>2</Id>")
+					.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+					.append("<Name>").append(CPB.TEST_STORY_NAME + 2).append("</Name>")
+					.append("<Value>").append(CPB.TEST_STORY_VALUE).append("</Value>")
+					.append("<Importance>").append(CPB.TEST_STORY_IMP).append("</Importance>")
+					.append("<Estimate>").append(CPB.TEST_STORY_EST).append("</Estimate>")
+					.append("<Status>").append(storyStatus).append("</Status>")
+					.append("<Notes>").append(CPB.TEST_STORY_NOTES + 2).append("</Notes>")
+					.append("<HowToDemo>").append(CPB.TEST_STORY_HOW_TO_DEMO + 2).append("</HowToDemo>")
+					.append("<Release>").append(releaseIdAndSprintId).append("</Release>")
+					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
+					.append("<Tag></Tag>")
+				.append("</Story>")
+			.append("</ExistingStories>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
@@ -169,8 +171,9 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	public void testShowExistedStory_3() {
 		String sprintId = "SprintIDNumberFormatException";
 		String releaseId = "-1";
+		
 		// ================ set request info ========================
-		String projectName = mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
@@ -184,7 +187,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		// assert response text
+
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
@@ -196,8 +199,9 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	public void testShowExistedStory_4() {
 		String sprintId = "";
 		String releaseId = "ReleaseNumberFormatException";
+		
 		// ================ set request info ========================
-		String projectName = mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
@@ -211,7 +215,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		// assert response text
+
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
@@ -223,8 +227,9 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	public void testShowExistedStory_5() {
 		String sprintId = "";
 		String releaseId = "";
+		
 		// ================ set request info ========================
-		String projectName = this.mProject.getName();
+		String projectName = this.mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
@@ -238,7 +243,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		// assert response text
+
 		String expectedResponseText = "";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);

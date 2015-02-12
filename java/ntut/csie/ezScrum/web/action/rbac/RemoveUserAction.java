@@ -19,21 +19,33 @@ public class RemoveUserAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		String id = request.getParameter("id");;
-		String resource = request.getParameter("resource");
-		String operation = request.getParameter("operation");
+		long accountId, projectId;
+		
+		try {
+			accountId = Long.parseLong(request.getParameter("id"));
+			projectId = Long.parseLong(request.getParameter("resource"));
+		} catch (NumberFormatException e) {
+			if (request.getParameter("resource").equals("system")) {
+				accountId = Long.parseLong(request.getParameter("id"));
+				projectId = 0;
+			} else {
+				accountId = 0;
+				projectId = -1;
+			}
+		}
+		String role = request.getParameter("operation");
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		AccountHelper ah = new AccountHelper(session);
+		AccountHelper accountHelper = new AccountHelper(session);
 		
-		if (id != null && resource != null && operation != null) {
+		if (accountId > 0 && projectId > -1 && role != null) {
 			try {
-				AccountObject account = ah.assignRole_remove(id, resource, operation);
+				AccountObject account = accountHelper.removeAssignRole(accountId, projectId, role);
 				
-				// 刪除Session中關於該使用者的所有專案權限。
+				// 刪除 Session 中關於該使用者的所有專案權限。
 				SessionManager.removeScrumRolesMap(request, account);
 				response.setContentType("text/xml; charset=utf-8");
-				response.getWriter().write(ah.getAccountXML(account));				
+				response.getWriter().write(accountHelper.getAccountXML(account));				
 				response.getWriter().close();
 			}
 			catch (IOException e) {

@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -15,44 +15,48 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CheckOutIssue {
-	private ArrayList<Long> IssueIDList = new ArrayList<Long>();
-	private List<IIssue> issueList;
-	private CreateProject CP;
-	private Date SetDoneDate = null;
-	private Configuration configuration = new Configuration();
-	private ProjectMapper projectMapper = new ProjectMapper();
+	private ArrayList<Long> mIssuesId = new ArrayList<Long>();
+	private List<IIssue> mIssues;
+	private ArrayList<TaskObject> mTasks;
+	private CreateProject mCP;
+	private Date mSetDoneDate = null;
+	private Configuration mConfiguration = new Configuration();
+	private ProjectMapper mProjectMapper = new ProjectMapper();
 
-	
-	public CheckOutIssue(List<IIssue> list, CreateProject CP) {
-		this.issueList = list;
-		this.CP = CP;
+	public CheckOutIssue(List<IIssue> issues, CreateProject CP) {
+		mIssues = issues;
+		mCP = CP;
 	}
 	
-	public CheckOutIssue(List<IIssue> list, CreateProject CP, Date setDate) {
-		this.issueList = list;
-		this.CP = CP;
-		this.SetDoneDate = setDate;
+	public CheckOutIssue(List<IIssue> issues, CreateProject CP, Date setDate) {
+		mIssues = issues;
+		mCP = CP;
+		mSetDoneDate = setDate;
+	}
+	
+	public CheckOutIssue(ArrayList<TaskObject> tasks, CreateProject CP) {
+		mTasks = tasks;
+		mCP = CP;
 	}
 
 	public void exeReset_Issues() throws Exception {
-		IUserSession userSession = configuration.getUserSession();
-
-		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-			String projectName = this.CP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
+		IUserSession userSession = mConfiguration.getUserSession();
+		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+			String projectName = mCP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			IProject project = this.projectMapper.getProjectByID(projectName);
+			IProject project = mProjectMapper.getProjectByID(projectName);
 
 //			// SprintBacklog SB = new SprintBacklog(project, CreateUserSession());
 //			SprintBacklogMapper SB = new SprintBacklogMapper(project, userSession);
 			
 			SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, userSession, null)).getSprintBacklogMapper();
 
-			for (long ID : this.IssueIDList) {
-				if (this.SetDoneDate != null) {
+			for (long ID : mIssuesId) {
+				if (mSetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
-					sprintBacklogMapper.resetTask(ID, "", format.format(this.SetDoneDate), "");
+					sprintBacklogMapper.resetTask(ID, "", format.format(mSetDoneDate), new Date());
 				} else {
-					sprintBacklogMapper.resetTask(ID, "", "", "");
+					sprintBacklogMapper.resetTask(ID, "", "", new Date());
 				}
 				System.out.println("移動 Issue " + ID + " 到 Non Check-out 成功");
 			}
@@ -60,38 +64,39 @@ public class CheckOutIssue {
 	}
 
 	public void exeCheckOut_Issues() throws Exception {
-		IUserSession userSession = configuration.getUserSession();
+		IUserSession userSession = mConfiguration.getUserSession();
 
-		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-			String projectName = this.CP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
+		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+			String projectName = mCP.mProjectName + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			IProject project = this.projectMapper.getProjectByID(projectName);
+			IProject project = mProjectMapper.getProjectByID(projectName);
 
 //			// SprintBacklog SB = new SprintBacklog(project, CreateUserSession());
 //			SprintBacklogMapper SB = new SprintBacklogMapper(project, userSession);
 			
 			SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
 
-			for (long ID : this.IssueIDList) {
-				if (this.SetDoneDate != null) {
+			for (long ID : mIssuesId) {
+				if (mSetDoneDate != null) {
 					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
-					sprintBacklogLogic.checkOutTask(ID, configuration.USER_ID, "", "", format.format(this.SetDoneDate), "");
+					sprintBacklogLogic.checkOutTask(ID, mConfiguration.USER_ID, "", "", format.format(mSetDoneDate), "");
 				} else {
-					sprintBacklogLogic.checkOutTask(ID, configuration.USER_ID, "", "", "", "");
+					sprintBacklogLogic.checkOutTask(ID, mConfiguration.USER_ID, "", "", "", "");
 				}
 				System.out.println("移動 Issue " + ID + " 到 Check-out 成功");
 			}
 		}
 	}
 
+	// for closing story
 	public void exeDone_Issues() throws Exception {
-		IUserSession userSession = configuration.getUserSession();
-		String handler = userSession.getAccount().getId();
+		IUserSession userSession = mConfiguration.getUserSession();
+		String handler = userSession.getAccount().getUsername();
 
-		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-//			String projectName = this.CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
+		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+//			String projectName = CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			IProject project = this.CP.getProjectList().get(i);
+			IProject project = mCP.getProjectList().get(i);
 
 //			// SprintBacklog SB = new SprintBacklog(project, CreateUserSession());
 //			SprintBacklogMapper SB = new SprintBacklogMapper(project, userSession);
@@ -99,16 +104,50 @@ public class CheckOutIssue {
 			SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
 			SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
-			for (IIssue issue : this.issueList) {
+			for (IIssue issue : mIssues) {
 				long ID = issue.getIssueID();
 				String name = issue.getSummary();
-				if (this.SetDoneDate != null) {
-					SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
+				SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
+				if (mSetDoneDate != null) {
 					sprintBacklogMapper.getStory(ID).setAssignto(handler);
-					sprintBacklogLogic.doneIssue(ID, name, format.format(this.SetDoneDate), "", "");
+					sprintBacklogLogic.closeStory(ID, name, format.format(mSetDoneDate));
 				} else {
 					sprintBacklogMapper.getStory(ID).setAssignto(handler);
-					sprintBacklogLogic.doneIssue(ID, name, "", "", "");
+					sprintBacklogLogic.closeStory(ID, name, format.format(new Date()));
+				}
+				System.out.println("移動 Issue " + ID + " 到 Done 成功");
+			}
+		}
+	}
+	
+	// for closing task
+	public void exeDone_Tasks() throws Exception {
+		IUserSession userSession = mConfiguration.getUserSession();
+		String handler = userSession.getAccount().getUsername();
+
+		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+//			String projectName = CP.PJ_NAME + Integer.toString((i + 1)); // TEST_PROJECT_X
+//			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
+			IProject project = mCP.getProjectList().get(i);
+
+//			// SprintBacklog SB = new SprintBacklog(project, CreateUserSession());
+//			SprintBacklogMapper SB = new SprintBacklogMapper(project, userSession);
+			
+			SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
+			SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
+
+			for (TaskObject task : mTasks) {
+				long ID = task.getId();
+				String name = task.getName();
+				String notes = task.getNotes();
+				int actual = task.getActual();
+				SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
+				if (mSetDoneDate != null) {
+					sprintBacklogMapper.getStory(ID).setAssignto(handler);
+					sprintBacklogLogic.closeTask(ID, name, notes, actual, format.format(mSetDoneDate));
+				} else {
+					sprintBacklogMapper.getStory(ID).setAssignto(handler);
+					sprintBacklogLogic.closeTask(ID, name, notes, actual, format.format(new Date()));
 				}
 				System.out.println("移動 Issue " + ID + " 到 Done 成功");
 			}

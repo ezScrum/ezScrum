@@ -5,23 +5,24 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowCheckOutIssueTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private AddStoryToSprint ASS;
-	private AddTaskToStory ATS;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
+	private Configuration mConfig;
 	private final String ACTION_PATH = "/showCheckOutIssue";
 
 	public ShowCheckOutIssueTest(String testMethod) {
@@ -29,72 +30,71 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
 
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe(); // 新增1個Sprint到專案內
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增1個Sprint到專案內
 
-		this.ASS = new AddStoryToSprint(1, 1, this.CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		this.ASS.exe(); // 新增1筆Story到Sprint內
+		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe(); // 新增1筆Story到Sprint內
 
-		this.ATS = new AddTaskToStory(1, 1, this.ASS, this.CP);
-		this.ATS.exe(); // 新增1筆Task到Story內
+		mATTS = new AddTaskToStory(1, 1, mASTS, mCP);
+		mATTS.exe(); // 新增1筆Task到Story內
 
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.ACTION_PATH);
+		setRequestPathInfo(ACTION_PATH);
 
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CS = null;
-		this.ASS = null;
-		this.ATS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
+		mConfig = null;
 	}
 
 	// 測試Issue為Task的CheckOut
-	public void testshowCheckOutIssue_Task() throws Exception {
+	public void testShowCheckOutIssue_Task() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		long issueID = ATS.getTasksId().get(0);
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
-		IIssue item = productBacklogMapper.getIssue(issueID);
+		IProject project = mCP.getProjectList().get(0);
+		long taskId = mATTS.getTasksId().get(0);
+		TaskObject task = TaskObject.get(taskId);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
-		addRequestParameter("issueID", String.valueOf(issueID));
+		addRequestParameter("issueID", String.valueOf(taskId));
+		addRequestParameter("issueType", "Task");
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -105,32 +105,34 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("{\"Task\":{")
-							.append("\"Id\":\"").append(item.getIssueID()).append("\",")
-							.append("\"Name\":\"").append(item.getSummary()).append("\",")
-							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
-							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
+							.append("\"Id\":\"").append(task.getId()).append("\",")
+							.append("\"Name\":\"").append(task.getName()).append("\",")
+							.append("\"Partners\":\"").append("\",")
+							.append("\"Notes\":\"").append(task.getNotes()).append("\",")
+							.append("\"Handler\":\"").append("").append("\",")
+							.append("\"IssueType\":\"").append("Task").append("\",")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
 	}
 
 	// 測試Issue為Story的CheckOut
-	public void testshowCheckOutIssue_Story() throws Exception {
+	public void testShowCheckOutIssue_Story() throws Exception {
 		// ================ set initial data =======================
-		IProject project = this.CP.getProjectList().get(0);
-		long issueID = ASS.getStories().get(0).getIssueID();
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, configuration.getUserSession());
-		IIssue item = productBacklogMapper.getIssue(issueID);
+		IProject project = mCP.getProjectList().get(0);
+		long storyId = mASTS.getStories().get(0).getIssueID();
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
+		IIssue story = productBacklogMapper.getIssue(storyId);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
-		addRequestParameter("issueID", String.valueOf(issueID));
+		addRequestParameter("issueID", String.valueOf(storyId));
+		addRequestParameter("issueType", "Story");
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -141,11 +143,12 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("{\"Task\":{")
-							.append("\"Id\":\"").append(item.getIssueID()).append("\",")
-							.append("\"Name\":\"").append(item.getSummary()).append("\",")
-							.append("\"Partners\":\"").append(item.getPartners()).append("\",")
-							.append("\"Notes\":\"").append(item.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(configuration.USER_ID).append("\"")
+							.append("\"Id\":\"").append(story.getIssueID()).append("\",")
+							.append("\"Name\":\"").append(story.getSummary()).append("\",")
+							.append("\"Partners\":\"").append(story.getPartners()).append("\",")
+							.append("\"Notes\":\"").append(story.getNotes()).append("\",")
+							.append("\"Handler\":\"").append(mConfig.USER_ID).append("\",")
+							.append("\"IssueType\":\"").append("Story").append("\",")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);

@@ -2,8 +2,6 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -34,16 +32,16 @@ public class AccountHelper {
 		mAccountMapper = new AccountMapper(mUserSession);
 	}
 
-	public String validateAccountID(String id) {
+	public String validateUsername(String username) {
 
 		// 判斷帳號是否符合只有英文+數字的格式
 		Pattern p = Pattern.compile("[0-9a-zA-Z_]*");
-		Matcher m = p.matcher(id);
+		Matcher m = p.matcher(username);
 		boolean b = m.matches();
 
 		// 若帳號可建立且ID format正確 則回傳true
 		AccountMapper am = new AccountMapper();
-		if (b && !am.isAccountExist(id) && !id.isEmpty()) {
+		if (b && !am.isAccountExist(username) && !username.isEmpty()) {
 			return "true";
 		}
 
@@ -63,19 +61,18 @@ public class AccountHelper {
 		return updateAccount;
 	}
 
-	public void deleteAccount(String id) {
-		mAccountMapper.deleteAccount(Long.parseLong(id));
+	public boolean deleteAccount(long id) {
+		return mAccountMapper.deleteAccount(id);
 	}
 
 	/**
 	 * Assign Role
-	 * @param id - account id
-	 * @return
+	 * @param accountId
+	 * @return XML string
 	 */
-	public String getAssignedProject(String id) {
-		// ezScrum v1.8
-		AccountObject account = mAccountMapper.getAccount(Long.parseLong(id));
-		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(Long.parseLong(id));
+	public String getAssignedProject(long accountId) {
+		AccountObject account = mAccountMapper.getAccount(accountId);
+		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(accountId);
 		List<String> assignedProject = new ArrayList<String>();
 		StringBuilder assignRoleInfo = new StringBuilder();
 		
@@ -98,7 +95,7 @@ public class AccountHelper {
 						  .append("<Resource>").append(resource).append("</Resource>")
 						  .append("<Operation>").append(operation).append("</Operation>")
 						  .append("</Assigned>");
-			assignedProject.add(resource);	// 記錄此project為assigned	
+			assignedProject.add(resource);	// 記錄此 project 為 assigned	
 		}
 		assignRoleInfo.append("</Roles>");
 		
@@ -123,38 +120,38 @@ public class AccountHelper {
 		
 		return assignRoleInfo.toString();
 	}
-	public AccountObject assignRole_add(long accountId, long projectId, String op) throws Exception {
+	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) {
 		// ezScrum v1.8
 		AccountObject account = null;
-		if (op.equals("admin")) {
+		if (scrumRole.equals("admin")) {
 			account = mAccountMapper.addSystemRole(accountId);
 		} else {
-			account = mAccountMapper.addProjectRole(projectId, accountId, RoleEnum.valueOf(op));
+			account = mAccountMapper.addProjectRole(projectId, accountId, RoleEnum.valueOf(scrumRole));
 		}
 		return account;
 	}
 
-	public AccountObject assignRole_remove(String id, String projectId, String op) throws Exception {
+	public AccountObject removeAssignRole(long accountId, long projectId, String role) throws Exception {
 		// ezScrum v1.8
 		AccountObject account = null;
-		if (op.equals("admin")) {
-			account = mAccountMapper.removeSystemRole(Long.parseLong(id));
+		if (role.equals("admin")) {
+			account = mAccountMapper.removeSystemRole(accountId);
 		} else {
-			account = mAccountMapper.removeProjectRole(Long.parseLong(projectId), Long.parseLong(id), RoleEnum.valueOf(op));
+			account = mAccountMapper.removeProjectRole(projectId, accountId, RoleEnum.valueOf(role));
 		}
 		return account;
 	}
 
 	public String getAccountXML(AccountObject account) {
-		List<AccountObject> accountList = new LinkedList<AccountObject>();
-		accountList.add(account);
-		return this.getXmlstring(accountList);
+		ArrayList<AccountObject> accounts = new ArrayList<AccountObject>();
+		accounts.add(account);
+		return getXmlstring(accounts);
 	}
 
 	public String getAccountListXML() {
-		AccountMapper am = new AccountMapper();
-		List<AccountObject> accountList = am.getAccounts();
-		return this.getXmlstring(accountList);
+		AccountMapper accountMapper = new AccountMapper();
+		ArrayList<AccountObject> accounts = accountMapper.getAccounts();
+		return getXmlstring(accounts);
 	}
 
 	public String getManagementView(AccountObject account) {
@@ -199,23 +196,25 @@ public class AccountHelper {
 	}
 
 	// ezScrum v1.8
-	private String getXmlstring(List<AccountObject> users) {
-		Iterator<AccountObject> iter = users.iterator();
+	private String getXmlstring(ArrayList<AccountObject> accounts) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Accounts>");
-		while (iter.hasNext()) {
-			AccountObject account = (AccountObject) iter.next();
-			sb.append("<AccountInfo>");
-			sb.append("<ID>").append(account.getId()).append("</ID>");
-			sb.append("<Account>").append(account.getUsername()).append("</Account>");
-			sb.append("<Name>").append(account.getNickName()).append("</Name>");
-			sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
-			sb.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");
-			sb.append("<Enable>").append(account.getEnable()).append("</Enable>");
-			sb.append("</AccountInfo>");
+		for (AccountObject account : accounts) {
+			if (account == null) {
+				sb.append("Account not found.");
+			} else {
+				sb.append("<AccountInfo>");
+				sb.append("<ID>").append(account.getId()).append("</ID>");
+				sb.append("<Account>").append(account.getUsername()).append("</Account>");
+				sb.append("<Name>").append(account.getNickName()).append("</Name>");
+				sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
+				sb.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");
+				sb.append("<Enable>").append(account.getEnable()).append("</Enable>");
+				sb.append("</AccountInfo>");
+			}
 		}
 		sb.append("</Accounts>");
-
+		
 		return sb.toString();
 	}
 

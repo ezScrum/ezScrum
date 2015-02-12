@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
@@ -15,31 +15,31 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateRelease CR;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private Configuration mConfig;
 	
 	public AjaxAddNewStoryActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
 
-		this.CR = new CreateRelease(1, this.CP);
-		this.CR.exe(); // 新增一筆Release Plan
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe(); // 新增一筆Release Plan
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的struts-config檔案路徑
 		
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/ajaxAddNewStory");
@@ -49,32 +49,31 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	}
 	
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CR = null;
-		configuration = null;
+		mCP = null;
+		mCR = null;
+		mConfig = null;
 		
 		super.tearDown();
 	}
 	
-	public void testexecute() throws Exception
+	public void testExecute() throws Exception
 	{
-		IProject project = this.CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		
 		//在Release中加入一個Sprint
-		AddSprintToRelease addSprint = new AddSprintToRelease(1,CR,CP);
-		addSprint.exe();
+		AddSprintToRelease ASTR = new AddSprintToRelease(1,mCR,mCP);
+		ASTR.exe();
 		
 		//設定參數
 		
@@ -89,7 +88,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		
 		
 		//設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
@@ -100,9 +99,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		/*-----------------------------------------------------------
 		*	驗證Story是否有被加入Sprint 1
 		-------------------------------------------------------------*/
-//		ProductBacklogHelper helper = new ProductBacklogHelper(project, config.getUserSession());
-//		IStory[] stories = helper.getStories();
-		IStory[] stories = (new ProductBacklogLogic(configuration.getUserSession(), project)).getStories();
+		IStory[] stories = (new ProductBacklogLogic(mConfig.getUserSession(), project)).getStories();
 		
 		assertEquals(1, stories.length);
 		

@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class AccountLogic {
 
@@ -18,41 +18,14 @@ public class AccountLogic {
 	 * @return
 	 */
 	public boolean checkAccount(HttpServletRequest request) {
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
 		AccountObject account = userSession.getAccount();
-		if (account.getEnable()) {
+		if (!account.getEnable()) {
 			return false;
 		}
-//		ScrumRole sr = SessionManager.getScrumRole(request, project, account);
-		
-//		if (sr == null) {
-//			return false;
-//		}
-//
-//		// 判斷使用者是否為 guest 使用者
-//		if (sr.isGuest()) {
-//			return false;
-//		}
 
-//		// 判斷使用者是否為 admin 使用者
-//		if (sr.isAdmin()) {
-//			return true;
-//		}
-		
-//		// 判斷使用者是否為存在於資料庫的使用者
-//		ProjectLogic projectLogic = new ProjectLogic();
-//		if (!(projectLogic.userIsExistedInProject(project, userSession))) {
-//			return false;
-//		}
-		
-		// if ( ! existUser(acc.getID())) {
-		// return false;
-		// }
-
-//		return true;
-		
 		// ezScrum v1.8
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr == null || sr.isGuest()) {	// 判斷使用者是否為 guest 使用者

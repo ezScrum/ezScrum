@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.action.report;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -31,15 +33,6 @@ public class GetTasksByStoryIDAction extends Action {
     	String storyID = request.getParameter("storyID");
     	String sprintID = request.getParameter("sprintID");
     	SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper();
-//    	SprintBacklog backlog;
-//    	try {
-//    	if (sprintID==null||sprintID.equals(""))    	
-//    		backlog = new SprintBacklog(project,userSession);
-//    	else
-//    		backlog = new SprintBacklog(project,userSession,Integer.parseInt(sprintID));
-//    	} catch (Exception e){
-//    		backlog=null;
-//    	}
 		
     	// 封裝 Task 成 XML
     	StringBuilder sb = new StringBuilder();
@@ -48,21 +41,22 @@ public class GetTasksByStoryIDAction extends Action {
     	{
     		sb.append("<Tasks>");
     		// 取出這個 Sprint 的 Tasks
-    		Map<Long, IIssue[]> map = backlog.getTasksMap();
+    		Map<Long, ArrayList<TaskObject>> map = backlog.getTasksMap();
     		// 取出 指定 Story 底下的 Tasks
-    		IIssue[] issues = map.get(Long.valueOf(storyID));
-    		if (issues != null)
-    		{
-	    		for(int i = 0; i < issues.length; i++){			
+    		ArrayList<TaskObject> tasks = map.get(Long.valueOf(storyID));
+    		if (tasks != null) {
+	    		for(TaskObject task : tasks) {	
+	    			String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
+	    			
 					sb.append("<Task>");
-					sb.append("<Id>" + issues[i].getIssueID() + "</Id>");
-					sb.append("<Link>" + tsc.TranslateXMLChar(issues[i].getIssueLink()) + "</Link>");
-					sb.append("<Name>" + tsc.TranslateXMLChar(issues[i].getSummary()) + "</Name>");
-					sb.append("<Estimate>" + issues[i].getEstimated() + "</Estimate>");
-					sb.append("<Actual>" + issues[i].getActualHour() + "</Actual>");
-					sb.append("<Handler>" + issues[i].getAssignto() + "</Handler>");
-					sb.append("<Partners>" + tsc.TranslateXMLChar(issues[i].getPartners()) + "</Partners>");
-					sb.append("<Notes>" + tsc.TranslateXMLChar(issues[i].getNotes()) + "</Notes>");
+					sb.append("<Id>").append(task.getId()).append("</Id>");
+					sb.append("<Link>").append("").append("</Link>");
+					sb.append("<Name>").append(tsc.TranslateXMLChar(task.getName())).append("</Name>");
+					sb.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
+					sb.append("<Actual>").append(task.getActual()).append("</Actual>");
+					sb.append("<Handler>").append(handlerUsername).append("</Handler>");
+					sb.append("<Partners>").append(tsc.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
+					sb.append("<Notes>").append(tsc.TranslateXMLChar(task.getNotes())).append("</Notes>");
 					sb.append("</Task>");
 				}
     		}

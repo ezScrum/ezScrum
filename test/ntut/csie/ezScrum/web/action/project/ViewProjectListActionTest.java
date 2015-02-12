@@ -15,6 +15,7 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
 	private Configuration mConfig;
+	CreateProject mCP;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
@@ -30,13 +31,10 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		ini.exe();
 		
 		// 新增一測試專案
-		CreateProject CP = new CreateProject(2);
-		CP.exeCreate();
+		mCP = new CreateProject(2);
+		mCP.exeCreate();
 		
 		super.setUp();
-
-		ini = null;
-		CP = null;
 	}
 	
 	protected void tearDown() throws IOException, Exception {
@@ -47,16 +45,15 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
-		ini = null;
-		projectManager = null;
+		// release
 		mConfig = null;
+		mCP = null;
 	}
 	
 	public void testViewProjectList(){
@@ -74,23 +71,23 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// ================ assert ========================
 		//	assert response text
 		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectObject projectOne = projectMapper.getProjectByPidForDb("TEST_PROJECT_1");
-		ProjectObject projectTwo = projectMapper.getProjectByPidForDb("TEST_PROJECT_2");
+		ProjectObject projectOne = projectMapper.getProject("TEST_PROJECT_1");
+		ProjectObject projectTwo = projectMapper.getProject("TEST_PROJECT_2");
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String expectResponseText = 
 			"<Projects>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_1</ID>" +
-					"<Name>TEST_PROJECT_1</Name>" +
+					"<ID>" + projectOne.getName() + "</ID>" +
+					"<Name>" + projectOne.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 1</Comment>" +
 					"<ProjectManager>Project_Manager_1</ProjectManager>" +
 					"<CreateDate>" + dateFormat.format(projectOne.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_2</ID>" +
-					"<Name>TEST_PROJECT_2</Name>" +
+					"<ID>" + projectTwo.getName() + "</ID>" +
+					"<Name>" + projectTwo.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 2</Comment>" +
 					"<ProjectManager>Project_Manager_2</ProjectManager>" +
 					"<CreateDate>" + dateFormat.format(projectTwo.getCreateTime()) + "</CreateDate>" +

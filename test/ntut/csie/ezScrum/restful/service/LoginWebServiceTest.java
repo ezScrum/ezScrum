@@ -1,71 +1,57 @@
 package ntut.csie.ezScrum.restful.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.restful.mobile.service.LoginWebService;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
-public class LoginWebServiceTest extends TestCase {
-	private Configuration configuration = null;
+public class LoginWebServiceTest {
+	private Configuration mConfig;
 	
-	public LoginWebServiceTest(String testMethod) {
-		super(testMethod);
-	}
-	
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		super.setUp();
-		
-		// release
-		ini = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		configuration.setTestMode(false);
-		configuration.save();
-		
-		configuration = null;
-		
-		super.tearDown();
-		
+		mConfig.setTestMode(false);
+		mConfig.save();
 		// release
-    	ini = null;
+		mConfig = null;
 	}
 	
 	// IAccountManager.confirmAccount() input不在DB中的account會跳exception(待解決)
+	@Test
 	public void testgetAccount() throws LogonException {
 		AccountObject account;
 		String username = "guest";
 		String userpwd = "guest";
 		LoginWebService login;
-		
 		// use guest login return null account
 		login = new LoginWebService(username, userpwd);
 		account = login.getAccount();
-		assertNotNull(account);
-//		assertEquals(true, account.isGuest());
-		assertEquals(username, account.getUsername());
-		
+		assertNull(account);
 		username = "admin";
 		userpwd = "admin";
-		
 		login = new LoginWebService(username, userpwd);
 		account = login.getAccount();
 		assertNotNull(account);
-//		assertEquals(false, account.isGuest());
 		assertEquals(username, account.getUsername());
 	}
 }

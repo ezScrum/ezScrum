@@ -96,9 +96,9 @@ public class StoryWebService extends ProjectWebService{
 		return tasks.toString();
 	}
 	
-	public void addExistedTask(String storyID, String taskIDsJson) {
+	public void addExistedTask(String storyId, String taskIdsJson) {
 		Gson gson = new Gson();
-		String[] taskIDs = gson.fromJson(taskIDsJson, String[].class);
-		mSprintBacklogHelper.addExistingTask(storyID, taskIDs);
+		String[] taskIds = gson.fromJson(taskIdsJson, String[].class);
+		mSprintBacklogHelper.addExistingTasksToStory(taskIds, Long.parseLong(storyId));
 	}
 }

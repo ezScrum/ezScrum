@@ -1,12 +1,13 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -16,16 +17,16 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 
-public class AccountDAOTest extends TestCase{
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class AccountDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
 
-	public AccountDAOTest(String testMethod) {
-		super(testMethod);
-	}
-
-	@Override
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -35,21 +36,21 @@ public class AccountDAOTest extends TestCase{
 		
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
-		super.setUp();
     }
 
-	@Override
-    protected void tearDown() throws Exception {
+	@After
+    public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
+		
 		// ============= release ==============
 		ini = null;
 		mConfig = null;
 		mControl = null;
-		super.tearDown();
     }
 	
+	@Test
 	public void testCreate() throws SQLException{
 		String userName = "TEST_USERNAME_";
 		String nickName =  "TEST_NICKNAME_";
@@ -82,6 +83,7 @@ public class AccountDAOTest extends TestCase{
 		}
 	}
 	
+	@Test
 	public void testGet(){
 		String userName = "TEST_USERNAME_";
 		String nickName =  "TEST_NICKNAME_";
@@ -113,6 +115,7 @@ public class AccountDAOTest extends TestCase{
 		}
 	}
 	
+	@Test
 	public void testUpdate(){
 		String userName = "TEST_USERNAME_1";
 		String nickName =  "TEST_NICKNAME_1";
@@ -143,6 +146,7 @@ public class AccountDAOTest extends TestCase{
 		assertEquals(account.getEnable(), newAccount.getEnable());
 	}
 	
+	@Test
 	public void testDelete() throws SQLException{
 		String userName = "TEST_USERNAME_";
 		String nickName =  "TEST_NICKNAME_";
@@ -181,6 +185,7 @@ public class AccountDAOTest extends TestCase{
 		assertEquals(2, accountList.size());
 	}
 	
+	@Test
 	public void testGetSystemRole(){
 		String userName = "TEST_USERNAME_1";
 		String nickName =  "TEST_NICKNAME_1";
@@ -204,6 +209,7 @@ public class AccountDAOTest extends TestCase{
 		assertTrue(newAccountRole == null);
 	}
 	
+	@Test
 	public void testGetAccounts(){
 		String userName = "TEST_USERNAME_";
 		String nickName =  "TEST_NICKNAME_";
@@ -223,6 +229,7 @@ public class AccountDAOTest extends TestCase{
 		assertEquals(4, accountList.size());
 	}
 	
+	@Test
 	public void testConvertAccount() throws SQLException{
 		// create 1 account
 		String userName = "TEST_USERNAME_1";

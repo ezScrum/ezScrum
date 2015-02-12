@@ -4,106 +4,99 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 
 public class AddRetrospectiveToSprint {
-	private static Log log = LogFactory.getLog(AddRetrospectiveToSprint.class);
-	
+	private static Log mlog = LogFactory.getLog(AddRetrospectiveToSprint.class);
 	// retrospective相關參數
-	private int GoodCount = 1;	
-	private int ImproveCount = 1;
-	private List<IIssue> GoodIssueList = new LinkedList<IIssue>();
-	private List<IIssue> ImproveIssueList = new LinkedList<IIssue>();	
+	private int mGoodCount = 1;	
+	private int mImprovementCount = 1;
+	private List<IIssue> mGoods = new LinkedList<IIssue>();
+	private List<IIssue> mImprovements = new LinkedList<IIssue>();	
 	// 
-	private int SprintCount = 1;
-	private int ProjectCount = 1;
-	private CreateProject CP;	
-	private Configuration configuration = new Configuration();
+	private int mSprintCount = 1;
+	private int mProjectCount = 1;
+	private CreateProject mCP;	
+	private Configuration mConfig = new Configuration();
 	
 	// 加入到所指定的sprint
-	public AddRetrospectiveToSprint(int goodCount, int improveCount, CreateSprint cs, CreateProject cp, String type) throws Exception {
-		this.GoodCount = goodCount;
-		this.ImproveCount = improveCount;
-		this.ProjectCount = cp.getProjectList().size();
-		this.SprintCount = cs.getSprintCount();
-		this.CP = cp;
-		
+	public AddRetrospectiveToSprint(int goodCount, int improvementCount, CreateSprint CS, CreateProject CP, String type) throws Exception {
+		mGoodCount = goodCount;
+		mImprovementCount = improvementCount;
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = CS.getSprintCount();
+		mCP = CP;
 //		CreateStories(EstValue, type);
 	}
 	
 	// 加入到多個sprint	
-	public AddRetrospectiveToSprint(int goodCount, int improveCount, int SprintNumber , CreateProject cp,String type) throws Exception {		
-		this.GoodCount = goodCount;
-		this.ImproveCount = improveCount;
-		this.ProjectCount = cp.getProjectList().size();
-		this.SprintCount = SprintNumber;
-		this.CP = cp;		
-		
+	public AddRetrospectiveToSprint(int goodCount, int improvementCount, int SprintNumber , CreateProject CP,String type) throws Exception {		
+		mGoodCount = goodCount;
+		mImprovementCount = improvementCount;
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = SprintNumber;
+		mCP = CP;	
 //		CreateStories(EstValue, type);
 	}
 	
 	public int getSprintCount() {
-		return this.SprintCount;
+		return mSprintCount;
 	}
 	
 	public List<IIssue> getIssueList() {
-		return this.GoodIssueList;
+		return mGoods;
 	}
 	
 	public void exe() throws Exception {
-//		IUserSession userSession = this.config.getUserSession();
-		
-		for (int i=0 ; i<this.ProjectCount ; i++) {
-//			String projectName = this.CP.PJ_NAME + Integer.toString((i+1));	// TEST_PROJECT_X
+//		IUserSession userSession = config.getUserSession();
+		for (int i=0 ; i<mProjectCount ; i++) {
+//			String projectName = CP.PJ_NAME + Integer.toString((i+1));	// TEST_PROJECT_X
 //			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			IProject project = this.CP.getProjectList().get(i);
+			IProject project = mCP.getProjectList().get(i);
 			// 此路徑為開發端的   TestData/MyWorkspace/
 			
 			// IssueList 為所有 project 所屬的所有 issues
 			// sublist 為單一個 project 所屬的所有 issues
 			ArrayList<Long> subList = new ArrayList<Long>();
 			// =========== 將所有的 list 資料切割出每個 Project 所包含的 issue 個數 ==========
-			for (int j=0 ; j<(this.GoodCount*this.SprintCount) ; j++) {
-				subList.add(this.GoodIssueList.get(i*(this.GoodCount*this.SprintCount) + j).getIssueID());
+			for (int j=0 ; j<(mGoodCount*mSprintCount) ; j++) {
+				subList.add(mGoods.get(i*(mGoodCount*mSprintCount) + j).getIssueID());
 			}
 			
 			// 將 sublist 依據 sprint 個數以及每個 sprint 想要加入的 story 個數建立關聯
-			for (int k=0 ; k<this.SprintCount ; k++) {
+			for (int k=0 ; k<mSprintCount ; k++) {
 				ArrayList<Long> subList_each = new ArrayList<Long>();
-				for (int l=0 ; l<this.GoodCount ; l++) {
-					subList_each.add(subList.get((k*this.GoodCount) + l));
+				for (int l=0 ; l<mGoodCount ; l++) {
+					subList_each.add(subList.get((k*mGoodCount) + l));
 				}
 				
 				addRetrospectiveToSprint(project, subList_each, Integer.toString(k+1) );
-				log.info("專案 " + project.getName() + ", 第 " + (k+1) + " 個 sprint 加入 " + this.GoodCount + " 個 stories 成功");
+				mlog.info("專案 " + project.getName() + ", 第 " + (k+1) + " 個 sprint 加入 " + mGoodCount + " 個 stories 成功");
 			}
 		}
 	}
 	
 	// create new story list
 	private void CreateStories(int EstValue, String type) throws Exception {
-//		int TotalStory = this.GoodCount * this.SprintCount;
-//		CreateProductBacklog createStory = new CreateProductBacklog(TotalStory, EstValue, this.CP, type);
+//		int TotalStory = GoodCount * SprintCount;
+//		CreateProductBacklog createStory = new CreateProductBacklog(TotalStory, EstValue, CP, type);
 //		createStory.exe();
 		
-//		this.IssueList.addAll(createStory.getIssueList());
+//		IssueList.addAll(createStory.getIssueList());
 	}
 	
 	private void addRetrospectiveToSprint(IProject p, ArrayList<Long> list, String sprintID) {
 //		ProductBacklog pb = new ProductBacklog(p, config.getUserSession());
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, configuration.getUserSession());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, mConfig.getUserSession());
 		
 		for (long issueID : list) {
 //			IIssue issue = pb.getIssue(issueID);

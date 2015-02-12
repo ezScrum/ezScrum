@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -28,7 +27,6 @@ public class SprintBacklogMapper {
 	private static Log log = LogFactory.getLog(SprintBacklogMapper.class);
 	private int mSprintPlanId = 0;
 	private IProject mIProject;
-	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
 	private Date mEndDate;
@@ -87,23 +85,16 @@ public class SprintBacklogMapper {
 	 * 初始化 Sprint 的資訊l
 	 */
 	private void initSprintInformation() {
-		try {
-			if (mIterPlanDesc.getStartDate().equals("")) {
-				throw new RuntimeException();
-			}
-			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
-			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-			String aDays = mIterPlanDesc.getAvailableDays();
-			// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
-			// 的機制移除
-			// 改為只計算 aDay:hours can commit * focus factor
-			if (aDays != null && !aDays.equals("")) {
-				mLimitedPoint = Integer.parseInt(aDays)
-						* Integer.parseInt(mIterPlanDesc.getFocusFactor())
-						/ 100;
-			}
-		} catch (NumberFormatException e) {
-			log.info("non-exist sprint");
+		mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
+		mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
+		String aDays = mIterPlanDesc.getAvailableDays();
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除
+		// 改為只計算 aDay:hours can commit * focus factor
+		if (aDays != null && !aDays.equals("")) {
+			mLimitedPoint = Integer.parseInt(aDays)
+					* Integer.parseInt(mIterPlanDesc.getFocusFactor())
+					/ 100;
 		}
 	}
 
@@ -152,11 +143,12 @@ public class SprintBacklogMapper {
 				List<Long> droppedTasksId = dropedStory.getChildrenId();
 				for (Long droppedTaskId : droppedTasksId) {
 					TaskObject droppedTask = TaskObject.get(droppedTaskId);
-					if (droppedTask != null){
+					if (droppedTask != null) {
 						droppedTasks.add(droppedTask);
 					}
 				}
-				mMapDropedStoryTasks.put(dropedStory.getIssueID(), droppedTasks);
+				mMapDropedStoryTasks
+						.put(dropedStory.getIssueID(), droppedTasks);
 			}
 		}
 		return mMapDropedStoryTasks;
@@ -383,12 +375,13 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+	public void closeTask(long id, String name, String notes, int actual,
+			Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
-					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+			task.setName(name).setNotes(notes).setActual(actual)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
 		mUpdateFlag = true;
@@ -410,6 +403,7 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
+		mUpdateFlag = true;
 	}
 	
 	/**
@@ -443,6 +437,26 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setNotes(notes).setHandlerId(noHandler)
 					.setStatus(TaskObject.STATUS_UNCHECK)
+					.save(specificDate.getTime());
+		}
+	}
+	
+	/**
+	 * From Not Checked Out to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}
 	}

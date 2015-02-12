@@ -18,64 +18,60 @@ import org.apache.commons.logging.LogFactory;
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 
 public class InitialSQL {
-	private static Log log = LogFactory.getLog(InitialSQL.class);
-
-	public static String MYSQL = "MySQL";
-	public static String LOCALDB = "Default";
-
-	private String reDirFile;		// 本地端 initial_bk.sql 檔案位置
-	private DBBean db = null;
-	private String AppServID = "";		// DB access ID
-	private String AppServPWD = "";		// DB access Password
-
-	private Configuration config = null;
-
-	private String sqlType = MYSQL;
+	private static Log mlog = LogFactory.getLog(InitialSQL.class);
+	public static String mMYSQL = "MySQL";
+	public static String mLOCALDB = "Default";
+	private String mReDirFile;		// 本地端 initial_bk.sql 檔案位置
+	private DBBean mDb = null;
+	private String mAppServID = "";		// DB access ID
+	private String mAppServPWD = "";		// DB access Password
+	private Configuration mConfig = null;
+	private String mSQLType = mMYSQL;
 
 	// 遠端執行，使用 DBBean 下 MySQL 指令清空資料表
 	public InitialSQL(Configuration configuration) {
 		// 依照設定檔初始化資料庫
 		// 如果是Default資料庫的話，就不需要特地去清除
 		// 目前只有 MySql 需要連線進行清除資料庫
-		this.config = configuration;
-		this.reDirFile = this.config.getDataPath() + File.separator + "InitialData" + File.separator + "initial_bk.sql";
+		mConfig = configuration;
+		mReDirFile = mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "initial_bk.sql";
 
-		if (config.getDBType().equals("MySQL")) {
-			this.db = new DBBean(configuration.getServerUrl(), configuration.getDBAccount(), configuration.getDBPassword(), configuration.getDBName());
-			this.log.info("使用 MySQL Database 為測試資料庫");
+		if (mConfig.getDBType().equals("MySQL")) {
+			mDb = new DBBean(configuration.getServerUrl(), configuration.getDBAccount(), configuration.getDBPassword(), configuration.getDBName());
+			mlog.info("使用 MySQL Database 為測試資料庫");
 		} else {
-			sqlType = LOCALDB;
-			this.log.info("使用 Local Database 為測試資料庫");
+			mSQLType = mLOCALDB;
+			mlog.info("使用 Local Database 為測試資料庫");
 		}
 	}
 
 	public void exe() {
-		if (this.db != null) {
+		if (mDb != null) {
 			try {
-				this.db.doSQL(get_clean_Tables_of_MySQL_Instruction());
+				mDb.doSQL(get_clean_Tables_of_MySQL_Instruction());
 			} catch (MySQLSyntaxErrorException e) {
-				this.log.debug("class: InitialSQL, method: exe, MySQLSyntaxErrorException: " + e.toString());
+				mlog.debug("class: InitialSQL, method: exe, MySQLSyntaxErrorException: " + e.toString());
 				e.printStackTrace();
 			} catch (Exception e) {
-				this.log.debug("class: InitialSQL, method: exe, Exception: " + e.toString());
+				mlog.debug("class: InitialSQL, method: exe, Exception: " + e.toString());
 				e.printStackTrace();
 			} finally {
-				this.db.close();
-				this.db = null;
-				this.log.info("[SQL] initial by connection Success");
+				mDb.close();
+				mDb = null;
+				mlog.info("[SQL] initial by connection Success");
 			}
-		} else if (sqlType != LOCALDB) {
+		} else if (mSQLType != mLOCALDB) {
 			Runtime rt = Runtime.getRuntime();
-			String cmdStr = "mysql -u" + this.AppServID + " -p" + this.AppServPWD + " " + config.getDBName();
+			String cmdStr = "mysql -u" + mAppServID + " -p" + mAppServPWD + " " + mConfig.getDBName();
 			Process p = null;
 			try {
 				p = rt.exec(cmdStr);
 				reDirFileToProcess(p.getOutputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
-				this.log.debug("class: InitialSQL, method: exe, IOException: " + e.toString());
+				mlog.debug("class: InitialSQL, method: exe, IOException: " + e.toString());
 			}
-			this.log.info("[SQL] initial by local file Success");
+			mlog.info("[SQL] initial by local file Success");
 		}
 	}
 
@@ -162,7 +158,7 @@ public class InitialSQL {
 
 		// 將檔案的內容寫入要執行程式的 OutputStream
 		try {
-			bis = new BufferedInputStream(new FileInputStream(this.reDirFile));
+			bis = new BufferedInputStream(new FileInputStream(mReDirFile));
 			bos = new BufferedOutputStream(processOuput);
 			int length = 0;
 			while ((length = bis.read(data)) != -1) {
@@ -172,7 +168,7 @@ public class InitialSQL {
 			// 將緩衝區中的資料全部寫出
 			bos.flush();
 		} catch (IOException e) {
-			this.log.debug("class: InitialSQL, method: reDirFileToProcess, IOException: " + e.toString());
+			mlog.debug("class: InitialSQL, method: reDirFileToProcess, IOException: " + e.toString());
 		} finally {
 			// 關閉串流
 			CloseStreamUtil.close(bis);

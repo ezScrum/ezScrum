@@ -1,9 +1,7 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +22,7 @@ public class TaskObject implements IBaseObject {
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
 	public final static int NO_PARENT = -1;
-
 	private final static int DEFAULT_VALUE = -1;
-
 	private long mId = DEFAULT_VALUE;
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
@@ -40,7 +36,6 @@ public class TaskObject implements IBaseObject {
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-	private ArrayList<HistoryObject> mHistories = null;
 
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
@@ -158,13 +153,8 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public AccountObject getHandler() {
-		if (mHandlerId > 0) {
-			AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
-			if (handler != null) {
-				return handler;
-			}
-		}
-		return null;
+		AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
+		return handler;
 	}
 
 	public int getEstimate() {
@@ -188,22 +178,22 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public int getStatus(Date date) {
-		long lastSeconds;
-		try {
-			lastSeconds = getLastSeconds(date);
-		} catch (ParseException e) {
-			lastSeconds = date.getTime();
-		}
+		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = TaskObject.STATUS_UNCHECK;
-		
-		for (HistoryObject history : mHistories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-					&& history.getCreateTime() <= lastSeconds) {
-				if (history.getNewValue().equals(String.valueOf(STATUS_CHECK))) {
+		ArrayList<HistoryObject> histories = getHistories();
+		for (HistoryObject history : histories) {
+			long historyTime = history.getCreateTime();
+			int historyType = history.getHistoryType();
+			if (historyType == HistoryObject.TYPE_STATUS
+					&& historyTime <= lastSecondOfTheDate) {
+				String statusInHistory = history.getNewValue();
+				if (statusInHistory.equals(String.valueOf(STATUS_CHECK))) {
 					status = STATUS_CHECK;
-				} else if (history.getNewValue().equals(String.valueOf(STATUS_DONE))) {
+				} else if (history.getNewValue().equals(
+						String.valueOf(STATUS_DONE))) {
 					status = STATUS_DONE;
-				} else if (history.getNewValue().equals(String.valueOf(STATUS_UNCHECK))) {
+				} else if (history.getNewValue().equals(
+						String.valueOf(STATUS_UNCHECK))) {
 					status = STATUS_UNCHECK;
 				}
 			}
@@ -224,86 +214,66 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
-	//
-	// public int getEstimateByDate(Date date) {
-	// return searchValue(HistoryObject.TYPE_ESTIMATE, date);
-	// }
-	//
-	// private int searchValue(int searchType, Date date) {
-	// int value = -1;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == searchType
-	// && (new Date(history.getModifiedTime()).before(date))) {
-	// value = Integer.parseInt(history.getNewValue());
-	// }
-	// }
-	// return value;
-	// }
-	//
-	// public int getDateStatus(Date date) {
-	// int status = -1;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
-	// status = Integer.parseInt(history.getOldValue());
-	// }
-	// }
-	// return status;
-	// }
-	//
-	// public long getAssignedTime() {
-	// long assignedTime = 0;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-	// && history.getNewValue().equals("\"Checked Out\"")) {
-	// if (assignedTime < history.getModifiedTime()) {
-	// assignedTime = history.getModifiedTime();
-	// }
-	// }
-	// }
-	// return assignedTime;
-	// }
-	//
-	// public long getDoneTime() {
-	// long doneTime = 0;
-	// for (HistoryObject history : mHistories) {
-	// if (history.getHistoryType() == HistoryObject.TYPE_STATUS
-	// && history.getNewValue().equals("\"Done\"")) {
-	// if (doneTime < history.getModifiedTime()) {
-	// doneTime = history.getModifiedTime();
-	// }
-	// }
-	// }
-	// return doneTime;
-	// }
+	public long getDoneTime() {
+		long doneTime = 0;
+		ArrayList<HistoryObject> histories = getHistories();
+		for (HistoryObject history : histories) {
+			long historyTime = history.getCreateTime();
+			if (history.getHistoryType() == HistoryObject.TYPE_STATUS
+					&& history.getNewValue()
+							.equals(String.valueOf(STATUS_DONE))) {
+				if (doneTime < historyTime) {
+					doneTime = historyTime;
+				}
+			}
+		}
+		return doneTime;
+	}
 
-	private long getLastSeconds(Date date) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
-		String dateString = sdf.format(date);
-		Date newDate = sdf.parse(dateString);
-		long lastSeconds = newDate.getTime();
-		lastSeconds += 86399999; // move to 23 hours 59 minutes 59 seconds the
-									// last second in one day
-		return lastSeconds;
+	private long getLastMillisecondOfDate(Date date) {
+		if (date == null) {
+			date = new Date();
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY,
+				calendar.getMaximum(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+		calendar.set(Calendar.MILLISECOND,
+				calendar.getMaximum(Calendar.MILLISECOND));
+		Date endOfDate = calendar.getTime();
+		long lastSecondOfDate = endOfDate.getTime();
+		return lastSecondOfDate;
 	}
 
 	public double getRemains(Date date) {
-		long lastSeconds = date.getTime();
-		try {
-			lastSeconds = getLastSeconds(date);
-		} catch (ParseException e) {
-			lastSeconds = date.getTime();
-		}
-
+		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
+		double remains = mRemains;
 		ArrayList<HistoryObject> histories = getHistories();
-
-		double remain = 0.0;
+		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
 		for (HistoryObject history : histories) {
-			if (history.getCreateTime() <= lastSeconds
-					&& history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
-				remain = Double.parseDouble(history.getNewValue());
+			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
+				remainsHistories.add(history);
 			}
 		}
-		return remain;
+		if (remainsHistories.size() > 0) {
+			String firstRemainsOldValue = remainsHistories.get(0).getOldValue();
+			remains = Double.parseDouble(firstRemainsOldValue); // Because
+																// create task
+																// no remains
+																// history, get
+																// first remains
+																// history old
+																// value
+		}
+		for (HistoryObject remainsHistory : remainsHistories) {
+			if (remainsHistory.getCreateTime() <= lastSecondOfTheDate) {
+				String remainsInHistory = remainsHistory.getNewValue();
+				remains = Double.parseDouble(remainsInHistory);
+			}
+		}
+		return remains;
 	}
 
 	public long getProjectId() {
@@ -354,15 +324,9 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public ArrayList<HistoryObject> getHistories() {
-		if (mHistories == null) {
-			try {
-				mHistories = HistoryDAO.getInstance().getHistoriesByIssue(mId,
-						IssueTypeEnum.TYPE_TASK);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return mHistories;
+		ArrayList<HistoryObject> histories = HistoryDAO.getInstance()
+				.getHistoriesByIssue(mId, IssueTypeEnum.TYPE_TASK);
+		return histories;
 	}
 
 	public ArrayList<AttachFileObject> getAttachFiles() {
@@ -415,7 +379,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public void save() {
-		if (recordExists()) {
+		if (exists()) {
 			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
@@ -429,9 +393,9 @@ public class TaskObject implements IBaseObject {
 	 * @param specificTime
 	 */
 	public void save(long specificTime) {
-		if (recordExists()) {
+		if (exists()) {
 			mUpdateTime = specificTime;
-			doUpdate();
+			doUpdate(specificTime);
 		} else {
 			doCreate();
 		}
@@ -439,7 +403,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public void reload() {
-		if (recordExists()) {
+		if (exists()) {
 			TaskObject task = TaskDAO.getInstance().get(mId);
 			resetData(task);
 		}
@@ -455,7 +419,7 @@ public class TaskObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean recordExists() {
+	private boolean exists() {
 		TaskObject task = TaskDAO.getInstance().get(mId);
 		return task != null;
 	}
@@ -474,21 +438,18 @@ public class TaskObject implements IBaseObject {
 		setStatus(task.getStatus());
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
-		mHistories = null;
 	}
 
 	private void doCreate() {
 		// default remains hour should equal to estimate
 		mRemains = mEstimate;
-		mId = TaskDAO.getInstance().create(this);
 
+		mId = TaskDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
-
 		HistoryDAO.getInstance().create(
 				new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
-
 		// add task relation history
 		if (mStoryId > 0) {
 			addHistoryOfAddRelation(mStoryId, mId);
@@ -497,13 +458,16 @@ public class TaskObject implements IBaseObject {
 
 	private void doUpdate() {
 		TaskObject oldTask = TaskObject.get(mId);
-		TaskDAO.getInstance().update(this);
 
+		TaskDAO.getInstance().update(this);
 		if (!mName.equals(oldTask.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
 		}
 		if (!mNotes.equals(oldTask.getNotes())) {
 			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
+		}
+		if (mStatus != oldTask.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
 		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
@@ -516,15 +480,13 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
 					mRemains);
 		}
-		if (mStatus != oldTask.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
-		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskDropFromStory(mStoryId, mId); // for task
-				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId); // for story
-			} 
+				addHistoryOfTaskRemoveFromStory(mStoryId, mId); // for task
+				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId); // for
+																		// story
+			}
 			// task append to story
 			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
 				addHistoryOfAddRelation(mStoryId, mId);
@@ -536,6 +498,53 @@ public class TaskObject implements IBaseObject {
 		}
 	}
 
+	// for specific time update
+	private void doUpdate(long specificTime) {
+		TaskObject oldTask = TaskObject.get(mId);
+		TaskDAO.getInstance().update(this);
+		if (!mName.equals(oldTask.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName,
+					specificTime);
+		}
+		if (!mNotes.equals(oldTask.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes,
+					specificTime);
+		}
+		if (mEstimate != oldTask.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
+					mEstimate, specificTime);
+		}
+		if (mActual != oldTask.getActual()) {
+			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual,
+					specificTime);
+		}
+		if (mRemains != oldTask.getRemains()) {
+			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
+					mRemains, specificTime);
+		}
+		if (mStatus != oldTask.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus,
+					specificTime);
+		}
+		if (mStoryId != oldTask.getStoryId()) {
+			// task drop from story
+			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
+				addHistoryOfTaskRemoveFromStory(mStoryId, mId, specificTime); // for
+																				// task
+				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
+						specificTime); // for story
+			}
+			// task append to story
+			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
+				addHistoryOfAddRelation(mStoryId, mId, specificTime);
+			}
+		}
+		if (mHandlerId != oldTask.getHandlerId()) {
+			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
+					mHandlerId, specificTime);
+		}
+	}
+
 	private void addHistoryOfAddRelation(long storyId, long taskId) {
 		addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mStoryId));
 		HistoryObject history = new HistoryObject(mStoryId,
@@ -543,15 +552,41 @@ public class TaskObject implements IBaseObject {
 				String.valueOf(mId), System.currentTimeMillis());
 		HistoryDAO.getInstance().create(history);
 	}
-	
-	private void addHistoryOfTaskDropFromStory(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_DROP, "", String.valueOf(mStoryId));
+
+	// addHistoryOfAddRelation for specific time
+	private void addHistoryOfAddRelation(long storyId, long taskId,
+			long specificTime) {
+		addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mStoryId));
+		HistoryObject history = new HistoryObject(mStoryId,
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
+				String.valueOf(mId), specificTime);
+		HistoryDAO.getInstance().create(history);
 	}
 
-	private void addHistoryOfStoryRemoveTask(long storyId, long taskId) {
+	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId) {
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId));
+	}
+
+	// addHistoryOfTaskDropFromStory for specific time
+	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId,
+			long specificTime) {
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId),
+				specificTime);
+	}
+
+	private void addHistoryOfStoryDropTask(long storyId, long taskId) {
+		HistoryObject history = new HistoryObject(storyId,
+				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
+				String.valueOf(mId), System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+
+	// addHistoryOfStoryRemoveTask for specific time
+	private void addHistoryOfStoryRemoveTask(long storyId, long taskId,
+			long specificTime) {
 		HistoryObject history = new HistoryObject(storyId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
-				String.valueOf(mId), System.currentTimeMillis());
+				String.valueOf(mId), specificTime);
 		HistoryDAO.getInstance().create(history);
 	}
 
@@ -559,9 +594,24 @@ public class TaskObject implements IBaseObject {
 		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
 	}
 
+	// add history for specific time
+	private void addHistory(int type, long oldValue, long newValue,
+			long specificTime) {
+		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue),
+				specificTime);
+	}
+
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+
+	// add history for specific time
+	private void addHistory(int type, String oldValue, String newValue,
+			long specificTime) {
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+				type, oldValue, newValue, specificTime);
 		HistoryDAO.getInstance().create(history);
 	}
 }

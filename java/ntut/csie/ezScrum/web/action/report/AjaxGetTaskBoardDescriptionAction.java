@@ -39,7 +39,7 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		
 		TaskBoard board = null;

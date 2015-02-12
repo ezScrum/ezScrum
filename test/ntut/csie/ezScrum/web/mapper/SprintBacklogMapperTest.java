@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -22,7 +22,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -32,20 +31,20 @@ import org.junit.Test;
 public class SprintBacklogMapperTest {
 
 	private SprintBacklogMapper mSprintBacklogMapper;
-	private Configuration mConfiguration = null;
+	private Configuration mConfig = null;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
-	private static long PROJECT_ID = 1;
+	private static long mPROJECT_ID = 1;
 
 	@Before
 	public void setUp() throws Exception {
 		// initialize database
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();// 初始化 SQL
 		ini = null;
 
@@ -64,33 +63,43 @@ public class SprintBacklogMapperTest {
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
 
-		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP,
-				CREATE_PRODUCTBACKLOG_TYPE);
+		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
 		mASTS.exe();
 
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfiguration.getUserSession();
+		IUserSession userSession = mConfig.getUserSession();
 		mSprintBacklogMapper = new SprintBacklogMapper(project, userSession);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
+		
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
 		ini = null;
 		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
+		mConfig = null;
 		mSprintBacklogMapper = null;
-		mConfiguration.setTestMode(false);
-		mConfiguration.save();
+		projectManager = null;
 	}
 
 	@Test
 	public void testGetTasksMap() {
-		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper
-				.getTasksMap();
+		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
 		assertEquals(3, tasksMap.size());
 		assertTrue(tasksMap.containsKey(1L));
 		assertTrue(tasksMap.containsKey(2L));
@@ -170,7 +179,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(0, droppedTasksMap.size());
 		// create product backlog helper
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfiguration.getUserSession();
+		IUserSession userSession = mConfig.getUserSession();
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
 		// remove story 2 from sprint
 		productBacklogHelper.removeStoryFromSprint(1);
@@ -229,8 +238,7 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testGetTasksByStoryId_WithNotExistStory() {
 		long notExistStoryId = -1;
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper
-				.getTasksByStoryId(notExistStoryId);
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(notExistStoryId);
 		assertEquals(0, tasks.size());
 	}
 
@@ -292,7 +300,7 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetDroppedStories() {
+	public void testGetDroppedStories() throws InterruptedException {
 		// check dropped stories before test
 		IIssue[] droppedStories = mSprintBacklogMapper.getDroppedStories();
 		assertEquals(0, droppedStories.length);
@@ -302,13 +310,14 @@ public class SprintBacklogMapperTest {
 		assertEquals("1", allStories.get(2).getSprintID());
 		// create product backlog helper
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfiguration.getUserSession();
+		IUserSession userSession = mConfig.getUserSession();
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
 		// remove story 2 from sprint
 		productBacklogHelper.removeStoryFromSprint(1);
 		// check dropped stories after add a dropped story
 		droppedStories = mSprintBacklogMapper.getDroppedStories();
 		allStories = mSprintBacklogMapper.getAllStories("Story");
+		
 		assertEquals("1", allStories.get(0).getSprintID());
 		assertEquals("0", allStories.get(1).getSprintID());
 		assertEquals("1", allStories.get(2).getSprintID());
@@ -502,7 +511,7 @@ public class SprintBacklogMapperTest {
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		taskInfo.partnersId.add(1L);
 
-		long taskId = mSprintBacklogMapper.addTask(PROJECT_ID, taskInfo);
+		long taskId = mSprintBacklogMapper.addTask(mPROJECT_ID, taskInfo);
 
 		TaskObject actualTask = TaskObject.get(taskId);
 		assertEquals(taskInfo.name, actualTask.getName());
@@ -511,15 +520,14 @@ public class SprintBacklogMapperTest {
 		assertEquals(taskInfo.estimate, actualTask.getRemains());
 		assertEquals(0, actualTask.getActual());
 		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
-		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId()
-				.get(0));
+		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
 	}
 
 	@Test
 	public void testAddExistingTasksToStory() {
 		long storyId = 1;
 		// get story
-		MantisService mantisService = new MantisService(mConfiguration);
+		MantisService mantisService = new MantisService(mConfig);
 		mantisService.openConnect();
 		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
@@ -557,7 +565,7 @@ public class SprintBacklogMapperTest {
 	public void testAddExistingTasksToStory_WithTwoExistingTasks() {
 		long storyId = 1;
 		// get story
-		MantisService mantisService = new MantisService(mConfiguration);
+		MantisService mantisService = new MantisService(mConfig);
 		mantisService.openConnect();
 		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
@@ -697,7 +705,7 @@ public class SprintBacklogMapperTest {
 
 		mSprintBacklogMapper.closeStory(storyId, CLOSE_NOTE, "");
 
-		MantisService service = new MantisService(mConfiguration);
+		MantisService service = new MantisService(mConfig);
 		service.openConnect();
 		story = service.getIssue(storyId);
 		service.closeConnect();
@@ -716,12 +724,11 @@ public class SprintBacklogMapperTest {
 		// story default status is NEW
 		assertEquals("new", story.getStatus());
 
-		MantisService service = new MantisService(mConfiguration);
+		MantisService service = new MantisService(mConfig);
 		service.openConnect();
 
 		// set story's status to CLOSED and assert it
-		service.changeStatusToClosed(storyId, ITSEnum.FIXED_RESOLUTION,
-				"", new Date());
+		service.changeStatusToClosed(storyId, ITSEnum.FIXED_RESOLUTION, "", new Date());
 		story = service.getIssue(storyId);
 		assertEquals("closed", story.getStatus());
 		
@@ -745,8 +752,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE,
-				SPECIFIC_DATE);
+		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE, SPECIFIC_DATE);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(CLOSE_NAME, closedTask.getName());
@@ -767,8 +773,7 @@ public class SprintBacklogMapperTest {
 		task.setStatus(TaskObject.STATUS_CHECK).save();
 		assertEquals(TaskObject.STATUS_CHECK, task.getStatus());
 
-		mSprintBacklogMapper.resetTask(task.getId(), RESET_NAME, RESET_NOTE,
-				SPECIFIC_DATE);
+		mSprintBacklogMapper.resetTask(task.getId(), RESET_NAME, RESET_NOTE, SPECIFIC_DATE);
 
 		TaskObject resetTask = TaskObject.get(task.getId());
 		assertEquals(RESET_NAME, resetTask.getName());
@@ -788,8 +793,7 @@ public class SprintBacklogMapperTest {
 		task.setStatus(TaskObject.STATUS_DONE).save();
 		assertEquals(TaskObject.STATUS_DONE, task.getStatus());
 
-		mSprintBacklogMapper.reopenTask(task.getId(), REOPEN_NAME, REOPEN_NOTE,
-				SPECIFIC_DATE);
+		mSprintBacklogMapper.reopenTask(task.getId(), REOPEN_NAME, REOPEN_NOTE, SPECIFIC_DATE);
 
 		TaskObject reopenTask = TaskObject.get(task.getId());
 		assertEquals(REOPEN_NAME, reopenTask.getName());

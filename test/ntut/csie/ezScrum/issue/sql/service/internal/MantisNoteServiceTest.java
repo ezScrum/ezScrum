@@ -1,11 +1,10 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
+import static org.junit.Assert.*;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.internal.Issue;
@@ -13,173 +12,171 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.jdom.Element;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MantisNoteServiceTest extends TestCase {
-	private CreateProject CP;
-	private CreateProductBacklog CPB;
+public class MantisNoteServiceTest {
 	private int ProjectCount = 1;
 	private int StoryCount = 10;
-	private Configuration configuration;
-	private IUserSession userSession = new UserSession(new AccountMapper().getAccount("admin"));
+	private CreateProject mCP;
+	private CreateProductBacklog mCPB;
+	private Configuration mConfig;
+	private MantisService mMantisService;
+	private MantisIssueService mMantisIssueService;
+	private MantisNoteService mMantisNoteService;
+	private TextParserGeneraterForNote mTextParserGeneraterForNote;
 	
-	private MantisService MSservice;
-	private MantisIssueService MISservice;
-	private MantisNoteService MNService;
-	TextParserGeneraterForNote noteTextHelper;
-	
-	public MantisNoteServiceTest(String testMethod) {
-        super(testMethod);
-    }
-	
-	protected void setUp() throws Exception {
-		configuration = new Configuration(userSession);
-		configuration.setTestMode(true);
-		configuration.save();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration(new UserSession(AccountObject.get("admin")));
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();											
 		
 		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCP = new CreateProject(ProjectCount);
+		mCP.exeCreate();
 		
 		// 建立MantisTagService
-		IProject project = this.CP.getProjectList().get(0);
-		this.MSservice = new MantisService(configuration);
-		MNService = new MantisNoteService(MSservice.getControl(), configuration);
-		MISservice = new MantisIssueService(MSservice.getControl(), configuration);
-		
-		super.setUp();
-		
-		// ============= release ==============
-		ini = null;
-		project = null;
+		mMantisService = new MantisService(mConfig);
+		mMantisNoteService = new MantisNoteService(mMantisService.getControl(), mConfig);
+		mMantisIssueService = new MantisIssueService(mMantisService.getControl(), mConfig);
 	}
 	
-	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+	@After
+	public void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();											
 
-		CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
     	
-    	configuration.setTestMode(false);
-		configuration.save();
+    	mConfig.setTestMode(false);
+		mConfig.save();
     	
-    	// ============= release ==============
-    	ini = null;
-    	copyProject = null;
-    	this.CP = null;
-    	this.CPB = null;
-    	this.MNService = null;
-    	configuration = null;
-    	
-    	super.tearDown();
+		// release resource
+		mCP = null;
+		mCPB = null;
+		mConfig = null;
+		mMantisService = null;
+		mMantisIssueService = null;
+		mMantisNoteService = null;
+		mTextParserGeneraterForNote = null;
 	}
 	
+	@Test
 	public void testGetIssueNotes(){
-		this.CPB = new CreateProductBacklog(this.StoryCount, this.CP);
-		this.CPB.exe();
+		mCPB = new CreateProductBacklog(StoryCount, mCP);
+		mCPB.exe();
 		
 		// get the issues by creating data
-		List<IIssue> issueList = this.CPB.getIssueList();
-		this.MSservice.openConnect();
+		List<IIssue> issues = mCPB.getIssueList();
+		mMantisService.openConnect();
 
 		int index = 0;
-		int imp = 200, est = 21, value = 300;
+		int imp = 200;
+		int est = 21;
+		int value = 300;
 		// override the note info.
-		for(IIssue issue : issueList){
-			this.addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
-									  Integer.toString(value + index), "demo_"+Integer.toString(index+1),
-									  "note_"+Integer.toString(index+1));
+		for(IIssue issue : issues){
+			addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
+									  Integer.toString(value + index), "demo_"+Integer.toString(index + 1),
+									  "note_"+Integer.toString(index + 1));
 			index++;
 		}
 			
 		//assert the issueNote info.
 		index = 0;
-		for(IIssue issue : issueList){
+		for(IIssue issue : issues){
 			// test method
-			List<IIssueNote> notes = MNService.getIssueNotes(issue);
+			List<IIssueNote> notes = mMantisNoteService.getIssueNotes(issue);
 			// test method
 			for (IIssueNote note : notes) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());// 1, 2 ..
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());// 1, 2 ..
 				assertEquals("admin", note.getHandler());// default = 1 (administrator)
-				assertEquals(Integer.toString(imp + index), noteTextHelper.getImportance());// 200, 201, 202 ..
-				assertEquals(Integer.toString(est + index), noteTextHelper.getEstimation());// 21, 22 , 23 ..
-				assertEquals(Integer.toString(value + index), noteTextHelper.getValue());// 300, 301, 302 ..
-				assertEquals("demo_" + Integer.toString(index+1), noteTextHelper.getHowToDemo());// demo_1, 2 ..
-				assertEquals("note_" + Integer.toString(index+1), noteTextHelper.getNotes());// note_1, 2 ..
+				assertEquals(Integer.toString(imp + index), mTextParserGeneraterForNote.getImportance());// 200, 201, 202 ..
+				assertEquals(Integer.toString(est + index), mTextParserGeneraterForNote.getEstimation());// 21, 22 , 23 ..
+				assertEquals(Integer.toString(value + index), mTextParserGeneraterForNote.getValue());// 300, 301, 302 ..
+				assertEquals("demo_" + Integer.toString(index + 1), mTextParserGeneraterForNote.getHowToDemo());// demo_1, 2 ..
+				assertEquals("note_" + Integer.toString(index + 1), mTextParserGeneraterForNote.getNotes());// note_1, 2 ..
 			}
 			index++;
 		}
 		// close connection
-		this.MSservice.closeConnect();
+		mMantisService.closeConnect();
 	}
 	
+	@Test
 	public void testUpdateBugNote(){
-		IProject project = this.CP.getProjectList().get(0);
-		List<IIssue> issueList = new LinkedList<IIssue>();
-		List<IIssueNote> noteList;
-		this.MSservice.openConnect();
+		IProject project = mCP.getProjectList().get(0);
+		List<IIssue> issues = new LinkedList<IIssue>();
+		List<IIssueNote> notes;
+		mMantisService.openConnect();
 		// new 10 issues
 		for (int index = 0 ; index < 10 ; index++) {
 			IIssue story = new Issue();
-			story.setIssueID(index+1);
-			story.setSummary("Story_Name_" + Integer.toString(index+1));
-			story.setDescription("Story_Desc_" + Integer.toString(index+1));
+			story.setIssueID(index + 1);
+			story.setSummary("Story_Name_" + Integer.toString(index + 1));
+			story.setDescription("Story_Desc_" + Integer.toString(index + 1));
 
 			story.setProjectID(project.getName());
 			story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 			
-			this.MISservice.newIssue(story);
-			issueList.add(story);
+			mMantisIssueService.newIssue(story);
+			issues.add(story);
 
 			// check the issue's note is null
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(0, noteList.size());
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(0, notes.size());
 		}
 		
 		// Test if there is no existing tag in bug note initially, 
 		// "insertBugNote" would be called in function "updateBugNote".
-		int imp = 201, est = 21, val = 251;
-		for(int index = 0; index < issueList.size(); index++){
+		int imp = 201;
+		int est = 21;
+		int val = 251;
+		for(int index = 0; index < issues.size(); index++){
 			String importance = Integer.toString(imp + index);
 			String estimation = Integer.toString(est + index);
 			String value = Integer.toString(val + index);
-			String howToDemo = "demo_"+Integer.toString(index+1);
-			String notes = "note_"+Integer.toString(index+1);
+			String howToDemo = "demo_"+Integer.toString(index + 1);
+			String notesString = "note_"+Integer.toString(index + 1);
 			
 			// test method : "updateBugNote", which would be called in function "addTagElement".
-			this.addTagElement(issueList.get(index), importance, estimation, value,	howToDemo, notes);
+			addTagElement(issues.get(index), importance, estimation, value,	howToDemo, notesString);
 
 			// check the issue note info.
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(1, noteList.size());
-			for (IIssueNote note : noteList) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(1, notes.size());
+			for (IIssueNote note : notes) {
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());					// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());					// 1, 2 ..
 				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
-				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
-				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
-				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
-				assertEquals(howToDemo, noteTextHelper.getHowToDemo());		// demo_1, 2 ..
-				assertEquals(notes, noteTextHelper.getNotes());				// note_1, 2 ..
+				assertEquals(importance, mTextParserGeneraterForNote.getImportance());	// 201, 202, 203 ..
+				assertEquals(estimation, mTextParserGeneraterForNote.getEstimation());	// 21, 22 , 23 ..
+				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 251, 252, 253 ..
+				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// demo_1, 2 ..
+				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// note_1, 2 ..
 			}
 		}
 		// ==============================================================
@@ -190,97 +187,98 @@ public class MantisNoteServiceTest extends TestCase {
 		imp = 301; 
 		est = 31;
 		val = 351;
-		for(int index = 0; index < issueList.size(); index++){
+		for(int index = 0; index < issues.size(); index++){
 			String importance = Integer.toString(imp + index);
 			String estimation = Integer.toString(est + index);
 			String value = Integer.toString(val + index);
-			String howToDemo = "demo_"+Integer.toString(index+11);
-			String notes = "note_"+Integer.toString(index+11);
+			String howToDemo = "demo_"+Integer.toString(index + 11);
+			String notesString = "note_"+Integer.toString(index + 11);
 			
 			// test method : "updateBugNote", which would be called in function "addTagElement".
-			this.addTagElement(issueList.get(index), importance, estimation, value,	howToDemo, notes);
+			addTagElement(issues.get(index), importance, estimation, value,	howToDemo, notesString);
 			
 			// check the issue note info.
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(1, noteList.size());// list size still is 1, because the query result didn't separate the note tags 
-			for (IIssueNote note : noteList) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(1, notes.size());// list size still is 1, because the query result didn't separate the note tags 
+			for (IIssueNote note : notes) {
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());					// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());					// 1, 2 ..
 				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
-				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
-				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32 , 33 ..
-				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
-				assertEquals(howToDemo, noteTextHelper.getHowToDemo());		// demo_1, 2 ..
-				assertEquals(notes, noteTextHelper.getNotes());				// note_1, 2 ..
+				assertEquals(importance, mTextParserGeneraterForNote.getImportance());	// 301, 302, 303 ..
+				assertEquals(estimation, mTextParserGeneraterForNote.getEstimation());	// 31, 32 , 33 ..
+				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 351, 352, 353 ..
+				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// demo_1, 2 ..
+				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// note_1, 2 ..
 			}
 		}
 		// close connection
-		this.MSservice.closeConnect();
+		mMantisService.closeConnect();
 	}
 	
+	@Test
 	public void testUpdateIssueNote(){
-		IProject project = this.CP.getProjectList().get(0);
-		List<IIssue> issueList = new LinkedList<IIssue>();
-		List<IIssueNote> noteList;
-		this.MSservice.openConnect();
+		IProject project = mCP.getProjectList().get(0);
+		List<IIssue> issues = new LinkedList<IIssue>();
+		List<IIssueNote> notes;
+		mMantisService.openConnect();
 		// new 10 issues
 		for (int index = 0 ; index < 10 ; index++) {
 			IIssue story = new Issue();
-			story.setIssueID(index+1);
+			story.setIssueID(index + 1);
 			story.setSummary("Story_Name_" + Integer.toString(index+1));
 			story.setDescription("Story_Desc_" + Integer.toString(index+1));
 
 			story.setProjectID(project.getName());
 			story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 			
-			this.MISservice.newIssue(story);
-			issueList.add(story);
+			mMantisIssueService.newIssue(story);
+			issues.add(story);
 
 			// check the issue's note is null
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(0, noteList.size());
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(0, notes.size());
 		}
 		
 		// Test if there is no existing tag in bug note initially, 
 		// "insertBugNote" would be called in function "updateIssueNote".
 		int imp = 201, est = 21, val = 251;
-		for(int index = 0; index < issueList.size(); index++){
+		for(int index = 0; index < issues.size(); index++){
 			String importance = Integer.toString(imp + index);
 			String estimation = Integer.toString(est + index);
 			String value = Integer.toString(val + index);
-			String howToDemo = "demo_"+Integer.toString(index+1);
-			String notes = "note_"+Integer.toString(index+1);
+			String howToDemo = "demo_"+Integer.toString(index + 1);
+			String notesString = "note_"+Integer.toString(index + 1);
 
 			// generate note text
-			noteTextHelper = new TextParserGeneraterForNote();
-			String noteText = noteTextHelper.generaterNoteText(importance, estimation, value, howToDemo, notes);
+			mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+			String noteText = mTextParserGeneraterForNote.generaterNoteText(importance, estimation, value, howToDemo, notesString);
 			
 			IIssueNote issueNote = new IssueNote();
 			issueNote.setText(noteText);
 			
 			// test method
-			this.MNService.updateIssueNote(issueList.get(index), issueNote);
+			mMantisNoteService.updateIssueNote(issues.get(index), issueNote);
 			
 			// set the issue's noteList
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			issueList.get(index).setIssueNotes(noteList);
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			issues.get(index).setIssueNotes(notes);
 			
 			// check the issue note info.
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(1, noteList.size());
-			for (IIssueNote note : noteList) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(1, notes.size());
+			for (IIssueNote note : notes) {
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());					// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());					// 1, 2 ..
 				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
-				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
-				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
-				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
-				assertEquals(howToDemo, noteTextHelper.getHowToDemo());		// demo_1, 2 ..
-				assertEquals(notes, noteTextHelper.getNotes());				// note_1, 2 ..
+				assertEquals(importance, mTextParserGeneraterForNote.getImportance());	// 201, 202, 203 ..
+				assertEquals(estimation, mTextParserGeneraterForNote.getEstimation());	// 21, 22 , 23 ..
+				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 251, 252, 253 ..
+				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// demo_1, 2 ..
+				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// note_1, 2 ..
 			}
 		}
 		// ==============================================================
@@ -292,140 +290,142 @@ public class MantisNoteServiceTest extends TestCase {
 		est = 31;
 		val = 351;
 		int index = 0;
-		for(IIssue issue : issueList){
+		for(IIssue issue : issues){
 			String importance = Integer.toString(imp + index);
 			String estimation = Integer.toString(est + index);
 			String value = Integer.toString(val + index);
 			String howToDemo = "update_demo_"+Integer.toString(index+1);
-			String notes = "update_note_"+Integer.toString(index+1);
+			String notesString = "update_note_"+Integer.toString(index+1);
 			
 			// generate note text
-			noteTextHelper = new TextParserGeneraterForNote();
-			String noteText = noteTextHelper.generaterNoteText(importance, estimation, value, howToDemo, notes);
+			mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+			String noteText = mTextParserGeneraterForNote.generaterNoteText(importance, estimation, value, howToDemo, notesString);
 			
 			// new issueNote
 			IIssueNote issueNote = new IssueNote();
-			issueNote.setIssueID(issueList.get(index).getIssueID());
+			issueNote.setIssueID(issues.get(index).getIssueID());
 			issueNote.setText(noteText);
 			issueNote.setHandler("");
-			issueNote.setNoteID(issueList.get(index).getIssueID());
+			issueNote.setNoteID(issues.get(index).getIssueID());
 			
 			// add new issueNote to issue 
 			issue.addIssueNote(issueNote);
 
 			// test method
-			this.MNService.updateIssueNote(issue, issueNote);
+			mMantisNoteService.updateIssueNote(issue, issueNote);
 			
 			// check the issue note info.
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(1, noteList.size());
-			for (IIssueNote note : noteList) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(1, notes.size());
+			for (IIssueNote note : notes) {
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());					// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());					// 1, 2 ..
 				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
-				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
-				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32, 33 ..
-				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
-				assertEquals(howToDemo, noteTextHelper.getHowToDemo());		// update_note_1, 2 ..
-				assertEquals(notes, noteTextHelper.getNotes());				// update_note_1, 2 ..
+				assertEquals(importance, mTextParserGeneraterForNote.getImportance());	// 301, 302, 303 ..
+				assertEquals(estimation, mTextParserGeneraterForNote.getEstimation());	// 31, 32, 33 ..
+				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 351, 352, 353 ..
+				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// update_note_1, 2 ..
+				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// update_note_1, 2 ..
 			}
 			
 			index++;
 		}
 		// close connection
-		this.MSservice.closeConnect();
+		mMantisService.closeConnect();
 	}
 	
+	@Test
 	public void testInsertBugNote(){
-		IProject project = this.CP.getProjectList().get(0);
-		List<IIssue> issueList = new LinkedList<IIssue>();
-		List<IIssueNote> noteList;
-		this.MSservice.openConnect();
+		IProject project = mCP.getProjectList().get(0);
+		List<IIssue> issues = new LinkedList<IIssue>();
+		List<IIssueNote> notes;
+		mMantisService.openConnect();
 		// new 10 issues
 		for (int index = 0 ; index < 10 ; index++) {
 			IIssue story = new Issue();
-			story.setIssueID(index+1);
+			story.setIssueID(index + 1);
 			story.setSummary("Story_Name_" + Integer.toString(index+1));
 			story.setDescription("Story_Desc_" + Integer.toString(index+1));
 
 			story.setProjectID(project.getName());
 			story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 			
-			this.MISservice.newIssue(story);
-			issueList.add(story);
+			mMantisIssueService.newIssue(story);
+			issues.add(story);
 
 			// check the issue's note is null
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(0, noteList.size());
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(0, notes.size());
 		}
 		
 		// Test insertBugNote, insert new bug note into table 
 		int imp = 201, est = 21, val = 251;
-		for(int index = 0; index < issueList.size(); index++){
+		for(int index = 0; index < issues.size(); index++){
 			String importance = Integer.toString(imp + index);
 			String estimation = Integer.toString(est + index);
 			String value = Integer.toString(val + index);
-			String howToDemo = "demo_"+Integer.toString(index+1);
-			String notes = "note_"+Integer.toString(index+1);
+			String howToDemo = "demo_"+Integer.toString(index + 1);
+			String notesString = "note_"+Integer.toString(index + 1);
 			
 			// generate note text
-			noteTextHelper = new TextParserGeneraterForNote();
-			String noteText = noteTextHelper.generaterNoteText(importance, estimation, value, howToDemo, notes);
+			mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+			String noteText = mTextParserGeneraterForNote.generaterNoteText(importance, estimation, value, howToDemo, notesString);
 			
 			// test method
-			this.MNService.insertBugNote(issueList.get(index).getIssueID(), noteText);
+			mMantisNoteService.insertBugNote(issues.get(index).getIssueID(), noteText);
 			
 			// check the issue note info.
-			noteList = this.MNService.getIssueNotes(issueList.get(index));
-			assertEquals(1, noteList.size());
-			for (IIssueNote note : noteList) {
-				noteTextHelper = new TextParserGeneraterForNote();
-				noteTextHelper.parserNoteText(note.getText());
-				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
-				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
+			notes = mMantisNoteService.getIssueNotes(issues.get(index));
+			assertEquals(1, notes.size());
+			for (IIssueNote note : notes) {
+				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
+				mTextParserGeneraterForNote.parserNoteText(note.getText());
+				assertEquals(index + 1, note.getIssueID());					// 1, 2 .. 
+				assertEquals(index + 1, note.getNoteID());					// 1, 2 ..
 				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
-				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
-				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
-				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
-				assertEquals(howToDemo, noteTextHelper.getHowToDemo());		// demo_1, 2 ..
-				assertEquals(notes, noteTextHelper.getNotes());				// note_1, 2 ..
+				assertEquals(importance, mTextParserGeneraterForNote.getImportance());	// 201, 202, 203 ..
+				assertEquals(estimation, mTextParserGeneraterForNote.getEstimation());	// 21, 22 , 23 ..
+				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 251, 252, 253 ..
+				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// demo_1, 2 ..
+				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// note_1, 2 ..
 			}
 		}
 		// close connection
-		this.MSservice.closeConnect();
+		mMantisService.closeConnect();
 	}
 	
+	@Test
 	public void testRemoveNote(){
-		this.CPB = new CreateProductBacklog(this.StoryCount, this.CP);
-		this.CPB.exe();
+		mCPB = new CreateProductBacklog(StoryCount, mCP);
+		mCPB.exe();
 		
 		// get the issues by creating data
-		List<IIssue> issueList = this.CPB.getIssueList();
-		this.MSservice.openConnect();
+		List<IIssue> issues = mCPB.getIssueList();
+		mMantisService.openConnect();
 
 		int index = 0;
 		int imp = 200, est = 21, value = 300;
 		// override the note info.
-		for(IIssue issue : issueList){
-			this.addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
+		for(IIssue issue : issues){
+			addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
 									  Integer.toString(value + index), "demo_"+Integer.toString(index+1),
-									  "note_"+Integer.toString(index+1));
+									  "note_"+Integer.toString(index + 1));
 			index++;
 		}
 		
-		for(IIssue issue : issueList){
+		for(IIssue issue : issues){
 			String issueID = Long.toString(issue.getIssueID());
 			//test method
-			this.MNService.removeNote(issueID);
+			mMantisNoteService.removeNote(issueID);
 
-			// assert no note exist in bugnote table
+			// assert no note exist in bug note table
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName("mantis_bugnote_table");
 			valueSet.addFieldEqualCondition("mantis_bugnote_table.id", issueID);
 			String query = valueSet.getSelectQuery();
-			ResultSet result = this.MSservice.getControl().executeQuery(query);
+			ResultSet result = mMantisService.getControl().executeQuery(query);
 			try {
 				assertTrue(!result.next());
 			} catch (Exception e) {
@@ -438,7 +438,7 @@ public class MantisNoteServiceTest extends TestCase {
 			valueSet.addTableName("mantis_bugnote_text_table");
 			valueSet.addFieldEqualCondition("mantis_bugnote_text_table.id", issueID);
 			query = valueSet.getSelectQuery();
-			result = this.MSservice.getControl().executeQuery(query);
+			result = mMantisService.getControl().executeQuery(query);
 			try {
 				assertTrue(!result.next());
 			} catch (Exception e) {
@@ -447,7 +447,7 @@ public class MantisNoteServiceTest extends TestCase {
 			}
 		}
 		// close connection
-		this.MSservice.closeConnect();
+		mMantisService.closeConnect();
 	}
 	
 	private void addTagElement(IIssue issue, String imp, String est, String value, String howtodemo, String notes) {
@@ -484,7 +484,7 @@ public class MantisNoteServiceTest extends TestCase {
 		if (history.getChildren().size() > 0) {
 			issue.addTagValue(history);
 			// test method
-			this.MSservice.updateBugNote(issue);
+			mMantisService.updateBugNote(issue);
 			// test method
 			try {
 				Thread.sleep(1000);
@@ -493,5 +493,4 @@ public class MantisNoteServiceTest extends TestCase {
 			}
 		}
 	}
-	
 }

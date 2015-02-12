@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -18,6 +17,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.EditUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -30,12 +30,12 @@ import org.codehaus.jettison.json.JSONObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowIssueHistoryTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
+	private CreateProject mCP;
+	private CreateSprint mCS;
 	private Configuration mConfig;
-	private final String ACTION_PATH = "/showIssueHistory";
+	private final String mACTION_PATH = "/showIssueHistory";
 	private IProject mProject;
-	private CreateUnplannedItem mCreateUnplanned;
+	private CreateUnplannedItem mCUI;
 
 	public ShowIssueHistoryTest(String testName) {
 		super(testName);
@@ -51,19 +51,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		ini.exe();
 
 		// 新增1個 project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
-		mProject = mCreateProject.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 
 		// 新增1個 sprint
-		mCreateSprint = new CreateSprint(2, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 
 		super.setUp();
 		// ================ set action info ========================
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(ACTION_PATH);
+		setRequestPathInfo(mACTION_PATH);
 
 		ini = null;
 	}
@@ -75,7 +75,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -84,35 +83,36 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		ini = null;
 		projectManager = null;
-		mCreateProject = null;
+		mCP = null;
+		mCS = null;
 		mConfig = null;
 	}
 
 	public void testShowSprintBacklogTreeListInfo() throws Exception {
-		List<String> idList = mCreateSprint.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		int sprintId = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 
 		Thread.sleep(1000);
 
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		String issueId = String.valueOf(addTaskToStory.getTasksId().get(0));
+		String taskId = String.valueOf(addTaskToStory.getTasksId().get(0));
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
-		addRequestParameter("issueID", issueId);
-		String expectedTaskName = addTaskToStory.getTasks().get(0).getSummary();
-		String expectedIssueType = addTaskToStory.getTasks().get(0).getCategory();
-		String expectedLink = "/ezScrum/showIssueInformation.do?issueID=" + issueId;
-		List<String> expectedDescription = genArrayList("Create Task #2", "Append to Story #1");
+		addRequestParameter("issueID", taskId);
+		addRequestParameter("issueType", "Task");
+		String expectedTaskName = addTaskToStory.getTasks().get(0).getName();
+		String expectedIssueType = "Task";
+		List<String> expectedDescription = genArrayList("Create Task #1", "Append to Story #1");
 		List<String> expectedHistoryType = genArrayList("", "");
 
 		// ================ set session info ========================
@@ -131,7 +131,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		assertEquals(expectedTaskName, historyObj.getString("Name"));
 		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
-		assertEquals(expectedLink, historyObj.getString("Link"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -140,9 +139,9 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest1() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCreateSprint.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 
@@ -160,6 +159,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
+		addRequestParameter("issueType", "Story");
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -172,7 +172,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
 		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
 		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
@@ -182,15 +181,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest2() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCreateSprint.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		Thread.sleep(1000);
 		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		// ================ set request info ========================
@@ -202,11 +200,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
-		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #2");
+		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #1");
 		List<String> expectedHistoryType = genArrayList("", "", "");
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
+		addRequestParameter("issueType", "Story");
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -229,21 +228,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest3() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCreateSprint.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		Thread.sleep(1000);
 
 		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
-		Thread.sleep(1000);
 		long taskId = addTaskToStory.getTasksId().get(0);
 
 		// drop Task from story
-		DropTask dropTask = new DropTask(mCreateProject, sprintId, storyId, taskId);
+		DropTask dropTask = new DropTask(mCP, sprintId, storyId, taskId);
 		dropTask.exe();
 
 		// ================ set request info ========================
@@ -255,11 +252,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
-		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #2", "Drop Task #2");
+		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #1", "Drop Task #1");
 		List<String> expectedHistoryType = genArrayList("", "", "", "");
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
+		addRequestParameter("issueType", "Story");
 
 		// ================ 執行 action ====================
 		actionPerform();
@@ -272,7 +270,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
 		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
 		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
@@ -282,16 +279,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest1() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCreateSprint.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		Thread.sleep(1000);
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
-		Thread.sleep(1000);
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -305,6 +300,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 先 assert story 的 history
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("issueID", String.valueOf(taskId));
+		addRequestParameter("issueType", "Task");
 
 		// 執行 action
 		actionPerform();
@@ -314,7 +310,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #2", "Append to Story #1");
+		List<String> expectedDescription = genArrayList("Create Task #1", "Append to Story #1");
 		List<String> expectedHistoryType = genArrayList("", "");
 
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
@@ -325,23 +321,30 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest2() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCreateSprint.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		Thread.sleep(1000);
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
-		Thread.sleep(1000);
 
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = taskId;
+		taskInfo.name = "崩潰啦";
+		taskInfo.estimate = 13;
+		taskInfo.actual = 2;
+		taskInfo.remains = 8;
+		taskInfo.handlerId = 1;
+		taskInfo.notes = "煩死啦";
+		
 		// edit task info
-		SprintBacklogLogic SBLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), Long.toString(sprintId));
-		SBLogic.editTask(taskId, "崩潰啦", "13", "13", "admin", "", "13", "煩死啦", null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		sprintBacklogLogic.updateTask(taskInfo);
 		
 		// ================ set request info ========================
 		// 設定 Session 資訊
@@ -352,6 +355,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 先 assert story 的 history
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("issueID", String.valueOf(taskId));
+		addRequestParameter("issueType", "Task");
 
 		// 執行 action
 		actionPerform();
@@ -361,16 +365,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #2",
+		List<String> expectedDescription = genArrayList("Create Task #1",
 												        "Append to Story #1",
-												        "admin",
 												        "\"TEST_TASK_1\" => \"崩潰啦\"",
-												        "1 => 13",
-												        "1 => 13",
 												        "\"TEST_TASK_NOTES_1\" => \"煩死啦\"",
-												        "0 => 13");
-		List<String> expectedHistoryType = genArrayList("", "", "Handler", "Name", "Estimate",
-				"Remains", "Note", "Actual Hour");
+												        "1 => 13",
+												        "0 => 2",
+												        "1 => 8",
+												        "admin");
+		List<String> expectedHistoryType = genArrayList("", "", "Name", "Note", "Estimate",
+				"Actual Hour", "Remains", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
@@ -380,33 +384,29 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest3() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCreateSprint.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		Thread.sleep(1000);
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
-		Thread.sleep(1000);
 
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
-		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getStory(taskId);
-		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", "", task.getNotes(), "");
 		// task Check Out -> Done
-		task = SBHelper.getStory(taskId);
-		SBHelper.doneIssue(taskId, task.getSummary(), task.getNotes(), "", task.getActualHour());
+		sprintBacklogHelper.closeTask(taskId, task.getName(), task.getNotes(), task.getActual(), "");
 		// task Done -> Check Out
-		task = SBHelper.getStory(taskId);
-		SBHelper.reopenIssue(taskId, task.getSummary(), task.getNotes(), "");
+		sprintBacklogHelper.reopenTask(taskId, task.getName(), task.getNotes(), "");
 		// task Check Out -> Not Check Out
-		task = SBHelper.getStory(taskId);
-		SBHelper.resetTask(taskId, task.getSummary(), task.getNotes(), "");
+		sprintBacklogHelper.resetTask(taskId, task.getName(), task.getNotes(), "");
+		
 		// ================ set request info ========================
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
@@ -416,6 +416,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 先 assert story 的 history
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("issueID", String.valueOf(taskId));
+		addRequestParameter("issueType", String.valueOf("Task"));
 
 		// 執行 action
 		actionPerform();
@@ -425,16 +426,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #2",
+		List<String> expectedDescription = genArrayList("Create Task #1",
 												        "Append to Story #1",
 												        "Not Check Out => Check Out",
 												        "admin",
 												        "1 => 0",
 												        "Check Out => Done",
 												        "Done => Check Out",
-												        "Check Out => Not Check Out");
-		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler",
-				"Remains", "Status", "Status", "Status");
+												        "Check Out => Not Check Out",
+												        "Remove handler admin");
+		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Remains", "Status", "Status", "Status", "Handler");
 		
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
@@ -443,38 +444,40 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 * change task handler
 	 */
 	public void testShowTaskHistoryTest4() throws Exception {
-		long sprintId = Long.valueOf(mCreateSprint.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
-		Thread.sleep(1000);
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		
 		// 新增1個 account
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
-		Thread.sleep(1000);
+		CreateAccount CA = new CreateAccount(1);
+		CA.exe();
 		
 		// assign role to account
-		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
-		addUserToRole.exe_ST();
-		Thread.sleep(1000);
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_ST();
 		
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCreateProject);
-		addTaskToStory.exe();
-		Thread.sleep(1000);
+		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
+		ATTS.exe();
 
 		String projectName = mProject.getName();
-		long taskId = addTaskToStory.getTasksId().get(0);
+		long taskId = ATTS.getTasksId().get(0);
 
-		SprintBacklogHelper SBHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession(), Long.toString(sprintId));
 		// task Not Check Out -> Check Out
-		IIssue task = SBHelper.getStory(taskId);
-		SBHelper.checkOutTask(taskId, task.getSummary(), "admin", task.getPartners(), task.getNotes(), "");
-		// change task handler
-		task.setAssignto(createAccount.getAccountList().get(0).getUsername());
-		SBHelper.updateTask(new TaskObject(task));
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
+		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", task.getPartnersUsername(), task.getNotes(), "");
+		
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = task.getId();
+		taskInfo.name = task.getName();
+		taskInfo.notes = task.getNotes();
+		taskInfo.estimate = task.getEstimate();
+		taskInfo.actual = task.getActual();
+		taskInfo.remains = task.getRemains();
+		sprintBacklogHelper.updateTask(taskInfo, AUTR.getNowAccount().getUsername(), "");
 		
 		// ================ set request info ========================
 		// 設定 Session 資訊
@@ -485,6 +488,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 先 assert story 的 history
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("issueID", String.valueOf(taskId));
+		addRequestParameter("issueType", "Task");
 
 		// 執行 action
 		actionPerform();
@@ -494,7 +498,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #2",
+		List<String> expectedDescription = genArrayList("Create Task #1",
 												        "Append to Story #1",
 												        "Not Check Out => Check Out",
 												        "admin",
@@ -509,13 +513,14 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowUnplanedItemHistoryTest1() throws Exception {
 		// 新增一個 UnplannedItem
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
-		String issueId = String.valueOf(mCreateUnplanned.getIdList().get(0));
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
+		String issueId = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCreateSprint.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
 		addRequestParameter("issueID", issueId);
+		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -538,9 +543,9 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(mCUI.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(mCUI.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(mCUI.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -553,20 +558,25 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		createAccount.exe();
 		Thread.sleep(1000);
 
-		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
 		Thread.sleep(1000);
 
 		// 新增一個 UnplannedItem
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
-		EditUnplannedItem EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
+		Thread.sleep(1000);
+		
+		EditUnplannedItem EU = new EditUnplannedItem(mCUI, mCP, createAccount);
 		EU.exe_CO();
-		String issueID = String.valueOf(mCreateUnplanned.getIdList().get(0));
+		Thread.sleep(1000);
+		
+		String issueID = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCreateSprint.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
 		addRequestParameter("issueID", issueID);
+		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -590,11 +600,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 														"\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"");
 		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note");
 		String actualResponseText = response.getWriterBuffer().toString();
+		System.out.println(actualResponseText);
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(mCUI.getIssueList().get(0).getCategory(), historyObj.getString("IssueType"));
+		assertEquals(mCUI.getIssueList().get(0).getIssueLink(), historyObj.getString("Link"));
+		assertEquals(mCUI.getIssueList().get(0).getSummary(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -607,26 +618,29 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		createAccount.exe();
 		Thread.sleep(1000);
 
-		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
 		Thread.sleep(1000);
 		
 		// 新增一個UnplannedItem
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
 		Thread.sleep(1000);
 
-		EditUnplannedItem EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
+		EditUnplannedItem EU = new EditUnplannedItem(mCUI, mCP, createAccount);
 		EU.exe_CO();
 		Thread.sleep(1000);
 
-		EU = new EditUnplannedItem(mCreateUnplanned, mCreateProject, createAccount);
+		EU = new EditUnplannedItem(mCUI, mCP, createAccount);
 		EU.exe_DONE();
-		String issueId = String.valueOf(mCreateUnplanned.getIdList().get(0));
+		Thread.sleep(1000);
+		
+		String issueId = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCreateSprint.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
 		addRequestParameter("issueID", issueId);
+		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -647,11 +661,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        "\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"", "Check Out => Done");
 		List<String> expectedHistoryType = genArrayList("", "", "Status", "Handler", "Note", "Status");
 		String actualResponseText = response.getWriterBuffer().toString();
+		System.out.println(actualResponseText);
 		JSONObject object = new JSONObject(actualResponseText);
 
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getCategory(), object.get("IssueType"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getIssueLink(), object.get("Link"));
-		assertEquals(mCreateUnplanned.getIssueList().get(0).getSummary(), object.get("Name"));
+		assertEquals(mCUI.getIssueList().get(0).getCategory(), object.get("IssueType"));
+		assertEquals(mCUI.getIssueList().get(0).getIssueLink(), object.get("Link"));
+		assertEquals(mCUI.getIssueList().get(0).getSummary(), object.get("Name"));
 		assertData(expectedHistoryType, expectedDescription, object.getJSONArray("IssueHistories"));
 	}
 

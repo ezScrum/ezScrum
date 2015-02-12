@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
@@ -28,35 +27,32 @@ import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.IWorkspace;
 import ntut.csie.jcis.resource.core.ResourceFacade;
 import ntut.csie.jcis.resource.core.internal.Workspace;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class CreateProject {
-	private static Log log = LogFactory.getLog(CreateProject.class);
-	
+	private static Log mlog = LogFactory.getLog(CreateProject.class);
 	private Configuration mConfig = new Configuration();
 	private int mProjectCount = 1;
-	private ArrayList<IProject> mProjectList;
-	
+	private ArrayList<IProject> mProjects;
 	public String mProjectName = "TEST_PROJECT_";			// TEST_PROJECT_X
 	public String mProjectDisplayName = "TEST_DISPLAYNAME_";// TEST_DISPLAYNAME_X
 	public String mProjectMaNager = "Project_Manager_";		// Project_Manager_X
 	public String mProjectCommon = "This is Test Project - ";// This is Test Project - X
 	private long mFileSize = 2;								// attach file size
 
-	private String[] operation = {"ProductOwner", "ScrumMaster", "ScrumTeam", "Stakeholder", "Guest"};
+	private String[] mOperation = {"ProductOwner", "ScrumMaster", "ScrumTeam", "Stakeholder", "Guest"};
 
 	private ProjectMapper mProjectMapper;
 	
 	public CreateProject(int count) {
 		mProjectCount = count;
-		mProjectList = new ArrayList<IProject>();
+		mProjects = new ArrayList<IProject>();
 		mProjectMapper = new ProjectMapper();
 	}
 
 	public ArrayList<IProject> getProjectList() {
-		return mProjectList;
+		return mProjects;
 	}
 	
 	// ezScrum v1.8
@@ -74,7 +70,7 @@ public class CreateProject {
 			projectInfo.common = mProjectCommon + (i + 1);			// This is Test Project - X
 			projectInfo.manager = mProjectMaNager + (i + 1);		// Project_Manager_X
 			
-			long id = projectMapper.createProject(projectInfo.name, projectInfo);
+			projectMapper.createProject(projectInfo.name, projectInfo);
 		}
 	}
 	
@@ -103,14 +99,14 @@ public class CreateProject {
 			// save in the Role
 			createRole(projectName);
 
-//			copyScrumRoleSetting(project.getFullPath().getPathString());
+			copyScrumRoleSetting(project.getFullPath().getPathString());
 
 			// save in DB
 			try {
 				saveDB(project);
 
 				// add to list
-				mProjectList.add(project);
+				mProjects.add(project);
 
 				success = true;
 			} catch (Exception e) {
@@ -118,11 +114,11 @@ public class CreateProject {
 			}
 		}
 
-		if (success || this.mProjectCount == 0) {
+		if (success || mProjectCount == 0) {
 			System.out.println("Create " + mProjectCount + " test projects success.");
-			log.info("Create " + mProjectCount + " test projects success.");
+			mlog.info("Create " + mProjectCount + " test projects success.");
 		} else {
-			log.info("Create project fail.");
+			mlog.info("Create project fail.");
 			System.out.println("新增專案失敗了辣！！！");
 			System.out.println("怎麼辦～怎麼辦～怎麼辦～是誰寫的出來面對！！！");
 		}
@@ -170,7 +166,7 @@ public class CreateProject {
 	// 儲存 account permission 資訊
 	private void createPermission(String resource) {
 		IAccountManager am = AccountFactory.getManager();
-		for (String oper : operation) {
+		for (String oper : mOperation) {
 			String name = resource + "_" + oper;
 			IPermission perm = AccountFactory.createPermission(name, resource, oper);
 			am.addPermission(perm);
@@ -185,7 +181,7 @@ public class CreateProject {
 	// 儲存 account role 資訊
 	private void createRole(String resource) {
 		IAccountManager am = AccountFactory.getManager();
-		for (String oper : operation) {
+		for (String oper : mOperation) {
 			String name = resource + "_" + oper;
 			IRole role = AccountFactory.createRole(name, name);
 			am.addRole(role);
@@ -210,20 +206,20 @@ public class CreateProject {
 				if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
 					// 資料庫尚未建立的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					log.info("Create a new DataBase : " + mConfig.getDBName());
+					mlog.info("Create a new DataBase : " + mConfig.getDBName());
 					M_service.initiateDB();
-					log.info("Initialize the database from sql file.");
+					mlog.info("Initialize the database from sql file.");
 				} else if (e.getType().equals(TestConnectException.DATABASE_ERROR)) {
 					// 資料表不正確的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					log.info("Create a new DataBase : " + mConfig.getDBName());
+					mlog.info("Create a new DataBase : " + mConfig.getDBName());
 					M_service.initiateDB();
-					log.info("Initialize the database from sql file.");
+					mlog.info("Initialize the database from sql file.");
 				} else {
-					log.info("class: CreateProject, method: saveDB, something error");
+					mlog.info("class: CreateProject, method: saveDB, something error");
 				}
 			} catch (SQLException sqle) {
-				log.info("class: CreateProject, method: saveDB, SQL exception.");
+				mlog.info("class: CreateProject, method: saveDB, SQL exception.");
 			}
 
 			// 如果project Create失敗，就把目前產生到一半的Project檔案刪除
@@ -231,7 +227,7 @@ public class CreateProject {
 				project.delete();
 				return;
 			} catch (IOException e1) {
-				log.info("class: CreateProject, method: project.delete(), exception: " + e1.toString());
+				mlog.info("class: CreateProject, method: project.delete(), exception: " + e1.toString());
 				e1.printStackTrace();
 			}
 		} catch (Exception e) {
@@ -247,23 +243,23 @@ public class CreateProject {
 	}
 
 	// 複製 ScrumRole 檔案
-//	private void copyScrumRoleSetting(String ectpprojectpathath) {
-//		File srcScrumRolePath = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
-//		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
-//
-//		try {
-//			InputStream in = new FileInputStream(srcScrumRolePath);
-//			OutputStream out = new FileOutputStream(destScrumRolePath);
-//
-//			byte[] buf = new byte[1024];		// buffer
-//			int len;
-//			while ((len = in.read(buf)) > 0) {
-//				out.write(buf, 0, len);
-//			}
-//			in.close();
-//			out.close();
-//		} catch (Exception e) {
-//			log.debug("copyScrumRoleSetting error" + e.toString());
-//		}
-//	}
+	private void copyScrumRoleSetting(String ectpprojectpathath) {
+		File srcScrumRolePath = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
+		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
+
+		try {
+			InputStream in = new FileInputStream(srcScrumRolePath);
+			OutputStream out = new FileOutputStream(destScrumRolePath);
+
+			byte[] buf = new byte[1024];		// buffer
+			int len;
+			while ((len = in.read(buf)) > 0) {
+				out.write(buf, 0, len);
+			}
+			in.close();
+			out.close();
+		} catch (Exception e) {
+			mlog.debug("copyScrumRoleSetting error" + e.toString());
+		}
+	}
 }

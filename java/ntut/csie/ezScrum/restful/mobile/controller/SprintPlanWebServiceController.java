@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 
 @Path("{projectID}/sprint/")
 public class SprintPlanWebServiceController {
-	// SprintWebService mSprintWebService;
 	SprintPlanWebService mSprintPlanWebService;
 
 	/**
@@ -37,8 +36,8 @@ public class SprintPlanWebServiceController {
 	@POST
 	@Path("create")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createSprint(@PathParam("projectID") String projectID,
-			@QueryParam("userName") String userName,
+	public String createSprint(@PathParam("projectID") String projectId,
+			@QueryParam("userName") String username,
 			@QueryParam("password") String password, JSONObject sprintJson) {
 		Gson gson = new Gson();
 		String responseString = "";
@@ -46,12 +45,11 @@ public class SprintPlanWebServiceController {
 			SprintObject sprintObject = gson.fromJson(sprintJson.toString(),
 					SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(userName, password, projectID);
+			decoder.decode(username, password, projectId);
 			// 使用者帳號
-			AccountObject userObject = new AccountObject();
-			userObject.setUsername(decoder.getDecodeUserName());
-			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
+			AccountObject account = new AccountObject(decoder.getDecodeUserName());
+			account.setPassword(decoder.getDecodePwd());
+			mSprintPlanWebService = new SprintPlanWebService(account,
 					decoder.getDecodeProjectID());
 			mSprintPlanWebService.createSprint(sprintObject);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
@@ -83,20 +81,19 @@ public class SprintPlanWebServiceController {
 	@DELETE
 	@Path("delete/{sprintID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String deleteSprint(@PathParam("projectID") String projectID,
-			@PathParam("sprintID") String sprintID,
-			@QueryParam("userName") String userName,
+	public String deleteSprint(@PathParam("projectID") String projectId,
+			@PathParam("sprintID") String sprintId,
+			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		String responseString = "";
 		try {
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(userName, password, projectID);
-			AccountObject userObject = new AccountObject();
-			userObject.setUsername(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectId);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
-			mSprintPlanWebService.deleteSprint(sprintID);
+			mSprintPlanWebService.deleteSprint(sprintId);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
 			responseString += "JSONException";
@@ -126,17 +123,16 @@ public class SprintPlanWebServiceController {
 	@PUT
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateSprint(@PathParam("projectID") String projectID,
-			@QueryParam("userName") String userName,
+	public String updateSprint(@PathParam("projectID") String projectId,
+			@QueryParam("userName") String username,
 			@QueryParam("password") String password, String sprintJson) {
 		Gson gson = new Gson();
 		String responseString = "";
 		try {
 			SprintObject sprint = gson.fromJson(sprintJson, SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(userName, password, projectID);
-			AccountObject userObject = new AccountObject();
-			userObject.setUsername(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectId);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -172,15 +168,14 @@ public class SprintPlanWebServiceController {
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllSprint(@PathParam("projectID") String projectID,
-			@QueryParam("userName") String userName,
+	public String getAllSprint(@PathParam("projectID") String projectId,
+			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
-		AccountObject userObject = new AccountObject();
 		try {
-			decoder.decode(userName, password, projectID);
-			userObject.setUsername(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectId);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
@@ -214,20 +209,19 @@ public class SprintPlanWebServiceController {
 	@Path("{sprintID}/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSprintWithAllItem(
-			@PathParam("projectID") String projectID,
-			@PathParam("sprintID") String sprintID,
+			@PathParam("projectID") String projectId,
+			@PathParam("sprintID") String sprintId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		String sprintJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectID);
-			AccountObject userObject = new AccountObject();
-			userObject.setUsername(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectId);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());
-			sprintJson = mSprintPlanWebService.getSprintWithAllItem(sprintID);
+			sprintJson = mSprintPlanWebService.getSprintWithAllItem(sprintId);
 		} catch (IOException e) {
 			System.out
 					.println("class: SprintWebServiceController, "
@@ -260,15 +254,14 @@ public class SprintPlanWebServiceController {
 	@Path("/all/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getAllSprintWithAllItem(
-			@PathParam("projectID") String projectID,
+			@PathParam("projectID") String projectId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		String sprintJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectID);
-			AccountObject userObject = new AccountObject();
-			userObject.setUsername(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectId);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectID());

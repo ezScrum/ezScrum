@@ -16,64 +16,63 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowAddExistedTaskTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
 	private final String ACTION_PATH = "/showAddExistedTask2";
-	private IProject project;
+	private IProject mProject;
 	
 	public ShowAddExistedTaskTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	新增一個測試專案
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 		
 		//	新增一個Sprint
-		this.CS = new CreateSprint(1, this.CP);
-		this.CS.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( ACTION_PATH );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mConfig = null;
 	}
 	
 	/**
@@ -81,21 +80,21 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	 */
 	public void testShowAddExistTask_1() throws Exception {
 		// 加入1個Sprint
-		int sprintID = Integer.valueOf(this.CS.getSprintIDList().get(0));
+		int sprintID = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint加入1個Story
-		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, sprintID, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStory_Sprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		// Story加入1個Task
-		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
-		addTask_Story.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
+		ATTS.exe();
 
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);	
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);	
 		// 設定新增Task所需的資訊
 		String expectedStoryID = "1";
 		String expectedSprintID = "1";
@@ -120,23 +119,23 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	 */
 	public void testShowAddExistTask_2() throws Exception {
 		// 加入1個Sprint
-		int sprintID = Integer.valueOf(this.CS.getSprintIDList().get(0));
+		int sprintID = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint加入1個Story
-		AddStoryToSprint addStory_Sprint = new AddStoryToSprint(1, 1, sprintID, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStory_Sprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		// Story加入1個Task
-		AddTaskToStory addTask_Story = new AddTaskToStory(1, 1, addStory_Sprint, CP);
-		addTask_Story.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
+		ATTS.exe();
 		// drop Task from story
-		DropTask dropTask = new DropTask(CP, 1, 1, 2);
-		dropTask.exe();
+		DropTask DT = new DropTask(mCP, 1, 1, 1);
+		DT.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);	
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);	
 		// 設定新增Task所需的資訊
 		String expectedTaskName = "TEST_TASK_1";
 		String expectedStoryID = "1";
@@ -154,8 +153,8 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Tasks><Task><Id>").append(2)	
-							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(2)
+		expectedResponseText.append("<Tasks><Task><Id>").append(1)	
+							.append("</Id><Link>/ezScrum/showIssueInformation.do?issueID=").append(1)
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Status>").append("new")
 							.append("</Status><Estimate>").append(expectedTaskEstimation)

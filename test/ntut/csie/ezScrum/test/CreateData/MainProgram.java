@@ -1,9 +1,11 @@
 package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.Scanner;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 
+/*
+ * For create data manually
+ */
 public class MainProgram {
 	public static void main(String[] args) throws Exception {
 		Configuration configuration = new Configuration();

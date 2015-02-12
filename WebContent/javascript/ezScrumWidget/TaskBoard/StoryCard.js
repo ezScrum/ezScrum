@@ -62,7 +62,7 @@ function renderNotes(notes, value) {
 function createStoryContent(story) {
 	// 幾個動作Icon的超連結
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
-	var historyIcon = '<a href="javascript:showHistory(' + story.id + ')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
+	var historyIcon = '<a href="javascript:showHistory(' + story.id + ', \'Story\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
 	var uploadIcon = '<a href="javascript:attachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
 	
 	return '<table class="StoryCard_Table">'
@@ -81,14 +81,15 @@ function createStoryContent(story) {
 function createStoryCard(story) {
 
 	var storyCard = new Ext.Panel({
-		id : story.id,
-		data : story,
-		bodyBorder : false,
-		border : false,
-		items : [{
-			bodyBorder : false,
-			border : false,
-			html : createStoryContent(story)
+		id			: 'Story:' + story.id,	// for front-end
+		stroyId		: story.id,  // for back-end
+		data		: story,
+		bodyBorder	: false,
+		border		: false,
+		items		: [{
+			bodyBorder	: false,
+			border		: false,
+			html		: createStoryContent(story)
 		}],
 		// 在 taskboard 上編輯 story 後, update card 內容
 		updateData_Edit : function(name, point) {
@@ -112,7 +113,8 @@ function createStoryCard(story) {
 	storyCard.draggable = {
 		readObject : storyCard,
 		ddGroup : story.id,
-		issueType:'story',
+		storyId	: story.id,
+		issueType:'Story',
 		status : story.get('Status'),
 		afterDragDrop : function(target, e, targetID) {
 			// 如果狀態沒有轉換，就不作動作
@@ -122,7 +124,7 @@ function createStoryCard(story) {
 				// 取得 Story 底下所有的 Task
 				var tasks = story.get('Tasks');
 				for ( var k = tasks.length-1 ; k >= 0; k--) {
-					var taskStatus = Ext.getCmp( tasks[k].Id ).draggable.status; 
+					var taskStatus = Ext.getCmp( 'Task:' + tasks[k].Id ).draggable.status; 
 					// 若有任一 Task 不為 done，則 Story 無法移至 done
 					if( taskStatus != 'closed' ){
 						Ext.MessageBox.alert('warning!', 'Please check all the tasks of Story #' + story.id + ' are done.');
@@ -130,10 +132,10 @@ function createStoryCard(story) {
 					}
 				}
 				// 顯示確認Done Story的視窗，很可怕的是這個function在TaskBoard.jsp上面 
-                Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue, this.id, this);
+                Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue, this.storyId, this);
 			} else if (target.status == 'new') {
 				// 顯示Reopen的視窗
-				Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReOpenIssue, this.id, this);
+				Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReOpenIssue, this.storyId, this);
 			}
 			this.target = target;
 		},

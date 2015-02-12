@@ -72,7 +72,7 @@ public class SprintPlanWebService extends ProjectWebService{
 	 */
 	public String getSprintWithAllItem(String sprintID) throws SQLException {
 		Gson gson = new Gson();
-		return gson.toJson(mSprintPlanHelper.getSprintWithAllItem(sprintID));
+		return gson.toJson(mSprintPlanHelper.getSprint(sprintID));
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class SprintPlanWebService extends ProjectWebService{
 		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
 		List<SprintObject> result = new ArrayList<SprintObject>();
 		for (SprintObject sprint : sprintList) {
-			result.add(mSprintPlanHelper.getSprintWithAllItem(sprint.id));
+			result.add(mSprintPlanHelper.getSprint(sprint.id));
 		}
 		return gson.toJson(result);
 	}

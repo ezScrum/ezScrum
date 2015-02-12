@@ -5,19 +5,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateSprint {
-	// private static Log log = LogFactory.getLog(CreateSprint.class);
-
-	private int SprintCount = 1;
-	private CreateProject CP = null;
-
-	private List<String> SprintIDList;
+	private int mSprintCount = 1;
+	private CreateProject mCP = null;
+	private List<String> mSprintsId;
 
 	public String TEST_SPRINT_GOAL = "TEST_SPRINTGOAL_";		// Sprint Goal
 	public String TEST_SPRINT_NOTE = "TEST_SPRINTNOTE_";		// Sprint Notes
@@ -27,66 +23,66 @@ public class CreateSprint {
 	public final static String SPRINT_FOCUS_FACTOR = "100";		// 100%
 	public final static String SPRINT_DEMOPLACE = "Lab 1321";	// daily scrum place
 
-	public Date Today = null;
+	public Date mToday = null;
 
 	// ========================== 為了可以設定 sprint 而新增下列屬性 ===========================
-	private boolean AutoSetSprint = true;
-	private int SprintIDIndex = 0;
-	private IProject P = null;
+	private boolean mAutoSetSprint = true;
+	private int mSprintIDIndex = 0;
+	private IProject mProject = null;
 
-	public CreateSprint(int Count, CreateProject cp) {
-		this.SprintCount = Count;
-		this.CP = cp;
+	public CreateSprint(int count, CreateProject CP) {
+		mSprintCount = count;
+		mCP = CP;
 
-		this.AutoSetSprint = false;
-		this.SprintIDList = new ArrayList<String>();
+		mAutoSetSprint = false;
+		mSprintsId = new ArrayList<String>();
 	}
 
-	public CreateSprint(int SPcount, int Index, Date today, IProject p) {
-		this.SprintCount = SPcount;
-		this.SprintIDList = new ArrayList<String>();
+	public CreateSprint(int sprintCount, int Index, Date today, IProject project) {
+		mSprintCount = sprintCount;
+		mSprintsId = new ArrayList<String>();
 
-		this.Today = today;
-		this.AutoSetSprint = false;
-		this.SprintIDIndex = Index * SPcount;
-		this.P = p;
+		mToday = today;
+		mAutoSetSprint = false;
+		mSprintIDIndex = Index * sprintCount;
+		mProject = project;
 	}
 
 	public CreateSprint(int SPcount, int Index, Date today, CreateProject cp) {
-		this.SprintCount = SPcount;
-		this.SprintIDList = new ArrayList<String>();
+		mSprintCount = SPcount;
+		mSprintsId = new ArrayList<String>();
 
-		this.Today = today;
-		this.AutoSetSprint = false;
-		this.SprintIDIndex = Index * SPcount;
-		this.CP = cp;
+		mToday = today;
+		mAutoSetSprint = false;
+		mSprintIDIndex = Index * SPcount;
+		mCP = cp;
 	}
 
 	public int getSprintCount() {
-		return this.SprintCount;
+		return mSprintCount;
 	}
 
 	public List<String> getSprintIDList() {
-		return this.SprintIDList;	// not implemented yet
+		return mSprintsId;	// not implemented yet
 	}
 
 	public void exe() {
 		Calendar cal = Calendar.getInstance();
 
-		for (int i = 0; i < this.CP.getProjectList().size(); i++) {
-			this.Today = cal.getTime();									// get Today
-			IProject project = this.CP.getProjectList().get(i);			// get Project
+		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+			mToday = cal.getTime();									// get Today
+			IProject project = mCP.getProjectList().get(i);			// get Project
 
-			for (int j = 0; j < this.SprintCount; j++) {
+			for (int j = 0; j < mSprintCount; j++) {
 				ISprintPlanDesc desc = createDesc(j);
 				SprintPlanMapper spMapper = new SprintPlanMapper(project);
 				spMapper.addSprintPlan(desc);
-				SprintIDList.add(String.valueOf((j + 1)));
+				mSprintsId.add(String.valueOf((j + 1)));
 			}
 
-			System.out.println("  " + project.getName() + " create " + this.SprintCount + " sprint success.");
+			System.out.println("  " + project.getName() + " create " + mSprintCount + " sprint success.");
 		}
-		System.out.println("Create " + this.CP.getProjectList().size() + " Sprint(s) Finish!");
+		System.out.println("Create " + mCP.getProjectList().size() + " Sprint(s) Finish!");
 	}
 
 	private ISprintPlanDesc createDesc(int index) {
@@ -94,15 +90,15 @@ public class CreateSprint {
 
 		String ID = Integer.toString(index + 1);
 		desc.setID(ID);
-		desc.setGoal(this.TEST_SPRINT_GOAL + ID);
-		desc.setStartDate(getDate(this.Today, index * Integer.parseInt(this.SPRINT_INTERVAL) * 7));
-		desc.setInterval(this.SPRINT_INTERVAL);
-		desc.setMemberNumber(this.SPRINT_MEMBER);
-		desc.setAvailableDays(this.SPRINT_AVAILABLE_DAY);
-		desc.setFocusFactor(this.SPRINT_FOCUS_FACTOR);
+		desc.setGoal(TEST_SPRINT_GOAL + ID);
+		desc.setStartDate(getDate(mToday, index * Integer.parseInt(SPRINT_INTERVAL) * 7));
+		desc.setInterval(SPRINT_INTERVAL);
+		desc.setMemberNumber(SPRINT_MEMBER);
+		desc.setAvailableDays(SPRINT_AVAILABLE_DAY);
+		desc.setFocusFactor(SPRINT_FOCUS_FACTOR);
 		desc.setDemoDate(desc.getEndDate());
-		desc.setDemoPlace(this.SPRINT_DEMOPLACE);
-		desc.setNotes(this.TEST_SPRINT_NOTE + ID);
+		desc.setDemoPlace(SPRINT_DEMOPLACE);
+		desc.setNotes(TEST_SPRINT_NOTE + ID);
 
 		return desc;
 	}

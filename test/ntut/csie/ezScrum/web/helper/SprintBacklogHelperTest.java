@@ -2,21 +2,13 @@ package ntut.csie.ezScrum.web.helper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.tools.javac.comp.Check;
-
-import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -24,15 +16,16 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SprintBacklogHelperTest{
 	private SprintBacklogHelper mSprintBacklogHelper;
-	private Configuration mConfiguration = null;
+	private Configuration mConfig = null;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -41,10 +34,10 @@ public class SprintBacklogHelperTest{
 	@Before
 	public void setUp() throws Exception  {
 		// initialize database
-		mConfiguration = new Configuration();
-		mConfiguration.setTestMode(true);
-		mConfiguration.save();
-		InitialSQL ini = new InitialSQL(mConfiguration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();// 初始化 SQL
 		ini = null;
 
@@ -63,33 +56,41 @@ public class SprintBacklogHelperTest{
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
 
-		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP,
-				CREATE_PRODUCTBACKLOG_TYPE);
+		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
 		mASTS.exe();
 
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfiguration.getUserSession();
+		IUserSession userSession = mConfig.getUserSession();
 		String sprintId = "1";
 		mSprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintId);
     }
 
 	@After
 	public void tearDown() throws Exception {
-    	InitialSQL ini = new InitialSQL(mConfiguration);
+    	InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
+		
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
 		ini = null;
 		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
 		mSprintBacklogHelper = null;
-		mConfiguration.setTestMode(false);
-		mConfiguration.save();
     }
 	
 	@Test
-	public void testDropTask()
-	{
+	public void testDropTask() {
 		long taskId = 1;
 		// get task one
 		TaskObject task = TaskObject.get(taskId);
@@ -109,8 +110,7 @@ public class SprintBacklogHelperTest{
 	}
 	
 	@Test
-	public void testUpdateTask_WithNotExistHandler()
-	{
+	public void testUpdateTask_WithNotExistHandler() {
 		long taskId = 1;
 		// check task status before test
 		TaskObject task = TaskObject.get(taskId);
@@ -136,10 +136,9 @@ public class SprintBacklogHelperTest{
 		assertEquals(-1, task.getHandlerId());
 		assertEquals(0, task.getPartnersId().size());
 	}
-	
+
 	@Test
-	public void testUpdateTask_WithNewHandler()
-	{
+	public void testUpdateTask_WithNewHandler() {
 		long taskId = 1;
 		// check task status before test
 		TaskObject task = TaskObject.get(taskId);
@@ -170,8 +169,7 @@ public class SprintBacklogHelperTest{
 	}
 	
 	@Test
-	public void testUpdateTask_WithNewHandlerAndNewPartners()
-	{
+	public void testUpdateTask_WithNewHandlerAndNewPartners() {
 		long taskId = 1;
 		// check task status before test
 		TaskObject task = TaskObject.get(taskId);
@@ -210,12 +208,11 @@ public class SprintBacklogHelperTest{
 	}
 	
 	@Test
-	public void testAddExistingTasksToStory()
-	{
+	public void testAddExistingTasksToStory() {
 		long projectId = 1;
 		long storyId = 1;
 		// get story
-		MantisService mantisService = new MantisService(mConfiguration);
+		MantisService mantisService = new MantisService(mConfig);
 		mantisService.openConnect();
 		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
@@ -231,7 +228,7 @@ public class SprintBacklogHelperTest{
 		// add new existing task
 		String newTaskStringId = String.valueOf(newTask.getId());
 		String[] selectedTasksStringId = {newTaskStringId};
-		mSprintBacklogHelper.addExistingTask(selectedTasksStringId, storyId);
+		mSprintBacklogHelper.addExistingTasksToStory(selectedTasksStringId, storyId);
 		// get story again
 		mantisService.openConnect();
 		story = mantisService.getIssue(storyId);
@@ -244,14 +241,13 @@ public class SprintBacklogHelperTest{
 		assertEquals(3, newTaskIds.get(2));
 		assertEquals(10, newTaskIds.get(3));
 	}
-	
+
 	@Test
-	public void testAddExistingTasksToStory_WithTwoExistingTasks()
-	{
+	public void testAddExistingTasksToStory_WithTwoExistingTasks() {
 		long projectId = 1;
 		long storyId = 1;
 		// get story
-		MantisService mantisService = new MantisService(mConfiguration);
+		MantisService mantisService = new MantisService(mConfig);
 		mantisService.openConnect();
 		IIssue story = mantisService.getIssue(storyId);
 		mantisService.closeConnect();
@@ -271,7 +267,7 @@ public class SprintBacklogHelperTest{
 		String newTask1StringId = String.valueOf(newTask1.getId());
 		String newTask2StringId = String.valueOf(newTask2.getId());
 		String[] selectedTasksStringId = {newTask1StringId, newTask2StringId};
-		mSprintBacklogHelper.addExistingTask(selectedTasksStringId, storyId);
+		mSprintBacklogHelper.addExistingTasksToStory(selectedTasksStringId, storyId);
 		// get story again
 		mantisService.openConnect();
 		story = mantisService.getIssue(storyId);

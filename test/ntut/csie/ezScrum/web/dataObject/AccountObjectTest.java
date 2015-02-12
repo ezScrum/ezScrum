@@ -1,16 +1,14 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -18,49 +16,47 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
+
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AccountObjectTest{
-	private MySQLService mService;
 	private MySQLControl mControl = null;
-	private Configuration configuration = null;
+	private Configuration mConfig = null;
 
 	@Before
 	public void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mService = new MySQLService(configuration);
-		mService.openConnect();
 		
-		mControl = new MySQLControl(configuration);
+		mControl = new MySQLControl(mConfig);
 		mControl.connection();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		mService.closeConnect();
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
+		projectManager = null;
 		mControl = null;
-		mService = null;
-		configuration = null;
+		mConfig = null;
 	}
 	
 	@Test
@@ -188,6 +184,7 @@ public class AccountObjectTest{
 
 		json.put(AccountEnum.ID, account.getId())
 		        .put(AccountEnum.USERNAME, account.getUsername())
+		        .put(AccountEnum.NICK_NAME, account.getNickName())
 		        .put(AccountEnum.PASSWORD, account.getPassword())
 		        .put(AccountEnum.EMAIL, account.getEmail())
 		        .put(AccountEnum.ENABLE, account.getEnable())

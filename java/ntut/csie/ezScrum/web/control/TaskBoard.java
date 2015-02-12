@@ -187,9 +187,9 @@ public class TaskBoard {
 				// 取得這個Story底下的Task點數
 				ArrayList<TaskObject> tmpTasks = mStoryIdToTasks.get(story.getIssueID());
 				for (TaskObject task : tmpTasks) {
-					// 已經closed的task就不用算他的點數啦
-					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE) 
+					if(task.getStatus() == TaskObject.STATUS_DONE){
 						continue;
+					}
 					point[1] += getTaskPoint(dueDate, task);
 				}
 			} catch (Exception e) {

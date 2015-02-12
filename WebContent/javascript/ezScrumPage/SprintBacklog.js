@@ -340,8 +340,8 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
     	var record = this.SprintBacklog_TreeGrid_ID.getSelectionModel().getSelectedNode();
         if(record != null) {
             var id = record.attributes['ID'];
-            
-            IssueHistory_Window.showTheWindow(id);
+            var type = record.attributes['Type'];
+            IssueHistory_Window.showTheWindow(id, type);
         }
     },
     

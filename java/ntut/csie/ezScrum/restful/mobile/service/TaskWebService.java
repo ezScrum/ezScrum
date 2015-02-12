@@ -4,15 +4,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.account.core.LogonException;
+import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
 
@@ -34,10 +41,11 @@ public class TaskWebService extends ProjectWebService {
 	
 	private void initialize(long projectId) {
 		UserSession userSession = new UserSession(super.getAccount());
-		mSprintBacklogHelper = new SprintBacklogHelper(super.getProjectList().get(0), userSession);
-		mProductBacklogHelper = new ProductBacklogHelper(userSession, super.getProjectList().get(0));
 		mProjectHelper = new ProjectHelper();
 		mProject = mProjectHelper.getProject(projectId);
+		IProject project = new ProjectMapper().getProjectByID(mProject.getName());
+		mSprintBacklogHelper = new SprintBacklogHelper(project, userSession);
+		mProductBacklogHelper = new ProductBacklogHelper(userSession, project);
 	}
 	
 	/**
@@ -45,27 +53,33 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getNoParentTasks() throws SQLException {
-		IIssue[] existedTask = mProductBacklogHelper.getWildTasks();
-		List<TaskObject> existedTaskList = new ArrayList<TaskObject>();
-		for (IIssue task : existedTask)
-			existedTaskList.add(new TaskObject(task));
+	public String getTasksWithNoParent() throws SQLException {
+		ArrayList<TaskObject> existingTasks = mProductBacklogHelper.getTasksWithNoParent();
 		Gson gson = new Gson();
-		return gson.toJson(existedTaskList);
-	}
-	
-	public String getWildTask() throws NumberFormatException, SQLException {
-		return mSprintBacklogHelper.getTasksWithNoParent(mProject.getId());
+		return gson.toJson(existingTasks);
 	}
 	
 	/**
-	 * 在 story 中加入新的 task
+	 * 在 story 中加入新的 task (TaskInfo 可能不完全，待檢查!!!)
 	 * @param storyId
 	 * @param task
 	 * @return
+	 * @throws JSONException 
 	 */
-	public String createTaskInStory(String storyId, TaskObject task) {
-		return Long.toString(mSprintBacklogHelper.addTask(storyId, task).getIssueID());
+	public String createTaskInStory(long storyId, String taskJSonString) throws JSONException {
+		JSONObject taskJSon = new JSONObject(taskJSonString);
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.name = taskJSon.getString("name");
+		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
+		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
+		taskInfo.notes = taskJSon.getString("notes");
+		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		taskInfo.storyId = storyId;
+		taskInfo.projectId = mProject.getId();
+		
+		TaskObject task = mSprintBacklogHelper.addTask(mProject.getId(), taskInfo);
+		return String.valueOf(task.getId());
 	}
 	
 	/**
@@ -87,13 +101,22 @@ public class TaskWebService extends ProjectWebService {
 	}
 	
 	/**
-	 * 編輯 task
+	 * 編輯 task (TaskInfo 可能不完全，待檢查!!!)
 	 * @param taskJson
 	 * @return
+	 * @throws JSONException 
 	 */
-	public String updateTask(String taskJson) {
-		Gson gson = new Gson();
-		TaskObject task = gson.fromJson(taskJson, TaskObject.class);
-		return Boolean.toString(mSprintBacklogHelper.updateTask(task));
+	public String updateTask(String taskJSonString) throws JSONException {
+		JSONObject taskJSon = new JSONObject(taskJSonString);
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.name = taskJSon.getString("name");
+		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
+		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
+		taskInfo.notes = taskJSon.getString("notes");
+		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		
+		mSprintBacklogHelper.updateTask(taskInfo, taskJSon.getString("handler"), taskJSon.getString("partner"));
+		return "true";
 	}
 }

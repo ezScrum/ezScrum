@@ -31,6 +31,7 @@ public class SprintPlanMapper {
 	public SprintPlanMapper(IProject project) {
 		m_project = project;
 		m_projectId = m_project.getName();
+		loaderLoadElement();
 	}
 	
 	// ori name: save()
@@ -310,7 +311,7 @@ public class SprintPlanMapper {
 		return taskBoardStagesMap;
 	}
 	
-	private Element loaderLoadElement() {
+	public Element loaderLoadElement() {
 		String prefsPath = getUsrMetadataPath() + File.separator + ITER_PLAN_FILE;
 		if (!new File(prefsPath).exists()) {
 			prefsPath = getSysMetadataPath() + File.separator + ITER_PLAN_FILE;
@@ -410,8 +411,9 @@ public class SprintPlanMapper {
 
 	private Document loadElement() {
 		String prefsPath = getUsrMetadataPath() + File.separator + ITER_PLAN_FILE;
+		File file = new File(prefsPath);
 		
-		if ( ! new File(prefsPath).exists()) {
+		if (!file.exists()) {
 			return null;
 		}
 		

@@ -21,7 +21,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
@@ -41,8 +40,7 @@ public class SprintBacklogHelper {
 	public SprintBacklogHelper(IProject project, IUserSession userSession) {
 		mIProject = project;
 		mUserSession = userSession;
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
-				null);
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession, "-1");
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
@@ -62,9 +60,14 @@ public class SprintBacklogHelper {
 			String sprintId) {
 		mIProject = project;
 		mUserSession = userSession;
-		mSprintId = Long.parseLong(sprintId);
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
-				sprintId);
+		try {
+			mSprintId = Long.parseLong(sprintId);
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
+					sprintId);
+		} catch (NumberFormatException e) {
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mUserSession,
+					"-1");
+		}
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
@@ -163,6 +166,14 @@ public class SprintBacklogHelper {
 		return TaskObject.get(taskId);
 	}
 
+	public void addExistingTasksToStory(String[] selectedTaskIds, long storyId) {
+		ArrayList<Long> tasksId = new ArrayList<Long>();
+		for (String task : selectedTaskIds) {
+			tasksId.add(Long.parseLong(task));
+		}
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
+	}
+
 	public TaskObject getTask(long taskId) {
 		return mSprintBacklogMapper.getTask(taskId);
 	}
@@ -175,6 +186,27 @@ public class SprintBacklogHelper {
 		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
 	}
 
+	public void updateTask(TaskInfo taskInfo, String handlerUsername, String partnersUsername) {
+		AccountObject handler = AccountObject.get(handlerUsername);
+		long handlerId = -1;
+		if (handler != null) {
+			handlerId = handler.getId();
+		}
+		
+		ArrayList<Long> partnersId = new ArrayList<Long>();
+		for (String parnerUsername : partnersUsername.split(";")) {
+			AccountObject partner = AccountObject.get(parnerUsername);
+			if (partner != null) {
+				partnersId.add(partner.getId());
+			}
+		}
+		
+		taskInfo.handlerId = handlerId;
+		taskInfo.partnersId = partnersId;
+		
+		mSprintBacklogMapper.updateTask(taskInfo);
+	}
+
 	public void deleteTask(long taskId) {
 		mSprintBacklogMapper.deleteTask(taskId);
 	}
@@ -185,36 +217,6 @@ public class SprintBacklogHelper {
 		resetTask(taskId, task.getName(), task.getNotes(), null);
 		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
-	}
-
-	public void updateTask(TaskInfo taskInfo, String handlerUsername,
-			String rawPartnersUsername) {
-		AccountObject handler = AccountObject.get(handlerUsername);
-		long handlerId = -1;
-		if (handler != null) {
-			handlerId = handler.getId();
-		}
-		ArrayList<Long> partnersId = new ArrayList<Long>();
-		// split raw partners' user name by symbol ;
-		String[] partnersUsername = rawPartnersUsername.split(";");
-		for (String partnerUsername : partnersUsername) {
-			AccountObject partner = AccountObject.get(partnerUsername);
-			if (partner != null) {
-				partnersId.add(partner.getId());
-			}
-		}
-		taskInfo.handlerId = handlerId;
-		taskInfo.partnersId = partnersId;
-		mSprintBacklogMapper.updateTask(taskInfo);
-	}
-
-	public void addExistingTask(String[] selectedTasksStringId, long storyId) {
-		ArrayList<Long> tasksId = new ArrayList<Long>();
-		for (String taskStringId : selectedTasksStringId) {
-			long taskId = Long.parseLong(taskStringId);
-			tasksId.add(taskId);
-		}
-		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
 	}
 
 	public void closeStory(long id, String notes, String changeDate) {
@@ -236,8 +238,8 @@ public class SprintBacklogHelper {
 				notes, changeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, String changeDate) {
-		mSprintBacklogLogic.closeTask(id, name, notes, changeDate);
+	public void closeTask(long id, String name, String notes, int actual, String changeDate) {
+		mSprintBacklogLogic.closeTask(id, name, notes, actual, changeDate);
 	}
 
 	public void reopenTask(long taskId, String name, String notes,

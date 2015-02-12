@@ -115,9 +115,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			.append(" pr.").append(ProjectRoleEnum.PROJECT_ID).append(" = sr.").append(ScrumRoleEnum.PROJECT_ID)
 			.append(" and pr.").append(ProjectRoleEnum.ROLE).append(" = sr.").append(ScrumRoleEnum.ROLE)
 			.append(" where ").append(ProjectRoleEnum.ACCOUNT_ID).append(" = ").append(accountId);
+		
+		String queryString  = query.toString();
 		HashMap<String, ProjectRole> map = new HashMap<String, ProjectRole>();
 		ProjectRole systemRole = getSystemRole(accountId);
-		ResultSet result = mControl.executeQuery(query.toString());
+		ResultSet result = mControl.executeQuery(queryString);
 		
 		try {
 			if (systemRole != null) {
@@ -278,7 +280,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		ArrayList<AccountObject> members = new ArrayList<AccountObject>();
 		try {
 			while (result.next()) {
-				members.add(convertAccount(result));
+				members.add(convertAccountUseAccountId(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -346,7 +348,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addEqualCondition(AccountEnum.ID, id);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-
 		AccountObject account = null;
 		try {
 			if (result.next()) {
@@ -412,18 +413,27 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return accounts;
 	}
 
-	public AccountObject confirmAccount(String username, String password) {
+	/**
+	 * Use username and password to get the account.
+	 * 
+	 * NOTICE: password already be md5 hashed
+	 * 
+	 * @param username
+	 * @param passwordMd5
+	 * @return AccountObject
+	 */
+	public AccountObject confirmAccount(String username, String passwordMd5) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, username);
-		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, getMd5(password));
-		valueSet.addTextFieldEqualCondition(AccountEnum.ENABLE, "1"); 
+		valueSet.addTextFieldEqualCondition(AccountEnum.PASSWORD, passwordMd5);
+		valueSet.addEqualCondition(AccountEnum.ENABLE, 1); 
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		AccountObject account = null;
 		
 		try {
-			if (result.next()) {
+			while (result.next()) {
 				account = convertAccount(result);
 			}
 		} catch (SQLException e) {
@@ -447,8 +457,28 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 				.setEnable(enable);
 		return account;
 	}
+	
+	/**
+	 * For getProjectMembers 因為 join 出來的欄位是 ACCOUNT_ID
+	 * @param result
+	 * @return AccountObject
+	 * @throws SQLException
+	 */
+	public AccountObject convertAccountUseAccountId(ResultSet result) throws SQLException {
+		long id = result.getLong(ProjectRoleEnum.ACCOUNT_ID);
+		String username = result.getString(AccountEnum.USERNAME);
+		String nickName = result.getString(AccountEnum.NICK_NAME);
+		String password = result.getString(AccountEnum.PASSWORD);
+		String email = result.getString(AccountEnum.EMAIL);
+		boolean enable = result.getBoolean(AccountEnum.ENABLE);
 
-	private String getMd5(String str) {
+		AccountObject account = new AccountObject(id, username);
+		account.setPassword(password).setNickName(nickName).setEmail(email)
+				.setEnable(enable);
+		return account;
+	}
+
+	public String getMd5(String str) {
 		MessageDigest md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");

@@ -12,22 +12,22 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class CheckAccountIDAction extends Action {
+public class CheckUsernameAction extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		String id = request.getParameter("id");
+		String username = request.getParameter("id");
 		
-		// 設置Header與編碼
+		// 設置 Header 與編碼
 		response.setContentType("text/html");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setCharacterEncoding("UTF-8");
 
 		try {
-			// 將判斷帳號是否有效結果傳給View
-			response.getWriter().write((new AccountHelper()).validateAccountID(id));
+			// 將判斷帳號是否有效結果傳給 View
+			response.getWriter().write((new AccountHelper()).validateUsername(username));
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();

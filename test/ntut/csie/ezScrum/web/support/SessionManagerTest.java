@@ -5,18 +5,21 @@ import java.io.File;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+
+import org.junit.Test;
+
 import servletunit.struts.MockStrutsTestCase;
 
 public class SessionManagerTest extends MockStrutsTestCase{
-	private ProjectObject project = null;
+	private ProjectObject mProject = null;
 	private Configuration mConfig = null;
-	@SuppressWarnings("unused")
     private SessionManager mSessionManager = null;
-	private final String ACTION_PATH = "/getProjectMembers";
+	private final String mACTION_PATH = "/getProjectMembers";
 	
 	@Override
 	protected void setUp() throws Exception{
@@ -34,7 +37,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		// ================ set action info ========================
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(ACTION_PATH);
+		setRequestPathInfo(mACTION_PATH);
 	}
 	
 	@Override
@@ -42,18 +45,25 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
 		ini = null;
 		mConfig = null;
+		mProject = null;
 		mSessionManager = null;
 		super.tearDown();
 	}
 	
+	@Test
 	public void testGetProjectObject() {
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
@@ -61,24 +71,25 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		
-		request.getSession().setAttribute(projectName, project);
+		request.getSession().setAttribute(projectName, mProject);
 		mSessionManager = new SessionManager(request);
 
 		ProjectObject projectObject =  SessionManager.getProjectObject(request);
 		assertNotNull(projectObject);
 	}
 	
+	@Test
 	public void testGetScrumRole() throws Exception {
 		// ================ set request info ========================
-		String projectName = project.getName();
-		long projectId = project.getId();
+		String projectName = mProject.getName();
+		long projectId = mProject.getId();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
 		actionPerform();
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		request.getSession().setAttribute(projectName, project);
+		request.getSession().setAttribute(projectName, mProject);
 		
 		mSessionManager = new SessionManager(request);
 		
@@ -102,28 +113,29 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		ProjectDAO.getInstance().createScrumRole(projectId, RoleEnum.ProductOwner, scrumRole);
 		
 		// getScrumRole
-		ScrumRole role = SessionManager.getScrumRole(request, project, account);
+		ScrumRole role = SessionManager.getScrumRole(request, mProject, account);
 		
 		assertNotNull(role);
 		assertTrue(role.getEditProject());
 	}
 	
+	@Test
 	public void testSetProjectObject(){
 		// ================ set request info ========================
-		String projectName = project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		actionPerform();
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		request.getSession().setAttribute(projectName, project);
+		request.getSession().setAttribute(projectName, mProject);
 
 		mSessionManager = new SessionManager(request);
-		SessionManager.setProjectObject(request, project);
+		mSessionManager.setProjectObject(request, mProject);
 		
 		// assert
-		ProjectObject projectObject = (ProjectObject) request.getSession().getAttribute(project.getName());
+		ProjectObject projectObject = (ProjectObject) request.getSession().getAttribute(mProject.getName());
 		assertNotNull(projectObject);
 		assertEquals(projectName, projectObject.getName());
 	}
@@ -137,13 +149,13 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		String manager = "TEST_PROJECT_MANAGER";
 		long attachFileMaxSize = 1024L;
 		
-		project = new ProjectObject(projectName);
-		project.setDisplayName(displayName);
-		project.setManager(manager);
-		project.setCreateTime(System.currentTimeMillis());
-		project.setAttachFileSize(attachFileMaxSize);
-		project.save();
-		project.reload();
+		mProject = new ProjectObject(projectName);
+		mProject.setDisplayName(displayName);
+		mProject.setManager(manager);
+		mProject.setCreateTime(System.currentTimeMillis());
+		mProject.setAttachFileSize(attachFileMaxSize);
+		mProject.save();
+		mProject.reload();
 	}
 	
 }

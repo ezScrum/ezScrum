@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -19,7 +21,6 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class ProjectObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
-
 	private long mId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mDisplayName = "";
@@ -28,9 +29,6 @@ public class ProjectObject implements IBaseObject {
 	private long mAttachFileSize = DEFAULT_VALUE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-	private ArrayList<AccountObject> mMembers = null;
-	private ArrayList<AccountObject> mWorkers = null;
-	private ArrayList<TaskObject> mTasksWithNoParent = null;
 	
 	public ProjectObject(String name) {
 		mName = name;
@@ -116,6 +114,14 @@ public class ProjectObject implements IBaseObject {
 		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
 		return object;
 	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
 
 	/**
 	 * Get project by id
@@ -142,29 +148,32 @@ public class ProjectObject implements IBaseObject {
 	}
 	
 	public ArrayList<AccountObject> getProjectMembers() {
-		if (mMembers == null) {
-			mMembers = AccountDAO.getInstance().getProjectMembers(mId);
-		}
-		return mMembers;
+		ArrayList<AccountObject> projectMembers = AccountDAO.getInstance().getProjectMembers(mId);
+		return projectMembers;
 	}
 	
 	public ArrayList<AccountObject> getProjectWorkers() {
-		if (mWorkers == null) {
-			mWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
-		}
-		return mWorkers;
+		ArrayList<AccountObject> projectWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
+		return projectWorkers;
 	}
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {
-		if (mTasksWithNoParent == null) {
-			mTasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
-		}
-		return mTasksWithNoParent;
+		ArrayList<TaskObject> tasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
+		return tasksWithNoParent;
+	}
+	
+	public ScrumRole getScrumRole(RoleEnum role) {
+		return ProjectDAO.getInstance().getScrumRole(mId, mName, role);
+	}
+	
+	public void updateScrumRole(ScrumRole scrumRole) {
+		ProjectDAO.getInstance().updateScrumRole(mId, 
+				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
 	}
 	
 	@Override
     public void save() {
-		if (recordExists()) {
+		if (exists()) {
 			doUpdate();			
 		} else {
 			doCreate();
@@ -173,11 +182,9 @@ public class ProjectObject implements IBaseObject {
 
 	@Override
     public void reload() {
-		if (recordExists()) {
+		if (exists()) {
 			ProjectObject project = ProjectDAO.getInstance().get(mId);
-			if (project != null) {
-				resetData(project);
-			}
+			resetData(project);
 		}
     }
 
@@ -190,8 +197,9 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean recordExists() {
-		return mId > 0;
+	private boolean exists() {
+		ProjectObject project = ProjectDAO.getInstance().get(mId);
+		return project != null;
 	}
 	
 	private void resetData(ProjectObject project) {
@@ -203,17 +211,11 @@ public class ProjectObject implements IBaseObject {
 		mManager = project.getManager();
 		mCreateTime = project.getCreateTime();
 		mUpdateTime = project.getUpdateTime();
-		mMembers = null;
-		mWorkers = null;
-		mTasksWithNoParent = null;
 	}
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
-		try {
-	        reload();
-        } catch (Exception e) {
-        }
+        reload();
 	}
 	
 	private void doUpdate() {

@@ -1,9 +1,12 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
@@ -16,16 +19,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AccountMapperTest extends TestCase {
+public class AccountMapperTest{
 	private AccountMapper mAccountMapper;
 	private Configuration mConfig = null;
 
-	public AccountMapperTest(String testMethod) {
-		super(testMethod);
-	}
-
 	@Before
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -38,11 +37,10 @@ public class AccountMapperTest extends TestCase {
 		
 		// ============= release ==============
 		ini = null;
-		super.setUp();
 	}
 
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -50,8 +48,8 @@ public class AccountMapperTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -60,7 +58,6 @@ public class AccountMapperTest extends TestCase {
 		projectManager = null;
 		mAccountMapper = null;
 		mConfig = null;
-		super.tearDown();
 	}
 	
 	@Test
@@ -71,7 +68,7 @@ public class AccountMapperTest extends TestCase {
 		String email = "account@mail.com";
 		
 		AccountInfo userInfo = new AccountInfo();
-		userInfo.userName = userName;
+		userInfo.username = userName;
 		userInfo.password = password;
 		userInfo.nickName = nickName;
 		userInfo.email = email;
@@ -133,7 +130,7 @@ public class AccountMapperTest extends TestCase {
 		
 		AccountInfo userInfo = new AccountInfo();
 		userInfo.id = id;
-		userInfo.userName = userName;
+		userInfo.username = userName;
 		userInfo.password = password;
 		userInfo.nickName = nickName;
 		userInfo.email = email;

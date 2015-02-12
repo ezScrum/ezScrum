@@ -1,123 +1,100 @@
 package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
 // 一般使用者更新資料
 public class ViewProjectManagementActionTest extends MockStrutsTestCase {
 
-	private CreateAccount CA;
-	private int AccountCount = 1;
-	private String actionPath = "/viewManagement";	// defined in "struts-config.xml"
-	private IUserSession userSession;
-	
-	private Configuration configuration;
+	private CreateAccount mCA;
+	private int mAccountCount = 1;
+	private String mActionPath = "/viewManagement";
+	private IUserSession mUserSession;
+	private Configuration mConfig;
 	
 	public ViewProjectManagementActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 		
 		super.setUp();
 		
-		// 固定行為可抽離
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		/**
+		 * 設定讀取的 struts-config 檔案路徑
+		 * ViewProjectManagementAction
+		 */
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo(this.actionPath);
+    	setRequestPathInfo(this.mActionPath);
     	
     	// ============= release ==============
     	ini = null;
     }
 
-    protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+    protected void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+		
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
     	super.tearDown();    	
     	
     	// ============= release ==============
-//    	AccountFactory.releaseManager();
-    	(new AccountMapper()).releaseManager();
     	ini = null;
-    	this.CA = null;
-    	this.config = null;
-    	this.userSession = null;
-    	configuration = null;
+    	mCA = null;
+    	mUserSession = null;
+    	projectManager = null;
+    	mConfig = null;
     }
     
     // 
-    public void testViewProjectManagementAction_admin() throws LogonException { 	    			
-		
-    	// ================ set initial data =======================
-
-    	// ================ set initial data =======================    	
-    	
-    	// ================== set parameter info ==================== 	    
-   	
-    	// ================== set parameter info ====================
-    	    	
+    public void testViewProjectManagementAction_admin() { 	    			
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
-    	// ================ set session info ========================
-    	
-    	// ================ set URL parameter ========================    	
-    	// ================ set URL parameter ========================
+    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-    	actionPerform();		// 執行 action
+		// 執行 action
+    	actionPerform();
     	
-    	/*
-    	 * Verify:
-    	 */
+    	// Verify
     	verifyForward("Admin_ManagementView");    	
     }		
     
-    public void testViewProjectManagementAction_user() throws LogonException { 	    			
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+    public void testViewProjectManagementAction_user() { 	    			
+		// create account
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 		
     	// ================ set initial data =======================
-    	this.userSession = new UserSession(this.CA.getAccountList().get(0));    	
-    	// ================ set initial data =======================
-
-    	// ================ set initial data =======================    	
-    	
-    	// ================== set parameter info ==================== 	    
-   	
-    	// ================== set parameter info ====================
+    	mUserSession = new UserSession(mCA.getAccountList().get(0));    	
     	    	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", this.userSession);
-    	// ================ set session info ========================
-    	
-    	// ================ set URL parameter ========================    	
-    	// ================ set URL parameter ========================
+    	request.getSession().setAttribute("UserSession", mUserSession);
 
-    	actionPerform();		// 執行 action
+		// 執行 action
+    	actionPerform();
     	
-    	/*
-    	 * Verify:
-    	 */
+    	// Verify
     	verifyForward("User_ManagementView");    	
     }	    
-    
 }

@@ -64,16 +64,16 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     	});
 	},
 	initialTaskBoard: function() {
-		// remove all items (for選擇其它sprint時以AJAX的形式更新，取代切換頁面的形式) 
+		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
 		this.TaskBoardCardPanel.init_StatusPanel();
 		
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
-			// Issue的三種狀態 'new', 'assigned', 'closed';
+			// Issue 的三種狀態 'new', 'assigned', 'closed';
 			var story = TaskBoard_StoriesStore.getAt(i);
 			
 
-			// 建立StatusPanel，GroupID則是依照StoryID，並且每個Panel再設置其所代表的Status
-			// createStoryStatusPanel function 在 ezScrumWidget/TaskBoard/StatusPanel.js
+			// 建立 StatusPanel，GroupID 則是依照 StoryID，並且每個 Panel 再設置其所代表的 Status
+			// createStoryStatusPanel function 在  ezScrumWidget/TaskBoard/StatusPanel.js
 			var statusPanel = createStoryStatusPanel(story.id);
 			this.TaskBoardCardPanel.add(statusPanel);
 
@@ -82,7 +82,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 
 			statusPanel.get(story.id + '_' + story.get('Status')).add(storyCard);
 			
-			// 相同Story的Task會放在同一個Panel裡面
+			// 相同 Story 的 Task 會放在同一個 Panel 裡面
 			var tasks = story.get('Tasks');
 			for ( var k = tasks.length-1 ; k >= 0; k--) {
 				var task = tasks[k];
@@ -92,7 +92,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 				statusPanel.get(story.id + '_' + task.Status).add(taskCard);
 			}
 			
-			// 讓taskboard重新進行Layout以便可以計算Stroy或Task的高度，再去重設其他沒有放Story或Task的Panel
+			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
 			this.TaskBoardCardPanel.doLayout();
 			statusPanel.resetCellHeight();
 		}
@@ -353,16 +353,16 @@ function showReCheckOutTask(id, card) {
 	RE_CheckOutTaskWindow.showWidget(id);
 }
 
-// show done task
+// show done issue
 function showDoneIssue(id, card) {
 	DoneIssueWindow.setCard(card);
-	DoneIssueWindow.showWidget(id);
+	DoneIssueWindow.showWidget(id, card.issueType);
 }
 
 // show reopen issue
 function showReOpenIssue(id, card) {
 	RE_OpenIssueWindow.setCard(card);
-	RE_OpenIssueWindow.showWidget(id);
+	RE_OpenIssueWindow.showWidget(id, card.issueType);
 }
 
 // attach file
@@ -371,8 +371,8 @@ function attachFile(issueID) {
 }
 
 // show issue history
-function showHistory(issueID) {
-	IssueHistory_Window.showTheWindow(issueID);
+function showHistory(issueId, issueType) {
+	IssueHistory_Window.showTheWindow(issueId, issueType);
 }
 
 // delete file

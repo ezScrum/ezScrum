@@ -393,7 +393,7 @@
     	<!-- admin  -->
     		<!-- Account CRUD -->
     	<action path="/getAccountList"				type="ntut.csie.ezScrum.web.action.rbac.GetAccountListAction" />    	
-    	<action path="/checkAccountID"				type="ntut.csie.ezScrum.web.action.rbac.CheckAccountIDAction"/>			
+    	<action path="/checkAccountID"				type="ntut.csie.ezScrum.web.action.rbac.CheckUsernameAction"/>			
     	<action path="/modifyAccount"				type="ntut.csie.ezScrum.web.action.rbac.ModifyAccountAction" />
     	<action path="/deleteAccount"				type="ntut.csie.ezScrum.web.action.rbac.DeleteAccountAction" />    	
 			<!-- Assign Role -->

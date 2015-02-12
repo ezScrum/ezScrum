@@ -12,10 +12,10 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -48,6 +48,9 @@ public class SprintBacklogLogic {
 			String sprintID) {
 		mIProject = project;
 		mUserSession = userSession;
+		if (sprintID == null || sprintID.equals("")) {
+			sprintID = "-1";
+		}
 		mSprintBacklogMapper = createSprintBacklogMapper(Long
 				.parseLong(sprintID));
 	}
@@ -72,12 +75,16 @@ public class SprintBacklogLogic {
 	private SprintBacklogMapper createSprintBacklogMapper(long sprintId) {
 		SprintBacklogMapper sprintBacklogMapper = null;
 
-		if (sprintId == -1 || sprintId == 0) {
-			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-					mUserSession);
-		} else {
-			sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-					mUserSession, sprintId);
+		try {
+			if (sprintId == -1 || sprintId == 0) {
+				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+						mUserSession);
+			} else {
+				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
+						mUserSession, sprintId);
+			}
+		} catch (Exception e) {
+			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
 	}
@@ -128,9 +135,15 @@ public class SprintBacklogLogic {
 		mSprintBacklogMapper.resetTask(id, name, notes, closeDate);
 	}
 	
-	public void closeTask(long id, String name, String notes, String changeDate) {
+	public void closeTask(long id, String name, String notes, int actual, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeTask(id, name, notes, closeDate);
+		mSprintBacklogMapper.closeTask(id, name, notes, actual, closeDate);
+	}
+	
+	// for ezScrum 1.8
+	// TaskInfo should include task id
+	public void updateTask(TaskInfo taskInfo) {
+		mSprintBacklogMapper.updateTask(taskInfo);
 	}
 
 	/**

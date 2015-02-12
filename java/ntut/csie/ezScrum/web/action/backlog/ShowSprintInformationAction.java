@@ -52,8 +52,9 @@ public class ShowSprintInformationAction extends Action {
 		String sprintID = request.getParameter("sprintID");
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession);
-		if (backlog == null) {
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
+		long sprintId = backlog.getSprintPlanId();
+		if (backlog == null || sprintId == -1 || sprintId == 0) {
 			return mapping.findForward("error");
 		}
 		
@@ -68,7 +69,7 @@ public class ShowSprintInformationAction extends Action {
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintPlanId());
 		request.setAttribute("SprintPlan", plan);
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkersUsername(projectObject.getId()));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(projectObject.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "

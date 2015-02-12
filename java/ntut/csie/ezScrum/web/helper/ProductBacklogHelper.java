@@ -19,6 +19,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -145,7 +146,7 @@ public class ProductBacklogHelper {
 	 * @return IIssue
 	 */
 	public IIssue editStory(long issueId, String name, String value, String importance, String estimate, String howToDemo, String notes, boolean addHistory) {
-		mProductBacklogMapper.modifyName(issueId, name, null);
+		mProductBacklogMapper.modifyName(issueId, name, new Date());
 		Element history = translateIssueToXML(value, importance, estimate, howToDemo, notes);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
@@ -431,11 +432,11 @@ public class ProductBacklogHelper {
 		return list.toArray(new IIssue[list.size()]);
 	}
 	
-	public ArrayList<TaskObject> getwildedTasks() {
-		ArrayList<TaskObject> wildedTasks = new ArrayList<TaskObject>();
-		
-		
-		return wildedTasks;
+	public ArrayList<TaskObject> getTasksWithNoParent() {
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		tasks = project.getTasksWithNoParent();
+		return tasks;
 	}
 
 	/**

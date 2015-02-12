@@ -20,12 +20,12 @@ public class TaskHandlerFilterTest extends TestCase {
 	}
 	
 	public void testFilterStories() {
-		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasks_byInfo(), this.compareInfo);
+		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasksByInfo(), this.compareInfo);
 		assertNull(filter.getStories());
 	}
 	
 	public void testFilterTasks_1() {
-		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasks_byInfo(), this.compareInfo);
+		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasksByInfo(), this.compareInfo);
 		ITask[] filterTasks = filter.getTasks();
 
 		assertEquals(5, filterTasks.length);
@@ -40,7 +40,7 @@ public class TaskHandlerFilterTest extends TestCase {
 	}
 	
 	public void testFilterTasks_2() {
-		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasks_byInfo(), "ALL");
+		AProductBacklogFilter filter = new TaskHandlerFilter(this.data.getTasksByInfo(), "ALL");
 		ITask[] filterTasks = filter.getTasks();
 
 		assertEquals(10, filterTasks.length);

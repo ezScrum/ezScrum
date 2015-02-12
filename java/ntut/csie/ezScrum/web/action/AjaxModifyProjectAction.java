@@ -66,7 +66,8 @@ public class AjaxModifyProjectAction extends PermissionAction {
 			.setComment(comment)
 			.setManager(projectManager)
 			.save();
-		SessionManager.setProjectObject(request, projectObject);
+		SessionManager sessionManager = new SessionManager(request);
+		sessionManager.setProjectObject(request, projectObject);
 		
 		return new StringBuilder("success");
 	}

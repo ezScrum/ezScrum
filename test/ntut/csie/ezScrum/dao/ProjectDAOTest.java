@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,16 +23,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProjectDAOTest extends TestCase {
+public class ProjectDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
 
-	public ProjectDAOTest(String testMethod) {
-		super(testMethod);
-	}
-
 	@Before
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -40,12 +38,10 @@ public class ProjectDAOTest extends TestCase {
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
-
-		super.setUp();
 	}
 
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -53,14 +49,11 @@ public class ProjectDAOTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		// ============= release ==============
 		ini = null;
 		mConfig = null;
 		mControl = null;
-
-		super.tearDown();
 	}
 
 	@Test

@@ -241,8 +241,8 @@ public class UnplannedItemMapper {
 
 	public void addHistory(long issueId, int issueType, int historyType,
 			String oldValue, String newValue) {
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(issueId, issueType, historyType,
-				oldValue, newValue, System.currentTimeMillis()));
+		HistoryObject history = new HistoryObject(issueId, issueType, historyType,
+				oldValue, newValue, System.currentTimeMillis());
+		history.save();
 	}
 }

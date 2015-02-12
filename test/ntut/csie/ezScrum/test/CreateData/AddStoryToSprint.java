@@ -2,9 +2,6 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -12,39 +9,35 @@ import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 
 public class AddStoryToSprint {
-	private static Log log = LogFactory.getLog(AddStoryToSprint.class);
-
+	private static Log mlog = LogFactory.getLog(AddStoryToSprint.class);
 	private int mStoryCount; // Number of Stories each sprint
 	private int mSprintCount;
 	private int mProjectCount;
 	private CreateProject mCP;
 	private ArrayList<IIssue> mStories = new ArrayList<IIssue>();
-	private Configuration config = new Configuration();
+	private Configuration mConfig = new Configuration();
 
-	public AddStoryToSprint(int count, int EstValue, CreateSprint CS,
-			CreateProject CP, String type) throws Exception {
-		mStoryCount = count;
-		mProjectCount = CP.getProjectList().size();
-		mSprintCount = CS.getSprintCount();
-		mCP = CP;
-
-		CreateStories(EstValue, type);
-	}
-
-	public AddStoryToSprint(int storyCount, int EstValue, int SprintNumber,
+	public AddStoryToSprint(int storyCount, int estimate, CreateSprint CS,
 			CreateProject CP, String type) throws Exception {
 		mStoryCount = storyCount;
 		mProjectCount = CP.getProjectList().size();
-		mSprintCount = SprintNumber;
+		mSprintCount = CS.getSprintCount();
 		mCP = CP;
+		CreateStories(estimate, type);
+	}
 
-		CreateStories(EstValue, type);
+	public AddStoryToSprint(int storyCount, int estimate, int sprintCount,
+			CreateProject CP, String type) throws Exception {
+		mStoryCount = storyCount;
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = sprintCount;
+		mCP = CP;
+		CreateStories(estimate, type);
 	}
 
 	public int getSprintCount() {
@@ -77,7 +70,7 @@ public class AddStoryToSprint {
 					subList_each.add(subList.get((k * mStoryCount) + l));
 				}
 				addStoryToSprint(project, subList_each, Integer.toString(k + 1));
-				log.info("專案 " + project.getName() + ", 第 " + (k + 1)
+				mlog.info("專案 " + project.getName() + ", 第 " + (k + 1)
 						+ " 個 sprint 加入 " + mStoryCount + " 個 stories 成功");
 			}
 		}
@@ -95,7 +88,7 @@ public class AddStoryToSprint {
 	private void addStoryToSprint(IProject p, ArrayList<Long> list,
 			String sprintID) {
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p,
-				config.getUserSession());
+				mConfig.getUserSession());
 
 		for (long issueId : list) {
 			IIssue issue = productBacklogMapper.getIssue(issueId);
@@ -127,7 +120,6 @@ public class AddStoryToSprint {
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
 				productBacklogMapper.updateStoryRelation(issueId,
 						issue.getReleaseID(), sprintID, null, null, current);
-
 			}
 		}
 	}

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
@@ -267,8 +266,8 @@ public class ProductBacklogMapper {
 
 	public void addHistory(long issueId, int issueType, int historyType,
 			String oldValue, String newValue) {
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.create(new HistoryObject(issueId, issueType, historyType,
-				oldValue, newValue, System.currentTimeMillis()));
+		HistoryObject history = new HistoryObject(issueId, issueType, historyType,
+				oldValue, newValue, System.currentTimeMillis());
+		history.save();
 	}
 }

@@ -4,13 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class PluginMockDataHelper {
-	
 	public static boolean isMockFileExisted(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();

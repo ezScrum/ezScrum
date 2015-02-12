@@ -7,21 +7,20 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class DropTask {
 	private Configuration mConfig = new Configuration();
-	private CreateProject mCreateProject;
+	private CreateProject mCP;
 	private long mSprintId = 0;
 	private long mTaskId = 0;
 	
 	public DropTask(CreateProject createProject, long sprintId, long parentId, long taskId) {
-		mCreateProject = createProject;
+		mCP = createProject;
 		mSprintId = sprintId;
 		mTaskId = taskId;
 	}
 
 	public void exe() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		IUserSession userSession = mConfig.getUserSession();
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, userSession, mSprintId);
-		// remove relation
 		sprintBacklogMapper.dropTask(mTaskId);
 	}
 }

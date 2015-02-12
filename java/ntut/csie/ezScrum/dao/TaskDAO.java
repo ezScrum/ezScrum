@@ -168,11 +168,11 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.setOrderBy(IssuePartnerRelationEnum.ID, IQueryValueSet.ASC_ORDER);
 		String query = valueSet.getSelectQuery();
 
-		ArrayList<Long> partnerIdList = new ArrayList<Long>();
+		ArrayList<Long> partnersId = new ArrayList<Long>();
 		ResultSet result = mControl.executeQuery(query);
 		try {
 			while (result.next()) {
-				partnerIdList.add(result
+				partnersId.add(result
 						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
 			}
 		} catch (SQLException e) {
@@ -180,8 +180,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		} finally {
 			closeResultSet(result);
 		}
-			
-		return partnerIdList;
+		return partnersId;
 	}
 
 	public long addPartner(long taskId, long partnerId) {

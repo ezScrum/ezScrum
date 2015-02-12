@@ -87,7 +87,11 @@ public class AccountObject implements IBaseObject {
 	}
 
 	public HashMap<String, ProjectRole> getRoles() {
-		return AccountDAO.getInstance().getProjectRoleMap(mId);
+		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleMap(mId);
+		if (roles == null) {
+			roles = new HashMap<String, ProjectRole>();
+		}
+		return roles; 
 	}
 
 	/**
@@ -187,6 +191,10 @@ public class AccountObject implements IBaseObject {
 	 * @return AccountObject
 	 */
 	public static AccountObject confirmAccount(String username, String password) {
+		// 從資料庫拿出來的密碼會是加密過的，所以這邊用長度判斷是否已經經過 MD5 加密，如果長度不符合 32 就用 MD5 hash 過一次
+		if (password.length() != 32) {
+			password = AccountDAO.getInstance().getMd5(password);
+		}
 		return AccountDAO.getInstance().confirmAccount(username, password);
 	}
 
@@ -201,7 +209,7 @@ public class AccountObject implements IBaseObject {
 
 	@Override
 	public void save() {
-		if (recordExists()) {
+		if (exists()) {
 			doUpdate();
 		} else {
 			doCreate();
@@ -209,17 +217,16 @@ public class AccountObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() throws Exception {
-		if (recordExists()) {
+	public void reload() {
+		if (exists()) {
 			AccountObject account = AccountDAO.getInstance().get(mId);
-			if (account != null) {
-				resetData(account);
-			}
+			resetData(account);
 		}
 	}
 
-	private boolean recordExists() {
-		return mId > 0;
+	private boolean exists() {
+		AccountObject account = AccountDAO.getInstance().get(mId);
+		return account != null;
 	}
 
 	private void resetData(AccountObject account) {
@@ -233,10 +240,7 @@ public class AccountObject implements IBaseObject {
 
 	private void doCreate() {
 		mId = AccountDAO.getInstance().create(this);
-		try {
-			reload();
-		} catch (Exception e) {
-		}
+		reload();
 	}
 
 	private void doUpdate() {
@@ -247,11 +251,13 @@ public class AccountObject implements IBaseObject {
 	public JSONObject toJSON() throws JSONException {
 		JSONObject account = new JSONObject();
 
-		account.put(AccountEnum.ID, mId).put(AccountEnum.USERNAME, mUsername)
-				.put(AccountEnum.PASSWORD, mPassword)
-				.put(AccountEnum.EMAIL, mEmail)
-				.put(AccountEnum.ENABLE, mEnable)
-				.put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
+		account.put(AccountEnum.ID, mId)
+		       .put(AccountEnum.USERNAME, mUsername)
+		       .put(AccountEnum.NICK_NAME, mNickName)
+			   .put(AccountEnum.PASSWORD, mPassword)
+			   .put(AccountEnum.EMAIL, mEmail)
+			   .put(AccountEnum.ENABLE, mEnable)
+			   .put(ProjectRoleEnum.TABLE_NAME, getProjectRoleMap());
 
 		return account;
 	}

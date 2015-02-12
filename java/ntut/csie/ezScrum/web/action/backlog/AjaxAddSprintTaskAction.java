@@ -1,5 +1,8 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +14,7 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
@@ -34,26 +38,38 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		IProject project = (IProject)SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
 		// get parameter info
 		String sprintId = request.getParameter("sprintId");
-		String storyId = request.getParameter("issueID");
-
+		
+		long storyId = Long.parseLong(request.getParameter("issueID"));
+		int estimate = request.getParameter("Estimate").equals("") ? 0 : Integer.parseInt(request.getParameter("Estimate"));
+		String name = request.getParameter("Name");
+		String notes = request.getParameter("Notes");
+		String specificTimeString = request.getParameter("SpecificTime");
+		
+		Date specificDate;
+		try {
+			specificDate  = DateUtil.parse(specificTimeString, DateUtil._16DIGIT_DATE_TIME);
+		} catch (ParseException e) {
+			specificDate = new Date();
+		}
+		
 		// 表格的資料
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.name = request.getParameter("Name");
-		taskInfo.projectId = projectObject.getId();
-		taskInfo.storyId = Long.parseLong(storyId);
-		taskInfo.estimate = Integer.parseInt(request.getParameter("Estimate"));
-		taskInfo.notes = request.getParameter("Notes");
-		taskInfo.specificTime = Long.parseLong(request.getParameter("SpecificTime"));
+		taskInfo.name = name;
+		taskInfo.storyId = storyId;
+		taskInfo.estimate = estimate;
+		taskInfo.notes = notes;
+		taskInfo.specificTime = specificDate.getTime();
+		
+		ProjectObject projectObject = ProjectObject.get(project.getName());
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project, session, sprintId);
-		TaskObject task = sprintBacklogHelper.createTaskInStory(taskInfo);
+		TaskObject task = sprintBacklogHelper.addTask(projectObject.getId(), taskInfo);
 
 		// 組出回傳資訊
 		StringBuilder sb = new StringBuilder();

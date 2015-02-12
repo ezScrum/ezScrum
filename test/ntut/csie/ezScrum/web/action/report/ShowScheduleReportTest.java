@@ -29,78 +29,77 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowScheduleReportTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private AddStoryToSprint ASS;
-	private AddTaskToStory ATS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/showScheduleReport";
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
+	private Configuration mConfig;
+	private final String mActionPath = "/showScheduleReport";
 
 	public ShowScheduleReportTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
-		CP = new CreateProject(1);
-		CP.exeCreate(); // 新增一測試專案
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
 
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(ACTION_PATH);
+		setRequestPathInfo(mActionPath);
 
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
 		projectManager = null;
-		CP = null;
-		CS = null;
-		ASS = null;
-		ATS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mATTS = null;
+		mConfig = null;
 	}
 
 	/**
 	 * 正常執行
 	 */
 	public void testShowScheduleReport_1() throws Exception {
-		CS = new CreateSprint(1, CP);
-		CS.exe(); // 新增1個Sprint到專案內
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增1個Sprint到專案內
 
-		ASS = new AddStoryToSprint(2, 1, CS, CP, CreateProductBacklog.TYPE_ESTIMATION);
-		ASS.exe(); // 新增2筆Story到Sprint內
+		mASTS = new AddStoryToSprint(2, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe(); // 新增2筆Story到Sprint內
 
-		ATS = new AddTaskToStory(2, 1, ASS, CP);
-		ATS.exe(); // 新增2筆Task到Story內
+		mATTS = new AddTaskToStory(2, 1, mASTS, mCP);
+		mATTS.exe(); // 新增2筆Task到Story內
 
 		// ================ set initial data =======================
-		IProject project = CP.getProjectList().get(0);
-		int SprintID = Integer.parseInt(CS.getSprintIDList().get(0));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, configuration.getUserSession(), CS.getSprintIDList().get(0));
+		IProject project = mCP.getProjectList().get(0);
+		int sprintId = Integer.parseInt(mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
 
@@ -108,9 +107,9 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.getSession().setAttribute("sprintID", SprintID);
+		request.getSession().setAttribute("sprintID", sprintId);
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -123,7 +122,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String startDate = DateUtil.format(sprintBacklogMapper.getSprintStartDate(), DateUtil._8DIGIT_DATE_1);
 		String endtDate = DateUtil.format(sprintBacklogMapper.getSprintEndDate(), DateUtil._8DIGIT_DATE_1);
 		String ExpectedDuration = startDate + " ~ " + endtDate;
-		assertEquals(SprintID, ActualReport.getIteration());
+		assertEquals(sprintId, ActualReport.getIteration());
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/ScheduleReport/Sprint1/ScheduleReport.png", ActualReport.getPath());
 		assertEquals(stories.size(), ActualReport.getStorySize());
 		assertEquals(sprintBacklogMapper.getSprintGoal(), ActualReport.getSprintGoal());
@@ -151,7 +150,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	 */
 	public void testShowScheduleReport_2() throws IOException {
 		// ================ set initial data =======================
-		IProject project = CP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("No sprints in project!");
 
@@ -159,7 +158,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 
 		// ================ 執行 action ==============================
@@ -181,20 +180,17 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	 */
 	public void testShowScheduleReport_3() throws IOException {
 		// ================ set initial data =======================
-		IProject project = CP.getProjectList().get(0);
-		CS = new CreateSprint(1, CP);
-		CS.exe(); // 新增1個Sprint到專案內
+		IProject project = mCP.getProjectList().get(0);
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增1個Sprint到專案內
 		// 新增帳號
-		CreateAccount testAccount = new CreateAccount(1);
-		testAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(CP, testAccount);
-		addUserToRole.exe_Guest();
+		CreateAccount CA = new CreateAccount(1);
+		CA.exe();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_Guest();
 		// 使用無權限的帳號資訊塞到UserSession
-//		IAccount theAccount = null;
-//		IAccountManager manager = AccountFactory.getManager();
-//		theAccount = manager.getAccount(testAccount.getAccount_ID(1));
-		AccountObject theAccount = new AccountMapper().getAccount(testAccount.getAccount_ID(1));
-		IUserSession theUserSession = new UserSession(theAccount);
+		AccountObject account = new AccountMapper().getAccount(CA.getAccount_ID(1));
+		IUserSession userSession = new UserSession(account);
 
 		StringBuilder expectedResponseTest = new StringBuilder();
 		expectedResponseTest.append("System failure!");
@@ -203,7 +199,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		String projectName = project.getName();
 		request.setHeader("Referer", "?PID=" + projectName); // SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", theUserSession);
+		request.getSession().setAttribute("UserSession", userSession);
 		request.getSession().setAttribute("Project", project);
 
 		// ================ 執行 action ==============================

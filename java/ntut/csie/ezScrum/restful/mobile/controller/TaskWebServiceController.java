@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.jettison.json.JSONException;
+
 import ntut.csie.ezScrum.restful.mobile.service.TaskWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -34,15 +36,17 @@ public class TaskWebServiceController {
 	@POST
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateTask(@PathParam("projectID") String projectID,
+	public String updateTask(@PathParam("projectID") String projectId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password, String taskJson) {
 		System.out.println("task json : " + taskJson);
 		InformationDecoder decoder = new InformationDecoder();
+		String result = "false";
 		try {
-			decoder.decode(username, password, projectID);
+			decoder.decode(username, password, projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			result = mTaskWebService.updateTask(taskJson);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: updateTask, " + "exception: " + e.toString());
@@ -51,8 +55,12 @@ public class TaskWebServiceController {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: updateTask, " + "exception: " + e.toString());
 			e.printStackTrace();
+		} catch (JSONException e) {
+			System.out.println("class: TaskWebServiceController, "
+					+ "method: updateTask, " + "exception: " + e.toString());
+			e.printStackTrace();
 		}
-		return mTaskWebService.updateTask(taskJson);
+		return result;
 	}
 
 	/****
@@ -65,17 +73,17 @@ public class TaskWebServiceController {
 	@GET
 	@Path("existed")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getExistedTask(@PathParam("projectID") String projectID,
+	public String getExistedTask(@PathParam("projectID") String projectId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		String existedTaskListJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
+			decoder.decodeProjectID(projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			existedTaskListJson = mTaskWebService.getNoParentTasks();
+			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
 		} catch (LogonException e) {
 			System.out
 					.println("class: TaskWebServiceController, "
@@ -108,20 +116,18 @@ public class TaskWebServiceController {
 	@POST
 	@Path("create/{storyID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createTaskInStory(@PathParam("projectID") String projectID,
-			@PathParam("storyID") String storyID,
+	public String createTaskInStory(@PathParam("projectID") String projectId,
+			@PathParam("storyID") long storyId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password, String taskJson) {
-		Gson gson = new Gson();
 		InformationDecoder decoder = new InformationDecoder();
 		String newTaskId = "";
-		TaskObject task = gson.fromJson(taskJson, TaskObject.class);
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
+			decoder.decodeProjectID(projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			newTaskId = mTaskWebService.createTaskInStory(storyID, task);
+			newTaskId = mTaskWebService.createTaskInStory(storyId, taskJson);
 		} catch (IOException e) {
 			System.out
 					.println("class: TaskWebServiceController, "
@@ -130,6 +136,11 @@ public class TaskWebServiceController {
 							+ e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
+			System.out.println("class: TaskWebServiceController, "
+					+ "method: createTaskInStory, " + "exception: "
+					+ e.toString());
+			e.printStackTrace();
+		} catch (JSONException e) {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: createTaskInStory, " + "exception: "
 					+ e.toString());
@@ -149,18 +160,18 @@ public class TaskWebServiceController {
 	@Path("delete/{taskID}/from/{storyID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteTask(@PathParam("projectID") String projectID,
-			@PathParam("taskID") String taskID,
-			@PathParam("storyID") String storyID,
+	public void deleteTask(@PathParam("projectID") String projectId,
+			@PathParam("taskID") String taskId,
+			@PathParam("storyID") String storyId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
+			decoder.decodeProjectID(projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			mTaskWebService.deleteTask(taskID, storyID);
+			mTaskWebService.deleteTask(taskId, storyId);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: deleteTask, " + "api:InformationDecoder, "
@@ -184,18 +195,18 @@ public class TaskWebServiceController {
 	@Path("drop/{taskID}/from/{storyID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void dropTask(@PathParam("projectID") String projectID,
-			@PathParam("taskID") String taskID,
-			@PathParam("storyID") String storyID,
+	public void dropTask(@PathParam("projectID") String projectId,
+			@PathParam("taskID") String taskId,
+			@PathParam("storyID") String storyId,
 			@QueryParam("userName") String username,
 			@QueryParam("password") String password) {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
+			decoder.decodeProjectID(projectId);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			mTaskWebService.dropTask(taskID, storyID);
+			mTaskWebService.dropTask(taskId, storyId);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: dropTask, " + "api:InformationDecoder, "

@@ -20,76 +20,76 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/showSprintBacklogTreeListInfo";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mACTION_PATH = "/showSprintBacklogTreeListInfo";
+	private IProject mProject;
 	
 	public ShowSprintBacklogListInfoActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.save();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mACTION_PATH );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.save();
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
 	
 	/**
 	 * 沒有stories and tasks
 	 */
 	public void testShowSprintBacklogListInfo_1(){
-		List<String> idList = this.CS.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -109,25 +109,25 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	 * @throws Exception 
 	 */
 	public void testShowSprintBacklogListInfo_2() throws Exception{
-		List<String> idList = this.CS.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
 		int taskEstValue = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, this.CP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -166,24 +166,24 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	}
 	
 	public void testShowSprintBacklogListInfo_3() throws Exception {
-		List<String> idList = this.CS.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================  執行 action ==============================
 		actionPerform();
 		// ================    assert    =============================
@@ -208,13 +208,13 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		StoryDate = getStoryDate.getDateList(currentDate, 10);
 		
 		//  Task
-		String TaskType = addTaskToStory.getTasks().get(0).getCategory();
-		String TaskID = String.valueOf(addTaskToStory.getTasks().get(0).getIssueID());
-		String TaskName = addTaskToStory.getTasks().get(0).getSummary();
-		String TaskEstimate = addTaskToStory.getTasks().get(0).getEstimated();
-		String TaskStatus = addTaskToStory.getTasks().get(0).getStatus();
+		String TaskType = "Task";
+		String TaskID = String.valueOf(addTaskToStory.getTasks().get(0).getId());
+		String TaskName = addTaskToStory.getTasks().get(0).getName();
+		String TaskEstimate = addTaskToStory.getTasks().get(0).getEstimate() + "";
+		String TaskStatus = addTaskToStory.getTasks().get(0).getStatusString();
 		String TaskNotes = addTaskToStory.getTasks().get(0).getNotes();
-		String TaskLink = "\"/ezScrum/showIssueInformation.do?issueID\\u003d2\"";
+		String TaskLink = "";
 	//  取得Task日期
 		List<String> TaskDate = new ArrayList<String>();
 		TaskDate = getStoryDate.getDateList(currentDate, 10);
@@ -243,7 +243,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		}
 		expectedResponseTest.append(",\"leaf\":false")
 							.append(",\"expanded\":false")
-							.append(",\"id\":\"1\"")
+							.append(",\"id\":\"Story:1\"")
 							.append(",\"cls\":\"folder\"")
 							.append(",\"children\":[{\"Type\":\"" + TaskType + "\"")
 							.append(",\"ID\":\"" + TaskID + "\"")
@@ -255,7 +255,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Importance\":\"\"")
 							.append(",\"Status\":\"" + TaskStatus + "\"")
 							.append(",\"Notes\":\"" + TaskNotes + "\"")
-							.append(",\"Link\":" + TaskLink)
+							.append(",\"Link\":\"" + TaskLink + "\"")
 							.append(",\"SprintID\":\"\"")
 							.append(",\"ReleaseID\":\"\"")
 							.append(",\"dateList\":[");
@@ -278,10 +278,11 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Date_8\":\"\"")
 							.append(",\"leaf\":true")
 							.append(",\"expanded\":false")
-							.append(",\"id\":\"2\"")
+							.append(",\"id\":\"Task:1\"")
 							.append(",\"cls\":\"file\"}]}]");
 		
 		String actualResponseText = response.getWriterBuffer().toString();
+		System.out.println(actualResponseText);
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
 	}
 }
