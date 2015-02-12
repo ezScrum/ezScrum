@@ -10,18 +10,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.MantisAccountManager;
+import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.RoleEnum;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.project.core.ICVS;
 import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IPath;
@@ -37,106 +36,121 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
 
-	//private ITSPrefsStorage mPrefs;
-	private MySQLService mService;
-	
-	private Configuration mConfig;
-
 	public ProjectMapper() {
-		//mPrefs = new ITSPrefsStorage();
-		mConfig = new Configuration();
-		mService = new MySQLService(mConfig);
 	}
 
 	/**
-	 * new mapper function for ezScrum v1.8
+	 * @param name projectName
+	 * @param projectInfo 其他資訊都包成 Info
+	 * @return projectId
 	 */
-	public ProjectObject createProjectForDb(ProjectObject project) {
-		mService.openConnect();
-		mService.createProject(project);
-		project = mService.getProjectByPid(project.getName());
-		mService.closeConnect();
-		return project;
-	}
-
-	public boolean deleteProjectForDb(String id) {
-		mService.openConnect();
-		boolean result = mService.deleteProject(id);
-		mService.closeConnect();
-		return result;
-	}
-
-	public ProjectObject updateProjectForDb(ProjectObject project) {
-		mService.openConnect();
-		mService.updateProject(project);
-		project = mService.getProjectById(project.getId());
-		mService.closeConnect();
-		return project;
-	}
-
-	public List<ProjectObject> getProjectListForDb() {
-		mService.openConnect();
-		List<ProjectObject> result = mService.getProjectList();
-		mService.closeConnect();
-		if (result == null) result = new ArrayList<ProjectObject>();
-		return result;
-	}
-
-	public ProjectObject getProjectByIdForDb(String id) {
-		mService.openConnect();
-		ProjectObject result = mService.getProjectById(id);
-		mService.closeConnect();
-		return result;
+	public long createProject(String name, ProjectInfo projectInfo) {
+		ProjectObject project = new ProjectObject(name);
+		project
+			.setDisplayName(projectInfo.displayName)
+			.setComment(projectInfo.common)
+			.setManager(projectInfo.manager)
+			.setAttachFileSize(projectInfo.attachFileSize)
+			.save();
+		project.reload();
+		
+		// 新建 project，也把 serial number 建起來
+		long projectId = project.getId();
+		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
+		serialnumberDAO.create(new SerialNumberObject(projectId
+				, 0, 0, 0, 0, 0, 0));
+				
+		return projectId;
 	}
 	
-	public ProjectObject getProjectByPidForDb(String pid) {
-		mService.openConnect();
-		ProjectObject result = mService.getProjectByPid(pid);
-		mService.closeConnect();
-		return result;
-	}
-
-	public List<UserObject> getProjectMemberListForDb(String id) {
-		mService.openConnect();
-		List<UserObject> result = mService.getProjectMemberList(id);
-		mService.closeConnect();
-		return result;
-	}
-
-	public List<UserObject> getProjectScrumWorkerListForDb(String id) {
-		mService.openConnect();
-		List<UserObject> result = mService.getProjectWorkerList(id);
-		mService.closeConnect();
-		return result;
+	/**
+	 * Get project by id
+	 * 
+	 * @param id projectId
+	 * @return ProjectObject
+	 */
+	public ProjectObject getProject(long id) {
+		return ProjectObject.get(id);
 	}
 	
-	public List<String> getProjectScrumWorkerList(String id) {
-		mService.openConnect();
-		List<UserObject> userList = mService.getProjectWorkerList(id);
-		mService.closeConnect();
-		List<String> result = new ArrayList<String>();
-		for (UserObject user : userList) {
-			result.add(user.getAccount());
+	/**
+	 * Get project by name
+	 * 
+	 * @param name projectName
+	 * @return ProjectObject
+	 */
+	public ProjectObject getProject(String name) {
+		return ProjectObject.get(name);
+	}
+	
+	/**
+	 * Get all projects
+	 * 
+	 * @return ProjectObject list
+	 */
+	public ArrayList<ProjectObject> getAllProjects() {
+		return ProjectObject.getAllProjects();
+	}
+	
+	/**
+	 * @param id projectId
+	 * @param projectInfo 其他資訊都包成 Info
+	 */
+	public void updateProject(long id, ProjectInfo projectInfo) {
+		ProjectObject project = ProjectObject.get(id);
+		if(project != null) {
+			project.setDisplayName(projectInfo.displayName).setComment(projectInfo.common)
+			.setManager(projectInfo.manager).setAttachFileSize(projectInfo.attachFileSize)
+			.save();
 		}
-		return result;
+	}
+	
+	/**
+	 * Delete project by id
+	 * 
+	 * @param id projectId
+	 */
+	public void deleteProject(long id) {
+		ProjectObject project = ProjectObject.get(id);
+		project.delete();
 	}
 
-	public void createScrumRole(String id) {
-		ScrumRole scrumRole;
-		mService.openConnect();
-		for (RoleEnum role : RoleEnum.values()) {
-			scrumRole = new ScrumRole(role);
-			mService.createScrumRole(id, role, scrumRole);
+	/**
+	 * Get all members in project include enable and disable members
+	 * 
+	 * @param projectId
+	 * @return AccountObject list
+	 */
+	public ArrayList<AccountObject> getProjectMembers(long projectId) {
+		return ProjectObject.get(projectId).getProjectMembers();
+	}
+
+	/**
+	 * Get members in project only enable members
+	 * 
+	 * @param projectId
+	 * @return AccountObject list
+	 */
+	public ArrayList<AccountObject> getProjectWorkers(long projectId) {
+		return ProjectObject.get(projectId).getProjectWorkers();
+	}
+
+	public ArrayList<String> getProjectWorkersUsername(long projectId) {
+		ArrayList<AccountObject> projectWorkers = getProjectWorkers(projectId);
+		ArrayList<String> projectWorkersUsername = new ArrayList<String>();
+		for (AccountObject projectWorker : projectWorkers) {
+			projectWorkersUsername.add(projectWorker.getUsername());
 		}
-		mService.closeConnect();
-    }
+		return projectWorkersUsername;
+	}
 
 	/**
 	 * 建立專案的資料結構及外部檔案
 	 * 
 	 * @param userSession
 	 * @param tmpPrefs
-	 * @param ProjectInfoForm projectInfoForm
+	 * @param ProjectInfoForm
+	 *            projectInfoForm
 	 * @return
 	 * @throws Exception
 	 */
@@ -145,10 +159,10 @@ public class ProjectMapper {
 		Configuration config = new Configuration();
 		// save in the workspace，並且建立Project資料夾
 		// 這樣後續的設定檔複製儲存動作才能正常進行
-		IProject project = this.createProjectWorkspace(userSession, projectInfoForm, config);
+		IProject project = createProjectWorkspace(userSession, projectInfoForm, config);
 
 		// 建立專案資訊 in database
-		this.createProjectDB(config, project, userSession);
+		createProjectDB(config, project, userSession);
 
 		return project;
 	}
@@ -193,7 +207,6 @@ public class ProjectMapper {
 		} catch (Exception e) {
 			log.warn("Save Project Error!" + e.getMessage());
 		}
-//		this.saveITSConfig(project, userSession, tmpPrefs); ezScrum v1.8 不需要
 		return project;
 	}
 
@@ -259,21 +272,6 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 透過projectID取得Project information
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@Deprecated
-	public IProject cloneProjectByID(String projectID) {
-		IWorkspace workspace = ResourceFacade.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-
-		IProject project = root.cloneProject(projectID);
-		return project;
-	}
-
-	/**
 	 * 取的專案存於外部檔案的資料
 	 * 
 	 * @param project
@@ -285,8 +283,7 @@ public class ProjectMapper {
 
 		ProjectInfoForm form = new ProjectInfoForm();
 		String fileSize = desc.getAttachFileSize();
-		if (fileSize == null || fileSize.compareTo("") == 0)
-			form.setAttachFileSize("2");
+		if (fileSize == null || fileSize.compareTo("") == 0) form.setAttachFileSize("2");
 		else form.setAttachFileSize(desc.getAttachFileSize());
 		form.setName(desc.getName());
 		form.setDisplayName(desc.getDisplayName());
@@ -323,20 +320,6 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 取得專案內的所有成員
-	 * 
-	 * @param userSession
-	 * @param project
-	 * @return
-	 */
-	@Deprecated
-	public List<IAccount> getProjectMemberList(IUserSession userSession, IProject project) {
-		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
-		List<IAccount> projectMemberList = mantisAccountManager.getProjectMemberList(project);
-		return projectMemberList;
-	}
-
-	/**
 	 * 回傳此專案的Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
 	 * 
 	 * @param userSession
@@ -361,8 +344,7 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 檢查 check file path 檔案是否存在，
-	 * 否則依據 clone file path 複製一份檔案過去
+	 * 檢查 check file path 檔案是否存在， 否則依據 clone file path 複製一份檔案過去
 	 */
 	@Deprecated
 	public void checkAndClone(String checkfilepath, String clonefilepath) throws IOException {
@@ -406,8 +388,7 @@ public class ProjectMapper {
 		desc.setSrc(convertStringToSourcePath(form.getSourcePaths()));
 		String fileSize = form.getAttachFileSize();
 		// 如果fileSize沒有填值的話，則自動填入2
-		if (fileSize.compareTo("") == 0)
-			desc.setAttachFileSize("2");
+		if (fileSize.compareTo("") == 0) desc.setAttachFileSize("2");
 		else desc.setAttachFileSize(form.getAttachFileSize());
 		ICVS cvs = desc.getCVS();
 		cvs.setServerType(form.getServerType());
@@ -431,7 +412,7 @@ public class ProjectMapper {
 		cvs.setRepositoryPath(repositoryPath);
 		return project;
 	}
-	
+
 	@Deprecated
 	private IPath[] convertStringToSourcePath(String[] sourcePathArray) {
 		IPath[] sourcePaths = new IPath[sourcePathArray.length];

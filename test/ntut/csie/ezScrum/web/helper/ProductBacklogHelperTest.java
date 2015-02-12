@@ -1,11 +1,13 @@
 package ntut.csie.ezScrum.web.helper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -17,40 +19,39 @@ import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ProductBacklogHelperTest extends TestCase {
-	private CreateProject mCreateProject;
-	private CreateProductBacklog mCreateProductBacklog;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ProductBacklogHelperTest{
+	private CreateProject mCP;
+	private CreateProductBacklog mCreateProductBacklog = null;
 	private ProductBacklogHelper mProductBacklogHelper = null;
 	private Configuration mConfig = null;
 	private IProject mProject;
 	private int mProjectCount = 1;
 	private int mStoryCount = 1;
 	
-	public ProductBacklogHelperTest(String testMethod) {
-        super(testMethod);
-    }
-	
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		// 新增Project
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 		
 		// 新增Story	
-		mCreateProductBacklog = new CreateProductBacklog(mStoryCount, mCreateProject);
+		mCreateProductBacklog = new CreateProductBacklog(mStoryCount, mCP);
 		mCreateProductBacklog.exe();
 		
-		super.setUp();
-		
 		// 建立 productbacklog 物件
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 		mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		
 		// 為了使 Story 建立時間與修改時間分開而停下
@@ -60,7 +61,8 @@ public class ProductBacklogHelperTest extends TestCase {
 		mProject = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -68,27 +70,29 @@ public class ProductBacklogHelperTest extends TestCase {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	mCreateProject = null;
+    	mCP = null;
+    	
     	mCreateProductBacklog = null;
+    	mProductBacklogHelper = null;
     	projectManager = null;
     	mConfig = null;
-    	
-    	super.tearDown();
+    	mProject = null;
 	}
 	
+	@Test
 	public void testAddAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
 		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
-		attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
 		File sqlFile = new File(mConfig.getInitialSQLPath());
 		
@@ -105,12 +109,13 @@ public class ProductBacklogHelperTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testDeleteAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
 		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
-		attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
 		File sqlFile = new File(mConfig.getInitialSQLPath());
 		
@@ -139,10 +144,7 @@ public class ProductBacklogHelperTest extends TestCase {
 		}
 	}
 	
-	public void testEditStory() {
-		
-	}
-	
+	@Test
 	public void testEditStoryHistory() throws SQLException {
 		long issueId = mCreateProductBacklog.getIssueIDList().get(0);
 		String name = "快接 task 啦";

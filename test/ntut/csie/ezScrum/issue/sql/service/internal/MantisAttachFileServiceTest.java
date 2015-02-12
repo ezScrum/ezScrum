@@ -1,8 +1,10 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
+import static org.junit.Assert.*;
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -14,92 +16,83 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class MantisAttachFileServiceTest extends TestCase {
-	private CreateProject CP;
-	private int ProjectCount = 1;
-	private CreateSprint CS;
-	private int SprintCount = 1;
-	private AddStoryToSprint ASTS;
-	private int StoryCount = 1;
-	
-	private Configuration configuration;
-	private MantisService mantisService;
-	private MantisAttachFileService MAFSservice;
-	private IProject project;
+public class MantisAttachFileServiceTest {
+	private int mProjectCount = 1;
+	private int mSprintCount = 1;
+	private int mStoryCount = 1;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASTS;
+	private Configuration mConfig;
+	private MantisService mMantisService;
+	private MantisAttachFileService mMantisAttachFileService;
+	private IProject mProject;
 
-	public MantisAttachFileServiceTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		// 新增Sprint
-		this.CS = new CreateSprint(SprintCount, CP);
-		this.CS.exe();
+		mCS = new CreateSprint(mSprintCount, mCP);
+		mCS.exe();
 
 		// 新增 Story 至 Sprint
-		this.ASTS = new AddStoryToSprint(StoryCount, 3, this.CS, this.CP, "EST");
-		this.ASTS.exe();
+		mASTS = new AddStoryToSprint(mStoryCount, 3, mCS, mCP, "EST");
+		mASTS.exe();
 		
-		project = this.CP.getProjectList().get(0);
-		mantisService = new MantisService(configuration);
-		MAFSservice = new MantisAttachFileService(mantisService.getControl(), configuration);
-		mantisService.openConnect();
-
-		super.setUp();
-		// ============= release ==============
-		ini = null;
+		mProject = mCP.getProjectList().get(0);
+		mMantisService = new MantisService(mConfig);
+		mMantisAttachFileService = new MantisAttachFileService(mMantisService.getControl(), mConfig);
+		mMantisService.openConnect();
 	}
 
-	protected void tearDown() throws Exception {
-		mantisService.closeConnect();
+	@After
+	public void tearDown() throws Exception {
+		mMantisService.closeConnect();
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
-		// ============= release ==============
-		ini = null;
-		this.CP = null;
-		this.CS = null;
-		this.MAFSservice = null;
-		projectManager = null;
-		configuration = null;
-
-		super.tearDown();
+		// release resource
+		mCP = null;
+		mCS = null;
+		mASTS = null;
+		mConfig = null;
+		mMantisService = null;
+		mMantisAttachFileService = null;
+		mProject = null;
 	}
 
+	@Test
 	public void testAddAttachFile() throws Exception{
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 5, CS, CP, "EST");
-		ASS.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 5, mCS, mCP, "EST");
+		ASTS.exe();
 		
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
-		attachFileInfo.issueId = ASS.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
 		
-		long id = MAFSservice.addAttachFile(attachFileInfo);
+		long id = mMantisAttachFileService.addAttachFile(attachFileInfo);
 		assertEquals(1, id);
-		AttachFileObject attachFile = MAFSservice.getAttachFile(id);
+		AttachFileObject attachFile = mMantisAttachFileService.getAttachFile(id);
 		
 		assertEquals(attachFile.getName(), attachFileInfo.name);
 		assertEquals(attachFile.getPath(), attachFileInfo.path);
@@ -107,21 +100,22 @@ public class MantisAttachFileServiceTest extends TestCase {
 		assertEquals(attachFile.getIssueType(), attachFileInfo.issueType);
 	}
 	
+	@Test
 	// 透過FileName取得AttachFileObject
 	public void testGetAttachFileByName() throws Exception{
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 5, CS, CP, "EST");
-		ASS.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 5, mCS, mCP, "EST");
+		ASTS.exe();
 
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
-		attachFileInfo.issueId = ASS.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
 		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
 
 		// 加入AttachFile
-		long fileId = MAFSservice.addAttachFile(attachFileInfo);
+		long fileId = mMantisAttachFileService.addAttachFile(attachFileInfo);
 		// getAttachFile
-		AttachFileObject attachFile = MAFSservice.getAttachFile(fileId);
+		AttachFileObject attachFile = mMantisAttachFileService.getAttachFile(fileId);
 
 		assertEquals(fileId, attachFile.getId());
 		assertEquals(attachFileInfo.name, attachFile.getName());
@@ -129,30 +123,31 @@ public class MantisAttachFileServiceTest extends TestCase {
 		assertEquals(attachFileInfo.issueId, attachFile.getIssueId());
 	}
 
+	@Test
 	// 透過StoryId取得多筆AttachFile
 	public void testGetAttachFileByStoryId() throws Exception{
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 5, CS, CP, "EST");
-		ASS.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 5, mCS, mCP, "EST");
+		ASTS.exe();
 		ArrayList<Long> fileIdList = new ArrayList<Long>();
 
 		AttachFileInfo attachFileInfo1 = new AttachFileInfo();
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
-		attachFileInfo1.issueId = ASS.getIssueList().get(0).getIssueID();
+		attachFileInfo1.issueId = ASTS.getStories().get(0).getIssueID();
 		attachFileInfo1.issueType = AttachFileObject.TYPE_STORY;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
-		attachFileInfo2.issueId = ASS.getIssueList().get(0).getIssueID();
+		attachFileInfo2.issueId = ASTS.getStories().get(0).getIssueID();
 		attachFileInfo2.issueType = AttachFileObject.TYPE_STORY;
 
 		// 加入AttachFile
-		fileIdList.add(MAFSservice.addAttachFile(attachFileInfo1));
-		fileIdList.add(MAFSservice.addAttachFile(attachFileInfo2));
+		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo1));
+		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo2));
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByStoryId(ASS.getIssueList().get(0).getIssueID());
+		ArrayList<AttachFileObject> attachFileList = mMantisAttachFileService.getAttachFilesByStoryId(ASTS.getStories().get(0).getIssueID());
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
 		attachFileArray.add(attachFileInfo2);
@@ -165,31 +160,32 @@ public class MantisAttachFileServiceTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetAttachFileByTaskId() throws Exception{
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 5, CS, CP, "EST");
-		ASS.exe();
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, ASS, CP);
-		addTaskToStory.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 5, mCS, mCP, "EST");
+		ASTS.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
+		ATTS.exe();
 		ArrayList<Long> fileIdList = new ArrayList<Long>();
 
 		AttachFileInfo attachFileInfo1 = new AttachFileInfo();
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
-		attachFileInfo1.issueId = addTaskToStory.getTaskIDList().get(0);
+		attachFileInfo1.issueId = ATTS.getTasksId().get(0);
 		attachFileInfo1.issueType = AttachFileObject.TYPE_TASK;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
-		attachFileInfo2.issueId = addTaskToStory.getTaskIDList().get(0);
+		attachFileInfo2.issueId = ATTS.getTasksId().get(0);
 		attachFileInfo2.issueType = AttachFileObject.TYPE_TASK;
 
 		// 加入AttachFile
-		fileIdList.add(MAFSservice.addAttachFile(attachFileInfo1));
-		fileIdList.add(MAFSservice.addAttachFile(attachFileInfo2));
+		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo1));
+		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo2));
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = MAFSservice.getAttachFilesByTaskId(addTaskToStory.getTaskIDList().get(0));
+		ArrayList<AttachFileObject> attachFileList = mMantisAttachFileService.getAttachFilesByTaskId(ATTS.getTasksId().get(0));
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
 		attachFileArray.add(attachFileInfo2);
@@ -202,6 +198,7 @@ public class MantisAttachFileServiceTest extends TestCase {
 		}
 	}
 
+	@Test
 	// 從story get attach file
 	public void testDeleteAttachFile_1() {
 		ArrayList<AttachFileInfo> infoList = new ArrayList<AttachFileInfo>();
@@ -215,20 +212,21 @@ public class MantisAttachFileServiceTest extends TestCase {
 			attachFileInfo.name = "TEST_FILE_NAME_" + i;
 			attachFileInfo.path = "./" + attachFileInfo.name;
 			attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
-			attachFileInfo.projectName = project.getName();
-			fileIdList.add(MAFSservice.addAttachFile(attachFileInfo));
+			attachFileInfo.projectName = mProject.getName();
+			fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo));
 			infoList.add(attachFileInfo);
 		}
 
-		actualAttachFileList = MAFSservice.getAttachFilesByStoryId(storyId);
+		actualAttachFileList = mMantisAttachFileService.getAttachFilesByStoryId(storyId);
 		assertEquals(3, actualAttachFileList.size());
 		// delete one data
-		MAFSservice.deleteAttachFile(fileIdList.get(0));
+		mMantisAttachFileService.deleteAttachFile(fileIdList.get(0));
 		actualAttachFileList.clear();
-		actualAttachFileList = MAFSservice.getAttachFilesByStoryId(storyId);
+		actualAttachFileList = mMantisAttachFileService.getAttachFilesByStoryId(storyId);
 		assertEquals(2, actualAttachFileList.size());
 	}
 
+	@Test
 	// 從task get attach file
 	public void testDeleteAttachFile_2() {
 		ArrayList<AttachFileInfo> infoList = new ArrayList<AttachFileInfo>();
@@ -242,17 +240,17 @@ public class MantisAttachFileServiceTest extends TestCase {
 			attachFileInfo.name = "TEST_FILE_NAME_" + i;
 			attachFileInfo.path = "./" + attachFileInfo.name;
 			attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
-			attachFileInfo.projectName = project.getName();
-			fileIdList.add(MAFSservice.addAttachFile(attachFileInfo));
+			attachFileInfo.projectName = mProject.getName();
+			fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo));
 			infoList.add(attachFileInfo);
 		}
 
-		actualAttachFileList = MAFSservice.getAttachFilesByTaskId(taskId);
+		actualAttachFileList = mMantisAttachFileService.getAttachFilesByTaskId(taskId);
 		assertEquals(3, actualAttachFileList.size());
 		// delete one data
-		MAFSservice.deleteAttachFile(fileIdList.get(0));
+		mMantisAttachFileService.deleteAttachFile(fileIdList.get(0));
 		actualAttachFileList.clear();
-		actualAttachFileList = MAFSservice.getAttachFilesByTaskId(taskId);
+		actualAttachFileList = mMantisAttachFileService.getAttachFilesByTaskId(taskId);
 		assertEquals(2, actualAttachFileList.size());
 	}
 }

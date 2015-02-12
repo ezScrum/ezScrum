@@ -338,7 +338,7 @@ public class ReleasePlanHelper {
     // 取得Sprint的Story資訊
     private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
     	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
-    	IIssue[] stories = SBhelper.getStoryInSprint(sprintID);
+    	IIssue[] stories = SBhelper.getStoryInSprint(Long.parseLong(sprintID));
     	int storypoint = 0;
     	int storydonecount = 0;
     	for (IIssue story : stories) {

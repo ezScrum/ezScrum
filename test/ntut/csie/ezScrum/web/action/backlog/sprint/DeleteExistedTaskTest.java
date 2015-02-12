@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -16,192 +15,198 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class DeleteExistedTaskTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
-	private AddStoryToSprint mAddStoryToSprint;
+
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private AddStoryToSprint mASS;
 	private Configuration mConfig;
-	private final String ACTION_PATH = "/deleteExistedTask";
-	private IProject mProject;
+	private final String mActionPath = "/deleteExistedTask";
+	private IProject mIProject;
 	private long mSprintId;
 	private long mStoryId;
-	
+
 	public DeleteExistedTaskTest(String testMethod) {
-        super(testMethod);
-    }
-	
+		super(testMethod);
+	}
+
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
-		
+		mConfig.save();
+
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 新增一個測試專案
-    	mCreateProject = new CreateProject(1);
-    	mCreateProject.exeCreate();
-    	mProject = mCreateProject.getProjectList().get(0);
-    	
-    	// 新增一個 Sprint
-    	int sprintCount = 1;
-		mCreateSprint = new CreateSprint(sprintCount , mCreateProject);
-    	mCreateSprint.exe();
-    	mSprintId = Long.parseLong(mCreateSprint.getSprintIDList().get(0));
-    	
-		// Sprint 加入1個 Story
+
+		// create project
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mIProject = mCP.getProjectList().get(0);
+
+		// create sprint
+		int sprintCount = 1;
+		mCS = new CreateSprint(sprintCount, mCP);
+		mCS.exe();
+		mSprintId = Long.parseLong(mCS.getSprintIDList().get(0));
+
+		// create story to sprint
 		int storyCount = 1;
-		mAddStoryToSprint = new AddStoryToSprint(storyCount, 1, (int)mSprintId, mCreateProject, CreateProductBacklog.TYPE_ESTIMATION);
-		mAddStoryToSprint.exe();
-		mStoryId = mAddStoryToSprint.getIssueList().get(storyCount-1).getIssueID();
-    	
-    	super.setUp();
-    	
-    	// ============= release ==============
-    	ini = null;
-    }
-	
-    protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
+		mASS = new AddStoryToSprint(storyCount, 1, (int) mSprintId, mCP,
+				CreateProductBacklog.TYPE_ESTIMATION);
+		mASS.exe();
+		mStoryId = mASS.getStories().get(storyCount - 1).getIssueID();
+
+		super.setUp();
+
+		// ============= release ==============
+		ini = null;
+	}
+
+	protected void tearDown() throws Exception {
+		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		//	刪除外部檔案
+
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
-    	
+
 		mConfig.setTestMode(false);
-		mConfig.store();
-    	
-    	// ============= release ==============
-    	ini = null;
-    	mCreateProject = null;
-    	mConfig = null;
-    	
-    	super.tearDown();
-    }
-    
-    /**
-     * 刪除一個Task
-     * @throws Exception 
-     */
-    public void testDeleteExistedTask_1() throws Exception{
+		mConfig.save();
+
+		// ============= release ==============
+		ini = null;
+		mCP = null;
+		mCS = null;
+		mASS = null;
+		mConfig = null;
+		mIProject = null;
+		super.tearDown();
+	}
+
+	/**
+	 * 刪除一個 Task
+	 */
+	public void testDeleteExistedTask_1() throws Exception {
 		int taskCount = 1;
-		String[] taskIDs = createTasks(taskCount);
-		// drop Task from story
-		DropTask dropTaskOne = new DropTask(mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[0]));
-		dropTaskOne.exe();
-    	
+		String[] tasksId = createTasks(taskCount);
+		DropTask DT = new DropTask(mCP, mSprintId, mStoryId,
+				Long.valueOf(tasksId[0]));
+		DT.exe();
+
 		// ================ set request info ========================
-		String projectName = this.mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
-		addRequestParameter("selected", taskIDs);
-		
+		addRequestParameter("selected", tasksId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
 		// ================ 執行 action ======================
-    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
-    	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( this.ACTION_PATH );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
+		setServletConfigFile("/WEB-INF/struts-config.xml");
+		setRequestPathInfo(mActionPath);
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String actualResponseText = response.getWriterBuffer().toString();
 		StringBuilder expectedResponseText = new StringBuilder("");
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		
-		this.verifyExistedTasks();
-    }
-    
-    /**
-     * 刪除兩個Task
-     * @throws Exception 
-     */
-    public void testDeleteExistedTask_2() throws Exception{
+
+		verifyExistedTasks();
+	}
+
+	/**
+	 * 刪除兩個 Task
+	 */
+	public void testDeleteExistedTask_2() throws Exception {
 		int taskCount = 2;
-		String[] taskIDs = this.createTasks(taskCount);
-		// drop Task from story
-		DropTask dropTask_1 = new DropTask(this.mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[0]));
-		dropTask_1.exe();
-		DropTask dropTask_2 = new DropTask(this.mCreateProject, mSprintId, mStoryId, Long.valueOf(taskIDs[1]));
-		dropTask_2.exe();
-    	
+		String[] tasksId = createTasks(taskCount);
+		DropTask DT1 = new DropTask(mCP, mSprintId, mStoryId,
+				Long.valueOf(tasksId[0]));
+		DT1.exe();
+		DropTask DT2 = new DropTask(mCP, mSprintId, mStoryId,
+				Long.valueOf(tasksId[1]));
+		DT2.exe();
+
 		// ================ set request info ========================
-		String projectName = this.mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
-		addRequestParameter("selected", taskIDs);
-		
+		addRequestParameter("selected", tasksId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
 		// ================ 執行 action ======================
-    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
-    	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( this.ACTION_PATH );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
+		setServletConfigFile("/WEB-INF/struts-config.xml");
+		setRequestPathInfo(mActionPath);
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String actualResponseText = response.getWriterBuffer().toString();
 		StringBuilder expectedResponseText = new StringBuilder("");
 		assertEquals(expectedResponseText.toString(), actualResponseText);
+
+		verifyExistedTasks();
+	}
+
+	private String[] createTasks(int taskCount) throws Exception {
+		// Story 加入1個 Task
+		AddTaskToStory ATS = new AddTaskToStory(taskCount, 1, mASS, mCP);
+		ATS.exe();
 		
-		this.verifyExistedTasks();
-    }
-    
-    private String[] createTasks(int taskCount) throws NumberFormatException, Exception{
-		// Story加入1個Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, this.mAddStoryToSprint, mCreateProject);
-		addTaskToStory.exe();
-		String[] taskIDs = new String[addTaskToStory.getTaskIDList().size()];
-		for(int i = 0; i < addTaskToStory.getTaskIDList().size(); i++ ){
-			taskIDs[i] = String.valueOf(addTaskToStory.getTaskIDList().get(i));
+		String[] tasksId = new String[ATS.getTasksId().size()];
+		for (int i = 0; i < ATS.getTasksId().size(); i++) {
+			tasksId[i] = String.valueOf(ATS.getTasksId().get(i));
 		}
-		return taskIDs;
-    }
-    
-    /**
-     * 驗證delete tasks後，該Tasks是確實被刪除的。
-     * @throws Exception
-     */
-    private void verifyExistedTasks() throws Exception{
-		//	clear request and response
+		return tasksId;
+	}
+
+	/**
+	 * 驗證 delete tasks 後，該 Tasks 是確實被刪除的。
+	 */
+	private void verifyExistedTasks() {
+		// clear request and response
 		clearRequestParameters();
-		this.response.reset();
-    	
+		response.reset();
+
 		// ================ set request info ========================
-		String projectName = this.mProject.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", mProject);	
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mIProject);
 		// 設定新增Task所需的資訊
-		String expectedStoryID = "1";
-		String expectedSprintID = "1";
-		
-		addRequestParameter("sprintID", expectedSprintID);
-		addRequestParameter("issueID", expectedStoryID);
+		String expectedStoryId = "1";
+		String expectedSprintId = "1";
+
+		addRequestParameter("sprintID", expectedSprintId);
+		addRequestParameter("issueID", expectedStoryId);
 
 		// ================ 執行 action ======================
 		String path = "/showAddExistedTask2";
-    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
-    	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( path );
-		
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
+		setServletConfigFile("/WEB-INF/struts-config.xml");
+		setRequestPathInfo(path);
+
 		actionPerform();
 
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		StringBuilder expectedResponseText = new StringBuilder("<Tasks></Tasks>");
+		StringBuilder expectedResponseText = new StringBuilder(
+				"<Tasks></Tasks>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-    }
+	}
 }

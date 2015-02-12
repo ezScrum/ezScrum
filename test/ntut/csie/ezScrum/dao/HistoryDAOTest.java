@@ -1,71 +1,72 @@
 package ntut.csie.ezScrum.dao;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
-public class HistoryDAOTest extends TestCase {
-	private Configuration config;
-	private CreateProject CP;
-	private int ProjectCount = 1;
-	private HistoryDAO historyDao = null;
-	private MySQLControl control = null;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	public HistoryDAOTest(String testMethod) {
-		super(testMethod);
-	}
+public class HistoryDAOTest {
+	private Configuration mConfig;
+	private CreateProject mCP;
+	private int mProjectCount = 1;
+	private HistoryDAO mHistoryDao = null;
+	private MySQLControl mControl = null;
 
-	protected void setUp() throws Exception {
-		config = new Configuration();
-		config.setTestMode(true);
-		config.store();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 
-		InitialSQL ini = new InitialSQL(config);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		CP = new CreateProject(this.ProjectCount);
-		CP.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
-		historyDao = HistoryDAO.getInstance();
-		control = new MySQLControl(config);
-		control.connection();
-
-		super.setUp();
+		mHistoryDao = HistoryDAO.getInstance();
+		mControl = new MySQLControl(mConfig);
+		mControl.connection();
 	}
 
-	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(config);
-		ini.exe(); // 初始化 SQL
+	@After
+	public void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 
-		config.setTestMode(false);
-		config.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		CP = null;
-		config = null;
-		historyDao = null;
-		control = null;
-
-		super.tearDown();
+		mCP = null;
+		mConfig = null;
+		mHistoryDao = null;
+		mControl = null;
 	}
 
+	@Test
 	public void testAdd() {
 		String oldValue = "1";
 		String newValue = "0";
@@ -74,10 +75,10 @@ public class HistoryDAOTest extends TestCase {
 		HistoryObject history = new HistoryObject();
 		history.setHistoryType(HistoryObject.TYPE_IMPORTANCE)
 				.setNewValue(oldValue).setOldValue(newValue)
-				.setModifiedTime(modifiedTime)
+				.setCreateTime(modifiedTime)
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setIssueId(1);
 
-		long id = historyDao.add(history);
+		long id = mHistoryDao.create(history);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(HistoryEnum.TABLE_NAME);
@@ -86,7 +87,7 @@ public class HistoryDAOTest extends TestCase {
 		valueSet.addEqualCondition(HistoryEnum.ISSUE_ID, 1);
 		String query = valueSet.getSelectQuery();
 
-		ResultSet result = control.executeQuery(query);
+		ResultSet result = mControl.executeQuery(query);
 		try {
 			if (result.next()) {
 				assertEquals(history.getHistoryType(),
@@ -99,8 +100,8 @@ public class HistoryDAOTest extends TestCase {
 						result.getString(HistoryEnum.NEW_VALUE));
 				assertEquals(history.getOldValue(),
 						result.getString(HistoryEnum.OLD_VALUE));
-				assertEquals(history.getModifiedTime(),
-						result.getLong(HistoryEnum.MODIFIED_TIME));
+				assertEquals(history.getCreateTime(),
+						result.getLong(HistoryEnum.CREATE_TIME));
 				assertEquals(id, result.getLong(HistoryEnum.ID));
 				assertEquals(history.getNewValue(),
 						result.getString(HistoryEnum.NEW_VALUE));
@@ -110,6 +111,7 @@ public class HistoryDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGet() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();
@@ -124,19 +126,19 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
-			control.execute(query, true);
+			mControl.execute(query, true);
 
-			String[] keys = control.getKeys();
+			String[] keys = mControl.getKeys();
 			long id = Long.parseLong(keys[0]);
 
 			idList.add(id);
 		}
 
 		for (int i = 0; i < 5; i++) {
-			HistoryObject history = historyDao.get(idList.get(i));
+			HistoryObject history = mHistoryDao.get(idList.get(i));
 
 			assertEquals(HistoryObject.TYPE_ESTIMATE, history.getHistoryType());
 			assertEquals(IssueTypeEnum.TYPE_STORY, history.getIssueType());
@@ -147,6 +149,7 @@ public class HistoryDAOTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetHistoriesByIssue() throws SQLException {
 		long ISSUE_ID = 1;
 
@@ -160,13 +163,13 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
-			control.execute(query, true);
+			mControl.execute(query, true);
 		}
 
-		ArrayList<HistoryObject> histories = historyDao.getHistoriesByIssue(
+		ArrayList<HistoryObject> histories = mHistoryDao.getHistoriesByIssue(
 				ISSUE_ID, IssueTypeEnum.TYPE_STORY);
 		
 		assertEquals(5, histories.size());
@@ -181,11 +184,12 @@ public class HistoryDAOTest extends TestCase {
 		}
 
 		// assert 不存在的 history
-		histories = historyDao.getHistoriesByIssue(ISSUE_ID,
+		histories = mHistoryDao.getHistoriesByIssue(ISSUE_ID,
 				IssueTypeEnum.TYPE_TASK);
 		assertEquals(0, histories.size());
 	}
 
+	@Test
 	public void testDelete() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();
@@ -200,12 +204,12 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
-			control.execute(query, true);
+			mControl.execute(query, true);
 
-			String[] keys = control.getKeys();
+			String[] keys = mControl.getKeys();
 			long id = Long.parseLong(keys[0]);
 
 			idList.add(id);
@@ -213,19 +217,20 @@ public class HistoryDAOTest extends TestCase {
 
 		assertEquals(
 				5,
-				historyDao.getHistoriesByIssue(ISSUE_ID,
+				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
 						IssueTypeEnum.TYPE_STORY).size());
 
 		for (long id : idList) {
-			historyDao.delete(id);
+			mHistoryDao.delete(id);
 		}
 
 		assertEquals(
 				0,
-				historyDao.getHistoriesByIssue(ISSUE_ID,
+				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
 						IssueTypeEnum.TYPE_STORY).size());
 	}
 
+	@Test
 	public void testDeleteByIssue() throws SQLException {
 		long ISSUE_ID = 1;
 		ArrayList<Long> idList = new ArrayList<Long>();
@@ -240,12 +245,12 @@ public class HistoryDAOTest extends TestCase {
 					HistoryObject.TYPE_ESTIMATE);
 			valueSet.addInsertValue(HistoryEnum.OLD_VALUE, i);
 			valueSet.addInsertValue(HistoryEnum.NEW_VALUE, (i + 1));
-			valueSet.addInsertValue(HistoryEnum.MODIFIED_TIME,
+			valueSet.addInsertValue(HistoryEnum.CREATE_TIME,
 					System.currentTimeMillis());
 			String query = valueSet.getInsertQuery();
-			control.execute(query, true);
+			mControl.execute(query, true);
 
-			String[] keys = control.getKeys();
+			String[] keys = mControl.getKeys();
 			long id = Long.parseLong(keys[0]);
 
 			idList.add(id);
@@ -253,15 +258,15 @@ public class HistoryDAOTest extends TestCase {
 
 		assertEquals(
 				5,
-				historyDao.getHistoriesByIssue(ISSUE_ID,
+				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
 						IssueTypeEnum.TYPE_STORY).size());
 
-		historyDao
+		mHistoryDao
 				.deleteByIssue(ISSUE_ID, IssueTypeEnum.TYPE_STORY);
 
 		assertEquals(
 				0,
-				historyDao.getHistoriesByIssue(ISSUE_ID,
+				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
 						IssueTypeEnum.TYPE_STORY).size());
 	}
 }

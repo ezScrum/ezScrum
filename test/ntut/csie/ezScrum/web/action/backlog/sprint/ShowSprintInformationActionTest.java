@@ -18,40 +18,40 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintInformationActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/showSprintInformation";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private final String mACTION_PATH = "/showSprintInformation";
+	private IProject mProject;
 
 	public ShowSprintInformationActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		//	新增一測試專案
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.ACTION_PATH);
+		setRequestPathInfo(mACTION_PATH);
 
 		// ============= release ==============
 		ini = null;
@@ -59,21 +59,21 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 
 		super.tearDown();
 	}
@@ -84,13 +84,13 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	public void testShowInformationAction_1() {
 		// ================ set request info ========================
 		String sprintID = "1";
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", sprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -107,17 +107,17 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowInformationAction_2() {
 		int sprintCount = 1;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
+		CreateSprint createSprint = new CreateSprint(sprintCount, mCP);
 		createSprint.exe();
 
 		// ================ set request info ========================
 		String expectedSprintID = "1";
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -144,7 +144,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.Today;
+		Date today = createSprint.mToday;
 		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
@@ -168,28 +168,28 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowInformationAction_3() throws Exception {
 		int sprintCount = 1;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
+		CreateSprint createSprint = new CreateSprint(sprintCount, mCP);
 		createSprint.exe();
 
 		int storyCount = 1;
 		int expectStoryEstimation = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, expectStoryEstimation, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, expectStoryEstimation, createSprint, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 
 		int accountCount = 1;
 		CreateAccount createAccount = new CreateAccount(accountCount);
 		createAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(this.CP, createAccount);
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
 
 		// ================ set request info ========================
 		String expectedSprintID = "1";
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -217,7 +217,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		List<String> actualActors = (List<String>) request.getAttribute("Actors");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.Today;
+		Date today = createSprint.mToday;
 		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
@@ -257,24 +257,24 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowInformationAction_4() {
 		int sprintCount = 1;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
+		CreateSprint createSprint = new CreateSprint(sprintCount, mCP);
 		createSprint.exe();
 
 		int accountCount = 1;
 		CreateAccount createAccount = new CreateAccount(accountCount);
 		createAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(this.CP, createAccount);
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_Guest();
 
 		// ================ set request info ========================
 		String expectedSprintID = "1";
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		UserObject account = createAccount.getAccountList().get(0);
-		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
+		AccountObject account = createAccount.getAccountList().get(0);
+		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getUsername()));
 		request.getSession().setAttribute("UserSession", newUser);
 
 		// ================ 執行 action ======================
@@ -300,24 +300,24 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowInformationAction_5() {
 		int sprintCount = 1;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
+		CreateSprint createSprint = new CreateSprint(sprintCount, mCP);
 		createSprint.exe();
 
 		int accountCount = 1;
 		CreateAccount createAccount = new CreateAccount(accountCount);
 		createAccount.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(this.CP, createAccount);
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_PO();
 
 		// ================ set request info ========================
 		String expectedSprintID = "1";
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
-		UserObject account = createAccount.getAccountList().get(0);
-		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getAccount()));
+		AccountObject account = createAccount.getAccountList().get(0);
+		UserSession newUser = new UserSession(new AccountMapper().getAccount(account.getUsername()));
 		request.getSession().setAttribute("UserSession", newUser);
 
 		// ================ 執行 action ======================

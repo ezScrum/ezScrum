@@ -3,65 +3,61 @@ package ntut.csie.ezScrum.web.action.config;
 import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.codehaus.jettison.json.JSONException;
 
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveConfigurationActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private final String actionPath = "/saveConfiguration";
-	private Configuration configuration;
-	private IProject project;
+	private CreateProject mCP;
+	private final String mActionPath = "/saveConfiguration";
+	private Configuration mConfig;
 
 	public SaveConfigurationActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
+		mConfig = new Configuration();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增一測試專案
-		CP = new CreateProject(1);
-		CP.exeCreate();
-		project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 		
 		super.setUp();
 		
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(actionPath);
+		setRequestPathInfo(mActionPath);
 
 		// ============= release ==============
 		ini = null;
 	}
 
 	protected void tearDown() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(CP);
-		copyProject.exeDelete_Project();
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 
 		super.tearDown();
 	}
@@ -79,7 +75,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 //		String originDBType= configuration.getDBType();
 //		
 //		// ================ set request info ========================
-//		String projectName = this.project.getName();
+//		String projectName = project.getName();
 //		String actualServerUrl = "127.0.0.1";
 //		String actualDBAccount = "test";
 //		String actualDBPassword = "1234";

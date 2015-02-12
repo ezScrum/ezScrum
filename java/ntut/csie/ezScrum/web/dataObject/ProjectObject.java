@@ -1,118 +1,224 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
+
+import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class ProjectObject {
-	// 取得所有專案的資訊
-	private String id;
-	private String name = "";
-	private String displayName = "";
-	private String comment = "";
-	private String manager = "";
-	private String attachFileSize = "";
-	private String pid = "";
-	private long createDate;
-
-	public ProjectObject(String id, String name, String displayName, String comment, String manager, String attachFileSize, long createDate) {
-		setId(id);
-		setName(name);
-		setDisplayName(displayName);
-		setComment(comment);
-		setManager(manager);
-		setAttachFileSize(attachFileSize);
-		setCreateDate(createDate);
-		setPid(name);
+/**
+ * 舊的 table 中的 pid 即為新的 table 的 name
+ * 舊的 table 中的 name 即為新的 table 的 displayname
+ * 
+ * @author cutecool
+ * 
+ */
+public class ProjectObject implements IBaseObject {
+	private final static int DEFAULT_VALUE = -1;
+	private long mId = DEFAULT_VALUE;
+	private String mName = "";
+	private String mDisplayName = "";
+	private String mComment = "";
+	private String mManager = "";
+	private long mAttachFileSize = DEFAULT_VALUE;
+	private long mCreateTime = DEFAULT_VALUE;
+	private long mUpdateTime = DEFAULT_VALUE;
+	
+	public ProjectObject(String name) {
+		mName = name;
 	}
-
-	public ProjectObject(String name, String displayName, String comment, String manager, String attachFileSize) {
-		setName(name);
-		setPid(name);
-		setDisplayName(displayName);
-		setComment(comment);
-		setManager(manager);
-		setAttachFileSize(attachFileSize);
+	
+	public ProjectObject(long id, String name) {
+		mId = id;
+		mName = name;
 	}
-
-	public ProjectObject() {
-    }
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	
 	public String getName() {
-		return name;
+		return mName;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	public ProjectObject setDisplayName(String displayName) {
+		mDisplayName = displayName;
+		return this;
 	}
 
 	public String getDisplayName() {
-		return displayName;
+		return mDisplayName;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public ProjectObject setComment(String comment) {
+		mComment = comment;
+		return this;
 	}
 
 	public String getComment() {
-		return comment;
+		return mComment;
 	}
 
-	public void setManager(String manager) {
-		this.manager = manager;
+	public ProjectObject setManager(String manager) {
+		mManager = manager;
+		return this;
 	}
 
 	public String getManager() {
-		return manager;
+		return mManager;
 	}
 
-	public void setAttachFileSize(String attachFileSize) {
-		this.attachFileSize = attachFileSize;
+	public ProjectObject setAttachFileSize(long attachFileSize) {
+		mAttachFileSize = attachFileSize;
+		return this;
 	}
 
-	public String getAttachFileSize() {
-		return attachFileSize;
+	public long getAttachFileSize() {
+		return mAttachFileSize;
 	}
 
-	public String getId() {
-		return id;
+	public long getId() {
+		return mId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getPid() {
-		return pid;
-	}
-	
-	public void setPid(String pid) {
-		this.pid = pid;
+	public long getCreateTime() {
+		return mCreateTime;
 	}
 
-	public long getCreateDate() {
-		return createDate;
+	public ProjectObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
+		return this;
 	}
 
-	public void setCreateDate(long createDate) {
-		this.createDate = createDate;
+	public long getUpdateTime() {
+		return mUpdateTime;
 	}
-	
+
+	public ProjectObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
+	}
+
 	public JSONObject toJSON() throws JSONException {
 		JSONObject object = new JSONObject();
 		object
-			.put(ProjectEnum.NAME, name)
-			.put(ProjectEnum.ID, id)
-			.put(ProjectEnum.COMMENT, comment)
-			.put(ProjectEnum.PID, pid)
-			.put(ProjectEnum.CREATE_TIME, createDate)
-			.put(ProjectEnum.PRODUCT_OWNER, manager)
-			.put(ProjectEnum.ATTATCH_MAX_SIZE, attachFileSize);
+		        .put(ProjectEnum.ID, mId)
+		        .put(ProjectEnum.NAME, mName)
+		        .put(ProjectEnum.DISPLAY_NAME, mDisplayName)
+		        .put(ProjectEnum.COMMENT, mComment)
+		        .put(ProjectEnum.PRODUCT_OWNER, mManager)
+		        .put(ProjectEnum.ATTATCH_MAX_SIZE, mAttachFileSize)
+		        .put(ProjectEnum.CREATE_TIME, mCreateTime)
+		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
 		return object;
+	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
+
+	/**
+	 * Get project by id
+	 * 
+	 * @param id projectId
+	 * @return ProjectObject
+	 */
+	public static ProjectObject get(long id) {
+		return ProjectDAO.getInstance().get(id);
+	}
+
+	/**
+	 * Get project by name
+	 * 
+	 * @param name projectName
+	 * @return ProjectObject
+	 */
+	public static ProjectObject get(String name) {
+		return ProjectDAO.getInstance().get(name);
+	}
+
+	public static ArrayList<ProjectObject> getAllProjects() {
+		return ProjectDAO.getInstance().getAllProjects();
+	}
+	
+	public ArrayList<AccountObject> getProjectMembers() {
+		ArrayList<AccountObject> projectMembers = AccountDAO.getInstance().getProjectMembers(mId);
+		return projectMembers;
+	}
+	
+	public ArrayList<AccountObject> getProjectWorkers() {
+		ArrayList<AccountObject> projectWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
+		return projectWorkers;
+	}
+	
+	public ArrayList<TaskObject> getTasksWithNoParent() {
+		ArrayList<TaskObject> tasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
+		return tasksWithNoParent;
+	}
+	
+	public ScrumRole getScrumRole(RoleEnum role) {
+		return ProjectDAO.getInstance().getScrumRole(mId, mName, role);
+	}
+	
+	public void updateScrumRole(ScrumRole scrumRole) {
+		ProjectDAO.getInstance().updateScrumRole(mId, 
+				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
+	}
+	
+	@Override
+    public void save() {
+		if (exists()) {
+			doUpdate();			
+		} else {
+			doCreate();
+		}
+    }
+
+	@Override
+    public void reload() {
+		if (exists()) {
+			ProjectObject project = ProjectDAO.getInstance().get(mId);
+			resetData(project);
+		}
+    }
+
+	@Override
+    public boolean delete() {
+		boolean success = ProjectDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+		}
+		return success;
+    }
+	
+	private boolean exists() {
+		ProjectObject project = ProjectDAO.getInstance().get(mId);
+		return project != null;
+	}
+	
+	private void resetData(ProjectObject project) {
+		mId = project.getId();
+		mName = project.getName();
+		mDisplayName = project.getDisplayName();
+		mComment = project.getComment();
+		mAttachFileSize = project.getAttachFileSize();
+		mManager = project.getManager();
+		mCreateTime = project.getCreateTime();
+		mUpdateTime = project.getUpdateTime();
+	}
+	
+	private void doCreate() {
+		mId = ProjectDAO.getInstance().create(this);
+        reload();
+	}
+	
+	private void doUpdate() {
+		ProjectDAO.getInstance().update(this);
 	}
 }

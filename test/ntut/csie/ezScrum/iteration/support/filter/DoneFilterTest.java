@@ -1,27 +1,30 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IStory;
 
-public class DoneFilterTest extends TestCase {
-	
-	private StoryDataForFilter data = null;
-	
-	public DoneFilterTest(String testMethod) {
-        super(testMethod);
-    }
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	protected void setUp() {
-		this.data = new StoryDataForFilter();
+public class DoneFilterTest {
+
+	private StoryDataForFilter mData = null;
+
+	@Before
+	public void setUp() {
+		mData = new StoryDataForFilter();
 	}
-	
-	protected void tearDown() {
-		this.data = null;
+
+	@After
+	public void tearDown() {
+		mData = null;
 	}
-	
+
+	@Test
 	public void testFilterStories() {
-		AProductBacklogFilter filter = new DoneFilter(this.data.getStorirs());
+		AProductBacklogFilter filter = new DoneFilter(mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		assertEquals(3, filterStories.length);

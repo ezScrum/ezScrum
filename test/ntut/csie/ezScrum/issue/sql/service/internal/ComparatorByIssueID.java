@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
 import java.util.Comparator;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 
 public class ComparatorByIssueID implements Comparator<IIssue>

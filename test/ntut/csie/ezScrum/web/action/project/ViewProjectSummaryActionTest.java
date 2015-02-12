@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -21,29 +20,31 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.project.core.IProjectDescription;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
-	private Configuration configuration;
-	private CreateProject CP;
-	private CreateAccount CA;
-	private int ProjectCount = 1;
-	private int AccountCount = 1;
+	private int mProjectCount = 1;
+	private int mAccountCount = 1;
+	private Configuration mConfig;
+	private CreateProject mCP;
+	private CreateAccount mCA;
 
 	public ViewProjectSummaryActionTest(String testMethod) {
 		super(testMethod);
 	}
 
+	/**
+	 * 設定讀取的 struts-config 檔案路徑
+	 */
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -53,149 +54,129 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	 */
 	private void cleanActionInformation() {
 		clearRequestParameters();
-		this.response.reset();
+		response.reset();
 	}
 
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
 		super.setUp();
-		// ============= release ==============
-		ini = null;
 	}
 
 	protected void tearDown() throws Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
-		
-		configuration.setTestMode(false);
-		configuration.store();
+		projectManager.initialRoleBase(mConfig.getDataPath());
+
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
-		ini = null;
-		projectManager = null;
-		configuration = null;
+		// release
+		mCP = null;
+		mCA = null;
+		mConfig = null;
 	}
 
 	/**
-	 * 1. admin 建立專案
-	 * 2. admin 瀏覽專案
+	 * 1. admin 建立專案 2. admin 瀏覽專案
 	 */
 	public void testAdminViewProjectSummary() {
 		/**
 		 * 1. admin 建立專案
 		 */
 		// ================ set action info ========================
-		String actionPath_createProject = "/AjaxCreateProject";
-		setRequestPathInformation(actionPath_createProject);
+		String actionPath = "/AjaxCreateProject";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		//	設定專案資訊
-		String projectID = "test";
+		String projectName = "test";
 		String projectDisplayName = "Project for Test Create Project";
 		String comment = "";
 		String projectManager = "ezScrum tester";
 		String attachFileSize = "";
-		addRequestParameter("Name", projectID);
+		addRequestParameter("Name", projectName);
 		addRequestParameter("DisplayName", projectDisplayName);
 		addRequestParameter("Comment", comment);
 		addRequestParameter("ProjectManager", projectManager);
 		addRequestParameter("AttachFileSize", attachFileSize);
 		addRequestParameter("from", "createProject");
 
-		//	設定ITS參數資料
-		addRequestParameter("ServerUrl", configuration.getServerUrl());
-		addRequestParameter("ServicePath", configuration.getWebServicePath());
-		addRequestParameter("DBAccount", configuration.getDBAccount());
-		addRequestParameter("DBPassword", configuration.getDBPassword());
-		addRequestParameter("SQLType", configuration.getDBType());
-		addRequestParameter("DBName", configuration.getDBName());
-
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ======================
-		//	assert response text
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Root>")
-		        .append("<CreateProjectResult>")
-		        .append("<Result>Success</Result>")
-		        .append("<ID>test</ID>")
-		        .append("</CreateProjectResult>")
-		        .append("</Root>");
+		StringBuilder expectedResponse = new StringBuilder();
+		expectedResponse.append("<Root>").append("<CreateProjectResult>")
+				.append("<Result>Success</Result>").append("<ID>test</ID>")
+				.append("</CreateProjectResult>").append("</Root>");
 
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		assertEquals(expectedResponse.toString(), actualResponseText);
 
-		//	assert database information
+		// assert database information
 		ProjectMapper projectMapper = new ProjectMapper();
-		IProject project = projectMapper.getProjectByID(projectID);
-		IProjectDescription projectDesc = project.getProjectDesc();
-		assertEquals(projectID, projectDesc.getName());
-		assertEquals(projectDisplayName, projectDesc.getDisplayName());
-		assertEquals("2", projectDesc.getAttachFileSize());
-		assertEquals(comment, projectDesc.getComment());
-		assertEquals(projectManager, projectDesc.getProjectManager());
-
-		//	assert 外部檔案路徑及檔名
-		//		IWorkspace workspace = ResourceFacade.getWorkspace();
-		//		IWorkspaceRoot root = workspace.getRoot();
-		//    	IProject Actual = root.getProject(projectID);
-		//    	
-		//    	assertEquals(Actual.getName(), project.getName());
-		//    	assertEquals(Actual.getFullPath(), project.getFullPath());
+		ProjectObject project = projectMapper.getProject(projectName);
+		assertEquals(projectName, project.getName());
+		assertEquals(projectDisplayName, project.getDisplayName());
+		assertEquals(2, project.getAttachFileSize());
+		assertEquals(comment, project.getComment());
+		assertEquals(projectManager, project.getManager());
 
 		/**
 		 * 2. admin 瀏覽專案
 		 */
+		// ================ set action info ========================
 		cleanActionInformation();
-		String pathViewProjectSummary = "/viewProject";
-		setRequestPathInformation(pathViewProjectSummary);
+		actionPath = "/viewProject";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectID);
+		addRequestParameter("PID", projectName);
 
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
 
 		String expectIsGuest = "false";
-		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		String actualIsGuest = (String) request.getSession().getAttribute(
+				"isGuest");
 		assertEquals(expectIsGuest, actualIsGuest);
 
 		verifyNoActionMessages();
@@ -203,86 +184,80 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * Integration Test
-	 * Steps
-	 * 	1. admin 新增專案 (setup done) 
-	 * 	2. admin 新增帳號 (setup done)
-	 * 	3. admin assign this account to the project
-	 * 	4. user login ezScrum
-	 * 	5. user view project list
-	 * 	6. user select project
-	 * @throws Exception 
+	 * Integration Test Steps 1. admin 新增專案 (setup done) 2. admin 新增帳號 (setup
+	 * done) 3. admin assign this account to the project 4. user login ezScrum
+	 * 5. user view project list 6. user select project
+	 * 
+	 * @throws Exception
 	 */
 	public void testUserViewProjectSummary() throws Exception {
-		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		// =============== common data ============================
+		AccountObject account = mCA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		String userId = account.getId();		// 取得第一筆 Account ID
-		String projectId = this.CP.getProjectObjectList().get(0).getId();
-		String pid = this.CP.getProjectObjectList().get(0).getName();
+		long accountId = account.getId();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String projectName = mCP.getAllProjects().get(0).getName();
 
 		/**
 		 * 3. admin assign this account to the project
 		 */
 
 		// ================ set action info ========================
-		String actionPath_AddUser = "/addUser";	// defined in "struts-config.xml"
-		setRequestPathInformation(actionPath_AddUser);
+		String actionPath = "/addUser";
+		setRequestPathInformation(actionPath);
 
 		// ================ set initial data =======================
 		String scrumRole = "ScrumTeam";
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", projectId);
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
 		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info with admin ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
-		// ================ set URL parameter ========================    	
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// ================ set URL parameter ========================
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 add user action ======================
+		// 執行 add user action
 		actionPerform();
 
 		// ================ assert ========================
-		//	assert response text
-		String expectedUserRole_ST = (new TestTool()).getRole(pid, scrumRole);
-		//		String expectedUserRole_USER = "user";
-		String expectedUserId = account.getId();
-		String expectedUserAccount = account.getAccount();
-		String expectedUserName = account.getName();
-		String expectedUserPassword = (new TestTool()).getMd5(this.CA.getAccount_PWD(1));
-		String expectedUserMail = account.getEmail();
-		String expectedUserEnable = account.getEnable();
-		//    	account.addRole(new Role(expectedUserRole_ST, expectedUserRole_ST));
-		//    	HashMap<String, ProjectRole> roleArr = account.getRoles();
-		//    	String expectedUserRole = roleArr[0].getRoleId() + ", " + roleArr[1].getRoleId();
-		StringBuilder addUserExpectedResponseText = new StringBuilder();
-		addUserExpectedResponseText.append("<Accounts>")
-		        .append("<AccountInfo>")
-		        .append("<ID>").append(expectedUserId).append("</ID>")
-		        .append("<Account>").append(expectedUserAccount).append("</Account>")
-		        .append("<Name>").append(expectedUserName).append("</Name>")
-		        .append("<Mail>").append(expectedUserMail).append("</Mail>")
-		        .append("<Roles>").append(expectedUserRole_ST).append("</Roles>")
-		        .append("<Enable>").append(expectedUserEnable).append("</Enable>")
-		        .append("</AccountInfo>")
-		        .append("</Accounts>");
+		long expectedAccountId = account.getId();
+		String expectedUsername = account.getUsername();
+		String expectedPassword = (new TestTool())
+				.getMd5(mCA.getAccount_PWD(1));
+		String expectedNickName = account.getNickName();
+		String expectedEMail = account.getEmail();
+		boolean expectedEnable = account.getEnable();
+		String expectedScrumRole = (new TestTool()).getRole(projectName,
+				scrumRole);
 
-		String addUserActualResponseText = this.response.getWriterBuffer().toString();
-		assertEquals(addUserExpectedResponseText.toString(), addUserActualResponseText);
+		StringBuilder expectedResponse = new StringBuilder();
+		expectedResponse.append("<Accounts>").append("<AccountInfo>")
+				.append("<ID>").append(expectedAccountId).append("</ID>")
+				.append("<Account>").append(expectedUsername)
+				.append("</Account>").append("<Name>").append(expectedNickName)
+				.append("</Name>").append("<Mail>").append(expectedEMail)
+				.append("</Mail>").append("<Roles>").append(expectedScrumRole)
+				.append("</Roles>").append("<Enable>").append(expectedEnable)
+				.append("</Enable>").append("</AccountInfo>")
+				.append("</Accounts>");
+		String actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
-		//	assert database information
-		UserObject actualAccount = new AccountMapper().getAccountById(userId);
+		// assert database information
+		AccountObject actualAccount = new AccountMapper().getAccount(accountId);
 		assertNotNull(account);
-		assertEquals(expectedUserId, actualAccount.getId());
-		assertEquals(expectedUserAccount, actualAccount.getAccount());
-		assertEquals(expectedUserName, actualAccount.getName());
-		assertEquals(expectedUserPassword, actualAccount.getPassword());
-		assertEquals(expectedUserMail, actualAccount.getEmail());
-		assertEquals(expectedUserEnable, actualAccount.getEnable());
+		assertEquals(expectedAccountId, actualAccount.getId());
+		assertEquals(expectedUsername, actualAccount.getUsername());
+		assertEquals(expectedPassword, actualAccount.getPassword());
+		assertEquals(expectedNickName, actualAccount.getNickName());
+		assertEquals(expectedEMail, actualAccount.getEmail());
+		assertEquals(expectedEnable, actualAccount.getEnable());
 
 		// 測試 Role 是否正確
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
@@ -293,21 +268,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				break;
 			}
 		}
-		assertEquals(roleMap.size(), 1);	// ScrumTeam
-		assertTrue(isExisted);				// ScrumTeam
-		//		String[] userRole = {expectedUserRole_USER, expectedUserRole_ST};
-		//		for (String roleID : userRole) {
-		//			boolean isExisted = false;
-		//			for (IRole role : roleArr) {
-		//				if (roleID.equals(role.getRoleId())) {
-		//					isExisted = true;
-		//					break;
-		//				}
-		//			}
-		//			assertEquals(true, isExisted);
-		//		}
-		//		IRole[] roles = account.getRoles();
-		//		assertEquals(roleMap.size(), 1);		//	include ProductOwner
+		assertEquals(roleMap.size(), 1); // ScrumTeam
+		assertTrue(isExisted); // ScrumTeam
 
 		/**
 		 * 4. user login ezScrum
@@ -316,18 +278,16 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String actionPath_logonSubmit = "/logonSubmit";
-		setRequestPathInformation(actionPath_logonSubmit);
+		actionPath = "/logonSubmit";
+		setRequestPathInformation(actionPath);
 
 		// ================== set parameter info ====================
-		String loginUserID = account.getAccount();
-		String loginUserPassword = this.CA.getAccount_PWD(1);
 		LogonForm logonForm = new LogonForm();
-		logonForm.setUserId(loginUserID);
-		logonForm.setPassword(loginUserPassword);
+		logonForm.setUserId(account.getUsername());
+		logonForm.setPassword(mCA.getAccount_PWD(1));
 		setActionForm(logonForm);
 
-		// ================ 執行 login action ======================
+		// 執行 login action
 		actionPerform();
 
 		// ================ assert ======================
@@ -336,46 +296,47 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		/**
 		 * 5. view project list
 		 */
-		userSession = getUserSession(new AccountMapper().getAccountById(userId));
 		// ================ clean previous action info ========================
 		cleanActionInformation();
-		ProjectObject projectObject = this.CP.getProjectObjectList().get(0);
-		IProject project = this.CP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
+		IProject iProject = mCP.getProjectList().get(0);
 
 		// ================ set action info ========================
-		String actionPath_viewProjectList = "/viewProjectList";
-		setRequestPathInformation(actionPath_viewProjectList);
+		userSession = getUserSession(new AccountMapper().getAccount(accountId));
+		actionPath = "/viewProjectList";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", userSession);
 
-		// ================ 執行 view project list action ======================
+		// 執行 view project list action
 		actionPerform();
 
 		// ================ assert ========================
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		String expectedProjectID = projectObject.getId();
-		String expectedProjectName = projectObject.getName();
-		String expectedProjectDisplayName = projectObject.getDisplayName();
-		String expectedProjectComment = projectObject.getComment();
-		String expectedProjectManager = projectObject.getManager();
-		String expectedProjectCreateDate = dateFormat.format(projectObject.getCreateDate());
-		String expectedProjectDemoDate = "No Plan!";
-		//	assert response text
-		StringBuilder viewProjectListExpectedResponseText = new StringBuilder();
-		viewProjectListExpectedResponseText.append("<Projects>")
-		        .append("<Project>")
-		        .append("<ID>").append(expectedProjectName).append("</ID>")
-		        .append("<Name>").append(expectedProjectDisplayName).append("</Name>")
-		        .append("<Comment>").append(expectedProjectComment).append("</Comment>")
-		        .append("<ProjectManager>").append(expectedProjectManager).append("</ProjectManager>")
-		        .append("<CreateDate>").append(expectedProjectCreateDate).append("</CreateDate>")
-		        .append("<DemoDate>").append(expectedProjectDemoDate).append("</DemoDate>")
-		        .append("</Project>")
-		        .append("</Projects>");
+		long expectedProjectId = project.getId();
+		String expectedName = project.getName();
+		String expectedDisplayName = project.getDisplayName();
+		String expectedComment = project.getComment();
+		String expectedManager = project.getManager();
+		String expectedCreateDate = dateFormat.format(project.getCreateTime());
+		String expectedDemoDate = "No Plan!";
 
-		String viewProjectListActualResponseText = this.response.getWriterBuffer().toString();
-		assertEquals(viewProjectListExpectedResponseText.toString(), viewProjectListActualResponseText);
+		// assert response text
+		expectedResponse.setLength(0); // clear builder
+		expectedResponse.append("<Projects>").append("<Project>")
+				.append("<ID>").append(expectedName).append("</ID>")
+				.append("<Name>").append(expectedDisplayName).append("</Name>")
+				.append("<Comment>").append(expectedComment)
+				.append("</Comment>").append("<ProjectManager>")
+				.append(expectedManager).append("</ProjectManager>")
+				.append("<CreateDate>").append(expectedCreateDate)
+				.append("</CreateDate>").append("<DemoDate>")
+				.append(expectedDemoDate).append("</DemoDate>")
+				.append("</Project>").append("</Projects>");
+
+		actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
 		 * 6.1 user select project - get Project Description
@@ -384,36 +345,39 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String ActionPath_GetProjectDescription = "/GetProjectDescription";
-		setRequestPathInfo(ActionPath_GetProjectDescription);
+		actionPath = "/GetProjectDescription";
+		setRequestPathInfo(actionPath);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
-		// ================ 執行 action ======================
+		// 執行 get Project Description action
 		actionPerform();
 
 		// ================ assert ======================
-		//	assert response text
 		dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-		String expectAttachFileSize = "2";
-		String expectProjectCreateDate = dateFormat.format(projectObject.getCreateDate());
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("{")
-		        .append("\"ID\":\"").append(expectedProjectID).append("\",")
-		        .append("\"ProjectName\":\"").append(expectedProjectName).append("\",")
-		        .append("\"ProjectDisplayName\":\"").append(expectedProjectDisplayName).append("\",")
-		        .append("\"Commnet\":\"").append(expectedProjectComment).append("\",")
-		        .append("\"ProjectManager\":\"").append(expectedProjectManager).append("\",")
-		        .append("\"AttachFileSize\":\"").append(expectAttachFileSize).append("\",")
-		        .append("\"ProjectCreateDate\":\"").append(expectProjectCreateDate).append("\"")
-		        .append("}");
+		long expectedAttachFileSize = 2;
+		expectedCreateDate = dateFormat.format(project.getCreateTime());
 
-		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		expectedResponse.setLength(0); // clear builder
+		expectedResponse.append("{").append("\"ID\":\"")
+				.append(expectedProjectId).append("\",")
+				.append("\"ProjectName\":\"").append(expectedName)
+				.append("\",").append("\"ProjectDisplayName\":\"")
+				.append(expectedDisplayName).append("\",")
+				.append("\"Commnet\":\"").append(expectedComment).append("\",")
+				.append("\"ProjectManager\":\"").append(expectedManager)
+				.append("\",").append("\"AttachFileSize\":\"")
+				.append(expectedAttachFileSize).append("\",")
+				.append("\"ProjectCreateDate\":\"").append(expectedCreateDate)
+				.append("\"").append("}");
+		actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
 		 * 6.2 user select project - get Sprint Description
@@ -422,28 +386,29 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String actionPath_GetTaskBoardDescription = "/GetTaskBoardDescription";
-		setRequestPathInfo(actionPath_GetTaskBoardDescription);
+		actionPath = "/GetTaskBoardDescription";
+		setRequestPathInfo(actionPath);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
-		// ================ 執行 action ======================
+		// 執行 Get TaskBoard Description action
 		actionPerform();
 
 		// ================ assert ======================
-		//	assert response text
-		expectedResponseText.setLength(0);
-		expectedResponseText.append("{\"ID\":\"0\",")
-		        .append("\"SprintGoal\":\"\",")
-		        .append("\"Current_Story_Undone_Total_Point\":\"\",")
-		        .append("\"Current_Task_Undone_Total_Point\":\"\"}");
+		expectedResponse.setLength(0);
+		expectedResponse.append("{\"ID\":\"0\",")
+				.append("\"SprintGoal\":\"\",")
+				.append("\"Current_Story_Undone_Total_Point\":\"\",")
+				.append("\"Current_Task_Undone_Total_Point\":\"\"}");
 
-		actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
 		 * 6.3 user select project - get Story Burndown Chat
@@ -457,265 +422,278 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		int taskCount = 2;
 		int storyEstValue = 8;
 		int taskEstValue = 3;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
-		createSprint.exe();
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, CP);
-		addTaskToStory.exe();
-		String ActionPath_GetSprintBurndownChartData = "/getSprintBurndownChartData";
-		setRequestPathInfo(ActionPath_GetSprintBurndownChartData);
+		CreateSprint CS = new CreateSprint(sprintCount, mCP);
+		CS.exe();
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEstValue,
+				CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASS.exe();
+		AddTaskToStory ATS = new AddTaskToStory(taskCount, taskEstValue, ASS,
+				mCP);
+		ATS.exe();
+		actionPath = "/getSprintBurndownChartData";
+		setRequestPathInfo(actionPath);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set request info ========================
-		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint
+		addRequestParameter("SprintID", "-1"); // -1代表離現在時間最近的 Sprint
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.getUserSession(account));
+		request.getSession().setAttribute("UserSession",
+				getUserSession(account));
 
-		// ================ 執行 action ======================
+		// 執行 get Sprint BurndownChart Data action
 		actionPerform();
 
 		// ================ assert ======================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		//	assert response text
-		TestTool tool = new TestTool();
-		List<String> sprintDateList = tool.getSprintDate(project, this.getUserSession(account));
-		//	減一代表Sprint開始的第一天是SprintPlanning所以第一天不工作，因此總工作天必須減一。
+		// assert response text
+		List<String> sprintDateList = (new TestTool()).getSprintDate(iProject,
+				getUserSession(account));
+		// 減一代表 Sprint 開始的第一天是 SprintPlanning 所以第一天不工作，因此總工作天必須減一。
 		int workDateCount = sprintDateList.size() - 1;
-		List<String> storyIdealLinePoints = tool.getStoryIdealLinePoint(workDateCount, 16.0);
-		expectedResponseText.setLength(0);
-		;
-		expectedResponseText.append("{\"success\":true,")
-		        .append("\"Points\":[");
+		List<String> storyIdealLinePoints = (new TestTool())
+				.getStoryIdealLinePoint(workDateCount, 16.0);
+
+		expectedResponse.setLength(0);
+		expectedResponse.append("{\"success\":true,").append("\"Points\":[");
 		for (int i = 0; i <= workDateCount; i++) {
-			expectedResponseText.append("{")
-			        .append("\"Date\":\"" + sprintDateList.get(i) + "\",")
-			        .append("\"IdealPoint\":").append(storyIdealLinePoints.get(i)).append(",")
-			        .append("\"RealPoint\":");
+			expectedResponse.append("{")
+					.append("\"Date\":\"" + sprintDateList.get(i) + "\",")
+					.append("\"IdealPoint\":")
+					.append(storyIdealLinePoints.get(i)).append(",")
+					.append("\"RealPoint\":");
 			if (i == 0) {
-				expectedResponseText.append("16.0},");
+				expectedResponse.append("16.0},");
 			} else {
-				expectedResponseText.append("\"null\"},");
+				expectedResponse.append("\"null\"},");
 			}
 		}
-		expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
-		expectedResponseText.append("]}");
+		expectedResponse.deleteCharAt(expectedResponse.length() - 1);
+		expectedResponse.append("]}");
 
-		actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
 		 * 6.4 user select project - get Task Burndown Chat
 		 */
 		// ================ clean previous action info ========================
 		cleanActionInformation();
-		ActionPath_GetSprintBurndownChartData = "/getSprintBurndownChartData";
-		setRequestPathInfo(ActionPath_GetSprintBurndownChartData);
+		actionPath = "/getSprintBurndownChartData";
+		setRequestPathInfo(actionPath);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + pid);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set request info ========================
-		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint
+		addRequestParameter("SprintID", "-1"); // -1:代表離現在時間最近的 Sprint
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", this.getUserSession(account));
+		request.getSession().setAttribute("UserSession",
+				getUserSession(account));
 
-		// ================ 執行 action ======================
+		// 執行 get Sprint BurndownChart Data action
 		actionPerform();
 
 		// ================ assert ======================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		//	assert response text
-		sprintDateList = tool.getSprintDate(project, this.getUserSession(account));
-		// 減一代表Sprint開始的第一天是SprintPlanning所以第一天不工作，因此總工作天必須減一。
-		workDateCount = sprintDateList.size() - 1;	//	
-		List<String> taskIdealLinePoints = tool.getTaskIdealLinePoint(workDateCount, 12.0);
-		expectedResponseText.setLength(0);
-		;
-		expectedResponseText.append("{\"success\":true,")
-		        .append("\"Points\":[");
+		// assert response text
+		sprintDateList = (new TestTool()).getSprintDate(iProject,
+				getUserSession(account));
+		// 減一代表 Sprint 開始的第一天是 SprintPlanning 所以第一天不工作，因此總工作天必須減一。
+		workDateCount = sprintDateList.size() - 1; //
+		List<String> taskIdealLinePoints = (new TestTool())
+				.getTaskIdealLinePoint(workDateCount, 12.0);
+
+		expectedResponse.setLength(0);
+		expectedResponse.append("{\"success\":true,").append("\"Points\":[");
 		for (int i = 0; i <= workDateCount; i++) {
-			expectedResponseText.append("{")
-			        .append("\"Date\":\"" + sprintDateList.get(i) + "\",")
-			        .append("\"IdealPoint\":").append(taskIdealLinePoints.get(i)).append(",")
-			        .append("\"RealPoint\":");
+			expectedResponse.append("{")
+					.append("\"Date\":\"" + sprintDateList.get(i) + "\",")
+					.append("\"IdealPoint\":")
+					.append(taskIdealLinePoints.get(i)).append(",")
+					.append("\"RealPoint\":");
 			if (i == 0) {
-				expectedResponseText.append("12.0},");
+				expectedResponse.append("12.0},");
 			} else {
-				expectedResponseText.append("\"null\"},");
+				expectedResponse.append("\"null\"},");
 			}
 		}
-		expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
-		expectedResponseText.append("]}");
+		expectedResponse.deleteCharAt(expectedResponse.length() - 1);
+		expectedResponse.append("]}");
 
-		actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
+		actualResponse = response.getWriterBuffer().toString();
+		assertEquals(expectedResponse.toString(), actualResponse);
 
 		/**
 		 * 6.5 user select project
 		 */
-		// ================ clean previous action info ========================
+		// ================ clean previous action info ==============
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String actionPath_viewProject = "/viewProject";
-		setRequestPathInformation(actionPath_viewProject);
+		actionPath = "/viewProject";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================== set parameter info ====================
-		addRequestParameter("PID", pid);
+		addRequestParameter("PID", projectName);
 
-		// ================ 執行 view project action ======================
+		// 執行 view project action
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
+		verifyForward("SummaryView"); // define in ViewProjectSummaryAction.java
+		verifyForwardPath("/Pages/ezScrumContent.jsp"); // define in
+														// tiles-defs.xml
+
 		String expectIsGuest = "false";
-		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		String actualIsGuest = (String) request.getSession().getAttribute(
+				"isGuest");
 		assertEquals(expectIsGuest, actualIsGuest);
-		int expectedSprintID = 1;
+
+		int expectedSprintId = 1;
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
 		String expectedSprint_Current_Story_Undone_Total_Point = "16.0 / 16.0";
 		String expectedSprint_Current_Task_Undone_Total_Point = "12.0 / 12.0";
 		TaskBoard taskBoard = (TaskBoard) request.getAttribute("TaskBoard");
-		assertEquals(expectedSprintID, taskBoard.getSprintID());
+		assertEquals(expectedSprintId, taskBoard.getSprintID());
 		assertEquals(expectedSprintGoal, taskBoard.getSprintGoal());
-		assertEquals(expectedSprint_Current_Story_Undone_Total_Point, taskBoard.getStoryPoint());
-		assertEquals(expectedSprint_Current_Task_Undone_Total_Point, taskBoard.getTaskPoint());
+		assertEquals(expectedSprint_Current_Story_Undone_Total_Point,
+				taskBoard.getStoryPoint());
+		assertEquals(expectedSprint_Current_Task_Undone_Total_Point,
+				taskBoard.getTaskPoint());
 		verifyNoActionMessages();
 		verifyNoActionErrors();
 	}
 
 	/**
-	 * 比對資料庫中是否存在此專案的PID
-	 * 1. assert 不存在
-	 * 2. assert 存在
+	 * 比對資料庫中是否存在此專案的 project name 1. assert 不存在 2. assert 存在
 	 */
 	public void testPIDIsExisted() {
-		String pathViewProjectSummary = "/viewProject";
+		String actionPath = "/viewProject";
 
 		/**
-		 * project ID does not existed 
+		 * project name does not existed
 		 */
-		String notexistedProjectID = "testNotExisted";
-		setRequestPathInformation(pathViewProjectSummary);
+		String notExistedProjectName = "testNotExisted";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", notexistedProjectID);
+		addRequestParameter("PID", notExistedProjectName);
 
 		// ================ 執行 action ======================
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("error");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/Error.jsp");	//	define in tiles-defs.xml
-
+		verifyForward("error");
+		verifyForwardPath("/Error.jsp");
 		verifyNoActionMessages();
 		verifyNoActionErrors();
 
 		/**
-		 * project ID existed
+		 * project name existed
 		 */
-		this.cleanActionInformation();
-		String existedProjectID = "TEST_PROJECT_1";
-		setRequestPathInformation(pathViewProjectSummary);
+		// ================ clean previous action info ==============
+		cleanActionInformation();
+		String existedProjectName = "TEST_PROJECT_1";
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", existedProjectID);
+		addRequestParameter("PID", existedProjectName);
 
-		// ================ 執行 action ======================
+		// 執行 view Project action
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
 
 		String expectIsGuest = "false";
-		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		String actualIsGuest = (String) request.getSession().getAttribute(
+				"isGuest");
 		assertEquals(expectIsGuest, actualIsGuest);
-
 		verifyNoActionMessages();
 		verifyNoActionErrors();
 	}
 
 	/**
-	 * 判斷該使用者是否存在於專案中
-	 * 1. assert user(ScrumTeam) 不存在於專案
-	 * 2. assert user(ScrumTeam) 存在於專案
+	 * 判斷該使用者是否存在於專案中 1. assert user(ScrumTeam) 不存在於專案 2. assert user(ScrumTeam)
+	 * 存在於專案
 	 */
 	public void testUserIsInProject() {
-		String pathViewProjectSummary = "/viewProject";
-		String projectID = "TEST_PROJECT_1";
+		String actionPath = "/viewProject";
+		String projectName = "TEST_PROJECT_1";
 
 		/**
 		 * Permission Denied
 		 */
-		setRequestPathInformation(pathViewProjectSummary);
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		IUserSession userSession = this.getUserSession(this.CA.getAccountList().get(0));
+		IUserSession userSession = getUserSession(mCA.getAccountList().get(0));
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectID);
+		addRequestParameter("PID", projectName);
 
-		// ================ 執行 action ======================
+		// 執行 view Project action
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("permissionDenied");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/PermissionDenied.jsp");	//	define in tiles-defs.xml
-
+		verifyForward("permissionDenied");
+		verifyForwardPath("/PermissionDenied.jsp");
 		verifyNoActionMessages();
 		verifyNoActionErrors();
 
 		/**
 		 * user(ScrumTeam) 存在於專案
 		 */
-		this.cleanActionInformation();
-		AddUserToRole addUserToRole = new AddUserToRole(this.CP, this.CA);
+		cleanActionInformation();
+		AddUserToRole addUserToRole = new AddUserToRole(mCP, mCA);
 		addUserToRole.exe_SM();
 
-		setRequestPathInformation(pathViewProjectSummary);
+		setRequestPathInformation(actionPath);
 
 		// ================ set session info ========================
-		UserObject account = new AccountMapper().getAccount(CA.getAccountList().get(0).getAccount());
+		AccountObject account = mCA.getAccountList().get(0);
 		userSession = getUserSession(account);
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectID);
+		addRequestParameter("PID", projectName);
 
 		// ================ 執行 action ======================
 		actionPerform();
 
 		// ================ assert ======================
-		verifyForward("SummaryView");					//	define in ViewProjectSummaryAction.java
-		verifyForwardPath("/Pages/ezScrumContent.jsp");	//	define in tiles-defs.xml
+		verifyForward("SummaryView");
+		verifyForwardPath("/Pages/ezScrumContent.jsp");
 
 		String expectIsGuest = "false";
-		String actualIsGuest = (String) request.getSession().getAttribute("isGuest");
+		String actualIsGuest = (String) request.getSession().getAttribute(
+				"isGuest");
 		assertEquals(expectIsGuest, actualIsGuest);
-
 		verifyNoActionMessages();
 		verifyNoActionErrors();
 	}

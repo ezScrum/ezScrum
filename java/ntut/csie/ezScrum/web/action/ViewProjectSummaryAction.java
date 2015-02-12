@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -72,7 +72,7 @@ public class ViewProjectSummaryAction extends Action {
 		ProjectObject projectObject = SessionManager.getProjectObject(request);
 
 		// 取得 TaskBoard資訊
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		TaskBoard board = null;
@@ -86,16 +86,16 @@ public class ViewProjectSummaryAction extends Action {
 		}
 
 		// ezScrum v1.8
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 
 		if (scrumRole != null && scrumRole.isGuest()) {
 			request.getSession().setAttribute("isGuest", "true");
-			log.info(account.getAccount() + " is a guest, view project: " + project.getName());
+			log.info(account.getUsername() + " is a guest, view project: " + project.getName());
 			return mapping.findForward("GuestOnly");
 		} else {
 			request.getSession().setAttribute("isGuest", "false");
-			log.info(account.getAccount() + " is not a guest, view project: " + project.getName());
+			log.info(account.getUsername() + " is not a guest, view project: " + project.getName());
 		}
 
 		return mapping.findForward("SummaryView");

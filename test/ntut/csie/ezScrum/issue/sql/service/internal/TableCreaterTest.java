@@ -1,12 +1,14 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
+import static org.junit.Assert.*;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.BUILDRESULT_TABLE;
@@ -23,82 +25,68 @@ import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZTRACK_TYPEFIE
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZTRACK_TYPEFIELD_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.QUERY_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public class TableCreaterTest extends TestCase {
-	private TableCreater tc = null;
-	private ISQLControl control;
-	private CreateProject CP;
-	private Configuration configuration;
-	
-	public TableCreaterTest(String testMethod) {
-		super(testMethod);
-	}
+public class TableCreaterTest {
+	private ISQLControl mISQLControl;
+	private CreateProject mCP;
+	private Configuration mConfig;
 
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration(new UserSession(AccountObject.get("admin")));
+		mConfig.setTestMode(true);
+		mConfig.save();
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		// 新增Project
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		IProject project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
 		// create service control info.
-		MantisService Service = new MantisService(configuration);
-		this.control = Service.getControl();
-		this.control.setUser(configuration.getDBAccount());
-		this.control.setPassword(configuration.getDBPassword());
-		this.control.connection();
-		
-		this.tc = new TableCreater();
-	
-		super.setUp();
-		
-		// ============= release ==============
-		ini = null;
-		project = null;
-		Service = null;
+		MantisService Service = new MantisService(mConfig);
+		mISQLControl = Service.getControl();
+		mISQLControl.setUser(mConfig.getDBAccount());
+		mISQLControl.setPassword(mConfig.getDBPassword());
+		mISQLControl.connection();
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+	@After
+	public void tearDown() throws IOException, Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();											
 		
-		if (this.control != null) {
+		if (mISQLControl != null) {
 			try {
-				this.control.close();
+				mISQLControl.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
     	}
 		
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project();					// 刪除測試檔案	
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();	
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 	
 		
-		// ============= release ==============
-		ini = null;
-		copyProject = null;
-		this.tc = null;
-		this.control.close();
-		this.control = null;
-		this.CP = null;
-		configuration = null;
+		// release resource
+		mISQLControl = null;
+		mCP = null;
+		mConfig = null;
 	}
 
 	// test ezScrum
+	@Test
 	public void testcreateEzScrumTables() throws Exception{
 		List<String> tables = new ArrayList<String>();
 		
@@ -114,7 +102,7 @@ public class TableCreaterTest extends TestCase {
 		assertFalse(tables.contains(ITSEnum.EZSCRUM_TAG_TABLE));
 		
 		// create table
-		this.tc.createEzScrumTables(tables, this.control);
+		TableCreater.createEzScrumTables(tables, mISQLControl);
 		tables = getTableList();
 		// assert tables exist
 		assertTrue(tables.contains(ITSEnum.EZSCRUM_STORY_RELATION));
@@ -142,6 +130,7 @@ public class TableCreaterTest extends TestCase {
 	}
 	
 	// test ezTrack
+	@Test
 	public void testcreateEzTrackTables() throws SQLException {
 		List<String> tables = new ArrayList<String>();
 		
@@ -163,7 +152,7 @@ public class TableCreaterTest extends TestCase {
 
 		
 		// create table
-		this.tc.createEzTrackTables(tables, this.control);
+		TableCreater.createEzTrackTables(tables, mISQLControl);
 		tables = getTableList();
 		// assert tables exist
 		assertTrue(tables.contains(ITSEnum.EZTRACK_COMBOFIELD));
@@ -213,6 +202,7 @@ public class TableCreaterTest extends TestCase {
 	
 	
 	// test DoD
+	@Test
 	public void testcreateDoDTables() throws SQLException {
 		List<String> tables = new ArrayList<String>();
 		
@@ -229,7 +219,7 @@ public class TableCreaterTest extends TestCase {
 		assertFalse(tables.contains(ITSEnum.DOD_QUERY));
 		
 		// create table
-		this.tc.createDoDTables(tables, this.control);
+		TableCreater.createDoDTables(tables, mISQLControl);
 		tables = getTableList();
 		// assert tables exist
 		assertTrue(tables.contains(ITSEnum.DOD_BUILDRESULT));
@@ -267,7 +257,7 @@ public class TableCreaterTest extends TestCase {
 	private ArrayList<String> getTableList() throws SQLException {
 		ArrayList<String> tables = new ArrayList<String>();
 		
-		ResultSet rs = this.control.executeQuery("show tables");
+		ResultSet rs = mISQLControl.executeQuery("show tables");
 		while( (rs != null) && rs.next()) {
 			tables.add(rs.getString(1));
 		}
@@ -278,13 +268,13 @@ public class TableCreaterTest extends TestCase {
 	// drop the table
 	private void DropTable(String TableName) {
 		String ins = "DROP TABLE `" + TableName + "`";
-		this.control.execute(ins);
+		mISQLControl.execute(ins);
 	}
 	
 	// check column of table exist or not
 	private boolean assertColumnExist(String TableName, String ColumnName) throws SQLException {
 		String Ins = "SELECT COUNT(`" + ColumnName + "`) FROM `" + TableName + "`";
-		ResultSet rs = this.control.executeQuery(Ins);
+		ResultSet rs = mISQLControl.executeQuery(Ins);
 		
 		if (rs.next()) {
 			return rs.getBoolean(1);

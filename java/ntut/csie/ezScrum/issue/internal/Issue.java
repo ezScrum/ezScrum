@@ -286,10 +286,10 @@ public class Issue implements IIssue {
 		try {
 			for (HistoryObject history : getHistories()) {
 				if (history.getHistoryType() == HistoryObject.TYPE_STATUS) {
-					if (history.getModifiedTime() <= date.getTime()) {
+					if (history.getCreateTime() <= date.getTime()) {
 						lastStatus = Integer.parseInt(history.getNewValue());
 						if (lastStatus >= status) {
-							result = new Date(history.getModifiedTime());
+							result = new Date(history.getCreateTime());
 						} else {
 							break;
 						}
@@ -351,7 +351,7 @@ public class Issue implements IIssue {
 		if (statusHistories.size() != 0) {
 			for (int i = 0; i < statusHistories.size(); i++) {
 				HistoryObject history = statusHistories.get(i);
-				if (history.getModifiedTime() <= dateTime) {
+				if (history.getCreateTime() <= dateTime) {
 					status = Integer.parseInt(history.getNewValue());
 				}
 			}
@@ -558,9 +558,9 @@ public class Issue implements IIssue {
 		try {
 			for (HistoryObject history : getHistories()) {
 				if (lastUpdate == null) {
-					lastUpdate = new Date(history.getModifiedTime());
-				} else if (lastUpdate.getTime() < history.getModifiedTime()) {
-					lastUpdate = new Date(history.getModifiedTime());
+					lastUpdate = new Date(history.getCreateTime());
+				} else if (lastUpdate.getTime() < history.getCreateTime()) {
+					lastUpdate = new Date(history.getCreateTime());
 				}
 			}			
 		} catch (SQLException e) {
@@ -595,8 +595,7 @@ public class Issue implements IIssue {
 	 * for ezScrum v1.8 temp function
 	 */
 	public ArrayList<HistoryObject> getHistories() throws SQLException {
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		mHistories = historyDao.getHistoriesByIssue(mId, getIssueType());
+		mHistories = HistoryDAO.getInstance().getHistoriesByIssue(mId, getIssueType());
 		return mHistories;
 	}
 
@@ -707,7 +706,7 @@ public class Issue implements IIssue {
 			for (HistoryObject history : getHistories()) {
 				if (Integer.parseInt(history.getOldValue()) == ITSEnum.NEW_STATUS &&
 					Integer.parseInt(history.getNewValue()) == ITSEnum.ASSIGNED_STATUS) {
-					checkOutDate = history.getModifiedTime();
+					checkOutDate = history.getCreateTime();
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -725,7 +724,7 @@ public class Issue implements IIssue {
 			for (HistoryObject history : getHistories()) {
 				if (Integer.parseInt(history.getOldValue()) == ITSEnum.ASSIGNED_STATUS &&
 					Integer.parseInt(history.getNewValue()) == ITSEnum.CLOSED_STATUS) {
-					closeDate = history.getModifiedTime();
+					closeDate = history.getCreateTime();
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -830,7 +829,7 @@ public class Issue implements IIssue {
 				if (history.getHistoryType() == HistoryObject.TYPE_STATUS && 
 					history.getNewValue().equals(String.valueOf(ITSEnum.ASSIGNED_STATUS)) &&
 					history.getOldValue().equals(String.valueOf(ITSEnum.NEW_STATUS))) {
-					return history.getModifiedTime();
+					return history.getCreateTime();
 				}
 			}
 		} catch (SQLException e) {
@@ -846,7 +845,7 @@ public class Issue implements IIssue {
 				if (history.getHistoryType() == HistoryObject.TYPE_STATUS && 
 					history.getNewValue().equals(String.valueOf(ITSEnum.CLOSED_STATUS)) &&
 					history.getOldValue().equals(String.valueOf(ITSEnum.ASSIGNED_STATUS))) {
-					return history.getModifiedTime();
+					return history.getCreateTime();
 				}
 			}
 		} catch (SQLException e) {

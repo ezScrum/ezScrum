@@ -99,7 +99,12 @@ public class MySQLControl implements ISQLControl {
 			mKeys = new String[0];
 		}
 	}
-
+	
+	public Long executeInsert(String query) {
+		execute(query, true);
+		return Long.parseLong(mKeys[0]);
+	}
+ 
 	public boolean execute(String query) {
 		return execute(query, false);
 	}
@@ -134,7 +139,10 @@ public class MySQLControl implements ISQLControl {
 			if (returnKeys) {
 				setKeys(statement, query);
 			} else {
-				return statement.executeUpdate(query) > 0 ? true : false;
+				if (statement.executeUpdate(query) > 0) {
+					return true;
+				}
+				return false;
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

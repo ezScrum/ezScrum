@@ -13,10 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
-import ntut.csie.ezScrum.web.form.ProjectInfoForm;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.core.util.FileUtil;
@@ -40,15 +39,13 @@ public class AjaxAttachFileAction extends Action {
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 
 		StringBuilder result = new StringBuilder("");
-		if (project == null) {
+		if (projectObject == null) {
 			result.append("{\"success\":false}");
 		} else {
-			ProjectHelper projectHelper = new ProjectHelper();
-			ProjectInfoForm projectInfo = projectHelper.getProjectInfoForm(project);
-
-			int fileMaxSize_int = Integer.parseInt(projectInfo.getAttachFileSize());
+			long fileMaxSize_int = projectObject.getAttachFileSize();
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
 			
 			long issueId = Long.parseLong(request.getParameter("issueID"));
@@ -63,7 +60,7 @@ public class AjaxAttachFileAction extends Action {
 				int file_size = (int) file.length();
 				
 				if (file_size > fileMaxSize_int) {
-					result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectInfo.getAttachFileSize() + "Mb\"}");
+					result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectObject.getAttachFileSize() + "Mb\"}");
 				} else if (file_size < 0) {
 					result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
 				} else {
@@ -71,7 +68,7 @@ public class AjaxAttachFileAction extends Action {
 		            attachFileInfo.issueId = issueId;
 		            attachFileInfo.name = fileName;
 		            attachFileInfo.contentType = formFile.getContentType();
-		            attachFileInfo.projectName = project.getName();
+		            attachFileInfo.projectName = projectObject.getName();
 		            
 					try {
 						pbHelper.addAttachFile(attachFileInfo, file);

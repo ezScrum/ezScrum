@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
+import static org.junit.Assert.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,8 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
@@ -28,52 +27,45 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.jdom.Element;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MantisServiceTest extends TestCase {
-	private CreateProject mCreateProject;
+public class MantisServiceTest {
 	private int mProjectCount = 1;
 	private int mStoryCount = 1;
+	private CreateProject mCP;
 	private IProject mProject;
 	private Configuration mConfig;
-	private IUserSession mUserSession = new UserSession(new AccountMapper().getAccount("admin"));
 	private MantisService mMantisService;
 
-	public MantisServiceTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
-		mConfig = new Configuration(mUserSession);
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration(new UserSession(AccountObject.get("admin")));
 		mConfig.setTestMode(true);
-		mConfig.store();
-
+		mConfig.save();
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增Project
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 		mMantisService = new MantisService(mConfig);
-
-		super.setUp();
-
-		// ============= release ==============
-		ini = null;
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -87,17 +79,16 @@ public class MantisServiceTest extends TestCase {
 		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 
-		// ============= release ==============
-		ini = null;
-		mCreateProject = null;
-		mMantisService = null;
+		// release resource
+		mCP = null;
+		mProject = null;
 		mConfig = null;
-
-		super.tearDown();
+		mMantisService = null;
 	}
 
+	@Test
 	public void testNewIssue() {
 		mMantisService.openConnect();
 		
@@ -137,6 +128,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetIssues_many_parameter() {
 		mMantisService.openConnect();
 		
@@ -173,6 +165,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetIssues_project() {
 		mMantisService.openConnect();
 		
@@ -232,6 +225,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetIssues_project_category() throws SQLException {
 		mMantisService.openConnect();
 		
@@ -289,7 +283,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
-	
+	@Test
 	public void testGetIssue_ID() {
 		mMantisService.openConnect();
 		
@@ -318,6 +312,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testUpdateIssueContent() {
 		mMantisService.openConnect();
 		
@@ -362,6 +357,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testRemoveIssue() throws SQLException {
 		mMantisService.openConnect();
 		
@@ -413,6 +409,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetStories() {
 		mMantisService.openConnect();
 		
@@ -517,12 +514,13 @@ public class MantisServiceTest extends TestCase {
 	// ====================== for tagService =====================
 	// ===========================================================
 	// 測試對象: getIssues(String projectName, String category, String releaseID, String sprintID, Date date)
+	@Test
 	public void testInitTag_many_parameter() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -558,12 +556,13 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// 測試對象: getIssues(String projectName, String category)
+	@Test
 	public void testInitTag_projectName_category() throws SQLException {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -596,12 +595,13 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// 測試對象: getIssue(long issueID)
+	@Test
 	public void testInitTag_ID() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -633,12 +633,13 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// 測試對象: getStorys(String projectName)
+	@Test
 	public void testInitTag_projectName() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -671,12 +672,13 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// 測試對象: deleteStory(String ID)
+	@Test
 	public void testRemoveStoryTag_story() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -727,12 +729,13 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// 測試對象: removeStoryTag(String storyID, String tagID)
+	@Test
 	public void testRemoveStoryTag_storyTag() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -773,6 +776,7 @@ public class MantisServiceTest extends TestCase {
 	}
 
 	// test add new tag in project
+	@Test
 	public void testAddNewTag() {
 		mMantisService.openConnect();
 		
@@ -799,6 +803,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testDeleteTag() {
 		mMantisService.openConnect();
 
@@ -831,6 +836,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetTagList() {
 		mMantisService.openConnect();
 		
@@ -857,12 +863,13 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testAddStoryTag() {
 		mMantisService.openConnect();
 		
 		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
 		int dataCount = 10;
-		CreateTag CT = new CreateTag(dataCount, mCreateProject);
+		CreateTag CT = new CreateTag(dataCount, mCP);
 		CT.exe();
 		// new 10 test story data
 		for (int listIndex = 0; listIndex < dataCount; listIndex++) {
@@ -899,6 +906,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testUpdateTag() {
 		mMantisService.openConnect();
 		
@@ -926,6 +934,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetTagByName() {
 		mMantisService.openConnect();
 		
@@ -946,6 +955,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testIsTagExist() {
 		mMantisService.openConnect();
 
@@ -963,6 +973,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 	
+	@Test
 	public void testGetIssues() {
 		mMantisService.openConnect();
 		
@@ -998,6 +1009,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testAddRelationship_history_1() throws SQLException {
 		mMantisService.openConnect();
 		
@@ -1085,6 +1097,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testAddRelationship_history_2() throws SQLException {
 		mMantisService.openConnect();
 		
@@ -1149,6 +1162,7 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testRemoveRelationship_history() throws SQLException {
 		mMantisService.openConnect();
 		
@@ -1280,100 +1294,13 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
-	public void testUpdateHandler_history() throws SQLException {
-		mMantisService.openConnect();
-
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-		long taskId = mMantisService.newIssue(task);
-		assertEquals(taskId, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-
-		ArrayList<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date date = new Date();
-		date.setTime(date.getTime() + 1000);
-		mMantisService.updateHandler(taskOne, "admin", date);
-		int adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-		
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		date.setTime(date.getTime() + 1000);
-		// 測試塞入一樣狀態的 history，但是會發生日期無法塞進去，所以只好暫停一下進廣告
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		mMantisService.updateHandler(taskOne, "admin", date);
-		adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskId);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getIssueType(), IssueTypeEnum.TYPE_TASK);
-		
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #" + taskId);
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		mMantisService.closeConnect();
-	}
-
+	@Test
 	public void testUpdateName_history() throws SQLException {
 		IIssue task = new Issue();
 		task.setIssueID(1);
 		task.setSummary("Task_Name_One");
 		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
+		task.setProjectID(mCP.getProjectList().get(0).getName());
 		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
 
 		// open connection
@@ -1443,338 +1370,10 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
-	public void testChangeStatusToClosed_hisotry() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date d = new Date();
-		d.setTime(d.getTime() + 1000);
-		mMantisService.updateHandler(taskOne, "admin", d);
-
-		int adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		d.setTime(d.getTime() + 1000);
-		// 測試塞入一樣狀態的 history，但是會發生日期無法塞進去，所以只好暫停一下進廣告
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		mMantisService.updateHandler(taskOne, "admin", d);
-
-		adminId = mMantisService.getUserID("admin");
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-
-		d.setTime(d.getTime() + 1000);
-		mMantisService.changeStatusToClosed(taskID, ITSEnum.FIXED_RESOLUTION, "Task_New_Note", d);
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		
-		assertEquals(histories.get(1).getDescription(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(1).getOldValue(), "");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(2).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(2).getNewValue(), "50");
-		assertEquals(histories.get(2).getOldValue(), "10");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-		
-		assertEquals(histories.get(3).getDescription(), adminId + " => " + adminId);
-		assertEquals(histories.get(3).getNewValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getOldValue(), String.valueOf(adminId));
-		assertEquals(histories.get(3).getHistoryType(), HistoryObject.TYPE_HANDLER);
-		
-		assertEquals(histories.get(4).getDescription(), "Check Out => Done");
-		assertEquals(histories.get(4).getNewValue(), "90");
-		assertEquals(histories.get(4).getOldValue(), "50");
-		assertEquals(histories.get(4).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		// close connection
-		mMantisService.closeConnect();
-	}
-
-	public void testInsertBugNote_hisotry() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		// 日期無法塞進去，所以只好暫停一下進廣告
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// test method
-		mMantisService.insertBugNote(taskID, "");
-		// test method
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-		assertEquals(taskOne.getNotes(), "");
-
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		// close connection
-		mMantisService.closeConnect();
-	}
-
-	public void testReopenStatusToAssigned_hisotry() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date d = new Date();
-		d.setTime(d.getTime() + 1000);
-		// test method
-		mMantisService.reopenStatusToAssigned(taskID, task.getSummary(), "Note", d);
-		// test method
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		assertEquals(histories.get(1).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(1).getNewValue(), "50");
-		assertEquals(histories.get(1).getOldValue(), "10");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		// close connection
-		mMantisService.closeConnect();
-	}
-
-	public void testResetStatusToNew_hisotry() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-
-		Date d = new Date();
-		d.setTime(d.getTime() + 1000);
-		mMantisService.reopenStatusToAssigned(taskID, task.getSummary(), "Note", d);
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		assertEquals(histories.get(1).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(1).getNewValue(), "50");
-		assertEquals(histories.get(1).getOldValue(), "10");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		d.setTime(d.getTime() + 1000);
-		// test method
-		mMantisService.resetStatusToNew(taskID, task.getSummary(), "Note", d);
-		// test method
-
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		histories = taskOne.getHistories();
-		assertEquals(histories.get(0).getDescription(), "Create Task #1");
-		assertEquals(histories.get(0).getNewValue(), "");
-		assertEquals(histories.get(0).getOldValue(), "");
-		assertEquals(histories.get(0).getHistoryType(), HistoryObject.TYPE_CREATE);
-		assertEquals(histories.get(1).getDescription(), "Not Check Out => Check Out");
-		assertEquals(histories.get(1).getNewValue(), "50");
-		assertEquals(histories.get(1).getOldValue(), "10");
-		assertEquals(histories.get(1).getHistoryType(), HistoryObject.TYPE_STATUS);
-		assertEquals(histories.get(2).getDescription(), "Check Out => Not Check Out");
-		assertEquals(histories.get(2).getNewValue(), "10");
-		assertEquals(histories.get(2).getOldValue(), "50");
-		assertEquals(histories.get(2).getHistoryType(), HistoryObject.TYPE_STATUS);
-
-		// close connection
-		mMantisService.closeConnect();
-	}
-
-	public void testRemoveIssue_history() throws SQLException {
-		IIssue task = new Issue();
-		task.setIssueID(1);
-		task.setSummary("Task_Name_One");
-		task.setDescription("Task_Desc_One");
-		task.setProjectID(mCreateProject.getProjectList().get(0).getName());
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		// open connection
-		mMantisService.openConnect();
-
-		long taskID = mMantisService.newIssue(task);
-		assertEquals(taskID, (long) 1);
-
-		IIssue taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne.getSummary(), "Task_Name_One");
-		assertEquals(taskOne.getDescription(), "Task_Desc_One");
-		assertEquals(taskOne.getCategory(), ScrumEnum.TASK_ISSUE_TYPE);
-
-		List<HistoryObject> histories = taskOne.getHistories();
-		assertEquals(1, histories.size());
-		assertEquals("Create Task #1", histories.get(0).getDescription());
-
-		// test method
-		mMantisService.removeIssue(Long.toString(taskID));
-		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(taskID, IssueTypeEnum.TYPE_TASK).size());
-		
-		// test method
-		taskOne = mMantisService.getIssue(taskID);
-		assertEquals(taskOne, null);
-	}
-
+	@Test
 	public void testgetAttachFile() {
 		// ================ set initial data =======================
-		CreateProductBacklog CPB = new CreateProductBacklog(mStoryCount, mCreateProject);
+		CreateProductBacklog CPB = new CreateProductBacklog(mStoryCount, mCP);
 		CPB.exe();
 		
 		long issueId = CPB.getIssueList().get(0).getIssueID();
@@ -1807,6 +1406,7 @@ public class MantisServiceTest extends TestCase {
 	/**
 	 * 主要測試getIssue方法中 mAttachFileService.initAttachFile(issue);對getIssue造成的效果是否有效
 	 */
+	@Test
 	public void testGetIssue_AboutAttachFile() {
 		// new issue data
 		long issueId = 1;
@@ -1815,7 +1415,7 @@ public class MantisServiceTest extends TestCase {
 		story.setIssueID(issueId);
 		story.setSummary("Story_Name_One");
 		story.setDescription("Story_Desc_One");
-		story.setProjectID(mCreateProject.getProjectList().get(0).getName());
+		story.setProjectID(mCP.getProjectList().get(0).getName());
 		story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 
 		mMantisService.openConnect();
@@ -1857,6 +1457,7 @@ public class MantisServiceTest extends TestCase {
 	 * 主要測試getIssues方法中 p.s.這裡是複數s mAttachFileService.initAttachFile(issue);對getIssues造成的效果是否有效
 	 * @throws SQLException 
 	 */
+	@Test
 	public void testGetIssues_AboutAttachFile() throws SQLException {
 		ArrayList<IIssue> storyList = new ArrayList<IIssue>();
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
@@ -1907,6 +1508,7 @@ public class MantisServiceTest extends TestCase {
 	/**
 	 * 主要測試getStorys方法中 mAttachFileService.initAttachFile(story);對getStorys造成的效果是否有效
 	 */
+	@Test
 	public void testGetStories_AboutAttachFile() {
 		ArrayList<IStory> storyList = new ArrayList<IStory>();
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
@@ -1956,6 +1558,7 @@ public class MantisServiceTest extends TestCase {
 	/**
 	 * 主要測試getAttachFile方法中 mAttachFileService.getAttachFile(fileID);對getAttachFile造成的效果是否有效
 	 */
+	@Test
 	public void testGetAttachFile_AboutAttachFile() {
 		long fileId;
 		IIssue story = new Issue();
@@ -1991,8 +1594,9 @@ public class MantisServiceTest extends TestCase {
 	 * for noteService
 	 */
 	// test : getIssues(String projectName, String category, String releaseID, String sprintID, Date startDate, Date endDate)
+	@Test
 	public void testGetIssues_Date_AboutGetIssueNotes() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 		TextParserGeneraterForNote noteTextHelper;
@@ -2062,8 +1666,9 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testGetIssue_IssueID_AboutGetIssueNotes() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 		TextParserGeneraterForNote noteTextHelper;
@@ -2135,8 +1740,9 @@ public class MantisServiceTest extends TestCase {
 		mMantisService.closeConnect();
 	}
 
+	@Test
 	public void testUpdateBugNote() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 		TextParserGeneraterForNote noteTextHelper;
@@ -2234,8 +1840,9 @@ public class MantisServiceTest extends TestCase {
 		MNService = null;
 	}
 
+	@Test
 	public void testUpdateIssueNote() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 		TextParserGeneraterForNote noteTextHelper;
@@ -2360,8 +1967,9 @@ public class MantisServiceTest extends TestCase {
 		MNService = null;
 	}
 
+	@Test
 	public void testInsertBugNote() {
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 		TextParserGeneraterForNote noteTextHelper;
@@ -2427,13 +2035,14 @@ public class MantisServiceTest extends TestCase {
 		MNService = null;
 	}
 
+	@Test
 	public void testRemoveNote() {
 		mMantisService.openConnect();
 		MantisNoteService MNService = new MantisNoteService(mMantisService.getControl(), mConfig);
 
 		// new 10 issues
 		int storyCount = 10;
-		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCreateProject);
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 
 		// get the issues by creating data

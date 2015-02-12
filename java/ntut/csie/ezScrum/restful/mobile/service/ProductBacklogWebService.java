@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.ProductBacklogUtil;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
@@ -47,7 +47,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 	 * @throws JSONException
 	 */
 	public void createStory(JSONObject storyProperties) throws JSONException {
-		StoryInformation storyInformation = new StoryInformation();
+		StoryInfo storyInformation = new StoryInfo();
 		storyInformation.setName(storyProperties.getString("name"));
 		storyInformation.setImportance(storyProperties.getString("importance"));
 		storyInformation.setEstimation(storyProperties.getString("estimation"));

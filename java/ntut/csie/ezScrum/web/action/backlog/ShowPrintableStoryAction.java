@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.MakePDFService;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -80,7 +80,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 
 		response.setHeader("Content-disposition", "inline; filename=SprintStory.pdf");
 
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		//		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (file == null) {

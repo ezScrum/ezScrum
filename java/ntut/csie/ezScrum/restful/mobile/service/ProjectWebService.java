@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import ntut.csie.ezScrum.restful.mobile.support.ConvertIProject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.account.core.IAccount;
@@ -31,8 +31,8 @@ public class ProjectWebService extends LoginWebService {
 		this.Project.add(getProject(projectID));
 	}
 
-	public ProjectWebService(UserObject user, String projectID) throws LogonException {
-		super(user.getAccount(), user.getPassword());
+	public ProjectWebService(AccountObject user, String projectID) throws LogonException {
+		super(user.getUsername(), user.getPassword());
 		
 		this.Project.add(getProject(projectID));
 	}
@@ -41,7 +41,7 @@ public class ProjectWebService extends LoginWebService {
 		return this.Project;
 	}
 	
-	private List<IProject> getUserProject(UserObject acc) {
+	private List<IProject> getUserProject(AccountObject acc) {
 		List<IProject> projectlist = new ArrayList<IProject>();
 		ProjectLogic helper = new ProjectLogic();
 		

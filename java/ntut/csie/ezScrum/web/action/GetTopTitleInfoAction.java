@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -25,12 +25,12 @@ public class GetTopTitleInfoAction extends Action {
 //		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IProject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		UserObject account = session.getAccount();
+		AccountObject account = session.getAccount();
 		
-		String UserID = account.getAccount();
-		String UserName = account.getName();
+		String userName = account.getUsername();
+		String nickName = account.getNickName();
 
-		String userInfo = UserID + "(" + UserName + ")";
+		String userInfo = userName + "(" + nickName + ")";
 		String projectInfo = "";
 		
 		if (project != null) {

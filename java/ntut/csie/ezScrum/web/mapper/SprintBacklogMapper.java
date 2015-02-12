@@ -8,12 +8,14 @@ import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -24,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 public class SprintBacklogMapper {
 	private static Log log = LogFactory.getLog(SprintBacklogMapper.class);
 	private int mSprintPlanId = 0;
-	private IProject mProject;
+	private IProject mIProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
 	private Date mEndDate;
@@ -34,13 +36,12 @@ public class SprintBacklogMapper {
 	private double mLimitedPoint = 0;
 
 	private ArrayList<IIssue> mStories = null;
-	private List<IIssue> mTasks = null;
+	private ArrayList<TaskObject> mTasks = null;
 	private ArrayList<IIssue> mDropedStories = null;
-	private ArrayList<IIssue> mAllIssues = null;
 
 	// 用於紀錄Story與Task之間的Mapping
-	LinkedHashMap<Long, IIssue[]> mMapStoryTasks = null;
-	LinkedHashMap<Long, IIssue[]> mMapDropedStoryTasks = null;
+	LinkedHashMap<Long, ArrayList<TaskObject>> mMapStoryTasks = null;
+	LinkedHashMap<Long, ArrayList<TaskObject>> mMapDropedStoryTasks = null;
 	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 	private boolean mUpdateFlag = true;
 
@@ -51,17 +52,15 @@ public class SprintBacklogMapper {
 	 * @param userSession
 	 */
 	public SprintBacklogMapper(IProject project, IUserSession userSession) {
-		mProject = project;
+		mIProject = project;
 		mUserSession = userSession;
-
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
 			mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
 		}
-
 		initSprintInformation();
-		initITSInformation();
+		initConfig();
 	}
 
 	/**
@@ -71,44 +70,38 @@ public class SprintBacklogMapper {
 	 * @param userSession
 	 * @param sprintId
 	 */
-	public SprintBacklogMapper(IProject project, IUserSession userSession, long sprintId) {
-		mProject = project;
+	public SprintBacklogMapper(IProject project, IUserSession userSession,
+			long sprintId) {
+		mIProject = project;
 		mUserSession = userSession;
-
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintPlanId = Integer.parseInt(mIterPlanDesc.getID());
-
 		initSprintInformation();
-		initITSInformation();
+		initConfig();
 	}
 
 	/**
-	 * 初始化 Sprint 的資訊
+	 * 初始化 Sprint 的資訊l
 	 */
 	private void initSprintInformation() {
-		try {
-			if (mIterPlanDesc.getStartDate().equals("")) {
-				throw new RuntimeException();
-			}
-			mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
-			mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-
-			String aDays = mIterPlanDesc.getAvailableDays();
-			// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor 的機制移除
-			// 改為只計算 aDay:hours can commit * focus factor
-			if (aDays != null && !aDays.equals("")) {
-				mLimitedPoint = Integer.parseInt(aDays) * Integer.parseInt(mIterPlanDesc.getFocusFactor()) / 100;
-			}
-		} catch (NumberFormatException e) {
-			log.info("non-exist sprint");
+		mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
+		mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
+		String aDays = mIterPlanDesc.getAvailableDays();
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除
+		// 改為只計算 aDay:hours can commit * focus factor
+		if (aDays != null && !aDays.equals("")) {
+			mLimitedPoint = Integer.parseInt(aDays)
+					* Integer.parseInt(mIterPlanDesc.getFocusFactor())
+					/ 100;
 		}
 	}
 
 	/**
 	 * 初始 mMantisService 的設定
 	 */
-	private void initITSInformation() {
+	private void initConfig() {
 		mConfig = new Configuration(mUserSession);
 		mMantisService = new MantisService(mConfig);
 	}
@@ -117,15 +110,15 @@ public class SprintBacklogMapper {
 	 * 測試用
 	 */
 	public void forceRefresh() {
-		getAllIssuesInSprint();
+		synchronizeDataInSprintInDB();
 		mUpdateFlag = false;
 	}
 
 	/************************************************************
 	 * =============== Sprint Backlog的操作 =========
 	 *************************************************************/
-
-	public Map<Long, IIssue[]> getTasksMap() {
+	// StoryObject 時需要修改
+	public Map<Long, ArrayList<TaskObject>> getTasksMap() {
 		refresh();
 		return mMapStoryTasks;
 	}
@@ -135,31 +128,36 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	public List<IIssue> getTasks() {
+	public ArrayList<TaskObject> getAllTasks() {
 		refresh();
 		return mTasks;
 	}
 
-	public Map<Long, IIssue[]> getDropedTaskMap() {
+	public Map<Long, ArrayList<TaskObject>> getDroppedTasksMap() {
 		if (mMapDropedStoryTasks == null) {
-			getDropedStory();
+			IIssue[] droppedStories = getDroppedStories();
+			// 取得這些被 Dropped Story 的 Task
+			mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
+			for (IIssue dropedStory : droppedStories) {
+				ArrayList<TaskObject> droppedTasks = new ArrayList<TaskObject>();
+				List<Long> droppedTasksId = dropedStory.getChildrenId();
+				for (Long droppedTaskId : droppedTasksId) {
+					TaskObject droppedTask = TaskObject.get(droppedTaskId);
+					if (droppedTask != null) {
+						droppedTasks.add(droppedTask);
+					}
+				}
+				mMapDropedStoryTasks
+						.put(dropedStory.getIssueID(), droppedTasks);
+			}
 		}
 		return mMapDropedStoryTasks;
 	}
 
-	public List<IIssue> getIssues(String category) {
+	// 上層如果 call 到這個 function, 要判斷傳入引數，如果是 Task 的話要改用 getAllTasks()
+	public ArrayList<IIssue> getAllStories(String category) {
 		refresh();
-
-		List<IIssue> stories = new ArrayList<IIssue>();
-		if (category.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			stories.addAll(mStories);
-		} else if (category.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
-			stories.addAll(mTasks);
-		} else {
-			stories.addAll(mAllIssues);
-		}
-
-		return stories;
+		return mStories;
 	}
 
 	/**
@@ -168,172 +166,142 @@ public class SprintBacklogMapper {
 	 * @param sprintId
 	 * @return
 	 */
-	public IIssue[] getStoryInSprint(long sprintId) {
+	public IIssue[] getStoriesBySprintId(long sprintId) {
 		mMantisService.openConnect();
-		IIssue[] stories = mMantisService.getIssues(mProject.getName(), ScrumEnum.STORY_ISSUE_TYPE, null, Long.toString(sprintId), null);
+		IIssue[] stories = mMantisService
+				.getIssues(mIProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
+						null, Long.toString(sprintId), null);
 		mMantisService.closeConnect();
 		return stories;
 	}
 
 	/**
-	 * 取得 story 內的 tasks 與 sprint 無關
+	 * 取得 story 內的 tasks 與 sprint 無關 for ezScrum 1.8
 	 * 
 	 * @param storyId
 	 */
-	public IIssue[] getTaskInStory(long storyId) {
-		IIssue story = getIssue(storyId);
-		
-		if (story == null) {
-			return null;
-		}
-		
-		List<Long> taskIDs = story.getChildrenId();
-		List<IIssue> tasks = new ArrayList<IIssue>();
-		
-		for (long taskID : taskIDs) {
-			IIssue task = getIssue(taskID);
-			if (task != null) {
-				tasks.add(task);
-			}
-		}
-
-		return tasks.toArray(new IIssue[tasks.size()]);
-	}
-
-	/**
-	 * 取得在這個 Sprint 中曾經被 Drop 掉的 Story
-	 */
-	public IIssue[] getDropedStory() {
-		if (mDropedStories == null) {
-			mDropedStories = new ArrayList<IIssue>();
-		}
-		else {
-			return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
-		}
-
-		String iter = Integer.toString(mSprintPlanId);
-		Date startDate = getSprintStartDate();
-		Date endDate = getSprintEndDate();
-
-		mMantisService.openConnect();
-
-		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
-		IIssue[] tmpIIssues = mMantisService.getIssues(mProject.getName(), ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
-
-		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
-		if (tmpIIssues != null) {
-			for (IIssue issue : tmpIIssues) {
-				Map<Date, String> map = issue.getTagValueList("Iteration");
-
-				if (!issue.getSprintID().equals(iter)) {
-					mDropedStories.add(issue);
+	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
+		IIssue story = getStory(storyId);
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		if (story != null) {
+			List<Long> taskIds = story.getChildrenId();
+			for (long taskId : taskIds) {
+				TaskObject task = TaskObject.get(taskId);
+				if (task != null) {
+					tasks.add(task);
 				}
 			}
 		}
+		return tasks;
+	}
 
-		// 取得這些被 Dropped Story 的 Task
-		mMapDropedStoryTasks = new LinkedHashMap<Long, IIssue[]>();
-		ArrayList<IIssue> tmpList = new ArrayList<IIssue>();
-		for (IIssue issue : mDropedStories) {
-			tmpList.clear();
-
-			List<Long> childList = issue.getChildrenId();
-
-			for (Long id : childList) {
-				IIssue tmp = mMantisService.getIssue(id);
-				if (tmp != null) tmpList.add(tmp);
-			}
-			mMapDropedStoryTasks.put(issue.getIssueID(), tmpList.toArray(new IIssue[tmpList.size()]));
+	/**
+	 * 取得在這個 Sprint 中被 Drop 掉的 Story
+	 */
+	public IIssue[] getDroppedStories() {
+		if (mDropedStories == null) {
+			mDropedStories = new ArrayList<IIssue>();
+		} else {
+			return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 		}
-
+		String sprintIdString = Integer.toString(mSprintPlanId);
+		Date startDate = getSprintStartDate();
+		Date endDate = getSprintEndDate();
+		mMantisService.openConnect();
+		// 找出這個 Sprint 期間，所有可能出現的 issue，下面再進行過濾
+		IIssue[] sprintStories = mMantisService.getIssues(mIProject.getName(),
+				ScrumEnum.STORY_ISSUE_TYPE, null, "*", startDate, endDate);
+		// 確認這些這期間被 Drop 掉的 Story 是否曾經有在此 Sprint 過
+		if (sprintStories != null) {
+			for (IIssue story : sprintStories) {
+				if (!story.getSprintID().equals(sprintIdString)) {
+					mDropedStories.add(story);
+				}
+			}
+		}
 		mMantisService.closeConnect();
 		return mDropedStories.toArray(new IIssue[mDropedStories.size()]);
 	}
 
-	public IIssue getIssue(long issueId) {
+	public IIssue getStory(long storyId) {
 		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(issueId);
+		IIssue story = mMantisService.getIssue(storyId);
 		mMantisService.closeConnect();
-		return issue;
+		return story;
 	}
 
-	public void modifyTaskInformation(long taskId, String name, String handler, Date modifyDate) {
-		IIssue task = this.getIssue(taskId);
-
-		// taskId 為不存在的 issue 時，會有 null 的危險
+	public TaskObject getTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
-			if ((handler != null) && (handler.length() > 0) && (!task.getAssignto().equals(handler))) {
-				MantisService service = new MantisService(mConfig);
-				service.openConnect();
-				service.updateHandler(task, handler, modifyDate);
-				service.closeConnect();
-			}
-			if (!task.getSummary().equals(name) && name != null) {
-				mMantisService.openConnect();
-				mMantisService.updateName(task, name, modifyDate);
-				mMantisService.closeConnect();
-			}
+			return task;
+		}
+		return null;
+	}
+
+	// for ezScrum 1.8
+	// TaskInfo should include task id
+	public void updateTask(TaskInfo taskInfo) {
+		TaskObject task = TaskObject.get(taskInfo.taskId);
+		if (task != null) {
+			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId)
+					.setEstimate(taskInfo.estimate)
+					.setRemains(taskInfo.remains).setActual(taskInfo.actual)
+					.setNotes(taskInfo.notes)
+					.setPartnersId(taskInfo.partnersId).save();
 		}
 	}
 
-	public void updateTagValue(IIssue issue) {
-		mMantisService.openConnect();
-		mMantisService.updateBugNote(issue);
-		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
+	// for ezScrum 1.8
+	public long addTask(long projectId, TaskInfo taskInfo) {
+		TaskObject task = new TaskObject(projectId);
+		task.setName(taskInfo.name).setNotes(taskInfo.notes)
+				.setStoryId(taskInfo.storyId).setHandlerId(taskInfo.handlerId)
+				.setEstimate(taskInfo.estimate).setRemains(taskInfo.estimate)
+				.setActual(0).setCreateTime(taskInfo.specificTime).save();
+
+		for (long partnerId : taskInfo.partnersId) {
+			task.addPartner(partnerId);
+		}
+
 		mUpdateFlag = true;
-		mMantisService.closeConnect();
+		return task.getId();
 	}
 
-	public long addTask(String name, String description, long storyId, Date date) {
-		mMantisService.openConnect();
-		IIssue task = new Issue();
-
-		task.setProjectID(mProject.getName());
-		task.setSummary(name);
-		task.setDescription(description);
-		task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-
-		task = this.getIssue(mMantisService.newIssue(task));
-
-		// 新增關係
-		mMantisService.openConnect(); // connection be closed by SprintBacklogMapper.getIssue
-		mMantisService.addRelationship(storyId, task.getIssueID(), ITSEnum.PARENT_RELATIONSHIP, date);
-
-		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-		mUpdateFlag = true;
-		mMantisService.closeConnect();
-		return task.getIssueID();
-	}
-
-	public void addExistedTask(long[] taskIds, long storyId, Date date) {
-		mMantisService.openConnect();
-		
-		// 新增關係
+	// for ezScrum 1.8
+	public void addExistingTasksToStory(ArrayList<Long> taskIds, long storyId) {
 		for (long taskId : taskIds) {
-			mMantisService.addRelationship(storyId, taskId, ITSEnum.PARENT_RELATIONSHIP, date);
+			TaskObject task = TaskObject.get(taskId);
+			if (task != null) {
+				task.setStoryId(storyId);
+				task.save();
+			}
 		}
-
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		mUpdateFlag = true;
-		mMantisService.closeConnect();
 	}
 
-	public void deleteExistedTask(long[] taskIds) {
-		mMantisService.openConnect();
-		
+	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
+		ProjectObject project = ProjectObject.get(projectId);
+		return project.getTasksWithNoParent();
+	}
+
+	// for ezScrum 1.8
+	public void deleteExistingTask(long[] taskIds) {
 		for (long taskId : taskIds) {
-			mMantisService.deleteTask(taskId);
+			TaskObject task = TaskObject.get(taskId);
+			if (task != null) {
+				task.delete();
+			}
 		}
 		mUpdateFlag = true;
-		mMantisService.closeConnect();
 	}
 
-	public void removeTask(long taskId, long parentId) {
-		mMantisService.openConnect();
-		mMantisService.removeRelationship(parentId, taskId, ITSEnum.PARENT_RELATIONSHIP);
-		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
+	public void dropTask(long taskId) {
+		TaskObject task = TaskObject.get(taskId);
+		if (task != null) {
+			task.setStoryId(TaskObject.NO_PARENT).save();
+		}
 		mUpdateFlag = true;
-		mMantisService.closeConnect();
 	}
 
 	/************************************************************
@@ -345,7 +313,7 @@ public class SprintBacklogMapper {
 	}
 
 	public IProject getProject() {
-		return mProject;
+		return mIProject;
 	}
 
 	public Date getSprintStartDate() {
@@ -364,67 +332,141 @@ public class SprintBacklogMapper {
 		return mIterPlanDesc.getGoal();
 	}
 
+	public void closeStory(long id, String notes, String changeDate) {
+		Date closeDate = null;
+
+		if (changeDate != null && !changeDate.equals("")) {
+			closeDate = DateUtil.dayFillter(changeDate,
+					DateUtil._16DIGIT_DATE_TIME);
+		}
+
+		mMantisService.openConnect();
+		mMantisService.changeStatusToClosed(id, ITSEnum.FIXED_RESOLUTION,
+				notes, closeDate);
+		mMantisService.closeConnect();
+	}
+
+	public void reopenStory(long id, String name, String bugNote,
+			String changeDate) {
+		Date closeDate = null;
+
+		if (changeDate != null && !changeDate.equals("")) {
+			closeDate = DateUtil.dayFillter(changeDate,
+					DateUtil._16DIGIT_DATE_TIME);
+		} else {
+			closeDate = new Date();
+		}
+
+		mMantisService.openConnect();
+		mMantisService.resetStatusToNew(id, name, bugNote, closeDate);
+		mMantisService.closeConnect();
+	}
+
 	/************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
-
-	public void doneIssue(long id, String bugNote, String changeDate) {
-		Date closeDate = null;
-		
-		if (changeDate != null && !changeDate.equals("")) {
-			closeDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
+	/**
+	 * From Not Checked Out to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void closeTask(long id, String name, String notes, int actual,
+			Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes).setActual(actual)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
+					.save(specificDate.getTime());
 		}
-		
-		mMantisService.openConnect();
-		mMantisService.changeStatusToClosed(id, ITSEnum.FIXED_RESOLUTION, bugNote, closeDate);
-		mMantisService.closeConnect();
-	}
-
-	public void reopenIssue(long id, String name, String bugNote, String changeDate) {
-		Date reopenDate = new Date();
-		
-		if (changeDate != null && !changeDate.equals("")) {
-			reopenDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
-		}
-
-		IIssue issue = getIssue(id);
-		mMantisService.openConnect();
-		
-		if (issue.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) {
-			mMantisService.resetStatusToNew(id, name, bugNote, reopenDate);
-		} else if (issue.getCategory().equals(ScrumEnum.TASK_ISSUE_TYPE))  {
-			mMantisService.reopenStatusToAssigned(id, name, bugNote, reopenDate);
-		}
-		
-		mMantisService.closeConnect();
-	}
-
-	public void resetTask(long id, String name, String bugNote, String changeDate) {
-		Date reopenDate = new Date();
-		
-		if (changeDate != null && !changeDate.equals("")) {
-			reopenDate = DateUtil.dayFillter(changeDate, DateUtil._16DIGIT_DATE_TIME);
-		}
-
-		mMantisService.openConnect();
-		mMantisService.resetStatusToNew(id, name, bugNote, reopenDate);
-		mMantisService.closeConnect();
-	}
-
-	public void checkOutTask(long id, String bugNote) {
-		if (bugNote != null && !bugNote.equals("")) {
-			mMantisService.openConnect();
-			mMantisService.insertBugNote(id, bugNote);
-			mMantisService.closeConnect();
-		}
-	}
-
-	public void deleteTask(long taskId, long parentId) {
-		mMantisService.openConnect();
-		mMantisService.deleteRelationship(parentId, taskId);
-		mMantisService.deleteTask(taskId);
 		mUpdateFlag = true;
-		mMantisService.closeConnect();
+	}
+	
+	/**
+	 * From Checked Out to Done
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void closeTask(long id, String name, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
+					.setUpdateTime(specificDate.getTime())
+					.save(specificDate.getTime());
+		}
+		mUpdateFlag = true;
+	}
+	
+	/**
+	 * From Done to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void reopenTask(long id, String name, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes)
+					.setStatus(TaskObject.STATUS_CHECK)
+					.save(specificDate.getTime());
+		}
+	}
+
+	/**
+	 * From Checked Out to Not Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void resetTask(long id, String name, String notes, Date specificDate) {
+		long noHandler = -1;
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setNotes(notes).setHandlerId(noHandler)
+					.setStatus(TaskObject.STATUS_UNCHECK)
+					.save(specificDate.getTime());
+		}
+	}
+	
+	/**
+	 * From Not Checked Out to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+					.save(specificDate.getTime());
+		}
+	}
+
+	// for ezScrum 1.8
+	public void deleteTask(long id) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.delete();
+		}
 	}
 
 	/************************************************************
@@ -435,47 +477,39 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mAllIssues == null || 
-			mMapStoryTasks == null || mUpdateFlag) {
-			getAllIssuesInSprint();
+		if (mStories == null || mTasks == null || mMapStoryTasks == null
+				|| mUpdateFlag) {
+			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}
 	}
 
 	/**
 	 * 取得目前所有在此 Sprint 的 Story 與 Task
+	 * 
 	 * @return
 	 */
-	private IIssue[] getAllIssuesInSprint() {
-		if (mStories == null || mTasks == null || mAllIssues == null ||
-				mMapStoryTasks == null) {
+	private void synchronizeDataInSprintInDB() {
+		if (mStories == null || mTasks == null || mMapStoryTasks == null) {
 			mStories = new ArrayList<IIssue>();
-			mTasks = new ArrayList<IIssue>();
-			mAllIssues = new ArrayList<IIssue>();
-			mMapStoryTasks = new LinkedHashMap<Long, IIssue[]>();
+			mTasks = new ArrayList<TaskObject>();
+			mMapStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
 		} else {
 			mStories.clear();
 			mTasks.clear();
-			mAllIssues.clear();
 			mMapStoryTasks.clear();
 		}
-
-		IIssue[] issues = getStoryInSprint(mSprintPlanId);
-
-		for (IIssue issue : issues) {
-			mStories.add(issue);
-			IIssue[] taskList = getTaskInStory(issue.getIssueID());
-			if (taskList.length != 0) {
-				for (IIssue task : taskList) {
-					mTasks.add(task);
-				}
-				mMapStoryTasks.put(issue.getIssueID(), taskList);
+		IIssue[] stories = getStoriesBySprintId(mSprintPlanId);
+		for (IIssue story : stories) {
+			mStories.add(story);
+			ArrayList<TaskObject> tasks = getTasksByStoryId(story.getIssueID());
+			for (TaskObject task : tasks) {
+				mTasks.add(task);
+			}
+			if (tasks.size() > 0) {
+				mMapStoryTasks.put(story.getIssueID(), tasks);
 			}
 		}
 		mUpdateFlag = false;
-
-		mAllIssues.addAll(mStories);
-		mAllIssues.addAll(mTasks);
-		return mAllIssues.toArray(new IIssue[mAllIssues.size()]);
 	}
 }

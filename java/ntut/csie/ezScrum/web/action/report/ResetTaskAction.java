@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -47,9 +48,10 @@ public class ResetTaskAction extends PermissionAction {
 		sprintBacklogHelper.resetTask(issueID, name, bugNote, changeDate);
 
 		// return reset task的相關資訊
-		IIssue issue = sprintBacklogHelper.getIssue(issueID);
+		TaskObject task = sprintBacklogHelper.getTask(issueID);
+		//IIssue issue = sprintBacklogHelper.getStory(issueID);
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateTaskboardIssueToJson(issue));
+		result.append(new Translation().translateTaskboardTaskToJson(task));
 
 		return result;
 	}

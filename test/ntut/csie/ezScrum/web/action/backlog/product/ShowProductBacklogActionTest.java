@@ -18,69 +18,68 @@ import servletunit.struts.MockStrutsTestCase;
 
 public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/showProductBacklog2";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private final String mActionPath = "/showProductBacklog2";
+	private IProject mProject;
 	
 	public ShowProductBacklogActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mActionPath );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
 	
 	public void testShowProductBacklogAction_NoStory(){
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		addRequestParameter("FilterType", "");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, this.project );
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute( projectName, mProject );
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -101,17 +100,17 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	
 	public void testShowProductBacklogAction_Stories(){
 		int storyCount = 2;
-		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, this.CP);
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		addRequestParameter("FilterType", "");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, this.project );
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute( projectName, mProject );
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -152,21 +151,20 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Backlog(){
 		CreateProductBacklog CPB = new CreateProductBacklog();
-//		createProductBacklog.createBacklogStory(project, value, importance, estimation);
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		List<IIssue> issueList = CPB.getIssueList();
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "BACKLOG";
 		addRequestParameter("FilterType", filterType);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, this.project );
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute( projectName, mProject );
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -207,40 +205,39 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Done() throws Exception{
 		CreateProductBacklog CPB = new CreateProductBacklog();
-//		createProductBacklog.createBacklogStory(project, value, importance, estimation);
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		
 		int sprintCount = 1;
 		int storyCount = 1;
 		int storyEstValue = 8;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
-		createSprint.exe();
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
+		CreateSprint CS = new CreateSprint(sprintCount, mCP);
+		CS.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		
-		List<IIssue> issueList = addStoryToSprint.getIssueList();
-		CheckOutIssue checkOutIssue = new CheckOutIssue(issueList, this.CP);
-		checkOutIssue.exeDone_Issues();
+		List<IIssue> issueList = ASTS.getStories();
+		CheckOutIssue COI = new CheckOutIssue(issueList, mCP);
+		COI.exeDone_Issues();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "DONE";
 		addRequestParameter("FilterType", filterType);
-		String expectedStoryName = addStoryToSprint.getIssueList().get(0).getSummary();
-		String expectedStoryImportance = addStoryToSprint.getIssueList().get(0).getImportance();
-		String expectedStoryEstimation = addStoryToSprint.getIssueList().get(0).getEstimated();
-		String expectedStoryValue = addStoryToSprint.getIssueList().get(0).getValue();
-		String expectedStoryHoewToDemo = addStoryToSprint.getIssueList().get(0).getHowToDemo();
-		String expectedStoryNote = addStoryToSprint.getIssueList().get(0).getNotes();
-		String issueID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
-		String SprintID = createSprint.getSprintIDList().get(0);
+		String expectedStoryName = ASTS.getStories().get(0).getSummary();
+		String expectedStoryImportance = ASTS.getStories().get(0).getImportance();
+		String expectedStoryEstimation = ASTS.getStories().get(0).getEstimated();
+		String expectedStoryValue = ASTS.getStories().get(0).getValue();
+		String expectedStoryHoewToDemo = ASTS.getStories().get(0).getHowToDemo();
+		String expectedStoryNote = ASTS.getStories().get(0).getNotes();
+		String issueId = String.valueOf(ASTS.getStories().get(0).getIssueID());
+		String SprintId = CS.getSprintIDList().get(0);
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, this.project );
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute( projectName, mProject );
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -253,7 +250,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(issueID).append(",")
+							.append("\"Id\":").append(issueId).append(",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
 							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
@@ -262,9 +259,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 							.append("\"Status\":\"closed\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(issueID).append("\",")
+							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(issueId).append("\",")
 							.append("\"Release\":\"None\",")
-							.append("\"Sprint\":\"").append(SprintID).append("\",")
+							.append("\"Sprint\":\"").append(SprintId).append("\",")
 							.append("\"FilterType\":\"DONE\",")
 							.append("\"Attach\":false,")
 							.append("\"AttachFileList\":[]")
@@ -278,24 +275,23 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	
 	public void testShowProductBacklog_Detail() throws Exception{
 		CreateProductBacklog CPB = new CreateProductBacklog();
-//		createProductBacklog.createBacklogStory(project, value, importance, estimation);
-		CPB.createBacklogStory(project, "0", "0", "0");	//	backlog
-		CPB.createBacklogStory(project, "0", "1", "0");	//	backlog
-		CPB.createBacklogStory(project, "1", "2", "3");	//	detail
+		CPB.createBacklogStory(mProject, "0", "0", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "0", "1", "0");	//	backlog
+		CPB.createBacklogStory(mProject, "1", "2", "3");	//	detail
 		
 		int sprintCount = 1;
 		int storyCount = 1;
 		int storyEstValue = 8;
-		CreateSprint createSprint = new CreateSprint(sprintCount, this.CP);
-		createSprint.exe();
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, createSprint, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
+		CreateSprint CS = new CreateSprint(sprintCount, mCP);
+		CS.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASTS.exe();
 		
-		List<IIssue> issueList = addStoryToSprint.getIssueList();
-		CheckOutIssue checkOutIssue = new CheckOutIssue(issueList, this.CP);
-		checkOutIssue.exeDone_Issues();
+		List<IIssue> issueList = ASTS.getStories();
+		CheckOutIssue COI = new CheckOutIssue(issueList, mCP);
+		COI.exeDone_Issues();
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		String filterType = "DETAIL";
@@ -308,8 +304,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		String expectedStoryNote = CPB.getIssueList().get(2).getNotes();
 		String issueID = String.valueOf(CPB.getIssueList().get(2).getIssueID());
 		// ================ set session info ========================
-		request.getSession().setAttribute( projectName, this.project );
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute( projectName, mProject );
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

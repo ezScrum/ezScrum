@@ -1,27 +1,32 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IStory;
 
-public class ProductBacklogFilterFactoryTest extends TestCase {
-	
-	private StoryDataForFilter data = null;
-	
-	public ProductBacklogFilterFactoryTest(String testMethod) {
-        super(testMethod);
-    }
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	protected void setUp() {
-		this.data = new StoryDataForFilter();
+public class ProductBacklogFilterFactoryTest {
+	
+	private StoryDataForFilter mData = null;
+	
+	@Before
+	public void setUp() {
+		mData = new StoryDataForFilter();
 	}
 	
-	protected void tearDown() {
-		this.data = null;
+	@After
+	public void tearDown() {
+		mData = null;
 	}
 	
+	@Test
 	public void testgetPBFilterFilter_BACKLOG() {
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("BACKLOG", this.data.getStorirs());
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("BACKLOG", mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		// 藉由驗證是否被此 Factory 建構出的物件給過濾 Story 
@@ -35,8 +40,9 @@ public class ProductBacklogFilterFactoryTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testgetPBFilterFilter_DETAIL() {
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("DETAIL", this.data.getStorirs());
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("DETAIL", mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		// 藉由驗證是否被此 Factory 建構出的物件給過濾 Story 
@@ -51,8 +57,9 @@ public class ProductBacklogFilterFactoryTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testgetPBFilterFilter_DONE() {
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("DONE", this.data.getStorirs());
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("DONE", mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		// 藉由驗證是否被此 Factory 建構出的物件給過濾 Story 
@@ -67,8 +74,9 @@ public class ProductBacklogFilterFactoryTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testgetPBFilterFilter_NULL_1() {
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("", this.data.getStorirs());
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter("", mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		// 藉由驗證是否被此 Factory 建構出的物件給過濾 Story 
@@ -78,8 +86,9 @@ public class ProductBacklogFilterFactoryTest extends TestCase {
 		assertNotNull(filterStories);
 	}
 	
+	@Test
 	public void testgetPBFilterFilter_NULL_2() {
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(null, this.data.getStorirs());
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(null, mData.getStorirs());
 		IStory[] filterStories = filter.getStories();
 
 		// 藉由驗證是否被此 Factory 建構出的物件給過濾 Story 

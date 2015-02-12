@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -39,19 +41,26 @@ public class DoneIssueAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("Id"));
+		long issueId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
-		String bugNote = request.getParameter("Notes");
+		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
-		String ActualHour = request.getParameter("Actualhour");
+		int actual = Integer.parseInt(request.getParameter("Actualhour"));
+		String issueType = request.getParameter("IssueType");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
-		sprintBacklogHelper.doneIssue(issueID, name, bugNote, changeDate, ActualHour);
-
-		// return done issue 相關相關資訊
-		IIssue issue = sprintBacklogHelper.getIssue(issueID);
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateTaskboardIssueToJson(issue));
+		
+		if (issueType.equals("Story")) {
+			sprintBacklogHelper.closeStory(issueId, notes, changeDate);
+			// return done issue 相關相關資訊
+			IIssue issue = sprintBacklogHelper.getStory(issueId);
+			result.append(new Translation().translateTaskboardIssueToJson(issue));
+		} else if (issueType.equals("Task")) {
+			sprintBacklogHelper.closeTask(issueId, name, notes, actual, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(issueId);
+			result.append(new Translation().translateTaskboardTaskToJson(task));
+		}
 
 		return result;
 	}

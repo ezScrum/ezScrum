@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -29,7 +29,7 @@ public class ShowScrumReportAction extends Action {
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// get Account, ScrumRole
-    	UserObject account = session.getAccount();
+    	AccountObject account = session.getAccount();
 //		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 //		MantisAccountMapper accountHelper = new MantisAccountMapper(project, session);

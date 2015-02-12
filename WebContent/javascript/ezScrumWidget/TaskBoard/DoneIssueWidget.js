@@ -7,6 +7,7 @@ var IssueStore_ForDoneIssue = new Ext.data.Store({
 	id		: 0,
 	fields	:[
 		{name : 'Id'},
+		{name : 'IssueType'},
 		{name : 'Name'},
 		{name : 'Notes'},
 		{name : 'Partners'}
@@ -25,30 +26,30 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
                         fieldLabel	: 'ID',
                         name      	: 'Id',
                         readOnly	: true,
-                        xtype: 'hidden'
-                    },
-                    {
+                        xtype		: 'hidden'
+                    }, {
+                    	fieldLabel	: 'IssueType',
+                    	name		: 'IssueType',
+                    	xtype		: 'hidden'
+                    }, {
                         fieldLabel	: 'Name',
                         name      	: 'Name',
                         allowBlank	: false
-                    },
-                    {
+                    }, {
                     	fieldLabel	: 'Actual Hour',
                     	name      	: 'Actualhour'
-                    },
-                    {
+                    }, {
                         fieldLabel	: 'Notes',
                         xtype     	: 'textarea',
                         name      	: 'Notes',
                         height    	: 150
-                    },
-                    {
+                    }, {
                     	allowBlank	: true,
                     	fieldLabel	: 'Specific Done Time',
                     	name		: 'ChangeDate',
                     	format 		: 'Y/m/d-H:i:s',
                     	xtype		: 'datefield'
-                    },{
+                    }, {
                     	xtype: 'RequireFieldLabel'
                     }],
             buttons : 
@@ -108,11 +109,12 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			var record = IssueStore_ForDoneIssue.getAt(0);
 			if(record) {
 				this.getForm().setValues({
-					Id: record.data['Id'],
-					Name: record.data['Name'], 
-					Partners: record.data['Partners'], 
-					Notes: record.data['Notes'],
-					Actualhour: 0
+					Id			: record.data['Id'],
+					IssueType	: record.json['IssueType'],
+					Name		: record.data['Name'], 
+					Partners	: record.data['Partners'], 
+					Notes		: record.data['Notes'],
+					Actualhour	: 0
 				});
 				
 				// append issueID to window title. "DoneIssueWindow" define in TaskBoardCardFormPanel.js
@@ -127,14 +129,14 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     reset: function() {
         this.getForm().reset();
     },
-    loadIssue: function(id) {
+    loadIssue: function(id, issueType) {
         var obj = this;
         
     	Ext.Ajax.request({
 			url: this.loadUrl,
 			success: function(response) { obj.onLoadSuccess(response); },
 			failure: function(response) { obj.onLoadFailure(response); },
-			params : {issueID : id}
+			params : {issueID : id, issueType : issueType}
 		});
     }
 });
@@ -157,9 +159,9 @@ ezScrum.window.DoneIssueWindow = Ext.extend(ezScrum.layout.Window, {
 		this.items.get(0).on('DOFailure', function(obj, response) { this.fireEvent('DoneFailure', this, response); }, this);
 		this.items.get(0).on('LoadIssueFailure', function(obj, response) { this.fireEvent('LoadFailure', this, response); }, this);
 	},
-	showWidget : function(taskID) {
+	showWidget : function(issueId, issueType) {
 		this.items.get(0).reset();
-		this.items.get(0).loadIssue(taskID);
+		this.items.get(0).loadIssue(issueId, issueType);
 		this.show();
 	}
 });

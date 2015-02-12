@@ -1,211 +1,200 @@
 package ntut.csie.ezScrum.web.support;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 
-import org.jdom.Element;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SprintBacklogTreeStructureTest extends TestCase {
-	private IIssue story;
-	private IIssue task;
-	private Element root;
-	private SprintBacklogLogic sprintBacklogLogic;
-	private Configuration configuration = null;
+public class SprintBacklogTreeStructureTest {
+	private IIssue mStory;
+	private TaskObject mTask;
+	private SprintBacklogLogic mSprintBacklogLogic;
+	private Configuration mConfig = null;
+	private AccountObject mHandler = null;
+	private CreateProject mCP = null;
+	private final static int mPROJECT_COUNT = 1;
+	private long mProjectId = -1;
 	
-	public SprintBacklogTreeStructureTest(String testMethod) {
-        super(testMethod);
-    }
-	
-	protected void setUp(){
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+	@Before
+	public void setUp() {
+		// initialize database
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		this.story = new Issue();
-		this.story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
-		this.task = new Issue();
-		this.task.setCategory(ScrumEnum.TASK_ISSUE_TYPE);
-		this.root = new Element(ScrumEnum.ROOT_TAG);
-		this.sprintBacklogLogic = new SprintBacklogLogic();
-    }
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();// 初始化 SQL
+		ini = null;
+		
+		// create project
+		mCP = new CreateProject(mPROJECT_COUNT);
+		mCP.exeCreate();
+		mProjectId = mCP.getAllProjects().get(0).getId();
+		// create story
+		mStory = new Issue();
+		mStory.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
+		// create handler
+		mHandler = new AccountObject("account_handler");
+		mHandler.save();
+		// create a task
+		mTask = new TaskObject(mProjectId);
+		mTask.setHandlerId(mHandler.getId());
+		mTask.setEstimate(10);
+		mTask.save();
+		mSprintBacklogLogic = new SprintBacklogLogic();
+	}
 
-    protected void tearDown(){
-    	configuration.setTestMode(false);
-		configuration.store();
-    	this.story = null;
-    	this.task = null;
-    	this.root = null;
-    	this.sprintBacklogLogic = null;
-    	configuration = null;
-    }
-    
-    /*-----------------------------------------------------------
-	*	測試根據 Task 歷史紀錄取得 Remaining Hours
+	@After
+	public void tearDown() {
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
+		ini = null;
+		mCP = null;
+		mStory = null;
+		mTask = null;
+		mHandler = null;
+		mSprintBacklogLogic = null;
+		mConfig = null;
+	}
+
+	/*-----------------------------------------------------------
+	 *	測試根據 Task 歷史紀錄取得 Remaining Hours
 	-------------------------------------------------------------*/
-    // Sprint Date 沒有跳過假日
-	public void testRemainingBySprintDaysCase_1()
-	{
-		// Remaining Hours History 1
-        Element history_1 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_1.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100712171219");
-        Element remains = new Element(ScrumEnum.REMAINS);        
-        remains.setText("5");
-        history_1.addContent(remains);
-        // Remaining Hours History 2
-        Element history_2 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_2.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100713171219");
-        Element remains_1 = new Element(ScrumEnum.REMAINS);        
-        remains_1.setText("0");
-        history_2.addContent(remains_1);
-        // 加入 History root
-        this.root.addContent(history_1);
-        this.root.addContent(history_2);
-        // 歷史紀錄的時間
-		Date hisDate_1 = DateUtil.dayFillter(history_1
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		Date hisDate_2 = DateUtil.dayFillter(history_2
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		// 將歷史紀錄設定至 Task
-        this.task.setTagContent(root);
-        assertEquals("5", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_1));
-        assertEquals("0", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_2));
-
-        this.sprintBacklogLogic.calculateSprintBacklogDateList(new Date("2010/07/12"), 5);
-        ArrayList<Date> dateList = this.sprintBacklogLogic.getCurrentDateList();
-        SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							        		this.story, 
-							        		new IIssue[]{ this.task }, 
-							        		dateList);
-        List<SprintBacklogTreeStructure> tasksTree = tree.GetTasksTreeListForTest();
-        for (SprintBacklogTreeStructure taskTree : tasksTree){
-        	assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_4"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_5"));
-        }
+	// Sprint Date 沒有跳過假日
+	@Test
+	public void testTaskRemainsByHistories() {
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		// add a change remains history
+		mTask.setRemains(9);
+		mTask.save(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(8);
+		mTask.save(DateUtil.dayFillter("2010/07/13", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(7);
+		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(6);
+		mTask.save(DateUtil.dayFillter("2010/07/15", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history
+		mTask.setRemains(5);
+		mTask.save(DateUtil.dayFillter("2010/07/16", DateUtil._8DIGIT_DATE_1).getTime());
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 5);
+		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(mTask);
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
+		for (SprintBacklogTreeStructure taskTree : trees) {
+			assertEquals("9.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("8.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("7.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+			assertEquals("6.0", taskTree.GetDatetoRemainMap().get("Date_4"));
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_5"));
+		}
 	}
 	
-	// Sprint Date 有跳過假日
-	public void testRemainingBySprintDaysCase_2()
-	{
-		// Remaining Hours History 1
-        Element history_1 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_1.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100714171219");
-        Element remains = new Element(ScrumEnum.REMAINS);        
-        remains.setText("13");
-        history_1.addContent(remains);
-        // Remaining Hours History 2
-        Element history_2 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_2.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100716171219");
-        Element remains_1 = new Element(ScrumEnum.REMAINS);        
-        remains_1.setText("8");
-        history_2.addContent(remains_1);
-        // Remaining Hours History 3
-        Element history_3 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_3.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100719171219");
-        Element remains_3 = new Element(ScrumEnum.REMAINS);        
-        remains_3.setText("3");
-        history_3.addContent(remains_3);
-        // Remaining Hours History 4
-        Element history_4 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_4.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100720171219");
-        Element remains_4 = new Element(ScrumEnum.REMAINS);        
-        remains_4.setText("0");
-        history_4.addContent(remains_4);
-        // 加入 History root
-        this.root.addContent(history_1);
-        this.root.addContent(history_2);
-        this.root.addContent(history_3);
-        this.root.addContent(history_4);
-        // 歷史紀錄的時間
-		Date hisDate_1 = DateUtil.dayFillter(history_1
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		Date hisDate_2 = DateUtil.dayFillter(history_2
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		Date hisDate_3 = DateUtil.dayFillter(history_3
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		Date hisDate_4 = DateUtil.dayFillter(history_4
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		// 將歷史紀錄設定至 Task
-        this.task.setTagContent(root);
-        assertEquals("13", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_1));
-        assertEquals("8", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_2));
-        assertEquals("3", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_3));
-        assertEquals("0", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_4));
+	@Test
+	public void testTaskRemainsByHistories_2() {
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		// add a change remains history on 2010/7/12
+		mTask.setRemains(5);
+		mTask.save(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history on 2010/7/14
+		mTask.setRemains(0);
+		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
+		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(mTask);
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
+		for (SprintBacklogTreeStructure taskTree : trees) {
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+		}
+	}
 
-        this.sprintBacklogLogic.calculateSprintBacklogDateList(new Date("2010/07/14"), 5);
-        ArrayList<Date> dateList = this.sprintBacklogLogic.getCurrentDateList();
-        SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							        		this.story, 
-							        		new IIssue[]{ this.task }, 
-							        		dateList);
-        List<SprintBacklogTreeStructure> tasksTree = tree.GetTasksTreeListForTest();
-        for (SprintBacklogTreeStructure taskTree : tasksTree){
-        	assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-        	assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-        	assertEquals("8.0", taskTree.GetDatetoRemainMap().get("Date_3"));
-        	assertEquals("3.0", taskTree.GetDatetoRemainMap().get("Date_4"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_5"));
-        }
+	// Sprint Date 有跳過假日
+	@Test
+	public void testTaskRemainsByHistories_WithPassHoliday() {
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		// add a change remains history on 2010/7/14
+		mTask.setRemains(13);
+		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history on 2010/7/16
+		mTask.setRemains(8);
+		mTask.save(DateUtil.dayFillter("2010/07/16", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history on 2010/7/19
+		mTask.setRemains(3);
+		mTask.save(DateUtil.dayFillter("2010/07/19", DateUtil._8DIGIT_DATE_1).getTime());
+		// add a change remains history on 2010/7/20
+		mTask.setRemains(0);
+		mTask.save(DateUtil.dayFillter("2010/07/20", DateUtil._8DIGIT_DATE_1).getTime());
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1), 5);
+		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(mTask);
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
+		for (SprintBacklogTreeStructure taskTree : trees) {
+			assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("13.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("8.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+			assertEquals("3.0", taskTree.GetDatetoRemainMap().get("Date_4"));
+			assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_5"));
+		}
 	}
 	
 	// History 沒有 Remain 將以 ESTIMATION 代替
-	public void testRemainingBySprintDaysCase_3()
-	{
-		// Remaining Hours History 1
-        Element history_1 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_1.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100712171219");
-        Element remains = new Element(ScrumEnum.ESTIMATION);        
-        remains.setText("5");
-        history_1.addContent(remains);
-        // Remaining Hours History 2
-        Element history_2 = new Element(ScrumEnum.HISTORY_TAG);        
-        history_2.setAttribute(ScrumEnum.ID_HISTORY_ATTR, "20100714171219");
-        Element remains_1 = new Element(ScrumEnum.REMAINS);        
-        remains_1.setText("0");
-        history_2.addContent(remains_1);
-        // 加入 History root
-        this.root.addContent(history_1);
-        this.root.addContent(history_2);
-        // 歷史紀錄的時間
-		Date hisDate_1 = DateUtil.dayFillter(history_1
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		Date hisDate_2 = DateUtil.dayFillter(history_2
-				.getAttributeValue(ScrumEnum.ID_HISTORY_ATTR),
-				DateUtil._16DIGIT_DATE_TIME_2);
-		// 將歷史紀錄設定至 Task
-        this.task.setTagContent(root);
-        assertEquals("5", this.task.getTagValue(ScrumEnum.ESTIMATION, hisDate_1));
-        assertEquals("0", this.task.getTagValue(ScrumEnum.REMAINS, hisDate_2));
-
-        this.sprintBacklogLogic.calculateSprintBacklogDateList(new Date("2010/07/12"), 3);
-        ArrayList<Date> dateList = this.sprintBacklogLogic.getCurrentDateList();
-        SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							        		this.story, 
-							        		new IIssue[]{ this.task }, 
-							        		dateList);
-        List<SprintBacklogTreeStructure> tasksTree = tree.GetTasksTreeListForTest();
-        for (SprintBacklogTreeStructure taskTree : tasksTree){
-        	assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_1"));
-        	assertEquals("5.0", taskTree.GetDatetoRemainMap().get("Date_2"));
-        	assertEquals("0.0", taskTree.GetDatetoRemainMap().get("Date_3"));
-        }
+	@Test
+	public void testTaskRemainsByHistories_WithNoChangeRemainsHistory() {
+		// check task remains before test
+		Date taskCreateDate = new Date(mTask.getCreateTime());
+		assertEquals(10.0, mTask.getRemains(taskCreateDate));
+		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
+		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks.add(mTask);
+		SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(mStory, tasks, dates);
+		List<SprintBacklogTreeStructure> trees = tree.GetTasksTreeListForTest();
+		for (SprintBacklogTreeStructure taskTree : trees) {
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_1"));
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_2"));
+			assertEquals("10.0", taskTree.GetDatetoRemainMap().get("Date_3"));
+		}
 	}
 }

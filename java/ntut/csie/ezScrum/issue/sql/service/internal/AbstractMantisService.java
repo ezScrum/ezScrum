@@ -43,7 +43,7 @@ public abstract class AbstractMantisService {
 		// table
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(AccountEnum.ACCOUNT, userName);
+		valueSet.addTextFieldEqualCondition(AccountEnum.USERNAME, userName);
 		String query = valueSet.getSelectQuery();
 		try {
 			ResultSet result = m_control.executeQuery(query);
@@ -90,7 +90,7 @@ public abstract class AbstractMantisService {
 			ResultSet result = m_control.executeQuery(query);
 			String userName = "";
 			if (result.next()) {
-				userName = result.getString(AccountEnum.ACCOUNT);
+				userName = result.getString(AccountEnum.USERNAME);
 			}
 			return userName;
 		} catch (SQLException e) {
@@ -142,7 +142,7 @@ public abstract class AbstractMantisService {
 	protected int getProjectId(String pid) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
-		valueSet.addTextFieldEqualCondition(ProjectEnum.PID, pid);
+		valueSet.addTextFieldEqualCondition(ProjectEnum.NAME, pid);
 		String query = valueSet.getSelectQuery();
 
 		ResultSet result = getControl().executeQuery(query);

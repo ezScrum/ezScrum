@@ -1,126 +1,115 @@
 package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
-// 使用者更新資料前會先執行此Action
 public class GetUserDataActionTest extends MockStrutsTestCase {
-
-	private CreateProject CP;
-	private CreateAccount CA;
-	private int ProjectCount = 1;
-	private int AccountCount = 1;
-	private String actionPath = "/getUserData";	// defined in "struts-config.xml"
-
-	private Configuration configuration;
-	private AccountMapper accountMapper;
-	private IUserSession userSession;
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private int mProjectCount = 1;
+	private int mAccountCount = 1;
+	private String mActionPath = "/getUserData";
+	private Configuration mConfig;
+	private AccountMapper mAccountMapper;
+	private IUserSession mUserSession;
 
 	public GetUserDataActionTest(String testMethod) {
 		super(testMethod);
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 
-		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		this.accountMapper = new AccountMapper();
+		// 新增 Project
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
+
+		mAccountMapper = new AccountMapper();
 
 		super.setUp();
 
-		// 固定行為可抽離
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		/**
+		 * 設定讀取的 struts-config 檔案路徑
+		 * GetUserDataAction
+		 */
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.actionPath);
+		setRequestPathInfo(mActionPath);
 
 		// ============= release ==============
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		CopyProject copyProject = new CopyProject(this.CP);
-		copyProject.exeDelete_Project();					// 刪除測試檔案
-		
-		configuration.setTestMode(false);
-		configuration.store();
+		// 刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
+
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
-		// AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
-		copyProject = null;
-		this.CP = null;
-		this.CA = null;
-		this.config = null;
-		this.accountMapper = null;
-		configuration = null;
+		projectManager = null;
+		mCP = null;
+		mCA = null;
+		mAccountMapper = null;
+		mConfig = null;
 	}
 
-	//
-	public void testGetUserDataAction() throws LogonException {
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+	public void testGetUserDataAction() {
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		// User Information
-		String userId = this.CA.getAccount_ID(1);		// 取得第一筆 Account ID
-		this.userSession = new UserSession(this.CA.getAccountList().get(0));
-		// ================ set initial data =======================
-
-		// ================== set parameter info ====================
-		// ================== set parameter info ====================
+		String projectName = mCP.getProjectList().get(0).getName();
+		String username = mCA.getAccount_ID(1);
+		mUserSession = new UserSession(mCA.getAccountList().get(0));
 
 		// ================ set session info ========================
-		// config session為 admin
-		// request.getSession().setAttribute("UserSession", config.getUserSession());
-		request.getSession().setAttribute("UserSession", this.userSession);
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mUserSession);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		// ================ set URL parameter ========================
+		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
-		/*
+		/**
 		 * Verify:
 		 */
-		UserObject account = this.accountMapper.getAccount(userId);		// actual
-		UserObject accountE = this.userSession.getAccount();				// excepted
+		AccountObject actualAccount = mAccountMapper.getAccount(username);
+		AccountObject expectAccount = mUserSession.getAccount();
 
-		assertNotNull(account);
-		assertEquals(account.getAccount(), accountE.getAccount());
-		assertEquals(account.getPassword(), accountE.getPassword());
-		assertEquals(account.getEmail(), accountE.getEmail());
-		assertEquals(account.getName(), accountE.getName());
-		assertEquals(account.getEnable(), accountE.getEnable());
+		assertNotNull(actualAccount);
+		assertEquals(actualAccount.getUsername(), expectAccount.getUsername());
+		assertEquals(actualAccount.getPassword(), expectAccount.getPassword());
+		assertEquals(actualAccount.getEmail(), expectAccount.getEmail());
+		assertEquals(actualAccount.getNickName(), expectAccount.getNickName());
+		assertEquals(actualAccount.getEnable(), expectAccount.getEnable());
 	}
 
 }

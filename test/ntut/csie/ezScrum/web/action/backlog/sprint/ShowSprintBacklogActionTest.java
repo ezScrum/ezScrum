@@ -16,75 +16,76 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/showSprintBacklog2";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mACTION_PATH = "/showSprintBacklog2";
+	private IProject mProject;
 	
 	public ShowSprintBacklogActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mACTION_PATH );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		// 讓 config 回到  Production 模式
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mConfig = null;
 	}
 	
 	/**
 	 * 沒有Sprint
 	 */
 	public void testShowSprintBacklog_1(){
-		List<String> idList = this.CS.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -116,25 +117,25 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	 * @throws Exception 
 	 */
 	public void testShowSprintBacklog_2() throws Exception{
-		List<String> idList = this.CS.getSprintIDList();
+		List<String> idList = mCS.getSprintIDList();
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
 		int taskEstValue = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, this.CP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", idList.get(0));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -143,16 +144,16 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedStoryName = addStoryToSprint.getIssueList().get(0).getSummary();
-		String expectedStoryImportance = addStoryToSprint.getIssueList().get(0).getImportance();
+		String expectedStoryName = addStoryToSprint.getStories().get(0).getSummary();
+		String expectedStoryImportance = addStoryToSprint.getStories().get(0).getImportance();
 		String expectedStoryEstimation = String.valueOf(storyEst);
-		String expectedStoryValue = addStoryToSprint.getIssueList().get(0).getValue();
-		String expectedStoryHoewToDemo = addStoryToSprint.getIssueList().get(0).getHowToDemo();
-		String expectedStoryNote = addStoryToSprint.getIssueList().get(0).getNotes();
+		String expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
+		String expectedStoryHoewToDemo = addStoryToSprint.getStories().get(0).getHowToDemo();
+		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
 		String expectedSprintId= idList.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
 		String expectedSprintHoursToCommit = "10.0";
-		String issueID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
+		String issueID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
 		
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")

@@ -17,10 +17,12 @@ import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -62,7 +64,7 @@ public class ProductBacklogHelper {
 	 * @param storyInformation
 	 * @return IIssue
 	 */
-	public IIssue addNewStory(StoryInformation storyInformation) {
+	public IIssue addNewStory(StoryInfo storyInformation) {
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
 		String estimate = storyInformation.getEstimation();
@@ -113,7 +115,7 @@ public class ProductBacklogHelper {
 		return new IStory[0];
 	}
 
-	public IIssue editStory(StoryInformation storyInformation) {
+	public IIssue editStory(StoryInfo storyInformation) {
 		long issueId = Long.parseLong(storyInformation.getStroyID());
 		String name = storyInformation.getName();
 		String importance = storyInformation.getImportance();
@@ -144,7 +146,7 @@ public class ProductBacklogHelper {
 	 * @return IIssue
 	 */
 	public IIssue editStory(long issueId, String name, String value, String importance, String estimate, String howToDemo, String notes, boolean addHistory) {
-		mProductBacklogMapper.modifyName(issueId, name, null);
+		mProductBacklogMapper.modifyName(issueId, name, new Date());
 		Element history = translateIssueToXML(value, importance, estimate, howToDemo, notes);
 		if (history.getChildren().size() > 0) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
@@ -416,8 +418,8 @@ public class ProductBacklogHelper {
 		}
 	}
 
-	public IIssue[] getWildedTasks() throws SQLException {
-		IIssue[] issues = this.mProductBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
+	public IIssue[] getWildTasks() throws SQLException {
+		IIssue[] issues = mProductBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必需要使用ArrayList
 		ArrayList<IIssue> list = new ArrayList<IIssue>();
@@ -428,6 +430,13 @@ public class ProductBacklogHelper {
 			if (parentsID > 0) list.remove(i);
 		}
 		return list.toArray(new IIssue[list.size()]);
+	}
+	
+	public ArrayList<TaskObject> getTasksWithNoParent() {
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		tasks = project.getTasksWithNoParent();
+		return tasks;
 	}
 
 	/**
@@ -592,11 +601,11 @@ public class ProductBacklogHelper {
 		Files.copy(srcFile.toPath(), destFile.toPath());
 	}
 	
-	public boolean checkAccountInProject(List<UserObject> memberList, UserObject userObject) {
-		if(userObject.getAccount().equals("admin")) {
+	public boolean checkAccountInProject(List<AccountObject> memberList, AccountObject userObject) {
+		if(userObject.getUsername().equals("admin")) {
 			return true;
 		}
-		for(UserObject member : memberList) {
+		for(AccountObject member : memberList) {
 			if(member.getId() == userObject.getId()) {
 				return true;
 			}

@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 public class SprintPlanWebService extends ProjectWebService{
 	SprintPlanHelper mSprintPlanHelper;
 	
-	public SprintPlanWebService(UserObject user, String projectID) throws LogonException {
+	public SprintPlanWebService(AccountObject user, String projectID) throws LogonException {
 		super(user, projectID);
 		mSprintPlanHelper = new SprintPlanHelper(super.getProjectList().get(0));
 	}
@@ -72,7 +72,7 @@ public class SprintPlanWebService extends ProjectWebService{
 	 */
 	public String getSprintWithAllItem(String sprintID) throws SQLException {
 		Gson gson = new Gson();
-		return gson.toJson(mSprintPlanHelper.getSprintWithAllItem(sprintID));
+		return gson.toJson(mSprintPlanHelper.getSprint(sprintID));
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class SprintPlanWebService extends ProjectWebService{
 		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
 		List<SprintObject> result = new ArrayList<SprintObject>();
 		for (SprintObject sprint : sprintList) {
-			result.add(mSprintPlanHelper.getSprintWithAllItem(sprint.id));
+			result.add(mSprintPlanHelper.getSprint(sprint.id));
 		}
 		return gson.toJson(result);
 	}

@@ -7,20 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class ProjectManager {
-	private static Log log = LogFactory.getLog(ProjectManager.class);
+	private static Log mlog = LogFactory.getLog(ProjectManager.class);
 
-	public ProjectManager() {}
+	public ProjectManager() {
+	}
 
 	public void createProject() {
-
 	}
 
 	/**
@@ -35,10 +33,10 @@ public class ProjectManager {
 		try {
 			copyDirectory(srcRoleBase, destRoleBase);
 		} catch (IOException e) {
-			log.debug("class: CopyProject, method: init_RoleBase, IO Exception: " + e.toString());
+			mlog.debug("class: CopyProject, method: init_RoleBase, IO Exception: " + e.toString());
 			e.printStackTrace();
 		}
-		log.info("Initialize BoleBase.xml");
+		mlog.info("Initialize BoleBase.xml");
 	}
 
 	private void copyDirectory(File srcPath, File dstPath) throws IOException {
@@ -46,7 +44,6 @@ public class ProjectManager {
 			if (!dstPath.exists()) {
 				dstPath.mkdir();
 			}
-
 			String files[] = srcPath.list();
 
 			for (int i = 0; i < files.length; i++) {
@@ -54,11 +51,10 @@ public class ProjectManager {
 			}
 		} else {
 			if (!srcPath.exists()) {
-				log.info("File is not exist.");
+				mlog.info("File is not exist.");
 			} else {
 				InputStream in = new FileInputStream(srcPath);
 				OutputStream out = new FileOutputStream(dstPath);
-
 				byte[] buf = new byte[1024];		// buffer
 				int len;
 				while ((len = in.read(buf)) > 0) {
@@ -83,7 +79,7 @@ public class ProjectManager {
 
 			// delete from workspace
 			File srcFile = new File(srcPath);
-			this.deleteDirectory(srcFile);
+			deleteDirectory(srcFile);
 		}
 	}
 
@@ -101,7 +97,6 @@ public class ProjectManager {
 				}
 			}
 		}
-
 		path.delete();
 	}
 }

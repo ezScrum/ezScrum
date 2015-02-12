@@ -6,25 +6,27 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 
+	private static StoryDAO sInstance = null;
+	
 	public static StoryDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new StoryDAO();
 		}
-		return (StoryDAO) sInstance;
+		return sInstance;
 	}
 	
 	@Override
-    public long add(StoryObject infoObject) {
-	    return 0;
+    public long create(StoryObject infoObject) {
+	    return new Long(0);
     }
 
 	@Override
-    public StoryObject get(long id) throws SQLException {
+    public StoryObject get(long id) {
 	    return null;
     }
 
 	@Override
-    public boolean edit(StoryObject dataObject) {
+    public boolean update(StoryObject dataObject) {
 	    return false;
     }
 

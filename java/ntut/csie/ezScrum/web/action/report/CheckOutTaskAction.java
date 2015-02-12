@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -40,11 +41,11 @@ public class CheckOutTaskAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("Id"));
+		long taskId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String handler = request.getParameter("Handler");
 		String partners = request.getParameter("Partners");
-		String bugNote = request.getParameter("Notes");
+		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 		DateFormat df = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME); // 設定changeDate正確的時間格式
 		StringBuilder result = new StringBuilder("");
@@ -53,9 +54,9 @@ public class CheckOutTaskAction extends PermissionAction {
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
 				df.parse(changeDate);
-			sprintBacklogHelper.checkOutTask(issueID, name, handler, partners, bugNote, changeDate);
-			IIssue issue = sprintBacklogHelper.getIssue(issueID);	// return checkout的issue的相關資訊
-			result.append(new Translation().translateTaskboardIssueToJson(issue));
+			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
+			result.append(new Translation().translateTaskboardTaskToJson(task));
 		} catch (ParseException e) {								// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");
 		} catch (NullPointerException e) {							// issue為null

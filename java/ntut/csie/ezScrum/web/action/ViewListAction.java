@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 
 import org.apache.commons.logging.Log;
@@ -24,8 +24,8 @@ public class ViewListAction extends Action {
 
 		// 取得使用者登入資料
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		UserObject account = userSession.getAccount();
-		log.debug(userSession.getAccount().getAccount());
+		AccountObject account = userSession.getAccount();
+		log.debug(userSession.getAccount().getUsername());
 
 		// 移除Project information如此一來專案列表就不顯示上次進入的Project ID。
 		request.getSession().removeAttribute("Project");

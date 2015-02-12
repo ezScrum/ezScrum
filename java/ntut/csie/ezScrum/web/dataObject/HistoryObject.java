@@ -4,15 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.sqlService.MySQLService;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class HistoryObject {
+public class HistoryObject implements IBaseObject {
 	public final static int TYPE_CREATE = 1;
 	public final static int TYPE_NAME = 2;
 	public final static int TYPE_ESTIMATE = 3;
@@ -24,10 +25,13 @@ public class HistoryObject {
 	public final static int TYPE_STATUS = 12;
 	public final static int TYPE_HANDLER = 13;
 	public final static int TYPE_SPECIFIC_TIME = 14;
-	public final static int TYPE_DROP = 15; // Drop from parent
-	public final static int TYPE_APPEND = 16; // Append to parent
-	public final static int TYPE_ADD = 17;	// Add Child
-	public final static int TYPE_REMOVE = 18;	// Remove Child
+	public final static int TYPE_DROP = 15; // Drop from parent (for task
+											// history)
+	public final static int TYPE_APPEND = 16; // Append to parent (for task
+												// history)
+	public final static int TYPE_ADD = 17; // Add Child (for story history)
+	public final static int TYPE_REMOVE = 18; // Remove Child (for story
+												// history)
 	public final static int TYPE_NOTE = 19;
 	public final static int TYPE_HOWTODEMO = 20;
 	public final static int TYPE_PARTNERS = 21;
@@ -36,7 +40,7 @@ public class HistoryObject {
 	private long mIssueId;
 	private int mIssueType;
 	private int mHistoryType;
-	private long mModifiedTime;
+	private long mCreateTime;
 	private String mOldValue = "";
 	private String mNewValue = "";
 
@@ -44,13 +48,13 @@ public class HistoryObject {
 	}
 
 	public HistoryObject(long issueId, int issueType, int historyType,
-			String oldValue, String newValue, long modifiedTime) {
+			String oldValue, String newValue, long createTime) {
 		setIssueId(issueId);
 		setIssueType(issueType);
 		setHistoryType(historyType);
 		setOldValue(oldValue);
 		setNewValue(newValue);
-		setModifiedTime(modifiedTime);
+		setCreateTime(createTime);
 	}
 
 	public HistoryObject setId(long id) {
@@ -83,8 +87,8 @@ public class HistoryObject {
 		return this;
 	}
 
-	public HistoryObject setModifiedTime(long modifiedTime) {
-		mModifiedTime = modifiedTime;
+	public HistoryObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
 		return this;
 	}
 
@@ -113,7 +117,6 @@ public class HistoryObject {
 	}
 
 	public String getDescription() {
-		// TODO 判斷 type 來輸出成特定的 desc
 		switch (mHistoryType) {
 		case TYPE_CREATE:
 			return getCreateDesc();
@@ -150,7 +153,7 @@ public class HistoryObject {
 		}
 		return "";
 	}
-	
+
 	public String getHistoryTypeString() {
 		switch (mHistoryType) {
 		case TYPE_NAME:
@@ -180,47 +183,80 @@ public class HistoryObject {
 		}
 		return "";
 	}
-	
+
 	private String getAttachFileDesc() {
-		return "Attach a file: " + mNewValue; 
+		return "Attach a file: " + mNewValue;
 	}
-	
+
 	private String getNormalDesc() {
 		return String.format("%s => %s", mOldValue, mNewValue);
 	}
-	
+
 	private String getQuoteDesc() {
 		return String.format("\"%s\" => \"%s\"", mOldValue, mNewValue);
 	}
-	
+
 	private String getHandlerDesc() {
-		Configuration config = new Configuration();
-		MySQLService service = new MySQLService(config);
-		service.openConnect();
-		
-		if (mOldValue.equals("") && !mNewValue.equals("")) {
-			String newAccount = service.getAccountById(mNewValue).getAccount();
-			service.closeConnect();
-			return newAccount;
+		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
+			if (mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return newUsername;
+			}
+			
+			if (!mOldValue.equals("-1") && mNewValue.equals("-1")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mOldValue)).getUsername();
+				return "Remove handler " + newUsername;
+			}
+			
+			if (!mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+				AccountObject oldUser = AccountDAO.getInstance().get(Long.parseLong(mOldValue));
+				AccountObject newUser = AccountDAO.getInstance().get(Long.parseLong(mNewValue));
+				String oldUsername = "";
+				String newUsername = "";
+				if (oldUser != null) {
+					oldUsername = oldUser.getUsername();
+				}
+				
+				if (newUser != null) {
+					newUsername = newUser.getUsername();
+				}
+				return oldUsername + " => " + newUsername;
+			}
+		} else {
+			if (mOldValue.equals("") && !mNewValue.equals("")) {
+				String newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return newUsername;
+			}
+			
+			if (!mOldValue.equals("") && !mNewValue.equals("")) {
+				String oldUsername = "";
+				String newUsername = "";
+				oldUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mOldValue)).getUsername();
+				newUsername = AccountDAO.getInstance()
+						.get(Long.parseLong(mNewValue)).getUsername();
+				return oldUsername + " => " + newUsername;
+			}			
 		}
 		
-		if (!mOldValue.equals("") && !mNewValue.equals("")) {
-			String oldAccount = "";
-			String newAccount = "";
-			oldAccount = service.getAccountById(mOldValue).getAccount();
-			newAccount = service.getAccountById(mNewValue).getAccount();
-			service.closeConnect();
-			return oldAccount + " => " + newAccount;
-		}
-		service.closeConnect();
 		return "";
 	}
-	
+
 	private String getStatusDesc() {
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("10", "Not Check Out");
-		map.put("50", "Check Out");
-		map.put("90", "Done");
+		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
+			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
+		} else {
+			map.put("10", "Not Check Out");
+			map.put("50", "Check Out");
+			map.put("90", "Done");			
+		}
+		
 		return map.get(mOldValue) + " => " + map.get(mNewValue);
 	}
 
@@ -242,7 +278,7 @@ public class HistoryObject {
 		}
 		return desc;
 	}
-	
+
 	private String getAppendParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
 			return "Append to Story #" + mNewValue;
@@ -253,7 +289,7 @@ public class HistoryObject {
 		}
 		return "";
 	}
-	
+
 	private String getRemoveParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
 			return "Remove from Story #" + mNewValue;
@@ -262,30 +298,56 @@ public class HistoryObject {
 		}
 		return "";
 	}
-	
+
 	private String getAddChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
 			return "Add Task #" + mNewValue;
 		}
 		return "";
 	}
-	
+
 	private String getDropChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
 			return "Drop Task #" + mNewValue;
 		}
 		return "";
 	}
-	
-	public long getModifiedTime() {
-		return mModifiedTime;
-	}
-	
-	public String getFormattedModifiedTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
-		return sdf.format(new Date(mModifiedTime));
+
+	public long getCreateTime() {
+		return mCreateTime;
 	}
 
+	public String getFormattedModifiedTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
+		return sdf.format(new Date(mCreateTime));
+	}
+	
+	private boolean exists() {
+		HistoryObject history = HistoryDAO.getInstance().get(mId);
+		return history != null;
+	}
+
+	private void doCreate() {
+		mId =  HistoryDAO.getInstance().create(this);
+	}
+
+	@Override
+	public void save() {
+		if (!exists()) {
+			doCreate();
+		}
+	}
+
+	@Override
+	public void reload() {
+	}
+
+	@Override
+	public boolean delete() {
+		return false;
+	}
+
+	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put(HistoryEnum.ID, getId())
@@ -293,7 +355,7 @@ public class HistoryObject {
 				.put(HistoryEnum.ISSUE_TYPE, getIssueType())
 				.put(HistoryEnum.HISTORY_TYPE, getHistoryType())
 				.put(HistoryEnum.DESCRIPTION, getDescription())
-				.put(HistoryEnum.MODIFIED_TIME, getModifiedTime());
+				.put(HistoryEnum.CREATE_TIME, getCreateTime());
 		return object;
 	}
 }

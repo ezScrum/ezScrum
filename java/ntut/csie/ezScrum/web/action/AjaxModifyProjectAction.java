@@ -45,8 +45,6 @@ public class AjaxModifyProjectAction extends PermissionAction {
 		IProject project = (IProject) SessionManager.getProject(request);
 		ProjectMapper projectMapper = new ProjectMapper();
 		ProjectInfoForm projectform = projectMapper.getProjectInfoForm(project);
-		//		ProjectLogic projectLogic = new ProjectLogic();
-		//		ProjectInfoForm projectform = projectLogic.getProjectInfoForm(project);
 
 		projectform.setDisplayName(projectDisplayName);
 		projectform.setAttachFileSize(attachFileSize);
@@ -54,7 +52,6 @@ public class AjaxModifyProjectAction extends PermissionAction {
 		projectform.setProjectManager(projectManager);
 
 		// save back to project info form
-		//		ProjectMapper projectMapper = new ProjectMapper();
 		project = projectMapper.updateProject(projectform);
 
 		// 設定 session
@@ -63,11 +60,14 @@ public class AjaxModifyProjectAction extends PermissionAction {
 
 		// ezScrum v1.8
 		ProjectObject projectObject = SessionManager.getProjectObject(request);
-		projectObject.setDisplayName(projectDisplayName);
-		projectObject.setAttachFileSize(attachFileSize);
-		projectObject.setComment(comment);
-		projectObject.setManager(projectManager);
-		SessionManager.setProjectObject(request, new ProjectHelper().updateProject(projectObject));
+		projectObject
+			.setDisplayName(projectDisplayName)
+			.setAttachFileSize(Long.parseLong(attachFileSize))
+			.setComment(comment)
+			.setManager(projectManager)
+			.save();
+		SessionManager sessionManager = new SessionManager(request);
+		sessionManager.setProjectObject(request, projectObject);
 		
 		return new StringBuilder("success");
 	}

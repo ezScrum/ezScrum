@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ViewProjectManagementAction extends Action {
-	// private static Log log = LogFactory.getLog(ViewProjectManagementAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -1,9 +1,10 @@
 package ntut.csie.ezScrum.web.mapper;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -13,32 +14,33 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ProductBacklogMapperTest extends TestCase {
-	private CreateProject mCreateProject;
-	private CreateProductBacklog mCreateProductBacklog;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ProductBacklogMapperTest {
+	private CreateProject mCP;
+	private CreateProductBacklog mCPB;
 	private int mProjectCount = 1;
 	private int mStoryCount = 2;
 	private ProductBacklogMapper mProductBacklogMapper = null;
 	private Configuration mConfig = null;
 	private MySQLControl mControl = null;
 	
-	private final String FILE_NAME = "Initial.sql";
-	private final String FILE_TYPE = "sql/plain";
+	private final String mFILE_NAME = "Initial.sql";
+	private final String mFILE_TYPE = "sql/plain";
 	
-	public ProductBacklogMapperTest(String testMethod) {
-        super(testMethod);
-    }
-	
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		mControl = new MySQLControl(mConfig);
 		mControl.connection();
@@ -48,17 +50,15 @@ public class ProductBacklogMapperTest extends TestCase {
 		ini.exe();
 		
 		// 新增 Project
-		mCreateProject = new CreateProject(mProjectCount);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 		
 		// 新增 Story	
-		mCreateProductBacklog = new CreateProductBacklog(mStoryCount, mCreateProject);
-		mCreateProductBacklog.exe();
-		
-		super.setUp();
+		mCPB = new CreateProductBacklog(mStoryCount, mCP);
+		mCPB.exe();
 		
 		// 建立 productbacklog 物件
-		IProject project = mCreateProject.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		mProductBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
 		
 		// ============= release ==============
@@ -66,7 +66,8 @@ public class ProductBacklogMapperTest extends TestCase {
 		project = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -74,24 +75,24 @@ public class ProductBacklogMapperTest extends TestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	mCreateProject = null;
-    	mCreateProductBacklog = null;
+    	mCP = null;
+    	mCPB = null;
     	mProductBacklogMapper = null;
     	projectManager = null;
     	mConfig = null;
-    	
-    	super.tearDown();
+    	mControl = null;
 	}
 	
+	@Test
 	public void testAddStory() throws SQLException {
-		StoryInformation storyInfo = new StoryInformation();
+		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.setName("TEST_STORY");
 		storyInfo.setDescription("TEST_STORY_DESC");
 		
@@ -102,9 +103,9 @@ public class ProductBacklogMapperTest extends TestCase {
 		assertEquals(1, histories.size());
 	}
 	
-	// 測試上傳檔案到一筆 issue 是否成功
+	@Test // 測試上傳檔案到一筆 issue 是否成功
 	public void testAddAttachFile() {
-		IIssue issue = mCreateProductBacklog.getIssueList().get(0);
+		IIssue issue = mCPB.getIssueList().get(0);
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID());
 		
@@ -112,8 +113,8 @@ public class ProductBacklogMapperTest extends TestCase {
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(FILE_NAME, ActualFile.getName());
-		assertEquals(FILE_TYPE, ActualFile.getContentType());
+		assertEquals(mFILE_NAME, ActualFile.getName());
+		assertEquals(mFILE_TYPE, ActualFile.getContentType());
 		assertEquals(issue.getIssueID(), ActualFile.getId());
 		
 		// ============= release ==============
@@ -121,9 +122,9 @@ public class ProductBacklogMapperTest extends TestCase {
 		ActualFile = null;
 	}
 	
-	// 測試刪除一筆 Issue 的檔案
+	@Test // 測試刪除一筆 Issue 的檔案
 	public void testDeleteAttachFile() {
-		IIssue issue = mCreateProductBacklog.getIssueList().get(0);		
+		IIssue issue = mCPB.getIssueList().get(0);		
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID());
 		
@@ -131,8 +132,8 @@ public class ProductBacklogMapperTest extends TestCase {
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(FILE_NAME, ActualFile.getName());
-		assertEquals(FILE_TYPE, ActualFile.getContentType());
+		assertEquals(mFILE_NAME, ActualFile.getName());
+		assertEquals(mFILE_TYPE, ActualFile.getContentType());
 		assertEquals(issue.getIssueID(), ActualFile.getId());
 		
 		// 刪除此 issue 的檔案
@@ -145,9 +146,9 @@ public class ProductBacklogMapperTest extends TestCase {
 		ActualFile = null;		
 	}
 	
-	// 測試不用透過 mantis 直接取得檔案的方法
+	@Test // 測試不用透過 mantis 直接取得檔案的方法
 	public void testGetAttachfile() {
-		IIssue issue = mCreateProductBacklog.getIssueList().get(0);
+		IIssue issue = mCPB.getIssueList().get(0);
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID());
 		
@@ -155,8 +156,8 @@ public class ProductBacklogMapperTest extends TestCase {
 		AttachFileObject IssueFile = issue.getAttachFiles().get(0);
 		
 		assertEquals(1, issue.getAttachFiles().size());
-		assertEquals(FILE_NAME, IssueFile.getName());
-		assertEquals(FILE_TYPE, IssueFile.getContentType());
+		assertEquals(mFILE_NAME, IssueFile.getName());
+		assertEquals(mFILE_TYPE, IssueFile.getContentType());
 		assertEquals(issue.getIssueID(), IssueFile.getId());
 
 		// ============= release ==============
@@ -167,9 +168,9 @@ public class ProductBacklogMapperTest extends TestCase {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
         attachFileInfo.issueId = issueId;
         attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
-        attachFileInfo.name = FILE_NAME;
-        attachFileInfo.contentType = FILE_TYPE;
-        attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
+        attachFileInfo.name = mFILE_NAME;
+        attachFileInfo.contentType = mFILE_TYPE;
+        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
         mapper.addAttachFile(attachFileInfo);
 	}
 }

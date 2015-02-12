@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -39,13 +39,13 @@ public class AjaxGetPartnerListAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
-		List<UserObject> users = new ProjectHelper().getProjectScrumWorkerListForDb(userSession, project);
+		List<AccountObject> users = new ProjectHelper().getProjectScrumWorkerListForDb(userSession, project);
 		StringBuilder result = new StringBuilder();
 		result.append("<Partners><Result>success</Result>");
 
 		for (int i = 0, size = users.size(); i < size; i++) {
 			result.append("<Partner>")
-			      .append("<Name>").append(users.get(i).getAccount()).append("</Name>")
+			      .append("<Name>").append(users.get(i).getUsername()).append("</Name>")
 			      .append("</Partner>");
 		}
 		result.append("</Partners>");

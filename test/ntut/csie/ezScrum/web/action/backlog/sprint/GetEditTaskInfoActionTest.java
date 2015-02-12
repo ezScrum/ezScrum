@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -12,111 +11,123 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/getEditTaskInfo";
-	private IProject project;
-	
+
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mActionPath = "/getEditTaskInfo";
+	private IProject mIProject;
+
 	public GetEditTaskInfoActionTest(String testName) {
 		super(testName);
 	}
-	
+
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+
 		// 刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();// 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
-		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
-		
+
+		// create project
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+
+		// create sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		mIProject = mCP.getProjectList().get(0);
 		super.setUp();
+
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
-		
+		setRequestPathInfo(mActionPath);
+
 		ini = null;
 	}
-	
-	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+
+	protected void tearDown() throws Exception {
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
-		
-		configuration.setTestMode(false);
-		configuration.store();
-		
+
+		mConfig.setTestMode(false);
+		mConfig.save();
+
 		super.tearDown();
-		
+
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CS = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mConfig = null;
+		mIProject = null;
 	}
-	
+
 	public void testGetEditTaskInfo() throws Exception {
-		List<String> idList = this.CS.getSprintIDList();
-		int sprintID = Integer.parseInt(idList.get(0));
+		List<String> sprintIds = mCS.getSprintIDList();
+		int sprintId = Integer.parseInt(sprintIds.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
-		
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
+				sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		ASS.exe();
+
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
-		addTaskToStory.exe();
-		
-		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
-		createProductBacklog.exe();
-//		String issueID = String.valueOf(createProductBacklog.getIssueIDList().get(0));
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));
+		AddTaskToStory ATS = new AddTaskToStory(taskCount, taskEst, ASS, mCP);
+		ATS.exe();
+
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
+		CPB.exe();
+		String taskId = String.valueOf(ATS.getTasksId().get(0));
+
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
-		addRequestParameter("issueID", issueID);
+		addRequestParameter("sprintID", sprintIds.get(0));
+		addRequestParameter("issueID", taskId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================  執行 action ==============================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ 執行 action ==============================
 		actionPerform();
-		// ================    assert    =============================
+
+		// ================ assert =============================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
-		String expectedTaskName = addTaskToStory.getTaskList().get(0).getSummary();
-		String expectedTaskEstimation= addTaskToStory.getTaskList().get(0).getEstimated();
-		String expectedTaskActualHour = addTaskToStory.getTaskList().get(0).getActualHour();
-		String expectedTaskRemains = addTaskToStory.getTaskList().get(0).getRemains();
-		String expectedTaskNote = addTaskToStory.getTaskList().get(0).getNotes();
-		
-		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("<EditTask><Task><Id>" + issueID + "</Id>");
-		expectedResponseTest.append("<Name>" + expectedTaskName	+ "</Name>");
-		expectedResponseTest.append("<Estimate>" + expectedTaskEstimation + "</Estimate>");
-		expectedResponseTest.append("<Actual>" + expectedTaskActualHour + "</Actual><Handler></Handler>");
-		expectedResponseTest.append("<Remains>" + expectedTaskRemains + "</Remains><Partners></Partners>");
-		expectedResponseTest.append("<Notes>" + expectedTaskNote + "</Notes></Task></EditTask>");
-		
+
+		TaskObject task = ATS.getTasks().get(0);
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText
+			.append("<EditTask>")
+				.append("<Task>")
+					.append("<Id>").append(taskId).append("</Id>")
+					.append("<Name>").append(task.getName()).append("</Name>")
+					.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
+					.append("<Actual>").append(task.getActual()).append("</Actual>")
+					.append("<Handler></Handler>")
+					.append("<Remains>").append(task.getRemains()).append("</Remains>")
+					.append("<Partners></Partners>")
+					.append("<Notes>").append(task.getNotes()).append("</Notes>")
+				.append("</Task>")
+			.append("</EditTask>");
+
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println("result = " + actualResponseText);
-		assertEquals(expectedResponseTest.toString(), actualResponseText);
-		
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }

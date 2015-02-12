@@ -22,19 +22,24 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
 import ntut.csie.jcis.resource.core.IPath;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedHashTreeMap;
 
 public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
+	private CreateProject mCP;
+	private CreateSprint mCS;
 	private Configuration mConfig;
 	private IProject mProject;
 
@@ -46,20 +51,20 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增一測試專案
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
-		mProject = mCreateProject.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 
 		// 新增1筆 Sprint Plan
-		mCreateSprint = new CreateSprint(1, mCreateProject);
-		mCreateSprint.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
 
 		gson = new Gson();
 		super.setUp();
@@ -80,15 +85,14 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 		
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		mCreateProject = null;
-		mCreateSprint = null;
+		mCP = null;
+		mCS = null;
 		gson = null;
 		mConfig = null;
 		
@@ -104,9 +108,9 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	public void testGetTaskBoardStoryTaskList_1() throws Exception {
 		// Sprint 加入1個 Story
 		int storyCount = 1;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
+		IIssue story = ASTS.getStories().get(0);
 		long stroyId = story.getIssueID();
 
 		// ================ set request info ========================
@@ -141,7 +145,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
 		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stroyId).append("\",")
 		        .append("\"Release\":\"").append(story.getReleaseID()).append("\",")
-		        .append("\"Sprint\":\"").append(mCreateSprint.getSprintIDList().get(0)).append("\",")
+		        .append("\"Sprint\":\"").append(mCS.getSprintIDList().get(0)).append("\",")
 		        .append("\"Attach\":false,")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Tasks\":[]}],")
@@ -158,8 +162,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	public void testGetTaskBoardStoryTaskList_2() throws Exception {
 		// Sprint 加入10個 Story
 		int storyCount = 10;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -181,7 +185,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		HashMap<String, Object> resultMap = gson.fromJson(result, HashMap.class);
 		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
 		Number total = (Number) resultMap.get("Total");
-		List<IIssue> expectedStories = addStoryToSprint.getIssueList();
+		List<IIssue> expectedStories = ASTS.getStories();
 		IIssue expectedStory;
 
 		assertEquals(true, resultMap.get("success"));
@@ -199,7 +203,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(expectedStory.getHowToDemo(), storyList.get(i).get("HowToDemo"));
 			assertEquals(expectedStory.getIssueLink(), storyList.get(i).get("Link"));
 			assertEquals(expectedStory.getReleaseID(), storyList.get(i).get("Release"));
-			assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
+			assertEquals(mCS.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
 			assertEquals(expectedStory.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			assertEquals(new ArrayList<LinkedHashTreeMap>(), storyList.get(i).get("Tasks"));
@@ -216,18 +220,18 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		int storyCount = 1;
 		int taskCount = 1;
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
 		
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = ASTS.getStories().get(0);
 		long stroyId = story.getIssueID();
 
 		// 每個 Story 加入1個 task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, addStoryToSprint, mCreateProject);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, ASTS, mCP);
 		addTaskToStory.exe();
 		
-		IIssue task = addTaskToStory.getTaskList().get(0);
-		long taskId = task.getIssueID();
+		TaskObject task = addTaskToStory.getTasks().get(0);
+		long taskId = task.getId();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -261,22 +265,22 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
 		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stroyId).append("\",")
 		        .append("\"Release\":\"").append(story.getReleaseID()).append("\",")
-		        .append("\"Sprint\":\"").append(mCreateSprint.getSprintIDList().get(0)).append("\",")
+		        .append("\"Sprint\":\"").append(mCS.getSprintIDList().get(0)).append("\",")
 		        .append("\"Attach\":false,")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Tasks\":[{")
 		        .append("\"Id\":\"").append(taskId).append("\",")
-		        .append("\"Name\":\"").append(task.getSummary()).append("\",")
-		        .append("\"Estimate\":\"").append(task.getEstimated()).append("\",")
+		        .append("\"Name\":\"").append(task.getName()).append("\",")
+		        .append("\"Estimate\":\"").append(task.getEstimate()).append("\",")
 		        .append("\"RemainHours\":\"").append(task.getRemains()).append("\",")
-		        .append("\"Handler\":\"\",")
+		        .append("\"HandlerUserName\":\"\",")
 		        .append("\"Notes\":\"").append(task.getNotes()).append("\",")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Attach\":false,")
-		        .append("\"Status\":\"").append(task.getStatus()).append("\",")
+		        .append("\"Status\":\"").append(task.getStatusString()).append("\",")
 		        .append("\"Partners\":\"\",")
-		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(taskId).append("\",")
-		        .append("\"Actual\":\"").append(task.getActualHour()).append("\"")
+		        .append("\"Link\":\"").append("\",")
+		        .append("\"Actual\":\"").append(task.getActual()).append("\"")
 		        .append("}]}],")
 		        .append("\"success\":true,\"Total\":1}");
 		assertEquals(expectedResponseText.toString(), result);
@@ -292,35 +296,35 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		int storyCount = 5;
 		int taskCount = 1;
 		// Sprint 加入5個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
 
 		// 每個 Story 加入1個 task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, addStoryToSprint, mCreateProject);
-		addTaskToStory.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(taskCount, 1, ASTS, mCP);
+		ATTS.exe();
 
 		// 新建一個帳號並給於專案權限
-		CreateAccount createAccount = new CreateAccount(1);
-		createAccount.exe();
+		CreateAccount CA = new CreateAccount(1);
+		CA.exe();
 		
-		AddUserToRole addUserToRole = new AddUserToRole(mCreateProject, createAccount);
-		addUserToRole.exe_ST();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_ST();
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), null);
 		// 將第一個 story 跟 task 全都拉到 done, 用 TEST_ACCOUNT_ID_1 checkout task
-		List<IIssue> tasks = addTaskToStory.getTaskList();
-		List<IIssue> stories = addStoryToSprint.getIssueList();
-		sprintBacklogLogic.checkOutTask(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), createAccount.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
+		List<TaskObject> tasks = ATTS.getTasks();
+		List<IIssue> stories = ASTS.getStories();
+		sprintBacklogLogic.checkOutTask(tasks.get(0).getId(), tasks.get(0).getName(), CA.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
 		Thread.sleep(1000);
-		sprintBacklogLogic.doneIssue(tasks.get(0).getIssueID(), tasks.get(0).getSummary(), tasks.get(0).getNotes(), null, null);
-		sprintBacklogLogic.doneIssue(stories.get(0).getIssueID(), stories.get(0).getSummary(), stories.get(0).getNotes(), null, null);
+		sprintBacklogLogic.closeTask(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), 0, "");
+		sprintBacklogLogic.closeStory(stories.get(0).getIssueID(), stories.get(0).getNotes(), "");
 		// 將第三個 task check out，用 TEST_ACCOUNT_ID_1 checkout task
-		sprintBacklogLogic.checkOutTask(tasks.get(2).getIssueID(), tasks.get(2).getSummary(), createAccount.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
+		sprintBacklogLogic.checkOutTask(tasks.get(2).getId(), tasks.get(2).getName(), CA.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("UserID", createAccount.getAccount_ID(1));
+		addRequestParameter("UserID", CA.getAccount_ID(1));
 		addRequestParameter("sprintID", "1");
 
 		// ================ set session info ========================
@@ -338,9 +342,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
 		ArrayList<LinkedHashTreeMap<String, Object>> taskList;
 		Number total = (Number) resultMap.get("Total");
-		List<IIssue> expectedStories = addStoryToSprint.getIssueList();
-		List<IIssue> expectedTasks = addTaskToStory.getTaskList();
-		IIssue expectedStory, expectedTask;
+		List<IIssue> expectedStories = ASTS.getStories();
+		List<TaskObject> expectedTasks = ATTS.getTasks();
+		IIssue expectedStory;
+		TaskObject expectedTask;
 
 		/**
 		 * 一個 Story and task 被 TEST_ACCOUNT_ID_1 拉到 Done
@@ -369,14 +374,14 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(expectedStory.getHowToDemo(), storyList.get(i).get("HowToDemo"));
 			assertEquals(expectedStory.getIssueLink(), storyList.get(i).get("Link"));
 			assertEquals(expectedStory.getReleaseID(), storyList.get(i).get("Release"));
-			assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
+			assertEquals(mCS.getSprintIDList().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
 			assertEquals(expectedStory.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			for (int j = 0; j < taskList.size(); j++) {
-				assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(j).get("Id"));
-				assertEquals(expectedTask.getSummary(), taskList.get(j).get("Name"));
-				assertEquals(expectedTask.getEstimated(), taskList.get(j).get("Estimate"));
-				assertEquals(createAccount.getAccount_ID(1), taskList.get(j).get("Handler"));
+				assertEquals(String.valueOf(expectedTask.getId()), taskList.get(j).get("Id"));
+				assertEquals(expectedTask.getName(), taskList.get(j).get("Name"));
+				assertEquals(String.valueOf(expectedTask.getEstimate()), taskList.get(j).get("Estimate"));
+				assertEquals(CA.getAccount_ID(1), taskList.get(j).get("HandlerUserName"));
 				assertEquals(expectedTask.getNotes(), taskList.get(j).get("Notes"));
 				assertEquals(expectedTask.getAttachFiles(), taskList.get(j).get("AttachFileList"));
 				assertEquals(false, taskList.get(j).get("Attach"));
@@ -385,11 +390,11 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 					assertEquals("0", taskList.get(j).get("RemainHours"));
 				} else {
 					assertEquals(ITSEnum.ASSIGNED, taskList.get(j).get("Status"));
-					assertEquals(expectedTask.getRemains(), taskList.get(j).get("RemainHours"));
+					assertEquals(String.valueOf(expectedTask.getRemains()), taskList.get(j).get("RemainHours"));
 				}
-				assertEquals(expectedTask.getPartners(), taskList.get(j).get("Partners"));
-				assertEquals(expectedTask.getIssueLink(), taskList.get(j).get("Link"));
-				assertEquals(expectedTask.getActualHour(), taskList.get(j).get("Actual"));
+				assertEquals(expectedTask.getPartnersUsername(), taskList.get(j).get("Partners"));
+				assertEquals("", taskList.get(j).get("Link"));
+				assertEquals(String.valueOf(expectedTask.getActual()), taskList.get(j).get("Actual"));
 			}
 		}
 	}
@@ -403,10 +408,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	public void testGetTaskBoardStoryTaskList_AttachFile_Story() throws Exception {
 		// Sprint 加入1個 Story
 		int storyCount = 1;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
 
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		IIssue story = ASTS.getStories().get(0);
 		long storyId = story.getIssueID();
 
 		// attach file
@@ -423,11 +428,11 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
-        attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
+        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
         
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
-		pbHelper.addAttachFile(attachFileInfo, file);
-		IIssue expectedStory = pbHelper.getIssue(storyId);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
+		productBacklogHelper.addAttachFile(attachFileInfo, file);
+		IIssue expectedStory = productBacklogHelper.getIssue(storyId);
 
 		try {
 			FileUtil.delete(targetPath);
@@ -464,7 +469,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getHowToDemo(), storyList.get(0).get("HowToDemo"));
 		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
 		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
-		assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
+		assertEquals(mCS.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
 		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) storyList.get(0).get("AttachFileList")).get(0);
 		assertEquals(expectedStory.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
@@ -482,17 +487,17 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		int storyCount = 1;
 		int taskCount = 1;
 		
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, 1, mCreateSprint, mCreateProject, "EST");
-		addStoryToSprint.exe();
-		IIssue story = addStoryToSprint.getIssueList().get(0);
+		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
+		ASTS.exe();
+		IIssue story = ASTS.getStories().get(0);
 		long stroyId = story.getIssueID();
 		
 		// 每個 Story 加入1個 task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, 1, addStoryToSprint, mCreateProject);
-		addTaskToStory.exe();
+		AddTaskToStory ATTS = new AddTaskToStory(taskCount, 1, ASTS, mCP);
+		ATTS.exe();
 		
-		IIssue task = addTaskToStory.getTaskList().get(0);
-		long taskId = task.getIssueID();
+		TaskObject task = ATTS.getTasks().get(0);
+		long taskId = task.getId();
 		
 		// attach file
 		final String FILE_NAME = "ezScrumTestFile";
@@ -508,13 +513,13 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
-        attachFileInfo.projectName = mCreateProject.getProjectList().get(0).getName();
+        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
-		pbHelper.addAttachFile(attachFileInfo, file);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
+		productBacklogHelper.addAttachFile(attachFileInfo, file);
 		
-		IIssue expectedStory = pbHelper.getIssue(stroyId);
-		IIssue expectedTask = pbHelper.getIssue(taskId);
+		IIssue expectedStory = productBacklogHelper.getIssue(stroyId);
+		task.reload();
 		
 		try {
 			FileUtil.delete(targetPath);
@@ -538,37 +543,43 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
-		LinkedHashMap<String, Object> resultMap = gson.fromJson(result, LinkedHashMap.class);
-		ArrayList<LinkedHashTreeMap<String, Object>> storyList = (ArrayList<LinkedHashTreeMap<String, Object>>) resultMap.get("Stories");
-		assertEquals(String.valueOf(expectedStory.getIssueID()), storyList.get(0).get("Id"));
-		assertEquals(expectedStory.getSummary(), storyList.get(0).get("Name"));
-		assertEquals(expectedStory.getValue(), storyList.get(0).get("Value"));
-		assertEquals(expectedStory.getEstimated(), storyList.get(0).get("Estimate"));
-		assertEquals(expectedStory.getImportance(), storyList.get(0).get("Importance"));
-		assertEquals("", storyList.get(0).get("Tag"));
-		assertEquals(expectedStory.getStatus(), storyList.get(0).get("Status"));
-		assertEquals(expectedStory.getNotes(), storyList.get(0).get("Notes"));
-		assertEquals(expectedStory.getHowToDemo(), storyList.get(0).get("HowToDemo"));
-		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
-		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
-		assertEquals(mCreateSprint.getSprintIDList().get(0), storyList.get(0).get("Sprint"));
-		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
-		assertEquals(expectedStory.getAttachFiles(), storyList.get(0).get("AttachFileList"));
+		System.out.println(result);
 		
-		ArrayList<LinkedHashTreeMap<String, Object>> taskList = (ArrayList<LinkedHashTreeMap<String, Object>>) storyList.get(0).get("Tasks");
-		assertEquals(String.valueOf(expectedTask.getIssueID()), taskList.get(0).get("Id"));
-		assertEquals(expectedTask.getSummary(), taskList.get(0).get("Name"));
-		assertEquals(expectedTask.getEstimated(), taskList.get(0).get("Estimate"));
-		assertEquals(expectedTask.getNotes(), taskList.get(0).get("Notes"));
-		assertEquals(expectedTask.getStatus(), taskList.get(0).get("Status"));
-		assertEquals(expectedTask.getRemains(), taskList.get(0).get("RemainHours"));
-		assertEquals(expectedTask.getPartners(), taskList.get(0).get("Partners"));
-		assertEquals(expectedTask.getIssueLink(), taskList.get(0).get("Link"));
-		assertEquals(expectedTask.getActualHour(), taskList.get(0).get("Actual"));
-		assertEquals(!expectedTask.getAttachFiles().isEmpty(), taskList.get(0).get("Attach"));
+		JSONObject json = new JSONObject(result);
 		
-		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) taskList.get(0).get("AttachFileList")).get(0);
-		assertEquals(expectedTask.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());
-		assertEquals(expectedTask.getAttachFiles().get(0).getName(), attachFile.get("FileName"));
+		JSONArray stories = json.getJSONArray("Stories");
+		assertEquals(1, stories.length());
+		
+		JSONObject actualStory = stories.getJSONObject(0);
+		assertEquals(expectedStory.getSummary(), actualStory.getString("Name"));
+		assertEquals(expectedStory.getIssueID() + "", actualStory.getString("Id"));
+		assertEquals(expectedStory.getValue(), actualStory.getString("Value"));
+		assertEquals(expectedStory.getEstimated(), actualStory.getString("Estimate"));
+		assertEquals(expectedStory.getImportance(), actualStory.getString("Importance"));
+		assertEquals(expectedStory.getImportance(), actualStory.getString("Importance"));
+		assertEquals(expectedStory.getStatus(), actualStory.getString("Status"));
+		assertEquals(expectedStory.getNotes(), actualStory.getString("Notes"));
+		assertEquals(expectedStory.getHowToDemo(), actualStory.getString("HowToDemo"));
+		assertEquals(expectedStory.getIssueLink(), actualStory.getString("Link"));
+		assertEquals(expectedStory.getReleaseID(), actualStory.getString("Release"));
+		
+		JSONArray actualAttachFiles = actualStory.getJSONArray("AttachFileList");
+		assertEquals(1, actualAttachFiles.length());
+		
+		JSONObject actualAttachFile = actualAttachFiles.getJSONObject(0);
+		assertEquals(expectedStory.getAttachFiles().get(0).getId(), actualAttachFile.getLong("FileId"));
+		assertEquals(expectedStory.getAttachFiles().get(0).getName(), actualAttachFile.getString("FileName"));
+		
+		JSONArray actualTasks = actualStory.getJSONArray("Tasks");
+		assertEquals(1, actualTasks.length());
+		
+		JSONObject actualTask = actualTasks.getJSONObject(0);
+		assertEquals(task.getId(), actualTask.getLong("Id"));
+		assertEquals(task.getName(), actualTask.getString("Name"));
+		assertEquals(task.getEstimate(), actualTask.getInt("Estimate"));
+		assertEquals(task.getRemains(), actualTask.getInt("RemainHours"));
+		assertEquals(task.getActual(), actualTask.getInt("Actual"));
+		assertEquals(task.getNotes(), actualTask.getString("Notes"));
+		assertEquals(task.getStatusString(), actualTask.getString("Status"));
 	}
 }

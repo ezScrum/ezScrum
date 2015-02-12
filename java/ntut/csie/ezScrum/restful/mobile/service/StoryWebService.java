@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -24,7 +24,7 @@ public class StoryWebService extends ProjectWebService{
 	private ProductBacklogHelper mProductBacklogHelper;
 	private SprintBacklogHelper mSprintBacklogHelper;
 	
-	public StoryWebService(UserObject user, String projectID) throws LogonException {
+	public StoryWebService(AccountObject user, String projectID) throws LogonException {
 		super(user, projectID);
 		initialize();
 	}
@@ -88,22 +88,17 @@ public class StoryWebService extends ProjectWebService{
 	
 	/**
 	 * 取得 story 中所有的 task 
-	 * @param storyID
-	 * @return
-	 * @throws JSONException
+	 * @param storyId
+	 * @return tasks string
 	 */
-	public String getTaskInStory(String storyID) throws JSONException {
-		Gson gson = new Gson();
-		IIssue[] tasks = mSprintBacklogHelper.getTaskInStory(storyID);
-		List<TaskObject> taskList = new ArrayList<TaskObject>();
-		for (IIssue task : tasks)
-			taskList.add(new TaskObject(task));
-		return gson.toJson(taskList);
+	public String getTaskInStory(String storyId) {
+		ArrayList<TaskObject> tasks = mSprintBacklogHelper.getTasksByStoryId(Long.parseLong(storyId));
+		return tasks.toString();
 	}
 	
-	public void addExistedTask(String storyID, String taskIDsJson) {
+	public void addExistedTask(String storyId, String taskIdsJson) {
 		Gson gson = new Gson();
-		String[] taskIDs = gson.fromJson(taskIDsJson, String[].class);
-		mSprintBacklogHelper.addExistedTask(storyID, taskIDs);
+		String[] taskIds = gson.fromJson(taskIdsJson, String[].class);
+		mSprintBacklogHelper.addExistingTasksToStory(taskIds, Long.parseLong(storyId));
 	}
 }

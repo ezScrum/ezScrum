@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
@@ -15,9 +14,9 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.Story;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -144,7 +143,7 @@ public class ProductBacklogMapper {
 		return getIssue(issueId);
 	}
 
-	public IIssue addStory(StoryInformation storyInformation) {
+	public IIssue addStory(StoryInfo storyInformation) {
 		mMantisService.openConnect();
 		IIssue story = new Issue();
 
@@ -267,8 +266,8 @@ public class ProductBacklogMapper {
 
 	public void addHistory(long issueId, int issueType, int historyType,
 			String oldValue, String newValue) {
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		historyDao.add(new HistoryObject(issueId, issueType, historyType,
-				oldValue, newValue, System.currentTimeMillis()));
+		HistoryObject history = new HistoryObject(issueId, issueType, historyType,
+				oldValue, newValue, System.currentTimeMillis());
+		history.save();
 	}
 }

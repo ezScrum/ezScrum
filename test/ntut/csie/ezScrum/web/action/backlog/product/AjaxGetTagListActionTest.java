@@ -15,38 +15,38 @@ import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetTagListActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateTag CT;
-	private int ProjectCount = 1;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/AjaxGetTagList";
+	private CreateProject mCP;
+	private CreateTag mCT;
+	private int mProjectCount = 1;
+	private Configuration mConfig;
+	private final String mActionPath = "/AjaxGetTagList";
 	
 	public AjaxGetTagListActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
 		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 		
-		this.CT = new CreateTag(2, this.CP);
-		this.CT.exe();
+		mCT = new CreateTag(2, mCP);
+		mCT.exe();
 		
 		
 		super.setUp();
 		
 		// 設定讀取的struts-config檔案路徑
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent")); 
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); 
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.ACTION_PATH);
+		setRequestPathInfo(mActionPath);
 		
 		// ============= release ==============
 		ini = null;
@@ -54,32 +54,31 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 	
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CT = null;
-		configuration = null;
+		mCP = null;
+		mCT = null;
+		mConfig = null;
 	}
 	
 	public void testGetAllTagList(){
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + this.CP.getProjectList().get(0).getName());
+		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ 執行 action ======================
 		actionPerform();
 		// ================ assert ========================
@@ -87,7 +86,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 		
 		//	assert response text
-		ArrayList<TagObject> tags = this.CT.getTagList();
+		ArrayList<TagObject> tags = mCT.getTagList();
 		StringBuilder sb = new StringBuilder();
 		sb.append("<TagList><Result>success</Result>");
 
@@ -99,7 +98,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		}
 		sb.append("</TagList>");
 		
-		String actualResponsetext = this.response.getWriterBuffer().toString();
+		String actualResponsetext = response.getWriterBuffer().toString();
 		assertEquals(sb.toString(), actualResponsetext);
 	}
 }

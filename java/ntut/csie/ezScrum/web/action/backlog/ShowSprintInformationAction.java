@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -52,8 +52,9 @@ public class ShowSprintInformationAction extends Action {
 		String sprintID = request.getParameter("sprintID");
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession);
-		if (backlog == null) {
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
+		long sprintId = backlog.getSprintPlanId();
+		if (backlog == null || sprintId == -1 || sprintId == 0) {
 			return mapping.findForward("error");
 		}
 		
@@ -68,7 +69,7 @@ public class ShowSprintInformationAction extends Action {
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintPlanId());
 		request.setAttribute("SprintPlan", plan);
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(projectObject.getId()));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(projectObject.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "
@@ -76,7 +77,7 @@ public class ShowSprintInformationAction extends Action {
 
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr != null && sr.getAccessSprintBacklog()) {
 			return mapping.findForward("success");

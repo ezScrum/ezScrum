@@ -1,83 +1,86 @@
 package ntut.csie.ezScrum.iteration.support;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.pic.internal.UserSession;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ReleasePlanDescLoaderTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ReleasePlanDescLoaderTest {
 	
-	private Configuration configuration = null;
-	private CreateProject CP = null;
-	private IProject project = null;
-	private ReleasePlanMapper loader = null;
+	private Configuration mConfig = null;
+	private CreateProject mCP = null;
+	private IProject mProject = null;
+	private ReleasePlanMapper mReleasePlanMapper = null;
 	
-	public ReleasePlanDescLoaderTest(String method) {
-		super(method);
-	}
-	
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+		mConfig = new Configuration(new UserSession(AccountObject.get("admin")));
 		
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 		
 		// create project
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		this.project = this.CP.getProjectList().get(0);
+		this.mCP = new CreateProject(1);
+		this.mCP.exeCreate();
+		this.mProject = this.mCP.getProjectList().get(0);
 		
 		// initial loader
-		this.loader = new ReleasePlanMapper(this.project);
+		this.mReleasePlanMapper = new ReleasePlanMapper(mProject);
 		
 		// release
 		init = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 		
 		// copy and delete test project
-		CopyProject cp = new CopyProject(this.CP);
-		cp.exeDelete_Project();
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		// release
 		init = null;
-		cp = null;
-		this.CP = null;
-		this.project = null;
-		configuration = null;
-		super.tearDown();
+		mCP = null;
+		mProject = null;
+		mConfig = null;
 	}
 	
+	@Test
 	public void testloadReleasePlan() {
 		// 資料尚未建立就去讀取，不會回傳任何資料
-		List<IReleasePlanDesc> descs = this.loader.getReleasePlanList();
+		List<IReleasePlanDesc> descs = mReleasePlanMapper.getReleasePlanList();
 		assertEquals(descs.size(), 0);
 		
 		// 建立一筆假資料
-		CreateRelease cr = new CreateRelease(2, this.CP);
+		CreateRelease cr = new CreateRelease(2, mCP);
 		cr.exe();
 		
 		// 會回傳一筆 release
-		descs = this.loader.getReleasePlanList();
+		descs = mReleasePlanMapper.getReleasePlanList();
 		assertEquals(descs.size(), 2);
 		
 		IReleasePlanDesc desc = descs.get(0);
@@ -91,17 +94,18 @@ public class ReleasePlanDescLoaderTest extends TestCase {
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "2");
 	}
 	
+	@Test
 	public void testloadReleasePlanList() {
 		// 資料尚未建立就去讀取，不會回傳任何資料
-		List<IReleasePlanDesc> descs = this.loader.getReleasePlanList();
+		List<IReleasePlanDesc> descs = mReleasePlanMapper.getReleasePlanList();
 		assertEquals(descs.size(), 0);
 		
 		// 建立一筆假資料
-		CreateRelease cr = new CreateRelease(2, this.CP);
+		CreateRelease cr = new CreateRelease(2, mCP);
 		cr.exe();
 		
 		// 會回傳一筆 release
-		descs = this.loader.getReleasePlanList();
+		descs = this.mReleasePlanMapper.getReleasePlanList();
 		assertEquals(descs.size(), 2);
 		
 		IReleasePlanDesc desc = descs.get(0);

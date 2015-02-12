@@ -13,21 +13,21 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class EditUnplannedItemActionTest extends MockStrutsTestCase {
-	private CreateProject mCreateProject;
-	private CreateSprint mCreateSprint;
-	private CreateUnplannedItem mCreateUnplanned;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private CreateUnplannedItem mCUI;
 	private Configuration mConfig;
 	private IProject mProject;
 
-	private String PREFIX = "TEST_UNPLANNED_EDIT_";
-	private String UPDATE_NAME = "NAME_";
-	private String UPDATE_ESTIMATION = "99";
-	private String UPDATE_HOUR = "9";
-	private String UPDATE_PARTNER = "PARTNER_";
-	private String UPDATE_NOTE = "NOTE_";
-	private String[] UPDATE_STATUS = {"new", "assigned", "closed"};
+	private String mPREFIX = "TEST_UNPLANNED_EDIT_";
+	private String mUPDATE_NAME = "NAME_";
+	private String mUPDATE_ESTIMATION = "99";
+	private String mUPDATE_HOUR = "9";
+	private String mUPDATE_PARTNER = "PARTNER_";
+	private String mUPDATE_NOTE = "NOTE_";
+	private String mUPDATE_STATUS[] = {"new", "assigned", "closed"};
 
-	private String actionPath = "/editUnplannedItem";
+	private String mActionPath = "/editUnplannedItem";
 
 	public EditUnplannedItemActionTest(String testMethod) {
 		super(testMethod);
@@ -36,23 +36,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
-		mConfig.store();
+		mConfig.save();
 
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增 Project
-		mCreateProject = new CreateProject(1);
-		mCreateProject.exeCreate();
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
 
-		mProject = mCreateProject.getProjectList().get(0);
+		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(actionPath);
+		setRequestPathInfo(mActionPath);
 
 		// ============= release ==============
 		ini = null;
@@ -66,28 +66,30 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
+		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
-		mConfig.store();
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		mCreateProject = null;
-		mCreateSprint = null;
+		mCP = null;
+		mCS = null;
+		mCUI = null;
 		mConfig = null;
+		mProject = null;
 	}
 
 	// case 1: One sprint(s) with One Unplanned item(s)
 	// 將 name, partners, status, estimation, actual hour, notes 更新
 	public void testEditOneSprint1ui() throws Exception {
 		// 新增一個 Sprint
-		mCreateSprint = new CreateSprint(1, mCreateProject);
-		mCreateSprint.exe();
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
 
 		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
 		Thread.sleep(1000);
@@ -95,14 +97,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String sprintId = "1";
 		String issueId = "1";
-		String name = PREFIX + UPDATE_NAME + issueId;
+		String name = mPREFIX + mUPDATE_NAME + issueId;
 		String handler = "";
-		String partners = PREFIX + UPDATE_PARTNER + issueId;
-		String estimate = UPDATE_ESTIMATION;
-		String actualHour = UPDATE_HOUR;
-		String notes = PREFIX + UPDATE_NOTE + issueId;
+		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		String estimate = mUPDATE_ESTIMATION;
+		String actualHour = mUPDATE_HOUR;
+		String notes = mPREFIX + mUPDATE_NOTE + issueId;
 		String specificTime = "";
-		String status = UPDATE_STATUS[1];
+		String status = mUPDATE_STATUS[1];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -139,10 +141,10 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	// 測試先修改 UI2 再修改 UI1
 	public void testEditOneSprint2ui() throws Exception {
 		// 新增一個 Sprint
-		mCreateSprint = new CreateSprint(1, mCreateProject);
-		mCreateSprint.exe();
-		mCreateUnplanned = new CreateUnplannedItem(2, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe();
 
 		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
 		Thread.sleep(1000);
@@ -152,14 +154,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String sprintId = "1";
 		String issueId = "2";
-		String name = PREFIX + UPDATE_NAME + issueId;
+		String name = mPREFIX + mUPDATE_NAME + issueId;
 		String handler = "";
-		String partners = PREFIX + UPDATE_PARTNER + issueId;
-		String estimate = UPDATE_ESTIMATION;
-		String actualHour = UPDATE_HOUR;
-		String notes = PREFIX + UPDATE_NOTE + issueId;
+		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		String estimate = mUPDATE_ESTIMATION;
+		String actualHour = mUPDATE_HOUR;
+		String notes = mPREFIX + mUPDATE_NOTE + issueId;
 		String specificTime = "";
-		String status = UPDATE_STATUS[1];
+		String status = mUPDATE_STATUS[1];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -199,14 +201,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		sprintId = "1";
 		issueId = "2";
-		name = PREFIX + UPDATE_NAME + issueId;
+		name = mPREFIX + mUPDATE_NAME + issueId;
 		handler = "";
-		partners = PREFIX + UPDATE_PARTNER + issueId;
-		estimate = UPDATE_ESTIMATION;
-		actualHour = UPDATE_HOUR;
-		notes = PREFIX + UPDATE_NOTE + issueId;
+		partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		estimate = mUPDATE_ESTIMATION;
+		actualHour = mUPDATE_HOUR;
+		notes = mPREFIX + mUPDATE_NOTE + issueId;
 		specificTime = "";
-		status = UPDATE_STATUS[2];
+		status = mUPDATE_STATUS[2];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -243,10 +245,10 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	// 測試先修改 sprint2 再修改 sprint1
 	public void testEditTwoSprint1ui() throws Exception {
 		// 新增一個 Sprint
-		mCreateSprint = new CreateSprint(2, mCreateProject);
-		mCreateSprint.exe();
-		mCreateUnplanned = new CreateUnplannedItem(1, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
 
 		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
 		Thread.sleep(1000);
@@ -256,14 +258,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String sprintId = "2";
 		String issueId = "2";
-		String name = PREFIX + UPDATE_NAME + issueId;
+		String name = mPREFIX + mUPDATE_NAME + issueId;
 		String handler = "";
-		String partners = PREFIX + UPDATE_PARTNER + issueId;
-		String estimate = UPDATE_ESTIMATION;
-		String actualHour = UPDATE_HOUR;
-		String notes = PREFIX + UPDATE_NOTE + issueId;
+		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		String estimate = mUPDATE_ESTIMATION;
+		String actualHour = mUPDATE_HOUR;
+		String notes = mPREFIX + mUPDATE_NOTE + issueId;
 		String specificTime = "";
-		String status = UPDATE_STATUS[1];
+		String status = mUPDATE_STATUS[1];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -303,14 +305,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		sprintId = "1";
 		issueId = "1";
-		name = PREFIX + UPDATE_NAME + issueId;
+		name = mPREFIX + mUPDATE_NAME + issueId;
 		handler = "";
-		partners = PREFIX + UPDATE_PARTNER + issueId;
-		estimate = UPDATE_ESTIMATION;
-		actualHour = UPDATE_HOUR;
-		notes = PREFIX + UPDATE_NOTE + issueId;
+		partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		estimate = mUPDATE_ESTIMATION;
+		actualHour = mUPDATE_HOUR;
+		notes = mPREFIX + mUPDATE_NOTE + issueId;
 		specificTime = "";
-		status = UPDATE_STATUS[2];
+		status = mUPDATE_STATUS[2];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -346,10 +348,10 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	// 測試先修改 sprint1 UI1.UI2 再修改 sprint2 UI2.UI1
 	public void testEditTwoSprint2ui() throws Exception {
 		// 新增一個 Sprint
-		mCreateSprint = new CreateSprint(2, mCreateProject);
-		mCreateSprint.exe();
-		mCreateUnplanned = new CreateUnplannedItem(2, mCreateProject, mCreateSprint);
-		mCreateUnplanned.exe();
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe();
 
 		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
 		Thread.sleep(1000);
@@ -359,14 +361,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		String sprintId = "1";
 		String issueId = "1";
-		String name = PREFIX + UPDATE_NAME + issueId;
+		String name = mPREFIX + mUPDATE_NAME + issueId;
 		String handler = "";
-		String partners = PREFIX + UPDATE_PARTNER + issueId;
-		String estimate = UPDATE_ESTIMATION;
-		String actualHour = UPDATE_HOUR;
-		String notes = PREFIX + UPDATE_NOTE + issueId;
+		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		String estimate = mUPDATE_ESTIMATION;
+		String actualHour = mUPDATE_HOUR;
+		String notes = mPREFIX + mUPDATE_NOTE + issueId;
 		String specificTime = "";
-		String status = UPDATE_STATUS[1];
+		String status = mUPDATE_STATUS[1];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -406,14 +408,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		sprintId = "1";
 		issueId = "2";
-		name = PREFIX + UPDATE_NAME + issueId;
+		name = mPREFIX + mUPDATE_NAME + issueId;
 		handler = "";
-		partners = PREFIX + UPDATE_PARTNER + issueId;
-		estimate = UPDATE_ESTIMATION;
-		actualHour = UPDATE_HOUR;
-		notes = PREFIX + UPDATE_NOTE + issueId;
+		partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		estimate = mUPDATE_ESTIMATION;
+		actualHour = mUPDATE_HOUR;
+		notes = mPREFIX + mUPDATE_NOTE + issueId;
 		specificTime = "";
-		status = UPDATE_STATUS[2];
+		status = mUPDATE_STATUS[2];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -453,14 +455,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		sprintId = "2";
 		issueId = "4";
-		name = PREFIX + UPDATE_NAME + issueId;
+		name = mPREFIX + mUPDATE_NAME + issueId;
 		handler = "";
-		partners = PREFIX + UPDATE_PARTNER + issueId;
-		estimate = UPDATE_ESTIMATION;
-		actualHour = UPDATE_HOUR;
-		notes = PREFIX + UPDATE_NOTE + issueId;
+		partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		estimate = mUPDATE_ESTIMATION;
+		actualHour = mUPDATE_HOUR;
+		notes = mPREFIX + mUPDATE_NOTE + issueId;
 		specificTime = "";
-		status = UPDATE_STATUS[2];
+		status = mUPDATE_STATUS[2];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);
@@ -500,14 +502,14 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		sprintId = "2";
 		issueId = "3";
-		name = PREFIX + UPDATE_NAME + issueId;
+		name = mPREFIX + mUPDATE_NAME + issueId;
 		handler = "";
-		partners = PREFIX + UPDATE_PARTNER + issueId;
-		estimate = UPDATE_ESTIMATION;
-		actualHour = UPDATE_HOUR;
-		notes = PREFIX + UPDATE_NOTE + issueId;
+		partners = mPREFIX + mUPDATE_PARTNER + issueId;
+		estimate = mUPDATE_ESTIMATION;
+		actualHour = mUPDATE_HOUR;
+		notes = mPREFIX + mUPDATE_NOTE + issueId;
 		specificTime = "";
-		status = UPDATE_STATUS[2];
+		status = mUPDATE_STATUS[2];
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", issueId);

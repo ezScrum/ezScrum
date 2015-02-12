@@ -30,7 +30,6 @@ public class TestTool {
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		md.update(str.getBytes());

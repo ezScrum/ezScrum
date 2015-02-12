@@ -30,15 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.Person;
 import ntut.csie.ezScrum.web.dataObject.User;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.dataObject.ezScrumAdmin;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.AccessPermissionManager;
-import ntut.csie.jcis.account.core.IAccount;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,7 +67,6 @@ public class LogonSubmitAction extends Action {
 		String password = logonForm.getPassword();
 
 		log.debug("LogonForm.UserID=" + userId);
-		// log.debug("LogonForm.Password=" + password);
 
 		// 建立User Session
 		IUserSession userSession = ProjectInfoCenter.getInstance().login(userId, password);
@@ -97,9 +95,8 @@ public class LogonSubmitAction extends Action {
 		return mapping.findForward(person.getForwardName());
 	}
 
-	private Person getPerson(UserObject account) {
+	private Person getPerson(AccountObject account) {
 		AccountMapper accountMapper = new AccountMapper();
-//		if (account.checkPermission(accountMapper.getPermission("system_admin"))) {
 		if (account.getRoles().get("system") != null) {
 			return new ezScrumAdmin();
 		} else {

@@ -1112,7 +1112,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `account` VARCHAR(255) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
   `nick_name` VARCHAR(255) NULL,
   `email` TEXT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -1120,7 +1120,7 @@ CREATE TABLE `account` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `account_UNIQUE` (`account` ASC))
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 LOCK TABLES `account` WRITE;
@@ -1160,15 +1160,15 @@ ENGINE = InnoDB DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
+  `display_name` VARCHAR(255) NOT NULL,
   `comment` TEXT NULL,
   `product_owner` VARCHAR(255), 
   `attach_max_size` BIGINT UNSIGNED NOT NULL DEFAULT 2, 
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `pid_UNIQUE` (`pid` ASC))
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `sprint`;
@@ -1211,15 +1211,15 @@ DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `story_id` BIGINT NULL,
   `name` TEXT NOT NULL,
-  `hangler` BIGINT UNSIGNED NULL,
-  `estimation` INT NOT NULL DEFAULT 0,
+  `handler_id` BIGINT,
+  `status` VARCHAR(255) NULL,
+  `estimate` INT NOT NULL DEFAULT 0,
   `remain` INT NOT NULL DEFAULT 0,
   `actual` INT NOT NULL DEFAULT 0,
   `notes` TEXT NULL,
-  `status` VARCHAR(255) NULL,
-  `project_id` BIGINT UNSIGNED NOT NULL,
-  `sprint_id` BIGINT UNSIGNED NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
@@ -1233,7 +1233,7 @@ CREATE TABLE `history` (
   `type` INT NULL,
   `old_value` TEXT NULL,
   `new_value` TEXT NULL,
-  `modified_time` BIGINT UNSIGNED NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
@@ -1327,6 +1327,19 @@ CREATE TABLE `system` (
   `account_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `account_id_UNIQUE` (`account_id` ASC))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `serial_number`;
+CREATE TABLE `serial_number` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id` BIGINT UNSIGNED NOT NULL,
+  `release` BIGINT UNSIGNED NOT NULL,
+  `sprint` BIGINT UNSIGNED NOT NULL,
+  `story` BIGINT UNSIGNED NOT NULL,
+  `task` BIGINT UNSIGNED NOT NULL,
+  `unplanned` BIGINT UNSIGNED NOT NULL,
+  `retrospective` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 LOCK TABLES `system` WRITE;

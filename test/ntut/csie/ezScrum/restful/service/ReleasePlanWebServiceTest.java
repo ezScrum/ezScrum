@@ -1,9 +1,8 @@
 package ntut.csie.ezScrum.restful.service;
 
+import static org.junit.Assert.*;
 import java.sql.SQLException;
 import java.util.List;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -16,88 +15,82 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ReleasePlanWebServiceTest extends TestCase {
-	private CreateProject CP;
-	private CreateRelease CR;
-	private int ProjectCount = 1;
-	private int ReleaseCount = 3;
-	private int SprintCount = 3;
-	private IProject project;
-	private ReleasePlanHelper RPhelper;
-	private ReleasePlanWebService rService;
-	private Configuration configuration;
+public class ReleasePlanWebServiceTest {
+	private int mProjectCount = 1;
+	private int mReleaseCount = 3;
+	private int mSprintCount = 3;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private IProject mProject;
+	private ReleasePlanHelper mReleasePlanHelper;
+	private ReleasePlanWebService mReleasePlanWebService;
+	private Configuration mConfig;
 
-	public ReleasePlanWebServiceTest(String testMethod) {
-		super(testMethod);
-	}
-
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 新增一個 Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
-		this.CR = new CreateRelease(this.ReleaseCount, this.CP);
-		this.CR.exe();
+		mCR = new CreateRelease(mReleaseCount, mCP);
+		mCR.exe();
 		
-		project = this.CP.getProjectList().get(0);
-		RPhelper = new ReleasePlanHelper(project);
-
-		super.setUp();
-
-		// release
-		ini = null;
+		mProject = mCP.getProjectList().get(0);
+		mReleasePlanHelper = new ReleasePlanHelper(mProject);
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
-
-		super.setUp();
-
+		mConfig.setTestMode(false);
+		mConfig.save();
 		// release
-		ini = null;
-		this.CP = null;
-		this.CR = null;
-		configuration = null;
+		mCP = null;
+		mCR = null;
+		mProject = null;
+		mReleasePlanHelper = null;
+		mReleasePlanWebService = null;
+		mConfig = null;
 	}
 
+	@Test
 	public void testgetAllReleasePlan() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
-		rService = new ReleasePlanWebService(username, userpwd, projectID);
+		String projectID = mProject.getName();
+		mReleasePlanWebService = new ReleasePlanWebService(username, userpwd, projectID);
 
 		// create sprint
-		CreateSprint CS = new CreateSprint(SprintCount, CP);
+		CreateSprint CS = new CreateSprint(mSprintCount, mCP);
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releaselist = RPhelper.loadReleasePlansList();
-		JSONArray releasesJSONArray = new JSONArray(rService.getAllReleasePlan());
+		List<IReleasePlanDesc> releaselist = mReleasePlanHelper.loadReleasePlansList();
+		JSONArray releasesJSONArray = new JSONArray(mReleasePlanWebService.getAllReleasePlan());
 		
-		for (int i = 0; i < ReleaseCount; i++) {
+		for (int i = 0; i < mReleaseCount; i++) {
 			JSONObject releaseJSONObject = (JSONObject) releasesJSONArray.get(i);
 			assertEquals(releaselist.get(i).getID(), releaseJSONObject.get("ID"));
 			assertEquals(releaselist.get(i).getName(), releaseJSONObject.get("Name"));
@@ -120,21 +113,22 @@ public class ReleasePlanWebServiceTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testgetReleasePlan() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = project.getName();
-		rService = new ReleasePlanWebService(username, userpwd, projectID);
+		String projectID = mProject.getName();
+		mReleasePlanWebService = new ReleasePlanWebService(username, userpwd, projectID);
 
 		// create sprint
-		CreateSprint CS = new CreateSprint(SprintCount, CP);
+		CreateSprint CS = new CreateSprint(mSprintCount, mCP);
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releaselist = RPhelper.loadReleasePlansList();
+		List<IReleasePlanDesc> releaselist = mReleasePlanHelper.loadReleasePlansList();
 		
-		for(int i = 0; i < ReleaseCount ; i++){
-			JSONObject releaseJSONObject = new JSONObject(rService.getReleasePlan(releaselist.get(i).getID()));
+		for(int i = 0; i < mReleaseCount ; i++){
+			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getID()));
 			JSONObject releasePlanDescJSONObject = new JSONObject(releaseJSONObject.get("releasePlanDesc").toString());
 			assertEquals(releaselist.get(i).getID(), releasePlanDescJSONObject.get("id"));
 			assertEquals(releaselist.get(i).getName(), releasePlanDescJSONObject.get("name"));
