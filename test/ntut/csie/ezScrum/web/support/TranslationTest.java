@@ -86,14 +86,14 @@ public class TranslationTest{
 
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
 	@Test
-	public void testtranslateStoryToJson2() throws Exception {
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
+	public void testTranslateStoryToJson2() throws Exception {
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		IIssue[] stories = new IIssue[1];
 
 		// initial data
 		for (int i = 0; i < 10; i++) {
-			PBHelper.editStory(mCPB.getIssueList().get(i).getIssueID(), "0", "0", "0", "0", "0", "0", true);
-			IIssue issue = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			productBacklogHelper.editStory(mCPB.getIssueList().get(i).getIssueID(), "0", "0", "0", "0", "0", "0", true);
+			IIssue issue = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 
 			assertEquals("0", issue.getEstimated());
 			assertEquals("0", issue.getImportance());
@@ -103,7 +103,7 @@ public class TranslationTest{
 
 		StringBuilder ActualSB = new StringBuilder();
 		for (int i = 0; i < 10; i++) {
-			stories[0] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[0] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -124,7 +124,7 @@ public class TranslationTest{
 
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertTrue(ActualSB.toString().contains("DONE"));
@@ -134,7 +134,7 @@ public class TranslationTest{
 
 		// 驗證 backlog 狀態
 		for (int i = 4; i < 9; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -144,22 +144,22 @@ public class TranslationTest{
 
 		// 驗證 detail 狀態
 		for (int i = 0; i < 10; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DETAIL"));
 		}
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
-		PBHelper.editStory(mCPB.getIssueList().get(4).getIssueID(), "", "1", "1", "1", "", "", true);
+		productBacklogHelper.editStory(mCPB.getIssueList().get(4).getIssueID(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 
-		PBHelper.editStory(mCPB.getIssueList().get(5).getIssueID(), "", "1", "1", "1", "", "", true);
+		productBacklogHelper.editStory(mCPB.getIssueList().get(5).getIssueID(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 		
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertTrue(ActualSB.toString().contains("DONE"));
@@ -169,7 +169,7 @@ public class TranslationTest{
 
 		// 驗證 detail 狀態
 		for (int i = 4; i < 6; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));
@@ -179,7 +179,7 @@ public class TranslationTest{
 
 		// 驗證 backlog 狀態
 		for (int i = 7; i < 10; i++) {
-			stories[i] = PBHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
+			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
 			ActualSB = new StringBuilder();
 			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
 			assertFalse(ActualSB.toString().contains("DONE"));
