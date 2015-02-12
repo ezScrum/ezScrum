@@ -483,7 +483,7 @@ public class TaskObject implements IBaseObject {
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(mStoryId, mId); // for task
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId); // for task
 				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId); // for
 																		// story
 			}
@@ -529,7 +529,7 @@ public class TaskObject implements IBaseObject {
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(mStoryId, mId, specificTime); // for
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, specificTime); // for
 																				// task
 				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
 						specificTime); // for story
@@ -564,13 +564,13 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId));
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(storyId));
 	}
 
 	// addHistoryOfTaskDropFromStory for specific time
 	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId,
 			long specificTime) {
-		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(mStoryId),
+		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(storyId),
 				specificTime);
 	}
 
