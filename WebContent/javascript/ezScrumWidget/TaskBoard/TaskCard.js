@@ -94,6 +94,7 @@ function createTaskCard(task, storyID) {
         setHandlerPartners:function(handler, partners) {//set handler and partners
             var data = this.data;
             data.Handler = handler;
+            data.HandlerUserName = handler;
             data.Partners = partners;
             this.items.get(0).update(createTaskContent(data));
         },
@@ -126,6 +127,7 @@ function createTaskCard(task, storyID) {
 			var data = this.data;
 			data.Name = recordData['Name'];
 			data.Handler = recordData['Handler'];
+            data.HandlerUserName = recordData['Handler'];
 			data.Partners = recordData['Partners'];
         	this.items.get(0).update(createTaskContent(data));
 		},

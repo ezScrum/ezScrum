@@ -50,22 +50,22 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			if (issueType.equalsIgnoreCase("Story")) {
 				IIssue item = PBHelper.getIssue(issueId);
 				if (item != null) {
-					result.append(getJsonString(item, defaultHandler));
+					result.append(getIssueJsonString(item, defaultHandler));
 				} else {
-					result.append(getJsonString(null, defaultHandler));
+					result.append(getIssueJsonString(null, defaultHandler));
 				}				
 			} else if (issueType.equalsIgnoreCase("Task")) {
 				TaskObject task = sprintBacklogHelper.getTask(issueId);
-				result.append(getJsonString(task));
+				result.append(getTaskJsonString(task, defaultHandler));
 			}
 		} catch (Exception e) {
-			result.append(getJsonString(null, defaultHandler));
+			result.append(getIssueJsonString(null, defaultHandler));
 			log.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
 		}
 		return result;
 	}
 
-	private StringBuilder getJsonString(IIssue issue, String handler) {
+	private StringBuilder getIssueJsonString(IIssue issue, String handler) {
 		StringBuilder result = new StringBuilder();
 		TranslateSpecialChar translate = new TranslateSpecialChar();
 		if (issue != null) {
@@ -86,9 +86,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		return result;
 	}
 	
-	private StringBuilder getJsonString(TaskObject task) {
-		String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
-		
+	private StringBuilder getTaskJsonString(TaskObject task, String defaultHandler) {
 		StringBuilder result = new StringBuilder();
 		TranslateSpecialChar translate = new TranslateSpecialChar();
 		if (task != null) {
@@ -97,7 +95,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			        .append("\"Name\":\"").append(translate.TranslateJSONChar(task.getName())).append("\",")
 			        .append("\"Partners\":\"").append(task.getPartnersUsername()).append("\",")
 			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(task.getNotes())).append("\",")
-			        .append("\"Handler\":\"").append(handlerUsername).append("\",")
+			        .append("\"Handler\":\"").append(defaultHandler).append("\",")
 			        .append("\"IssueType\":\"").append("Task").append("\",")
 			        .append("},")
 			        .append("\"success\":true,")
