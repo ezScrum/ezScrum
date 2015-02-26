@@ -23,12 +23,10 @@ public class ConnectionPoolManager {
 		return instance;
 	}
 
-	public DataSource getConnectionPool(String driverClass, String url,
-			String account, String password) {
+	public DataSource getConnectionPool(String driverClass, String url, String account, String password) {
 		DataSource ds = poolMap.get(url);
 		if (ds == null)
 			ds = createDataSource(driverClass, url, account, password);
-
 		return ds;
 	}
 
@@ -36,8 +34,7 @@ public class ConnectionPoolManager {
 		poolMap.remove(url);
 	}
 
-	private DataSource createDataSource(String driverClass, String url,
-			String account, String password) {
+	private DataSource createDataSource(String driverClass, String url, String account, String password) {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		try {
 			ds.setDriverClass(driverClass);
@@ -51,7 +48,13 @@ public class ConnectionPoolManager {
 			ds.setAcquireIncrement(0);
 			ds.setMaxStatements(0);
 			ds.setMaxIdleTime(300);
-			ds.setIdleConnectionTestPeriod(100);
+			ds.setIdleConnectionTestPeriod(30);
+			
+			ds.setTestConnectionOnCheckin(false);
+			ds.setTestConnectionOnCheckout(true);
+			ds.setPreferredTestQuery("SELECT 1 ");
+			ds.setMaxConnectionAge(8 * 24 * 60 * 60);
+			ds.setCheckoutTimeout(8 * 24 * 60 * 60);
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}
