@@ -43,29 +43,29 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
 
-		String defaultHandler = session.getAccount().getUsername();
+		String defaultHandlerUsername = session.getAccount().getUsername();
 		try {
 			long issueId = Long.parseLong(request.getParameter("issueID"));
 			String issueType = request.getParameter("issueType");
 			if (issueType.equalsIgnoreCase("Story")) {
 				IIssue item = PBHelper.getIssue(issueId);
 				if (item != null) {
-					result.append(getIssueJsonString(item, defaultHandler));
+					result.append(getIssueJsonString(item, defaultHandlerUsername));
 				} else {
-					result.append(getIssueJsonString(null, defaultHandler));
+					result.append(getIssueJsonString(null, defaultHandlerUsername));
 				}				
 			} else if (issueType.equalsIgnoreCase("Task")) {
 				TaskObject task = sprintBacklogHelper.getTask(issueId);
-				result.append(getTaskJsonString(task, defaultHandler));
+				result.append(getTaskJsonString(task, defaultHandlerUsername));
 			}
 		} catch (Exception e) {
-			result.append(getIssueJsonString(null, defaultHandler));
+			result.append(getIssueJsonString(null, defaultHandlerUsername));
 			log.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
 		}
 		return result;
 	}
 
-	private StringBuilder getIssueJsonString(IIssue issue, String handler) {
+	private StringBuilder getIssueJsonString(IIssue issue, String handlerUsername) {
 		StringBuilder result = new StringBuilder();
 		TranslateSpecialChar translate = new TranslateSpecialChar();
 		if (issue != null) {
@@ -74,7 +74,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			        .append("\"Name\":\"").append(translate.TranslateJSONChar(issue.getSummary())).append("\",")
 			        .append("\"Partners\":\"").append(issue.getPartners()).append("\",")
 			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(issue.getNotes())).append("\",")
-			        .append("\"Handler\":\"").append(handler).append("\",")
+			        .append("\"Handler\":\"").append(handlerUsername).append("\",")
 			        .append("\"IssueType\":\"").append("Story").append("\",")
 			        .append("},")
 			        .append("\"success\":true,")
@@ -86,7 +86,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		return result;
 	}
 	
-	private StringBuilder getTaskJsonString(TaskObject task, String defaultHandler) {
+	private StringBuilder getTaskJsonString(TaskObject task, String handlerUsername) {
 		StringBuilder result = new StringBuilder();
 		TranslateSpecialChar translate = new TranslateSpecialChar();
 		if (task != null) {
@@ -95,7 +95,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			        .append("\"Name\":\"").append(translate.TranslateJSONChar(task.getName())).append("\",")
 			        .append("\"Partners\":\"").append(task.getPartnersUsername()).append("\",")
 			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(task.getNotes())).append("\",")
-			        .append("\"Handler\":\"").append(defaultHandler).append("\",")
+			        .append("\"Handler\":\"").append(handlerUsername).append("\",")
 			        .append("\"IssueType\":\"").append("Task").append("\",")
 			        .append("},")
 			        .append("\"success\":true,")
