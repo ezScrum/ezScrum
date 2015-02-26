@@ -9,56 +9,56 @@ import javax.sql.DataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class ConnectionPoolManager {
-	private static ConnectionPoolManager instance = null;
-	private Map<String, DataSource> poolMap;
+	private static ConnectionPoolManager mInstance = null;
+	private Map<String, DataSource> mPoolMap = null;
 
 	private ConnectionPoolManager() {
-		poolMap = new HashMap<String, DataSource>();
+		mPoolMap = new HashMap<String, DataSource>();
 	}
 
 	public static ConnectionPoolManager getInstance() {
-		if (instance == null)
-			instance = new ConnectionPoolManager();
-
-		return instance;
+		if (mInstance == null) {
+			mInstance = new ConnectionPoolManager();
+		}
+		return mInstance;
 	}
 
 	public DataSource getConnectionPool(String driverClass, String url, String account, String password) {
-		DataSource ds = poolMap.get(url);
-		if (ds == null)
-			ds = createDataSource(driverClass, url, account, password);
-		return ds;
+		DataSource dataSource = mPoolMap.get(url);
+		if (dataSource == null)
+			dataSource = createDataSource(driverClass, url, account, password);
+		return dataSource;
 	}
 
 	public void RemoveConnectionPool(String url) {
-		poolMap.remove(url);
+		mPoolMap.remove(url);
 	}
 
 	private DataSource createDataSource(String driverClass, String url, String account, String password) {
-		ComboPooledDataSource ds = new ComboPooledDataSource();
+		ComboPooledDataSource dataSource = new ComboPooledDataSource();
 		try {
-			ds.setDriverClass(driverClass);
-			ds.setJdbcUrl(url);
-			ds.setUser(account);
-			ds.setPassword(password);
+			dataSource.setDriverClass(driverClass);
+			dataSource.setJdbcUrl(url);
+			dataSource.setUser(account);
+			dataSource.setPassword(password);
 
-			ds.setMinPoolSize(10);
-			ds.setMaxPoolSize(35);
+			dataSource.setMinPoolSize(10);
+			dataSource.setMaxPoolSize(35);
 
-			ds.setAcquireIncrement(0);
-			ds.setMaxStatements(0);
-			ds.setMaxIdleTime(300);
-			ds.setIdleConnectionTestPeriod(30);
+			dataSource.setAcquireIncrement(0);
+			dataSource.setMaxStatements(0);
+			dataSource.setMaxIdleTime(300);
+			dataSource.setIdleConnectionTestPeriod(30);
 			
-			ds.setTestConnectionOnCheckin(false);
-			ds.setTestConnectionOnCheckout(true);
-			ds.setPreferredTestQuery("SELECT 1 ");
-			ds.setMaxConnectionAge(8 * 24 * 60 * 60);
-			ds.setCheckoutTimeout(8 * 24 * 60 * 60);
+			dataSource.setTestConnectionOnCheckin(false);
+			dataSource.setTestConnectionOnCheckout(true);
+			dataSource.setPreferredTestQuery("SELECT 1;");
+			dataSource.setMaxConnectionAge(8 * 24 * 60 * 60);
+			dataSource.setCheckoutTimeout(8 * 24 * 60 * 60);
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}
-		poolMap.put(url, ds);
-		return ds;
+		mPoolMap.put(url, dataSource);
+		return dataSource;
 	}
 }
