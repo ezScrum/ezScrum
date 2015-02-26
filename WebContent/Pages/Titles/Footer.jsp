@@ -14,7 +14,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td align="center" class="noBorderField">Science and Research Building Room 1321, No.1, Sec. 3, Jhongsiao E. Rd., Taipei City, Taiwan. 886 2 27712171 to 4263 &copy;2009-2014</td>
+		<td align="center" class="noBorderField">Science and Research Building Room 1321, No.1, Sec. 3, Jhongsiao E. Rd., Taipei City, Taiwan. 886 2 27712171 to 4263 &copy;2009-2015</td>
 	</tr>
 	</table>
   </body>
