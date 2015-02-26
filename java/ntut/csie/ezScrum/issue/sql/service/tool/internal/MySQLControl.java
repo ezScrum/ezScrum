@@ -21,7 +21,7 @@ public class MySQLControl implements ISQLControl {
 	Configuration mConfig = null;
 
 	Connection mConnection = null;
-	DataSource mDatatSource = null;
+	DataSource mDataSource = null;
 
 	String[] mKeys;
 	
@@ -52,19 +52,27 @@ public class MySQLControl implements ISQLControl {
 
 	public void connection() {
 		try {
-			if (mDatatSource == null) {
-				mDatatSource = ConnectionPoolManager.getInstance()
-						.getConnectionPool("com.mysql.jdbc.Driver", getURL(),
-								mUser, mPassword);
+			if (mDataSource == null) {
+				mDataSource = ConnectionPoolManager.getInstance().getConnectionPool("com.mysql.jdbc.Driver", getURL(), mUser, mPassword);
 			}
 
 			// 只有在Connection為null或者是Connection已經Close的情況下才進行Connection
 			if (mConnection == null || mConnection.isClosed())
-				mConnection = mDatatSource.getConnection();
+				mConnection = mDataSource.getConnection();
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			mDatatSource = null;
+			mDataSource = null;
+			ConnectionPoolManager.getInstance().RemoveConnectionPool(getURL());
+		}
+	}
+	
+	public void reconnection() {
+		try {
+			mDataSource = ConnectionPoolManager.getInstance().getConnectionPool("com.mysql.jdbc.Driver", getURL(), mUser, mPassword);
+			mConnection = mDataSource.getConnection();
+		} catch(SQLException e) {
+			mDataSource = null;
 			ConnectionPoolManager.getInstance().RemoveConnectionPool(getURL());
 		}
 	}
@@ -72,8 +80,7 @@ public class MySQLControl implements ISQLControl {
 	@Override
 	public void connectionToServer() {
 		try {
-			mConnection = DriverManager.getConnection(getServerURL(), mUser,
-					mPassword);
+			mConnection = DriverManager.getConnection(getServerURL(), mUser, mPassword);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -84,8 +91,7 @@ public class MySQLControl implements ISQLControl {
 	}
 
 	private void setKeys(Statement statement, String query) throws SQLException {
-		boolean result = statement.execute(query,
-				Statement.RETURN_GENERATED_KEYS);
+		statement.execute(query, Statement.RETURN_GENERATED_KEYS);
 		ResultSet keys = statement.getGeneratedKeys();
 
 		if (keys.next()) {
@@ -152,6 +158,15 @@ public class MySQLControl implements ISQLControl {
 
 	public ResultSet executeQuery(String query) {
 		ResultSet result = null;
+		
+		// 進行 MySQL connection 測試
+		try {
+			Statement s = mConnection.createStatement();
+			s.execute("Select 1;");
+		} catch (SQLException e) {
+			reconnection();
+		}
+		
 		try {
 			Statement statement = mConnection.createStatement();
 			result = statement.executeQuery(query);
@@ -171,8 +186,7 @@ public class MySQLControl implements ISQLControl {
 	}
 
 	private String getURL() {
-		return "jdbc:mysql://" + mHost + ":" + mPort + "/" + mDbName
-				+ "?useUnicode=true&characterEncoding=utf8";
+		return "jdbc:mysql://" + mHost + ":" + mPort + "/" + mDbName + "?useUnicode=true&characterEncoding=utf8";
 	}
 
 	private String getServerURL() {
