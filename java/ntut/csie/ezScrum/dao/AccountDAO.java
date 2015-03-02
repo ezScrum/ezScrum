@@ -308,13 +308,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 *            project id
 	 * @return return worker list
 	 */
-	/**
-	 * 取得專案下的所有能工作的成員
-	 * 
-	 * @param id
-	 *            project id
-	 * @return return worker list
-	 */
 	public ArrayList<AccountObject> getProjectWorkers(long id) {
 		MySQLQuerySet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);

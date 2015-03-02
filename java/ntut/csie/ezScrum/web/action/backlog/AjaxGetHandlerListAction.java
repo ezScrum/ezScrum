@@ -39,7 +39,7 @@ public class AjaxGetHandlerListAction extends PermissionAction {
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		List<AccountObject> users = (new ProjectHelper()).getProjectScrumWorkerListForDb(userSession, project);
+		List<AccountObject> users = (new ProjectHelper()).getProjectScrumWorkersForDb(userSession, project);
 
 		StringBuilder result = new StringBuilder();
 		result.append("<Handlers><Result>success</Result>");

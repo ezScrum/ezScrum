@@ -39,7 +39,7 @@ public class AjaxGetPartnerListAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
-		List<AccountObject> users = new ProjectHelper().getProjectScrumWorkerListForDb(userSession, project);
+		List<AccountObject> users = new ProjectHelper().getProjectScrumWorkersForDb(userSession, project);
 		StringBuilder result = new StringBuilder();
 		result.append("<Partners><Result>success</Result>");
 

@@ -94,7 +94,7 @@ public class ProjectHelper {
 	 * @param userSession
 	 * @param project
 	 */
-	public List<AccountObject> getProjectScrumWorkerListForDb(IUserSession userSession, ProjectObject project) {
+	public List<AccountObject> getProjectScrumWorkersForDb(IUserSession userSession, ProjectObject project) {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getProjectWorkers(project.getId());
 	}
