@@ -309,23 +309,21 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * @return return worker list
 	 */
 	public ArrayList<AccountObject> getProjectWorkers(long id) {
-		MySQLQuerySet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(ScrumRoleEnum.TABLE_NAME);
-		valueSet.addEqualCondition(ScrumRoleEnum.TABLE_NAME + '.'
-				+ ScrumRoleEnum.PROJECT_ID, id);
-		valueSet.addEqualCondition(ProjectRoleEnum.TABLE_NAME + '.'
-				+ ProjectRoleEnum.PROJECT_ID, id);
-		valueSet.addEqualCondition(ScrumRoleEnum.ACCESS_TASKBOARD, "1");
-		valueSet.addCrossJoin(ProjectRoleEnum.TABLE_NAME,
-				ScrumRoleEnum.TABLE_NAME + '.' + ScrumRoleEnum.ROLE,
-				ProjectRoleEnum.TABLE_NAME + '.' + ProjectRoleEnum.ROLE);
-		valueSet.addCrossJoin(AccountEnum.TABLE_NAME,
-				ProjectRoleEnum.ACCOUNT_ID, AccountEnum.TABLE_NAME + '.'
-						+ AccountEnum.ID);
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
+		StringBuilder query = new StringBuilder();
+		query.append("select account.* from ").append(ProjectRoleEnum.TABLE_NAME).append(", ").append(AccountEnum.TABLE_NAME)
+			.append(" where ")
+			.append(ProjectRoleEnum.TABLE_NAME).append(".").append(ProjectRoleEnum.PROJECT_ID)
+			.append(" = ").append(id)
+			.append(" AND ")
+			.append(ProjectRoleEnum.TABLE_NAME).append(".").append(ProjectRoleEnum.ACCOUNT_ID)
+			.append(" = ").append(AccountEnum.TABLE_NAME).append(".").append(AccountEnum.ID)
+			.append(" AND (")
+			.append(ProjectRoleEnum.TABLE_NAME).append(".").append(ProjectRoleEnum.ROLE).append(" = ").append(RoleEnum.ScrumMaster.ordinal())
+			.append(" OR ")
+			.append(ProjectRoleEnum.TABLE_NAME).append(".").append(ProjectRoleEnum.ROLE).append(" = ").append(RoleEnum.ScrumTeam.ordinal())
+			.append(")");
+		ResultSet result = mControl.executeQuery(query.toString());
 		ArrayList<AccountObject> workers = new ArrayList<AccountObject>();
-
 		try {
 			while (result.next()) {
 				workers.add(convertAccount(result));
@@ -335,7 +333,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		} finally {
 			closeResultSet(result);
 		}
-
 		return workers;
 	}
 
