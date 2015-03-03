@@ -310,7 +310,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 */
 	public ArrayList<AccountObject> getProjectWorkers(long id) {
 		StringBuilder query = new StringBuilder();
-		query.append("select account.* from ").append(ProjectRoleEnum.TABLE_NAME).append(", ").append(AccountEnum.TABLE_NAME)
+		query.append("select ").append(AccountEnum.TABLE_NAME).append(".* from ").append(ProjectRoleEnum.TABLE_NAME).append(", ").append(AccountEnum.TABLE_NAME)
 			.append(" where ")
 			.append(ProjectRoleEnum.TABLE_NAME).append(".").append(ProjectRoleEnum.PROJECT_ID)
 			.append(" = ").append(id)
