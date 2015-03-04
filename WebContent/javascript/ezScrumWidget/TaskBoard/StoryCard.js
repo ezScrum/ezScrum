@@ -63,7 +63,7 @@ function createStoryContent(story) {
 	// 幾個動作Icon的超連結
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
 	var historyIcon = '<a href="javascript:showHistory(' + story.id + ', \'Story\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
-	var uploadIcon = '<a href="javascript:attachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
+	var uploadIcon = '<a href="javascript:storyAttachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
 	
 	return '<table class="StoryCard_Table">'
 				+ '<tr><td colspan=2>'
@@ -145,7 +145,8 @@ function createStoryCard(story) {
 			this.status = this.target.status;
 			storyCard.draggable.status = this.target.status;// 抓到的值竟然與 this.status不同, 所以直接塞 
 		},
-		updateData : function(data) {			// 目前只需更新 name
+		updateData : function(data) {
+			// 目前只需更新 name
 			this.readObject.updateData(data);
 		}
 	};

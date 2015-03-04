@@ -131,7 +131,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			var storyId = record.data['Id'];
 			var storyName = record.data['Name'];
 			var storyEstimate = record.data['Estimate'];
-			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimate);
+			Ext.getCmp('Story:' + storyId).updateData_Edit(storyName, storyEstimate);
 
 			// update Sprint Desc. and Burndown Chart
 			var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -152,7 +152,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var taskHandler = record.data['Handler'];
 		var taskPartners = record.data['Partners'];
 		var taskRemainHours = record.data['Remains'];
-		Ext.getCmp(taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
+		Ext.getCmp('Task:' + taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
 		
 		// update Sprint Desc. and Burndown Chart
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -169,8 +169,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			
 			// update Task Card Info
 			var issueId = record.data['Id'];
+			var issueType = record.issueType;
 			var issueAttachFileList = record.data['AttachFileList'];
-			Ext.getCmp(issueId).updateData_AttachFile(issueAttachFileList);			
+			Ext.getCmp(issueType + ':' + issueId).updateData_AttachFile(issueAttachFileList);			
 		}else{
 			Ext.example.msg(title, msg);
 		}
@@ -365,9 +366,14 @@ function showReOpenIssue(id, card) {
 	RE_OpenIssueWindow.showWidget(id, card.issueType);
 }
 
-// attach file
-function attachFile(issueID) {
-	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID);
+// attach file for task
+function taskAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Task');
+}
+
+// attach file for story
+function storyAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Story');
 }
 
 // show issue history

@@ -16,6 +16,10 @@ import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 public class Translation {
 	public Translation() { /* empty */}
 
@@ -235,8 +239,63 @@ public class Translation {
 			jsonStroies.append(jsonStory);
 		}
 		obj.append("Stories", jsonStroies);
-
+ 
 		return obj.toString();
+	}
+	
+	public String translateTaskToJson(TaskObject task) {
+		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+		JSONObject json = new JSONObject();
+		try {
+			json.put("success", true);
+			json.put("Total", 1);
+			
+			JSONObject taskJson = new JSONObject();
+			taskJson.put("Id", task.getId());
+			taskJson.put("Name", TranslateChar.TranslateJSONChar((task.getName())));
+			taskJson.put("Value", "");
+			taskJson.put("Estimate", task.getEstimate());
+			taskJson.put("Importance", "");
+			taskJson.put("Tag", "");
+			taskJson.put("Status", task.getStatusString());
+			taskJson.put("Notes", TranslateChar.TranslateJSONChar(task.getNotes()));
+			taskJson.put("HowToDemo", "");
+			taskJson.put("Link", "");
+			taskJson.put("Release", "");
+			taskJson.put("Sprint", "");
+			taskJson.put("FilterType", "");
+			
+			if (task.getAttachFiles().size() > 0) {
+				taskJson.put("Attach", true);
+			} else {
+				taskJson.put("Attach", false);
+			}
+			
+			JSONArray attachFiles = new JSONArray();
+			for (AttachFileObject attachFile : task.getAttachFiles()) {
+				JSONObject attachFileJson = new JSONObject();
+				attachFileJson.put("IssueId", attachFile.getIssueId());
+				attachFileJson.put("IssueType", attachFile.getIssueTypeStr());
+				attachFileJson.put("FileId", attachFile.getId());
+				attachFileJson.put("FileName", attachFile.getName());
+				attachFileJson.put("FilePath", "fileDownload.do?projectName=" + task.getProjectId() + "&fileId=" + attachFile.getId()
+						+ "&fileName=" + attachFile.getName());
+				
+				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT);
+				Date date = new Date(attachFile.getCreateTime());
+				String attachTime = dateFormat.format(date);
+				
+				attachFileJson.put("UploadDate", attachTime);
+				attachFiles.put(attachFileJson);
+			}
+			
+			taskJson.put("AttachFileList", attachFiles);
+			json.put("Stories", new JSONArray().put(taskJson));
+			
+			return json.toString();
+		} catch (JSONException e) {
+		}
+		return new JSONObject().toString();
 	}
 
 	// for Taskboard, CO data, include Handler + Partners
