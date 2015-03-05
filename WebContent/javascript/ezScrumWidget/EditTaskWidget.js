@@ -8,7 +8,8 @@ Ext.ns('ezScrum.window');
 var PartnerTriggerField_EditTask = new Ext.form.TriggerField({
     fieldLabel : 'Partners',
     name : 'Partners',
-    editable   : false
+    editable   : false,
+    disabled   : true
 });
 
 var PartnerMenuForEditTask = new Ext.menu.Menu({
@@ -95,7 +96,10 @@ PartnerTriggerField_EditTask.onTriggerClick = function() {
 		}
 	}
 	
-	PartnerMenuForEditTask.showAt(PartnerTriggerField_EditTask.getPosition());
+	// partner 欄位的顯示
+	if(PartnerTriggerField_EditTask.disabled == false){
+		PartnerMenuForEditTask.showAt(PartnerTriggerField_EditTask.getPosition());
+	}
 };
 
 /**
@@ -178,6 +182,29 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.EditTaskForm.superclass.initComponent.apply(this, arguments);
 		this.HandlerCombo = this.items.items[2];
+		// set handler selected event
+		this.HandlerCombo.on('select', function() {
+			// 取得 handler 選擇的item
+			var value = this.getValue();
+			var record = this.findRecord(this.valueField || this.displayField, value);
+			
+			// Set partner combobox enable
+			PartnerTriggerField_EditTask.enable();
+			
+			//PartnerMenuForEditTask.loadPartnerList();
+			for (var i=0; i<PartnerMenuForEditTask.items.length; i++) {
+				var partnerName = PartnerMenuForEditTask.get(i).id;
+				var handlerName = record.id;
+				console.log(partnerName+ '   ' + handlerName);
+				
+				if (partnerName == handlerName) {
+					console.log('===============');
+					PartnerMenuForEditTask.items.removeAt(i);
+				}
+			}
+			console.log(PartnerMenuForEditTask.items);
+			//PartnerMenuForEditTask.doLayout();
+		}); 
 	},
 	onRender:function() {
 		ezScrum.EditTaskForm.superclass.onRender.apply(this, arguments);
