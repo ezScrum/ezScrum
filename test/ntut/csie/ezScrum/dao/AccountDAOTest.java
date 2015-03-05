@@ -35,7 +35,7 @@ public class AccountDAOTest {
 		ini.exe();
 		
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
     }
 
 	@After

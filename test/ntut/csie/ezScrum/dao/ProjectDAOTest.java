@@ -37,7 +37,7 @@ public class ProjectDAOTest {
 		ini.exe();
 
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 	}
 
 	@After

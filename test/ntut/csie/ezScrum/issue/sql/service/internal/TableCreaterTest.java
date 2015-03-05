@@ -54,7 +54,7 @@ public class TableCreaterTest {
 		mISQLControl = Service.getControl();
 		mISQLControl.setUser(mConfig.getDBAccount());
 		mISQLControl.setPassword(mConfig.getDBPassword());
-		mISQLControl.connection();
+		mISQLControl.connect();
 	}
 
 	@After

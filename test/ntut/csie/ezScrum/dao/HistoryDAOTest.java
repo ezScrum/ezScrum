@@ -42,7 +42,7 @@ public class HistoryDAOTest {
 
 		mHistoryDao = HistoryDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 	}
 
 	@After

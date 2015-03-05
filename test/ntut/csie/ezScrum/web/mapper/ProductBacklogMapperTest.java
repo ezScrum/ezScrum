@@ -43,7 +43,7 @@ public class ProductBacklogMapperTest {
 		mConfig.save();
 		
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);

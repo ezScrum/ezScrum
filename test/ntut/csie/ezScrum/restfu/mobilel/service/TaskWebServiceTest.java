@@ -59,7 +59,7 @@ public class TaskWebServiceTest {
 		mASTS.exe();
 		
 		mControl = new MySQLControl(mConfiguration);
-		mControl.connection();
+		mControl.connect();
 		
 		// create account
 		String TEST_ACCOUNT_NAME = "TEST_ACCOUNT_1";

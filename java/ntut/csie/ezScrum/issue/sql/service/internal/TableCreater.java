@@ -18,7 +18,7 @@ public class TableCreater {
 		boolean exist = true;
 		List<String> nameList = new ArrayList<String>();
 
-		checker.connection();
+		checker.connect();
 		try {
 			ResultSet result = checker.executeQuery("SHOW TABLES");
 			while (result.next()) {

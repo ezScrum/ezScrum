@@ -61,7 +61,7 @@ public class MantisTagServiceTest {
 		mISQLControl = mantisService.getControl();
 		mISQLControl.setUser(mConfig.getDBAccount());
 		mISQLControl.setPassword(mConfig.getDBPassword());
-		mISQLControl.connection();
+		mISQLControl.connect();
 		
 		mMantisTagService = new MantisTagService(mISQLControl, mConfig);
 		mProductBacklogMapper = new ProductBacklogMapper(mCP.getProjectList().get(0), mConfig.getUserSession());
