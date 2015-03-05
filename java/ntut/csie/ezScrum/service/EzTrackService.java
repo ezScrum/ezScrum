@@ -72,7 +72,7 @@ public class EzTrackService extends AbstractMantisService {
 	 * 利用透過MantisConnect及直接access資料庫的方式來實作 因此提供的pm帳號必需要能在Mantis及MySQL上使用
 	 */
 	public void openConnect() {
-		getControl().connection();
+		getControl().connect();
 		m_issueService = new EzTrackIssueService(getControl(), getConfig());
 		m_attachFileService =  new MantisAttachFileService(getControl(), getConfig());
 	}

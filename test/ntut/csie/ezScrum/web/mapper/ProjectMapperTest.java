@@ -41,7 +41,7 @@ public class ProjectMapperTest{
 		ini.exe();// 初始化 SQL
 		
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 		mProjectMapper = new ProjectMapper();
 		
 		// 建立測試資料

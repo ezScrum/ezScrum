@@ -33,7 +33,7 @@ public class SerialNumberDAOTest {
 
 		mSerialNumberDao = SerialNumberDAO.getInstance();
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 	}
 
 	@After

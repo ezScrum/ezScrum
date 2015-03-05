@@ -44,7 +44,7 @@ public class TaskDAOTest {
 		mCP.exeCreate();
 
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 
 		sProjectId = mCP.getAllProjects().get(0).getId();
 	}

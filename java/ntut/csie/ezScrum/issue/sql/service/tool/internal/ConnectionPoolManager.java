@@ -44,17 +44,24 @@ public class ConnectionPoolManager {
 
 			dataSource.setMinPoolSize(10);
 			dataSource.setMaxPoolSize(35);
-
 			dataSource.setAcquireIncrement(0);
 			dataSource.setMaxStatements(0);
+			
+			/** 最大允許的閒置時間*/
 			dataSource.setMaxIdleTime(300);
+			/** 對閒置的連線進行Query測試設置 */
 			dataSource.setIdleConnectionTestPeriod(30);
 			
+			/** Checkin connection時不檢查連線是否有效 */
 			dataSource.setTestConnectionOnCheckin(false);
+			/** Checkout connection時檢查連線的有效性*/
 			dataSource.setTestConnectionOnCheckout(true);
+			/** 進行test時使用的 Query設定*/
 			dataSource.setPreferredTestQuery("SELECT 1;");
-			dataSource.setMaxConnectionAge(8 * 24 * 60 * 60);
-			dataSource.setCheckoutTimeout(8 * 24 * 60 * 60);
+			/** Connection的最大有效時數(分鐘)*/
+			dataSource.setMaxConnectionAge(480);
+			/** Connection checkout 之後的有效時數(分鐘)*/
+			dataSource.setCheckoutTimeout(480);
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}

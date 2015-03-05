@@ -105,7 +105,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * 利用透過MantisConnect及直接access資料庫的方式來實作 因此提供的pm帳號必需要能在Mantis及MySQL上使用
 	 */
 	public void openConnect() {
-		getControl().connection();
+		getControl().connect();
 
 		mNoteService = new MantisNoteService(getControl(), getConfig());
 		mIssueService = new MantisIssueService(getControl(), getConfig());
@@ -117,7 +117,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * 執行SQL Script清空資料庫並且重新建立Table
 	 *************************************************************/
 	public boolean initiateDB() throws SQLException {
-		getControl().connection();
+		getControl().connect();
 		Connection connection = getControl().getconnection();
 
 		String defaultFile = ResourceFacade.getWorkspace().getRoot()
@@ -140,7 +140,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 */
 	public boolean createDB() {
 		ISQLControl controller = getControl();
-		controller.connectionToServer();
+		controller.connectToServer();
 		try {
 			String sql = "CREATE DATABASE " + MANTIS_DB_NAME;
 			return controller.execute(sql);
@@ -216,7 +216,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 
 	private boolean testServerConnect() throws SQLException {
-		getControl().connectionToServer();
+		getControl().connectToServer();
 		Connection connection = getControl().getconnection();
 		try {
 			if (connection == null)

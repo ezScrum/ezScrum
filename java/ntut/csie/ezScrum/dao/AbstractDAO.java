@@ -23,7 +23,7 @@ public abstract class AbstractDAO<T, K> {
 	protected AbstractDAO() {
 		mConfig = new Configuration();
 		mControl = new MySQLControl(mConfig);
-		mControl.connection();
+		mControl.connect();
 	}
 
 	// create

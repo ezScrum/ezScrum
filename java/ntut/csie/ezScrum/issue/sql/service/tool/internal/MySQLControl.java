@@ -50,7 +50,7 @@ public class MySQLControl implements ISQLControl {
 		mPassword = password;
 	}
 
-	public void connection() {
+	public void connect() {
 		try {
 			if (mDataSource == null) {
 				mDataSource = ConnectionPoolManager.getInstance().getConnectionPool("com.mysql.jdbc.Driver", getURL(), mUser, mPassword);
@@ -67,7 +67,7 @@ public class MySQLControl implements ISQLControl {
 		}
 	}
 	
-	public void reconnection() {
+	public void reconnect() {
 		try {
 			mDataSource = ConnectionPoolManager.getInstance().getConnectionPool("com.mysql.jdbc.Driver", getURL(), mUser, mPassword);
 			mConnection = mDataSource.getConnection();
@@ -78,7 +78,7 @@ public class MySQLControl implements ISQLControl {
 	}
 
 	@Override
-	public void connectionToServer() {
+	public void connectToServer() {
 		try {
 			mConnection = DriverManager.getConnection(getServerURL(), mUser, mPassword);
 		} catch (SQLException e) {
@@ -161,10 +161,10 @@ public class MySQLControl implements ISQLControl {
 		
 		// 進行 MySQL connection 測試
 		try {
-			Statement s = mConnection.createStatement();
-			s.execute("Select 1;");
+			Statement statement = mConnection.createStatement();
+			statement.execute("Select 1;");
 		} catch (SQLException e) {
-			reconnection();
+			reconnect();
 		}
 		
 		try {

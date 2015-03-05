@@ -38,7 +38,7 @@ public abstract class AbstractSQLControl implements ISQLControl{
 	}
 
 	
-	public void connection()
+	public void connect()
 	{
 		 try
 		 {
@@ -51,7 +51,7 @@ public abstract class AbstractSQLControl implements ISQLControl{
 	}
 	
 	@Override
-	public void connectionToServer() {
+	public void connectToServer() {
 		// TODO Auto-generated method stub
 		 try
 		 {
