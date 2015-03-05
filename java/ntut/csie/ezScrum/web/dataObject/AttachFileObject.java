@@ -1,6 +1,9 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.HashMap;
+
 import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -55,6 +58,14 @@ public class AttachFileObject {
 	public int getIssueType() {
 		return mIssueType;
 	}
+	
+	public String getIssueTypeStr() {
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		map.put(IssueTypeEnum.TYPE_STORY, "Story");
+		map.put(IssueTypeEnum.TYPE_TASK, "Task");
+		
+		return map.get(mIssueType);
+	}
 
 	public void setIssueType(int issueType) {
 		mIssueType = issueType;
@@ -102,7 +113,7 @@ public class AttachFileObject {
 		object
 			.put(AttachFileEnum.ID, mId)
 			.put(AttachFileEnum.NAME, mName)
-			.put(AttachFileEnum.PATH, mPath)
+//			.put(AttachFileEnum.PATH, mPath)
 			.put(AttachFileEnum.ISSUE_ID, mIssueId)
 			.put(AttachFileEnum.ISSUE_TYPE, mIssueType)
 			.put(AttachFileEnum.CREATE_TIME, mCreateTime);

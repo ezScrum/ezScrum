@@ -34,7 +34,7 @@ function renderAttachFile(record) {
 	var result = "<p><b>[Attach Files]</b></p>";
 	for ( var i = 0; i < fileList.length; i++) {
 		result += String.format('<p>'+ (i+1) +'. <a href="{0}" target="_blank">{1}</a>&nbsp;&nbsp;'
-							+ '<a href="#" onClick="deleteAttachFile({2}, {3}); false;"><image src="./images/drop2.png"></a>&nbsp;&nbsp;{4}</p>',
+							+ '<a href="#" onClick="deleteTaskAttachFile({2}, {3}); false;"><image src="./images/drop2.png"></a>&nbsp;&nbsp;{4}</p>',
 				fileList[i].FilePath, fileList[i].FileName, fileList[i].FileId, taskId, fileList[i].UploadDate);
 	}
 	return result;
@@ -66,7 +66,7 @@ function createTaskContent(task)
 {
     var editIcon = '<a href="javascript:editTask(' + task.Id + ')" title="Edit the Task"><img src="images/edit.png" border="0"></a>'
     var historyIcon = '<a href="javascript:showHistory(' + task.Id + ', \'Task\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>'
-    var uploadIcon = '<a href="javascript:attachFile(' + task.Id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>'
+    var uploadIcon = '<a href="javascript:taskAttachFile(' + task.Id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>'
     
     return '<table class="TaskCard_Table">'
                 +'<tr><td colspan=2>'
@@ -115,6 +115,7 @@ function createTaskCard(task, storyID) {
 		updateData_AttachFile : function(attachFileList) {
 			var data = this.data;
 			data.AttachFileList = attachFileList;
+            console.log(data);
         	this.items.get(0).update(createTaskContent(data));
 		},
 		updateName : function(name) {

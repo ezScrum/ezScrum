@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -46,6 +47,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		String entryPoint = request.getParameter("entryPoint");
 		long issueId = Integer.parseInt(request.getParameter("issueId"));
 		long fileId = Long.parseLong(request.getParameter("fileId"));
+		String issueType = request.getParameter("issueType");
 		
 		StringBuilder result = new StringBuilder("{\"success\":false}");
 		
@@ -60,9 +62,12 @@ public class AjaxDeleteFileAction extends PermissionAction {
 			ArrayList<IIssue> list = new ArrayList<IIssue>();
 			list.add(issue);
 			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
-		} else {
-			IIssue issue = PBHelper.getIssue(issueId);
-			result = new StringBuilder(new Translation().translateStoryToJson(issue));
+		} else if (issueType.equals("Story")){
+			IIssue story = PBHelper.getIssue(issueId);
+			result = new StringBuilder(new Translation().translateStoryToJson(story));
+		} else if (issueType.equals("Task")) {
+			TaskObject task = TaskObject.get(issueId);
+			result = new StringBuilder(new Translation().translateTaskToJson(task));
 		}
 
 		return result;

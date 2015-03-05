@@ -131,7 +131,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			var storyId = record.data['Id'];
 			var storyName = record.data['Name'];
 			var storyEstimate = record.data['Estimate'];
-			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimate);
+			Ext.getCmp('Story:' + storyId).updateData_Edit(storyName, storyEstimate);
 
 			// update Sprint Desc. and Burndown Chart
 			var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -152,7 +152,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var taskHandler = record.data['Handler'];
 		var taskPartners = record.data['Partners'];
 		var taskRemainHours = record.data['Remains'];
-		Ext.getCmp(taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
+		Ext.getCmp('Task:' + taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
 		
 		// update Sprint Desc. and Burndown Chart
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -169,8 +169,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			
 			// update Task Card Info
 			var issueId = record.data['Id'];
+			var issueType = record.issueType;
 			var issueAttachFileList = record.data['AttachFileList'];
-			Ext.getCmp(issueId).updateData_AttachFile(issueAttachFileList);			
+			Ext.getCmp(issueType + ':' + issueId).updateData_AttachFile(issueAttachFileList);			
 		}else{
 			Ext.example.msg(title, msg);
 		}
@@ -365,9 +366,14 @@ function showReOpenIssue(id, card) {
 	RE_OpenIssueWindow.showWidget(id, card.issueType);
 }
 
-// attach file
-function attachFile(issueID) {
-	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID);
+// attach file for task
+function taskAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Task');
+}
+
+// attach file for story
+function storyAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Story');
 }
 
 // show issue history
@@ -375,13 +381,13 @@ function showHistory(issueId, issueType) {
 	IssueHistory_Window.showTheWindow(issueId, issueType);
 }
 
-// delete file
-function deleteAttachFile(file_Id, issue_Id) {
+// delete file for story
+function deleteStoryAttachFile(file_Id, issue_Id) {
 	Ext.MessageBox.confirm('Confirm', 'Are you sure you want to delete this attached file?', function(btn){
 		if(btn === 'yes') {
 			Ext.Ajax.request({
 				url : 'ajaxDeleteFile.do',
-				params : {fileId:file_Id, issueId:issue_Id},
+				params : {fileId:file_Id, issueId:issue_Id, issueType: 'Story'},
 				success : function(response) {
 					Ext.example.msg('Delete File', 'Success.');
 					
@@ -393,7 +399,37 @@ function deleteAttachFile(file_Id, issue_Id) {
 							// update card content
 							var issueId = record.data['Id'];
 							var issueAttachFileList = record.data['AttachFileList'];
-							Ext.getCmp(issueId).updateData_AttachFile(issueAttachFileList);
+							Ext.getCmp('Story:' + issueId).updateData_AttachFile(issueAttachFileList);
+						}
+					}
+				},
+				failure : function(response) {
+					Ext.example.msg('Delete File', 'Failure.');
+				}
+			});
+		}
+	});
+}
+
+//delete file for task
+function deleteTaskAttachFile(file_Id, issue_Id) {
+	Ext.MessageBox.confirm('Confirm', 'Are you sure you want to delete this attached file?', function(btn){
+		if(btn === 'yes') {
+			Ext.Ajax.request({
+				url : 'ajaxDeleteFile.do',
+				params : {fileId:file_Id, issueId:issue_Id, issueType: 'Task'},
+				success : function(response) {
+					Ext.example.msg('Delete File', 'Success.');
+					
+					var records = jsonStoryReader.read(response);
+					
+					if(records.success && records.totalRecords > 0) {
+						var record = records.records[0];
+						if(record) {
+							// update card content
+							var issueId = record.data['Id'];
+							var issueAttachFileList = record.data['AttachFileList'];
+							Ext.getCmp('Task:' + issueId).updateData_AttachFile(issueAttachFileList);
 						}
 					}
 				},
