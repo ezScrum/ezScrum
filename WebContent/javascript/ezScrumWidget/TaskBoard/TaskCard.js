@@ -108,6 +108,7 @@ function createTaskCard(task, storyID) {
 			var data = this.data;
 			data.Name = name;
 			data.Handler = handler;
+			data.HandlerUserName = handler;
 			data.Partners = partners;
 			data.RemainHours = remainHours;
         	this.items.get(0).update(createTaskContent(data));
