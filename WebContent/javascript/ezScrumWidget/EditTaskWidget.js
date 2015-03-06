@@ -56,21 +56,6 @@ var PartnerStore_ForEditTask = new Ext.data.Store({
     reader : PartnerReader
 });
 
-PartnerStore_ForEditTask.on('load', function(store, records, options) {
-	for(var i=0; i<this.getCount(); i++) {
-		var record = this.getAt(i);
-		var info = record.get('Name');
-		PartnerMenuForEditTask.add({
-			id		: info,
-			tagId 	: info,
-			text	: info,
-			xtype	: 'menucheckitem',
-			hideOnClick	: false,
-			checkHandler: PartnerMenuForEditTask.onCheckItemClick
-		});
-	}
-});
-
 PartnerTriggerField_EditTask.onTriggerClick = function() {
 
 	// A array of items of the menu
@@ -115,6 +100,7 @@ var HandlerComboStore_ForEditTask = new Ext.data.Store({
 ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	// Default issue id
 	issueId : '-1',
+	handlerName: '',
 	notifyPanel : undefined,
 	initComponent:function() {
 		
@@ -188,32 +174,55 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			var record = this.findRecord(this.valueField || this.displayField, value);
 			
 			// Set partner combobox enable
+			PartnerTriggerField_EditTask.setValue('');
 			PartnerTriggerField_EditTask.enable();
-			
-			obj.initPartnerState(record.id);
+			obj.handlerName = record.id;
+			obj.initPartnerState();
 		}); 
 	},
-	initPartnerState: function(handlerName) {
-		PartnerMenuForEditTask.removeAll();
-		PartnerTriggerField_EditTask.setValue('');
-		var partners = PartnerStore_ForEditTask.data;
-		for (var i = 0; i < partners.length; i++) {
-			var partner = PartnerStore_ForEditTask.getAt(i);
-			var partnerName = partner.get('Name');
-			
-			if (handlerName === partnerName) {
-				continue;
+	initPartnerState: function() {		
+		var handlerName = this.handlerName;
+		Ext.Ajax.request({
+			async: false,
+			url: 'AjaxGetPartnerList.do',
+			success: function(response) {
+				PartnerStore_ForEditTask.loadData(response.responseXML);
+				PartnerMenuForEditTask.removeAll();
+				for (var i = 0 ; i < PartnerStore_ForEditTask.totalLength; i++) {
+					var partnerName = PartnerStore_ForEditTask.getAt(i).id;
+					if (handlerName === partnerName) {
+						continue;
+					}
+					PartnerMenuForEditTask.add({
+						id		: partnerName,
+						tagId 	: partnerName,
+						text	: partnerName,
+						xtype	: 'menucheckitem',
+						hideOnClick	: false,
+						checkHandler: PartnerMenuForEditTask.onCheckItemClick
+					});
+				}
 			}
-			
-			PartnerMenuForEditTask.add({
-				id		: partnerName,
-				tagId 	: partnerName,
-				text	: partnerName,
-				xtype	: 'menucheckitem',
-				hideOnClick	: false,
-				checkHandler: PartnerMenuForEditTask.onCheckItemClick
-			});
-		}
+		}); 
+
+//		var partners = PartnerStore_ForEditTask.data;
+//		for (var i = 0; i < partners.length; i++) {
+//			var partner = PartnerStore_ForEditTask.getAt(i);
+//			var partnerName = partner.get('Name');
+//			
+//			if (handlerName === partnerName) {
+//				continue;
+//			}
+//			
+//			PartnerMenuForEditTask.add({
+//				id		: partnerName,
+//				tagId 	: partnerName,
+//				text	: partnerName,
+//				xtype	: 'menucheckitem',
+//				hideOnClick	: false,
+//				checkHandler: PartnerMenuForEditTask.onCheckItemClick
+//			});
+//		}
 		PartnerMenuForEditTask.doLayout();
 	},
 	onRender:function() {
@@ -263,7 +272,8 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 					
 					// append issueID to window title
 					EditTaskWindow.setTitle('Edit Task #' + record.data['Id']);
-					this.initPartnerState(record.data['Handler']);
+					this.handlerName = record.data['Handler'];
+					this.initPartnerState();
 				}
 			}
 		}
