@@ -57,12 +57,9 @@ var PartnerStore_ForEditTask = new Ext.data.Store({
 });
 
 PartnerStore_ForEditTask.on('load', function(store, records, options) {
-	console.log('PartnerStore_ForEditTask.load');
-	PartnerStore_ForEditTask.removeAll();
 	for(var i=0; i<this.getCount(); i++) {
 		var record = this.getAt(i);
 		var info = record.get('Name');
-			
 		PartnerMenuForEditTask.add({
 			id		: info,
 			tagId 	: info,
@@ -199,17 +196,12 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	initPartnerState: function(handlerName) {
 		PartnerMenuForEditTask.removeAll();
 		PartnerTriggerField_EditTask.setValue('');
-		
 		var partners = PartnerStore_ForEditTask.data;
-		console.log(PartnerStore_ForEditTask.data);
-		
 		for (var i = 0; i < partners.length; i++) {
-			console.log('asdf');
 			var partner = PartnerStore_ForEditTask.getAt(i);
 			var partnerName = partner.get('Name');
 			
 			if (handlerName === partnerName) {
-				console.log(handlerName + ' ' + partnerName);
 				continue;
 			}
 			
@@ -222,8 +214,6 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				checkHandler: PartnerMenuForEditTask.onCheckItemClick
 			});
 		}
-
-		console.log(PartnerMenuForEditTask);
 		PartnerMenuForEditTask.doLayout();
 	},
 	onRender:function() {
@@ -248,7 +238,6 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	// Load Task success
 	onLoadSuccess:function(response) 
 	{
-		console.log('loadsuccess');
 		var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
 		myMask.hide();
 		
@@ -328,7 +317,7 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				sprintID : obj.sprintId
 			},
 			success : function(response) {
-				PartnerMenuForEditTask.loadPartnerList();				
+				PartnerMenuForEditTask.loadPartnerList();
 				obj.onLoadSuccess(response);
 			},
 			failure : function(response) {
