@@ -175,13 +175,21 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			
 			// Set partner combobox enable
 			PartnerTriggerField_EditTask.setValue('');
-			PartnerTriggerField_EditTask.enable();
+			
 			obj.handlerName = record.id;
 			obj.initPartnerState();
 		}); 
 	},
-	initPartnerState: function() {		
+	initPartnerState: function() {
 		var handlerName = this.handlerName;
+		
+		if (handlerName.length == 0) {
+			PartnerTriggerField_EditTask.disable();
+			return;
+		} else {
+			PartnerTriggerField_EditTask.enable();
+		}
+		
 		Ext.Ajax.request({
 			async: false,
 			url: 'AjaxGetPartnerList.do',
@@ -202,28 +210,9 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 						checkHandler: PartnerMenuForEditTask.onCheckItemClick
 					});
 				}
+				PartnerMenuForEditTask.doLayout();
 			}
-		}); 
-
-//		var partners = PartnerStore_ForEditTask.data;
-//		for (var i = 0; i < partners.length; i++) {
-//			var partner = PartnerStore_ForEditTask.getAt(i);
-//			var partnerName = partner.get('Name');
-//			
-//			if (handlerName === partnerName) {
-//				continue;
-//			}
-//			
-//			PartnerMenuForEditTask.add({
-//				id		: partnerName,
-//				tagId 	: partnerName,
-//				text	: partnerName,
-//				xtype	: 'menucheckitem',
-//				hideOnClick	: false,
-//				checkHandler: PartnerMenuForEditTask.onCheckItemClick
-//			});
-//		}
-		PartnerMenuForEditTask.doLayout();
+		});
 	},
 	onRender:function() {
 		ezScrum.EditTaskForm.superclass.onRender.apply(this, arguments);
@@ -272,6 +261,7 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 					
 					// append issueID to window title
 					EditTaskWindow.setTitle('Edit Task #' + record.data['Id']);
+					
 					this.handlerName = record.data['Handler'];
 					this.initPartnerState();
 				}

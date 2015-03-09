@@ -21,8 +21,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
-import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
@@ -425,7 +425,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         
         AttachFileInfo attachFileInfo = new AttachFileInfo();
         attachFileInfo.issueId = storyId;
-        attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+        attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
         attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
@@ -510,7 +510,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
         attachFileInfo.issueId = taskId;
-        attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
+        attachFileInfo.issueType = IssueTypeEnum.TYPE_TASK;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
         attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
@@ -564,11 +564,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getReleaseID(), actualStory.getString("Release"));
 		
 		JSONArray actualAttachFiles = actualStory.getJSONArray("AttachFileList");
-		assertEquals(1, actualAttachFiles.length());
-		
-		JSONObject actualAttachFile = actualAttachFiles.getJSONObject(0);
-		assertEquals(expectedStory.getAttachFiles().get(0).getId(), actualAttachFile.getLong("FileId"));
-		assertEquals(expectedStory.getAttachFiles().get(0).getName(), actualAttachFile.getString("FileName"));
+		assertEquals(0, actualAttachFiles.length());
 		
 		JSONArray actualTasks = actualStory.getJSONArray("Tasks");
 		assertEquals(1, actualTasks.length());

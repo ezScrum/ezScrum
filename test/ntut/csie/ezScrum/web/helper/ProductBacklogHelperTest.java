@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -91,7 +92,7 @@ public class ProductBacklogHelperTest{
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
 		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
-		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
 		File sqlFile = new File(mConfig.getInitialSQLPath());
@@ -114,7 +115,7 @@ public class ProductBacklogHelperTest{
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
 		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
-		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
 		File sqlFile = new File(mConfig.getInitialSQLPath());

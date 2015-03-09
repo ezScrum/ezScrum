@@ -1381,7 +1381,7 @@ public class MantisServiceTest {
         attachFileInfo.issueId = issueId;
         attachFileInfo.name = "TESTFILE.txt";
         attachFileInfo.path = "/abc/def/" + attachFileInfo.name;
-        attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+        attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
         attachFileInfo.contentType = "text/pain";
         attachFileInfo.projectName = mProject.getName();
 		

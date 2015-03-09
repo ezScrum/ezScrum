@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
 public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObject>{
 
@@ -53,7 +54,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, Integer.toString(AttachFileObject.TYPE_STORY));
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, Integer.toString(IssueTypeEnum.TYPE_STORY));
 		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 
 		String query = valueSet.getSelectQuery();
@@ -68,7 +69,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_TASK + "'");
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + IssueTypeEnum.TYPE_TASK + "'");
 		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 
 		String query = valueSet.getSelectQuery();

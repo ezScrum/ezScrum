@@ -1,10 +1,13 @@
 package ntut.csie.ezScrum.issue.sql.service.internal;
 
 import static org.junit.Assert.*;
+
 import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -14,6 +17,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class MantisAttachFileServiceTest {
@@ -88,7 +92,7 @@ public class MantisAttachFileServiceTest {
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
 		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
-		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		
 		long id = mMantisAttachFileService.addAttachFile(attachFileInfo);
 		assertEquals(1, id);
@@ -110,7 +114,7 @@ public class MantisAttachFileServiceTest {
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
 		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
-		attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 
 		// 加入AttachFile
 		long fileId = mMantisAttachFileService.addAttachFile(attachFileInfo);
@@ -134,13 +138,13 @@ public class MantisAttachFileServiceTest {
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
 		attachFileInfo1.issueId = ASTS.getStories().get(0).getIssueID();
-		attachFileInfo1.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo1.issueType = IssueTypeEnum.TYPE_STORY;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
 		attachFileInfo2.issueId = ASTS.getStories().get(0).getIssueID();
-		attachFileInfo2.issueType = AttachFileObject.TYPE_STORY;
+		attachFileInfo2.issueType = IssueTypeEnum.TYPE_STORY;
 
 		// 加入AttachFile
 		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo1));
@@ -172,13 +176,13 @@ public class MantisAttachFileServiceTest {
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
 		attachFileInfo1.issueId = ATTS.getTasksId().get(0);
-		attachFileInfo1.issueType = AttachFileObject.TYPE_TASK;
+		attachFileInfo1.issueType = IssueTypeEnum.TYPE_TASK;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
 		attachFileInfo2.issueId = ATTS.getTasksId().get(0);
-		attachFileInfo2.issueType = AttachFileObject.TYPE_TASK;
+		attachFileInfo2.issueType = IssueTypeEnum.TYPE_TASK;
 
 		// 加入AttachFile
 		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo1));
@@ -211,7 +215,7 @@ public class MantisAttachFileServiceTest {
 			attachFileInfo.issueId = storyId;
 			attachFileInfo.name = "TEST_FILE_NAME_" + i;
 			attachFileInfo.path = "./" + attachFileInfo.name;
-			attachFileInfo.issueType = AttachFileObject.TYPE_STORY;
+			attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 			attachFileInfo.projectName = mProject.getName();
 			fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo));
 			infoList.add(attachFileInfo);
@@ -239,7 +243,7 @@ public class MantisAttachFileServiceTest {
 			attachFileInfo.issueId = taskId;
 			attachFileInfo.name = "TEST_FILE_NAME_" + i;
 			attachFileInfo.path = "./" + attachFileInfo.name;
-			attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
+			attachFileInfo.issueType = IssueTypeEnum.TYPE_TASK;
 			attachFileInfo.projectName = mProject.getName();
 			fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo));
 			infoList.add(attachFileInfo);

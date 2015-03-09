@@ -436,6 +436,7 @@ public class SprintBacklogMapper {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes).setHandlerId(noHandler)
+					.setPartnersId(new ArrayList<Long>())
 					.setStatus(TaskObject.STATUS_UNCHECK)
 					.save(specificDate.getTime());
 		}

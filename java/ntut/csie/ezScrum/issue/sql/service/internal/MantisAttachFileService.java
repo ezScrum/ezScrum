@@ -91,7 +91,7 @@ public class MantisAttachFileService extends AbstractMantisService {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ISSUE_ID, Long.toString(id));
-		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + AttachFileObject.TYPE_TASK + "'");
+		valueSet.addEqualCondition(AttachFileEnum.ISSUE_TYPE, "'" + IssueTypeEnum.TYPE_TASK + "'");
 		valueSet.setOrderBy(AttachFileEnum.CREATE_TIME, MySQLQuerySet.ASC_ORDER);
 
 		String query = valueSet.getSelectQuery();

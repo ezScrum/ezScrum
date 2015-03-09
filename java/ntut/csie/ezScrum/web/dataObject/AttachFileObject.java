@@ -9,9 +9,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class AttachFileObject {
-	public final static int TYPE_TASK = 1;
-	public final static int TYPE_STORY = 2;
-	
 	private long mId = -1;
 	private long mIssueId = -1;
 	private int mIssueType;
