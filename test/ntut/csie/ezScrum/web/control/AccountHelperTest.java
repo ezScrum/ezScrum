@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 
@@ -29,6 +30,7 @@ public class AccountHelperTest {
 	private ProjectMapper mProjectMapper = null;
 	private Configuration mConfig;
 	private ProjectObject mProject = null;
+	private AccountHelper mAccountHelper;
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,6 +49,9 @@ public class AccountHelperTest {
 		// 建構 helper
 		mProjectMapper = new ProjectMapper();
 		mProject = mCP.getAllProjects().get(0);
+		
+		// create account helper
+		mAccountHelper = new AccountHelper(mConfig.getUserSession());
 		
 		// release
 		ini = null;
@@ -73,92 +78,30 @@ public class AccountHelperTest {
 		mConfig = null;
 		mProject = null;
 	}
-
+	
 	@Test
-	public void testGetScrumWorkerList() {
-		// create 4 accounts
-		CreateAccount ca = new CreateAccount(4);
-		ca.exe();
-
-		List<String> accountsId = mProjectMapper.getProjectWorkersUsername(mProject.getId());
-		assertEquals(0, accountsId.size());
-
-		AddUserToRole autr = new AddUserToRole(this.mCP, ca);
-		autr.setAccountIndex(0);
-		autr.exe_Sh();
-		autr.setAccountIndex(1);
-		autr.exe_PO();
-		autr.setAccountIndex(2);
-		autr.exe_SM();
-		autr.setAccountIndex(3);
-		autr.exe_ST();
-
-		ProjectObject project = mCP.getAllProjects().get(0);
-		updatePermission(project, "Stakeholder", false); // 將 Stakeholder 角色設定成不能存取
-													      // TaskBoard
-		updatePermission(project, "ProductOwner", false); // 將 PO 角色設定成不能存取 TaskBoard
-
-		accountsId = mProjectMapper.getProjectWorkersUsername(this.mProject.getId());
-		assertEquals(2, accountsId.size()); // 可以領取工作的角色剩下兩個
-		assertTrue(accountsId.contains(ca.getAccount_ID(3)));
-		assertTrue(accountsId.contains(ca.getAccount_ID(4)));
-
-		updatePermission(project, "ProductOwner", true); // 將 PO 角色設定成能存取 TaskBoard
-		accountsId = mProjectMapper.getProjectWorkersUsername(this.mProject.getId());
-		assertEquals(3, accountsId.size()); // 可以領取工作的角色剩下四個
-		assertTrue(accountsId.contains(ca.getAccount_ID(2)));
-		assertTrue(accountsId.contains(ca.getAccount_ID(3)));
-		assertTrue(accountsId.contains(ca.getAccount_ID(4)));
+	public void testValidateUsername() {
+		assertEquals("true", mAccountHelper.validateUsername("password123"));
+		assertEquals("false", mAccountHelper.validateUsername("password123*"));
 	}
-
-	private void updatePermission(ProjectObject project, String role, boolean accessTaskBoard) {
-		List<String> permissionsList = new LinkedList<String>();
-		permissionsList.add(ScrumEnum.ACCESS_PRODUCTBACKLOG);
-		permissionsList.add(ScrumEnum.ACCESS_RELEASEPLAN);
-		permissionsList.add(ScrumEnum.ACCESS_SPRINTPLAN);
-		permissionsList.add(ScrumEnum.ACCESS_SPRINTBACKLOG);
-
-		if (accessTaskBoard) {
-			permissionsList.add(ScrumEnum.ACCESS_TASKBOARD);
-		}
-
-		permissionsList.add(ScrumEnum.ACCESS_UNPLANNED);
-		permissionsList.add(ScrumEnum.ACCESS_RETROSPECTIVE);
-		permissionsList.add(ScrumEnum.ACCESS_REPORT);
-		permissionsList.add(ScrumEnum.ACCESS_EDITPROJECT);
-
-		ScrumRole scrumrole = new ScrumRole(project.getName(), role);
-		scrumrole = setAttribute(scrumrole, permissionsList);
-		ScrumRoleMapper scrumRoleMapper = new ScrumRoleMapper();
-		try {
-			scrumRoleMapper.updateScrumRole(project.getId(), scrumrole);
-		} catch (Exception e) {
-			System.out.println("class: AccountHelperTest, method: updatePermission, exception: " + e.toString());
-			e.printStackTrace();
-		}
+	
+	@Test
+	public void testGetAssignedProject() {
+		assertTrue("todo", false);
 	}
-
-	private ScrumRole setAttribute(ScrumRole role, List<String> attributeList) {
-		for (String attribute : attributeList) {
-			if (attribute.equals(ScrumEnum.ACCESS_PRODUCTBACKLOG))
-				role.setAccessProductBacklog(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_RELEASEPLAN))
-				role.setAccessReleasePlan(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_SPRINTPLAN))
-				role.setAccessSprintPlan(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_SPRINTBACKLOG))
-				role.setAccessSprintBacklog(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_TASKBOARD))
-				role.setAccessTaskBoard(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_UNPLANNED))
-				role.setAccessUnplannedItem(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_RETROSPECTIVE))
-				role.setAccessRetrospective(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_REPORT))
-				role.setReadReport(Boolean.TRUE);
-			else if (attribute.equals(ScrumEnum.ACCESS_EDITPROJECT))
-				role.setEditProject(Boolean.TRUE);
-		}
-		return role;
+	
+	@Test
+	public void testAddAssignedRole() {
+		assertTrue("todo", false);
+	}
+	
+	@Test
+	public void testRemoveAssignRole() {
+		assertTrue("todo", false);
+	}
+	
+	@Test
+	public void testGetManagementView() {
+		assertTrue("todo", false);
 	}
 }

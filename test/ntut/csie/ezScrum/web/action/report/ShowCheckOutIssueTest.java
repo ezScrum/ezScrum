@@ -109,8 +109,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 							.append("\"Name\":\"").append(task.getName()).append("\",")
 							.append("\"Partners\":\"").append("\",")
 							.append("\"Notes\":\"").append(task.getNotes()).append("\",")
-							.append("\"Handler\":\"").append("").append("\",")
-							.append("\"IssueType\":\"").append("Task").append("\",")
+							.append("\"Handler\":\"").append("admin").append("\",")
+							.append("\"IssueType\":\"").append("Task").append("\"")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);

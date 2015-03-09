@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +18,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -139,7 +142,7 @@ public class ProjectMapperTest{
 	}
 	
 	@Test
-	public void testGetProjectScrumWorkersUsername(){
+	public void testGetProjectScrumWorkersUsername_WithProductOwner(){
 		// check status before test
 		assertEquals(0, mProjectMapper.getProjectWorkersUsername(mProjectId).size());
 		
@@ -160,9 +163,62 @@ public class ProjectMapperTest{
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
-		ArrayList<String> userNameList = mProjectMapper.getProjectWorkersUsername(mProjectId);
-		assertEquals(1, userNameList.size());
-		assertEquals(accountName, userNameList.get(0));
+		ArrayList<String> usernames = mProjectMapper.getProjectWorkersUsername(mProjectId);
+		assertEquals(0, usernames.size());
+	}
+	
+	@Test
+	public void testGetProjectScrumWorkersUsername_WithScrumMater(){
+		// check status before test
+		assertEquals(0, mProjectMapper.getProjectWorkersUsername(mProjectId).size());
+		
+		// test account data
+		String accountName = "TEST_ACCOUNT_NAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String email = "TEST_ACCOUNT_EMAIL";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		
+		AccountObject account = new AccountObject(accountName);
+		account.setNickName(nickName);
+		account.setEmail(email);
+		account.setPassword(password);
+		account.save();
+		
+		// create project role - ScrumMaster
+		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumMaster);
+		assertTrue(createAcountResult);
+		
+		// get project scrum workers username
+		ArrayList<String> usernames = mProjectMapper.getProjectWorkersUsername(mProjectId);
+		assertEquals(1, usernames.size());
+		assertEquals(accountName, usernames.get(0));
+	}
+	
+	@Test
+	public void testGetProjectScrumWorkersUsername_WithScrumTeam(){
+		// check status before test
+		assertEquals(0, mProjectMapper.getProjectWorkersUsername(mProjectId).size());
+		
+		// test account data
+		String accountName = "TEST_ACCOUNT_NAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String email = "TEST_ACCOUNT_EMAIL";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		
+		AccountObject account = new AccountObject(accountName);
+		account.setNickName(nickName);
+		account.setEmail(email);
+		account.setPassword(password);
+		account.save();
+		
+		// create project role - ScrumTeam
+		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumTeam);
+		assertTrue(createAcountResult);
+		
+		// get project scrum workers username
+		ArrayList<String> usernames = mProjectMapper.getProjectWorkersUsername(mProjectId);
+		assertEquals(1, usernames.size());
+		assertEquals(accountName, usernames.get(0));
 	}
 	
 	/**

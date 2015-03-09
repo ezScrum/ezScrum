@@ -328,8 +328,8 @@ public class ProjectMapper {
 	@Deprecated
 	public List<String> getProjectScrumWorkerList(IUserSession userSession, IProject project) {
 		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
-		List<String> scrumWorkerList = mantisAccountManager.getScrumWorkerList(project);
-		return scrumWorkerList;
+		List<String> scrumWorkers = mantisAccountManager.getScrumWorkers(project);
+		return scrumWorkers;
 	}
 
 	@Deprecated

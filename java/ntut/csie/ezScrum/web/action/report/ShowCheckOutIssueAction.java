@@ -96,7 +96,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			        .append("\"Partners\":\"").append(task.getPartnersUsername()).append("\",")
 			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(task.getNotes())).append("\",")
 			        .append("\"Handler\":\"").append(handlerUsername).append("\",")
-			        .append("\"IssueType\":\"").append("Task").append("\",")
+			        .append("\"IssueType\":\"").append("Task").append("\"")
 			        .append("},")
 			        .append("\"success\":true,")
 			        .append("\"Total\":1")
