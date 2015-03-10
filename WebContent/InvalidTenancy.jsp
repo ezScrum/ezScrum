@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 
-<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
 <link rel="stylesheet" type="text/css" href="css/ext/css/ext-all.css" />
 <script type="text/javascript" src="javascript/ext-base-debug.js"></script>

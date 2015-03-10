@@ -35,13 +35,13 @@ public class AccountHelper {
 	public String validateUsername(String username) {
 
 		// 判斷帳號是否符合只有英文+數字的格式
-		Pattern p = Pattern.compile("[0-9a-zA-Z_]*");
-		Matcher m = p.matcher(username);
-		boolean b = m.matches();
+		Pattern pattern = Pattern.compile("[0-9a-zA-Z_]*");
+		Matcher matcher = pattern.matcher(username);
+		boolean doesMatch = matcher.matches();
 
 		// 若帳號可建立且ID format正確 則回傳true
-		AccountMapper am = new AccountMapper();
-		if (b && !am.isAccountExist(username) && !username.isEmpty()) {
+		AccountMapper accountMapper = new AccountMapper();
+		if (doesMatch && !accountMapper.isAccountExist(username) && !username.isEmpty()) {
 			return "true";
 		}
 
@@ -120,6 +120,7 @@ public class AccountHelper {
 		
 		return assignRoleInfo.toString();
 	}
+	
 	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) {
 		// ezScrum v1.8
 		AccountObject account = null;
@@ -165,57 +166,27 @@ public class AccountHelper {
 		return result;
 	}
 
-	/**
-	 * 將Roles String轉成Role String List
-	 */
-	private List<String> translateRoleStringWithCheck(IRole[] roles, String role) {
-		List<String> roleList = new ArrayList<String>();
-		// default
-		if (roles != null) {
-			for (IRole irole : roles) {
-				if (!irole.getRoleId().equals(role)) roleList.add(irole.getRoleId());
-			}
-		}
-		return roleList;
-	}
-
-	/**
-	 * 將Roles String轉成Role String List
-	 */
-	private List<String> translateRoleString(IRole[] roles, String role) {
-		List<String> roleList = new ArrayList<String>();
-		// default
-		if (roles != null) {
-			for (IRole irole : roles) {
-				roleList.add(irole.getRoleId());
-			}
-		}
-
-		roleList.add(role);
-		return roleList;
-	}
-
 	// ezScrum v1.8
 	private String getXmlstring(ArrayList<AccountObject> accounts) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<Accounts>");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("<Accounts>");
 		for (AccountObject account : accounts) {
 			if (account == null) {
-				sb.append("Account not found.");
+				stringBuilder.append("Account not found.");
 			} else {
-				sb.append("<AccountInfo>");
-				sb.append("<ID>").append(account.getId()).append("</ID>");
-				sb.append("<Account>").append(account.getUsername()).append("</Account>");
-				sb.append("<Name>").append(account.getNickName()).append("</Name>");
-				sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
-				sb.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");
-				sb.append("<Enable>").append(account.getEnable()).append("</Enable>");
-				sb.append("</AccountInfo>");
+				stringBuilder.append("<AccountInfo>");
+				stringBuilder.append("<ID>").append(account.getId()).append("</ID>");
+				stringBuilder.append("<Account>").append(account.getUsername()).append("</Account>");
+				stringBuilder.append("<Name>").append(account.getNickName()).append("</Name>");
+				stringBuilder.append("<Mail>").append(account.getEmail()).append("</Mail>");
+				stringBuilder.append("<Roles>").append(TranslateUtil.getRolesString(account.getRoles())).append("</Roles>");
+				stringBuilder.append("<Enable>").append(account.getEnable()).append("</Enable>");
+				stringBuilder.append("</AccountInfo>");
 			}
 		}
-		sb.append("</Accounts>");
+		stringBuilder.append("</Accounts>");
 		
-		return sb.toString();
+		return stringBuilder.toString();
 	}
 
 }

@@ -155,7 +155,7 @@ public class MantisAccountManager {
 	/**
 	 * 回傳此 Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
 	 */
-	public List<String> getScrumWorkerList(IProject project){
+	public List<String> getScrumWorkers(IProject project){
 		MantisAccountMapper mantisAccountMapper = new MantisAccountMapper(project, session);
 		String[] projectScrumWorkerList = mantisAccountMapper.getActorListByUpdaterAccessLevel();
 		

@@ -14,6 +14,8 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -28,6 +30,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.codehaus.jettison.json.JSONObject;
 
 public class AjaxAttachFileAction extends Action {
 	private static Log log = LogFactory.getLog(AjaxAttachFileAction.class);
@@ -49,6 +52,15 @@ public class AjaxAttachFileAction extends Action {
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
 			
 			long issueId = Long.parseLong(request.getParameter("issueID"));
+			String issueTypeStr = request.getParameter("issueType");
+			
+			int issueType = 0;
+			if (issueTypeStr.equals("Story")) {
+				issueType = IssueTypeEnum.TYPE_STORY;
+			} else if (issueTypeStr.equals("Task")) {
+				issueType = IssueTypeEnum.TYPE_TASK;
+			}
+			
 			ProductBacklogHelper pbHelper = new ProductBacklogHelper(session, project);
 			UploadForm fileForm = (UploadForm) form;
 
@@ -66,6 +78,7 @@ public class AjaxAttachFileAction extends Action {
 				} else {
 					AttachFileInfo attachFileInfo = new AttachFileInfo();
 		            attachFileInfo.issueId = issueId;
+		            attachFileInfo.issueType = issueType;
 		            attachFileInfo.name = fileName;
 		            attachFileInfo.contentType = formFile.getContentType();
 		            attachFileInfo.projectName = projectObject.getName();
@@ -77,8 +90,13 @@ public class AjaxAttachFileAction extends Action {
 						System.out.println(e);
 					}
 					
-					IIssue issue = pbHelper.getIssue(issueId);
-					result = new StringBuilder(new Translation().translateStoryToJson(issue));
+					if (issueTypeStr.equals("Story")) {
+						IIssue story = pbHelper.getIssue(issueId);
+						result = new StringBuilder(new Translation().translateStoryToJson(story));
+					} else if (issueTypeStr.equals("Task")) {
+						TaskObject task = TaskObject.get(issueId);
+						result = new StringBuilder(new Translation().translateTaskToJson(task));
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

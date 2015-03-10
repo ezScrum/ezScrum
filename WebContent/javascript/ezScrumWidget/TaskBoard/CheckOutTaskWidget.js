@@ -43,23 +43,6 @@ var PartnerStore_ForCheckOut = new Ext.data.Store({
     reader : PartnerReader
 });
 
-PartnerStore_ForCheckOut.on('load', function(store, records, options) {
-	PartnerMenu.removeAll();
-
-	for(var i=0; i<this.getCount(); i++) {
-		var record = this.getAt(i);
-		var info = record.get('Name');
-		
-		PartnerMenu.add({
-			tagId 	: info,
-			text	: info,
-			xtype	: 'menucheckitem',
-			hideOnClick	: false,
-			checkHandler: PartnerMenu.onCheckItemClick
-		});
-	}
-});
-
 PartnerTriggerField_CheckOut.onTriggerClick = function() {
 	PartnerMenu.showAt(PartnerTriggerField_CheckOut.getPosition());
 };
@@ -136,12 +119,58 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
                     }]
         }
 
+        var obj = this;
         Ext.apply(this, Ext.apply(this.initialConfig, config));
         ezScrum.CheckOutForm.superclass.initComponent.apply(this, arguments);
 
         this.HandlerCombo = this.items.items[2];
+        this.HandlerCombo.on('select', function() {
+			// 取得 handler 選擇的item
+			var value = this.getValue();
+			var record = this.findRecord(this.valueField || this.displayField, value);
+			
+			PartnerTriggerField_CheckOut.setValue('');
+			
+			obj.handlerName = record.id;
+			obj.initPartnerState();
+		}); 
         this.addEvents('COSuccess', 'COFailure', 'LoadTaskFailure');
     },
+    initPartnerState: function() {
+		var handlerName = this.handlerName;
+		
+		if (handlerName.length == 0) {
+			PartnerTriggerField_CheckOut.disable();
+			return;
+		} else {
+			PartnerTriggerField_CheckOut.enable();
+		}
+		
+		Ext.Ajax.request({
+			async: false,
+			url: 'AjaxGetPartnerList.do',
+			success: function(response) {
+				PartnerStore_ForCheckOut.loadData(response.responseXML);
+				PartnerMenu.removeAll();
+				for (var i = 0 ; i < PartnerStore_ForCheckOut.totalLength; i++) {
+					var partnerName = PartnerStore_ForCheckOut.getAt(i).id;
+					if (handlerName === partnerName) {
+						continue;
+					}
+					PartnerMenu.add({
+						id		: partnerName,
+						tagId 	: partnerName,
+						text	: partnerName,
+						xtype	: 'menucheckitem',
+						hideOnClick	: false,
+						checkHandler: PartnerMenu.onCheckItemClick
+					});
+				}
+				console.log(PartnerMenu);
+				PartnerMenu.doLayout();
+			}
+		});
+	},
     submit: function() {
         var form = this.getForm();
         var obj = this;
@@ -194,6 +223,9 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				
 				// append issueID to window title. "CheckOutTaskWindow" define in TaskBoardCardFormPanel.js
 				CheckOutTaskWindow.setTitle('Check Out Task #' + record.data['Id']);
+				
+				this.handlerName = record.data['Handler'];
+				this.initPartnerState();
 			}
     	}
     },

@@ -103,11 +103,11 @@ public class ProductBacklogMapperTest {
 		assertEquals(1, histories.size());
 	}
 	
-	@Test // 測試上傳檔案到一筆 issue 是否成功
-	public void testAddAttachFile() {
+	@Test // 測試上傳檔案到一筆 Story 是否成功
+	public void testAddAttachFile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID());
+		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
 		
 		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
@@ -122,11 +122,11 @@ public class ProductBacklogMapperTest {
 		ActualFile = null;
 	}
 	
-	@Test // 測試刪除一筆 Issue 的檔案
-	public void testDeleteAttachFile() {
+	@Test // 測試刪除一筆 Story 的檔案
+	public void testDeleteAttachFile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);		
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID());
+		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
 		
 		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
@@ -147,10 +147,10 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test // 測試不用透過 mantis 直接取得檔案的方法
-	public void testGetAttachfile() {
+	public void testGetAttachfile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID());
+		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
 		
 		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
 		AttachFileObject IssueFile = issue.getAttachFiles().get(0);
@@ -164,10 +164,10 @@ public class ProductBacklogMapperTest {
 		issue = null;
 	}
 	
-	private void addAttachFile(ProductBacklogMapper mapper, long issueId) {
+	private void addAttachFile(ProductBacklogMapper mapper, long issueId, int issutType) {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
         attachFileInfo.issueId = issueId;
-        attachFileInfo.issueType = AttachFileObject.TYPE_TASK;
+        attachFileInfo.issueType = issutType;
         attachFileInfo.name = mFILE_NAME;
         attachFileInfo.contentType = mFILE_TYPE;
         attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
