@@ -43,23 +43,6 @@ var PartnerStore_ForCheckOut = new Ext.data.Store({
     reader : PartnerReader
 });
 
-//PartnerStore_ForCheckOut.on('load', function(store, records, options) {
-//	PartnerMenu.removeAll();
-//
-//	for(var i=0; i<this.getCount(); i++) {
-//		var record = this.getAt(i);
-//		var info = record.get('Name');
-//		
-//		PartnerMenu.add({
-//			tagId 	: info,
-//			text	: info,
-//			xtype	: 'menucheckitem',
-//			hideOnClick	: false,
-//			checkHandler: PartnerMenu.onCheckItemClick
-//		});
-//	}
-//});
-
 PartnerTriggerField_CheckOut.onTriggerClick = function() {
 	PartnerMenu.showAt(PartnerTriggerField_CheckOut.getPosition());
 };
@@ -146,7 +129,6 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			var value = this.getValue();
 			var record = this.findRecord(this.valueField || this.displayField, value);
 			
-			// Set partner combobox enable
 			PartnerTriggerField_CheckOut.setValue('');
 			
 			obj.handlerName = record.id;

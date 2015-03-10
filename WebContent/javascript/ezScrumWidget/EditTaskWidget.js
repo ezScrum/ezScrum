@@ -173,7 +173,6 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			var value = this.getValue();
 			var record = this.findRecord(this.valueField || this.displayField, value);
 			
-			// Set partner combobox enable
 			PartnerTriggerField_EditTask.setValue('');
 			
 			obj.handlerName = record.id;

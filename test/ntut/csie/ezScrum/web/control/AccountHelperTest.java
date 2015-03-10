@@ -4,21 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,10 +19,9 @@ import org.junit.Test;
 
 public class AccountHelperTest {
 	private CreateProject mCP;
+	private CreateAccount mCA;
 	private int mProjectCount = 1;
-	private ProjectMapper mProjectMapper = null;
 	private Configuration mConfig;
-	private ProjectObject mProject = null;
 	private AccountHelper mAccountHelper;
 
 	@Before
@@ -46,9 +38,8 @@ public class AccountHelperTest {
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
 
-		// 建構 helper
-		mProjectMapper = new ProjectMapper();
-		mProject = mCP.getAllProjects().get(0);
+		mCA = new CreateAccount(3);
+		mCA.exe();
 		
 		// create account helper
 		mAccountHelper = new AccountHelper(mConfig.getUserSession());
@@ -74,9 +65,7 @@ public class AccountHelperTest {
 		// release
 		ini = null;
 		mCP = null;
-		mProjectMapper = null;
 		mConfig = null;
-		mProject = null;
 	}
 	
 	@Test
@@ -87,6 +76,7 @@ public class AccountHelperTest {
 	
 	@Test
 	public void testGetAssignedProject() {
+		String aa = mAccountHelper.getAssignedProject(mCA.getAccountList().get(0).getId());
 		assertTrue("todo", false);
 	}
 	

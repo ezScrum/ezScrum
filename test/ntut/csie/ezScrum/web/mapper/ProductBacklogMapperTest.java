@@ -103,8 +103,8 @@ public class ProductBacklogMapperTest {
 		assertEquals(1, histories.size());
 	}
 	
-	@Test // 測試上傳檔案到一筆 issue 是否成功
-	public void testAddStoryAttachFile() {
+	@Test // 測試上傳檔案到一筆 Story 是否成功
+	public void testAddAttachFile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
@@ -122,8 +122,8 @@ public class ProductBacklogMapperTest {
 		ActualFile = null;
 	}
 	
-	@Test // 測試刪除一筆 Issue 的檔案
-	public void testDeleteStoryAttachFile() {
+	@Test // 測試刪除一筆 Story 的檔案
+	public void testDeleteAttachFile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);		
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
@@ -147,7 +147,7 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test // 測試不用透過 mantis 直接取得檔案的方法
-	public void testGetStoryAttachfile() {
+	public void testGetAttachfile_Story() {
 		IIssue issue = mCPB.getIssueList().get(0);
 		
 		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
