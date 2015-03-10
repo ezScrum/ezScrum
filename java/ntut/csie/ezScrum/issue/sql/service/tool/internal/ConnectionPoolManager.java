@@ -47,10 +47,10 @@ public class ConnectionPoolManager {
 			dataSource.setAcquireIncrement(0);
 			dataSource.setMaxStatements(0);
 			
-			/** 最大允許的閒置時間*/
+			/** 最大允許的閒置時間(秒) */
 			dataSource.setMaxIdleTime(300);
-			/** 對閒置的連線進行Query測試設置 */
-			dataSource.setIdleConnectionTestPeriod(30);
+			/** 對閒置的連線進行Query測試設置(秒) */
+			dataSource.setIdleConnectionTestPeriod(1800);
 			
 			/** Checkin connection時不檢查連線是否有效 */
 			dataSource.setTestConnectionOnCheckin(false);
@@ -58,10 +58,10 @@ public class ConnectionPoolManager {
 			dataSource.setTestConnectionOnCheckout(true);
 			/** 進行test時使用的 Query設定*/
 			dataSource.setPreferredTestQuery("SELECT 1;");
-			/** Connection的最大有效時數(分鐘)*/
-			dataSource.setMaxConnectionAge(480);
-			/** Connection checkout 之後的有效時數(分鐘)*/
-			dataSource.setCheckoutTimeout(480);
+			/** Connection的最大有效時數(秒)*/
+			dataSource.setMaxConnectionAge(28800);
+			/** Connection checkout 之後的有效時數(毫秒)*/
+			dataSource.setCheckoutTimeout(28800000);
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}

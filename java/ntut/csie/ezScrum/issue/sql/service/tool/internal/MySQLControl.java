@@ -163,7 +163,9 @@ public class MySQLControl implements ISQLControl {
 		try {
 			Statement statement = mConnection.createStatement();
 			statement.execute("Select 1;");
+			statement.close();
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			reconnect();
 		}
 		

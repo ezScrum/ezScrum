@@ -39,7 +39,6 @@ var PartnerMenuForEditTask = new Ext.menu.Menu({
 	loadPartnerList : function() {
 		// to request partner list
 		Ext.Ajax.request({
-			async: false,
 			url: 'AjaxGetPartnerList.do',
 			success: function(response) {
 				PartnerStore_ForEditTask.loadData(response.responseXML);
@@ -54,6 +53,24 @@ var PartnerStore_ForEditTask = new Ext.data.Store({
    		{name: 'Name'}
     ],
     reader : PartnerReader
+});
+
+PartnerStore_ForEditTask.on('load', function(store, records, options) {
+	PartnerMenuForEditTask.removeAll();
+	
+	for(var i=0; i<this.getCount(); i++) {
+		var record = this.getAt(i);
+		var info = record.get('Name');
+			
+		PartnerMenuForEditTask.add({
+			id		: info,
+			tagId 	: info,
+			text	: info,
+			xtype	: 'menucheckitem',
+			hideOnClick	: false,
+			checkHandler: PartnerMenuForEditTask.onCheckItemClick
+		});
+	}
 });
 
 PartnerTriggerField_EditTask.onTriggerClick = function() {
@@ -78,10 +95,7 @@ PartnerTriggerField_EditTask.onTriggerClick = function() {
 		}
 	}
 	
-	// partner 欄位的顯示
-	if(PartnerTriggerField_EditTask.disabled == false){
-		PartnerMenuForEditTask.showAt(PartnerTriggerField_EditTask.getPosition());
-	}
+	PartnerMenuForEditTask.showAt(PartnerTriggerField_EditTask.getPosition());
 };
 
 /**
@@ -100,7 +114,6 @@ var HandlerComboStore_ForEditTask = new Ext.data.Store({
 ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	// Default issue id
 	issueId : '-1',
-	handlerName: '',
 	notifyPanel : undefined,
 	initComponent:function() {
 		
@@ -162,56 +175,9 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	        }]
         }
         
-		var obj = this;
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.EditTaskForm.superclass.initComponent.apply(this, arguments);
-
-		this.HandlerCombo = this.get(2);
-		// set handler selected event
-		this.HandlerCombo.on('select', function() {
-			// 取得 handler 選擇的item
-			var value = this.getValue();
-			var record = this.findRecord(this.valueField || this.displayField, value);
-			
-			PartnerTriggerField_EditTask.setValue('');
-			
-			obj.handlerName = record.id;
-			obj.initPartnerState();
-		}); 
-	},
-	initPartnerState: function() {
-		var handlerName = this.handlerName;
-		
-		if (handlerName.length == 0) {
-			PartnerTriggerField_EditTask.disable();
-			return;
-		} else {
-			PartnerTriggerField_EditTask.enable();
-		}
-		
-		Ext.Ajax.request({
-			async: false,
-			url: 'AjaxGetPartnerList.do',
-			success: function(response) {
-				PartnerStore_ForEditTask.loadData(response.responseXML);
-				PartnerMenuForEditTask.removeAll();
-				for (var i = 0 ; i < PartnerStore_ForEditTask.totalLength; i++) {
-					var partnerName = PartnerStore_ForEditTask.getAt(i).id;
-					if (handlerName === partnerName) {
-						continue;
-					}
-					PartnerMenuForEditTask.add({
-						id		: partnerName,
-						tagId 	: partnerName,
-						text	: partnerName,
-						xtype	: 'menucheckitem',
-						hideOnClick	: false,
-						checkHandler: PartnerMenuForEditTask.onCheckItemClick
-					});
-				}
-				PartnerMenuForEditTask.doLayout();
-			}
-		});
+		this.HandlerCombo = this.items.items[2];
 	},
 	onRender:function() {
 		ezScrum.EditTaskForm.superclass.onRender.apply(this, arguments);
@@ -244,6 +210,7 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			if(rs.success) {
 				var record = rs.records[0];
 				if(record) {
+					
 					this.HandlerCombo.originalValue = record.data['Handler'];
 					this.HandlerCombo.reset();
 					
@@ -252,7 +219,7 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 						issueID	: record.data['Id'], 
 						Name	: record.data['Name'], 
 						Partners: record.data['Partners'],
-						Estimate: record.data['Estimate'], 
+						Estimate	: record.data['Estimate'], 
 						Actual	: record.data['Actual'],
 						Notes	: record.data['Notes'],
 						Remains	: record.data['Remains']
@@ -260,9 +227,6 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 					
 					// append issueID to window title
 					EditTaskWindow.setTitle('Edit Task #' + record.data['Id']);
-					
-					this.handlerName = record.data['Handler'];
-					this.initPartnerState();
 				}
 			}
 		}
@@ -316,13 +280,14 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				sprintID : obj.sprintId
 			},
 			success : function(response) {
-				PartnerMenuForEditTask.loadPartnerList();
 				obj.onLoadSuccess(response);
 			},
 			failure : function(response) {
 				obj.onLoadFailure(response);
 			}
 		});
+		
+		PartnerMenuForEditTask.loadPartnerList();
 	},
 	reset:function() {
 		this.getForm().reset();
