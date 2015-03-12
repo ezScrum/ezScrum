@@ -33,10 +33,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
-				TagObject tag = new TagObject();
-				tag.setId(result.getLong(TagEnum.ID));
-				tag.setName(result.getString(TagEnum.NAME));
-
+				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
 				tags.add(tag);
 			}
 			issue.setTags(tags);
@@ -114,9 +111,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			if (result.next()) {
-				tag = new TagObject();
-				tag.setId(result.getLong(TagEnum.ID));
-				tag.setName(result.getString(TagEnum.NAME));
+				tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
 				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
 			}
 		} catch (SQLException e) {
@@ -141,9 +136,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
-				TagObject tag = new TagObject();
-				tag.setId(result.getLong(TagEnum.ID));
-				tag.setName(result.getString(TagEnum.NAME));
+				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
 				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
 
 				tags.add(tag);

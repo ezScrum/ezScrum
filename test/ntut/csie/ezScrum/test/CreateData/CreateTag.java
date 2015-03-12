@@ -44,9 +44,7 @@ public class CreateTag {
 				mProductBacklogMapper.addNewTag(TEST_TAG_NAME
 						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
 
-				TagObject tag = new TagObject();
-				tag.setId(tagIndex + 1);
-				tag.setName(TEST_TAG_NAME + Integer.toString(tagIndex + 1));
+				TagObject tag = new TagObject(tagIndex + 1, TEST_TAG_NAME + Integer.toString(tagIndex + 1));
 				mTags.add(tag);
 			}
 			System.out.println("Project "
