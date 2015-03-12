@@ -30,7 +30,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 				story.getProjectId());
 		
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
-		valueSet.addInsertValue(StoryEnum.SERIAL_ID, serialNumber.getStoryId() + 1);\
+		valueSet.addInsertValue(StoryEnum.SERIAL_ID, serialNumber.getStoryId() + 1);
 		valueSet.addInsertValue(StoryEnum.NAME, story.getName());
 		valueSet.addInsertValue(StoryEnum.STATUS, story.getStatus());
 		valueSet.addInsertValue(StoryEnum.ESTIMATE, story.getEstimate());
@@ -45,7 +45,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getCreateTime());
 		} else {
 			valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
-			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currnetTime);
+			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
 		}
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
