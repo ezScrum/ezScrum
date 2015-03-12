@@ -28,9 +28,10 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		long currentTime = System.currentTimeMillis();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
 				story.getProjectId());
-		
+
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
-		valueSet.addInsertValue(StoryEnum.SERIAL_ID, serialNumber.getStoryId() + 1);
+		valueSet.addInsertValue(StoryEnum.SERIAL_ID,
+				serialNumber.getStoryId() + 1);
 		valueSet.addInsertValue(StoryEnum.NAME, story.getName());
 		valueSet.addInsertValue(StoryEnum.STATUS, story.getStatus());
 		valueSet.addInsertValue(StoryEnum.ESTIMATE, story.getEstimate());
@@ -41,18 +42,21 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.PROJECT_ID, story.getProjectId());
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
 		if (story.getCreateTime() > 0) {
-			valueSet.addInsertValue(StoryEnum.CREATE_TIME, story.getCreateTime());
-			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getCreateTime());
+			valueSet.addInsertValue(StoryEnum.CREATE_TIME,
+					story.getCreateTime());
+			valueSet.addInsertValue(StoryEnum.UPDATE_TIME,
+					story.getCreateTime());
 		} else {
 			valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
 			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
 		}
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
-		
-		serialNumber.setId(SerialNumberEnum.STORY, serialNumber.getStoryId() + 1);
+
+		serialNumber.setId(SerialNumberEnum.STORY,
+				serialNumber.getStoryId() + 1);
 		serialNumber.save();
-		
+
 		return id;
 	}
 
@@ -92,7 +96,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
 		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getUpdateTime());
 		String query = valueSet.getUpdateQuery();
-		
+
 		return mControl.executeUpdate(query);
 	}
 
@@ -104,14 +108,61 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
 	}
-	
+
 	public ArrayList<StoryObject> getStoryBySprintId(long sprintId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, sprintId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-		
+
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		try {
+			while (result.next()) {
+				stories.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return stories;
+	}
+
+	/**
+	 * Get the stories which do not have sprint id.
+	 * 
+	 * @param projectId
+	 * @return All stories which no parent in this project
+	 */
+	public ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, StoryObject.NO_PARENT);
+		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		try {
+			while (result.next()) {
+				stories.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return stories;
+	}
+
+	public ArrayList<StoryObject> getAllStories(long projectId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 		try {
 			while (result.next()) {
