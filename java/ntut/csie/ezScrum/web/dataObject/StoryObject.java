@@ -88,6 +88,16 @@ public class StoryObject implements IBaseObject {
 		return this;
 	}
 	
+	public StoryObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
+		return this;
+	}
+	
+	public StoryObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
+	}
+	
 	public long getId() {
 		return mId;
 	}
