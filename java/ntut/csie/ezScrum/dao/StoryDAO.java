@@ -176,7 +176,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return stories;
 	}
 
-	private StoryObject convert(ResultSet result) throws SQLException {
+	public static StoryObject convert(ResultSet result) throws SQLException {
 		StoryObject story = new StoryObject(result.getLong(StoryEnum.ID),
 				result.getLong(StoryEnum.SERIAL_ID),
 				result.getLong(StoryEnum.PROJECT_ID));
