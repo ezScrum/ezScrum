@@ -6,6 +6,7 @@ import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -218,8 +219,21 @@ public class StoryObject implements IBaseObject {
 			tags.put(tag.toJSON());
 		}
 		
+		story
+			.put(StoryEnum.ID, mId)
+			.put(StoryEnum.NAME, mName)
+			.put(StoryEnum.NOTES, mNotes)
+			.put(StoryEnum.HOW_TO_DEMO, mHowToDemo)
+			.put(StoryEnum.IMPORTANCE, mImportance)
+			.put(StoryEnum.VALUE, mValue)
+			.put(StoryEnum.ESTIMATE, mEstimate)
+			.put(StoryEnum.STATUS, mStatus)
+			.put(StoryEnum.SPRINT_ID, mSprintId)
+			.put("tasks", tasks)
+			.put("histories", histories)
+			.put("tags", tags);
 		
-		return null;
+		return story;
 	}
 	
 	private boolean exists() {
