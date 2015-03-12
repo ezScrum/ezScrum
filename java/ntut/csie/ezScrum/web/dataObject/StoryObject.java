@@ -247,6 +247,10 @@ public class StoryObject implements IBaseObject {
 		HistoryDAO.getInstance().create(
 				new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
 						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		if (mSprintId != DEFAULT_VALUE) {
+			// Append this story to sprint
+			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId));
+		}
 	}
 	
 	private void doUpdate() {
@@ -280,6 +284,9 @@ public class StoryObject implements IBaseObject {
 				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()));				
 			} else if (mSprintId != DEFAULT_VALUE) {
 				// Append this story to sprint
+				if (oldStory.getSprintId() != DEFAULT_VALUE) {
+					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()));
+				}
 				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId));
 			}
 		}
