@@ -95,6 +95,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
 		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getUpdateTime());
+		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
 		String query = valueSet.getUpdateQuery();
 
 		return mControl.executeUpdate(query);
@@ -109,7 +110,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ArrayList<StoryObject> getStoryBySprintId(long sprintId) {
+	public ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, sprintId);

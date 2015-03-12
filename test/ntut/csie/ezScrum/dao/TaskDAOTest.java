@@ -96,6 +96,7 @@ public class TaskDAOTest {
 		while (result.next()) {
 			tasks.add(TaskDAO.convert(result));
 		}
+		closeResultSet(result);
 
 		assertEquals(3, tasks.size());
 		for (int i = 0; i < 3; i++) {
@@ -217,6 +218,7 @@ public class TaskDAOTest {
 			tasks.add(TaskDAO.convert(resultSet));
 		}
 		assertEquals(2, tasks.size());
+		closeResultSet(resultSet);
 	}
 
 	@Test
@@ -238,7 +240,7 @@ public class TaskDAOTest {
 			assertNotSame(-1, taskId);
 		}
 		
-		// get tasks by story
+		// get tasks by story id
 		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStoryId(1);
 		assertEquals(2, tasks.size());
 	}
@@ -260,7 +262,7 @@ public class TaskDAOTest {
 			assertNotSame(-1, taskId);
 		}
 		
-		// get Wild Tasks
+		// get wild tasks
 		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(sProjectId);
 		assertEquals(2, tasks.size());
 	}
@@ -328,7 +330,7 @@ public class TaskDAOTest {
 	}
 	
 	@Test
-	public void testAddPartner() {
+	public void testAddPartner() throws SQLException {
 		long TEST_TASK_ID = 3;
 		long TEST_PARTNER_ID = 5;
 		// create get partners id query
@@ -342,16 +344,11 @@ public class TaskDAOTest {
 		ArrayList<Long> partnerIdList = new ArrayList<Long>();
 		// execute get partners id query
 		ResultSet result = mControl.executeQuery(getPartnersIdQuery);
-		try {
-			while (result.next()) {
-				partnerIdList.add(result
-						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeResultSet(result);
+		while (result.next()) {
+			partnerIdList.add(result.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
 		}
+		closeResultSet(result);
+		
 		// before add partner
 		assertEquals(0, partnerIdList.size());
 		// add partner
@@ -486,6 +483,7 @@ public class TaskDAOTest {
 		ResultSet result= mControl.executeQuery(query);
 		result.next();
 		TaskObject actual = TaskDAO.convert(result);
+		closeResultSet(result);
 		
 		assertEquals(id, actual.getId());
 		assertEquals(TEST_SERIAL_NUMBER, actual.getSerialId());
@@ -509,5 +507,4 @@ public class TaskDAOTest {
 			}			
 		}
 	}
-	
 }
