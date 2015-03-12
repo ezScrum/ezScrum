@@ -92,7 +92,6 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
 		valueSet.addInsertValue(TaskEnum.NOTES, task.getNotes());
 		valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
-		valueSet.addInsertValue(TaskEnum.PROJECT_ID, task.getProjectId());
 		valueSet.addInsertValue(TaskEnum.STORY_ID, task.getStoryId());
 		valueSet.addInsertValue(TaskEnum.UPDATE_TIME, task.getUpdateTime());
 		valueSet.addEqualCondition(TaskEnum.ID, task.getId());
