@@ -1,101 +1,290 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
-import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
-public class StoryObject {
-	public String id = "";
-	public String name = "";
-	public String notes = "";
-	public String howToDemo = "";
-	public String importance = "";
-	public String value = "";
-	public String estimation = "";
-	public String status = "";
-	public String sprint = "";
-	public String release = "";
-	public String description = "";
-	public List<String> taskIDList = new ArrayList<String>();
-	public List<TagObject> tagList = new ArrayList<TagObject>();
-	public List<TaskObject> taskList = new ArrayList<TaskObject>();
-	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
+public class StoryObject implements IBaseObject {
+	public final static int STATUS_UNCHECK = 1;
+	public final static int STATUS_DONE = 2;
+	public final static int NO_PARENT = -1;
+	public final static int DEFAULT_VALUE = -1;
 	
-	public StoryObject() {
-		
+	private long mId = DEFAULT_VALUE;
+	private long mSerialId = DEFAULT_VALUE;
+	private long mProjectId = DEFAULT_VALUE;
+	private long mSprintId = DEFAULT_VALUE;
+	
+	private String mName = "";
+	private String mNotes = "";
+	private String mHowToDemo = "";
+	
+	private int mImportance = 0;
+	private int mValue = 0;
+	private int mEstimate = 0;
+	private int mStatus = STATUS_UNCHECK;
+	
+	private long mCreateTime = 0;
+	private long mUpdateTime = 0;
+	
+	public static StoryObject get(long id) {
+		return StoryDAO.getInstance().get(id);
 	}
 	
-	public StoryObject(IStory story) {
-		id = Long.toString(story.getIssueID());
-		name = story.getName();
-		notes = story.getNotes();
-		howToDemo = story.getHowToDemo();
-		importance = story.getImportance();
-		value = story.getValue();
-		estimation = story.getEstimated();
-		status = story.getStatus();
-		sprint = story.getSprintID();
-		release = story.getReleaseID();
-		description = story.getDescription();
-		tagList = story.getTags();
-		
-		for (long taskID : story.getChildrenId())
-			taskIDList.add(Long.toString(taskID));
+	public StoryObject(long projectId) {
+		mProjectId = projectId;
 	}
 	
-	public StoryObject(IIssue story) throws SQLException {
-		id = Long.toString(story.getIssueID());
-		name = story.getSummary();
-		notes = story.getNotes();
-		howToDemo = story.getHowToDemo();
-		importance = story.getImportance();
-		value = story.getValue();
-		estimation = story.getEstimated();
-		status = story.getStatus();
-		sprint = story.getSprintID();
-		release = story.getReleaseID();
-		description = story.getDescription();
-		tagList = story.getTags();
-		
-		for (long taskID : story.getChildrenId())
-			taskIDList.add(Long.toString(taskID));
+	public StoryObject(long id, long serialId, long projectId) {
+		mId = id;
+		mSerialId = serialId;
+		mProjectId = projectId;
+	}
+	
+	public StoryObject setName(String name) {
+		mName = name;
+		return this;
+	}
+	
+	public StoryObject setNotes(String notes) {
+		mNotes = notes;
+		return this;
+	}
+	
+	public StoryObject setHowToDemo(String howToDemo) {
+		mHowToDemo = howToDemo;
+		return this;
+	}
+	
+	public StoryObject setImportance(int importance) {
+		mImportance= importance;
+		return this;
+	}
+	
+	public StoryObject setValue(int value) {
+		mValue = value;
+		return this;
+	}
+	
+	public StoryObject setEstimate(int estimate) {
+		mEstimate = estimate;
+		return this;
+	}
+	
+	public StoryObject setStatus(int status) {
+		mStatus = status;
+		return this;
+	}
+	
+	public StoryObject setSprintId(long sprintId) {
+		mSprintId = sprintId;
+		return this;
+	}
+	
+	public long getId() {
+		return mId;
+	}
+	
+	public long getProjectId() {
+		return mProjectId;
+	}
+	
+	public long getSerialId() {
+		return mSerialId;
+	}
+	
+	public String getName() {
+		return mName;
+	}
+	
+	public String getNotes() {
+		return mNotes;
+	}
+	
+	public String getHowToDemo() {
+		return mHowToDemo;
+	}
+	
+	public int getImportance() {
+		return mImportance;
+	}
+	
+	public int getEstimate() {
+		return mEstimate;
+	}
+	
+	public int getValue() {
+		return mValue;
+	}
+	
+	public int getStatus() {
+		return mStatus;
+	}
+	
+	public long getSprintId() {
+		return mSprintId;
+	}
+	
+	public long getCreateTime() {
+		return mCreateTime;
+	}
+	
+	public long getUpdateTime() {
+		return mUpdateTime;
+	}
+	
+	public ArrayList<TaskObject> getTasks() {
+		return TaskDAO.getInstance().getTasksByStoryId(mId);
+	}
+	
+	public ArrayList<TagObject> getTags() {
+		// TODO
+		return null;
+	}
+	
+	public ArrayList<HistoryObject> getHistories() {
+		return HistoryDAO.getInstance().getHistoriesByIssue(mId, IssueTypeEnum.TYPE_STORY);
+	}
 
-		for (HistoryObject history : story.getHistories()) {
-			histories.add(history);
+	@Override
+	public void save() {
+		if (exists()) {
+			doUpdate();
+		} else {
+			doCreate();
 		}
 	}
-	
-	public void addTask(TaskObject task) {
-		taskList.add(task);
+
+	@Override
+	public void reload() {
+		if (exists()) {
+			StoryObject story = StoryDAO.getInstance().get(mId);
+			resetData(story);
+		}
 	}
-	
-	public StoryInfo toStoryInformation() {
-		String tagIDs = StringUtils.join(tagList.toArray(), ",");
-		return new StoryInfo(id, name, importance, estimation, value, howToDemo, notes, description, sprint, release, "");
+
+	@Override
+	public boolean delete() {
+		boolean success = StoryDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+			mSerialId = DEFAULT_VALUE;
+			mProjectId = DEFAULT_VALUE;
+		}
+		return success;
 	}
-	
+
 	public String toString() {
-		String story = 
-				"id: " + id + ", " + 
-				 "name: " + name + ", " + 
-				 "notes: " + notes + ", " + 
-				 "howToDemo: " + howToDemo + ", " + 
-				 "importance: " + importance + ", " + 
-				 "value: " + value + ", " + 
-				 "estimation: " + estimation + ", " + 
-				 "status: " + status + ", " + 
-				 "tagList: " + tagList.toString() + ", " +  
-				 "taskIDList: " + taskIDList.toString() + ", " + 
-				 "sprint: " + sprint;
-		for (TaskObject task : taskList) {
-			story += "\n" + task.toString();
+		try {
+			return toJSON().toString();			
+		} catch(JSONException e) {
+			return "JSON Exception";
 		}
-		return story;
+	}
+	
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		JSONObject story = new JSONObject();
+		JSONArray tasks = new JSONArray();
+		JSONArray histories = new JSONArray();
+		JSONArray tags = new JSONArray();
+		
+		for (TaskObject task : getTasks()) {
+			tasks.put(task.toJSON());
+		}
+		
+		for (HistoryObject history : getHistories()) {
+			histories.put(history.toJSON());
+		}
+		
+		for (TagObject tag : getTags()) {
+			tags.put(tag.toJSON());
+		}
+		
+		
+		return null;
+	}
+	
+	private boolean exists() {
+		StoryObject story = StoryDAO.getInstance().get(mId);
+		return story != null;
+	}
+	
+	private void doCreate() {
+		mId = StoryDAO.getInstance().create(this);
+		reload();
+		HistoryDAO.getInstance().create(
+				new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+	}
+	
+	private void doUpdate() {
+		StoryObject oldStory = StoryDAO.getInstance().get(mId);
+		StoryDAO.getInstance().update(this);
+		
+		if (!mName.equals(oldStory.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName);
+		}
+		if (!mNotes.equals(oldStory.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes);
+		}
+		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
+			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo);
+		}
+		if (mImportance != oldStory.getImportance()) {
+			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance);
+		}
+		if (mValue != oldStory.getValue()) {
+			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue);
+		}
+		if (mEstimate != oldStory.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate);
+		}
+		if (mStatus != oldStory.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus);
+		}
+		if (mSprintId != oldStory.getSprintId()) {
+			if (mSprintId == DEFAULT_VALUE) {
+				// Remove this story from sprint
+				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()));				
+			} else if (mSprintId != DEFAULT_VALUE) {
+				// Append this story to sprint
+				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId));
+			}
+		}
+	}
+	
+	private void addHistory(int type, int oldValue, int newValue) {
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+				type, String.valueOf(oldValue), String.valueOf(newValue), System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+	
+	private void addHistory(int type, String oldValue, String newValue) {
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+				type, oldValue, newValue, System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+	
+	private void resetData(StoryObject story) {
+		mId = story.getId();
+		mProjectId = story.getProjectId();
+		mSerialId = story.getSerialId();
+		
+		setName(story.getName());
+		setNotes(story.getNotes());
+		setHowToDemo(story.getHowToDemo());
+		setImportance(story.getImportance());
+		setValue(story.getValue());
+		setEstimate(story.getEstimate());
+		setStatus(story.getStatus());
+		setSprintId(story.getSprintId());
 	}
 }
