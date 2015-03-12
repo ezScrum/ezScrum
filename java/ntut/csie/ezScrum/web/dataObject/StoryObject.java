@@ -13,8 +13,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class StoryObject implements IBaseObject {
-	public final static int STATUS_UNCHECK = 1;
-	public final static int STATUS_DONE = 2;
+	public final static int STATUS_UNCHECK = 0;
+	public final static int STATUS_DONE = 1;
 	public final static int NO_PARENT = -1;
 	public final static int DEFAULT_VALUE = -1;
 	
