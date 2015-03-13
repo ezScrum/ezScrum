@@ -42,7 +42,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		TagObject tagObject = null;
 		try {
 			if (result.next()) {
-				tagObject = convertTag(result);
+				tagObject = convert(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return (getTagByName(name, projectId) != null);
 	}
 	
-	public TagObject convertTag(ResultSet result) throws SQLException {
+	public static TagObject convert(ResultSet result) throws SQLException {
 		long id = result.getLong(TagEnum.ID);
 		String tagName = result.getString(TagEnum.NAME);
 		long projectId = result.getLong(TagEnum.PROJECT_ID);

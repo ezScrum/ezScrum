@@ -69,7 +69,7 @@ public class TagDAOTest {
 	}
 	
 	@Test
-	public void testCreate_1Tag() throws SQLException{
+	public void testCreate() throws SQLException{
 		// Tag Name
 		String tagName = "TEST_TAG_NAME_1";
 		// create TagObject
@@ -88,7 +88,7 @@ public class TagDAOTest {
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
-			tagList.add(TagDAO.getInstance().convertTag(result));
+			tagList.add(TagDAO.convert(result));
 		}
 
 		assertEquals(1, tagList.size());
@@ -133,7 +133,7 @@ public class TagDAOTest {
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
-			tagList.add(TagDAO.getInstance().convertTag(result));
+			tagList.add(TagDAO.convert(result));
 		}
 
 		assertEquals(1, tagList.size());
@@ -160,7 +160,7 @@ public class TagDAOTest {
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
-			tagList.add(TagDAO.getInstance().convertTag(result));
+			tagList.add(TagDAO.convert(result));
 		}
 
 		assertEquals(0, tagList.size());
@@ -204,13 +204,13 @@ public class TagDAOTest {
 		}
 
 		// getTagList
-		ArrayList<TagObject> tagList = TagDAO.getInstance().getTagsByProject(mProjectId);
+		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByProject(mProjectId);
 		// assert
-		assertEquals(3, tagList.size());
+		assertEquals(3, tags.size());
 		
 		for (int i = 0; i < 3; i++) {
-			assertEquals(tagName + i, tagList.get(i).getName());
-			assertEquals(mProjectId, tagList.get(i).getProjectId());
+			assertEquals(tagName + i, tags.get(i).getName());
+			assertEquals(mProjectId, tags.get(i).getProjectId());
 		}
 	}
 	
@@ -220,14 +220,7 @@ public class TagDAOTest {
 		tag.setProjectId(mProjectId);
 		// create test data
 		long tagId = TagDAO.getInstance().create(tag);
-		// assert
 		assertNotSame(-1, tagId);
-		// get
-		ArrayList<TagObject> tagList = new ArrayList<TagObject>();
-		tagList.add(TagDAO.getInstance().get(tagId));
-		assertEquals(1, tagList.size());
-		assertEquals(tagId, tagList.get(0).getId());
-		assertEquals(tagName, tagList.get(0).getName());
-		return tagList.get(0);
+		return TagDAO.getInstance().get(tagId);
 	}
 }
