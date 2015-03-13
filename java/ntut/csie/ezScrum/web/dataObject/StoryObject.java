@@ -2,12 +2,14 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -156,12 +158,42 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public ArrayList<TagObject> getTags() {
-		// TODO
-		return null;
+		return TagDAO.getInstance().getTagsByStoryId(mId);
 	}
 	
 	public ArrayList<HistoryObject> getHistories() {
 		return HistoryDAO.getInstance().getHistoriesByIssue(mId, IssueTypeEnum.TYPE_STORY);
+	}
+	
+	public ArrayList<AttachFileObject> getAttachFiles() {
+		return AttachFileDAO.getInstance().getAttachFilesByStoryId(mId);
+	}
+	
+	public void removeTag(long tagId) {
+		StoryDAO.getInstance().removeTagRelation(mId, tagId);
+	}
+	
+	public void addTag(long tagId) {
+		StoryDAO.getInstance().addTagRelation(mId, tagId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setTags(ArrayList<Long> tagIds) {
+		ArrayList<Long> oldTags = new ArrayList<Long>();
+		for (TagObject tag : getTags()) {
+			oldTags.add(tag.getId());
+		}
+		
+		ArrayList<Long> deletedList = (ArrayList<Long>) CollectionUtils.subtract(oldTags, tagIds);
+		ArrayList<Long> addList = (ArrayList<Long>) CollectionUtils.subtract(tagIds, oldTags);
+		
+		for (Long tagId : deletedList) {
+			removeTag(tagId);
+		}
+		
+		for (Long tagId : addList) {
+			addTag(tagId);
+		}
 	}
 
 	@Override
@@ -216,7 +248,7 @@ public class StoryObject implements IBaseObject {
 		}
 		
 		for (TagObject tag : getTags()) {
-			tags.put(tag.toJSON());
+			//tags.put(tag.toJSON());
 		}
 		
 		story

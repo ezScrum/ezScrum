@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
 
 public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 
@@ -175,6 +176,24 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 			closeResultSet(result);
 		}
 		return stories;
+	}
+	
+	public void addTagRelation(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getSelectQuery();
+		mControl.executeInsert(query);
+	}
+	
+	public boolean removeTagRelation(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
 	}
 
 	public static StoryObject convert(ResultSet result) throws SQLException {
