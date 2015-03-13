@@ -45,10 +45,11 @@ public class CreateTag {
 			for (int tagIndex = 0; tagIndex < mTagCount; tagIndex++) {
 				// m_backlog.addNewTag(TEST_TAG_NAME +
 				// Integer.toString(tagIndex+1)); //TEST_TAG_Y
-				mProductBacklogMapper.addNewTag(TEST_TAG_NAME
-						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
+//				mProductBacklogMapper.addNewTag(TEST_TAG_NAME
+//						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
 
-				TagObject tag = new TagObject(tagIndex + 1, TEST_TAG_NAME + Integer.toString(tagIndex + 1), projectId);
+				TagObject tag = new TagObject(TEST_TAG_NAME + Integer.toString(tagIndex + 1), projectId);
+				tag.save();
 				mTags.add(tag);
 			}
 			System.out.println("Project "
