@@ -27,32 +27,10 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
 		valueSet.addInsertValue(TagEnum.PROJECT_ID, tag.getProjectId());
 		valueSet.addInsertValue(TagEnum.CREATE_TIME, System.currentTimeMillis());
-		
 		String query = valueSet.getInsertQuery();
-		mControl.execute(query, true);
-
-		String[] keys = mControl.getKeys();
-		long id = Long.parseLong(keys[0]);
+		long id = mControl.executeInsert(query);
 		return id;
     }
-	
-	public long addTag(String name, long projectId) {
-		long newId = -1;
-
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addInsertValue(TagEnum.PROJECT_ID, String.valueOf(projectId));
-		valueSet.addInsertValue(TagEnum.NAME, name);
-		valueSet.addInsertValue(TagEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
-		String query = valueSet.getInsertQuery();
-		mControl.execute(query, true);
-		
-		// get the new record id
-		String[] keys = mControl.getKeys();
-		newId = Long.parseLong(keys[0]);
-		
-		return newId;
-	}
 
 	@Override
     public TagObject get(long id) {
@@ -75,25 +53,13 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
     }
 
 	@Override
-	public boolean update(TagObject dataObject) {
+	public boolean update(TagObject tag) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, dataObject.getId());
-		valueSet.addInsertValue(TagEnum.NAME, dataObject.getName());
-		valueSet.addInsertValue(TagEnum.CREATE_TIME, String.valueOf(dataObject.getCreateTime()));
+		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
+		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
 		String query = valueSet.getUpdateQuery();
-
 		return mControl.executeUpdate(query);
-	}
-	
-	public boolean updateTag(long tagId, String newName, long projectId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addInsertValue(TagEnum.NAME, newName);
-		valueSet.addEqualCondition(TagEnum.ID, String.valueOf(tagId));
-		valueSet.addEqualCondition(TagEnum.PROJECT_ID, Long.toString(projectId));
-		String query = valueSet.getUpdateQuery();
-		return mControl.execute(query);
 	}
 
 	@Override
@@ -103,57 +69,6 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		valueSet.addEqualCondition(TagEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
-	}
-	
-	public void deleteTag(long id, long projectId) {
-		// 把story中有關此tag的資訊移除
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, String.valueOf(id));
-		String query = valueSet.getDeleteQuery();
-		mControl.execute(query);
-
-		// 移除Tag資訊
-		valueSet.clear();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, String.valueOf(id));
-		valueSet.addEqualCondition(TagEnum.PROJECT_ID, Long.toString(projectId));
-		query = valueSet.getDeleteQuery();
-		mControl.execute(query);
-	}
-	
-	// 對Story設定自訂分類標籤
-	public void addStoryTag(String storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, String.valueOf(tagId));
-		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, String.valueOf(tagId));
-		String query = valueSet.getSelectQuery();
-
-		// 如果story對tag關係若不存在則新增一筆關係
-		try {
-			ResultSet result = mControl.executeQuery(query);
-			if (!result.next()) {
-				query = valueSet.getInsertQuery();
-				mControl.execute(query);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	// 移除Story的自訂分類標籤
-	public void removeStoryTag(String storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
-		if (tagId != -1){
-			valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, String.valueOf(tagId));
-		}
-		String query = valueSet.getDeleteQuery();
-		mControl.executeUpdate(query);
 	}
 	
 	public TagObject getTagByName(String name, long projectId) {
@@ -176,7 +91,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	}
 	
 	// 取得自訂分類標籤列表
-	public ArrayList<TagObject> getTagList(long projectId) {
+	public ArrayList<TagObject> getTagsByProject(long projectId) {
 		ArrayList<TagObject> tags = new ArrayList<TagObject>();
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
@@ -195,7 +110,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return tags;
 	}
 	
-	public boolean isTagExist(String name, long projectId) {
+	public boolean exist(String name, long projectId) {
 		return (getTagByName(name, projectId) != null);
 	}
 	
