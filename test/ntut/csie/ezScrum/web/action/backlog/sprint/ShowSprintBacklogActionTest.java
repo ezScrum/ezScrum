@@ -12,15 +12,16 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private final String mACTION_PATH = "/showSprintBacklog2";
-	private IProject mProject;
+	private ProjectObject mProject;
 	
 	public ShowSprintBacklogActionTest(String testName) {
 		super(testName);
@@ -37,7 +38,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		
 		mCP = new CreateProject(1);
 		mCP.exeCreate(); // 新增一測試專案
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 		
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
@@ -144,16 +145,16 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedStoryName = addStoryToSprint.getStories().get(0).getSummary();
-		String expectedStoryImportance = addStoryToSprint.getStories().get(0).getImportance();
-		String expectedStoryEstimation = String.valueOf(storyEst);
-		String expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
+		String expectedStoryName = addStoryToSprint.getStories().get(0).getName();
+		int expectedStoryImportance = addStoryToSprint.getStories().get(0).getImportance();
+		int expectedStoryEstimate = storyEst;
+		int expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
 		String expectedStoryHoewToDemo = addStoryToSprint.getStories().get(0).getHowToDemo();
 		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
 		String expectedSprintId= idList.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
 		String expectedSprintHoursToCommit = "10.0";
-		String issueID = String.valueOf(addStoryToSprint.getStories().get(0).getIssueID());
+		long storyId = addStoryToSprint.getStories().get(0).getId();
 		
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")
@@ -161,18 +162,18 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 							.append("\"Sprint\":{")
 							.append("\"Id\":").append(expectedSprintId).append(",")
 							.append("\"Name\":\"Sprint #").append(expectedSprintId).append("\",")
-							.append("\"CurrentPoint\":\"").append(expectedStoryEstimation).append(".0\",")
+							.append("\"CurrentPoint\":\"").append(expectedStoryEstimate).append(".0\",")
 							.append("\"LimitedPoint\":\"").append(expectedSprintHoursToCommit).append("\",")
 							.append("\"TaskPoint\":\"").append(taskEstValue).append(".0\",")
 							.append("\"ReleaseID\":\"Release #None\",")
 							.append("\"SprintGoal\":\"").append(expectedSprintGoal).append("\"},")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(issueID).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(issueID).append("\",")
+							.append("\"Id\":").append(storyId).append(",")
+							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(storyId).append("\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")
 							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
+							.append("\"Estimate\":\"").append(expectedStoryEstimate).append("\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"Tag\":\"\",")

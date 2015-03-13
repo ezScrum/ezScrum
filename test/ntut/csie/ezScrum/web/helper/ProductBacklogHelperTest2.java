@@ -47,13 +47,14 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		configuration.setTestMode(true);
 		configuration.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		ini.exe();
 		
-		// 新增Project
+		// 新增 Project
 		this.CP = new CreateProject(this.ProjectCount);
 		this.CP.exeCreate();
-		// 新增Story	
+		// 新增 Story	
 		this.CPB = new CreateProductBacklog(this.StoryCount, this.CP);
 		this.CPB.exe();
 		
@@ -75,7 +76,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		ini = null;
     }
 
-    protected void tearDown() throws IOException, Exception {
+    protected void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();											// 初始化 SQL
 

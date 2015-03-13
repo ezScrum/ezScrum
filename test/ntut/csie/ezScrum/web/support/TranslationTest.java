@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
@@ -14,6 +13,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TranslationTest{
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateProductBacklog mCPB;
@@ -88,103 +89,97 @@ public class TranslationTest{
 	@Test
 	public void testTranslateStoryToJson2() throws Exception {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
-		IIssue[] stories = new IIssue[1];
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 
 		// initial data
 		for (int i = 0; i < 10; i++) {
-			productBacklogHelper.editStory(mCPB.getIssueList().get(i).getIssueID(), "0", "0", "0", "0", "0", "0", true);
-			IIssue issue = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-
-			assertEquals("0", issue.getEstimated());
-			assertEquals("0", issue.getImportance());
-			assertEquals("0", issue.getValue());
+			productBacklogHelper.editStory(mCPB.getStories().get(i).getId(), "0", "0", "0", "0", "0", "0", true);
+			StoryObject story = mCPB.getStories().get(i);
+			assertEquals(0, story.getEstimate());
+			assertEquals(0, story.getImportance());
+			assertEquals(0, story.getValue());
 			Thread.sleep(500);
 		}
 
-		StringBuilder ActualSB = new StringBuilder();
+		StringBuilder actualSB = new StringBuilder();
 		for (int i = 0; i < 10; i++) {
-			stories[0] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories));
-			assertFalse(ActualSB.toString().contains("DONE"));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
-			assertTrue(ActualSB.toString().contains("BACKLOG"));
+			stories.add(mCPB.getStories().get(i));
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(stories.get(i)));
+			assertFalse(actualSB.toString().contains("DONE"));
+			assertFalse(actualSB.toString().contains("DETAIL"));
+			assertTrue(actualSB.toString().contains("BACKLOG"));
 		}
 
-		ArrayList<IIssue> issueList = new ArrayList<IIssue>();
-		issueList.add(mCPB.getIssueList().get(0));
-		issueList.add(mCPB.getIssueList().get(1));
-		issueList.add(mCPB.getIssueList().get(2));
-		issueList.add(mCPB.getIssueList().get(3));
-		CheckOutIssue coi = new CheckOutIssue(issueList, mCP);
+		CheckOutIssue coi = new CheckOutIssue(stories, mCP);
 		// 將前四筆狀態 done
 		coi.exeDone_Issues();
 
-		stories = new IIssue[10];
+		stories.clear();
 
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertTrue(ActualSB.toString().contains("DONE"));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
-			assertFalse(ActualSB.toString().contains("BACKLOG"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertTrue(actualSB.toString().contains("DONE"));
+			assertFalse(actualSB.toString().contains("DETAIL"));
+			assertFalse(actualSB.toString().contains("BACKLOG"));
 		}
 
 		// 驗證 backlog 狀態
 		for (int i = 4; i < 9; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertFalse(ActualSB.toString().contains("DONE"));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
-			assertTrue(ActualSB.toString().contains("BACKLOG"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertFalse(actualSB.toString().contains("DONE"));
+			assertFalse(actualSB.toString().contains("DETAIL"));
+			assertTrue(actualSB.toString().contains("BACKLOG"));
 		}
 
 		// 驗證 detail 狀態
 		for (int i = 0; i < 10; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertFalse(actualSB.toString().contains("DETAIL"));
 		}
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
-		productBacklogHelper.editStory(mCPB.getIssueList().get(4).getIssueID(), "", "1", "1", "1", "", "", true);
+		productBacklogHelper.editStory(mCPB.getStories().get(4).getId(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 
-		productBacklogHelper.editStory(mCPB.getIssueList().get(5).getIssueID(), "", "1", "1", "1", "", "", true);
+		productBacklogHelper.editStory(mCPB.getStories().get(5).getId(), "", "1", "1", "1", "", "", true);
 		Thread.sleep(1000);
 		
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertTrue(ActualSB.toString().contains("DONE"));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
-			assertFalse(ActualSB.toString().contains("BACKLOG"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertTrue(actualSB.toString().contains("DONE"));
+			assertFalse(actualSB.toString().contains("DETAIL"));
+			assertFalse(actualSB.toString().contains("BACKLOG"));
 		}
 
 		// 驗證 detail 狀態
 		for (int i = 4; i < 6; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertFalse(ActualSB.toString().contains("DONE"));
-			assertTrue(ActualSB.toString().contains("DETAIL"));
-			assertFalse(ActualSB.toString().contains("BACKLOG"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertFalse(actualSB.toString().contains("DONE"));
+			assertTrue(actualSB.toString().contains("DETAIL"));
+			assertFalse(actualSB.toString().contains("BACKLOG"));
 		}
 
 		// 驗證 backlog 狀態
 		for (int i = 7; i < 10; i++) {
-			stories[i] = productBacklogHelper.getIssue(mCPB.getIssueList().get(i).getIssueID());
-			ActualSB = new StringBuilder();
-			ActualSB.append(new Translation().translateStoryToJson(stories[i]));
-			assertFalse(ActualSB.toString().contains("DONE"));
-			assertFalse(ActualSB.toString().contains("DETAIL"));
-			assertTrue(ActualSB.toString().contains("BACKLOG"));
+			StoryObject story = mCPB.getStories().get(i);
+			actualSB = new StringBuilder();
+			actualSB.append(new Translation().translateStoryToJson(story));
+			assertFalse(actualSB.toString().contains("DONE"));
+			assertFalse(actualSB.toString().contains("DETAIL"));
+			assertTrue(actualSB.toString().contains("BACKLOG"));
 		}
 	}
 }

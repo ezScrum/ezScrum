@@ -1,9 +1,7 @@
 package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
-import java.io.IOException;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -14,6 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -21,6 +20,7 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ReopenIssueActionTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -38,20 +38,25 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
+		ini.exe();
 
+		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();								// 新增一測試專案
+		mCP.exeCreate();
 
+		// 新增一個 Sprint
 		mCS = new CreateSprint(1, mCP);
-		mCS.exe();										// 新增一個 Sprint
+		mCS.exe();
 
+		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
 		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASTS.exe();		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
+		mASTS.exe();
 
+		// 新增兩筆 Task 到各個 Stories 內
 		mATTS = new AddTaskToStory(1, 1, mASTS, mCP);
-		mATTS.exe();		// 新增兩筆 Task 到各個 Stories 內
+		mATTS.exe();
 
 		super.setUp();
 
@@ -63,9 +68,10 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
+		ini.exe();
 
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
@@ -88,13 +94,13 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	public void testReopenIssue_Task() {
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
-		Long taskId = task.getId();
+		TaskObject task = mATTS.getTasks().get(0);
+		long taskId = task.getId();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
-		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID
+		addRequestParameter("Id", String.valueOf(taskId));
 		addRequestParameter("Name", task.getName());
 		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("IssueType", "Task");
@@ -142,15 +148,15 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	public void testReopenIssue_Story() {
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		IIssue issue = mASTS.getStories().get(0); // 取得Story資訊
-		Long storyId = issue.getIssueID();
+		StoryObject story = mASTS.getStories().get(0);
+		Long storyId = story.getId();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), "-1");
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(storyId));
-		addRequestParameter("Name", issue.getSummary());
-		addRequestParameter("Notes", issue.getNotes());
+		addRequestParameter("Name", story.getName());
+		addRequestParameter("Notes", story.getNotes());
 		addRequestParameter("IssueType", "Story");
 		addRequestParameter("ChangeDate", "");
 
@@ -160,30 +166,30 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
-		sprintBacklogMapper.closeStory(issue.getIssueID(), issue.getNotes(), ""); // 先設定Story為closed的狀態 在測試
+		sprintBacklogMapper.closeStory(story.getId(), story.getNotes(), ""); // 先設定Story為closed的狀態 在測試
 		actionPerform();
 		// 驗證回傳 path
 		verifyNoActionErrors();
-		// 驗證是否正確存入資料
-		issue = sprintBacklogMapper.getStory(storyId); // 重新取得Story資訊
+		// 驗證是否正確存入資料，重新取得 Story 資訊
+		story = sprintBacklogMapper.getStory(storyId);
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(storyId)).append(",")
 							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(storyId)).append("\",")
-							.append("\"Name\":\"").append(issue.getSummary()).append("\",")
-							.append("\"Handler\":\"").append(issue.getAssignto()).append("\",")
-							.append("\"Partners\":\"").append(issue.getPartners()).append("\"}")
+							.append("\"Name\":\"").append(story.getName()).append("\",")
+							.append("\"Handler\":\"").append(story.getAssignto()).append("\",")
+							.append("\"Partners\":\"").append(story.getPartners()).append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals(ITSEnum.S_NEW_STATUS, issue.getStatus()); // 判斷Story狀態是不是回到new了
+		assertEquals(ITSEnum.S_NEW_STATUS, story.getStatus()); // 判斷Story狀態是不是回到new了
 
 		// ============= release ==============
 		project = null;
 		sprintBacklogLogic = null;
 		sprintBacklogMapper = null;
-		issue = null;
+		story = null;
 	}
 }

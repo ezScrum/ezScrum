@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedHashTreeMap;
 
 public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private IProject mProject;
@@ -42,15 +42,16 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 		mProject = mCP.getProjectList().get(0);
 
-		// 新增1筆Sprint Plan
+		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
@@ -65,9 +66,10 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
+	 	// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); 	// 初始化 SQL
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
@@ -86,7 +88,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 測試Story的burndown chart在都沒有done的情況下的圖資料是否正確
+	 * 測試 Story 的 burndown chart 在都沒有 done 的情況下的圖資料是否正確
 	 */
 	public void testGetSprintBurndownChartData_Story_1() throws Exception {
 		final int STORY_COUNT = 2, STORY_EST = 5;
@@ -94,7 +96,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		ASTS.exe();
 
-		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
+		// 拿出 sprint 的每一天日期放在 idealPointArray 當 expecte 天數
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
@@ -152,7 +154,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將story移到done
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getIssueID(), "", "");
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());

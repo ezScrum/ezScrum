@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -31,10 +30,11 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
+		ini.exe();
 		
-		// 新增Project
+		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
 		
@@ -46,7 +46,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		
 		super.setUp();
 		
-		// 設定讀取的struts-config檔案路徑
+		// 設定讀取的 struts-config 檔案路徑
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); 
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(mActionPath);
@@ -85,13 +85,13 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIDList.get(0)));
-		String expectedStoryId = String.valueOf(mCPB.getIssueIDList().get(0));
-		String expectedStoryName = mCPB.getIssueList().get(0).getSummary();
-		String expectedStoryValue = mCPB.getIssueList().get(0).getValue();
-		String expectedStoryImportance = mCPB.getIssueList().get(0).getImportance();
-		String expectedStoryEstimation = mCPB.getIssueList().get(0).getEstimated();
-		String expectedStoryNote = mCPB.getIssueList().get(0).getNotes();
-		String expectedStoryHoewToDemo = mCPB.getIssueList().get(0).getHowToDemo();
+		long expectedStoryId = mCPB.getIssueIDList().get(0);
+		String expectedStoryName = mCPB.getStories().get(0).getName();
+		int expectedStoryValue = mCPB.getStories().get(0).getValue();
+		int expectedStoryImportance = mCPB.getStories().get(0).getImportance();
+		int expectedStoryEstimate = mCPB.getStories().get(0).getEstimate();
+		String expectedStoryNote = mCPB.getStories().get(0).getNotes();
+		String expectedStoryHoewToDemo = mCPB.getStories().get(0).getHowToDemo();
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ 執行 action ======================
@@ -111,7 +111,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Id\":").append(expectedStoryId).append(",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
+							.append("\"Estimate\":\"").append(expectedStoryEstimate).append("\",")
 							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
 							.append("\"Tag\":\"").append(tags.get(0).getName()).append("\",")
 							.append("\"Status\":\"new\",")

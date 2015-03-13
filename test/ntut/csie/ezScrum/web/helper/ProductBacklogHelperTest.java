@@ -91,7 +91,7 @@ public class ProductBacklogHelperTest{
 	public void testAddAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
-		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = mCreateProductBacklog.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		
@@ -114,7 +114,7 @@ public class ProductBacklogHelperTest{
 	public void testDeleteAttachFile() {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "initial_bk.sql";
-		attachFileInfo.issueId = mCreateProductBacklog.getIssueList().get(0).getIssueID();
+		attachFileInfo.issueId = mCreateProductBacklog.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
 		

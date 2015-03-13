@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -20,6 +19,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -36,37 +36,39 @@ public class SprintBacklogMapperTest {
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
-	private static long mPROJECT_ID = 1;
+	private static long mProjectId = 1;
 
 	@Before
 	public void setUp() throws Exception {
-		// initialize database
+		// Initialize database
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
+		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();// 初始化 SQL
+		ini.exe();
 		ini = null;
 
 		// create test data
-		int PROJECT_COUNT = 1;
-		int SPRINT_COUNT = 1;
-		int STORY_COUNT = 3;
-		int STORY_ESTIMATE = 5;
-		int TASK_COUNT = 3;
-		int TASK_ESTIMATE = 8;
-		String CREATE_PRODUCTBACKLOG_TYPE = "EST";
+		int projectCount = 1;
+		int sprintCount = 1;
+		int storyCount = 3;
+		int storyEstimate = 5;
+		int taskCount = 3;
+		int taskEstimate = 8;
+		String columnBeSet = "EST";
 		
-		mCP = new CreateProject(PROJECT_COUNT);
+		mCP = new CreateProject(projectCount);
 		mCP.exeCreate();
 
-		mCS = new CreateSprint(SPRINT_COUNT, mCP);
+		mCS = new CreateSprint(sprintCount, mCP);
 		mCS.exe();
 
-		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
+		mASTS = new AddStoryToSprint(storyCount, storyEstimate, mCS, mCP, columnBeSet);
 		mASTS.exe();
 
-		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
+		mATTS = new AddTaskToStory(taskCount, taskEstimate, mASTS, mCP);
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
@@ -511,7 +513,7 @@ public class SprintBacklogMapperTest {
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		taskInfo.partnersId.add(1L);
 
-		long taskId = mSprintBacklogMapper.addTask(mPROJECT_ID, taskInfo);
+		long taskId = mSprintBacklogMapper.addTask(mProjectId, taskInfo);
 
 		TaskObject actualTask = TaskObject.get(taskId);
 		assertEquals(taskInfo.name, actualTask.getName());
@@ -695,71 +697,62 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testCloseStory() {
-		String CLOSE_NOTE = "CLOSE_NOTE";
+		String closeNote = "CLOSE_NOTE";
+		StoryObject story = mASTS.getStories().get(0);
+		long storyId = story.getId();
+		long updateTime = System.currentTimeMillis();
 
-		IIssue story = mASTS.getStories().get(0);
-		long storyId = story.getIssueID();
-
-		// story default status is NEW
-		assertEquals("new", story.getStatus());
-
-		mSprintBacklogMapper.closeStory(storyId, CLOSE_NOTE, "");
-
-		MantisService service = new MantisService(mConfig);
-		service.openConnect();
-		story = service.getIssue(storyId);
-		service.closeConnect();
-
-		assertEquals("closed", story.getStatus());
+		// story default status is UNCHECK
+		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
+		
+		mSprintBacklogMapper.closeStory(storyId, closeNote, updateTime);
+		story = StoryObject.get(storyId);
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 	}
 
 	@Test
 	public void testReopenStory() {
-		String REOPEN_NAME = "REOPEN_NAME";
-		String REOPEN_NOTE = "REOPEN_NOTE";
+		String reopenName = "REOPEN_NAME";
+		String reopenNote = "REOPEN_NOTE";
+		StoryObject story = mASTS.getStories().get(0);
+		long storyId = story.getId();
+		long updateTime = System.currentTimeMillis();
 
-		IIssue story = mASTS.getStories().get(0);
-		long storyId = story.getIssueID();
+		// story default status is UNCHECK
+		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
 
-		// story default status is NEW
-		assertEquals("new", story.getStatus());
-
-		MantisService service = new MantisService(mConfig);
-		service.openConnect();
-
-		// set story's status to CLOSED and assert it
-		service.changeStatusToClosed(storyId, ITSEnum.FIXED_RESOLUTION, "", new Date());
-		story = service.getIssue(storyId);
-		assertEquals("closed", story.getStatus());
+		// set story's status to DONE and assert it
+		mSprintBacklogMapper.closeStory(storyId, reopenNote, updateTime);
+		story = StoryObject.get(storyId);
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 		
 		// reopen the story
-		mSprintBacklogMapper.reopenStory(storyId, REOPEN_NAME, REOPEN_NOTE, "");
-		
-		story = service.getIssue(storyId);
-		service.closeConnect();
-		assertEquals("new", story.getStatus());
-		assertEquals(REOPEN_NAME, story.getSummary());
+		updateTime = System.currentTimeMillis();
+		mSprintBacklogMapper.reopenStory(storyId, reopenName, reopenName, updateTime);
+		story = StoryObject.get(storyId);
+		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
+		assertEquals(reopenName, story.getName());
 	}
 
 	@Test
 	public void testCloseTask() {
-		String CLOSE_NAME = "CLOSE_NAME";
-		String CLOSE_NOTE = "CLOSE_NOTE";
-		Date SPECIFIC_DATE = new Date(System.currentTimeMillis());
+		String closeName = "CLOSE_NAME";
+		String closeNote = "CLOSE_NOTE";
+		Date specificDate = new Date(System.currentTimeMillis());
 
 		// assert status, default status should be UNCHECK
 		TaskObject task = mATTS.getTasks().get(0);
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), CLOSE_NAME, CLOSE_NOTE, SPECIFIC_DATE);
+		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
-		assertEquals(CLOSE_NAME, closedTask.getName());
-		assertEquals(CLOSE_NOTE, closedTask.getNotes());
+		assertEquals(closeName, closedTask.getName());
+		assertEquals(closeNote, closedTask.getNotes());
 		assertEquals(0, closedTask.getRemains());
 		assertEquals(TaskObject.STATUS_DONE, closedTask.getStatus());
-		assertEquals(SPECIFIC_DATE.getTime(), closedTask.getUpdateTime());
+		assertEquals(specificDate.getTime(), closedTask.getUpdateTime());
 	}
 
 	@Test

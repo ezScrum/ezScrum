@@ -87,7 +87,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 				CreateProductBacklog.TYPE_ESTIMATION);
 		ASS.exe();
 
-		int storyId = (int) ASS.getStories().get(0).getIssueID();
+		long storyId = ASS.getStories().get(0).getId();
 		AddTaskToStory ATS = new AddTaskToStory(1, 1, ASS, mCP);
 		ATS.exe();
 

@@ -30,6 +30,7 @@ import org.codehaus.jettison.json.JSONObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowIssueHistoryTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
@@ -143,7 +144,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getId();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -154,6 +155,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
+		String expectedIssueType = "Story";
 		List<String> expectedDescription = genArrayList("Create Story #" + storyId, "Append to Sprint #1");
 		List<String> expectedHistoryType = genArrayList("", "");
 
@@ -171,8 +173,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getName(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -185,7 +187,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
-		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getId();
 
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
@@ -200,6 +202,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
+		String expectedIssueType = "Story";
 		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #1");
 		List<String> expectedHistoryType = genArrayList("", "", "");
 
@@ -217,9 +220,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getStories().get(0).getIssueLink(), historyObj.getString("Link"));
-		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getName(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 
@@ -233,7 +235,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		addStoryToSprint.exe();
 
-		long storyId = addStoryToSprint.getStories().get(0).getIssueID();
+		long storyId = addStoryToSprint.getStories().get(0).getId();
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
@@ -252,6 +254,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
+		String expectedIssueType = "Story";
 		List<String> expectedDescription = genArrayList("Create Story #1", "Append to Sprint #1", "Add Task #1", "Drop Task #1");
 		List<String> expectedHistoryType = genArrayList("", "", "", "");
 
@@ -269,8 +272,8 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(addStoryToSprint.getStories().get(0).getCategory(), historyObj.getString("IssueType"));
-		assertEquals(addStoryToSprint.getStories().get(0).getSummary(), historyObj.getString("Name"));
+		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
+		assertEquals(addStoryToSprint.getStories().get(0).getName(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription, historyObj.getJSONArray("IssueHistories"));
 	}
 

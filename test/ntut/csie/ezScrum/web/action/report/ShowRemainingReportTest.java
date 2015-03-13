@@ -25,6 +25,7 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowRemainingReportTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private IProject mProject;
 	private Configuration mConfig;
@@ -39,18 +40,21 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-		
-		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
 
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+
+		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreate();
+
 		mProject = mCP.getProjectList().get(0);
 
 		super.setUp();
 
-		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		// struts-config檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/showRemainingReport");
 
@@ -58,14 +62,15 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		
+
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -87,9 +92,11 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", mProject);
 
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + mProject.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath("/DisplayMessage.jsp");
@@ -378,7 +385,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		String sprintId = CS.getSprintIDList().get(0);
 		// 1個story設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getIssueID(), ASTS.getStories().get(0).getNotes(), DONE_TIME);
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getNotes(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================

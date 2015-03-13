@@ -19,6 +19,7 @@ import servletunit.struts.MockStrutsTestCase;
 import com.google.gson.Gson;
 
 public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private IProject mProject;
@@ -34,15 +35,16 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 		mProject = mCP.getProjectList().get(0);
 
-		// 新增1筆Sprint Plan
+		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
@@ -58,8 +60,9 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); 	// 初始化 SQL
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
@@ -78,7 +81,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 完全沒有動story與task的sprint info
+	 * 完全沒有動 story 與 task 的 sprint info
 	 */
 	public void testGetSprintInfoForTaskBoard_1() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
@@ -133,7 +136,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		// 將第1個story跟task全都拉到done
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, "");
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), "", 0, "");
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getIssueID(), "", "");
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "");
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();

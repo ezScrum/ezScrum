@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.action.backlog;
 import java.io.File;
 import java.io.IOException;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -11,6 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -100,11 +100,11 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// Sprint 空資料
 		addRequestParameter("sprintID", "");
 
-		String[] storyIds = new String[mCPB.getIssueList()
+		String[] storyIds = new String[mCPB.getStories()
 				.size()];
 		int count = 0;
-		for (IIssue issue : mCPB.getIssueList()) {
-			storyIds[count++] = Long.toString(issue.getIssueID());
+		for (StoryObject story : mCPB.getStories()) {
+			storyIds[count++] = Long.toString(story.getId());
 		}
 
 		addRequestParameter("selects", storyIds);
@@ -140,8 +140,8 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(
 				mConfig.getUserSession(), mProject);
 
-		for (IIssue issue : mCPB.getIssueList()) {
-			String releaseID = productBacklogHelper.getIssue(issue.getIssueID())
+		for (StoryObject story : mCPB.getStories()) {
+			String releaseID = productBacklogHelper.getIssue(story.getId())
 					.getReleaseID();
 			assertEquals(Integer.toString(mCR.getReleaseCount()),
 					releaseID);

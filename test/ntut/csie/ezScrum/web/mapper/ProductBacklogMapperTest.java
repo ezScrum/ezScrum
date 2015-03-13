@@ -17,8 +17,9 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class ProductBacklogMapperTest {
 		mCPB.exe();
 		
 		// 建立 productbacklog 物件
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		mProductBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
 		
 		// ============= release ==============
@@ -105,63 +106,63 @@ public class ProductBacklogMapperTest {
 	
 	@Test // 測試上傳檔案到一筆 Story 是否成功
 	public void testAddAttachFile_Story() {
-		IIssue issue = mCPB.getIssueList().get(0);
+		StoryObject story = mCPB.getStories().get(0);
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
+		addAttachFile(mProductBacklogMapper, story.getId(), IssueTypeEnum.TYPE_STORY);
 		
-		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
+		story.reload();
+		AttachFileObject ActualFile = story.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
+		assertEquals(1, story.getAttachFiles().size());
 		assertEquals(mFILE_NAME, ActualFile.getName());
 		assertEquals(mFILE_TYPE, ActualFile.getContentType());
-		assertEquals(issue.getIssueID(), ActualFile.getId());
+		assertEquals(story.getId(), ActualFile.getId());
 		
 		// ============= release ==============
-		issue = null;
+		story = null;
 		ActualFile = null;
 	}
 	
 	@Test // 測試刪除一筆 Story 的檔案
 	public void testDeleteAttachFile_Story() {
-		IIssue issue = mCPB.getIssueList().get(0);		
+		StoryObject story = mCPB.getStories().get(0);		
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
+		addAttachFile(mProductBacklogMapper, story.getId(), IssueTypeEnum.TYPE_STORY);
 		
-		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject ActualFile = issue.getAttachFiles().get(0);
+		story.reload();
+		AttachFileObject ActualFile = story.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
+		assertEquals(1, story.getAttachFiles().size());
 		assertEquals(mFILE_NAME, ActualFile.getName());
 		assertEquals(mFILE_TYPE, ActualFile.getContentType());
-		assertEquals(issue.getIssueID(), ActualFile.getId());
+		assertEquals(story.getId(), ActualFile.getId());
 		
 		// 刪除此 issue 的檔案
 		mProductBacklogMapper.deleteAttachFile(ActualFile.getId());
-		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
-		assertEquals(0, issue.getAttachFiles().size());
+		story.reload();
+		assertEquals(0, story.getAttachFiles().size());
 		
 		// ============= release ==============
-		issue = null;
+		story = null;
 		ActualFile = null;		
 	}
 	
 	@Test // 測試不用透過 mantis 直接取得檔案的方法
 	public void testGetAttachfile_Story() {
-		IIssue issue = mCPB.getIssueList().get(0);
+		StoryObject story = mCPB.getStories().get(0);
 		
-		addAttachFile(mProductBacklogMapper, issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
+		addAttachFile(mProductBacklogMapper, story.getId(), IssueTypeEnum.TYPE_STORY);
 		
-		issue = mProductBacklogMapper.getIssue(issue.getIssueID());
-		AttachFileObject IssueFile = issue.getAttachFiles().get(0);
+		story.reload();
+		AttachFileObject IssueFile = story.getAttachFiles().get(0);
 		
-		assertEquals(1, issue.getAttachFiles().size());
+		assertEquals(1, story.getAttachFiles().size());
 		assertEquals(mFILE_NAME, IssueFile.getName());
 		assertEquals(mFILE_TYPE, IssueFile.getContentType());
-		assertEquals(issue.getIssueID(), IssueFile.getId());
+		assertEquals(story.getId(), IssueFile.getId());
 
 		// ============= release ==============
-		issue = null;
+		story = null;
 	}
 	
 	private void addAttachFile(ProductBacklogMapper mapper, long issueId, int issutType) {

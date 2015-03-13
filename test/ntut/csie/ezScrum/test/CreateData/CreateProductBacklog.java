@@ -2,14 +2,17 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
@@ -29,8 +32,8 @@ public class CreateProductBacklog {
 	public String TEST_STORY_HOW_TO_DEMO = "TEST_STORY_DEMO_";	// How to demo
 	public String TEST_STORY_NOTES = "TEST_STORY_NOTE_";	// Story notes
 
-	private ArrayList<IIssue> Issues = new ArrayList<IIssue>();
-	private ArrayList<Long> IssuesId = new ArrayList<Long>();
+	private ArrayList<StoryObject> mStories = new ArrayList<StoryObject>();
+	private ArrayList<Long> mStoryIds = new ArrayList<Long>();
 	private ProductBacklogMapper mProductBacklogMapper = null;
 
 	public static final String TYPE_ESTIMATION = "EST";
@@ -64,7 +67,7 @@ public class CreateProductBacklog {
 		if (mAutoSetStory) {
 
 			for (int i = 0; i < mCP.getProjectList().size(); i++) {
-				IProject project = mCP.getProjectList().get(i);		// TEST_PROJECT_X
+				ProjectObject project = mCP.getAllProjects().get(i);		// TEST_PROJECT_X
 				mProductBacklogMapper = new ProductBacklogMapper(project, userSession);
 
 				TEST_STORY_IMP = Integer.toString(Max_IMP);
@@ -79,9 +82,9 @@ public class CreateProductBacklog {
 					                TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
 					                TEST_STORY_NOTES + Integer.toString(j + 1),
 					                "", "", "", "");
-					IIssue story = mProductBacklogMapper.addStory(storyInformation);
+					StoryObject story = mProductBacklogMapper.addStory(storyInformation);
 
-					editStory(story.getIssueID(),
+					editStory(story.getId(),
 					        TEST_STORY_NAME + Integer.toString(j + 1),
 					        TEST_STORY_VALUE,
 					        TEST_STORY_IMP,
@@ -89,10 +92,10 @@ public class CreateProductBacklog {
 					        TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
 					        TEST_STORY_NOTES + Integer.toString(j + 1),
 					        false);
-					// 重新拿出更新過的story
-					story = mProductBacklogMapper.getIssue(story.getIssueID());
-					Issues.add(story);
-					IssuesId.add(story.getIssueID());
+					// 重新拿出更新過的 story
+					story = mProductBacklogMapper.getIssue(story.getId());
+					mStories.add(story);
+					mStoryIds.add(story.getId());
 					resetEST(j + 1);
 					resetIMP(j + 1);
 				}
@@ -101,7 +104,7 @@ public class CreateProductBacklog {
 		} else {
 			if (mType.equals(TYPE_ESTIMATION)) {
 				for (int i = 0; i < mCP.getProjectList().size(); i++) {
-					IProject project = mCP.getProjectList().get(i);		// TEST_PROJECT_X
+					ProjectObject project = mCP.getAllProjects().get(i);
 					mProductBacklogMapper = new ProductBacklogMapper(project, userSession);
 					TEST_STORY_IMP = Integer.toString(Max_IMP);
 					TEST_STORY_EST = Integer.toString(Min_EST);
@@ -115,8 +118,8 @@ public class CreateProductBacklog {
 						                TEST_STORY_HOW_TO_DEMO + Integer.toString(j + 1),
 						                TEST_STORY_NOTES + Integer.toString(j + 1),
 						                "", "", "", "");
-						IIssue story = mProductBacklogMapper.addStory(storyInformation);
-						editStory(story.getIssueID(),
+						StoryObject story = mProductBacklogMapper.addStory(storyInformation);
+						editStory(story.getId(),
 						        TEST_STORY_NAME + Integer.toString(j + 1),
 						        TEST_STORY_VALUE,
 						        TEST_STORY_IMP,
@@ -125,9 +128,9 @@ public class CreateProductBacklog {
 						        TEST_STORY_NOTES + Integer.toString(j + 1),
 						        false);
 						// 重新拿出更新過的story
-						story = mProductBacklogMapper.getIssue(story.getIssueID());
-						Issues.add(story);
-						IssuesId.add(story.getIssueID());
+						story = mProductBacklogMapper.getIssue(story.getId());
+						mStories.add(story);
+						mStoryIds.add(story.getId());
 						resetIMP(j + 1);
 					}
 				}
@@ -147,9 +150,9 @@ public class CreateProductBacklog {
 						                TEST_STORY_NOTES + Integer.toString(j + 1),
 						                TEST_STORY_DESC + Integer.toString(j + 1),
 						                "", "", "");
-						IIssue story = mProductBacklogMapper.addStory(storyInformation);
+						StoryObject story = mProductBacklogMapper.addStory(storyInformation);
 
-						editStory(story.getIssueID(),
+						editStory(story.getId(),
 						        TEST_STORY_NAME + Integer.toString(j + 1),
 						        TEST_STORY_VALUE,
 						        TEST_STORY_IMP,
@@ -158,9 +161,9 @@ public class CreateProductBacklog {
 						        TEST_STORY_NOTES + Integer.toString(j + 1),
 						        false);
 						// 重新拿出更新過的story
-						story = mProductBacklogMapper.getIssue(story.getIssueID());
-						Issues.add(story);	// add to list
-						IssuesId.add(story.getIssueID());
+						story = mProductBacklogMapper.getIssue(story.getId());
+						mStories.add(story);	// add to list
+						mStoryIds.add(story.getId());
 						resetEST(j + 1);
 					}
 					mlog.info("Assign Importance Value");
@@ -172,10 +175,10 @@ public class CreateProductBacklog {
 		}
 	}
 
-	public void createBacklogStory(IProject project, String value, String importance, String estimation) {
+	public void createBacklogStory(ProjectObject project, String value, String importance, String estimation) {
 		IUserSession userSession = mConfig.getUserSession();
 		mProductBacklogMapper = new ProductBacklogMapper(project, userSession);
-		int index = IssuesId.size();
+		int index = mStoryIds.size();
 		StoryInfo storyInformation = new StoryInfo
 		        (TEST_STORY_NAME + Integer.toString(index + 1),
 		                importance,
@@ -185,8 +188,8 @@ public class CreateProductBacklog {
 		                TEST_STORY_NOTES + Integer.toString(index + 1),
 		                "",
 		                "", "", "");
-		IIssue story = mProductBacklogMapper.addStory(storyInformation);
-		editStory(story.getIssueID(),
+		StoryObject story = mProductBacklogMapper.addStory(storyInformation);
+		editStory(story.getId(),
 		        TEST_STORY_NAME + Integer.toString(index + 1),
 		        value,
 		        importance,
@@ -194,17 +197,17 @@ public class CreateProductBacklog {
 		        TEST_STORY_HOW_TO_DEMO + Integer.toString(index + 1),
 		        TEST_STORY_NOTES + Integer.toString(index + 1),
 		        false);
-		story = mProductBacklogMapper.getIssue(story.getIssueID());
-		Issues.add(story);	// add to list
-		IssuesId.add(story.getIssueID());
+		story = mProductBacklogMapper.getIssue(story.getId());
+		mStories.add(story);	// add to list
+		mStoryIds.add(story.getId());
 	}
 
-	public ArrayList<IIssue> getIssueList() {
-		return Issues;
+	public ArrayList<StoryObject> getStories() {
+		return mStories;
 	}
 
 	public ArrayList<Long> getIssueIDList() {
-		return IssuesId;
+		return mStoryIds;
 	}
 
 	// reset estimation value

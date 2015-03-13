@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -12,12 +11,14 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowCheckOutIssueTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -33,21 +34,27 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-		
+
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
+		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreate();
 
+		// 新增1個Sprint到專案內
 		mCS = new CreateSprint(1, mCP);
-		mCS.exe(); // 新增1個Sprint到專案內
+		mCS.exe();
 
-		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASTS.exe(); // 新增1筆Story到Sprint內
+		// 新增1筆Story到Sprint內
+		mASTS = new AddStoryToSprint(1, 1, mCS, mCP,
+				CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();
 
+		// 新增1筆Task到Story內
 		mATTS = new AddTaskToStory(1, 1, mASTS, mCP);
-		mATTS.exe(); // 新增1筆Task到Story內
+		mATTS.exe();
 
 		super.setUp();
 		// ================ set action info ========================
@@ -58,7 +65,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 
@@ -88,7 +95,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = project.getName();
-		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
@@ -119,8 +127,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	// 測試Issue為Story的CheckOut
 	public void testShowCheckOutIssue_Story() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		long storyId = mASTS.getStories().get(0).getIssueID();
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long storyId = mASTS.getStories().get(0).getId();
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
 		IIssue story = productBacklogMapper.getIssue(storyId);
 

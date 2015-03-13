@@ -91,7 +91,7 @@ public class MantisAttachFileServiceTest {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
-		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
+		attachFileInfo.issueId = ASTS.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		
 		long id = mMantisAttachFileService.addAttachFile(attachFileInfo);
@@ -113,7 +113,7 @@ public class MantisAttachFileServiceTest {
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = "TEST.txt";
 		attachFileInfo.path = "/abc/def/TEST.txt";
-		attachFileInfo.issueId = ASTS.getStories().get(0).getIssueID();
+		attachFileInfo.issueId = ASTS.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 
 		// 加入AttachFile
@@ -137,13 +137,13 @@ public class MantisAttachFileServiceTest {
 		AttachFileInfo attachFileInfo1 = new AttachFileInfo();
 		attachFileInfo1.name = "TEST.txt";
 		attachFileInfo1.path = "/abc/def/TEST.txt";
-		attachFileInfo1.issueId = ASTS.getStories().get(0).getIssueID();
+		attachFileInfo1.issueId = ASTS.getStories().get(0).getId();
 		attachFileInfo1.issueType = IssueTypeEnum.TYPE_STORY;
 
 		AttachFileInfo attachFileInfo2 = new AttachFileInfo();
 		attachFileInfo2.name = "TEST2.txt";
 		attachFileInfo2.path = "/abc/def/TEST2.txt";
-		attachFileInfo2.issueId = ASTS.getStories().get(0).getIssueID();
+		attachFileInfo2.issueId = ASTS.getStories().get(0).getId();
 		attachFileInfo2.issueType = IssueTypeEnum.TYPE_STORY;
 
 		// 加入AttachFile
@@ -151,7 +151,7 @@ public class MantisAttachFileServiceTest {
 		fileIdList.add(mMantisAttachFileService.addAttachFile(attachFileInfo2));
 
 		// getAttachFile
-		ArrayList<AttachFileObject> attachFileList = mMantisAttachFileService.getAttachFilesByStoryId(ASTS.getStories().get(0).getIssueID());
+		ArrayList<AttachFileObject> attachFileList = mMantisAttachFileService.getAttachFilesByStoryId(ASTS.getStories().get(0).getId());
 		ArrayList<AttachFileInfo> attachFileArray = new ArrayList<AttachFileInfo>();
 		attachFileArray.add(attachFileInfo1);
 		attachFileArray.add(attachFileInfo2);

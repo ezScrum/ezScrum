@@ -64,7 +64,7 @@ public class MantisTagServiceTest {
 		mISQLControl.connect();
 		
 		mMantisTagService = new MantisTagService(mISQLControl, mConfig);
-		mProductBacklogMapper = new ProductBacklogMapper(mCP.getProjectList().get(0), mConfig.getUserSession());
+		mProductBacklogMapper = new ProductBacklogMapper(mCP.getAllProjects().get(0), mConfig.getUserSession());
 	}
 	
 	@After
@@ -219,7 +219,7 @@ public class MantisTagServiceTest {
 	
 	// help testAddStoryTag
 	private void addStoryTagRelation(){
-		String storyId = Long.toString(mCPB.getIssueList().get(0).getIssueID());
+		String storyId = Long.toString(mCPB.getStories().get(0).getId());
 		long tagID;
 		for(int index = 0; index < TagCount; index++){
 			tagID = mCT.getTagList().get(index).getId();
@@ -248,7 +248,7 @@ public class MantisTagServiceTest {
 		// 先將 tag attach to story 
 		mCT.attachTagToStory(mCPB);
 		
-		String storyId = Long.toString(mCPB.getIssueList().get(0).getIssueID());
+		String storyId = Long.toString(mCPB.getStories().get(0).getId());
 		String query;
 		long tagId;
 		for(int index = 0; index < TagCount; index++){

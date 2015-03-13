@@ -1,10 +1,12 @@
 package ntut.csie.ezScrum.restful.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -17,6 +19,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -24,7 +27,7 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
-import ntut.csie.jcis.resource.core.IProject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -42,7 +45,7 @@ public class ProductBacklogWebServiceTest {
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private CreateProductBacklog mCPB;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Configuration mConfig;
 	private ProductBacklogHelper mProductBacklogHelper;
 
@@ -61,7 +64,7 @@ public class ProductBacklogWebServiceTest {
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
 
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 	}
 
 	@After
@@ -82,6 +85,7 @@ public class ProductBacklogWebServiceTest {
 		mCR = null;
 		mCPB = null;
 		mProject = null;
+		mProject = null;
 		mConfig = null;
 		mProductBacklogHelper = null;
 	}
@@ -90,10 +94,10 @@ public class ProductBacklogWebServiceTest {
 	public void testcreateStory() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -126,10 +130,10 @@ public class ProductBacklogWebServiceTest {
 	public void testreadStory() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -164,10 +168,10 @@ public class ProductBacklogWebServiceTest {
 	public void testupdateStory() throws LogonException, JSONException, SQLException{
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 		
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(0, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -220,10 +224,10 @@ public class ProductBacklogWebServiceTest {
 	public void testdeleteStory() throws LogonException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -249,10 +253,10 @@ public class ProductBacklogWebServiceTest {
 	public void testreadStoryByID() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -282,10 +286,10 @@ public class ProductBacklogWebServiceTest {
 	public void testgetTagList() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -312,10 +316,10 @@ public class ProductBacklogWebServiceTest {
 	public void testGetStoryHistory() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
-		String projectID = mProject.getName();
+		String projectName = mProject.getName();
 
 		// Web service 物件
-		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectID);
+		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mCPB.exe();
@@ -341,7 +345,5 @@ public class ProductBacklogWebServiceTest {
 				assertEquals(String.valueOf(iIssuehistorys.get(j).getDescription()), JSONObject.getString("description"));
 			}
 		}
-
 	}
-
 }

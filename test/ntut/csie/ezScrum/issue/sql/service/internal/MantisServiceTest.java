@@ -1376,9 +1376,9 @@ public class MantisServiceTest {
 		CreateProductBacklog CPB = new CreateProductBacklog(mStoryCount, mCP);
 		CPB.exe();
 		
-		long issueId = CPB.getIssueList().get(0).getIssueID();
+		long storyId = CPB.getStories().get(0).getId();
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
-        attachFileInfo.issueId = issueId;
+        attachFileInfo.issueId = storyId;
         attachFileInfo.name = "TESTFILE.txt";
         attachFileInfo.path = "/abc/def/" + attachFileInfo.name;
         attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
