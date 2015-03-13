@@ -1253,6 +1253,7 @@ CREATE TABLE `tag` (
   `name` VARCHAR(255) NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

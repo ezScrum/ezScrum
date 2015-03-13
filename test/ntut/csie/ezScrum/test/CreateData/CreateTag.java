@@ -1,11 +1,14 @@
 package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
+
+import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,15 +41,15 @@ public class CreateTag {
 			// m_backlog = new ProductBacklog(m_project, m_userSession);
 			mProductBacklogMapper = new ProductBacklogMapper(mProject,
 					mUserSession);
+			long projectId = ProjectDAO.getInstance().get(mProject.getName()).getId();
 			for (int tagIndex = 0; tagIndex < mTagCount; tagIndex++) {
 				// m_backlog.addNewTag(TEST_TAG_NAME +
 				// Integer.toString(tagIndex+1)); //TEST_TAG_Y
-				mProductBacklogMapper.addNewTag(TEST_TAG_NAME
-						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
+//				mProductBacklogMapper.addNewTag(TEST_TAG_NAME
+//						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
 
-				TagObject tag = new TagObject();
-				tag.setId(tagIndex + 1);
-				tag.setName(TEST_TAG_NAME + Integer.toString(tagIndex + 1));
+				TagObject tag = new TagObject(TEST_TAG_NAME + Integer.toString(tagIndex + 1), projectId);
+				tag.save();
 				mTags.add(tag);
 			}
 			System.out.println("Project "
