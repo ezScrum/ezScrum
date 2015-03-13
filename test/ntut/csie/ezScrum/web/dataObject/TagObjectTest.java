@@ -98,23 +98,19 @@ public class TagObjectTest {
 	
 	@Test
 	public void testDelete() {
-//		TaskObject task = new TaskObject(1);
-//		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
-//		task.save();
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME", task.getName());
-//		assertEquals("TEST_NOTES", task.getNotes());
-//		assertEquals(10, task.getEstimate());
-//		assertEquals(10, task.getRemains());
-//		assertEquals(0, task.getActual());
-//
-//		boolean deleteSuccess = task.delete();
-//
-//		assertTrue(deleteSuccess);
-//		assertEquals(-1, task.getId());
-//		assertEquals(-1, task.getSerialId());
-//		assertEquals(null, TaskDAO.getInstance().get(1));
+		// test data
+		String tagName = "TEST_TAG_NAME_1";
+
+		// create tag
+		TagObject tag = new TagObject(tagName, mProjectId);
+		tag.save();
+		
+		assertEquals(tagName, tag.getName());
+		assertEquals(mProjectId, tag.getProjectId());
+		
+		// delete tag
+		boolean deleteStatus = tag.delete();
+		assertTrue(deleteStatus);
+		assertEquals(-1, tag.getId());
 	}
 }
