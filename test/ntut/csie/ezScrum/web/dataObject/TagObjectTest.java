@@ -52,46 +52,25 @@ public class TagObjectTest {
 	
 	@Test
 	public void testSave_CreateANewTag() {
-//		TaskObject task = new TaskObject(1);
-//		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-//			.setActual(0);
-//		task.save();
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME", task.getName());
-//		assertEquals("TEST_NOTES", task.getNotes());
-//		assertEquals(10, task.getEstimate());
-//		assertEquals(10, task.getRemains());
-//		assertEquals(0, task.getActual());
+		TagObject tag = new TagObject("TEST_NAME", mProjectId);
+		tag.save();
+		assertEquals(1, tag.getId());
+		assertEquals("TEST_NAME", tag.getName());
+		assertEquals(1, tag.getProjectId());
 	}
 	
 	@Test
 	public void testSave_UpdateTag() {
-//		TaskObject task = new TaskObject(1);
-//		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-//			.setActual(0);
-//		task.save();
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME", task.getName());
-//		assertEquals("TEST_NOTES", task.getNotes());
-//		assertEquals(10, task.getEstimate());
-//		assertEquals(10, task.getRemains());
-//		assertEquals(0, task.getActual());
-//
-//		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
-//			.setRemains(5).setActual(1);
-//		task.save();
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME2", task.getName());
-//		assertEquals("TEST_NOTES2", task.getNotes());
-//		assertEquals(3, task.getEstimate());
-//		assertEquals(5, task.getRemains());
-//		assertEquals(1, task.getActual());
+		TagObject tag = new TagObject("TEST_NAME", mProjectId);
+		tag.save();
+		assertEquals(1, tag.getId());
+		assertEquals("TEST_NAME", tag.getName());
+		assertEquals(1, tag.getProjectId());
+		tag.setName("TEST_NEW_NAME");
+		tag.save();
+		assertEquals(1, tag.getId());
+		assertEquals("TEST_NEW_NAME", tag.getName());
+		assertEquals(1, tag.getProjectId());
 	}
 	
 	@Test
