@@ -71,15 +71,15 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return mControl.executeUpdate(query);
 	}
 	
-	public TagObject getTagByName(String name, long projectId) {
+	public TagObject getTagInProjectByName(long projectId, String name) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TagEnum.PROJECT_ID, Long.toString(projectId));
 		valueSet.addTextFieldEqualCondition(TagEnum.NAME, name);
 		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
 		TagObject tag = null;
 		try {
-			ResultSet result = mControl.executeQuery(query);
 			if (result.next()) {
 				tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
 				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
@@ -87,31 +87,38 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		finally {
+			closeResultSet(result);
+		}
 		return tag;
 	}
 	
 	// 取得自訂分類標籤列表
 	public ArrayList<TagObject> getTagsByProject(long projectId) {
-		ArrayList<TagObject> tags = new ArrayList<TagObject>();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TagEnum.PROJECT_ID, String.valueOf(projectId));
 		String query = valueSet.getSelectQuery();
-
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<TagObject> tags = new ArrayList<TagObject>();
 		try {
-			ResultSet result = mControl.executeQuery(query);
+			
 			while (result.next()) {
 				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
 				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
 				tags.add(tag);
 			}
-		} catch (SQLException e) {}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(result);
+		}
 		return tags;
 	}
 	
 	public boolean exist(String name, long projectId) {
-		return (getTagByName(name, projectId) != null);
+		return (getTagInProjectByName(projectId, name) != null);
 	}
 	
 	public static TagObject convert(ResultSet result) throws SQLException {

@@ -167,23 +167,13 @@ public class TagDAOTest {
 	}
 	
 	@Test
-	public void testExist(){
-		// create Tag
-		String tagName = "TEST_TAG_NAME_1";
-		createTag(tagName);
-		
-		// isTagExist
-		assertTrue(TagDAO.getInstance().exist(tagName, mProjectId));
-	}
-	
-	@Test
 	public void testGetTagByName(){
 		// create Tag
 		String tagName = "TEST_TAG_NAME_1";
 		createTag(tagName);
 		
 		// getTagByName
-		TagObject tag = TagDAO.getInstance().getTagByName(tagName, mProjectId);
+		TagObject tag = TagDAO.getInstance().getTagInProjectByName(mProjectId, tagName);
 		// assert
 		assertNotNull(tag);
 		assertEquals(tagName, tag.getName());
