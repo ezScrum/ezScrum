@@ -73,8 +73,7 @@ public class TagDAOTest {
 		// Tag Name
 		String tagName = "TEST_TAG_NAME_1";
 		// create TagObject
-		TagObject tag = new TagObject(tagName);
-		tag.setProjectId(mProjectId);
+		TagObject tag = new TagObject(tagName, mProjectId);
 		// create test data
 		long tagId = TagDAO.getInstance().create(tag);
 		// assert
@@ -185,8 +184,7 @@ public class TagDAOTest {
 		String tagName = "TEST_TAG_NAME_";
 		// create 3 TagObject
 		for (int i = 0; i < 3; i++) {
-			TagObject tag = new TagObject(tagName + i);
-			tag.setProjectId(mProjectId);
+			TagObject tag = new TagObject(tagName + i, mProjectId);
 			// create test data
 			long tagId = TagDAO.getInstance().create(tag);
 			// assert
@@ -206,8 +204,7 @@ public class TagDAOTest {
 	
 	private TagObject createTag(String tagName) {
 		// create TagObject
-		TagObject tag = new TagObject(tagName);
-		tag.setProjectId(mProjectId);
+		TagObject tag = new TagObject(tagName, mProjectId);
 		// create test data
 		long tagId = TagDAO.getInstance().create(tag);
 		assertNotSame(-1, tagId);

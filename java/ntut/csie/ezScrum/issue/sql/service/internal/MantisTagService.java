@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -33,7 +34,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
-				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
+				TagObject tag = TagDAO.convert(result);
 				tags.add(tag);
 			}
 			issue.setTags(tags);
@@ -111,8 +112,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			if (result.next()) {
-				tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
-				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
+				tag = TagDAO.convert(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -136,9 +136,7 @@ public class MantisTagService extends AbstractMantisService {
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
-				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
-				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
-
+				TagObject tag = TagDAO.convert(result);
 				tags.add(tag);
 			}
 		} catch (SQLException e) {

@@ -23,10 +23,12 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	@Override
     public long create(TagObject tag) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
+		long currentTime = System.currentTimeMillis();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
 		valueSet.addInsertValue(TagEnum.PROJECT_ID, tag.getProjectId());
-		valueSet.addInsertValue(TagEnum.CREATE_TIME, System.currentTimeMillis());
+		valueSet.addInsertValue(TagEnum.CREATE_TIME, currentTime);
+		valueSet.addInsertValue(TagEnum.UPDATE_TIME, currentTime);
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		return id;
@@ -58,6 +60,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
 		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
+		valueSet.addInsertValue(TagEnum.UPDATE_TIME, System.currentTimeMillis());
 		String query = valueSet.getUpdateQuery();
 		return mControl.executeUpdate(query);
 	}
@@ -81,8 +84,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		TagObject tag = null;
 		try {
 			if (result.next()) {
-				tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
-				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
+				tag = convert(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -102,10 +104,8 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		ResultSet result = mControl.executeQuery(query);
 		ArrayList<TagObject> tags = new ArrayList<TagObject>();
 		try {
-			
 			while (result.next()) {
-				TagObject tag = new TagObject(result.getLong(TagEnum.ID), result.getString(TagEnum.NAME));
-				tag.setProjectId(result.getLong(TagEnum.PROJECT_ID));
+				TagObject tag = convert(result);
 				tags.add(tag);
 			}
 		} catch (SQLException e) {
@@ -123,13 +123,13 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	
 	public static TagObject convert(ResultSet result) throws SQLException {
 		long id = result.getLong(TagEnum.ID);
-		String tagName = result.getString(TagEnum.NAME);
+		String name = result.getString(TagEnum.NAME);
 		long projectId = result.getLong(TagEnum.PROJECT_ID);
 		long createTime = result.getLong(TagEnum.CREATE_TIME);
 		
-		TagObject tagObject = new TagObject(id, tagName);
-		tagObject.setProjectId(projectId)
+		TagObject tag = new TagObject(id, name, projectId);
+		tag.setProjectId(projectId)
 		         .setCreateTime(createTime);
-		return tagObject;
+		return tag;
 	}
 }

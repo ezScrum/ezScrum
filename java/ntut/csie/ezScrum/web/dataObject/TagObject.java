@@ -11,28 +11,22 @@ public class TagObject implements IBaseObject{
 	private long mId = -1;
 	private long mProjectId = -1;
 	private long mCreateTime = -1;
-	private String mTagName = "";
+	private long mUpdateTime = -1;
+	private String mName = "";
 	
-	public TagObject(long id, String name) {
+	public TagObject(long id, String name, long projectId) {
 		mId = id;
-		mTagName = name;
+		mName = name;
+		mProjectId = projectId;
 	}
 
-	public TagObject(String name) {
-		if((name != null) && (name.length() > 0)){
-			mTagName = name;
-		} else {
-			throw new RuntimeException();
-		}
+	public TagObject(String name, long projectId) {
+		mName = name;
+		mProjectId = projectId;
 	}
 	
 	public long getId() {
 		return mId;
-	}
-	
-	public TagObject setId(long id) {
-		mId = id;
-		return this;
 	}
 	
 	public long getProjectId() {
@@ -45,11 +39,11 @@ public class TagObject implements IBaseObject{
 	}
 	
 	public String getName() {
-		return mTagName;
+		return mName;
 	}
 	
 	public TagObject setName(String tagName) {
-		mTagName = tagName;
+		mName = tagName;
 		return this;
 	}
 	
@@ -57,8 +51,18 @@ public class TagObject implements IBaseObject{
 		return mCreateTime;
 	}
 
-	public void setCreateTime(long createTime) {
+	public TagObject setCreateTime(long createTime) {
 		mCreateTime = createTime;
+		return this;
+	}
+	
+	public long getUpdateTime() {
+		return mUpdateTime;
+	}
+
+	public TagObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
 	}
 	
 	/**
@@ -74,7 +78,7 @@ public class TagObject implements IBaseObject{
 	 * @param ProjectId
 	 * @return
 	 */
-	public static TagObject get(String name, long projectId){
+	public static TagObject getTagInProjectByName(String name, long projectId){
 		return TagDAO.getInstance().getTagInProjectByName(projectId, name);
 	}
 	
@@ -111,7 +115,7 @@ public class TagObject implements IBaseObject{
 	
 	private void resetData(TagObject tag) {
 		mId = tag.getId();
-		mTagName = tag.getName();
+		mName = tag.getName();
 		mProjectId = tag.getProjectId();
 		mCreateTime = tag.getCreateTime();
 	}
@@ -129,9 +133,10 @@ public class TagObject implements IBaseObject{
     public JSONObject toJSON() throws JSONException {
 		JSONObject tagJsonObject = new JSONObject();
 		tagJsonObject.put(TagEnum.ID, mId);
-		tagJsonObject.put(TagEnum.NAME, mTagName);
+		tagJsonObject.put(TagEnum.NAME, mName);
 		tagJsonObject.put(TagEnum.PROJECT_ID, mProjectId);
 		tagJsonObject.put(TagEnum.CREATE_TIME, mCreateTime);
+		tagJsonObject.put(TagEnum.UPDATE_TIME, mUpdateTime);
 	    return tagJsonObject;
     }
 
