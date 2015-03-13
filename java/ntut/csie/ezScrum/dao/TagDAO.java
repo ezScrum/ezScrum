@@ -60,7 +60,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
 		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
-		valueSet.addInsertValue(TagEnum.UPDATE_TIME, System.currentTimeMillis());
+		valueSet.addInsertValue(TagEnum.UPDATE_TIME, tag.getUpdateTime());
 		String query = valueSet.getUpdateQuery();
 		return mControl.executeUpdate(query);
 	}
@@ -126,10 +126,10 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		String name = result.getString(TagEnum.NAME);
 		long projectId = result.getLong(TagEnum.PROJECT_ID);
 		long createTime = result.getLong(TagEnum.CREATE_TIME);
-		
+		long updateTime = result.getLong(TagEnum.UPDATE_TIME);
 		TagObject tag = new TagObject(id, name, projectId);
-		tag.setProjectId(projectId)
-		         .setCreateTime(createTime);
+		tag.setCreateTime(createTime)
+			.setUpdateTime(updateTime);
 		return tag;
 	}
 }

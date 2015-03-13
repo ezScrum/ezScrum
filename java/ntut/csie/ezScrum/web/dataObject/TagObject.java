@@ -33,11 +33,6 @@ public class TagObject implements IBaseObject{
 		return mProjectId;
 	}
 	
-	public TagObject setProjectId(long id) {
-		mProjectId = id;
-		return this;
-	}
-	
 	public String getName() {
 		return mName;
 	}
@@ -85,6 +80,7 @@ public class TagObject implements IBaseObject{
 	@Override
     public void save() {
 		if (exists()) {
+			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -115,9 +111,10 @@ public class TagObject implements IBaseObject{
 	
 	private void resetData(TagObject tag) {
 		mId = tag.getId();
-		mName = tag.getName();
 		mProjectId = tag.getProjectId();
-		mCreateTime = tag.getCreateTime();
+		setName(tag.getName());
+		setCreateTime(tag.getCreateTime());
+		setUpdateTime(tag.getUpdateTime());
 	}
 	
 	private void doCreate() {
@@ -131,13 +128,13 @@ public class TagObject implements IBaseObject{
 
 	@Override
     public JSONObject toJSON() throws JSONException {
-		JSONObject tagJsonObject = new JSONObject();
-		tagJsonObject.put(TagEnum.ID, mId);
-		tagJsonObject.put(TagEnum.NAME, mName);
-		tagJsonObject.put(TagEnum.PROJECT_ID, mProjectId);
-		tagJsonObject.put(TagEnum.CREATE_TIME, mCreateTime);
-		tagJsonObject.put(TagEnum.UPDATE_TIME, mUpdateTime);
-	    return tagJsonObject;
+		JSONObject tag = new JSONObject();
+		tag.put(TagEnum.ID, mId);
+		tag.put(TagEnum.NAME, mName);
+		tag.put(TagEnum.PROJECT_ID, mProjectId);
+		tag.put(TagEnum.CREATE_TIME, mCreateTime);
+		tag.put(TagEnum.UPDATE_TIME, mUpdateTime);
+	    return tag;
     }
 
 	public String toString() {
