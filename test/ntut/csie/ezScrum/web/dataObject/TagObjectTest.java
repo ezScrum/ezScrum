@@ -75,40 +75,25 @@ public class TagObjectTest {
 	
 	@Test
 	public void testReload() {
-//		TaskObject task = new TaskObject(1);
-//		task.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10).setActual(0);
-//		task.save();
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME", task.getName());
-//		assertEquals("TEST_NOTES", task.getNotes());
-//		assertEquals(10, task.getEstimate());
-//		assertEquals(10, task.getRemains());
-//		assertEquals(0, task.getActual());
-//
-//		task.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5).setRemains(3).setActual(1);
-//
-//		assertEquals(1, task.getId());
-//		assertEquals(1, task.getSerialId());
-//		assertEquals("TEST_NAME2", task.getName());
-//		assertEquals("TEST_NOTES2", task.getNotes());
-//		assertEquals(5, task.getEstimate());
-//		assertEquals(3, task.getRemains());
-//		assertEquals(1, task.getActual());
-//
-//		try {
-//			task.reload();
-//
-//			assertEquals(1, task.getId());
-//			assertEquals(1, task.getSerialId());
-//			assertEquals("TEST_NAME", task.getName());
-//			assertEquals("TEST_NOTES", task.getNotes());
-//			assertEquals(10, task.getEstimate());
-//			assertEquals(10, task.getRemains());
-//			assertEquals(0, task.getActual());
-//		} catch (Exception e) {
-//		}
+		// test data
+		String tagName = "TEST_TAG_NAME_1";
+		String tagNewName = "TEST_TAG_NAME_1_new";
+		
+		// create tag
+		TagObject tag = new TagObject(tagName, mProjectId);
+		tag.save();
+		
+		assertEquals(tagName, tag.getName());
+		assertEquals(mProjectId, tag.getProjectId());
+		
+		// set value but don't save
+		tag.setName(tagNewName);
+		assertEquals(tagNewName, tag.getName());
+		
+		// reload
+		tag.reload();
+		assertEquals(tagName, tag.getName());
+		
 	}
 	
 	@Test
