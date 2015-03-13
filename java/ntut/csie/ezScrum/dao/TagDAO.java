@@ -117,10 +117,6 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return tags;
 	}
 	
-	public boolean exist(String name, long projectId) {
-		return (getTagInProjectByName(projectId, name) != null);
-	}
-	
 	public static TagObject convert(ResultSet result) throws SQLException {
 		long id = result.getLong(TagEnum.ID);
 		String name = result.getString(TagEnum.NAME);
