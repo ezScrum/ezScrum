@@ -2,13 +2,17 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -229,12 +233,8 @@ public class StoryObjectTest {
 		TagObject tag2 = new TagObject("TAG_2", mProjectId);
 		tag2.save();
 		
-		story.addTag(tag1.getId());
-		assertEquals(1, story.getTags().size());
-		
-		story.addTag(tag2.getId());
-		assertEquals(2, story.getTags().size());
-		
+		TagDAO.getInstance().addTagToStory(story.getId(), tag1.getId());
+		TagDAO.getInstance().addTagToStory(story.getId(), tag2.getId());		
 		
 		// test non-exist tag id
 		story.removeTag(10);
