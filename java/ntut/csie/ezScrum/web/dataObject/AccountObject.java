@@ -20,6 +20,8 @@ public class AccountObject implements IBaseObject {
 	private String mEmail = "";
 	private String mNickName = "";
 	private boolean mEnable = false;
+	private long mCreateTime = DEFAULT_VALUE;
+	private long mUpdateTime = DEFAULT_VALUE;
 
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -44,6 +46,24 @@ public class AccountObject implements IBaseObject {
 
 	public long getId() {
 		return mId;
+	}
+	
+	public long getCreateTime() {
+		return mCreateTime;
+	}
+
+	public AccountObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
+		return this;
+	}
+
+	public long getUpdateTime() {
+		return mUpdateTime;
+	}
+
+	public AccountObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
 	}
 
 	public String getPassword() {
@@ -236,6 +256,8 @@ public class AccountObject implements IBaseObject {
 		mEmail = account.getEmail();
 		mNickName = account.getNickName();
 		mEnable = account.getEnable();
+		mCreateTime = account.getCreateTime();
+		mUpdateTime = account.getUpdateTime();
 	}
 
 	private void doCreate() {
@@ -255,8 +277,9 @@ public class AccountObject implements IBaseObject {
 		       .put(AccountEnum.USERNAME, mUsername)
 		       .put(AccountEnum.NICK_NAME, mNickName)
 			   .put(AccountEnum.EMAIL, mEmail)
-			   .put(AccountEnum.ENABLE, mEnable);
-
+			   .put(AccountEnum.ENABLE, mEnable)
+			   .put(AccountEnum.CREATE_TIME, mCreateTime)
+			   .put(AccountEnum.UPDATE_TIME, mUpdateTime);
 		return account;
 	}
 }

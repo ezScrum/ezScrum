@@ -475,10 +475,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
 		boolean enable = result.getBoolean(AccountEnum.ENABLE);
-
+		long createTime = result.getLong(AccountEnum.CREATE_TIME);
+		long updateTime = result.getLong(AccountEnum.UPDATE_TIME);
 		AccountObject account = new AccountObject(id, username);
 		account.setPassword(password).setNickName(nickName).setEmail(email)
-				.setEnable(enable);
+				.setEnable(enable).setCreateTime(createTime).setUpdateTime(updateTime);
 		return account;
 	}
 
