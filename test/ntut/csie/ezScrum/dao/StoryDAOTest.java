@@ -266,7 +266,7 @@ public class StoryDAOTest {
 	}
 	
 	@Test
-	public void testGetAllStories() {
+	public void testGetStoriesByProjectId() {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			StoryObject story = new StoryObject(sProjectId);
@@ -280,7 +280,7 @@ public class StoryDAOTest {
 		}
 		
 		// get all stories
-		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesWithNoParent(sProjectId);
+		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(sProjectId);
 		assertEquals(3, stories.size());
 	}
 	
