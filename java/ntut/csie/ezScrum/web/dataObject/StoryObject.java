@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
-
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
@@ -9,7 +8,6 @@ import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -255,7 +253,7 @@ public class StoryObject implements IBaseObject {
 		}
 		
 		for (TagObject tag : getTags()) {
-			//tags.put(tag.toJSON());
+			tags.put(tag.toJSON());
 		}
 		
 		story

@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.web.databasEnum.TagEnum;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
