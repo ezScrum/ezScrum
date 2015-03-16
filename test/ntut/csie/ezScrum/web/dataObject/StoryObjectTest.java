@@ -213,14 +213,14 @@ public class StoryObjectTest {
 		tag2.save();
 		
 		story.addTag(tag1.getId());
-		assertEquals(1, story.getTags());
+		assertEquals(1, story.getTags().size());
 		
 		story.addTag(tag2.getId());
-		assertEquals(2, story.getTags());
+		assertEquals(2, story.getTags().size());
 		
 		// 不存在的 tag id, 不會加入成功
 		story.addTag(5);
-		assertEquals(2, story.getTags());
+		assertEquals(2, story.getTags().size());
 	}
 	
 	@Test
@@ -234,14 +234,21 @@ public class StoryObjectTest {
 		tag2.save();
 		
 		story.addTag(tag1.getId());
-		assertEquals(1, story.getTags());
+		assertEquals(1, story.getTags().size());
 		
 		story.addTag(tag2.getId());
-		assertEquals(2, story.getTags());
+		assertEquals(2, story.getTags().size());
 		
-		// 不存在的 tag id, 不會加入成功
-		story.addTag(5);
-		assertEquals(2, story.getTags());
+		
+		// test non-exist tag id
+		story.removeTag(10);
+		assertEquals(2, story.getTags().size());
+		
+		story.removeTag(tag1.getId());
+		assertEquals(1, story.getTags().size());
+		
+		story.removeTag(tag2.getId());
+		assertEquals(0, story.getTags().size());
 	}
 
 	@Test
