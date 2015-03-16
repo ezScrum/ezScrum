@@ -395,7 +395,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+2), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+2), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+2), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -409,7 +409,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+2), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+2), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+2), AvailabelIssue.get(i).getNotes());
 		}
     }
@@ -439,7 +439,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+2), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+2), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+2), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -457,7 +457,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+5), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+5), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+5), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+5), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+5), AvailabelIssue.get(i).getNotes());
 		}
     }
@@ -488,7 +488,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+2), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+2), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+2), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -506,7 +506,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+5), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+5), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+5), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+5), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+5), AvailabelIssue.get(i).getNotes());
 		}
     }
@@ -539,7 +539,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+2), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+2), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+2), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+2), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -555,7 +555,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+3), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+3), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+3), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+3), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+3), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -572,7 +572,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+3), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+3), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+3), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+3), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+3), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -625,7 +625,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+6), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+6), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+6), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+6), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+6), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -645,7 +645,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+9), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+9), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+9), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+9), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+9), AvailabelIssue.get(i).getNotes());
 		}
 		
@@ -697,7 +697,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		for (int i=0 ; i<AvailabelIssue.size() ; i++) {
 			assertEquals((i+7), AvailabelIssue.get(i).getIssueID());
 			assertEquals(this.CPB.TEST_STORY_HOW_TO_DEMO + Long.toString(i+7), AvailabelIssue.get(i).getHowToDemo());
-			assertEquals(this.CPB.TEST_STORY_NAME + Long.toString(i+7), AvailabelIssue.get(i).getSummary());
+			assertEquals(this.CPB.mTestStoryName + Long.toString(i+7), AvailabelIssue.get(i).getSummary());
 			assertEquals(this.CPB.TEST_STORY_NOTES + Long.toString(i+7), AvailabelIssue.get(i).getNotes());
 		}
     }

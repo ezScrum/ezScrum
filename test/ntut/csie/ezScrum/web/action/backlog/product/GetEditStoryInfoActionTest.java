@@ -73,7 +73,7 @@ public class GetEditStoryInfoActionTest extends MockStrutsTestCase{
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("issueID", String.valueOf(CPB.getIssueIDList().get(1)));
+		addRequestParameter("issueID", String.valueOf(CPB.getStoryIds().get(1)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

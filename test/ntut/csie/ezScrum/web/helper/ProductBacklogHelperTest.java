@@ -147,7 +147,7 @@ public class ProductBacklogHelperTest{
 	
 	@Test
 	public void testEditStoryHistory() throws SQLException {
-		long issueId = mCreateProductBacklog.getIssueIDList().get(0);
+		long issueId = mCreateProductBacklog.getStoryIds().get(0);
 		String name = "快接 task 啦";
 		String value = "6";
 		String importance = "6";

@@ -146,7 +146,7 @@ public class SprintPlanWebServiceTest {
 		mCS = new CreateSprint(mSprintCount, mCP);
 		mCS.exe();	    // 新增 Sprint
 
-		mASTS = new AddStoryToSprint(mStoryCount, mStoryEstimation, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION); // 新增 Story
+		mASTS = new AddStoryToSprint(mStoryCount, mStoryEstimation, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST); // 新增 Story
 		mASTS.exe();
 
 		mCT = new CreateTask(mTaskCount, mCP);

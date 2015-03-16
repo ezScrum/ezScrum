@@ -54,7 +54,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mCS.exe();
 
 		// 新增Story
-		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
 		
 		// 新增 Task

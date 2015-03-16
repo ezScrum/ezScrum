@@ -94,7 +94,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		int sprintId = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		Thread.sleep(1000);
@@ -142,7 +142,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 
@@ -185,7 +185,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 
@@ -232,7 +232,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		long storyId = addStoryToSprint.getStories().get(0).getId();
@@ -284,7 +284,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
@@ -326,7 +326,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
@@ -389,7 +389,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 加入1個 Sprint
 		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		// Sprint 加入1個 Story
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
@@ -450,7 +450,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		
 		// Sprint 加入1個 Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		
 		// 新增1個 account

@@ -81,7 +81,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				mSprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				mSprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;
@@ -92,7 +92,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 
-		String issueId = String.valueOf(CPB.getIssueIDList().get(0));
+		String issueId = String.valueOf(CPB.getStoryIds().get(0));
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);

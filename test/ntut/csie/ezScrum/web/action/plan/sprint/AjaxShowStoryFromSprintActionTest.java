@@ -103,7 +103,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	public void testShowStoryFromSprint_2() throws Exception{
 		int storycount = 2;
 		
-		AddStoryToSprint ASTS = new AddStoryToSprint(storycount, 2, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(storycount, 2, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		
 		// ================ set request info ========================

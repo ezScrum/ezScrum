@@ -52,7 +52,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		// create story to sprint
 		int storyCount = 1;
 		mASS = new AddStoryToSprint(storyCount, 1, (int) mSprintId, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		mASS.exe();
 		mStoryId = mASS.getStories().get(storyCount - 1).getId();
 

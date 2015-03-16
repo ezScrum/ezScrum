@@ -86,7 +86,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryValue = "5";
 		String expectedStoryHoewToDemo = "UT for Update Story for How to Demo";
 		String expectedStoryNote = "UT for Update Story for Notes";
-		String storyId = String.valueOf(CPB.getIssueIDList().get(0));
+		String storyId = String.valueOf(CPB.getStoryIds().get(0));
 		addRequestParameter("issueID", storyId);
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);

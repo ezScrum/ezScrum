@@ -82,7 +82,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;

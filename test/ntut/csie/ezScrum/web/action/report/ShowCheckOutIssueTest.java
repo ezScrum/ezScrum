@@ -49,7 +49,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		// 新增1筆Story到Sprint內
 		mASTS = new AddStoryToSprint(1, 1, mCS, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
 
 		// 新增1筆Task到Story內

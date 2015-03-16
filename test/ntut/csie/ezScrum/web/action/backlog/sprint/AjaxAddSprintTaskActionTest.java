@@ -85,7 +85,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		ASR.exe();
 
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, 1, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		// ================ set request info ========================
@@ -145,7 +145,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 		ASR.exe();
 
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, 1, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		// ================ set request info ========================

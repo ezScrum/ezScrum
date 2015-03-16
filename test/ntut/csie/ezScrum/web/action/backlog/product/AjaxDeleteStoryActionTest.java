@@ -77,7 +77,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		String issueID = String.valueOf(CPB.getIssueIDList().get(1));
+		String issueID = String.valueOf(CPB.getStoryIds().get(1));
 		addRequestParameter("issueID", issueID);
 		
 		// ================ set session info ========================
@@ -98,7 +98,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		// assert history should be delete also
 		HistoryDAO historyDAO = HistoryDAO.getInstance();
 		ArrayList<HistoryObject> historyList_1 = new ArrayList<HistoryObject>();
-		historyList_1 = historyDAO.getHistoriesByIssue(CPB.getIssueIDList().get(1), IssueTypeEnum.TYPE_STORY);
+		historyList_1 = historyDAO.getHistoriesByIssue(CPB.getStoryIds().get(1), IssueTypeEnum.TYPE_STORY);
 		assertTrue(historyList_1.size() == 0);
 	}
 }

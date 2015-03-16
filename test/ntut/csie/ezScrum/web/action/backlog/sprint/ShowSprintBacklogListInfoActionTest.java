@@ -114,7 +114,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
@@ -171,7 +171,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;

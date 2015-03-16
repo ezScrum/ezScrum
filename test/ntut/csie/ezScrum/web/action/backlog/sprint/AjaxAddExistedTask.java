@@ -84,7 +84,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 	public void testAddExistedTask() throws Exception {
 		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, (int) sprintId, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		long storyId = ASS.getStories().get(0).getId();

@@ -425,7 +425,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		CreateSprint CS = new CreateSprint(sprintCount, mCP);
 		CS.exe();
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEstValue,
-				CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 		AddTaskToStory ATS = new AddTaskToStory(taskCount, taskEstValue, ASS,
 				mCP);

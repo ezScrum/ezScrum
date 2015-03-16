@@ -81,7 +81,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 
 		// 3個Sprint，每個Sprint加入個2Story
 		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1,
-				SprintCount, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				SprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(mConfig.getUserSession(), project);
 

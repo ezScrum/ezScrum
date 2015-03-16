@@ -51,7 +51,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		mCS.exe();
 
 		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
-		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
 
 		// 新增兩筆 Task 到各個 Stories 內

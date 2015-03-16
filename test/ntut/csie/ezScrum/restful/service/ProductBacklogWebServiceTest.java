@@ -99,7 +99,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		String TEST_STORY_NAME = "TEST_STORY_";			// Story Name
@@ -135,7 +135,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		// call RESTFUL method
@@ -173,7 +173,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(0, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(0, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 		
 		String TEST_STORY_NAME = "TEST_STORY_";			// Story Name
@@ -229,11 +229,11 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		// call RESTFUL method
-		productBacklogWebService.deleteStory(String.valueOf(mCPB.getIssueIDList().get(0)));
+		productBacklogWebService.deleteStory(String.valueOf(mCPB.getStoryIds().get(0)));
 		// get all story
 		IStory[] storyList = (new ProductBacklogLogic(mConfig.getUserSession(), mProject)).getStoriesByFilterType(null);
 		// assert
@@ -242,7 +242,7 @@ public class ProductBacklogWebServiceTest {
 		// get History
 		HistoryDAO historyDAO = HistoryDAO.getInstance();
 		ArrayList<HistoryObject> historyList = new ArrayList<HistoryObject>();
-		historyList = historyDAO.getHistoriesByIssue(mCPB.getIssueIDList().get(0), IssueTypeEnum.TYPE_STORY);
+		historyList = historyDAO.getHistoriesByIssue(mCPB.getStoryIds().get(0), IssueTypeEnum.TYPE_STORY);
 
 		// assert
 		assertTrue(storyList.length == mStoryCount - 1);
@@ -258,11 +258,11 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		// call RESTFUL method
-		productBacklogWebService.readStoryById(mCPB.getIssueIDList().get(0));
+		productBacklogWebService.readStoryById(mCPB.getStoryIds().get(0));
 		// get JSON 
 		String response = productBacklogWebService.getRESTFulResponseString();
 		// call local method
@@ -291,7 +291,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		// call RESTFUL method
@@ -321,17 +321,17 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService productBacklogWebService = new ProductBacklogWebService(username, userpwd, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mCPB.exe();
 
 		for (int i = 0; i < mStoryCount; i++) {
 			// call RESTFUL method
-			productBacklogWebService.readStoryHistory(mCPB.getIssueIDList().get(i));
+			productBacklogWebService.readStoryHistory(mCPB.getStoryIds().get(i));
 			// get JSON 
 			String response = productBacklogWebService.getRESTFulResponseString();
 			// call local method
 			mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
-			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getIssue(mCPB.getIssueIDList().get(i)).getHistories();
+			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getIssue(mCPB.getStoryIds().get(i)).getHistories();
 
 			// JSON to JSONObject
 			JSONObject historyJSONObject = new JSONObject(response);

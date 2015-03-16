@@ -155,7 +155,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -209,7 +209,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -268,7 +268,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -317,7 +317,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -376,7 +376,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增1個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -428,7 +428,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
@@ -485,7 +485,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(SPRINT_COUNT, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe(); 	// 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內

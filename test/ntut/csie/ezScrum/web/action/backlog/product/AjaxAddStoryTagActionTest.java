@@ -79,13 +79,13 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 	
 	public void testAddTagToStory(){
 		// ================ set request info ========================
-		ArrayList<Long> storyIDList = mCPB.getIssueIDList();
+		ArrayList<Long> storyIDList = mCPB.getStoryIds();
 		ArrayList<TagObject> tags = mCT.getTagList();
 		
 		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIDList.get(0)));
-		long expectedStoryId = mCPB.getIssueIDList().get(0);
+		long expectedStoryId = mCPB.getStoryIds().get(0);
 		String expectedStoryName = mCPB.getStories().get(0).getName();
 		int expectedStoryValue = mCPB.getStories().get(0).getValue();
 		int expectedStoryImportance = mCPB.getStories().get(0).getImportance();

@@ -89,7 +89,7 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 
 		// 5個 Sprint，每個 Sprint 加入1個 Story
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, SprintCount, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(

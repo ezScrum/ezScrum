@@ -51,7 +51,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
 		int Story_Count = 5;
 		int Story_Estimation = 2;
-		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
 
 		// 新增兩筆 Task 到各個 Stories 內

@@ -90,7 +90,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增1個Sprint到專案內
 
-		mASTS = new AddStoryToSprint(2, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(2, 1, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe(); // 新增2筆Story到Sprint內
 
 		mATTS = new AddTaskToStory(2, 1, mASTS, mCP);

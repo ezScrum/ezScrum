@@ -46,7 +46,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint
 
-		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(1, 1, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe(); // 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
 
 		mATTS = new AddTaskToStory(1, 1, mASTS, mCP);

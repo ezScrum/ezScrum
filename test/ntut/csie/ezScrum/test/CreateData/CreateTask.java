@@ -120,7 +120,7 @@ public class CreateTask {
 		CS.exe();
 
 		AddStoryToSprint storyTosprint = new AddStoryToSprint(1, 2, CS,
-				mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		storyTosprint.exe(); // 執行 - 將 stories 區分到每個 sprints
 	}
 

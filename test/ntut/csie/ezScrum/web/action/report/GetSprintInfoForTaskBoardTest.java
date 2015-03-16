@@ -86,7 +86,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	public void testGetSprintInfoForTaskBoard_1() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task
@@ -125,7 +125,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	public void testGetSprintInfoForTaskBoard_2() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task

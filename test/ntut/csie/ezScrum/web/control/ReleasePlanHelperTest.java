@@ -229,7 +229,7 @@ public class ReleasePlanHelperTest {
 		CreateSprint CS = new CreateSprint(3, mCP);
 		CS.exe();
 		// create story to sprint
-		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe(); // 每個Sprint中新增2筆Story
 		// 取得ReleasePlans
 		releases = "1,2,3";

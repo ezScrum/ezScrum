@@ -173,7 +173,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		int storyCount = 1;
 		int expectStoryEstimation = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, expectStoryEstimation, createSprint, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, expectStoryEstimation, createSprint, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		int accountCount = 1;
@@ -230,7 +230,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		//	verify story information
 		assertNotNull(actualIIssueList);
-		assertEquals((new CreateProductBacklog()).TEST_STORY_NAME + 1, actualIIssueList.get(0).getSummary());
+		assertEquals((new CreateProductBacklog()).mTestStoryName + 1, actualIIssueList.get(0).getSummary());
 		assertEquals(String.valueOf(expectStoryEstimation), actualStoryPoint);
 
 		//	verify sprint plan information

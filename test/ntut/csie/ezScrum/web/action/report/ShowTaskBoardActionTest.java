@@ -61,7 +61,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		int Story_Count = 5;
 		int Story_Estimation = 2;
-		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe(); // 新增五筆 Stories 到兩個 Sprints 內，並設計每個 Sprint 的 Story 點數總和為
 		// 10
 

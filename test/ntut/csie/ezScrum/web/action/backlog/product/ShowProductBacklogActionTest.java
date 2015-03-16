@@ -218,7 +218,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CreateSprint CS = new CreateSprint(sprintCount, mCP);
 		CS.exe();
 		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, storyEstValue,
-				CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		ArrayList<StoryObject> stories = ASTS.getStories();
@@ -291,7 +291,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CreateSprint CS = new CreateSprint(sprintCount, mCP);
 		CS.exe();
 		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, storyEstValue,
-				CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		ArrayList<StoryObject> stories = ASTS.getStories();

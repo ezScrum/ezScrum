@@ -93,7 +93,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Story_1() throws Exception {
 		final int STORY_COUNT = 2, STORY_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 拿出 sprint 的每一天日期放在 idealPointArray 當 expecte 天數
@@ -143,7 +143,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Story_2() throws Exception {
 		final int STORY_COUNT = 2, STORY_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 拿出sprint的每一天日期
@@ -194,7 +194,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Task_1() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task
@@ -248,7 +248,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Task_2() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task

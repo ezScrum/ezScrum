@@ -250,7 +250,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		int taskEstValue = 3;
 		CreateSprint CS = new CreateSprint(sprintCount, mCP);
 		CS.exe();
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, mCP);
 		addTaskToStory.exe();
@@ -320,7 +320,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		int taskEstValue = 3;
 		CreateSprint CS = new CreateSprint(sprintCount, mCP);
 		CS.exe();
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEstValue, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEstValue, addStoryToSprint, mCP);
 		addTaskToStory.exe();

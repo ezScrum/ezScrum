@@ -92,7 +92,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		mCT.attachTagToStory(mCPB);
 		
 		// ================ set request info ========================
-		ArrayList<Long> storyIds = mCPB.getIssueIDList();
+		ArrayList<Long> storyIds = mCPB.getStoryIds();
 		ArrayList<TagObject> tags = mCT.getTagList();
 		
 		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
@@ -104,7 +104,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		int expectedStoryValue = mCPB.getStories().get(0).getValue();
 		String expectedStoryHoewToDemo = mCPB.getStories().get(0).getHowToDemo();
 		String expectedStoryNote = mCPB.getStories().get(0).getNotes();
-		long storyId = mCPB.getIssueIDList().get(0);
+		long storyId = mCPB.getStoryIds().get(0);
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ 執行 action ======================
