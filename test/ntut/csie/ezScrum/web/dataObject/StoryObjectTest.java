@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -308,7 +309,16 @@ public class StoryObjectTest {
 		AttachFileObject.Builder fileBuilder = new AttachFileObject.Builder();
 		fileBuilder.setContentType("jpg").setIssueId(story.getId())
 				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH");
+		AttachFileObject attachFile = fileBuilder.build();
+		AttachFileDAO.getInstance().create(attachFile);
 		
+		attachFile = story.getAttachFiles().get(0);
+		assertEquals(1, story.getAttachFiles().size());
+		
+		assertEquals("jpg", attachFile.getContentType());
+		assertEquals("FILE_1", attachFile.getName());
+		assertEquals("/TEST_PATH", attachFile.getPath());
+		assertEquals(IssueTypeEnum.TYPE_STORY, attachFile.getIssueType());
 	}
 	
 	private StoryObject createStory() {
