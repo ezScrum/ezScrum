@@ -3,15 +3,19 @@ package ntut.csie.ezScrum.web.dataObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databasEnum.TagEnum;
 
 import org.junit.After;
 import org.junit.Before;
@@ -248,13 +252,53 @@ public class StoryObjectTest {
 	}
 
 	@Test
-	public void testGetTags() {
-		assertEquals(false, true);
+	public void testGetTags() {	
+		// test data
+		String storyTagName = "TEST_TAG_NAME_";
+		// create story
+		StoryObject story = createStory();
+		// add 3 tags
+		for (int i = 0; i < 3; i++) {
+			TagObject tag = new TagObject(storyTagName + (i + 1), mProjectId);
+			tag.save();
+			// add tag to story
+			story.addTag(tag.getId());
+		}
+		
+		// getTags
+		ArrayList<TagObject> tags = story.getTags();
+		
+		// assert
+		assertEquals(3, tags.size());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(storyTagName + (i + 1), tags.get(i).getName());
+		}
 	}
 	
 	@Test
 	public void testSetTags() {
-		assertEquals(false, true);
+		// test data
+		String storyTagName = "TEST_TAG_NAME_";
+		// create story
+		StoryObject story = createStory();
+		// List
+		ArrayList<Long> tagIds = new ArrayList<Long>();
+		// add 3 tags
+		for (int i = 0; i < 3; i++) {
+			TagObject tag = new TagObject(storyTagName + (i + 1), mProjectId);
+			tag.save();
+			// add tag to List
+			tagIds.add(tag.getId());
+		}
+		// SetTags
+		story.setTags(tagIds);
+		// getTags
+		ArrayList<TagObject> tags = story.getTags();
+		// assert
+		assertEquals(3, tags.size());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(storyTagName + (i + 1), tags.get(i).getName());
+		}
 	}
 
 	@Test
