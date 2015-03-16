@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.TagEnum;
 
@@ -166,7 +167,7 @@ public class TagDAOTest {
 	}
 	
 	@Test
-	public void testGetTagByName(){
+	public void testGetTagInProjectByName(){
 		// create Tag
 		String tagName = "TEST_TAG_NAME_1";
 		createTag(tagName);
@@ -179,7 +180,7 @@ public class TagDAOTest {
 	}
 	
 	@Test
-	public void testGetTagsByProject(){
+	public void testGetTagsByProjectId(){
 		// Tag Name
 		String tagName = "TEST_TAG_NAME_";
 		// create 3 TagObject
@@ -192,7 +193,7 @@ public class TagDAOTest {
 		}
 
 		// getTagList
-		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByProject(mProjectId);
+		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByProjectId(mProjectId);
 		// assert
 		assertEquals(3, tags.size());
 		
@@ -200,6 +201,25 @@ public class TagDAOTest {
 			assertEquals(tagName + i, tags.get(i).getName());
 			assertEquals(mProjectId, tags.get(i).getProjectId());
 		}
+	}
+	
+	@Test
+	public void testGetTagsByStoryId(){
+		StoryObject story = new StoryObject(mProjectId);
+		story.save();
+		// Tag Name
+		String tagName = "TEST_TAG_NAME_";
+		// create 3 TagObject
+		for (int i = 0; i < 3; i++) {
+			TagObject tag = new TagObject(tagName + i, mProjectId);
+			// create test data
+			long tagId = TagDAO.getInstance().create(tag);
+			// assert
+			assertNotSame(-1, tagId);
+		}
+		assertEquals(0, TagDAO.getInstance().getTagsByStoryId(story.getId()).size());
+		story.addTag(1);
+		assertEquals(1, TagDAO.getInstance().getTagsByStoryId(story.getId()).size());
 	}
 	
 	private TagObject createTag(String tagName) {

@@ -96,7 +96,7 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	}
 	
 	// 取得自訂分類標籤列表
-	public ArrayList<TagObject> getTagsByProject(long projectId) {
+	public ArrayList<TagObject> getTagsByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TagEnum.PROJECT_ID, String.valueOf(projectId));
@@ -117,24 +117,6 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return tags;
 	}
 	
-	public void addTagRelation(long storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, tagId);
-		String query = valueSet.getSelectQuery();
-		mControl.executeInsert(query);
-	}
-	
-	public boolean removeTagRelation(long storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, tagId);
-		String query = valueSet.getDeleteQuery();
-		return mControl.executeUpdate(query);
-	}
-	
 	public ArrayList<TagObject> getTagsByStoryId(long storyId) {
 		ArrayList<TagObject> tags = new ArrayList<TagObject>();
 		StringBuilder query = new StringBuilder();
@@ -153,6 +135,24 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 			closeResultSet(result);
 		}
 		return tags;
+	}
+	
+	public void addTagToStory(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getInsertQuery();
+		mControl.executeInsert(query);
+	}
+	
+	public boolean removeTagFromStory(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
 	}
 	
 	public static TagObject convert(ResultSet result) throws SQLException {

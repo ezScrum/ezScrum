@@ -173,14 +173,14 @@ public class StoryObject implements IBaseObject {
 	public void removeTag(long tagId) {
 		TagObject tag = TagDAO.getInstance().get(tagId);
 		if (tag != null && isTagExistingInStory(tagId)) {
-			TagDAO.getInstance().removeTagRelation(mId, tagId);
+			TagDAO.getInstance().removeTagFromStory(mId, tagId);
 		}
 	}
 	
 	public void addTag(long tagId) {
 		TagObject tag = TagDAO.getInstance().get(tagId);
 		if (tag != null && !isTagExistingInStory(tagId)) {
-			TagDAO.getInstance().addTagRelation(mId, tagId);			
+			TagDAO.getInstance().addTagToStory(mId, tagId);			
 		}
 	}
 	
