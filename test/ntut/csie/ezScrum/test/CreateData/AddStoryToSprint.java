@@ -23,7 +23,7 @@ public class AddStoryToSprint {
 	 * @param columnValue Set estimate or importance's value
 	 * @param CS
 	 * @param CP
-	 * @param columnBeSet Chose estimate or importance to set value
+	 * @param columnBeSet Chose estimate or importance to set value, e.g. "EST" or "IMP"
 	 * @throws Exception
 	 */
 	public AddStoryToSprint(int storyCount, int columnValue, CreateSprint CS,
@@ -32,7 +32,7 @@ public class AddStoryToSprint {
 		mProjectCount = CP.getProjectList().size();
 		mSprintCount = CS.getSprintCount();
 		mCP = CP;
-		CreateStories(columnValue, columnBeSet);
+		createStories(columnValue, columnBeSet);
 	}
 
 	/**
@@ -42,16 +42,16 @@ public class AddStoryToSprint {
 	 * @param columnValue Set estimate or importance's value
 	 * @param sprintCount
 	 * @param CP
-	 * @param columnBeSet Chose estimate or importance to set value
+	 * @param columnBeSet Chose estimate or importance to set value, e.g. "EST" or "IMP"
 	 * @throws Exception
 	 */
 	public AddStoryToSprint(int storyCount, int columnValue, int sprintCount,
 			CreateProject CP, String columnBeSet) {
 		mStoryCount = storyCount;
-		mProjectCount = CP.getProjectList().size();
+		mProjectCount = CP.getAllProjects().size();
 		mSprintCount = sprintCount;
 		mCP = CP;
-		CreateStories(columnValue, columnBeSet);
+		createStories(columnValue, columnBeSet);
 	}
 
 	public int getSprintCount() {
@@ -66,7 +66,7 @@ public class AddStoryToSprint {
 		for (int i = 0; i < mProjectCount; i++) {
 			ProjectObject project = mCP.getAllProjects().get(i);
 			
-			// 對每個 sprint 加入 mStoryCount 個 story
+			// 對每個 sprint 加入 mStoryCount 個 stories
 			for (int sprintIndex = 0; sprintIndex < mSprintCount; sprintIndex++) {
 				for (int storyIndex = 0; storyIndex < mStoryCount; storyIndex++) {
 					StoryObject story = mStories.get(storyIndex + storyIndex * sprintIndex);
@@ -79,7 +79,7 @@ public class AddStoryToSprint {
 	}
 
 	// create new story list
-	private void CreateStories(int columnValue, String columnBeSet) {
+	private void createStories(int columnValue, String columnBeSet) {
 		int totalStory = mStoryCount * mSprintCount;
 		CreateProductBacklog createStory = new CreateProductBacklog(totalStory,
 				columnValue, mCP, columnBeSet);

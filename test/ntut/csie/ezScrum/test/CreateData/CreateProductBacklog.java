@@ -31,14 +31,14 @@ public class CreateProductBacklog {
 	public CreateProductBacklog() {
 	}
 
-	public CreateProductBacklog(int storycount, CreateProject cp) {
-		mStoryCount = storycount;
+	public CreateProductBacklog(int storyCount, CreateProject cp) {
+		mStoryCount = storyCount;
 		mCP = cp;
 		mAutoSetStory = true;
 	}
 
-	public CreateProductBacklog(int storycount, int columnValue, CreateProject CP, String columnBeSet) {
-		mStoryCount = storycount;
+	public CreateProductBacklog(int storyCount, int columnValue, CreateProject CP, String columnBeSet) {
+		mStoryCount = storyCount;
 		mCP = CP;
 		mColumnValue = columnValue;
 		mAutoSetStory = false;
