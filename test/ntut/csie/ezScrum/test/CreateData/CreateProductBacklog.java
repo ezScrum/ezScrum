@@ -46,69 +46,39 @@ public class CreateProductBacklog {
 	}
 
 	public void exe() {
-		if (mAutoSetStory) {
-			for (int i = 0; i < mCP.getAllProjects().size(); i++) {
-				ProjectObject project = mCP.getAllProjects().get(i);
-
-				for (int j = 0; j < mStoryCount; j++) {
-					StoryObject story = new StoryObject(project.getId());
+		for (int i = 0; i < mCP.getAllProjects().size(); i++) {
+			ProjectObject project = mCP.getAllProjects().get(i);
+			
+			for (int j = 0; j < mStoryCount; j++) {
+				StoryObject story = new StoryObject(project.getId());
+				story
+					.setName(mTestStoryName + j + 1)
+					.setNotes(mTestStoryNotes + j + 1);
+				if (mAutoSetStory) {
 					story
-						.setName(mTestStoryName + j + 1)
-						.setNotes(mTestStoryNotes + j + 1)
 						.setEstimate(mTestStoryEst)
-						.setImportance(mTestStoryImp)
-						.setValue(mTestStoryValue)
-						.setHowToDemo(mTestStoryHowToDemo + j + 1)
-						.save();
-					mStories.add(story);
-					mStoryIds.add(story.getId());
-				}
-				mlog.info("Project " + project.getName() + " create " + mStoryCount + " Stories success.");
-			}
-		} else {
-			if (mColumnBeSet.equals(COLUMN_TYPE_EST)) {
-				for (int i = 0; i < mCP.getAllProjects().size(); i++) {
-					ProjectObject project = mCP.getAllProjects().get(i);
-					
-					for (int j = 0; j < mStoryCount; j++) {
-						StoryObject story = new StoryObject(project.getId());
+						.setImportance(mTestStoryImp);
+				} else {
+					if (mColumnBeSet.equals(COLUMN_TYPE_EST)) {
 						story
-							.setName(mTestStoryName + j + 1)
-							.setNotes(mTestStoryNotes + j + 1)
 							.setEstimate(mColumnValue)
-							.setImportance(mTestStoryImp)
-							.setValue(mTestStoryValue)
-							.setHowToDemo(mTestStoryHowToDemo + j + 1)
-							.save();
-						mStories.add(story);
-						mStoryIds.add(story.getId());
-					}
-					mlog.info("Assign Estimate Value");
-					mlog.info("Project " + project.getName() + " create " + mStoryCount + " Stories success");
-				}
-			} else if (mColumnBeSet.equals(COLUMN_TYPE_IMP)) {
-				for (int i = 0; i < mCP.getAllProjects().size(); i++) {
-					ProjectObject project = mCP.getAllProjects().get(i);
-
-					for (int j = 0; j < mStoryCount; j++) {
-						StoryObject story = new StoryObject(project.getId());
+							.setImportance(mTestStoryImp);
+						mlog.info("Assign Estimate Value");
+					} else if (mColumnBeSet.equals(COLUMN_TYPE_IMP)) {
 						story
-							.setName(mTestStoryName + j + 1)
-							.setNotes(mTestStoryNotes + j + 1)
 							.setEstimate(mTestStoryEst)
-							.setImportance(mColumnValue)
-							.setValue(mTestStoryValue)
-							.setHowToDemo(mTestStoryHowToDemo + j + 1)
-							.save();
-						mStories.add(story);
-						mStoryIds.add(story.getId());
+							.setImportance(mColumnValue);
+						mlog.info("Assign Importance Value");
 					}
-					mlog.info("Assign Importance Value");
-					mlog.info("Project " + project.getName() + " create " + mStoryCount + " Stories success");
 				}
-			} else {
-				mlog.info("Create Product Backlog Type error.");
+				story
+					.setValue(mTestStoryValue)
+					.setHowToDemo(mTestStoryHowToDemo + j + 1)
+					.save();
+				mStories.add(story);
+				mStoryIds.add(story.getId());
 			}
+			mlog.info("Project " + project.getName() + " create " + mStoryCount + " Stories success.");
 		}
 	}
 
