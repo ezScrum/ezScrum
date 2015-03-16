@@ -39,22 +39,13 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
 		valueSet.addInsertValue(StoryEnum.PROJECT_ID, story.getProjectId());
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
-		if (story.getCreateTime() > 0) {
-			valueSet.addInsertValue(StoryEnum.CREATE_TIME,
-					story.getCreateTime());
-			valueSet.addInsertValue(StoryEnum.UPDATE_TIME,
-					story.getCreateTime());
-		} else {
-			valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
-			valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
-		}
+		valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
+		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
-
 		serialNumber.setId(SerialNumberEnum.STORY,
 				serialNumber.getStoryId() + 1);
 		serialNumber.save();
-
 		return id;
 	}
 
@@ -64,9 +55,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.ID, id);
 		String query = valueSet.getSelectQuery();
-
 		ResultSet result = mControl.executeQuery(query);
-
 		StoryObject story = null;
 		try {
 			if (result.next()) {
@@ -95,7 +84,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getUpdateTime());
 		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
 		String query = valueSet.getUpdateQuery();
-
 		return mControl.executeUpdate(query);
 	}
 
@@ -114,7 +102,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, sprintId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 		try {
 			while (result.next()) {
@@ -128,12 +115,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return stories;
 	}
 
-	/**
-	 * Get the stories which do not have sprint id.
-	 * 
-	 * @param projectId
-	 * @return All stories which no parent in this project
-	 */
 	public ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
@@ -141,7 +122,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 		try {
 			while (result.next()) {
@@ -155,13 +135,12 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return stories;
 	}
 
-	public ArrayList<StoryObject> getAllStories(long projectId) {
+	public ArrayList<StoryObject> getStoriesByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 		try {
 			while (result.next()) {
