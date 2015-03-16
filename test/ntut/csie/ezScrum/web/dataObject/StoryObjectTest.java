@@ -62,25 +62,7 @@ public class StoryObjectTest {
 
 	@Test
 	public void testSave_Create_New_Story() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 
 		story = StoryDAO.getInstance().get(story.getId());
 		assertEquals(1, story.getId());
@@ -96,25 +78,7 @@ public class StoryObjectTest {
 
 	@Test
 	public void testSave_Update_Story() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 
 		story.setName("TEST_NAME2").setNotes("TEST_NOTE2")
 				.setHowToDemo("TEST_HOW_TO_DEMO2").setImportance(2).setValue(3)
@@ -136,25 +100,7 @@ public class StoryObjectTest {
 
 	@Test
 	public void testGetHistories() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 
 		story.setName("TEST_NAME2").setNotes("TEST_NOTE2")
 				.setHowToDemo("TEST_HOW_TO_DEMO2").setImportance(2).setValue(3)
@@ -228,25 +174,7 @@ public class StoryObjectTest {
 
 	@Test
 	public void testGetTasks() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 
 		assertEquals(0, story.getTasks().size());
 
@@ -276,25 +204,7 @@ public class StoryObjectTest {
 	
 	@Test
 	public void testAddTag() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 		
 		TagObject tag1 = new TagObject("TAG_1", mProjectId);
 		tag1.save();
@@ -315,25 +225,7 @@ public class StoryObjectTest {
 	
 	@Test
 	public void testRemoveTag() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 		
 		TagObject tag1 = new TagObject("TAG_1", mProjectId);
 		tag1.save();
@@ -389,5 +281,29 @@ public class StoryObjectTest {
 		fileBuilder.setContentType("jpg").setIssueId(story.getId())
 				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH");
 		
+	}
+	
+	private StoryObject createStory() {
+		StoryObject story = StoryObject.get(1);
+
+		assertNull(story);
+
+		story = new StoryObject(mProjectId);
+		story.setName("TEST_NAME").setNotes("TEST_NOTE")
+				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
+				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
+				.setSprintId(1).save();
+		story = StoryObject.get(story.getId());
+		assertEquals(1, story.getId());
+		assertEquals("TEST_NAME", story.getName());
+		assertEquals("TEST_NOTE", story.getNotes());
+		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
+		assertEquals(1, story.getImportance());
+		assertEquals(2, story.getValue());
+		assertEquals(3, story.getEstimate());
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
+		assertEquals(1, story.getSprintId());
+		
+		return story;
 	}
 }

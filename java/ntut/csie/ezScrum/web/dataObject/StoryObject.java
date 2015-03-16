@@ -158,10 +158,6 @@ public class StoryObject implements IBaseObject {
 		return TaskDAO.getInstance().getTasksByStoryId(mId);
 	}
 	
-	public ArrayList<TagObject> getTags() {
-		return TagDAO.getInstance().getTagsByStoryId(mId);
-	}
-	
 	public ArrayList<HistoryObject> getHistories() {
 		return HistoryDAO.getInstance().getHistoriesByIssue(mId, IssueTypeEnum.TYPE_STORY);
 	}
@@ -170,16 +166,20 @@ public class StoryObject implements IBaseObject {
 		return AttachFileDAO.getInstance().getAttachFilesByStoryId(mId);
 	}
 	
+	public ArrayList<TagObject> getTags() {
+		return TagDAO.getInstance().getTagsByStoryId(mId);
+	}
+	
 	public void removeTag(long tagId) {
 		TagObject tag = TagDAO.getInstance().get(tagId);
-		if (tag != null) {
+		if (tag != null && isTagExistingInStory(tagId)) {
 			TagDAO.getInstance().removeTagRelation(mId, tagId);
 		}
 	}
 	
 	public void addTag(long tagId) {
 		TagObject tag = TagDAO.getInstance().get(tagId);
-		if (tag == null) {
+		if (tag != null && !isTagExistingInStory(tagId)) {
 			TagDAO.getInstance().addTagRelation(mId, tagId);			
 		}
 	}
@@ -356,5 +356,15 @@ public class StoryObject implements IBaseObject {
 		setEstimate(story.getEstimate());
 		setStatus(story.getStatus());
 		setSprintId(story.getSprintId());
+	}
+	
+	private boolean isTagExistingInStory(long tagId) {
+		ArrayList<TagObject> tags = getTags();
+		for (TagObject tag : tags) {
+			if (tag.getId() == tagId) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
