@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
@@ -170,11 +171,17 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public void removeTag(long tagId) {
-		StoryDAO.getInstance().removeTagRelation(mId, tagId);
+		TagObject tag = TagDAO.getInstance().get(tagId);
+		if (tag != null) {
+			TagDAO.getInstance().removeTagRelation(mId, tagId);
+		}
 	}
 	
 	public void addTag(long tagId) {
-		StoryDAO.getInstance().addTagRelation(mId, tagId);
+		TagObject tag = TagDAO.getInstance().get(tagId);
+		if (tag == null) {
+			TagDAO.getInstance().addTagRelation(mId, tagId);			
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

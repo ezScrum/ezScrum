@@ -177,24 +177,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		}
 		return stories;
 	}
-	
-	public void addTagRelation(long storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, tagId);
-		String query = valueSet.getSelectQuery();
-		mControl.executeInsert(query);
-	}
-	
-	public boolean removeTagRelation(long storyId, long tagId) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
-		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, tagId);
-		String query = valueSet.getDeleteQuery();
-		return mControl.executeUpdate(query);
-	}
 
 	public static StoryObject convert(ResultSet result) throws SQLException {
 		StoryObject story = new StoryObject(result.getLong(StoryEnum.ID),

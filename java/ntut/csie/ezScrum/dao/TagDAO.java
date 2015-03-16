@@ -117,6 +117,44 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		return tags;
 	}
 	
+	public void addTagRelation(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addInsertValue(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addInsertValue(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getSelectQuery();
+		mControl.executeInsert(query);
+	}
+	
+	public boolean removeTagRelation(long storyId, long tagId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryTagRelationEnum.STORY_ID, storyId);
+		valueSet.addEqualCondition(StoryTagRelationEnum.TAG_ID, tagId);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	public ArrayList<TagObject> getTagsByStoryId(long storyId) {
+		ArrayList<TagObject> tags = new ArrayList<TagObject>();
+		StringBuilder query = new StringBuilder();
+		query.append("Select ").append(TagEnum.TABLE_NAME).append(".* from ").append(StoryTagRelationEnum.TABLE_NAME).append(", ")
+		.append(TagEnum.TABLE_NAME).append(" where ").append(StoryTagRelationEnum.TABLE_NAME).append(".").append(StoryTagRelationEnum.STORY_ID)
+		.append("=").append(storyId);
+		
+		ResultSet result = mControl.executeQuery(query.toString());
+		try {
+			while(result.next()) {
+				tags.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return tags;
+	}
+	
 	public static TagObject convert(ResultSet result) throws SQLException {
 		long id = result.getLong(TagEnum.ID);
 		String name = result.getString(TagEnum.NAME);

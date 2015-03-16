@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -275,12 +276,80 @@ public class StoryObjectTest {
 	
 	@Test
 	public void testAddTag() {
-		assertEquals(false, true);
+		StoryObject story = StoryObject.get(1);
+
+		assertNull(story);
+
+		story = new StoryObject(mProjectId);
+		story.setName("TEST_NAME").setNotes("TEST_NOTE")
+				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
+				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
+				.setSprintId(1).save();
+		story = StoryObject.get(story.getId());
+		assertEquals(1, story.getId());
+		assertEquals("TEST_NAME", story.getName());
+		assertEquals("TEST_NOTE", story.getNotes());
+		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
+		assertEquals(1, story.getImportance());
+		assertEquals(2, story.getValue());
+		assertEquals(3, story.getEstimate());
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
+		assertEquals(1, story.getSprintId());
+		
+		TagObject tag1 = new TagObject("TAG_1", mProjectId);
+		tag1.save();
+		
+		TagObject tag2 = new TagObject("TAG_2", mProjectId);
+		tag2.save();
+		
+		story.addTag(tag1.getId());
+		assertEquals(1, story.getTags());
+		
+		story.addTag(tag2.getId());
+		assertEquals(2, story.getTags());
+		
+		// 不存在的 tag id, 不會加入成功
+		story.addTag(5);
+		assertEquals(2, story.getTags());
 	}
 	
 	@Test
 	public void testRemoveTag() {
-		assertEquals(false, true);
+		StoryObject story = StoryObject.get(1);
+
+		assertNull(story);
+
+		story = new StoryObject(mProjectId);
+		story.setName("TEST_NAME").setNotes("TEST_NOTE")
+				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
+				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
+				.setSprintId(1).save();
+		story = StoryObject.get(story.getId());
+		assertEquals(1, story.getId());
+		assertEquals("TEST_NAME", story.getName());
+		assertEquals("TEST_NOTE", story.getNotes());
+		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
+		assertEquals(1, story.getImportance());
+		assertEquals(2, story.getValue());
+		assertEquals(3, story.getEstimate());
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
+		assertEquals(1, story.getSprintId());
+		
+		TagObject tag1 = new TagObject("TAG_1", mProjectId);
+		tag1.save();
+		
+		TagObject tag2 = new TagObject("TAG_2", mProjectId);
+		tag2.save();
+		
+		story.addTag(tag1.getId());
+		assertEquals(1, story.getTags());
+		
+		story.addTag(tag2.getId());
+		assertEquals(2, story.getTags());
+		
+		// 不存在的 tag id, 不會加入成功
+		story.addTag(5);
+		assertEquals(2, story.getTags());
 	}
 
 	@Test

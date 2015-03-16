@@ -229,9 +229,9 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ScrumRole convertScrumRole(String projectId, String role,
+	public ScrumRole convertScrumRole(String projectName, String role,
 			ResultSet result) throws SQLException {
-		ScrumRole scrumRole = new ScrumRole(projectId, role);
+		ScrumRole scrumRole = new ScrumRole(projectName, role);
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
 		scrumRole.setAccessProductBacklog(result
 				.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
