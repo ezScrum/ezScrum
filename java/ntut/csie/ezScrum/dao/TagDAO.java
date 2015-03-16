@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.dao;
 
+import java.io.Console;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -122,8 +123,9 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		StringBuilder query = new StringBuilder();
 		query.append("Select ").append(TagEnum.TABLE_NAME).append(".* from ").append(StoryTagRelationEnum.TABLE_NAME).append(", ")
 		.append(TagEnum.TABLE_NAME).append(" where ").append(StoryTagRelationEnum.TABLE_NAME).append(".").append(StoryTagRelationEnum.STORY_ID)
-		.append("=").append(storyId);
-		
+		.append(" = ").append(storyId).append(" AND ").append(StoryTagRelationEnum.TABLE_NAME).append(".").append(StoryTagRelationEnum.TAG_ID)
+		.append(" = ").append(TagEnum.TABLE_NAME).append(".").append(TagEnum.ID);
+		System.out.println(query.toString());
 		ResultSet result = mControl.executeQuery(query.toString());
 		try {
 			while(result.next()) {

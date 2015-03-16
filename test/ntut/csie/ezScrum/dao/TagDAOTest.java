@@ -218,8 +218,10 @@ public class TagDAOTest {
 			assertNotSame(-1, tagId);
 		}
 		assertEquals(0, TagDAO.getInstance().getTagsByStoryId(story.getId()).size());
-		story.addTag(1);
-		assertEquals(1, TagDAO.getInstance().getTagsByStoryId(story.getId()).size());
+		story.addTag(2);
+		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByStoryId(story.getId());
+		assertEquals(1, tags.size());
+		assertEquals("TEST_TAG_NAME_1", tags.get(0).getName());
 	}
 	
 	private TagObject createTag(String tagName) {
