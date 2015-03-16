@@ -122,7 +122,8 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		query.append("Select ").append(TagEnum.TABLE_NAME).append(".* from ").append(StoryTagRelationEnum.TABLE_NAME).append(", ")
 		.append(TagEnum.TABLE_NAME).append(" where ").append(StoryTagRelationEnum.TABLE_NAME).append(".").append(StoryTagRelationEnum.STORY_ID)
 		.append(" = ").append(storyId).append(" AND ").append(StoryTagRelationEnum.TABLE_NAME).append(".").append(StoryTagRelationEnum.TAG_ID)
-		.append(" = ").append(TagEnum.TABLE_NAME).append(".").append(TagEnum.ID);
+		.append(" = ").append(TagEnum.TABLE_NAME).append(".").append(TagEnum.ID).append(" order by ").append(StoryTagRelationEnum.TABLE_NAME).append(".")
+		.append(StoryTagRelationEnum.ID).append(" ASC");
 		ResultSet result = mControl.executeQuery(query.toString());
 		try {
 			while(result.next()) {
