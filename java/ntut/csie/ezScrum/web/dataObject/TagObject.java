@@ -67,16 +67,6 @@ public class TagObject implements IBaseObject{
 		return TagDAO.getInstance().get(id);
 	}
 	
-	/**
-	 * 透過 Tag Name 取得 Tag
-	 * @param name
-	 * @param ProjectId
-	 * @return
-	 */
-	public static TagObject getTagInProjectByName(String name, long projectId){
-		return TagDAO.getInstance().getTagInProjectByName(projectId, name);
-	}
-	
 	@Override
     public void save() {
 		if (exists()) {

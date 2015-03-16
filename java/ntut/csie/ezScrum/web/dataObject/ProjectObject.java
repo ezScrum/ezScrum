@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
@@ -169,6 +170,16 @@ public class ProjectObject implements IBaseObject {
 	public void updateScrumRole(ScrumRole scrumRole) {
 		ProjectDAO.getInstance().updateScrumRole(mId, 
 				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
+	}
+	
+	/**
+	 * 透過 Tag Name 取得 Tag
+	 * @param name
+	 * @param ProjectId
+	 * @return
+	 */
+	public TagObject getTagByName(String name){
+		return TagDAO.getInstance().getTagInProjectByName(mId, name);
 	}
 	
 	@Override
