@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -203,7 +204,7 @@ public class StoryDAOTest {
 		
 		// delete story #2
 		boolean result = StoryDAO.getInstance().delete(stories.get(1).getId());
-		assertEquals(true, result);
+		assertTrue(result);
 		
 		// reload stories
 		stories.clear();
