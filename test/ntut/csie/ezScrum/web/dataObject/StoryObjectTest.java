@@ -263,26 +263,7 @@ public class StoryObjectTest {
 
 	@Test
 	public void testGetAttachFiles() {
-		StoryObject story = StoryObject.get(1);
-
-		assertNull(story);
-
-		story = new StoryObject(mProjectId);
-		story.setName("TEST_NAME").setNotes("TEST_NOTE")
-				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
-				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
-				.setSprintId(1).save();
-
-		story = StoryObject.get(story.getId());
-		assertEquals(1, story.getId());
-		assertEquals("TEST_NAME", story.getName());
-		assertEquals("TEST_NOTE", story.getNotes());
-		assertEquals("TEST_HOW_TO_DEMO", story.getHowToDemo());
-		assertEquals(1, story.getImportance());
-		assertEquals(2, story.getValue());
-		assertEquals(3, story.getEstimate());
-		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
-		assertEquals(1, story.getSprintId());
+		StoryObject story = createStory();
 
 		AttachFileObject.Builder fileBuilder = new AttachFileObject.Builder();
 		fileBuilder.setContentType("jpg").setIssueId(story.getId())

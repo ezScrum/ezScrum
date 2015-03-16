@@ -191,14 +191,14 @@ public class StoryObject implements IBaseObject {
 			oldTags.add(tag.getId());
 		}
 		
-		ArrayList<Long> deletedList = (ArrayList<Long>) CollectionUtils.subtract(oldTags, tagIds);
-		ArrayList<Long> addList = (ArrayList<Long>) CollectionUtils.subtract(tagIds, oldTags);
+		ArrayList<Long> deleteTags = (ArrayList<Long>) CollectionUtils.subtract(oldTags, tagIds);
+		ArrayList<Long> addTags = (ArrayList<Long>) CollectionUtils.subtract(tagIds, oldTags);
 		
-		for (Long tagId : deletedList) {
+		for (Long tagId : deleteTags) {
 			removeTag(tagId);
 		}
 		
-		for (Long tagId : addList) {
+		for (Long tagId : addTags) {
 			addTag(tagId);
 		}
 	}
