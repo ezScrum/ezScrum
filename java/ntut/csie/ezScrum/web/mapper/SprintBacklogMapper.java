@@ -166,8 +166,11 @@ public class SprintBacklogMapper {
 	 * @return Tasks of Story list
 	 */
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
-		ArrayList<TaskObject> tasks = StoryObject.get(storyId).getTasks();
-		return tasks;
+		StoryObject story = StoryObject.get(storyId);
+		if (story != null) {
+			return story.getTasks();
+		}
+		return new ArrayList<TaskObject>();		
 	}
 	
 	public Map<Long, ArrayList<TaskObject>> getTasksMap() {

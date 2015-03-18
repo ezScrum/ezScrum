@@ -17,16 +17,16 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapper {
-	private ProjectObject mProject;
+	private IProject mProject;
 	private Configuration mConfig;
 	private IUserSession mUserSession;
 	private MantisService mMantisService;
 
-	public ProductBacklogMapper(ProjectObject project, IUserSession userSession) {
+	public ProductBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 		mUserSession = userSession;
 		mConfig = new Configuration(mUserSession);
