@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
@@ -156,6 +157,10 @@ public class ProjectObject implements IBaseObject {
 	public ArrayList<AccountObject> getProjectWorkers() {
 		ArrayList<AccountObject> projectWorkers = AccountDAO.getInstance().getProjectWorkers(mId);
 		return projectWorkers;
+	}
+	
+	public static ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
+		return StoryDAO.getInstance().getStoriesWithNoParent(projectId);
 	}
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {

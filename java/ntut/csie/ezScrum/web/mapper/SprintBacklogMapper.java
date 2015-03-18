@@ -111,7 +111,7 @@ public class SprintBacklogMapper {
 	 * 取得被 Drop 掉的 Story
 	 */
 	public ArrayList<StoryObject> getDroppedStories() {
-			mDropedStories = StoryObject.getStoriesWithNoParent(mProject
+			mDropedStories = ProjectObject.getStoriesWithNoParent(mProject
 					.getId());
 		return mDropedStories;
 	}
