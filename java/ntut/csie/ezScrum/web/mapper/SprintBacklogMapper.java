@@ -2,8 +2,6 @@ package ntut.csie.ezScrum.web.mapper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
@@ -27,10 +25,6 @@ public class SprintBacklogMapper {
 	private ArrayList<TaskObject> mTasks = null;
 	private ArrayList<StoryObject> mDropedStories = null;
 
-	// 用於紀錄 Story 與 Task 之間的 Mapping
-	private LinkedHashMap<Long, ArrayList<TaskObject>> mMapStoryTasks = null;
-	private LinkedHashMap<Long, ArrayList<TaskObject>> mMapDropedStoryTasks = null;
-	
 	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 	private boolean mUpdateFlag = true;
 
@@ -171,24 +165,6 @@ public class SprintBacklogMapper {
 			return story.getTasks();
 		}
 		return new ArrayList<TaskObject>();		
-	}
-	
-	public Map<Long, ArrayList<TaskObject>> getTasksMap() {
-		refresh();
-		return mMapStoryTasks;
-	}
-
-	public Map<Long, ArrayList<TaskObject>> getDroppedTasksMap() {
-		if (mMapDropedStoryTasks == null) {
-			ArrayList<StoryObject> droppedStories = getDroppedStories();
-			// 取得這些被 Dropped Story 的 Task
-			mMapDropedStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
-			for (StoryObject dropedStory : droppedStories) {
-				ArrayList<TaskObject> droppedTasks = dropedStory.getTasks();
-				mMapDropedStoryTasks.put(dropedStory.getId(), droppedTasks);
-			}
-		}
-		return mMapDropedStoryTasks;
 	}
 	
 	// for ezScrum 1.8
@@ -407,8 +383,7 @@ public class SprintBacklogMapper {
 	 * Refresh 動作
 	 */
 	private void refresh() {
-		if (mStories == null || mTasks == null || mMapStoryTasks == null
-				|| mUpdateFlag) {
+		if (mStories == null || mTasks == null || mUpdateFlag) {
 			synchronizeDataInSprintInDB();
 			mUpdateFlag = false;
 		}
@@ -418,22 +393,16 @@ public class SprintBacklogMapper {
 	 * 取得目前所有在此 Sprint 的 Story 與 Task
 	 */
 	private void synchronizeDataInSprintInDB() {
-		if (mStories == null || mTasks == null || mMapStoryTasks == null) {
+		if (mStories == null || mTasks == null) {
 			mStories = new ArrayList<StoryObject>();
 			mTasks = new ArrayList<TaskObject>();
-			mMapStoryTasks = new LinkedHashMap<Long, ArrayList<TaskObject>>();
 		} else {
 			mStories.clear();
 			mTasks.clear();
-			mMapStoryTasks.clear();
 		}
 		mStories = getStoriesBySprintId(mSprintId);
 		for (StoryObject story : mStories) {
 			mTasks = getTasksByStoryId(story.getId());
-
-			if (mTasks.size() > 0) {
-				mMapStoryTasks.put(story.getId(), mTasks);
-			}
 		}
 		mUpdateFlag = false;
 	}
