@@ -274,7 +274,7 @@ public class ConvertSprintBacklog {
 		int storyLength = 0;
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
-		if ((sb != null) && (sb.getSprintPlanId() > 0)) {
+		if ((sb != null) && (sb.getSprintId() > 0)) {
 			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
 			Map<Long, ArrayList<TaskObject>> taskMap = sb.getTasksMap();
 			stories = this.filterStory(stories, taskMap, handler);

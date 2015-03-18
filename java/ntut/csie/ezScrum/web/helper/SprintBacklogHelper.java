@@ -272,7 +272,7 @@ public class SprintBacklogHelper {
 			int availableDays = mSprintBacklogLogic
 					.getSprintAvailableDays(mSprintId);
 
-			if (this.mSprintBacklogMapper.getSprintPlanId() > 0) {
+			if (this.mSprintBacklogMapper.getSprintId() > 0) {
 				ArrayList<IIssue> stories = getStoriesByImportance();
 				Map<Long, ArrayList<TaskObject>> storyTaskMap = mSprintBacklogMapper
 						.getTasksMap();
@@ -318,10 +318,10 @@ public class SprintBacklogHelper {
 		double taskPoint = 0.0d;
 		String sprintGoal = "";
 		if ((mSprintBacklogMapper != null)
-				&& (mSprintBacklogMapper.getSprintPlanId() > 0)) {
+				&& (mSprintBacklogMapper.getSprintId() > 0)) {
 			// 存在一 current sprint
 			issues = getStoriesByImportance();
-			currentSprintId = mSprintBacklogMapper.getSprintPlanId();
+			currentSprintId = mSprintBacklogMapper.getSprintId();
 			currentPoint = mSprintBacklogLogic
 					.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
 			limitedPoint = mSprintBacklogMapper.getLimitedPoint();
@@ -355,7 +355,7 @@ public class SprintBacklogHelper {
 		String result = "";
 		// 建立 DateColumnStore 的資料
 		if ((mSprintBacklogMapper != null)
-				&& (mSprintBacklogMapper.getSprintPlanId() > 0)) {
+				&& (mSprintBacklogMapper.getSprintId() > 0)) {
 			Date StartDate = mSprintBacklogMapper.getSprintStartDate();
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic
