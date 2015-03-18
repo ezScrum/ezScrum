@@ -111,10 +111,8 @@ public class SprintBacklogMapper {
 	 * 取得被 Drop 掉的 Story
 	 */
 	public ArrayList<StoryObject> getDroppedStories() {
-		if (mDropedStories == null) {
 			mDropedStories = StoryObject.getStoriesWithNoParent(mProject
 					.getId());
-		}
 		return mDropedStories;
 	}
 
@@ -402,7 +400,7 @@ public class SprintBacklogMapper {
 		}
 		mStories = getStoriesBySprintId(mSprintId);
 		for (StoryObject story : mStories) {
-			mTasks = getTasksByStoryId(story.getId());
+			mTasks.addAll((ArrayList<TaskObject>)story.getTasks());
 		}
 		mUpdateFlag = false;
 	}

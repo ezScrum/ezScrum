@@ -1,17 +1,12 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -21,7 +16,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -96,57 +90,6 @@ public class SprintBacklogMapperTest {
 		mConfig = null;
 		mSprintBacklogMapper = null;
 		projectManager = null;
-	}
-
-	@Test
-	public void testGetTasksMap() {
-		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
-		assertEquals(3, tasksMap.size());
-		assertTrue(tasksMap.containsKey(1L));
-		assertTrue(tasksMap.containsKey(2L));
-		assertTrue(tasksMap.containsKey(3L));
-		ArrayList<TaskObject> tasksInStory1 = tasksMap.get(1L);
-		assertEquals(3, tasksInStory1.size());
-		// check project id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getProjectId());
-		assertEquals(1, tasksInStory1.get(1).getProjectId());
-		assertEquals(1, tasksInStory1.get(2).getProjectId());
-		// check story id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getStoryId());
-		assertEquals(1, tasksInStory1.get(1).getStoryId());
-		assertEquals(1, tasksInStory1.get(2).getStoryId());
-		// check task id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getId());
-		assertEquals(2, tasksInStory1.get(1).getId());
-		assertEquals(3, tasksInStory1.get(2).getId());
-		ArrayList<TaskObject> tasksInStory2 = tasksMap.get(2L);
-		assertEquals(3, tasksInStory2.size());
-		// check project id in tasksInStory2
-		assertEquals(1, tasksInStory2.get(0).getProjectId());
-		assertEquals(1, tasksInStory2.get(1).getProjectId());
-		assertEquals(1, tasksInStory2.get(2).getProjectId());
-		// check story id in tasksInStory2
-		assertEquals(2, tasksInStory2.get(0).getStoryId());
-		assertEquals(2, tasksInStory2.get(1).getStoryId());
-		assertEquals(2, tasksInStory2.get(2).getStoryId());
-		// check task id in tasksInStory2
-		assertEquals(4, tasksInStory2.get(0).getId());
-		assertEquals(5, tasksInStory2.get(1).getId());
-		assertEquals(6, tasksInStory2.get(2).getId());
-		ArrayList<TaskObject> tasksInStory3 = tasksMap.get(3L);
-		assertEquals(3, tasksInStory3.size());
-		// check project id in tasksInStory3
-		assertEquals(1, tasksInStory3.get(0).getProjectId());
-		assertEquals(1, tasksInStory3.get(1).getProjectId());
-		assertEquals(1, tasksInStory3.get(2).getProjectId());
-		// check story id in tasksInStory3
-		assertEquals(3, tasksInStory3.get(0).getStoryId());
-		assertEquals(3, tasksInStory3.get(1).getStoryId());
-		assertEquals(3, tasksInStory3.get(2).getStoryId());
-		// check task id in tasksInStory3
-		assertEquals(7, tasksInStory3.get(0).getId());
-		assertEquals(8, tasksInStory3.get(1).getId());
-		assertEquals(9, tasksInStory3.get(2).getId());
 	}
 
 	@Test
@@ -274,7 +217,7 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetDroppedStories() throws InterruptedException {
+	public void testGetDroppedStories() {
 		// check dropped stories before test
 		ArrayList<StoryObject> droppedStories = mSprintBacklogMapper.getDroppedStories();
 		assertEquals(0, droppedStories.size());
