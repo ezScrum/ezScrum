@@ -23,7 +23,6 @@ public class SprintBacklogMapper {
 
 	private ArrayList<StoryObject> mStories = null;
 	private ArrayList<TaskObject> mTasks = null;
-	private ArrayList<StoryObject> mDropedStories = null;
 
 	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 	private boolean mUpdateFlag = true;
