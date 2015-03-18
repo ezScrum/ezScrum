@@ -436,7 +436,6 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testAddExistingTasksToStory() {
-		long storyId = 1;
 		// get story
 		StoryObject story = mASTS.getStories().get(0);
 		

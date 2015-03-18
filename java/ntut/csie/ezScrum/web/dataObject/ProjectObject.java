@@ -159,13 +159,12 @@ public class ProjectObject implements IBaseObject {
 		return projectWorkers;
 	}
 	
-	public static ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
-		return StoryDAO.getInstance().getStoriesWithNoParent(projectId);
+	public ArrayList<StoryObject> getStoriesWithNoParent() {
+		return StoryDAO.getInstance().getStoriesWithNoParent(mId);
 	}
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {
-		ArrayList<TaskObject> tasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
-		return tasksWithNoParent;
+		return TaskDAO.getInstance().getTasksWithNoParent(mId);
 	}
 	
 	public ScrumRole getScrumRole(RoleEnum role) {

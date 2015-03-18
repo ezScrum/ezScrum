@@ -111,9 +111,7 @@ public class SprintBacklogMapper {
 	 * 取得被 Drop 掉的 Story
 	 */
 	public ArrayList<StoryObject> getDroppedStories() {
-			mDropedStories = ProjectObject.getStoriesWithNoParent(mProject
-					.getId());
-		return mDropedStories;
+		return mProject.getStoriesWithNoParent();
 	}
 
 	// for ezScrum 1.8
