@@ -96,7 +96,7 @@ public class ScheduleReport {
 		SprintBacklogMapper sb = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskSeriesCollection collection = null;
 		if(mIteration==-1){
-			mIteration = sb.getSprintPlanId();
+			mIteration = sb.getSprintId();
 		}
 		
 		if(sb!=null){

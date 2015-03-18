@@ -1,17 +1,12 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -21,7 +16,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -72,8 +66,7 @@ public class SprintBacklogMapperTest {
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfig.getUserSession();
-		mSprintBacklogMapper = new SprintBacklogMapper(project, userSession);
+		mSprintBacklogMapper = new SprintBacklogMapper(project);
 	}
 
 	@After
@@ -97,57 +90,6 @@ public class SprintBacklogMapperTest {
 		mConfig = null;
 		mSprintBacklogMapper = null;
 		projectManager = null;
-	}
-
-	@Test
-	public void testGetTasksMap() {
-		Map<Long, ArrayList<TaskObject>> tasksMap = mSprintBacklogMapper.getTasksMap();
-		assertEquals(3, tasksMap.size());
-		assertTrue(tasksMap.containsKey(1L));
-		assertTrue(tasksMap.containsKey(2L));
-		assertTrue(tasksMap.containsKey(3L));
-		ArrayList<TaskObject> tasksInStory1 = tasksMap.get(1L);
-		assertEquals(3, tasksInStory1.size());
-		// check project id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getProjectId());
-		assertEquals(1, tasksInStory1.get(1).getProjectId());
-		assertEquals(1, tasksInStory1.get(2).getProjectId());
-		// check story id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getStoryId());
-		assertEquals(1, tasksInStory1.get(1).getStoryId());
-		assertEquals(1, tasksInStory1.get(2).getStoryId());
-		// check task id in tasksInStory1
-		assertEquals(1, tasksInStory1.get(0).getId());
-		assertEquals(2, tasksInStory1.get(1).getId());
-		assertEquals(3, tasksInStory1.get(2).getId());
-		ArrayList<TaskObject> tasksInStory2 = tasksMap.get(2L);
-		assertEquals(3, tasksInStory2.size());
-		// check project id in tasksInStory2
-		assertEquals(1, tasksInStory2.get(0).getProjectId());
-		assertEquals(1, tasksInStory2.get(1).getProjectId());
-		assertEquals(1, tasksInStory2.get(2).getProjectId());
-		// check story id in tasksInStory2
-		assertEquals(2, tasksInStory2.get(0).getStoryId());
-		assertEquals(2, tasksInStory2.get(1).getStoryId());
-		assertEquals(2, tasksInStory2.get(2).getStoryId());
-		// check task id in tasksInStory2
-		assertEquals(4, tasksInStory2.get(0).getId());
-		assertEquals(5, tasksInStory2.get(1).getId());
-		assertEquals(6, tasksInStory2.get(2).getId());
-		ArrayList<TaskObject> tasksInStory3 = tasksMap.get(3L);
-		assertEquals(3, tasksInStory3.size());
-		// check project id in tasksInStory3
-		assertEquals(1, tasksInStory3.get(0).getProjectId());
-		assertEquals(1, tasksInStory3.get(1).getProjectId());
-		assertEquals(1, tasksInStory3.get(2).getProjectId());
-		// check story id in tasksInStory3
-		assertEquals(3, tasksInStory3.get(0).getStoryId());
-		assertEquals(3, tasksInStory3.get(1).getStoryId());
-		assertEquals(3, tasksInStory3.get(2).getStoryId());
-		// check task id in tasksInStory3
-		assertEquals(7, tasksInStory3.get(0).getId());
-		assertEquals(8, tasksInStory3.get(1).getId());
-		assertEquals(9, tasksInStory3.get(2).getId());
 	}
 
 	@Test
@@ -175,66 +117,39 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetDroppedTasksMap() {
-		// check dropped stories before test
-		Map<Long, ArrayList<TaskObject>> droppedTasksMap = mSprintBacklogMapper.getDroppedTasksMap();
-		assertEquals(0, droppedTasksMap.size());
-		// create product backlog helper
-		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfig.getUserSession();
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
-		// remove story 2 from sprint
-		productBacklogHelper.removeStoryFromSprint(1);
-		// check dropped stories after add a dropped story
-		droppedTasksMap = mSprintBacklogMapper.getDroppedTasksMap();
-		assertEquals(3, droppedTasksMap.get(1).size());
-		assertEquals(1, droppedTasksMap.get(1).get(0).getId());
-		assertEquals(2, droppedTasksMap.get(1).get(1).getId());
-		assertEquals(3, droppedTasksMap.get(1).get(2).getId());
-	}
-
-	@Test
 	public void testGetAllStories() {
-		String projectName = mCP.getProjectList().get(0).getName();
-		List<IIssue> stories = mSprintBacklogMapper.getAllStories("Story");
+		long projectId = mCP.getAllProjects().get(0).getId();
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
 		assertEquals(3, stories.size());
 		// check project id
-		assertEquals(projectName, stories.get(0).getProjectID());
-		assertEquals(projectName, stories.get(1).getProjectID());
-		assertEquals(projectName, stories.get(2).getProjectID());
+		assertEquals(projectId, stories.get(0).getProjectId());
+		assertEquals(projectId, stories.get(1).getProjectId());
+		assertEquals(projectId, stories.get(2).getProjectId());
 		// check story id
-		assertEquals(1, stories.get(0).getIssueID());
-		assertEquals(2, stories.get(1).getIssueID());
-		assertEquals(3, stories.get(2).getIssueID());
-		// check issue type
-		assertEquals("Story", stories.get(0).getCategory());
-		assertEquals("Story", stories.get(1).getCategory());
-		assertEquals("Story", stories.get(2).getCategory());
+		assertEquals(1, stories.get(0).getId());
+		assertEquals(2, stories.get(1).getId());
+		assertEquals(3, stories.get(2).getId());
 	}
 
 	@Test
 	public void testGetStoriesBySprintId_WithNotExistSprintId() {
-		IIssue[] stories = mSprintBacklogMapper.getStoriesBySprintId(-1);
-		assertEquals(0, stories.length);
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesBySprintId(-1);
+		assertEquals(0, stories.size());
 	}
 
 	@Test
 	public void testGetStoriesBySprintId() {
-		String projectName = mCP.getProjectList().get(0).getName();
-		IIssue[] stories = mSprintBacklogMapper.getStoriesBySprintId(1);
-		assertEquals(3, stories.length);
+		long projectId = mCP.getAllProjects().get(0).getId();
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesBySprintId(1);
+		assertEquals(3, stories.size());
 		// check project id
-		assertEquals(projectName, stories[0].getProjectID());
-		assertEquals(projectName, stories[1].getProjectID());
-		assertEquals(projectName, stories[2].getProjectID());
+		assertEquals(projectId, stories.get(0).getProjectId());
+		assertEquals(projectId, stories.get(1).getProjectId());
+		assertEquals(projectId, stories.get(2).getProjectId());
 		// check story id
-		assertEquals(1, stories[0].getIssueID());
-		assertEquals(2, stories[1].getIssueID());
-		assertEquals(3, stories[2].getIssueID());
-		// check issue type
-		assertEquals("Story", stories[0].getCategory());
-		assertEquals("Story", stories[1].getCategory());
-		assertEquals("Story", stories[2].getCategory());
+		assertEquals(1, stories.get(0).getId());
+		assertEquals(2, stories.get(1).getId());
+		assertEquals(3, stories.get(2).getId());
 	}
 
 	@Test
@@ -302,55 +217,49 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetDroppedStories() throws InterruptedException {
+	public void testGetDroppedStories() {
 		// check dropped stories before test
-		IIssue[] droppedStories = mSprintBacklogMapper.getDroppedStories();
-		assertEquals(0, droppedStories.length);
-		List<IIssue> allStories = mSprintBacklogMapper.getAllStories("Story");
-		assertEquals("1", allStories.get(0).getSprintID());
-		assertEquals("1", allStories.get(1).getSprintID());
-		assertEquals("1", allStories.get(2).getSprintID());
-		// create product backlog helper
-		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfig.getUserSession();
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(userSession, project);
-		// remove story 2 from sprint
-		productBacklogHelper.removeStoryFromSprint(1);
+		ArrayList<StoryObject> droppedStories = mSprintBacklogMapper.getDroppedStories();
+		assertEquals(0, droppedStories.size());
+		ArrayList<StoryObject> allStories = mSprintBacklogMapper.getAllStories();
+		assertEquals(1, allStories.get(0).getSprintId());
+		assertEquals(1, allStories.get(1).getSprintId());
+		assertEquals(1, allStories.get(2).getSprintId());
+		
+		// remove story id = 1 from sprint
+		allStories.get(0).setSprintId(StoryObject.DEFAULT_VALUE).save();
+		
 		// check dropped stories after add a dropped story
 		droppedStories = mSprintBacklogMapper.getDroppedStories();
-		allStories = mSprintBacklogMapper.getAllStories("Story");
+		allStories = mSprintBacklogMapper.getAllStories();
 		
-		assertEquals("1", allStories.get(0).getSprintID());
-		assertEquals("0", allStories.get(1).getSprintID());
-		assertEquals("1", allStories.get(2).getSprintID());
-		assertEquals(1, droppedStories.length);
+		assertEquals(StoryObject.DEFAULT_VALUE, allStories.get(0).getSprintId());
+		assertEquals(1, allStories.get(1).getSprintId());
+		assertEquals(1, allStories.get(2).getSprintId());
+		assertEquals(1, droppedStories.size());
 	}
 
 	@Test
 	public void testGetStory_WithNotExistStoryId() {
 		long notExistStoryId = -1;
-		IIssue story = mSprintBacklogMapper.getStory(notExistStoryId);
+		StoryObject story = mSprintBacklogMapper.getStory(notExistStoryId);
 		assertEquals(null, story);
 	}
 
 	@Test
 	public void testGetStory() {
-		String projectName = mCP.getProjectList().get(0).getName();
-		IIssue story1 = mSprintBacklogMapper.getStory(1);
-		IIssue story2 = mSprintBacklogMapper.getStory(2);
-		IIssue story3 = mSprintBacklogMapper.getStory(3);
+		long projectId = mCP.getAllProjects().get(0).getId();
+		StoryObject story1 = mSprintBacklogMapper.getStory(1);
+		StoryObject story2 = mSprintBacklogMapper.getStory(2);
+		StoryObject story3 = mSprintBacklogMapper.getStory(3);
 		// check project id
-		assertEquals(projectName, story1.getProjectName());
-		assertEquals(projectName, story2.getProjectName());
-		assertEquals(projectName, story3.getProjectName());
+		assertEquals(projectId, story1.getProjectId());
+		assertEquals(projectId, story2.getProjectId());
+		assertEquals(projectId, story3.getProjectId());
 		// check story id
-		assertEquals(1, story1.getIssueID());
-		assertEquals(2, story2.getIssueID());
-		assertEquals(3, story3.getIssueID());
-		// check issue type
-		assertEquals("Story", story1.getCategory());
-		assertEquals("Story", story2.getCategory());
-		assertEquals("Story", story3.getCategory());
+		assertEquals(1, story1.getId());
+		assertEquals(2, story2.getId());
+		assertEquals(3, story3.getId());
 	}
 
 	@Test
@@ -527,18 +436,16 @@ public class SprintBacklogMapperTest {
 
 	@Test
 	public void testAddExistingTasksToStory() {
-		long storyId = 1;
 		// get story
-		MantisService mantisService = new MantisService(mConfig);
-		mantisService.openConnect();
-		IIssue story = mantisService.getIssue(storyId);
-		mantisService.closeConnect();
+		StoryObject story = mASTS.getStories().get(0);
+		
 		// check story tasks status before test
-		List<Long> oldTaskIds = story.getChildrenId();
+		ArrayList<TaskObject> oldTaskIds = story.getTasks();
 		assertEquals(3, oldTaskIds.size());
-		assertEquals(1, oldTaskIds.get(0));
-		assertEquals(2, oldTaskIds.get(1));
-		assertEquals(3, oldTaskIds.get(2));
+		assertEquals(1, oldTaskIds.get(0).getId());
+		assertEquals(2, oldTaskIds.get(1).getId());
+		assertEquals(3, oldTaskIds.get(2).getId());
+		
 		// create a new task
 		TaskObject newTask = new TaskObject(1);
 		newTask.save();
@@ -546,37 +453,29 @@ public class SprintBacklogMapperTest {
 		assertEquals(1, newTask.getProjectId());
 		assertEquals(-1, newTask.getStoryId());
 		assertEquals(10, newTask.getId());
+		
 		// add new existing task to story
 		ArrayList<Long> tasksId = new ArrayList<Long>();
-		tasksId.add(10L);
+		tasksId.add(newTask.getId());
+		
 		mSprintBacklogMapper.addExistingTasksToStory(tasksId, 1);
+		
 		// get story again
-		mantisService.openConnect();
-		story = mantisService.getIssue(storyId);
-		mantisService.closeConnect();
+		story.reload();
+		
 		// check story tasks status after add new existing task
-		List<Long> newTaskIds = story.getChildrenId();
+		List<TaskObject> newTaskIds = story.getTasks();
 		assertEquals(4, newTaskIds.size());
-		assertEquals(1, newTaskIds.get(0));
-		assertEquals(2, newTaskIds.get(1));
-		assertEquals(3, newTaskIds.get(2));
-		assertEquals(10, newTaskIds.get(3));
+		assertEquals(1, newTaskIds.get(0).getId());
+		assertEquals(2, newTaskIds.get(1).getId());
+		assertEquals(3, newTaskIds.get(2).getId());
+		assertEquals(10, newTaskIds.get(3).getId());
 	}
 
 	@Test
 	public void testAddExistingTasksToStory_WithTwoExistingTasks() {
-		long storyId = 1;
-		// get story
-		MantisService mantisService = new MantisService(mConfig);
-		mantisService.openConnect();
-		IIssue story = mantisService.getIssue(storyId);
-		mantisService.closeConnect();
-		// check story tasks status before test
-		List<Long> oldTaskIds = story.getChildrenId();
-		assertEquals(3, oldTaskIds.size());
-		assertEquals(1, oldTaskIds.get(0));
-		assertEquals(2, oldTaskIds.get(1));
-		assertEquals(3, oldTaskIds.get(2));
+		StoryObject story = mASTS.getStories().get(0);
+		
 		// create a new task 1
 		TaskObject newTask1 = new TaskObject(1);
 		newTask1.save();
@@ -584,6 +483,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(1, newTask1.getProjectId());
 		assertEquals(-1, newTask1.getStoryId());
 		assertEquals(10, newTask1.getId());
+		
 		// create a new task 2
 		TaskObject newTask2 = new TaskObject(1);
 		newTask2.save();
@@ -591,23 +491,24 @@ public class SprintBacklogMapperTest {
 		assertEquals(1, newTask2.getProjectId());
 		assertEquals(-1, newTask2.getStoryId());
 		assertEquals(11, newTask2.getId());
+		
 		// add new task 1 and new task 2 to story
 		ArrayList<Long> tasksId = new ArrayList<Long>();
 		tasksId.add(10L);
 		tasksId.add(11L);
-		mSprintBacklogMapper.addExistingTasksToStory(tasksId, 1);
-		// get story again
-		mantisService.openConnect();
-		story = mantisService.getIssue(storyId);
-		mantisService.closeConnect();
+		mSprintBacklogMapper.addExistingTasksToStory(tasksId, story.getId());
+		
+		// reload story again
+		story.reload();
+		
 		// check story tasks status after add existing new tasks
-		List<Long> newTaskIds = story.getChildrenId();
-		assertEquals(5, newTaskIds.size());
-		assertEquals(1, newTaskIds.get(0));
-		assertEquals(2, newTaskIds.get(1));
-		assertEquals(3, newTaskIds.get(2));
-		assertEquals(10, newTaskIds.get(3));
-		assertEquals(11, newTaskIds.get(4));
+		ArrayList<TaskObject> tasks = story.getTasks();
+		assertEquals(5, tasks.size());
+		assertEquals(1, tasks.get(0).getId());
+		assertEquals(2, tasks.get(1).getId());
+		assertEquals(3, tasks.get(2).getId());
+		assertEquals(10, tasks.get(3).getId());
+		assertEquals(11, tasks.get(4).getId());
 	}
 
 	@Test
@@ -698,14 +599,15 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testCloseStory() {
 		String closeNote = "CLOSE_NOTE";
+		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		long updateTime = System.currentTimeMillis();
+		Date updateTime = new Date();
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
 		
-		mSprintBacklogMapper.closeStory(storyId, closeNote, updateTime);
+		mSprintBacklogMapper.closeStory(storyId, closeName, closeNote, updateTime);
 		story = StoryObject.get(storyId);
 		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 	}
@@ -714,20 +616,21 @@ public class SprintBacklogMapperTest {
 	public void testReopenStory() {
 		String reopenName = "REOPEN_NAME";
 		String reopenNote = "REOPEN_NOTE";
+		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		long updateTime = System.currentTimeMillis();
+		Date updateTime = new Date();
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
 
 		// set story's status to DONE and assert it
-		mSprintBacklogMapper.closeStory(storyId, reopenNote, updateTime);
+		mSprintBacklogMapper.closeStory(storyId, closeName, reopenNote, updateTime);
 		story = StoryObject.get(storyId);
 		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 		
 		// reopen the story
-		updateTime = System.currentTimeMillis();
+		updateTime = new Date();
 		mSprintBacklogMapper.reopenStory(storyId, reopenName, reopenName, updateTime);
 		story = StoryObject.get(storyId);
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());

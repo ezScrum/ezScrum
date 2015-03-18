@@ -298,12 +298,12 @@ public class SprintPlanHelper {
 				.getSprintPlanList());
 	}
 
-	public SprintObject getSprint(String sprintID)
+	public SprintObject getSprint(String sprintId)
 			throws SQLException {
-		SprintObject sprint = new SprintObject(loadPlan(sprintID));
+		SprintObject sprint = new SprintObject(loadPlan(sprintId));
 		// 找出 sprint 中所有的 story
 		IIssue[] storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long
-				.parseLong(sprintID));
+				.parseLong(sprintId));
 		for (IIssue storyIssue : storyIIssues) {
 			StoryObject story = new StoryObject(storyIssue);
 			// 找出 story 中所有的 task

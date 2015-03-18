@@ -48,7 +48,7 @@ public class GetAddSprintTaskInfoAction extends Action {
 		
 		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper();
 	
-		if ( (backlog != null) && (backlog.getSprintPlanId() > 0) ) {
+		if ( (backlog != null) && (backlog.getSprintId() > 0) ) {
 //			MantisAccountMapper helper = new MantisAccountMapper(project, session);
 //			List<String> actorList = helper.getScrumWorkerList();
 			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, project);
