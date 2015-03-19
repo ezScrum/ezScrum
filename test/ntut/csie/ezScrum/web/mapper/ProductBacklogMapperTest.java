@@ -89,6 +89,26 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
+	public void testGetUnclosedStories() {
+		
+	}
+	
+	@Test
+	public void testUpdateStoryRelation() {
+		
+	}
+	
+	@Test
+	public void testGetStoriesByRelease() {
+		
+	}
+	
+	@Test
+	public void testUpdateStory() {
+		
+	}
+	
+	@Test
 	public void testAddStory() throws SQLException {
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.name = "TEST_NAME";
@@ -177,7 +197,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testModifyStoryName_Existing() {
 		StoryObject story = mCPB.getStories().get(0);
-		mProductBacklogMapper.modifyName(story.getId(), "NEW_NAME", new Date());
+		mProductBacklogMapper.modifyStoryName(story.getId(), "NEW_NAME", new Date());
 		story.reload();
 		assertEquals("NEW_NAME", story.getName());
 	}
@@ -187,7 +207,7 @@ public class ProductBacklogMapperTest {
 	 */
 	@Test
 	public void testModifyStoryName_No_Existing() {
-		mProductBacklogMapper.modifyName(100, "NEW_NAME", new Date());
+		mProductBacklogMapper.modifyStoryName(100, "NEW_NAME", new Date());
 	}
 	
 	@Test
