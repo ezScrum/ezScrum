@@ -54,7 +54,7 @@ public class ProductBacklogLogic {
 	public IStory[] getStoriesByRelease(IReleasePlanDesc release) {
 		// get Story back and sort it by importance
 		String releaseId = release.getID();
-		ArrayList<IStory> list = mProductBacklogMapper.connectToGetStoryByRelease(releaseId, null);
+		ArrayList<IStory> list = mProductBacklogMapper.getStoryByRelease(releaseId, null);
 		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
 		return list.toArray(new IStory[list.size()]);
 	}

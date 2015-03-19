@@ -57,6 +57,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	private MantisNoteService mNoteService;
 	private MantisIssueService mIssueService;
+	private MantisAttachFileService mAttachFileService;
 
 	public MantisService(Configuration config) {
 		setConfig(config);
@@ -107,6 +108,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		mNoteService = new MantisNoteService(getControl(), getConfig());
 		mIssueService = new MantisIssueService(getControl(), getConfig());
+		mAttachFileService = new MantisAttachFileService(getControl(), getConfig());
 	}
 
 	/************************************************************
@@ -1227,24 +1229,24 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 	}
 
-	@Override
-    public long addAttachFile(AttachFileInfo attachFileInfo) {
-	    // TODO Auto-generated method stub
-	    return 0;
-    }
-
-	@Override
-    public void deleteAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public AttachFileObject getAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
+	/**
+	 * for ezScrum v1.8
+	 */
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
+		return mAttachFileService.addAttachFile(attachFileInfo);
+	}
+	
+	/**
+	 * for ezScrum v1.8
+	 */
+	public void deleteAttachFile(long fileId) {
+		mAttachFileService.deleteAttachFile(fileId);
+	}
+	
+	public AttachFileObject getAttachFile(long fileId) {
+		return mAttachFileService.getAttachFile(fileId);
+	}
+	
 	@Override
     public long addNewTag(String name, String projectName) {
 	    // TODO Auto-generated method stub

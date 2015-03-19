@@ -5,35 +5,33 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
-import ntut.csie.ezScrum.dao.TagDAO;
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.iteration.iternal.Story;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapper {
-	private ProjectObject mProject;
+	private IProject mProject;
 	private MantisService mMantisService;
 
-	public ProductBacklogMapper(ProjectObject project, IUserSession userSession) {
+	public ProductBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
 	}
 	
 	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
+		ProjectObject project = ProjectObject.get(mProject.getName());
 		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
-		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(mProject.getId());
+		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(project.getId());
 		for (StoryObject story : stories) {
 			if (story.getStatus() != StoryObject.STATUS_DONE) {
 				list.add(story);
@@ -51,71 +49,105 @@ public class ProductBacklogMapper {
 		     .save();
 	}
 
-	// get all stories
-	public ArrayList<StoryObject> getAllStoriesByProjectId() {
-		// TODO move to project
-		return StoryObject.getAllStoriesByProjectId(mProject.getId());
-	}
-
-	// TODO
 	// get all stories by release
-	public ArrayList<StoryObject> connectToGetStoryByRelease(String releaseId, String sprintId) {
-		mMantisService.openConnect();
-		// 找出 Category 為 Story
-		IIssue[] issues = mMantisService.getIssues(mProject.getName(),
-				ScrumEnum.STORY_ISSUE_TYPE, releaseId, sprintId, null);
-
-		ArrayList<IStory> list = new ArrayList<IStory>();
-		for (IIssue issue : issues) {
-			list.add(new Story(issue));
+	public ArrayList<StoryObject> getStoryByRelease(String releaseId, String sprintId) {
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
+		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
+		
+		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
+		
+		for(ISprintPlanDesc sprint : releasePlan.getSprintDescList()){
+			SprintObject sprintObject = new SprintObject(sprint);
+			for(StoryObject story : sprintObject.storyList){
+				storie.add(story);
+			}
 		}
-
-		mMantisService.closeConnect();
-		return list;
+		return storie;
 	}
 
 	public StoryObject getStory(long id) {
 		return StoryObject.get(id);
 	}
 	
-	public void updateStory(StoryInfo storyInfo) {		
-		// TODO
+	public void updateStory(StoryInfo storyInfo) {
+		// process story info tag String
+		ArrayList<Long> tagIds = new ArrayList<Long>();
+		for (String tagName : storyInfo.tags.split(",")) {
+			TagObject tag = TagObject.get(tagName);
+			tagIds.add(tag.getId());
+		}
+		
+		StoryObject story = StoryObject.get(storyInfo.id);
+		story.setName(storyInfo.name)
+	         .setEstimate(storyInfo.estimate)
+	         .setImportance(storyInfo.importance)
+	         .setNotes(storyInfo.notes)
+	         .setHowToDemo(storyInfo.howToDemo)
+	         .setSprintId(storyInfo.sprintId)
+	         .setSprintId(storyInfo.sprintId)
+	         .setStatus(storyInfo.status)
+	         .setValue(storyInfo.value)
+	         .save();
+		story.setTags(tagIds);
 	}
 
-	public StoryObject addStory(StoryInfo storyInfo) {		
-		// TODO
-		return getStory(storyId);
+	public StoryObject addStory(StoryInfo storyInfo) {
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		
+		// process story info tag String
+		ArrayList<Long> tagIds = new ArrayList<Long>();
+		for(String tagName : storyInfo.tags.split(",")){
+			TagObject tag = TagObject.get(tagName);
+			tagIds.add(tag.getId());
+		}
+		
+		StoryObject story = new StoryObject(project.getId());
+		story.setName(storyInfo.name)
+		     .setEstimate(storyInfo.estimate)
+		     .setImportance(storyInfo.importance)
+		     .setNotes(storyInfo.notes)
+		     .setHowToDemo(storyInfo.howToDemo)
+		     .setSprintId(storyInfo.sprintId)
+		     .setSprintId(storyInfo.sprintId)
+		     .setStatus(storyInfo.status)
+		     .setValue(storyInfo.value)
+		     .save();
+		story.setTags(tagIds);
+		return getStory(story.getId());
 	}
 
-	public void modifyName(long storyId, String name, Date modifyDate) {
+	public void modifyStoryName(long storyId, String name, Date modifyDate) {
 		StoryObject story = getStory(storyId);
 
-		if (!story.getName().equals(name)) {
+		if ((story != null) && (!story.getName().equals(name))) {
 			story.setName(name);
 			story.save(modifyDate.getTime());
 		}
 	}
 	
 	// delete story 用
-	public void deleteStory(String storyId) {
-		StoryObject story = StoryObject.get(Long.parseLong(storyId));
-		story.delete();
+	public void deleteStory(long storyId) {
+		StoryObject story = StoryObject.get(storyId);
+		if(story != null){
+			story.delete();
+		}
 	}
 
 	public void removeTask(long taskId, long parentId) {
-		// TODO do not delete task
 		StoryObject story = StoryObject.get(parentId);
 		ArrayList<TaskObject> tasks = story.getTasks();
 		for(TaskObject taskObject : tasks){
 			if(taskObject.getId() == taskId){
-				taskObject.delete();
+				taskObject.setStoryId(TaskObject.NO_PARENT);
+				taskObject.save();
 			}
 		}
 	}
 
 	// 新增自訂分類標籤
 	public long addNewTag(String name) {
-		TagObject tag = new TagObject(name, mProject.getId());
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		TagObject tag = new TagObject(name, project.getId());
 		tag.save();
 		return tag.getId();
 	}
@@ -123,7 +155,9 @@ public class ProductBacklogMapper {
 	// 刪除自訂分類標籤
 	public void deleteTag(long id) {
 		TagObject tag = TagObject.get(id);
-		tag.delete();
+		if(tag != null){
+			tag.delete();
+		}
 	}
 
 	// 取得自訂分類標籤列表
@@ -135,19 +169,25 @@ public class ProductBacklogMapper {
 	// 對Story設定自訂分類標籤
 	public void addStoryTag(String storyId, long tagId) {
 		StoryObject story = StoryObject.get(Long.parseLong(storyId));
-		story.addTag(tagId);
+		if(story != null){
+			story.addTag(tagId);
+		}
 	}
 
 	// 移除Story的自訂分類標籤
 	public void removeStoryTag(String storyId, long tagId) {
 		StoryObject story = StoryObject.get(Long.parseLong(storyId));
-		story.removeTag(tagId);
+		if(story != null){
+			story.removeTag(tagId);
+		}
 	}
 
 	public void updateTag(long tagId, String tagName) {
 		TagObject tag = TagObject.get(tagId);
-		tag.setName(tagName);
-		tag.save();
+		if(tag != null){
+			tag.setName(tagName);
+			tag.save();
+		}
 	}
 
 	public boolean isTagExist(String name) {
@@ -170,7 +210,6 @@ public class ProductBacklogMapper {
 		return id;
 	}
 
-	// TODO
 	// for ezScrum v1.8
 	public void deleteAttachFile(long fileId) {
 		mMantisService.openConnect();
@@ -178,7 +217,6 @@ public class ProductBacklogMapper {
 		mMantisService.closeConnect();
 	}
 
-	// TODO
 	/**
 	 * 抓取attach file for ezScrum v1.8
 	 */

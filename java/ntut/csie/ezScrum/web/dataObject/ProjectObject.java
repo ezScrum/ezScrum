@@ -163,6 +163,11 @@ public class ProjectObject implements IBaseObject {
 		return StoryDAO.getInstance().getStoriesWithNoParent(mId);
 	}
 	
+	// get all stories
+	public ArrayList<StoryObject> getAllStoriesByProjectId(long projectId) {
+		return StoryDAO.getInstance().getStoriesByProjectId(projectId);
+	}
+
 	public ArrayList<TaskObject> getTasksWithNoParent() {
 		return TaskDAO.getInstance().getTasksWithNoParent(mId);
 	}
