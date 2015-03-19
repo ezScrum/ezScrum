@@ -55,10 +55,10 @@ public class ProductBacklogMapper {
 		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
-		
-		for(ISprintPlanDesc sprint : releasePlan.getSprintDescList()){
-			SprintObject sprintObject = new SprintObject(sprint);
-			for(StoryObject story : sprintObject.storyList){
+
+		for (ISprintPlanDesc sprint : releasePlan.getSprintDescList()) {
+			ArrayList<StoryObject> storiesInSprint = StoryObject.getStoriesBySprintId(Long.parseLong(sprint.getID()));
+			for (StoryObject story : storiesInSprint) {
 				storie.add(story);
 			}
 		}
