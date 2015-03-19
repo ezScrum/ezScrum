@@ -57,6 +57,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	private MantisNoteService mNoteService;
 	private MantisIssueService mIssueService;
+	private MantisAttachFileService mAttachFileService;
+	private MantisTagService mTagService;
 
 	public MantisService(Configuration config) {
 		setConfig(config);
@@ -107,6 +109,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		mNoteService = new MantisNoteService(getControl(), getConfig());
 		mIssueService = new MantisIssueService(getControl(), getConfig());
+		mAttachFileService = new MantisAttachFileService(getControl(), getConfig());
+		mTagService = new MantisTagService(getControl(), getConfig());
 	}
 
 	/************************************************************
@@ -292,6 +296,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		for (IIssue issue : issues) {
 			setIssueNote(issue);
 			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
+			mAttachFileService.initAttachFile(issue);
 			setChildParentRelation(issue);
 		}
 		return issues;
@@ -309,7 +314,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		for (IIssue issue : issues) {
 			setIssueNote(issue);
 			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
-			
+			mAttachFileService.initAttachFile(issue);
+			mTagService.initTag(issue);
 			setChildParentRelation(issue);
 		}
 		return issues;
@@ -322,6 +328,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		for (IIssue issue : issues) {
 			setIssueNote(issue);
 			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
+			mAttachFileService.initAttachFile(issue);
 			setChildParentRelation(issue);
 		}
 		return issues;
@@ -333,6 +340,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		for (IIssue issue : issues) {
 			setIssueNote(issue);
 			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
+			mAttachFileService.initAttachFile(issue);
+			mTagService.initTag(issue);
 			setChildParentRelation(issue);
 		}
 		return issues;
@@ -344,6 +353,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		if (issue != null) {
 			setIssueNote(issue);
 			issue.setIssueNotes(mNoteService.getIssueNotes(issue));
+			mAttachFileService.initAttachFile(issue);
+			mTagService.initTag(issue);
 			setChildParentRelation(issue);
 		}
 		return issue;
@@ -893,6 +904,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 			valueSet.addEqualCondition("storyID", ID);
 			query = valueSet.getDeleteQuery();
 			getControl().execute(query);
+
+			// 刪除跟此issue有關的tag
+			mTagService.removeStoryTag(ID, -1);
 			
 			// 刪除History
 			HistoryDAO historyDao = HistoryDAO.getInstance();
@@ -1227,75 +1241,76 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 	}
 
-	@Override
-    public long addAttachFile(AttachFileInfo attachFileInfo) {
-	    // TODO Auto-generated method stub
-	    return 0;
-    }
+	// 新增自訂分類標籤
+	public long addNewTag(String name, String projectName) {
+		return mTagService.addTag(name, projectName);
+	}
+
+	// 刪除自訂分類標籤
+	public void deleteTag(long id, String projectName) {
+		mTagService.deleteTag(id, projectName);
+	}
+
+	// 取得自訂分類標籤列表
+	public ArrayList<TagObject> getTagList(String projectName) {
+		return mTagService.getTagList(projectName);
+	}
+
+	// 對Story設定自訂分類標籤
+	public void addStoryTag(String storyID, long tagID) {
+		mTagService.addStoryTag(storyID, tagID);
+	}
+
+	// 移除Story的自訂分類標籤
+	public void removeStoryTag(String storyID, long tagID) {
+		mTagService.removeStoryTag(storyID, tagID);
+	}
 
 	@Override
-    public void deleteAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    
-    }
+	public ArrayList<IStory> getStorys(String projectName) {
+		ArrayList<IStory> result = new ArrayList<IStory>();
+		result = mIssueService.getStorys(projectName);
+
+		for (IStory story : result) {
+			setIssueNote(story);
+			mAttachFileService.initAttachFile(story);
+			mTagService.initTag(story);
+		}
+
+		return result;
+	}
 
 	@Override
-    public AttachFileObject getAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
+	public void updateTag(long tagId, String tagName, String projectName) {
+		mTagService.updateTag(tagId, tagName, projectName);
+	}
 
 	@Override
-    public long addNewTag(String name, String projectName) {
-	    // TODO Auto-generated method stub
-	    return 0;
-    }
+	public TagObject getTagByName(String name, String projectName) {
+		return mTagService.getTagByName(name, projectName);
+	}
 
 	@Override
-    public void deleteTag(long id, String projectName) {
-	    // TODO Auto-generated method stub
-	    
-    }
+	public boolean isTagExist(String name, String projectName) {
+		return mTagService.isTagExist(name, projectName);
+	}
 
-	@Override
-    public ArrayList<TagObject> getTagList(String projectName) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public void addStoryTag(String storyID, long tagID) {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public void removeStoryTag(String storyID, long tagID) {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public List<IStory> getStorys(String name) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	@Override
-    public void updateTag(long tagId, String tagName, String projectName) {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public boolean isTagExist(String name, String projectName) {
-	    // TODO Auto-generated method stub
-	    return false;
-    }
-
-	@Override
-    public TagObject getTagByName(String name, String projectName) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
+	/**
+	 * for ezScrum v1.8
+	 */
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
+		return mAttachFileService.addAttachFile(attachFileInfo);
+	}
+	
+	/**
+	 * for ezScrum v1.8
+	 */
+	public void deleteAttachFile(long fileId) {
+		mAttachFileService.deleteAttachFile(fileId);
+	}
+	
+	// 抓取attach file
+	public AttachFileObject getAttachFile(long fileId) {
+		return mAttachFileService.getAttachFile(fileId);
+	}
 }
