@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import net.sf.antcontrib.logic.Throw;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -26,10 +27,12 @@ import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
 import ntut.csie.ezScrum.web.databasEnum.TagEnum;
+import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -226,18 +229,82 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
-	public void testDeleteStory_Existing() {
+	public void testDeleteStory_Existing() throws SQLException {
+		// get story
+		StoryObject story = mCPB.getStories().get(0);
 		
+		// delete story
+		mProductBacklogMapper.deleteStory(story.getId());
+		// get data from database
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		assertFalse(result.next());
 	}
 	
 	@Test
 	public void testDeleteStory_No_Existing() {
+		// test data
+		long nonExistStoryId = 5;
 		
+		// delete story
+		try {
+			mProductBacklogMapper.deleteStory(nonExistStoryId);
+		} catch (Exception e) {
+			Assert.fail();
+		}
+		assertTrue(true);
 	}
 	
 	@Test
-	public void testRemoveTask() {
+	public void testRemoveTask() throws SQLException {
+		// get project
+		IProject iProject = mCP.getProjectList().get(0);
+		ProjectObject project = ProjectObject.get(iProject.getName());
+		// test data
+		String taskName = "TEST_TASK_1";
+		int taskEstimate = 13;
 		
+		// get story
+		StoryObject story = mCPB.getStories().get(0);
+		TaskObject task = new TaskObject(project.getId());
+		task.setName(taskName)
+		    .setEstimate(taskEstimate)
+		    .setStoryId(story.getId())
+		    .save();
+		assertEquals(story.getId(), task.getStoryId());
+		
+		// removeTask
+		mProductBacklogMapper.removeTask(task.getId(), story.getId());
+		// get data from database
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addEqualCondition(TaskEnum.ID, task.getId());
+		String query = valueSet.getSelectQuery();
+
+		ResultSet result = mControl.executeQuery(query);
+
+		TaskObject taskDB = null;
+		
+		if (result.next()) {
+			taskDB = new TaskObject(result.getLong(TaskEnum.ID),
+			        result.getLong(TaskEnum.SERIAL_ID),
+			        result.getLong(TaskEnum.PROJECT_ID));
+			taskDB.setName(result.getString(TaskEnum.NAME))
+			      .setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
+			      .setEstimate(result.getInt(TaskEnum.ESTIMATE))
+			      .setRemains(result.getInt(TaskEnum.REMAIN))
+			      .setActual(result.getInt(TaskEnum.ACTUAL))
+			      .setStatus(result.getInt(TaskEnum.STATUS))
+			      .setNotes(result.getString(TaskEnum.NOTES))
+			      .setStoryId(result.getLong(TaskEnum.STORY_ID))
+			      .setCreateTime(result.getLong(TaskEnum.CREATE_TIME))
+			      .setUpdateTime(result.getLong(TaskEnum.UPDATE_TIME));
+		}
+		// assert
+		assertEquals(-1, taskDB.getStoryId());
 	}
 	
 	@Test
