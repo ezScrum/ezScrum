@@ -155,9 +155,9 @@ public class SprintBacklogLogic {
 	public int getSprintAvailableDays(long sprintId) {
 		SprintBacklogMapper backlog = createSprintBacklogMapper(sprintId);
 		int availableDays = 0;
-		if (backlog.getSprintPlanId() > 0) {
+		if (backlog.getSprintId() > 0) {
 			ISprintPlanDesc desc = (new SprintPlanMapper(mIProject))
-					.getSprintPlan(Integer.toString(backlog.getSprintPlanId()));
+					.getSprintPlan(Integer.toString(backlog.getSprintId()));
 			availableDays = Integer.parseInt(desc.getInterval()) * 5; // 一個禮拜五天
 		}
 		return availableDays;

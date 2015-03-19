@@ -43,7 +43,7 @@ public class TaskBoard {
 	public TaskBoard(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sprintBacklogMapper) {
 		mSprintBacklogLogic = sprintBacklogLogic;
 		mSprintBacklogMapper = sprintBacklogMapper;
-		mIteration = Integer.toString(sprintBacklogMapper.getSprintPlanId());
+		mIteration = Integer.toString(sprintBacklogMapper.getSprintId());
 		init();
 	}
 
@@ -238,7 +238,7 @@ public class TaskBoard {
 	}
 
 	public int getSprintID() {
-		return mSprintBacklogMapper.getSprintPlanId();
+		return mSprintBacklogMapper.getSprintId();
 	}
 
 	public String getStoryPoint() {
@@ -308,7 +308,7 @@ public class TaskBoard {
 		// 設定圖表內容
 		ChartUtil chartUtil = new ChartUtil((type
 		        .equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories")
-		        + " Burndown Chart in Sprint #" + mSprintBacklogMapper.getSprintPlanId(),
+		        + " Burndown Chart in Sprint #" + mSprintBacklogMapper.getSprintId(),
 		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper
 		                .getSprintEndDate().getTime() + 24 * 3600 * 1000));
 

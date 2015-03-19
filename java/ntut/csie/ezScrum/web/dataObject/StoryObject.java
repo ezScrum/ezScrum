@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
@@ -8,6 +9,7 @@ import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -38,6 +40,10 @@ public class StoryObject implements IBaseObject {
 	
 	public static StoryObject get(long id) {
 		return StoryDAO.getInstance().get(id);
+	}
+	
+	public static ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
+		return StoryDAO.getInstance().getStoriesBySprintId(sprintId);
 	}
 	
 	public StoryObject(long projectId) {
@@ -208,11 +214,26 @@ public class StoryObject implements IBaseObject {
 			addTag(tagId);
 		}
 	}
-
+	
 	@Override
 	public void save() {
 		if (exists()) {
+			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
+		} else {
+			doCreate();
+		}
+	}
+
+	/**
+	 * Update time will equal to parameter you passed.
+	 * 
+	 * @param specificTime
+	 */
+	public void save(long specificTime) {
+		if (exists()) {
+			mUpdateTime = specificTime;
+			doUpdate(specificTime);
 		} else {
 			doCreate();
 		}
@@ -294,7 +315,7 @@ public class StoryObject implements IBaseObject {
 						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
 		if (mSprintId != DEFAULT_VALUE) {
 			// Append this story to sprint
-			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId));
+			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mCreateTime);
 		}
 	}
 	
@@ -337,15 +358,62 @@ public class StoryObject implements IBaseObject {
 		}
 	}
 	
+	private void doUpdate(long specificTime) {
+		StoryObject oldStory = StoryDAO.getInstance().get(mId);
+		StoryDAO.getInstance().update(this);
+		
+		if (!mName.equals(oldStory.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName, specificTime);
+		}
+		if (!mNotes.equals(oldStory.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes, specificTime);
+		}
+		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
+			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo, specificTime);
+		}
+		if (mImportance != oldStory.getImportance()) {
+			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance, specificTime);
+		}
+		if (mValue != oldStory.getValue()) {
+			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue, specificTime);
+		}
+		if (mEstimate != oldStory.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate, specificTime);
+		}
+		if (mStatus != oldStory.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus, specificTime);
+		}
+		if (mSprintId != oldStory.getSprintId()) {
+			if (mSprintId == DEFAULT_VALUE) {
+				// Remove this story from sprint
+				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), specificTime);				
+			} else if (mSprintId != DEFAULT_VALUE) {
+				// Append this story to sprint
+				if (oldStory.getSprintId() != DEFAULT_VALUE) {
+					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), specificTime);
+				}
+				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), specificTime);
+			}
+		}
+	}
+	
 	private void addHistory(int type, int oldValue, int newValue) {
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
-				type, String.valueOf(oldValue), String.valueOf(newValue), System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
+	}
+	
+	private void addHistory(int type, int oldValue, int newValue, long specificTime) {
+		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue), specificTime);
 	}
 	
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
 				type, oldValue, newValue, System.currentTimeMillis());
+		HistoryDAO.getInstance().create(history);
+	}
+	
+	private void addHistory(int type, String oldValue, String newValue, long specificTime) {
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+				type, oldValue, newValue, specificTime);
 		HistoryDAO.getInstance().create(history);
 	}
 	

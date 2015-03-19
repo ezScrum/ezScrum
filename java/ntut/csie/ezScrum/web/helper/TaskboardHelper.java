@@ -81,8 +81,8 @@ public class TaskboardHelper {
 	public StringBuilder getSprintInfoForTaskBoardText() {
 		SprintInfoUI sprintInfoUI = null;
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
-		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintPlanId() > 0)) {
-			int currentSprintID = sprintBacklogMapper.getSprintPlanId();
+		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0)) {
+			int currentSprintID = sprintBacklogMapper.getSprintId();
 			double currentPoint = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
 			double currentHours = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
 			boolean isCurrentSprint = false;
@@ -106,7 +106,7 @@ public class TaskboardHelper {
 		int storyLength = 0;
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
-		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintPlanId() > 0)) {
+		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0)) {
 			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
 			Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklogMapper.getTasksMap(); 	// 取出Sprint中所有的task
 			stories = this.filterStory(stories, taskMap, name);					// filter story

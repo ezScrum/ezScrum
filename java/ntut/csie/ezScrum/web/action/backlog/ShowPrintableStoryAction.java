@@ -61,7 +61,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> issues = sprintBacklogLogic.getStoriesByImp();
 
-		request.setAttribute("SprintID", backlog.getSprintPlanId());
+		request.setAttribute("SprintID", backlog.getSprintId());
 		request.setAttribute("Stories", issues);
 		File file = null;
 
