@@ -4,10 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -18,65 +19,47 @@ import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class ProductBacklogMapper {
 	private ProjectObject mProject;
-	private Configuration mConfig;
-	private IUserSession mUserSession;
 	private MantisService mMantisService;
 
 	public ProductBacklogMapper(ProjectObject project, IUserSession userSession) {
 		mProject = project;
-		mUserSession = userSession;
-		mConfig = new Configuration(mUserSession);
-		mMantisService = new MantisService(mConfig);
 	}
 
-	public ArrayList<IStory> getUnclosedIssues(String category)
-			throws SQLException {
-		mMantisService.openConnect();
-		IIssue[] issues = mMantisService
-				.getIssues(mProject.getName(), category);
-		mMantisService.closeConnect();
-
-		ArrayList<IStory> list = new ArrayList<IStory>();
-		for (IIssue issue : issues) {
-			if (ITSEnum.getStatus(issue.getStatus()) < ITSEnum.CLOSED_STATUS) {
-				list.add(new Story(issue));
+	
+	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
+		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
+		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(mProject.getId());
+		for (StoryObject story : stories) {
+			if (story.getStatus() != StoryObject.STATUS_DONE) {
+				list.add(story);
 			}
 		}
 		return list;
 	}
 
-	// 回傳某種 category的issue
-	public IIssue[] getIssues(String category) throws SQLException {
-		mMantisService.openConnect();
-		IIssue[] issues = mMantisService.getIssues(mProject.getName(), category);
-		mMantisService.closeConnect();
-		return issues;
-	}
-
-	public void updateStoryRelation(long issueId, String releaseId,
-			String sprintId, String estimate, String importance, Date date) {
-		mMantisService.openConnect();
-		mMantisService.updateStoryRelationTable(issueId, mProject.getName(),
-				releaseId, sprintId, estimate, importance, date);
-		mMantisService.closeConnect();
+	public void updateStoryRelation(long issueId, String sprintId, String estimate, String importance, Date date) {
+		StoryObject story = StoryObject.get(issueId);
+		story.setSprintId(Long.parseLong(sprintId))
+		     .setEstimate(Integer.parseInt(estimate))
+		     .setImportance(Integer.parseInt(importance))
+		     .setUpdateTime(date.getTime())
+		     .save();
 	}
 
 	// get all stories
-	public ArrayList<IStory> getAllStoriesByProjectName() {
-		mMantisService.openConnect();
-		ArrayList<IStory> issues = mMantisService.getStorys(mProject.getName());
-		mMantisService.closeConnect();
-		return issues;
+	public ArrayList<StoryObject> getAllStoriesByProjectId() {
+		return StoryObject.getAllStoriesByProjectId(mProject.getId());
 	}
 
+	// TODO
 	// get all stories by release
-	public ArrayList<IStory> connectToGetStoryByRelease(String releaseId,
-			String sprintId) {
-
+	public ArrayList<IStory> connectToGetStoryByRelease(String releaseId, String sprintId) {
 		mMantisService.openConnect();
 		// 找出 Category 為 Story
 		IIssue[] issues = mMantisService.getIssues(mProject.getName(),
@@ -91,59 +74,42 @@ public class ProductBacklogMapper {
 		return list;
 	}
 
-	public IIssue getIssue(long id) {
-		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(id);
-		mMantisService.closeConnect();
-		return issue;
+	public StoryObject getStory(long id) {
+		return StoryObject.get(id);
 	}
 	
-	public void updateIssueValue(IIssue newIssue, boolean addHistory) {
-		long issueId = newIssue.getIssueID();
-		IIssue oldIssue = getIssue(issueId);
+	// TODO
+	public void updateStory(StoryObject newStory, boolean addHistory) {
+		long storyId = newStory.getId();
+		StoryObject oldStory = getStory(storyId);
 		
 		if (addHistory) {
-			if (!newIssue.getSummary().equals(oldIssue.getSummary())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_NAME,
-						oldIssue.getSummary(), newIssue.getSummary());
-			}
-			if (!newIssue.getValue().equals(oldIssue.getValue())) {
+			if (!newStory.getValue() == oldStory.getValue()) {
 				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_VALUE,
-						oldIssue.getValue(), newIssue.getValue());
+						oldStory.getValue(), newIssue.getValue());
 			}
-			if (!newIssue.getImportance().equals(oldIssue.getImportance())) {
+			if (!newIssue.getImportance().equals(oldStory.getImportance())) {
 				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_IMPORTANCE,
-						oldIssue.getImportance(), newIssue.getImportance());
+						oldStory.getImportance(), newIssue.getImportance());
 			}
-			if (!newIssue.getEstimated().equals(oldIssue.getEstimated())) {
+			if (!newIssue.getEstimated().equals(oldStory.getEstimated())) {
 				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_ESTIMATE,
-						oldIssue.getEstimated(), newIssue.getEstimated());
+						oldStory.getEstimated(), newIssue.getEstimated());
 			}
-			if (!newIssue.getHowToDemo().equals(oldIssue.getHowToDemo())) {
+			if (!newIssue.getHowToDemo().equals(oldStory.getHowToDemo())) {
 				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_HOWTODEMO,
-						oldIssue.getHowToDemo(), newIssue.getHowToDemo());
+						oldStory.getHowToDemo(), newIssue.getHowToDemo());
 			}
-			if (!newIssue.getNotes().equals(oldIssue.getNotes())) {
+			if (!newIssue.getNotes().equals(oldStory.getNotes())) {
 				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_NOTE,
-						oldIssue.getNotes(), newIssue.getNotes());
+						oldStory.getNotes(), newIssue.getNotes());
 			}
 		}
-		mMantisService.openConnect();
-		mMantisService.updateBugNote(newIssue);
-		mMantisService.closeConnect();
 	}
 
-	public IIssue updateIssueValue(long issueId, String name, String value, String importance, String estimate, String howToDemo, String notes) {
-		IIssue issue = getIssue(issueId);
-		
-		mMantisService.openConnect();
-		mMantisService.updateBugNote(issue);
-		mMantisService.closeConnect();
-		
-		return getIssue(issueId);
-	}
-
+	// TODO
 	public IIssue addStory(StoryInfo storyInformation) {
+		
 		mMantisService.openConnect();
 		IIssue story = new Issue();
 
@@ -154,89 +120,85 @@ public class ProductBacklogMapper {
 		long storyId = mMantisService.newIssue(story);
 
 		mMantisService.closeConnect();
-		return getIssue(storyId);
+		return getStory(storyId);
 	}
 
 	
 
 	public void modifyName(long storyId, String name, Date modifyDate) {
-		IIssue task = getIssue(storyId);
+		StoryObject story = getStory(storyId);
 
-		if (!task.getSummary().equals(name)) {
-			mMantisService.openConnect();
-			mMantisService.updateName(task, name, modifyDate);
-			mMantisService.closeConnect();
+		if (!story.getName().equals(name)) {
+			story.setName(name);
+			story.setUpdateTime(modifyDate.getTime());
+			story.save();
 		}
 	}
 	
 	// delete story 用
 	public void deleteStory(String storyId) {
-		mMantisService.openConnect();
-		mMantisService.deleteStory(storyId);
-		mMantisService.closeConnect();
+		StoryObject story = StoryObject.get(Long.parseLong(storyId));
+		story.delete();
 	}
 
 	public void removeTask(long taskId, long parentId) {
-		mMantisService.openConnect();
-		mMantisService.removeRelationship(parentId, taskId, ITSEnum.PARENT_RELATIONSHIP);
-		mMantisService.closeConnect();
+		StoryObject story = StoryObject.get(parentId);
+		ArrayList<TaskObject> tasks = story.getTasks();
+		for(TaskObject taskObject : tasks){
+			if(taskObject.getId() == taskId){
+				taskObject.delete();
+			}
+		}
 	}
 
 	// 新增自訂分類標籤
 	public long addNewTag(String name) {
-		mMantisService.openConnect();
-		long id = mMantisService.addNewTag(name, mProject.getName());
-		mMantisService.closeConnect();
-		return id;
+		TagObject tag = new TagObject(name, mProject.getId());
+		tag.save();
+		return tag.getId();
 	}
 
 	// 刪除自訂分類標籤
 	public void deleteTag(long id) {
-		mMantisService.openConnect();
-		mMantisService.deleteTag(id, mProject.getName());
-		mMantisService.closeConnect();
+		TagObject tag = TagObject.get(id);
+		tag.delete();
 	}
 
 	// 取得自訂分類標籤列表
-	public ArrayList<TagObject> getTagList() {
-		mMantisService.openConnect();
-		ArrayList<TagObject> tags = mMantisService.getTagList(mProject.getName());
-		mMantisService.closeConnect();
+	public ArrayList<TagObject> getTags() {
+		ArrayList<TagObject> tags = TagObject.getTags();
 		return tags;
 	}
 
 	// 對Story設定自訂分類標籤
 	public void addStoryTag(String storyId, long tagId) {
-		mMantisService.openConnect();
-		mMantisService.addStoryTag(storyId, tagId);
-		mMantisService.closeConnect();
+		StoryObject story = StoryObject.get(Long.parseLong(storyId));
+		story.addTag(tagId);
 	}
 
 	// 移除Story的自訂分類標籤
 	public void removeStoryTag(String storyId, long tagId) {
-		mMantisService.openConnect();
-		mMantisService.removeStoryTag(storyId, tagId);
-		mMantisService.closeConnect();
+		StoryObject story = StoryObject.get(Long.parseLong(storyId));
+		story.removeTag(tagId);
 	}
 
 	public void updateTag(long tagId, String tagName) {
-		mMantisService.openConnect();
-		mMantisService.updateTag(tagId, tagName, mProject.getName());
-		mMantisService.closeConnect();
+		TagObject tag = TagObject.get(tagId);
+		tag.setName(tagName);
+		tag.save();
 	}
 
 	public boolean isTagExist(String name) {
-		mMantisService.openConnect();
-		boolean result = mMantisService.isTagExist(name, mProject.getName());
-		mMantisService.closeConnect();
-		return result;
+		TagObject tag = TagObject.get(name);
+		
+		if(tag != null){
+			return true;
+		}
+		return false;
 	}
 
 	public TagObject getTagByName(String name) {
-		mMantisService.openConnect();
-		TagObject tag = mMantisService.getTagByName(name, mProject.getName());
-		mMantisService.closeConnect();
-		return tag;
+		return TagObject.get(name);
 	}
 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
@@ -246,6 +208,7 @@ public class ProductBacklogMapper {
 		return id;
 	}
 
+	// TODO
 	// for ezScrum v1.8
 	public void deleteAttachFile(long fileId) {
 		mMantisService.openConnect();
@@ -253,21 +216,19 @@ public class ProductBacklogMapper {
 		mMantisService.closeConnect();
 	}
 
+	// TODO
 	/**
 	 * 抓取attach file for ezScrum v1.8
 	 */
 	public AttachFileObject getAttachfile(long fileId) {
 		mMantisService.openConnect();
-		AttachFileObject attachFileObjects = mMantisService
-				.getAttachFile(fileId);
+		AttachFileObject attachFileObjects = mMantisService.getAttachFile(fileId);
 		mMantisService.closeConnect();
 		return attachFileObjects;
 	}
 
-	public void addHistory(long issueId, int issueType, int historyType,
-			String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(issueId, issueType, historyType,
-				oldValue, newValue, System.currentTimeMillis());
+	public void addHistory(long issueId, int issueType, int historyType, String oldValue, String newValue) {
+		HistoryObject history = new HistoryObject(issueId, issueType, historyType, oldValue, newValue, System.currentTimeMillis());
 		history.save();
 	}
 }

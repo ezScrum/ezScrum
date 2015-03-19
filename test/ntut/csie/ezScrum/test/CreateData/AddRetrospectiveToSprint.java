@@ -100,7 +100,7 @@ public class AddRetrospectiveToSprint {
 		
 		for (long issueID : list) {
 //			IIssue issue = pb.getIssue(issueID);
-			IIssue issue = productBacklogMapper.getIssue(issueID);
+			IIssue issue = productBacklogMapper.getStory(issueID);
 			String oldSprintID = issue.getSprintID();
 			if (sprintID != null && !sprintID.equals("")
 					&& Integer.parseInt(sprintID) >= 0) {
@@ -129,7 +129,7 @@ public class AddRetrospectiveToSprint {
 //						.getReleaseID(), sprintID, null, null, current);
 				
 				// 最後將修改的結果更新至DB
-				productBacklogMapper.updateIssueValue(issue, true);
+				productBacklogMapper.updateStory(issue, true);
 				productBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintID, sprintID);
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
 				productBacklogMapper.updateStoryRelation(issueID, issue.getReleaseID(), sprintID, null, null, current);

@@ -15,6 +15,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -166,13 +167,8 @@ public class SprintBacklogMapper {
 	 * @param sprintId
 	 * @return
 	 */
-	public IIssue[] getStoriesBySprintId(long sprintId) {
-		mMantisService.openConnect();
-		IIssue[] stories = mMantisService
-				.getIssues(mIProject.getName(), ScrumEnum.STORY_ISSUE_TYPE,
-						null, Long.toString(sprintId), null);
-		mMantisService.closeConnect();
-		return stories;
+	public ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
+		return StoryObject.getStoriesBySprintId(sprintId);
 	}
 
 	/**

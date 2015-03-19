@@ -81,7 +81,7 @@ public class StoryWebService extends ProjectWebService{
 			System.out.println("editTag : " + editTag);
 			mProductBacklogHelper.addStoryTag(editStoryObj.id, editTag.getId());
 		}
-		newStoryObj = new StoryObject(mProductBacklogHelper.getIssue(Long.parseLong(newStoryObj.id)));
+		newStoryObj = new StoryObject(mProductBacklogHelper.getStory(Long.parseLong(newStoryObj.id)));
 		Gson gson = new Gson();
 		return gson.toJson(newStoryObj);
 	}

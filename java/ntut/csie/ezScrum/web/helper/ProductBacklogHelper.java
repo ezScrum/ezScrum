@@ -88,7 +88,7 @@ public class ProductBacklogHelper {
 			// 4. 如果這個SprintID有Release資訊，那麼也將此Story加入Release
 			addStoryToRelease(sprintId, list);
 		}
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
+		IIssue issue = mProductBacklogMapper.getStory(issueId);
 		return issue;
 	}
 
@@ -149,11 +149,11 @@ public class ProductBacklogHelper {
 		mProductBacklogMapper.modifyName(issueId, name, new Date());
 		Element history = translateIssueToXML(value, importance, estimate, howToDemo, notes);
 		if (history.getChildren().size() > 0) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
+			IIssue issue = mProductBacklogMapper.getStory(issueId);
 			issue.addTagValue(history);
 			issue.setSummary(name);
-			mProductBacklogMapper.updateIssueValue(issue, addHistory);
-			return mProductBacklogMapper.getIssue(issueId);
+			mProductBacklogMapper.updateStory(issue, addHistory);
+			return mProductBacklogMapper.getStory(issueId);
 		} else {
 			return null;
 		}
@@ -198,7 +198,7 @@ public class ProductBacklogHelper {
 	 * @return StringBuilder
 	 */
 	public StringBuilder getEditStoryInformationResponseText(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
+		IIssue issue = mProductBacklogMapper.getStory(issueId);
 
 		StringBuilder result = new StringBuilder("");
 		result.append(new Translation().translateStory(issue));
@@ -300,7 +300,7 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getAddStoryTagResponseText(String storyId, long tagId) {
 		addStoryTag(storyId, tagId);
-		IIssue issue = mProductBacklogMapper.getIssue(Long.parseLong(storyId));
+		IIssue issue = mProductBacklogMapper.getStory(Long.parseLong(storyId));
 		StringBuilder result = new StringBuilder("");
 		result.append(translateStoryToJson(issue));
 		return result;
@@ -315,7 +315,7 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getRemoveStoryTagResponseText(String storyId, long tagId) {
 		removeStoryTag(storyId, tagId);
-		IIssue issue = mProductBacklogMapper.getIssue(Long.parseLong(storyId));
+		IIssue issue = mProductBacklogMapper.getStory(Long.parseLong(storyId));
 		StringBuilder result = new StringBuilder("");
 		result.append(translateStoryToJson(issue));
 		return result;
@@ -350,7 +350,7 @@ public class ProductBacklogHelper {
 	 * @param issueId
 	 */
 	public void removeReleaseSprint(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
+		IIssue issue = mProductBacklogMapper.getStory(issueId);
 
 		// history node
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -372,7 +372,7 @@ public class ProductBacklogHelper {
 		issue.addTagValue(history);
 
 		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
+		mProductBacklogMapper.updateStory(issue, true);
 
 		// 將 Story 與 Release 對應的關係從 StoryRelationTable 移除
 		mProductBacklogMapper.updateStoryRelation(issueId, "-1", ScrumEnum.DIGITAL_BLANK_VALUE, null, null, current);
@@ -419,7 +419,7 @@ public class ProductBacklogHelper {
 	}
 
 	public IIssue[] getWildTasks() throws SQLException {
-		IIssue[] issues = mProductBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
+		IIssue[] issues = mProductBacklogMapper.getStories(ScrumEnum.TASK_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必需要使用ArrayList
 		ArrayList<IIssue> list = new ArrayList<IIssue>();
@@ -445,7 +445,7 @@ public class ProductBacklogHelper {
 	 * @param id
 	 */
 	private void removeTask(String id) {
-		IIssue issue = mProductBacklogMapper.getIssue(Long.parseLong(id));
+		IIssue issue = mProductBacklogMapper.getStory(Long.parseLong(id));
 		// 取得issue的的task列表
 		ArrayList<Long> tasksList = issue.getChildrenId();
 		// drop Tasks
@@ -471,7 +471,7 @@ public class ProductBacklogHelper {
 	 * @return ArrayList
 	 */
 	public ArrayList<TagObject> getTagList() {
-		return mProductBacklogMapper.getTagList();
+		return mProductBacklogMapper.getTags();
 	}
 
 	/**
@@ -481,7 +481,7 @@ public class ProductBacklogHelper {
 	 * @return IIssue
 	 */
 	public IIssue getIssue(long id) {
-		return mProductBacklogMapper.getIssue(id);
+		return mProductBacklogMapper.getStory(id);
 	}
 
 	/**

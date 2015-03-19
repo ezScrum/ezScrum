@@ -206,7 +206,7 @@ public class ProductBacklogWebServiceTest {
 		        TEST_STORY_NOTES + "1",
 		        true);
 		
-		story = productBacklogMapper.getIssue(story.getIssueID());
+		story = productBacklogMapper.getStory(story.getIssueID());
 		
 		StoryObject storyObject = new StoryObject(story);
 
