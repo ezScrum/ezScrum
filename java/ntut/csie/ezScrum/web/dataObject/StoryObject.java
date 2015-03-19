@@ -166,10 +166,6 @@ public class StoryObject implements IBaseObject {
 		return HistoryDAO.getInstance().getHistoriesByIssue(mId, IssueTypeEnum.TYPE_STORY);
 	}
 	
-	public static ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
-		return StoryDAO.getInstance().getStoriesBySprintId(sprintId);
-	}
-	
 	public static ArrayList<StoryObject> getAllStoriesByProjectId(long ProjectId) {
 		return StoryDAO.getInstance().getStoriesByProjectId(ProjectId);
 	}

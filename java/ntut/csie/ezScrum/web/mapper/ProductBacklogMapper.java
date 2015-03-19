@@ -30,7 +30,6 @@ public class ProductBacklogMapper {
 	public ProductBacklogMapper(ProjectObject project, IUserSession userSession) {
 		mProject = project;
 	}
-
 	
 	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
 		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
@@ -54,12 +53,13 @@ public class ProductBacklogMapper {
 
 	// get all stories
 	public ArrayList<StoryObject> getAllStoriesByProjectId() {
+		// TODO move to project
 		return StoryObject.getAllStoriesByProjectId(mProject.getId());
 	}
 
 	// TODO
 	// get all stories by release
-	public ArrayList<IStory> connectToGetStoryByRelease(String releaseId, String sprintId) {
+	public ArrayList<StoryObject> connectToGetStoryByRelease(String releaseId, String sprintId) {
 		mMantisService.openConnect();
 		// 找出 Category 為 Story
 		IIssue[] issues = mMantisService.getIssues(mProject.getName(),
@@ -78,60 +78,21 @@ public class ProductBacklogMapper {
 		return StoryObject.get(id);
 	}
 	
-	// TODO
-	public void updateStory(StoryObject newStory, boolean addHistory) {
-		long storyId = newStory.getId();
-		StoryObject oldStory = getStory(storyId);
-		
-		if (addHistory) {
-			if (!newStory.getValue() == oldStory.getValue()) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_VALUE,
-						oldStory.getValue(), newIssue.getValue());
-			}
-			if (!newIssue.getImportance().equals(oldStory.getImportance())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_IMPORTANCE,
-						oldStory.getImportance(), newIssue.getImportance());
-			}
-			if (!newIssue.getEstimated().equals(oldStory.getEstimated())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_ESTIMATE,
-						oldStory.getEstimated(), newIssue.getEstimated());
-			}
-			if (!newIssue.getHowToDemo().equals(oldStory.getHowToDemo())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_HOWTODEMO,
-						oldStory.getHowToDemo(), newIssue.getHowToDemo());
-			}
-			if (!newIssue.getNotes().equals(oldStory.getNotes())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_NOTE,
-						oldStory.getNotes(), newIssue.getNotes());
-			}
-		}
+	public void updateStory(StoryInfo storyInfo) {		
+		// TODO
 	}
 
-	// TODO
-	public IIssue addStory(StoryInfo storyInformation) {
-		
-		mMantisService.openConnect();
-		IIssue story = new Issue();
-
-		story.setProjectID(mProject.getName());
-		story.setSummary(storyInformation.getName());
-		story.setDescription(storyInformation.getDescription());
-		story.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
-		long storyId = mMantisService.newIssue(story);
-
-		mMantisService.closeConnect();
+	public StoryObject addStory(StoryInfo storyInfo) {		
+		// TODO
 		return getStory(storyId);
 	}
-
-	
 
 	public void modifyName(long storyId, String name, Date modifyDate) {
 		StoryObject story = getStory(storyId);
 
 		if (!story.getName().equals(name)) {
 			story.setName(name);
-			story.setUpdateTime(modifyDate.getTime());
-			story.save();
+			story.save(modifyDate.getTime());
 		}
 	}
 	
@@ -142,6 +103,7 @@ public class ProductBacklogMapper {
 	}
 
 	public void removeTask(long taskId, long parentId) {
+		// TODO do not delete task
 		StoryObject story = StoryObject.get(parentId);
 		ArrayList<TaskObject> tasks = story.getTasks();
 		for(TaskObject taskObject : tasks){
@@ -225,10 +187,5 @@ public class ProductBacklogMapper {
 		AttachFileObject attachFileObjects = mMantisService.getAttachFile(fileId);
 		mMantisService.closeConnect();
 		return attachFileObjects;
-	}
-
-	public void addHistory(long issueId, int issueType, int historyType, String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(issueId, issueType, historyType, oldValue, newValue, System.currentTimeMillis());
-		history.save();
 	}
 }
