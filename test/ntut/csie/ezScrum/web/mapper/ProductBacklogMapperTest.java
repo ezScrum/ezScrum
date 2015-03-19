@@ -3,10 +3,8 @@ package ntut.csie.ezScrum.web.mapper;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Date;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -16,7 +14,6 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -92,16 +89,48 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
+	public void testGetUnclosedStories() {
+		
+	}
+	
+	@Test
+	public void testUpdateStoryRelation() {
+		
+	}
+	
+	@Test
+	public void testGetStoriesByRelease() {
+		
+	}
+	
+	@Test
+	public void testUpdateStory() {
+		
+	}
+	
+	@Test
 	public void testAddStory() throws SQLException {
 		StoryInfo storyInfo = new StoryInfo();
-		storyInfo.setName("TEST_STORY");
-		storyInfo.setDescription("TEST_STORY_DESC");
+		storyInfo.name = "TEST_NAME";
+		storyInfo.howToDemo = "TEST_HOW_TO_DEMO";
+		storyInfo.notes = "TEST_NOTES";
+		storyInfo.estimate = 1;
+		storyInfo.value = 2;
+		storyInfo.importance = 3;
 		
-		IIssue issue = mProductBacklogMapper.addStory(storyInfo);
+		StoryObject story = mProductBacklogMapper.addStory(storyInfo);
+		story = StoryObject.get(story.getId());
 		
-		HistoryDAO historyDao = HistoryDAO.getInstance();
-		ArrayList<HistoryObject> histories = historyDao.getHistoriesByIssue(issue.getIssueID(), IssueTypeEnum.TYPE_STORY);
-		assertEquals(1, histories.size());
+		assertEquals(storyInfo.name, story.getName());
+		assertEquals(storyInfo.notes, story.getNotes());
+		assertEquals(storyInfo.howToDemo, story.getHowToDemo());
+		assertEquals(storyInfo.estimate, story.getEstimate());
+		assertEquals(storyInfo.importance, story.getImportance());
+		assertEquals(storyInfo.value, story.getValue());
+		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
+		assertEquals(3, story.getSerialId());
+		assertEquals(StoryObject.DEFAULT_VALUE, story.getSprintId());
+		assertEquals(1, story.getHistories().size());
 	}
 	
 	@Test // 測試上傳檔案到一筆 Story 是否成功
@@ -147,7 +176,7 @@ public class ProductBacklogMapperTest {
 		ActualFile = null;		
 	}
 	
-	@Test // 測試不用透過 mantis 直接取得檔案的方法
+	@Test
 	public void testGetAttachfile_Story() {
 		StoryObject story = mCPB.getStories().get(0);
 		
@@ -163,6 +192,77 @@ public class ProductBacklogMapperTest {
 
 		// ============= release ==============
 		story = null;
+	}
+	
+	@Test
+	public void testModifyStoryName_Existing() {
+		StoryObject story = mCPB.getStories().get(0);
+		mProductBacklogMapper.modifyStoryName(story.getId(), "NEW_NAME", new Date());
+		story.reload();
+		assertEquals("NEW_NAME", story.getName());
+	}
+	
+	/*
+	 * Modify non-existing story's name should pass and no error
+	 */
+	@Test
+	public void testModifyStoryName_No_Existing() {
+		mProductBacklogMapper.modifyStoryName(100, "NEW_NAME", new Date());
+	}
+	
+	@Test
+	public void testDeleteStory_Existing() {
+		
+	}
+	
+	@Test
+	public void testDeleteStory_No_Existing() {
+		
+	}
+	
+	@Test
+	public void testRemoveTask() {
+		
+	}
+	
+	@Test
+	public void testAddNewTag() {
+		
+	}
+	
+	@Test
+	public void testDeleteTag() {
+		
+	}
+	
+	@Test
+	public void testGetTags() {
+		
+	}
+	
+	@Test
+	public void testAddStoryTag() {
+		
+	}
+	
+	@Test
+	public void testRemoveStoryTag() {
+		
+	}
+	
+	@Test
+	public void testUpdateTag() {
+		
+	}
+	
+	@Test
+	public void testIsTagExist() {
+		
+	}
+	
+	@Test
+	public void testGetTagByName() {
+		
 	}
 	
 	private void addAttachFile(ProductBacklogMapper mapper, long issueId, int issutType) {
