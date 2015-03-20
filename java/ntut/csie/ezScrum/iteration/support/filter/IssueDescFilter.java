@@ -5,9 +5,10 @@ import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class IssueDescFilter extends AProductBacklogFilter {
-	public IssueDescFilter(IStory[] stories, String info) {
+	public IssueDescFilter(ArrayList<StoryObject> stories, String info) {
 		super(stories, info);
 	}
 	
@@ -16,28 +17,23 @@ public class IssueDescFilter extends AProductBacklogFilter {
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
-		IStory[] Stories = super.Stories;
-		
-		List<IStory> filerStories = new ArrayList<IStory>();
-		
-		for (IStory story : Stories) {
-			// story description contains info
-			String desc = story.getDescription();
-			if ( compareDesc(desc) ) {
-				filerStories.add(story);
-			}
-		}
-			
-		return filerStories.toArray(new IStory[filerStories.size()]);
+	protected ArrayList<StoryObject> FilterStories() {
+		ArrayList<StoryObject> stories = super.Stories;
+//		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
+//		for (StoryObject story : stories) {
+//			// story description contains info
+//			String desc = story.getDescription(); // story has no description
+//			if (compareDesc(desc)) {
+//				fileredStories.add(story);
+//			}
+//		}
+		return stories;
 	}
 
 	@Override
 	protected ITask[] FilterTasks() {
 		ITask[] Tasks = super.Tasks;
-		
 		List<ITask> filerStories = new ArrayList<ITask>();
-		
 		for (ITask task : Tasks) {
 			// task description contains info
 			String desc = task.getDescription();
@@ -45,7 +41,6 @@ public class IssueDescFilter extends AProductBacklogFilter {
 				filerStories.add(task);
 			}
 		}
-			
 		return filerStories.toArray(new ITask[filerStories.size()]);
 	}
 	
@@ -55,7 +50,6 @@ public class IssueDescFilter extends AProductBacklogFilter {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 }

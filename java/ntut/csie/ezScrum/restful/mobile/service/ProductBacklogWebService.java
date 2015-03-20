@@ -125,7 +125,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 
 			// 變更 Sprint 的內容
 			issueIdList.add(issueId);
-			mProductBacklogLogic.addIssueToSprint(issueIdList, sprint);
+			mProductBacklogLogic.addStoriesToSprint(issueIdList, sprint);
 
 			// 重新取出 edit 後的 Story
 			IStory[] storyList = mProductBacklogLogic.getStoriesByFilterType(null);
