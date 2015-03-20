@@ -38,6 +38,9 @@ public class StoryObject implements IBaseObject {
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
 	
+	private ArrayList<Long> mCacheTagsId = new ArrayList<Long>();
+	private boolean mUpdateTags = false;
+	
 	public static StoryObject get(long id) {
 		return StoryDAO.getInstance().get(id);
 	}
@@ -174,37 +177,47 @@ public class StoryObject implements IBaseObject {
 		return TagDAO.getInstance().getTagsByStoryId(mId);
 	}
 	
+	public ArrayList<Long> getTagsId() {
+		ArrayList<Long> tagsId = new ArrayList<Long>();
+		for (TagObject tag : getTags()) {
+			tagsId.add(tag.getId());
+		}
+		return tagsId;
+	}
+	
 	public void removeTag(long tagId) {
-		TagObject tag = TagDAO.getInstance().get(tagId);
-		if (tag != null && isTagExistingInStory(tagId)) {
-			TagDAO.getInstance().removeTagFromStory(mId, tagId);
+		if (mCacheTagsId.size() == 0) {
+			mCacheTagsId = getTagsId();
+		}
+		
+		for (int i = 0; i < mCacheTagsId.size(); i++) {
+			long cacheTagId = mCacheTagsId.get(i);
+			if (cacheTagId == tagId) {
+				mCacheTagsId.remove(i);
+				mUpdateTags = true;
+			}
 		}
 	}
 	
 	public void addTag(long tagId) {
-		TagObject tag = TagDAO.getInstance().get(tagId);
-		if (tag != null && !isTagExistingInStory(tagId)) {
-			TagDAO.getInstance().addTagToStory(mId, tagId);			
+		if (mCacheTagsId.size() == 0) {
+			mCacheTagsId = getTagsId();
 		}
+		
+		for (int i = 0; i < mCacheTagsId.size(); i++) {
+			long cacheTagId = mCacheTagsId.get(i);
+			if (cacheTagId == tagId) {
+				return;
+			}
+		}
+		mCacheTagsId.add(tagId);
+		mUpdateTags = true;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void setTags(ArrayList<Long> tagIds) {
-		ArrayList<Long> oldTags = new ArrayList<Long>();
-		for (TagObject tag : getTags()) {
-			oldTags.add(tag.getId());
-		}
-		
-		ArrayList<Long> deleteTags = (ArrayList<Long>) CollectionUtils.subtract(oldTags, tagIds);
-		ArrayList<Long> addTags = (ArrayList<Long>) CollectionUtils.subtract(tagIds, oldTags);
-		
-		for (Long tagId : deleteTags) {
-			removeTag(tagId);
-		}
-		
-		for (Long tagId : addTags) {
-			addTag(tagId);
-		}
+	public StoryObject setTags(ArrayList<Long> tagIds) {
+		mCacheTagsId = tagIds;
+		mUpdateTags = true;
+		return this;
 	}
 	
 	@Override
@@ -301,6 +314,7 @@ public class StoryObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = StoryDAO.getInstance().create(this);
+		saveTags();
 		reload();
 		HistoryDAO.getInstance().create(
 				new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
@@ -314,6 +328,7 @@ public class StoryObject implements IBaseObject {
 	private void doUpdate() {
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
+		saveTags();
 		
 		if (!mName.equals(oldStory.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName);
@@ -353,6 +368,7 @@ public class StoryObject implements IBaseObject {
 	private void doUpdate(long specificTime) {
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
+		saveTags();
 		
 		if (!mName.equals(oldStory.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName, specificTime);
@@ -432,5 +448,43 @@ public class StoryObject implements IBaseObject {
 			}
 		}
 		return false;
+	}
+	
+	private void removeTagFromDB(long tagId) {
+		TagObject tag = TagDAO.getInstance().get(tagId);
+		if (tag != null && isTagExistingInStory(tagId)) {
+			TagDAO.getInstance().removeTagFromStory(mId, tagId);
+		}
+	}
+	
+	private void addTagToDB(long tagId) {
+		TagObject tag = TagDAO.getInstance().get(tagId);
+		if (tag != null && !isTagExistingInStory(tagId)) {
+			TagDAO.getInstance().addTagToStory(mId, tagId);			
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void saveTags() {
+		if (mUpdateTags) {
+			ArrayList<Long> oldTags = new ArrayList<Long>();
+			for (TagObject tag : getTags()) {
+				oldTags.add(tag.getId());
+			}
+			
+			ArrayList<Long> deleteTags = (ArrayList<Long>) CollectionUtils.subtract(oldTags, mCacheTagsId);
+			ArrayList<Long> addTags = (ArrayList<Long>) CollectionUtils.subtract(mCacheTagsId, oldTags);
+			
+			for (Long tagId : deleteTags) {
+				removeTagFromDB(tagId);
+			}
+			
+			for (Long tagId : addTags) {
+				addTagToDB(tagId);
+			}
+			
+			mCacheTagsId = new ArrayList<Long>();
+			mUpdateTags = false;
+		}
 	}
 }

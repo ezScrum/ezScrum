@@ -530,6 +530,7 @@ public class ProductBacklogMapperTest {
 		StoryObject story = mCPB.getStories().get(0);
 		// add tag
 		story.addTag(tag.getId());
+		story.save();
 		// 從資料庫撈出資料
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);

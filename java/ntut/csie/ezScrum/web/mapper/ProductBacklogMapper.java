@@ -80,8 +80,8 @@ public class ProductBacklogMapper {
 	         .setSprintId(storyInfo.sprintId)
 	         .setStatus(storyInfo.status)
 	         .setValue(storyInfo.value)
+	         .setTags(tagsId)
 	         .save();
-		story.setTags(tagsId);
 	}
 
 	public StoryObject addStory(StoryInfo storyInfo) {
@@ -97,8 +97,8 @@ public class ProductBacklogMapper {
 		     .setSprintId(storyInfo.sprintId)
 		     .setStatus(storyInfo.status)
 		     .setValue(storyInfo.value)
+		     .setTags(tagsId)
 		     .save();
-		story.setTags(tagsId);
 		return getStory(story.getId());
 	}
 
@@ -157,6 +157,7 @@ public class ProductBacklogMapper {
 		StoryObject story = StoryObject.get(storyId);
 		if(story != null){
 			story.addTag(tagId);
+			story.save();
 		}
 	}
 
@@ -165,6 +166,7 @@ public class ProductBacklogMapper {
 		StoryObject story = StoryObject.get(storyId);
 		if(story != null){
 			story.removeTag(tagId);
+			story.save();
 		}
 	}
 
