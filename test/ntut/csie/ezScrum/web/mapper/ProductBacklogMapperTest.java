@@ -18,13 +18,16 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateRelease;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -43,6 +46,9 @@ import org.junit.Test;
 public class ProductBacklogMapperTest {
 	private CreateProject mCP;
 	private CreateProductBacklog mCPB;
+	private CreateRelease mCR;
+	private AddSprintToRelease mASTR;
+	private AddStoryToSprint mASTS;
 	private int mProjectCount = 1;
 	private int mStoryCount = 2;
 	private ProductBacklogMapper mProductBacklogMapper = null;
@@ -72,6 +78,12 @@ public class ProductBacklogMapperTest {
 		// 新增 Story
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
 		mCPB.exe();
+		
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe();
+		
+		mASTR = new AddSprintToRelease(2, mCR, mCP);
+		mASTR.exe();
 		
 		// 建立 productbacklog 物件
 		IProject project = mCP.getProjectList().get(0);
@@ -108,12 +120,45 @@ public class ProductBacklogMapperTest {
 	
 	@Test
 	public void testGetUnclosedStories() {
+		long projectId = mCP.getAllProjects().get(0).getId();
 		
+		// add 5 unclosed stories,
+		for (int i = 0; i< 5; i++) {
+			StoryObject story = new StoryObject(projectId);
+			story.setName("Story_" + i);
+			story.setStatus(StoryObject.STATUS_UNCHECK);
+			story.save();
+		}
+		
+		// add 3 closed stories,
+		for (int i = 0; i< 3; i++) {
+			StoryObject story = new StoryObject(projectId);
+			story.setName("Story_" + i);
+			story.setStatus(StoryObject.STATUS_DONE);
+			story.save();
+		}
+		
+		ArrayList<StoryObject> closedStories = mProductBacklogMapper.getUnclosedStories();
+		
+		assertEquals(3, closedStories.size());
 	}
 	
 	@Test
 	public void testUpdateStoryRelation() {
+		StoryObject story = mCPB.getStories().get(0);
 		
+		assertEquals("TEST_STORY_1", story.getName());
+		assertEquals(StoryObject.DEFAULT_VALUE, story.getSprintId());
+		assertEquals(100, story.getImportance());
+		assertEquals(2, story.getEstimate());
+		
+		mProductBacklogMapper.updateStoryRelation(story.getId(), 1, 5, 10, new Date());
+		
+		story.reload();
+		assertEquals("TEST_STORY_1", story.getName());
+		assertEquals(1, story.getSprintId());
+		assertEquals(10, story.getImportance());
+		assertEquals(5, story.getEstimate());
 	}
 	
 	@Test
@@ -123,7 +168,35 @@ public class ProductBacklogMapperTest {
 	
 	@Test
 	public void testUpdateStory() {
+		StoryObject story = mCPB.getStories().get(0);
 		
+		assertEquals("TEST_STORY_1", story.getName());
+		assertEquals("TEST_STORY_NOTE_1", story.getNotes());
+		assertEquals("TEST_STORY_DEMO_1", story.getHowToDemo());
+		assertEquals(StoryObject.DEFAULT_VALUE, story.getSprintId());
+		assertEquals(100, story.getImportance());
+		assertEquals(2, story.getEstimate());
+		assertEquals(50, story.getValue());
+		
+		StoryInfo storyInfo = new StoryInfo();
+		storyInfo.name = "NEW_STORY_1";
+		storyInfo.notes = "NEW_NOTE_1";
+		storyInfo.howToDemo = "NEW_DEMO_1";
+		storyInfo.sprintId = 1;
+		storyInfo.estimate = 13;
+		storyInfo.importance = 0;
+		storyInfo.value = 100;
+		
+		mProductBacklogMapper.updateStory(storyInfo);
+		
+		story.reload();
+		assertEquals("NEW_STORY_1", story.getName());
+		assertEquals("NEW_NOTE_1", story.getNotes());
+		assertEquals("NEW_DEMO_1", story.getHowToDemo());
+		assertEquals(1, story.getSprintId());
+		assertEquals(0, story.getImportance());
+		assertEquals(13, story.getEstimate());
+		assertEquals(100, story.getValue());
 	}
 	
 	@Test

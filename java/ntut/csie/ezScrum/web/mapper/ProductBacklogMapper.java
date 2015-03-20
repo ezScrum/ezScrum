@@ -28,7 +28,7 @@ public class ProductBacklogMapper {
 		mProject = project;
 	}
 	
-	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
+	public ArrayList<StoryObject> getUnclosedStories() {
 		ProjectObject project = ProjectObject.get(mProject.getName());
 		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
 		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(project.getId());
@@ -40,13 +40,12 @@ public class ProductBacklogMapper {
 		return list;
 	}
 
-	public void updateStoryRelation(long issueId, String sprintId, String estimate, String importance, Date date) {
-		StoryObject story = StoryObject.get(issueId);
-		story.setSprintId(Long.parseLong(sprintId))
-		     .setEstimate(Integer.parseInt(estimate))
-		     .setImportance(Integer.parseInt(importance))
-		     .setUpdateTime(date.getTime())
-		     .save();
+	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
+		StoryObject story = StoryObject.get(storyId);
+		story.setSprintId(sprintId)
+		     .setEstimate(estimate)
+		     .setImportance(importance)
+		     .save(date.getTime());
 	}
 
 	// get all stories by release
@@ -83,7 +82,6 @@ public class ProductBacklogMapper {
 	         .setImportance(storyInfo.importance)
 	         .setNotes(storyInfo.notes)
 	         .setHowToDemo(storyInfo.howToDemo)
-	         .setSprintId(storyInfo.sprintId)
 	         .setSprintId(storyInfo.sprintId)
 	         .setStatus(storyInfo.status)
 	         .setValue(storyInfo.value)
