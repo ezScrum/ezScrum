@@ -13,6 +13,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
@@ -30,6 +31,7 @@ import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -58,7 +60,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	private MantisNoteService mNoteService;
 	private MantisIssueService mIssueService;
-	private MantisAttachFileService mAttachFileService;
 
 	public MantisService(Configuration config) {
 		setConfig(config);
@@ -109,7 +110,6 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 		mNoteService = new MantisNoteService(getControl(), getConfig());
 		mIssueService = new MantisIssueService(getControl(), getConfig());
-		mAttachFileService = new MantisAttachFileService(getControl(), getConfig());
 	}
 
 	/************************************************************
@@ -1261,14 +1261,12 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	
 	@Override
     public long addNewTag(String name, String projectName) {
-	    // TODO Auto-generated method stub
-	    return 0;
+	    return TagDAO.getInstance().create(new TagObject(name, ProjectObject.get(projectName).getId()));
     }
 
 	@Override
     public void deleteTag(long id, String projectName) {
 	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
