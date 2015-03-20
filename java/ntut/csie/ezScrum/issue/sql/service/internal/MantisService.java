@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
@@ -29,6 +31,7 @@ import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
@@ -1227,34 +1230,43 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		getControl().execute(query);
 	}
 
-	@Override
-    public long addAttachFile(AttachFileInfo attachFileInfo) {
-	    // TODO Auto-generated method stub
-	    return 0;
-    }
-
-	@Override
-    public void deleteAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    
-    }
-
-	@Override
-    public AttachFileObject getAttachFile(long fileId) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
+	/**
+	 * for ezScrum v1.8
+	 */
+	public long addAttachFile(AttachFileInfo attachFileInfo) {
+		// builder
+		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
+		attachFileBuilder.setIssueId(attachFileInfo.issueId);
+		attachFileBuilder.setIssueType(attachFileInfo.issueType);
+		attachFileBuilder.setContentType(attachFileInfo.contentType);
+		attachFileBuilder.setName(attachFileInfo.name);
+		attachFileBuilder.setPath(attachFileInfo.path);
+		
+		// create AttachFileObject
+		AttachFileObject attachFile = attachFileBuilder.build();
+		long newAttachFileId = AttachFileDAO.getInstance().create(attachFile);
+		return newAttachFileId;
+	}
+	
+	/**
+	 * for ezScrum v1.8
+	 */
+	public void deleteAttachFile(long fileId) {
+		AttachFileDAO.getInstance().delete(fileId);
+	}
+	
+	public AttachFileObject getAttachFile(long fileId) {
+		return AttachFileDAO.getInstance().get(fileId);
+	}
+	
 	@Override
     public long addNewTag(String name, String projectName) {
-	    // TODO Auto-generated method stub
-	    return 0;
+	    return TagDAO.getInstance().create(new TagObject(name, ProjectObject.get(projectName).getId()));
     }
 
 	@Override
     public void deleteTag(long id, String projectName) {
 	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override

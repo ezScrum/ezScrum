@@ -1,14 +1,17 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.web.databasEnum.TagEnum;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class TagObject implements IBaseObject{
 	private final static int DEFAULT_VALUE = -1;
+	private static long mProjectId = -1;
 	private long mId = -1;
-	private long mProjectId = -1;
 	private long mCreateTime = -1;
 	private long mUpdateTime = -1;
 	private String mName = "";
@@ -64,6 +67,20 @@ public class TagObject implements IBaseObject{
 	 */
 	public static TagObject get(long id){
 		return TagDAO.getInstance().get(id);
+	}
+	
+	/**
+	 * get Tag by tag name
+	 */
+	public static TagObject get(String name){
+		return TagDAO.getInstance().getTagInProjectByName(mProjectId, name);
+	}
+	
+	/**
+	 * get Tags in project
+	 */
+	public static ArrayList<TagObject> getTags(){
+		 return TagDAO.getInstance().getTagsByProjectId(mProjectId);
 	}
 	
 	@Override

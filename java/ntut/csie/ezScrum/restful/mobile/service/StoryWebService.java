@@ -63,8 +63,8 @@ public class StoryWebService extends ProjectWebService{
 	 */
 	public String updateStory(String storyJson) throws SQLException {
 		StoryObject editStoryObj = new Gson().fromJson(storyJson, StoryObject.class);
-		StoryObject newStoryObj = new StoryObject(mProductBacklogHelper.editStory(editStoryObj.toStoryInformation()));
-		for (TagObject originTag : newStoryObj.tagList) {
+		StoryObject newStory = new StoryObject(mProductBacklogHelper.editStory(editStoryObj.toStoryInformation()));
+		for (TagObject originTag : newStory.tagList) {
 			boolean isExist = false;
 			// 判斷舊的 tag 是否還存在
 			for (TagObject editTag : editStoryObj.tagList)
@@ -72,18 +72,18 @@ public class StoryWebService extends ProjectWebService{
 					isExist =  true;
 			// 如果 tag 不存在就刪掉，否則將已經存在的 tag 從待加入的 tag list 中移除
 			if (!isExist) {
-				mProductBacklogHelper.removeStoryTag(newStoryObj.id, originTag.getId());
+				mProductBacklogHelper.removeTagFromStory(newStory.id, originTag.getId());
 			} else
 				editStoryObj.tagList.remove(originTag);
 		}
 		// 將新的 tag 加入 story
 		for (TagObject editTag : editStoryObj.tagList) {
 			System.out.println("editTag : " + editTag);
-			mProductBacklogHelper.addStoryTag(editStoryObj.id, editTag.getId());
+			mProductBacklogHelper.addTagToStory(editStoryObj.id, editTag.getId());
 		}
-		newStoryObj = new StoryObject(mProductBacklogHelper.getIssue(Long.parseLong(newStoryObj.id)));
+		newStory = new StoryObject(mProductBacklogHelper.getStory(Long.parseLong(newStory.id)));
 		Gson gson = new Gson();
-		return gson.toJson(newStoryObj);
+		return gson.toJson(newStory);
 	}
 	
 	/**

@@ -54,7 +54,7 @@ public class ProductBacklogLogic {
 	public IStory[] getStoriesByRelease(IReleasePlanDesc release) {
 		// get Story back and sort it by importance
 		String releaseId = release.getID();
-		ArrayList<IStory> list = mProductBacklogMapper.connectToGetStoryByRelease(releaseId, null);
+		ArrayList<IStory> list = mProductBacklogMapper.getStoryByRelease(releaseId, null);
 		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
 		return list.toArray(new IStory[list.size()]);
 	}
@@ -64,7 +64,7 @@ public class ProductBacklogLogic {
 	 * @param category
 	 */
 	public IStory[] getUnclosedIssues(String category) throws SQLException {
-		ArrayList<IStory> list = mProductBacklogMapper.getUnclosedIssues(category);
+		ArrayList<IStory> list = mProductBacklogMapper.getUnclosedStories(category);
 		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
 		return list.toArray(new IStory[list.size()]);
 	}
@@ -88,7 +88,7 @@ public class ProductBacklogLogic {
 	 *************************************************************/
 	public void addIssueToSprint(List<Long> issueIdList, String sprintId) {
 		for (long issueId : issueIdList) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
+			IIssue issue = mProductBacklogMapper.getStory(issueId);
 			String oldSprintId = issue.getSprintID();
 			
 			if (sprintId != null && !sprintId.equals("") &&
@@ -108,7 +108,7 @@ public class ProductBacklogLogic {
 				issue.addTagValue(history);
 
 				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
+				mProductBacklogMapper.updateStory(issue, false);
 				mProductBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintId, sprintId);
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
 				mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), sprintId, null, null, current);
@@ -124,7 +124,7 @@ public class ProductBacklogLogic {
 	 */
 	public void addReleaseTagToIssue(List<Long> issueList, String releaseId) {
 		for (long issueId : issueList) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
+			IIssue issue = mProductBacklogMapper.getStory(issueId);
 
 			if (releaseId != null && !releaseId.equals("") && Integer.parseInt(releaseId) >= 0) {
 				// history node
@@ -139,7 +139,7 @@ public class ProductBacklogLogic {
 				issue.addTagValue(history);
 
 				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
+				mProductBacklogMapper.updateStory(issue, false);
 				mProductBacklogMapper.updateStoryRelation(issueId, releaseId, issue.getSprintID(), null, null, current);
 			}
 		}
@@ -150,7 +150,7 @@ public class ProductBacklogLogic {
 	 * @param issueId
 	 */
 	public void removeReleaseTagFromIssue(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
+		IIssue issue = mProductBacklogMapper.getStory(issueId);
 
 		// history node
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -165,7 +165,7 @@ public class ProductBacklogLogic {
 		issue.addTagValue(history);
 
 		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
+		mProductBacklogMapper.updateStory(issue, true);
 		mProductBacklogMapper.updateStoryRelation(issueId, "-1", issue.getSprintID(), null, null, current);
 	}
 
@@ -174,7 +174,7 @@ public class ProductBacklogLogic {
 	 * @param issueId
 	 */
 	public void removeStoryFromSprint(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
+		IIssue issue = mProductBacklogMapper.getStory(issueId);
 
 		// history node
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -188,7 +188,7 @@ public class ProductBacklogLogic {
 		issue.addTagValue(history);
 
 		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
+		mProductBacklogMapper.updateStory(issue, true);
 		mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), ScrumEnum.DIGITAL_BLANK_VALUE, null, null, current);
 	}
 

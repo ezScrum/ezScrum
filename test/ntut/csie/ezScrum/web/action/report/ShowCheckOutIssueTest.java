@@ -130,7 +130,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		long storyId = mASTS.getStories().get(0).getId();
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
-		IIssue story = productBacklogMapper.getIssue(storyId);
+		IIssue story = productBacklogMapper.getStory(storyId);
 
 		// ================ set request info ========================
 		String projectName = project.getName();

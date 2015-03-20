@@ -50,10 +50,11 @@ public class CreateProductBacklog {
 			ProjectObject project = mCP.getAllProjects().get(i);
 			
 			for (int j = 0; j < mStoryCount; j++) {
+				int storyNameIndex = j + 1;
 				StoryObject story = new StoryObject(project.getId());
 				story
-					.setName(mTestStoryName + j + 1)
-					.setNotes(mTestStoryNotes + j + 1);
+					.setName(mTestStoryName + storyNameIndex)
+					.setNotes(mTestStoryNotes + storyNameIndex);
 				if (mAutoSetStory) {
 					story
 						.setEstimate(mTestStoryEst)
@@ -73,7 +74,7 @@ public class CreateProductBacklog {
 				}
 				story
 					.setValue(mTestStoryValue)
-					.setHowToDemo(mTestStoryHowToDemo + j + 1)
+					.setHowToDemo(mTestStoryHowToDemo + storyNameIndex)
 					.save();
 				mStories.add(story);
 				mStoryIds.add(story.getId());
@@ -84,14 +85,15 @@ public class CreateProductBacklog {
 
 	public void createBacklogStory(ProjectObject project, int value, int importance, int estimate) {
 		int index = mStoryIds.size();
+		int storyNameIndex = index + 1;
 		StoryObject story = new StoryObject(project.getId());
 		story
-			.setName(mTestStoryName + index + 1)
-			.setNotes(mTestStoryNotes + index + 1)
+			.setName(mTestStoryName + storyNameIndex)
+			.setNotes(mTestStoryNotes + storyNameIndex)
 			.setEstimate(estimate)
 			.setImportance(importance)
 			.setValue(value)
-			.setHowToDemo(mTestStoryHowToDemo + index + 1)
+			.setHowToDemo(mTestStoryHowToDemo + storyNameIndex)
 			.save();
 		mStories.add(story);
 		mStoryIds.add(story.getId());
