@@ -1,10 +1,10 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -13,7 +13,6 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -26,6 +25,8 @@ public class ProductBacklogMapper {
 
 	public ProductBacklogMapper(IProject project, IUserSession userSession) {
 		mProject = project;
+		Configuration config = new Configuration();
+		mMantisService = new MantisService(config);
 	}
 	
 	public ArrayList<StoryObject> getUnclosedStories() {
@@ -69,13 +70,7 @@ public class ProductBacklogMapper {
 	}
 	
 	public void updateStory(StoryInfo storyInfo) {
-		// process story info tag String
-		ArrayList<Long> tagIds = new ArrayList<Long>();
-		for (String tagName : storyInfo.tags.split(",")) {
-			TagObject tag = TagObject.get(tagName);
-			tagIds.add(tag.getId());
-		}
-		
+		ArrayList<Long> tagsId = getTagsIdByTagsName(storyInfo.tags);
 		StoryObject story = StoryObject.get(storyInfo.id);
 		story.setName(storyInfo.name)
 	         .setEstimate(storyInfo.estimate)
@@ -86,19 +81,12 @@ public class ProductBacklogMapper {
 	         .setStatus(storyInfo.status)
 	         .setValue(storyInfo.value)
 	         .save();
-		story.setTags(tagIds);
+		story.setTags(tagsId);
 	}
 
 	public StoryObject addStory(StoryInfo storyInfo) {
 		ProjectObject project = ProjectObject.get(mProject.getName());
-		
-		// process story info tag String
-		ArrayList<Long> tagIds = new ArrayList<Long>();
-		for(String tagName : storyInfo.tags.split(",")){
-			TagObject tag = TagObject.get(tagName);
-			tagIds.add(tag.getId());
-		}
-		
+		ArrayList<Long> tagsId = getTagsIdByTagsName(storyInfo.tags);
 		StoryObject story = new StoryObject(project.getId());
 		story.setName(storyInfo.name)
 		     .setEstimate(storyInfo.estimate)
@@ -110,7 +98,7 @@ public class ProductBacklogMapper {
 		     .setStatus(storyInfo.status)
 		     .setValue(storyInfo.value)
 		     .save();
-		story.setTags(tagIds);
+		story.setTags(tagsId);
 		return getStory(story.getId());
 	}
 
@@ -223,5 +211,19 @@ public class ProductBacklogMapper {
 		AttachFileObject attachFileObjects = mMantisService.getAttachFile(fileId);
 		mMantisService.closeConnect();
 		return attachFileObjects;
+	}
+	
+	private ArrayList<Long> getTagsIdByTagsName(String originTagsName){
+		// process story info tag String
+		ArrayList<Long> tagsId = new ArrayList<Long>();
+		if (originTagsName.length() > 0) {
+			for(String tagName : originTagsName.split(",")) {
+				TagObject tag = TagObject.get(tagName);
+				if (tag != null) {
+					tagsId.add(tag.getId());
+				}
+			}
+		}
+		return tagsId;
 	}
 }

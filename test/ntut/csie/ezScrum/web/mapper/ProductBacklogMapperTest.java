@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import net.sf.antcontrib.logic.Throw;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -28,6 +27,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -79,9 +79,11 @@ public class ProductBacklogMapperTest {
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
 		mCPB.exe();
 		
+		// 新增 Release
 		mCR = new CreateRelease(1, mCP);
 		mCR.exe();
 		
+		// 新增 Sprint
 		mASTR = new AddSprintToRelease(2, mCR, mCP);
 		mASTR.exe();
 		
@@ -140,7 +142,7 @@ public class ProductBacklogMapperTest {
 		
 		ArrayList<StoryObject> closedStories = mProductBacklogMapper.getUnclosedStories();
 		
-		assertEquals(3, closedStories.size());
+		assertEquals(7, closedStories.size());
 	}
 	
 	@Test
@@ -160,10 +162,24 @@ public class ProductBacklogMapperTest {
 		assertEquals(10, story.getImportance());
 		assertEquals(5, story.getEstimate());
 	}
-	
+
 	@Test
-	public void testGetStoriesByRelease() {
+	public void testGetStoriesByRelease() throws Exception {
+		// get Release
+		mCR.getReleaseList().get(0);
+		// get CreateSprint
+		CreateSprint createSprint = mASTR.getCreateSprintsList().get(0);
+		// test data
+		int storyCount = 3;
+		int storyEstimate = 13;
+		// add story to sprint 1
+		mASTS = new AddStoryToSprint(storyCount, storyEstimate, 1, mCP, "EST");
+		mASTS.exe();
 		
+		// test getStoriesByRelease
+		ArrayList<StoryObject> storie = mProductBacklogMapper.getStoryByRelease(mCR.getReleaseList().get(0).getID(), createSprint.getSprintIDList().get(0));
+		// assert
+		assertEquals(storyCount, storie.size());
 	}
 	
 	@Test
@@ -179,6 +195,7 @@ public class ProductBacklogMapperTest {
 		assertEquals(50, story.getValue());
 		
 		StoryInfo storyInfo = new StoryInfo();
+		storyInfo.id = story.getId();
 		storyInfo.name = "NEW_STORY_1";
 		storyInfo.notes = "NEW_NOTE_1";
 		storyInfo.howToDemo = "NEW_DEMO_1";

@@ -12,5 +12,5 @@ public class StoryInfo {
 	public int estimate = 0;
 	public int status = StoryObject.STATUS_UNCHECK;
 	public long sprintId = -1;
-	public String tags; // aaa,bbb,ccc
+	public String tags = ""; // aaa,bbb,ccc
 }

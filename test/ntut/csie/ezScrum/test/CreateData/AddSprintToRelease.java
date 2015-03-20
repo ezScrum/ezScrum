@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import java.util.ArrayList;
 import java.util.Date;
+
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -10,7 +12,9 @@ public class AddSprintToRelease {
 	private int mProjectCount = 1;
 	private CreateProject mCP;
 	private CreateRelease mCR;
+	private CreateSprint mCS;
 	private ProjectMapper mProjectMapper = new ProjectMapper();
+	private ArrayList<CreateSprint> createSprints = new ArrayList<CreateSprint>();
 	
 	public AddSprintToRelease(int count, CreateRelease CR, CreateProject CP) {
 		mEachCount = count;
@@ -23,7 +27,7 @@ public class AddSprintToRelease {
 	public void exe() throws Exception {
 		for (int i=0 ; i<mProjectCount ; i++) {
 			String projectName = mCP.mProjectName + Integer.toString((i+1));	// TEST_PROJECT_X
-//			IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
+            // IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
 			IProject project = mProjectMapper.getProjectByID(projectName);
 			// 此路徑為開發端的   TestData/MyWorkspace/
 			
@@ -41,9 +45,15 @@ public class AddSprintToRelease {
 	// 建立所需的 sprints
 	private void createSprint(IProject Project, int ReleaseIndex, String StartDate) {
 		Date SD = new Date(StartDate);
-//		CreateSprint CS = new CreateSprint(EachCount, ReleaseIndex, SD, Project);
-		CreateSprint CS = new CreateSprint(mEachCount, ReleaseIndex, SD, mCP);
-		CS.exe();
+        // CreateSprint CS = new CreateSprint(EachCount, ReleaseIndex, SD, Project);
+		mCS = new CreateSprint(mEachCount, ReleaseIndex, SD, mCP);
+		mCS.exe();
+		// add to list
+		createSprints.add(mCS);
+	}
+	
+	public ArrayList<CreateSprint> getCreateSprintsList(){
+		return createSprints;
 	}
 	
 	// 依據 releaseID 回傳此 release 必須加入的 sprint list
