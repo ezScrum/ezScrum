@@ -308,7 +308,8 @@ public class ProductBacklogMapperTest {
 	 */
 	@Test
 	public void testModifyStoryName_No_Existing() {
-		mProductBacklogMapper.modifyStoryName(100, "NEW_NAME", new Date());
+		long nonExistingStoryId = 100;
+		mProductBacklogMapper.modifyStoryName(nonExistingStoryId, "NEW_NAME", new Date());
 	}
 	
 	@Test
