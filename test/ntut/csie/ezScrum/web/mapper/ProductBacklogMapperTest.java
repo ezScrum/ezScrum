@@ -6,15 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
+import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
@@ -32,12 +30,7 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
-import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.TagEnum;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -325,13 +318,8 @@ public class ProductBacklogMapperTest {
 		
 		// delete story
 		mProductBacklogMapper.deleteStory(story.getId());
-		// get data from database
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryEnum.TABLE_NAME);
-		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		assertFalse(result.next());
+		StoryObject storyObject = StoryDAO.getInstance().get(story.getId());
+		assertNull(storyObject);
 	}
 	
 	@Test
@@ -356,7 +344,6 @@ public class ProductBacklogMapperTest {
 		// test data
 		String taskName = "TEST_TASK_1";
 		int taskEstimate = 13;
-		
 		// get story
 		StoryObject story = mCPB.getStories().get(0);
 		TaskObject task = new TaskObject(project.getId());
@@ -365,36 +352,11 @@ public class ProductBacklogMapperTest {
 		    .setStoryId(story.getId())
 		    .save();
 		assertEquals(story.getId(), task.getStoryId());
-		
 		// removeTask
 		mProductBacklogMapper.removeTask(task.getId(), story.getId());
-		// get data from database
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TaskEnum.ID, task.getId());
-		String query = valueSet.getSelectQuery();
-
-		ResultSet result = mControl.executeQuery(query);
-
-		TaskObject taskDB = null;
-		
-		if (result.next()) {
-			taskDB = new TaskObject(result.getLong(TaskEnum.ID),
-			        result.getLong(TaskEnum.SERIAL_ID),
-			        result.getLong(TaskEnum.PROJECT_ID));
-			taskDB.setName(result.getString(TaskEnum.NAME))
-			      .setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
-			      .setEstimate(result.getInt(TaskEnum.ESTIMATE))
-			      .setRemains(result.getInt(TaskEnum.REMAIN))
-			      .setActual(result.getInt(TaskEnum.ACTUAL))
-			      .setStatus(result.getInt(TaskEnum.STATUS))
-			      .setNotes(result.getString(TaskEnum.NOTES))
-			      .setStoryId(result.getLong(TaskEnum.STORY_ID))
-			      .setCreateTime(result.getLong(TaskEnum.CREATE_TIME))
-			      .setUpdateTime(result.getLong(TaskEnum.UPDATE_TIME));
-		}
+		TaskObject taskObject = TaskDAO.getInstance().get(task.getId());
 		// assert
-		assertEquals(-1, taskDB.getStoryId());
+		assertEquals(-1, taskObject.getStoryId());
 	}
 	
 	@Test
@@ -408,26 +370,7 @@ public class ProductBacklogMapperTest {
 		// addNewTag
 		long tagId = mProductBacklogMapper.addNewTag(tagName);
 		assertNotSame(-1, tagId);
-		
-		// 從資料庫撈出資料
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tagId);
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-
-		TagObject tagObject = null;
-
-		if (result.next()) {
-			long id = result.getLong(TagEnum.ID);
-			String name = result.getString(TagEnum.NAME);
-			long projectId = result.getLong(TagEnum.PROJECT_ID);
-			long createTime = result.getLong(TagEnum.CREATE_TIME);
-			long updateTime = result.getLong(TagEnum.UPDATE_TIME);
-			tagObject = new TagObject(id, name, projectId);
-			tagObject.setCreateTime(createTime).setUpdateTime(updateTime);
-		}
-		
+		TagObject tagObject = TagDAO.getInstance().get(tagId);
 		// assert
 		assertEquals(tagName, tagObject.getName());
 		assertEquals(project.getId(), tagObject.getProjectId());
@@ -448,23 +391,13 @@ public class ProductBacklogMapperTest {
 		StoryObject story = mCPB.getStories().get(0);
 		// add tag
 		story.addTag(tag.getId());
-		// 從資料庫撈出資料
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		assertTrue(result.next());
-		
+		TagObject tagObject = TagDAO.getInstance().get(tag.getId());
+		assertNotNull(tagObject);
 		// deleteTag
 		mProductBacklogMapper.deleteTag(tag.getId());
 		// assert
-		valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		query = valueSet.getSelectQuery();
-		result = mControl.executeQuery(query);
-		assertFalse(result.next());
+		tagObject = TagDAO.getInstance().get(tag.getId());
+		assertNull(tagObject);
 	}
 	
 	@Test
@@ -505,14 +438,8 @@ public class ProductBacklogMapperTest {
 		StoryObject story = mCPB.getStories().get(0);
 		// addStoryTag
 		mProductBacklogMapper.addStoryTag(story.getId(), tag.getId());
-		// 從資料庫撈出資料
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		assertTrue(result.next());
+		TagObject tagObject = TagDAO.getInstance().get(tag.getId());
+		assertNotNull(tagObject);
 	}
 	
 	@Test
@@ -542,15 +469,7 @@ public class ProductBacklogMapperTest {
 		
 		// remove story tag
 		mProductBacklogMapper.removeStoryTag(story.getId(), tag.getId());
-		
-		// 從資料庫撈出資料
-		valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
-		query = valueSet.getSelectQuery();
-		result = mControl.executeQuery(query);
-		assertFalse(result.next());
+		assertEquals(0, story.getTags().size());
 	}
 	
 	@Test
@@ -567,25 +486,7 @@ public class ProductBacklogMapperTest {
 		
 		// test Update Tag
 		mProductBacklogMapper.updateTag(tag.getId(), newTagName);
-		
-		// 從資料庫撈出資料
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(TagEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		TagObject tagObject = null;
-		
-		if (result.next()) {
-			long id = result.getLong(TagEnum.ID);
-			String name = result.getString(TagEnum.NAME);
-			long projectId = result.getLong(TagEnum.PROJECT_ID);
-			long createTime = result.getLong(TagEnum.CREATE_TIME);
-			long updateTime = result.getLong(TagEnum.UPDATE_TIME);
-			tagObject = new TagObject(id, name, projectId);
-			tagObject.setCreateTime(createTime).setUpdateTime(updateTime);
-		}
-		
+		TagObject tagObject = TagDAO.getInstance().get(tag.getId());
 		// assert
 		assertNotNull(tagObject);
 		assertEquals(newTagName, tagObject.getName());
