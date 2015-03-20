@@ -89,10 +89,8 @@ public class ProductBacklogLogic {
 		for (long issueId : issueIdList) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
 			String oldSprintId = issue.getSprintID();
-			
 			if (sprintId != null && !sprintId.equals("") &&
 					Integer.parseInt(sprintId) >= 0) {
-
 				// history node
 				Element history = new Element(ScrumEnum.HISTORY_TAG);
 
@@ -124,7 +122,6 @@ public class ProductBacklogLogic {
 	public void addReleaseTagToIssue(List<Long> issueList, String releaseId) {
 		for (long issueId : issueList) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
-
 			if (releaseId != null && !releaseId.equals("") && Integer.parseInt(releaseId) >= 0) {
 				// history node
 				Element history = new Element(ScrumEnum.HISTORY_TAG);
