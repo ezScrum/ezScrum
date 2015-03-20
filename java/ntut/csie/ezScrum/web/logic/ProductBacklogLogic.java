@@ -2,6 +2,8 @@ package ntut.csie.ezScrum.web.logic;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -35,15 +38,10 @@ public class ProductBacklogLogic {
 	 * 
 	 * @return
 	 */
-	public IStory[] getStories() {
-		try {
-			ArrayList<IStory> list = mProductBacklogMapper.getAllStoriesByProjectName();
-			list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-			return list.toArray(new IStory[list.size()]);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new IStory[0];
+	public ArrayList<StoryObject> getStories() {
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getStories();
+		stories = sortStoriesByImportance(stories);
+		return stories;
 	}
 
 	/**
@@ -51,22 +49,22 @@ public class ProductBacklogLogic {
 	 * @param release
 	 * @return
 	 */
-	public IStory[] getStoriesByRelease(IReleasePlanDesc release) {
+	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc release) {
 		// get Story back and sort it by importance
 		String releaseId = release.getID();
-		ArrayList<IStory> list = mProductBacklogMapper.getStoryByRelease(releaseId, null);
-		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-		return list.toArray(new IStory[list.size()]);
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoryByRelease(releaseId, null);
+		stories = sortStoriesByImportance(stories);
+		return stories;
 	}
 
 	/**
 	 * Unclosed Issues 根據IMPORTANCE排順序
 	 * @param category
 	 */
-	public IStory[] getUnclosedIssues(String category) throws SQLException {
-		ArrayList<IStory> list = mProductBacklogMapper.getUnclosedStories(category);
-		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-		return list.toArray(new IStory[list.size()]);
+	public ArrayList<StoryObject> getUnclosedStories(String category) throws SQLException {
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
+		stories = sortStoriesByImportance(stories);
+		return stories;
 	}
 
 	/**
@@ -76,8 +74,8 @@ public class ProductBacklogLogic {
 	 * @return
 	 */
 	public IStory[] getStoriesByFilterType(String filterType) {
-		IStory[] storyList = getStories();
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(filterType, storyList);
+		ArrayList<StoryObject> allStories = getStories();
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(filterType, allStories);
 		IStory[] stories = filter.getStories();						// 回傳過濾後的 Stories
 		return stories;
 	}
@@ -197,7 +195,7 @@ public class ProductBacklogLogic {
 	 * @return
 	 */
 	public ArrayList<IStory> getAddableStories() throws SQLException {
-		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		IStory[] issues = getUnclosedStories(ScrumEnum.STORY_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
 		ArrayList<IStory> stories = new ArrayList<IStory>();
@@ -228,7 +226,7 @@ public class ProductBacklogLogic {
 	 * @param releaseId
 	 */
 	public ArrayList<IStory> getAddableStories(String sprintId, String releaseId) throws SQLException {
-		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		IStory[] issues = getUnclosedStories(ScrumEnum.STORY_ISSUE_TYPE);
 
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
 		ArrayList<IStory> list = new ArrayList<IStory>();
@@ -250,64 +248,15 @@ public class ProductBacklogLogic {
 		}
 		return list;
 	}
-
-	private ArrayList<IStory> sortStories(ArrayList<IStory> stories, String type, boolean desc) {
-		ArrayList<IStory> sortedList = new ArrayList<IStory>();
-		// ID & Importance 為數字排序
-		if (type.compareTo(ScrumEnum.ID_ATTR) == 0 || type.compareTo(ScrumEnum.IMPORTANCE) == 0) {
-			if (desc) {
-				// 數字從小到大
-				for (IStory issue : stories) {
-					int index = 0;
-					int valueSource = 0;
-					if (issue.getValueByType(type) != null) {
-						valueSource = Integer.parseInt(issue.getValueByType(type));
-					}
-					for (IStory sortedIssue : sortedList) {
-						int valueTarget = 0;
-						if (sortedIssue.getValueByType(type) != null) {
-							valueTarget = Integer.parseInt(sortedIssue.getValueByType(type));
-						}
-						if (valueSource < valueTarget) {
-							break;
-						}
-						index++;
-					}
-					sortedList.add(index, issue);
-				}
-			} else {
-				// 數字從大到小
-				for (IStory issue : stories) {
-					int index = 0;
-					int valueSource = 0;
-					if (issue.getValueByType(type) != null) {
-						valueSource = Integer.parseInt(issue.getValueByType(type));
-					}
-					for (IStory sortedIssue : sortedList) {
-						int valueTarget = 0;
-						if (sortedIssue.getValueByType(type) != null) {
-							valueTarget = Integer.parseInt(sortedIssue.getValueByType(type));
-						}
-						if (valueSource > valueTarget) {
-							break;
-						}
-						index++;
-					}
-					sortedList.add(index, issue);
-				}
+	
+	private ArrayList<StoryObject> sortStoriesByImportance(ArrayList<StoryObject> stories) {
+		Collections.sort(stories, new Comparator<StoryObject>() {
+			@Override
+			public int compare(StoryObject story1, StoryObject story2) {
+				return story1.getImportance() - story2.getImportance();
 			}
-		} else {
-			sortedList.addAll(stories);
-			if (!sortedList.isEmpty()) {
-				if (desc) {
-					insertionSort(sortedList, type); // 遞增
-				}
-				else {
-					insertionSort_asc(sortedList, type); // 遞減
-				}
-			}
-		}
-		return sortedList;
+		});
+		return stories;
 	}
 
 	private void insertionSort_asc(List<IStory> sortedList, String type) {
