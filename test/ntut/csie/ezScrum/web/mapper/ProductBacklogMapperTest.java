@@ -140,9 +140,9 @@ public class ProductBacklogMapperTest {
 			story.save();
 		}
 		
-		ArrayList<StoryObject> closedStories = mProductBacklogMapper.getUnclosedStories();
+		ArrayList<StoryObject> unclosedStories = mProductBacklogMapper.getUnclosedStories();
 		
-		assertEquals(7, closedStories.size());
+		assertEquals(7, unclosedStories.size());
 	}
 	
 	@Test
@@ -491,7 +491,7 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
-	public void testAddStoryTag() throws SQLException {
+	public void testAddTagToStory() throws SQLException {
 		// get project
 		IProject iProject = mCP.getProjectList().get(0);
 		ProjectObject project = ProjectObject.get(iProject.getName());
@@ -516,7 +516,7 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
-	public void testRemoveStoryTag() throws SQLException {
+	public void testRemoveTagFromStory() throws SQLException {
 		// get project
 		IProject iProject = mCP.getProjectList().get(0);
 		ProjectObject project = ProjectObject.get(iProject.getName());
@@ -591,7 +591,7 @@ public class ProductBacklogMapperTest {
 	}
 	
 	@Test
-	public void testIsTagExist() {
+	public void testIsTagExisting() {
 		// get project
 		IProject iProject = mCP.getProjectList().get(0);
 		ProjectObject project = ProjectObject.get(iProject.getName());
