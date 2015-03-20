@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.stapler.ReleasePlan;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -61,7 +62,7 @@ public class ProductBacklogLogic {
 	 * Unclosed Issues 根據IMPORTANCE排順序
 	 * @param category
 	 */
-	public ArrayList<StoryObject> getUnclosedStories(String category) throws SQLException {
+	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
 		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
 		stories = sortStoriesByImportance(stories);
 		return stories;
@@ -73,11 +74,11 @@ public class ProductBacklogLogic {
 	 * @param filterType
 	 * @return
 	 */
-	public IStory[] getStoriesByFilterType(String filterType) {
+	public ArrayList<StoryObject> getStoriesByFilterType(String filterType) {
 		ArrayList<StoryObject> allStories = getStories();
 		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(filterType, allStories);
-		IStory[] stories = filter.getStories();						// 回傳過濾後的 Stories
-		return stories;
+		ArrayList<StoryObject> filteredStories = filter.getStories();						// 回傳過濾後的 Stories
+		return filteredStories;
 	}
 
 	/************************************************************
@@ -86,7 +87,7 @@ public class ProductBacklogLogic {
 	 *************************************************************/
 	public void addIssueToSprint(List<Long> issueIdList, String sprintId) {
 		for (long issueId : issueIdList) {
-			IIssue issue = mProductBacklogMapper.getStory(issueId);
+			IIssue issue = mProductBacklogMapper.getIssue(issueId);
 			String oldSprintId = issue.getSprintID();
 			
 			if (sprintId != null && !sprintId.equals("") &&
@@ -106,7 +107,7 @@ public class ProductBacklogLogic {
 				issue.addTagValue(history);
 
 				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateStory(issue, false);
+				mProductBacklogMapper.updateIssueValue(issue, false);
 				mProductBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintId, sprintId);
 				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
 				mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), sprintId, null, null, current);
@@ -122,7 +123,7 @@ public class ProductBacklogLogic {
 	 */
 	public void addReleaseTagToIssue(List<Long> issueList, String releaseId) {
 		for (long issueId : issueList) {
-			IIssue issue = mProductBacklogMapper.getStory(issueId);
+			IIssue issue = mProductBacklogMapper.getIssue(issueId);
 
 			if (releaseId != null && !releaseId.equals("") && Integer.parseInt(releaseId) >= 0) {
 				// history node
@@ -137,7 +138,7 @@ public class ProductBacklogLogic {
 				issue.addTagValue(history);
 
 				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateStory(issue, false);
+				mProductBacklogMapper.updateIssueValue(issue, false);
 				mProductBacklogMapper.updateStoryRelation(issueId, releaseId, issue.getSprintID(), null, null, current);
 			}
 		}
@@ -148,7 +149,7 @@ public class ProductBacklogLogic {
 	 * @param issueId
 	 */
 	public void removeReleaseTagFromIssue(long issueId) {
-		IIssue issue = mProductBacklogMapper.getStory(issueId);
+		IIssue issue = mProductBacklogMapper.getIssue(issueId);
 
 		// history node
 		Element history = new Element(ScrumEnum.HISTORY_TAG);
@@ -163,7 +164,7 @@ public class ProductBacklogLogic {
 		issue.addTagValue(history);
 
 		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateStory(issue, true);
+		mProductBacklogMapper.updateIssueValue(issue, true);
 		mProductBacklogMapper.updateStoryRelation(issueId, "-1", issue.getSprintID(), null, null, current);
 	}
 
@@ -172,49 +173,26 @@ public class ProductBacklogLogic {
 	 * @param issueId
 	 */
 	public void removeStoryFromSprint(long issueId) {
-		IIssue issue = mProductBacklogMapper.getStory(issueId);
-
-		// history node
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		Date current = new Date();
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
-
-		// iteration node
-		Element iteration = new Element(ScrumEnum.SPRINT_ID);
-		iteration.setText(ScrumEnum.DIGITAL_BLANK_VALUE);
-		history.addContent(iteration);
-		issue.addTagValue(history);
-
-		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateStory(issue, true);
-		mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), ScrumEnum.DIGITAL_BLANK_VALUE, null, null, current);
+		StoryObject story = mProductBacklogMapper.getStory(issueId);
+		story.setSprintId(-1);
+		story.save();
 	}
 
 	/**
 	 * release plan select stories 2010.06.02 by taoyu modify
 	 * @return
 	 */
-	public ArrayList<IStory> getAddableStories() throws SQLException {
-		IStory[] issues = getUnclosedStories(ScrumEnum.STORY_ISSUE_TYPE);
-
+	public ArrayList<StoryObject> getAddableStories() throws SQLException {
+		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
-		ArrayList<IStory> stories = new ArrayList<IStory>();
-
-		for (IStory issue : issues) {
-			String story_SID = issue.getSprintID();
-			String story_RID = issue.getReleaseID();
-
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : allStories) {
+			long sprintId = story.getSprintId();
 			// 此 story ID 有包含於 sprint ID，則不列入 list
-			if ((story_SID != null) && (Integer.parseInt(story_SID) > 0)) {
+			if (sprintId > 0) {
 				continue;
 			}
-
-			// 此 story ID 有 release ID，則不列入 list
-			if ((story_RID != null) && (Integer.parseInt(story_RID) > 0)) {
-				continue;
-			}
-
-			stories.add(issue);
+			stories.add(story);
 		}
 		return stories;
 	}
@@ -225,28 +203,19 @@ public class ProductBacklogLogic {
 	 * @param sprintId
 	 * @param releaseId
 	 */
-	public ArrayList<IStory> getAddableStories(String sprintId, String releaseId) throws SQLException {
-		IStory[] issues = getUnclosedStories(ScrumEnum.STORY_ISSUE_TYPE);
-
+	public ArrayList<StoryObject> getAddableStories(String sprintId, String releaseId) throws SQLException {
+		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
-		ArrayList<IStory> list = new ArrayList<IStory>();
-
-		for (IStory issue : issues) {
-			String story_SID = issue.getSprintID();
-			String story_RID = issue.getReleaseID();
-
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : allStories) {
+			long sprintIdInStory = story.getSprintId();
 			// 此 story 有包含 sprint ID，則不列入 list
-			if ((story_SID != null) && (Integer.parseInt(story_SID) > 0)) {
+			if (sprintIdInStory > 0) {
 				continue;
 			}
-
-			// 此 story 有 包含非本release ID，，則不列入 list
-			if ((story_RID != null) && (Integer.parseInt(story_RID) > 0)) {
-				if (!story_RID.equals(releaseId)) continue;
-			}
-			list.add(issue);
+			stories.add(story);
 		}
-		return list;
+		return stories;
 	}
 	
 	private ArrayList<StoryObject> sortStoriesByImportance(ArrayList<StoryObject> stories) {
@@ -257,51 +226,5 @@ public class ProductBacklogLogic {
 			}
 		});
 		return stories;
-	}
-
-	private void insertionSort_asc(List<IStory> sortedList, String type) {
-		int length = sortedList.size();
-		int firstOutOfOrder, location;
-		IStory temp;
-
-		for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++) { // Starts at second term, goes until the end of the array.
-			String firstValue = sortedList.get(firstOutOfOrder).getValueByType(type);
-			String secondValue = sortedList.get(firstOutOfOrder - 1).getValueByType(type);
-
-			if ((firstValue.compareTo(secondValue)) > 0) { // If the two are out of order, we move the element to its rightful place.
-				temp = sortedList.get(firstOutOfOrder);
-				location = firstOutOfOrder;
-
-				do { // Keep moving down the array until we find exactly where it's supposed to go.
-					sortedList.set(location, sortedList.get(location - 1));
-					location--;
-				} while (location > 0 && (sortedList.get(location - 1).getValueByType(type).compareTo(temp.getValueByType(type))) < 0);
-
-				sortedList.set(location, temp);
-			}
-		}
-	}
-
-	private void insertionSort(List<IStory> sortedList, String type) {
-		int length = sortedList.size();
-		int firstOutOfOrder, location;
-		IStory temp;
-
-		for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++) { // Starts at second term, goes until the end of the array.
-			String firstValue = sortedList.get(firstOutOfOrder).getValueByType(type);
-			String secondValue = sortedList.get(firstOutOfOrder - 1).getValueByType(type);
-
-			if (firstValue.compareTo(secondValue) < 0) { // If the two are out of order, we move the element to its rightful place.
-				temp = sortedList.get(firstOutOfOrder);
-				location = firstOutOfOrder;
-
-				do { // Keep moving down the array until we find exactly where it's supposed to go.
-					sortedList.set(location, sortedList.get(location - 1));
-					location--;
-				} while (location > 0 && sortedList.get(location - 1).getValueByType(type).compareTo(temp.getValueByType(type)) > 0);
-
-				sortedList.set(location, temp);
-			}
-		}
 	}
 }

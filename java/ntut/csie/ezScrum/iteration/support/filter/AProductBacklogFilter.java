@@ -1,27 +1,30 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public abstract class AProductBacklogFilter {
-	protected IStory[] Stories = null;
+	protected ArrayList<StoryObject> Stories = null;
 	protected ITask[] Tasks = null;
 	protected String compareInfo = null;
 	
-	protected abstract IStory[] FilterStories();		// 過濾 Stories 的方法
+	protected abstract ArrayList<StoryObject> FilterStories();		// 過濾 Stories 的方法
 	protected abstract ITask[] FilterTasks();			// 過濾 Tasks 的方法
 	
-	public IStory[] getStories() { return this.Stories; }
+	public ArrayList<StoryObject> getStories() { return this.Stories; }
 	public ITask[] getTasks() { return this.Tasks; }
 	
-	public AProductBacklogFilter(IStory[] stories) {
+	public AProductBacklogFilter(ArrayList<StoryObject> stories) {
 		this.Stories = stories;
 		
 		// 根據不同條件過濾 Stories
 		this.Stories = FilterStories();
 	}
 	
-	public AProductBacklogFilter(IStory[] stories, String compareinfo) {
+	public AProductBacklogFilter(ArrayList<StoryObject> stories, String compareinfo) {
 		this.Stories = stories;
 		this.compareInfo = compareinfo;
 		

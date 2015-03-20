@@ -5,9 +5,10 @@ import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class IssueNameFilter extends AProductBacklogFilter {
-	public IssueNameFilter(IStory[] stories, String info) {
+	public IssueNameFilter(ArrayList<StoryObject> stories, String info) {
 		super(stories, info);
 	}
 	
@@ -16,20 +17,17 @@ public class IssueNameFilter extends AProductBacklogFilter {
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
-		IStory[] Stories = super.Stories;
-		
-		List<IStory> filerStories = new ArrayList<IStory>();
-		
-		for (IStory story : Stories) {
+	protected ArrayList<StoryObject> FilterStories() {
+		ArrayList<StoryObject> stories = super.Stories;
+		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
+		for (StoryObject story : stories) {
 			// story name contains info
 			String name = story.getName();
 			if ( compareName(name) ) {
-				filerStories.add(story);
+				fileredStories.add(story);
 			}
 		}
-			
-		return filerStories.toArray(new IStory[filerStories.size()]);
+		return fileredStories;
 	}
 
 	@Override

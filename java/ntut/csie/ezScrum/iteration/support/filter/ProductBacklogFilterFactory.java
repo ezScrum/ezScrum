@@ -1,8 +1,11 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 
 public class ProductBacklogFilterFactory {
@@ -20,11 +23,10 @@ public class ProductBacklogFilterFactory {
 		return factory;		
 	}
 	
-	public AProductBacklogFilter getPBFilterFilter(String type, IStory[] stories) {
+	public AProductBacklogFilter getPBFilterFilter(String type, ArrayList<StoryObject> stories) {
 		if (type == null) {
 			return new NullFilter(stories);
 		}
-		
 		if (type.equals(ScrumEnum.BACKLOG)) {
 			return new BacklogedFilter(stories);
 		} else if (type.equals(ScrumEnum.DETAIL)) {
@@ -36,11 +38,10 @@ public class ProductBacklogFilterFactory {
 		}
 	}
 	
-	public AProductBacklogFilter getStoryFilter_byInfo(String type, IStory[] stories, String info) {
+	public AProductBacklogFilter getStoryFilter_byInfo(String type, ArrayList<StoryObject> stories, String info) {
 		if (type == null) {
 			return new NullFilter(stories);
 		}
-		
 		if (type.equals(ScrumEnum.FILTER_NANE)) {
 			return new IssueNameFilter(stories, info);
 		} else if (type.equals(ScrumEnum.FILTER_DESCRIPTION)) {

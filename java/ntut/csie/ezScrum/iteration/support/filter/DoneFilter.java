@@ -6,27 +6,25 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class DoneFilter extends AProductBacklogFilter {
 
-	public DoneFilter(IStory[] issues) {
+	public DoneFilter(ArrayList<StoryObject> issues) {
 		super(issues);
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
-		IStory[] Stories = super.Stories;
-		
-		List<IStory> filerStories = new ArrayList<IStory>();
-		
-		for (IStory story : Stories) {
+	protected ArrayList<StoryObject> FilterStories() {
+		ArrayList<StoryObject> stories = super.Stories;
+		ArrayList<StoryObject> filererStories = new ArrayList<StoryObject>();
+		for (StoryObject story : stories) {
 			// status is closed
-			if ( (story.getStatus() != null) && (story.getStatus().equals(ITSEnum.S_CLOSED_STATUS)) ) {
-				filerStories.add(story);
+			if (story.getStatus() == StoryObject.STATUS_DONE) {
+				filererStories.add(story);
 			}
 		}
-			
-		return filerStories.toArray(new IStory[filerStories.size()]);
+		return filererStories;
 	}
 
 	@Override
