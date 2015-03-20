@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
@@ -1233,18 +1234,29 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * for ezScrum v1.8
 	 */
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		return mAttachFileService.addAttachFile(attachFileInfo);
+		// builder
+		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
+		attachFileBuilder.setIssueId(attachFileInfo.issueId);
+		attachFileBuilder.setIssueType(attachFileInfo.issueType);
+		attachFileBuilder.setContentType(attachFileInfo.contentType);
+		attachFileBuilder.setName(attachFileInfo.name);
+		attachFileBuilder.setPath(attachFileInfo.path);
+		
+		// create AttachFileObject
+		AttachFileObject attachFile = attachFileBuilder.build();
+		long newAttachFileId = AttachFileDAO.getInstance().create(attachFile);
+		return newAttachFileId;
 	}
 	
 	/**
 	 * for ezScrum v1.8
 	 */
 	public void deleteAttachFile(long fileId) {
-		mAttachFileService.deleteAttachFile(fileId);
+		AttachFileDAO.getInstance().delete(fileId);
 	}
 	
 	public AttachFileObject getAttachFile(long fileId) {
-		return mAttachFileService.getAttachFile(fileId);
+		return AttachFileDAO.getInstance().get(fileId);
 	}
 	
 	@Override

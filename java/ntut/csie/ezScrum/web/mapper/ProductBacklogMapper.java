@@ -31,14 +31,14 @@ public class ProductBacklogMapper {
 	
 	public ArrayList<StoryObject> getUnclosedStories() {
 		ProjectObject project = ProjectObject.get(mProject.getName());
-		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
+		ArrayList<StoryObject> unclosedStories = new ArrayList<StoryObject>();
 		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(project.getId());
 		for (StoryObject story : stories) {
 			if (story.getStatus() != StoryObject.STATUS_DONE) {
-				list.add(story);
+				unclosedStories.add(story);
 			}
 		}
-		return list;
+		return unclosedStories;
 	}
 
 	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
