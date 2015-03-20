@@ -72,14 +72,14 @@ public class StoryWebService extends ProjectWebService{
 					isExist =  true;
 			// 如果 tag 不存在就刪掉，否則將已經存在的 tag 從待加入的 tag list 中移除
 			if (!isExist) {
-				mProductBacklogHelper.removeStoryTag(newStory.id, originTag.getId());
+				mProductBacklogHelper.removeTagFromStory(newStory.id, originTag.getId());
 			} else
 				editStoryObj.tagList.remove(originTag);
 		}
 		// 將新的 tag 加入 story
 		for (TagObject editTag : editStoryObj.tagList) {
 			System.out.println("editTag : " + editTag);
-			mProductBacklogHelper.addStoryTag(editStoryObj.id, editTag.getId());
+			mProductBacklogHelper.addTagToStory(editStoryObj.id, editTag.getId());
 		}
 		newStory = new StoryObject(mProductBacklogHelper.getStory(Long.parseLong(newStory.id)));
 		Gson gson = new Gson();

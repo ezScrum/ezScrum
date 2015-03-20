@@ -437,7 +437,7 @@ public class ProductBacklogMapperTest {
 		// get story
 		StoryObject story = mCPB.getStories().get(0);
 		// addStoryTag
-		mProductBacklogMapper.addStoryTag(story.getId(), tag.getId());
+		mProductBacklogMapper.addTagToStory(story.getId(), tag.getId());
 		TagObject tagObject = TagDAO.getInstance().get(tag.getId());
 		assertNotNull(tagObject);
 	}
@@ -459,7 +459,7 @@ public class ProductBacklogMapperTest {
 		story.addTag(tag.getId());
 		story.save();
 		// remove story tag
-		mProductBacklogMapper.removeStoryTag(story.getId(), tag.getId());
+		mProductBacklogMapper.removeTagFromStory(story.getId(), tag.getId());
 		assertEquals(0, story.getTags().size());
 	}
 	
@@ -495,11 +495,11 @@ public class ProductBacklogMapperTest {
 		tag.save();
 		
 		// test isTagExist
-		boolean isTagExist = mProductBacklogMapper.isTagExist(tagName);
+		boolean isTagExist = mProductBacklogMapper.isTagExisting(tagName);
 		assertTrue(isTagExist);
 		
 		// test wrong tag name
-		isTagExist = mProductBacklogMapper.isTagExist(tagName + "1");
+		isTagExist = mProductBacklogMapper.isTagExisting(tagName + "1");
 		assertFalse(isTagExist);
 	}
 	

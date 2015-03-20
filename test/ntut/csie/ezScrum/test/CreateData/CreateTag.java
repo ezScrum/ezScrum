@@ -73,7 +73,7 @@ public class CreateTag {
 					storyId = mCPB.getIssueList().get(pbIndex).getIssueID();
 					// m_backlog.addStoryTag(String.valueOf(storyId),
 					// String.valueOf(tagIndex+1));
-					mProductBacklogMapper.addStoryTag(
+					mProductBacklogMapper.addTagToStory(
 							String.valueOf(storyId), tagIndex + 1);
 					mlog.info("Project "
 							+ mCP.getProjectList().get(projectIndex)

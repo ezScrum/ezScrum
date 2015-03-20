@@ -153,7 +153,7 @@ public class ProductBacklogMapper {
 	}
 
 	// 對Story設定自訂分類標籤
-	public void addStoryTag(long storyId, long tagId) {
+	public void addTagToStory(long storyId, long tagId) {
 		StoryObject story = StoryObject.get(storyId);
 		if(story != null){
 			story.addTag(tagId);
@@ -162,7 +162,7 @@ public class ProductBacklogMapper {
 	}
 
 	// 移除Story的自訂分類標籤
-	public void removeStoryTag(long storyId, long tagId) {
+	public void removeTagFromStory(long storyId, long tagId) {
 		StoryObject story = StoryObject.get(storyId);
 		if(story != null){
 			story.removeTag(tagId);
@@ -178,7 +178,7 @@ public class ProductBacklogMapper {
 		}
 	}
 
-	public boolean isTagExist(String name) {
+	public boolean isTagExisting(String name) {
 		TagObject tag = TagObject.get(name);
 		
 		if(tag != null){

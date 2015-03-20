@@ -413,7 +413,7 @@ public class ProductBacklogHelper {
 		String[] ids = tagIds.split(",");
 		if (!(tagIds.isEmpty()) && ids.length > 0) {
 			for (String tagId : ids) {
-				mProductBacklogMapper.addStoryTag(Long.toString(issueId), Long.parseLong(tagId));
+				mProductBacklogMapper.addTagToStory(Long.toString(issueId), Long.parseLong(tagId));
 			}
 		}
 	}
@@ -462,7 +462,7 @@ public class ProductBacklogHelper {
 	 * @return boolean
 	 */
 	public boolean isTagExist(String name) {
-		return mProductBacklogMapper.isTagExist(name);
+		return mProductBacklogMapper.isTagExisting(name);
 	}
 
 	/**
@@ -519,7 +519,7 @@ public class ProductBacklogHelper {
 	 * @param tagId
 	 */
 	public void addStoryTag(String storyId, long tagId) {
-		mProductBacklogMapper.addStoryTag(storyId, tagId);
+		mProductBacklogMapper.addTagToStory(storyId, tagId);
 	}
 
 	/**
@@ -529,7 +529,7 @@ public class ProductBacklogHelper {
 	 * @param tagId
 	 */
 	public void removeStoryTag(String storyId, long tagId) {
-		mProductBacklogMapper.removeStoryTag(storyId, tagId);
+		mProductBacklogMapper.removeTagFromStory(storyId, tagId);
 	}
 
 	public void moveStory(long issueId, String moveId, String type) {
