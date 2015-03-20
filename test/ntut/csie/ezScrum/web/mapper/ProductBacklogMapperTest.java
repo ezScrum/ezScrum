@@ -458,15 +458,6 @@ public class ProductBacklogMapperTest {
 		// add tag
 		story.addTag(tag.getId());
 		story.save();
-		// 從資料庫撈出資料
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(StoryTagRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TagEnum.ID, tag.getId());
-		valueSet.addEqualCondition(StoryEnum.ID, story.getId());
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		assertTrue(result.next());
-		
 		// remove story tag
 		mProductBacklogMapper.removeStoryTag(story.getId(), tag.getId());
 		assertEquals(0, story.getTags().size());
