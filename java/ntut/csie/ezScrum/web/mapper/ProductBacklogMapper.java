@@ -94,7 +94,6 @@ public class ProductBacklogMapper {
 		     .setNotes(storyInfo.notes)
 		     .setHowToDemo(storyInfo.howToDemo)
 		     .setSprintId(storyInfo.sprintId)
-		     .setSprintId(storyInfo.sprintId)
 		     .setStatus(storyInfo.status)
 		     .setValue(storyInfo.value)
 		     .setTags(tagsId)

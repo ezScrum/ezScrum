@@ -76,33 +76,14 @@ public class ProductBacklogLogic {
 	}
 
 	/************************************************************
-	 * 將列表中的 Issue ID 都加入此 Sprint 之下
-	 * @param issue2
+	 * 將列表中的 Story ID 都加入此 Sprint 之下
 	 *************************************************************/
 	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
-		for (long issueId : storiesId) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
-			String oldSprintId = issue.getSprintID();
-			if (sprintId != null && !sprintId.equals("") &&
-					Integer.parseInt(sprintId) >= 0) {
-				// history node
-				Element history = new Element(ScrumEnum.HISTORY_TAG);
-
-				Date current = new Date();
-				String dateTime = DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2);
-				history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, dateTime);
-
-				// iteration node
-				Element iteration = new Element(ScrumEnum.SPRINT_ID);
-				iteration.setText(sprintId);
-				history.addContent(iteration);
-				issue.addTagValue(history);
-
-				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
-				mProductBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintId, sprintId);
-				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
-				mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), sprintId, null, null, current);
+		for (long storyId : storiesId) {
+			StoryObject story = mProductBacklogMapper.getStory(storyId);
+			if (sprintId > 0) {
+				// 更新 Stroy與Srpint對應的關係
+				mProductBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}
