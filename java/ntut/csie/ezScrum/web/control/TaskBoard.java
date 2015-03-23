@@ -242,15 +242,15 @@ public class TaskBoard {
 	}
 
 	public String getStoryPoint() {
-		return mSprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
+		return mSprintBacklogLogic.getUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE)
 		        + " / "
-		        + mSprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
+		        + mSprintBacklogLogic.getStoryPoint(ScrumEnum.STORY_ISSUE_TYPE);
 	}
 
 	public String getTaskPoint() {
-		return mSprintBacklogLogic.getTaskCurrnetRemainsPoint()
+		return mSprintBacklogLogic.getTaskRemainsPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTaskCurrentEstimatePoint();
+		        + mSprintBacklogLogic.getTaskEstimatePoints();
 	}
 
 	public String getInitialStoryPoint() {

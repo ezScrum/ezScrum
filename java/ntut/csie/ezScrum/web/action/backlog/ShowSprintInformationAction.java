@@ -64,7 +64,7 @@ public class ShowSprintInformationAction extends Action {
 		request.setAttribute("Stories", issues);
 
 		NumberFormat nf = NumberFormat.getInstance();
-		request.setAttribute("StoryPoint", nf.format(sprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE)));
+		request.setAttribute("StoryPoint", nf.format(sprintBacklogLogic.getStoryPoint(ScrumEnum.STORY_ISSUE_TYPE)));
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintId());

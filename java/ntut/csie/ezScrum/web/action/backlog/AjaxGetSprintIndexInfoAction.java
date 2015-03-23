@@ -51,10 +51,10 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 		//如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ( (sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0) ) {
 			currentSprintID = sprintBacklogMapper.getSprintId();
-			initialPoint = sprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
-			currentPoint = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
-			initialHours = sprintBacklogLogic.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
-			currentHours = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
+			initialPoint = sprintBacklogLogic.getStoryPoint(ScrumEnum.STORY_ISSUE_TYPE);
+			currentPoint = sprintBacklogLogic.getUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
+			initialHours = sprintBacklogLogic.getStoryPoint(ScrumEnum.TASK_ISSUE_TYPE);
+			currentHours = sprintBacklogLogic.getUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
 			
 			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
 			releaseID = Integer.parseInt(rpHelper.getReleaseID(Integer.toString(currentSprintID)));
