@@ -1,23 +1,15 @@
 package ntut.csie.ezScrum.web.logic;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-import org.jdom.Element;
 
 public class ProductBacklogLogic {
 	private IProject mProject;
@@ -90,10 +82,10 @@ public class ProductBacklogLogic {
 
 	/**
 	 * 移除Story和Story的關係
-	 * @param issueId
+	 * @param storyId
 	 */
-	public void removeStoryFromSprint(long issueId) {
-		StoryObject story = mProductBacklogMapper.getStory(issueId);
+	public void removeStoryFromSprint(long storyId) {
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		story.setSprintId(-1);
 		story.save();
 	}
