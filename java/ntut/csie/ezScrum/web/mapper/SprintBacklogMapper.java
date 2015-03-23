@@ -164,8 +164,8 @@ public class SprintBacklogMapper {
 	
 	// for ezScrum 1.8
 	// TaskInfo should include task id
-	public void updateTask(TaskInfo taskInfo) {
-		TaskObject task = TaskObject.get(taskInfo.taskId);
+	public void updateTask(long taskId, TaskInfo taskInfo) {
+		TaskObject task = TaskObject.get(taskId);
 		if (task != null) {
 			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId)
 			.setEstimate(taskInfo.estimate)
@@ -247,7 +247,8 @@ public class SprintBacklogMapper {
 	 * ================ TaskBoard 中有關於 story 操作 =================
 	 *************************************************************/
 
-	public void closeStory(long id, String name, String notes, Date specificDate) {
+	public void closeStory(long id, String name, String notes,
+			Date specificDate) {
 		StoryObject story = StoryObject.get(id);
 		if (story != null) {
 			story.setName(name).setNotes(notes)

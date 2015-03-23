@@ -382,7 +382,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(0, oldTask.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = 1;
+		taskInfo.taskId = taskId;
 		// set new value
 		taskInfo.name = "NEW_TEST_TASK_NAME";
 		taskInfo.handlerId = 1;
@@ -395,9 +395,9 @@ public class SprintBacklogMapperTest {
 		partnersId.add(2L);
 		taskInfo.partnersId = partnersId;
 		// update task
-		mSprintBacklogMapper.updateTask(taskInfo);
+		mSprintBacklogMapper.updateTask(taskId, taskInfo);
 		// get new task
-		TaskObject newTask = TaskObject.get(1);
+		TaskObject newTask = TaskObject.get(taskId);
 		// check new task status after update
 		assertEquals(1, newTask.getId());
 		assertEquals("NEW_TEST_TASK_NAME", newTask.getName());

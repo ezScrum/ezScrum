@@ -83,8 +83,8 @@ public class TaskboardHelper {
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0)) {
 			int currentSprintID = sprintBacklogMapper.getSprintId();
-			double currentPoint = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
-			double currentHours = sprintBacklogLogic.getCurrentUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
+			double currentPoint = sprintBacklogLogic.getUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
+			double currentHours = sprintBacklogLogic.getUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
 			String releaseID = rpHelper.getReleaseID(Integer.toString(currentSprintID));

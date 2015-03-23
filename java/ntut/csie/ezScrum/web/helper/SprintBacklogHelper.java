@@ -323,10 +323,10 @@ public class SprintBacklogHelper {
 			issues = getStoriesByImportance();
 			currentSprintId = mSprintBacklogMapper.getSprintId();
 			currentPoint = mSprintBacklogLogic
-					.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE);
+					.getStoryPoint(ScrumEnum.STORY_ISSUE_TYPE);
 			limitedPoint = mSprintBacklogMapper.getLimitedPoint();
 			taskPoint = mSprintBacklogLogic
-					.getCurrentPoint(ScrumEnum.TASK_ISSUE_TYPE);
+					.getStoryPoint(ScrumEnum.TASK_ISSUE_TYPE);
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mIProject);
