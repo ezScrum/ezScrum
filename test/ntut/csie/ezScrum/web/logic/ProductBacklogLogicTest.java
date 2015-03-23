@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.logic;
 
 import java.util.ArrayList;
+import java.util.List;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -34,7 +35,7 @@ public class ProductBacklogLogicTest {
 
 		// create test data
 		int PROJECT_COUNT = 1;
-		int SPRINT_COUNT = 1;
+		int SPRINT_COUNT = 2;
 		int STORY_COUNT = 3;
 		int STORY_ESTIMATE = 5;
 		int TASK_COUNT = 3;
@@ -82,7 +83,9 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testAddStoriesToSprint() {
-		
+		List<String> sprintIdStrings = mCS.getSprintIDList();
+		Assert.assertEquals("1", sprintIdStrings.get(0));
+		Assert.assertEquals("2", sprintIdStrings.get(1));
 	}
 	
 	@Test

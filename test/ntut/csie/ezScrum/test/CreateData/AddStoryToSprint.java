@@ -65,12 +65,13 @@ public class AddStoryToSprint {
 	public void exe() throws Exception {
 		for (int i = 0; i < mProjectCount; i++) {
 			ProjectObject project = mCP.getAllProjects().get(i);
-			
 			// 對每個 sprint 加入 mStoryCount 個 stories
 			for (int sprintIndex = 0; sprintIndex < mSprintCount; sprintIndex++) {
 				for (int storyIndex = 0; storyIndex < mStoryCount; storyIndex++) {
-					StoryObject story = mStories.get(storyIndex + storyIndex * sprintIndex);
-					story.setSprintId(sprintIndex + 1).save();
+					int storyPositionInStories = storyIndex + mStoryCount * sprintIndex;
+					long sprintId = sprintIndex + 1;
+					StoryObject story = mStories.get(storyPositionInStories);
+					story.setSprintId(sprintId).save();
 				}
 				mlog.info("專案 " + project.getName() + ", 第 " + (sprintIndex + 1)
 						+ " 個 sprint 加入 " + mStoryCount + " 個 stories 成功");
