@@ -250,7 +250,7 @@ public class TaskBoard {
 	public String getTaskPoint() {
 		return mSprintBacklogLogic.getTaskRemainsPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTaskEstimatePoint();
+		        + mSprintBacklogLogic.getTaskEstimatePoints();
 	}
 
 	public String getInitialStoryPoint() {

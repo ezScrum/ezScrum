@@ -190,7 +190,7 @@ public class SprintBacklogLogicTest {
 		int TASK_COUNT = 3;
 		int TASK_ESTIMATE = 8;
 
-		double totalEstimatePoint = mSprintBacklogLogic.getTaskEstimatePoint();
+		double totalEstimatePoint = mSprintBacklogLogic.getTaskEstimatePoints();
 		double expectedTotalEstimatePont = TASK_COUNT * TASK_ESTIMATE
 				* STORY_COUNT;
 		assertEquals(expectedTotalEstimatePont, totalEstimatePoint);
@@ -244,7 +244,7 @@ public class SprintBacklogLogicTest {
 
 	@Test
 	public void testGetStoryPoints() {
-		assertEquals(15, mSprintBacklogLogic.getStoryPoint());
+		assertEquals(15, mSprintBacklogLogic.getTotalStoryPoints());
 	}
 
 	@Test

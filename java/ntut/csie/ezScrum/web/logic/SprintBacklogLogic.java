@@ -262,11 +262,11 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all tasks estimate point
+	 * Get all tasks estimate point in one sprint
 	 * 
 	 * @return task estimate point
 	 */
-	public double getTaskEstimatePoint() {
+	public double getTaskEstimatePoints() {
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getAllTasks();
 		double point = 0;
 		for (TaskObject task : tasks) {
@@ -276,11 +276,11 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all stories point
+	 * Get all stories point in one sprint
 	 * 
 	 * @return total story point
 	 */
-	public double getStoryPoint() {
+	public double getTotalStoryPoints() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
 		double point = 0;
 		for (StoryObject story : stories) {
@@ -290,7 +290,7 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all tasks remains point
+	 * Get all tasks remains point in one sprint
 	 * 
 	 * @return task remains point
 	 */
@@ -307,7 +307,7 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all stories unclosed point
+	 * Get all stories unclosed point in one sprint
 	 * 
 	 * @return story unclosed point
 	 */
