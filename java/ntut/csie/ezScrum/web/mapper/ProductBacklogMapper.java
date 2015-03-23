@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -24,7 +23,7 @@ public class ProductBacklogMapper {
 	private IProject mProject;
 	private MantisService mMantisService;
 
-	public ProductBacklogMapper(IProject project, IUserSession userSession) {
+	public ProductBacklogMapper(IProject project) {
 		mProject = project;
 		Configuration config = new Configuration();
 		mMantisService = new MantisService(config);

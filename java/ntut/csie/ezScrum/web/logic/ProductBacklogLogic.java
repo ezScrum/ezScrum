@@ -7,31 +7,27 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.jdom.Element;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.stapler.ReleasePlan;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
+import org.jdom.Element;
+
 public class ProductBacklogLogic {
-	private IUserSession mUserSession;
 	private IProject mProject;
 	private ProductBacklogMapper mProductBacklogMapper;
 
-	public ProductBacklogLogic(IUserSession session, IProject project) {
-		mUserSession = session;
+	public ProductBacklogLogic(IProject project) {
 		mProject = project;
-		mProductBacklogMapper = new ProductBacklogMapper(mProject, mUserSession);
+		mProductBacklogMapper = new ProductBacklogMapper(mProject);
 	}
 
 	/**
@@ -62,7 +58,7 @@ public class ProductBacklogLogic {
 	 * Unclosed Issues 根據IMPORTANCE排順序
 	 * @param category
 	 */
-	public ArrayList<StoryObject> getUnclosedStories() throws SQLException {
+	public ArrayList<StoryObject> getUnclosedStories() {
 		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
 		stories = sortStoriesByImportance(stories);
 		return stories;
@@ -85,8 +81,8 @@ public class ProductBacklogLogic {
 	 * 將列表中的 Issue ID 都加入此 Sprint 之下
 	 * @param issue2
 	 *************************************************************/
-	public void addIssueToSprint(List<Long> issueIdList, String sprintId) {
-		for (long issueId : issueIdList) {
+	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
+		for (long issueId : storiesId) {
 			IIssue issue = mProductBacklogMapper.getIssue(issueId);
 			String oldSprintId = issue.getSprintID();
 			if (sprintId != null && !sprintId.equals("") &&
@@ -114,58 +110,6 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * 新增Story和Release的關係 add <Release/> tag to the issues
-	 * 
-	 * @param issueList
-	 * @param releaseId
-	 */
-	public void addReleaseTagToIssue(List<Long> issueList, String releaseId) {
-		for (long issueId : issueList) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
-			if (releaseId != null && !releaseId.equals("") && Integer.parseInt(releaseId) >= 0) {
-				// history node
-				Element history = new Element(ScrumEnum.HISTORY_TAG);
-				Date current = new Date();
-				history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2));
-
-				// release node
-				Element release = new Element(ScrumEnum.RELEASE_TAG);
-				release.setText(releaseId);
-				history.addContent(release);
-				issue.addTagValue(history);
-
-				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
-				mProductBacklogMapper.updateStoryRelation(issueId, releaseId, issue.getSprintID(), null, null, current);
-			}
-		}
-	}
-
-	/**
-	 * 1. 移除 Story 和 Release 的關係 2. remove <Release/> tag to the issues
-	 * @param issueId
-	 */
-	public void removeReleaseTagFromIssue(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
-
-		// history node
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		Date current = new Date();
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2));
-
-		// release node
-		Element release = new Element(ScrumEnum.RELEASE_TAG);
-		release.setText(ScrumEnum.DIGITAL_BLANK_VALUE);
-		history.addContent(release);
-
-		issue.addTagValue(history);
-
-		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
-		mProductBacklogMapper.updateStoryRelation(issueId, "-1", issue.getSprintID(), null, null, current);
-	}
-
-	/**
 	 * 移除Story和Story的關係
 	 * @param issueId
 	 */
@@ -179,7 +123,7 @@ public class ProductBacklogLogic {
 	 * release plan select stories 2010.06.02 by taoyu modify
 	 * @return
 	 */
-	public ArrayList<StoryObject> getAddableStories() throws SQLException {
+	public ArrayList<StoryObject> getAddableStories() {
 		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
@@ -198,9 +142,8 @@ public class ProductBacklogLogic {
 	 * sprint backlog select stories 2009.12.18 by chiachi
 	 * 
 	 * @param sprintId
-	 * @param releaseId
 	 */
-	public ArrayList<StoryObject> getAddableStories(String sprintId, String releaseId) throws SQLException {
+	public ArrayList<StoryObject> getAddableStories(String sprintId) {
 		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();

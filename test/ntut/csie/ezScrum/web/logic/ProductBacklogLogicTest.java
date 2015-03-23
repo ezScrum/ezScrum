@@ -1,19 +1,12 @@
 package ntut.csie.ezScrum.web.logic;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.Date;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import org.junit.After;
 import org.junit.Before;
@@ -58,9 +51,8 @@ public class ProductBacklogLogicTest {
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		IUserSession userSession = mConfig.getUserSession();
 		
-		mProductBacklogLogic = new ProductBacklogLogic(userSession, project);
+		mProductBacklogLogic = new ProductBacklogLogic(project);
 	}
 	
 	@After
@@ -86,18 +78,17 @@ public class ProductBacklogLogicTest {
 	}
 	
 	@Test
-	public void testAddIssueToSprint() {
-	}
-	
-	@Test
-	public void testAddReleaseTagToIssue() {
+	public void testAddStoriesToSprint() {
+		
 	}
 	
 	@Test
 	public void testGetAddableStories() {
+		
 	}
 	
 	@Test
-	public void testGetAddableStoriesBySprintAndReleaseId() {
+	public void testGetAddableStories_WithSprintId() {
+		
 	}
 }

@@ -98,7 +98,7 @@ public class SprintBacklogHelper {
 
 		if ((mSprintId != 0) && (mSprintId != -1)) {
 			// 將 Story 加入 Sprint 當中
-			helper.addIssueToSprint(storiesId, String.valueOf(mSprintId));
+			helper.addStoriesToSprint(storiesId, String.valueOf(mSprintId));
 
 			// 檢查 Sprint 是否有存在於某個 Release 中
 			ReleasePlanHelper releasePlan = new ReleasePlanHelper(mIProject);

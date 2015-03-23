@@ -479,7 +479,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
     	ArrayList<Long> StoryID = new ArrayList<Long>();
     	StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
 //    	this.helper.add(StoryID, Integer.toString(1));
-    	this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+    	this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
     	
 		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
@@ -497,7 +497,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(2).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
 //		this.helper.add(StoryID, Integer.toString(1));
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(6, AvailabelIssue.size());
@@ -530,7 +530,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		// 將第一筆 Story 加入 Sprint 1 內
 		ArrayList<Long> StoryID = new ArrayList<Long>();
 		StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
 		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
@@ -564,7 +564,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.remove(0);
 		StoryID.add(this.CPB.getIssueList().get(9).getIssueID());
 		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(7, AvailabelIssue.size());
 		
@@ -615,7 +615,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(4).getIssueID());
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
 		// 驗證顯示剩下的 6-10 筆 StoryID
 		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
@@ -635,7 +635,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(6).getIssueID());
 		StoryID.add(this.CPB.getIssueList().get(7).getIssueID());
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(2));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(2));
 		
 		// 驗證顯示剩下的 9, 10 筆 StoryID
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
@@ -676,7 +676,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add((long)9);
 		StoryID.add((long)10);
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(3));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(3));
 		
 		// 驗證顯示 0 筆資料
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
@@ -687,7 +687,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add((long)7);
 		StoryID.add((long)8);
 		Thread.sleep(1000);		// 速度太快，暫停一下，避免影響資料存的時間一樣
-		this.productBacklogLogic1.addIssueToSprint(StoryID, Integer.toString(0));
+		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(0));
 		
 		// 驗證顯示 2 筆資料
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();

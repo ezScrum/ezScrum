@@ -221,7 +221,7 @@ public class SprintPlanHelper {
 					List<IIssue> stories = map.get(sprintID);
 					if (stories != null) {
 						ArrayList<Long> total = convertToLong(stories);
-						productBacklogLogic.addIssueToSprint(total,
+						productBacklogLogic.addStoriesToSprint(total,
 								nextSprintID);
 					}
 				} else {
@@ -230,7 +230,7 @@ public class SprintPlanHelper {
 					List<IIssue> stories = map.get(sprintID);
 					if (stories != null) {
 						ArrayList<Long> total = convertToLong(stories);
-						productBacklogLogic.addIssueToSprint(total,
+						productBacklogLogic.addStoriesToSprint(total,
 								nextSprintID);
 					}
 				}
