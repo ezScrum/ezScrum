@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.logic;
 
+import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -7,8 +8,10 @@ import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.jcis.resource.core.IProject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,11 +87,12 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testGetAddableStories() {
-		
-	}
-	
-	@Test
-	public void testGetAddableStories_WithSprintId() {
-		
+		Assert.assertEquals(0, mProductBacklogLogic.getAddableStories().size());
+		ArrayList<StoryObject> stories = mASTS.getStories();
+		stories.get(1).setSprintId(-1).save();
+		Assert.assertEquals(1, mProductBacklogLogic.getAddableStories().size());
+		StoryObject addableStory = mProductBacklogLogic.getAddableStories().get(0);
+		Assert.assertEquals(stories.get(1).getId(), addableStory.getId());
+		Assert.assertEquals(-1, addableStory.getSprintId());
 	}
 }

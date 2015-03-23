@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -18,7 +17,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.jdom.Element;
 
 public class ProductBacklogLogic {
@@ -120,7 +118,7 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * release plan select stories 2010.06.02 by taoyu modify
+	 * get stories which are status new and no parent
 	 * @return
 	 */
 	public ArrayList<StoryObject> getAddableStories() {
@@ -131,26 +129,6 @@ public class ProductBacklogLogic {
 			long sprintId = story.getSprintId();
 			// 此 story ID 有包含於 sprint ID，則不列入 list
 			if (sprintId > 0) {
-				continue;
-			}
-			stories.add(story);
-		}
-		return stories;
-	}
-
-	/**
-	 * sprint backlog select stories 2009.12.18 by chiachi
-	 * 
-	 * @param sprintId
-	 */
-	public ArrayList<StoryObject> getAddableStories(String sprintId) {
-		ArrayList<StoryObject> allStories = getUnclosedStories();
-		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
-		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
-		for (StoryObject story : allStories) {
-			long sprintIdInStory = story.getSprintId();
-			// 此 story 有包含 sprint ID，則不列入 list
-			if (sprintIdInStory > 0) {
 				continue;
 			}
 			stories.add(story);
