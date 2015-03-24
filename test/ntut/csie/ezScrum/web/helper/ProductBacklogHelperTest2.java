@@ -428,9 +428,9 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		CR.exe();		// 新增一筆 ReleasePlan
 		
 		// 將第一筆 Story 加入 Release 1 內
-		ArrayList<Long> StoryID = new ArrayList<Long>();
-		StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
-		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		ArrayList<Long> storiesId = new ArrayList<Long>();
+		storiesId.add(this.CPB.getIssueList().get(0).getIssueID());
+		this.productBacklogLogic1.addReleaseTagToIssue(storiesId, Integer.toString(1));
 				
 		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(9, AvailabelIssue.size());
@@ -444,11 +444,11 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		}
 		
 		// 再將三筆 Story 加入 Release 1 內
-		StoryID.add(this.CPB.getIssueList().get(1).getIssueID());
-		StoryID.add(this.CPB.getIssueList().get(2).getIssueID());
-		StoryID.add(this.CPB.getIssueList().get(3).getIssueID());
+		storiesId.add(this.CPB.getIssueList().get(1).getIssueID());
+		storiesId.add(this.CPB.getIssueList().get(2).getIssueID());
+		storiesId.add(this.CPB.getIssueList().get(3).getIssueID());
 //		this.helper.addRelease(StoryID, Integer.toString(1));
-		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
+		this.productBacklogLogic1.addReleaseTagToIssue(storiesId, Integer.toString(1));
 		
 		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
 		assertEquals(6, AvailabelIssue.size());

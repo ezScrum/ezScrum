@@ -19,16 +19,16 @@ public class TaskHandlerFilter extends AProductBacklogFilter {
 
 	@Override
 	protected ITask[] FilterTasks() {
-		ITask[] Tasks = super.Tasks;
+		ITask[] Tasks = super.mTasks;
 		
 		List<ITask> filerStories = new ArrayList<ITask>();
 		
-		if (this.compareInfo.equals("ALL")) {
+		if (this.mCompareInfo.equals("ALL")) {
 			filerStories.addAll(Arrays.asList(Tasks));
 		} else {
 			for (ITask task : Tasks) {
 				// task handler contains info
-				if ( (task.getAssignto() != null) && (task.getAssignto().equals(this.compareInfo)) ) {
+				if ( (task.getAssignto() != null) && (task.getAssignto().equals(this.mCompareInfo)) ) {
 					filerStories.add(task);
 				}
 			}

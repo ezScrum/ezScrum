@@ -1,52 +1,46 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class IssueDescFilter extends AProductBacklogFilter {
-	public IssueDescFilter(ArrayList<StoryObject> stories, String info) {
-		super(stories, info);
-	}
-	
-	public IssueDescFilter(ITask[] tasks, String info) {
-		super(tasks, info);
+	public <E> IssueDescFilter(ArrayList<E> issues, String info) {
+		super(issues, info);
 	}
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.Stories;
-//		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
-//		for (StoryObject story : stories) {
-//			// story description contains info
-//			String desc = story.getDescription(); // story has no description
-//			if (compareDesc(desc)) {
-//				fileredStories.add(story);
-//			}
-//		}
+		ArrayList<StoryObject> stories = super.mStories;
+		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
+		for (StoryObject story : stories) {
+			// story description contains info
+			String name = story.getName(); // story has no description
+			if (compareDesc(name)) {
+				fileredStories.add(story);
+			}
+		}
 		return stories;
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
-		ITask[] Tasks = super.Tasks;
-		List<ITask> filerStories = new ArrayList<ITask>();
-		for (ITask task : Tasks) {
+	protected ArrayList<TaskObject> FilterTasks() {
+		ArrayList<TaskObject> Tasks = super.mTasks;
+		ArrayList<TaskObject> filerStories = new ArrayList<TaskObject>();
+		for (TaskObject task : Tasks) {
 			// task description contains info
-			String desc = task.getDescription();
-			if ( compareDesc(desc) ) {
+			String name = task.getName();
+			if ( compareDesc(name) ) {
 				filerStories.add(task);
 			}
 		}
-		return filerStories.toArray(new ITask[filerStories.size()]);
+		return filerStories;
 	}
 	
 	private boolean compareDesc(String desc) {
 		if ( (desc != null) && (desc.length() > 0) ) { 
-			if (desc.contains(this.compareInfo)) {
+			if (desc.contains(this.mCompareInfo)) {
 				return true;
 			}
 		}

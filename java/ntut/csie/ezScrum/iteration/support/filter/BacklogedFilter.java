@@ -1,12 +1,9 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class BacklogedFilter extends AProductBacklogFilter {
 
@@ -16,7 +13,7 @@ public class BacklogedFilter extends AProductBacklogFilter {
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.Stories;
+		ArrayList<StoryObject> stories = super.mStories;
 		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
 		for (StoryObject story : stories) {
 			// business value 不存在, 或 estimate 不存在, 或 importance 不存在
@@ -31,7 +28,7 @@ public class BacklogedFilter extends AProductBacklogFilter {
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
+	protected ArrayList<TaskObject> FilterTasks() {
 		// empty function
 		return null;
 	}

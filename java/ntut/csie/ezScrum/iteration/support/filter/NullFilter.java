@@ -2,27 +2,22 @@ package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class NullFilter extends AProductBacklogFilter {
 
-	public NullFilter(ArrayList<StoryObject> stories) {
-		super(stories);
-	}
-	
-	public NullFilter(ITask[] tasks) {
-		super(tasks);
+	public <E> NullFilter(ArrayList<E> issues) {
+		super(issues);
 	}
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		return super.Stories;
+		return super.mStories;
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
-		return super.Tasks;
+	protected ArrayList<TaskObject> FilterTasks() {
+		return super.mTasks;
 	}
 }

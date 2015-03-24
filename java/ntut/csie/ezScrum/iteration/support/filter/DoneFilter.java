@@ -16,7 +16,7 @@ public class DoneFilter extends AProductBacklogFilter {
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.Stories;
+		ArrayList<StoryObject> stories = super.mStories;
 		ArrayList<StoryObject> filererStories = new ArrayList<StoryObject>();
 		for (StoryObject story : stories) {
 			// status is closed
