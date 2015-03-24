@@ -1,12 +1,9 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class DoneFilter extends AProductBacklogFilter {
 
@@ -28,7 +25,7 @@ public class DoneFilter extends AProductBacklogFilter {
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
+	protected ArrayList<TaskObject> FilterTasks() {
 		// empty function
 		return null;
 	}
