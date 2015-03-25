@@ -48,7 +48,7 @@ public class RemoveSprintPlanAction extends PermissionAction {
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintId);
 		List<IIssue> issues = sprintBacklogLogic.getStories();
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);	
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);	
 		for(IIssue issue:issues){
 			productBacklogLogic.removeStoryFromSprint(issue.getIssueID());
 			

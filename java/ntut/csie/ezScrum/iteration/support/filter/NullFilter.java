@@ -1,11 +1,14 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class NullFilter extends AProductBacklogFilter {
 
-	public NullFilter(IStory[] stories) {
+	public NullFilter(ArrayList<StoryObject> stories) {
 		super(stories);
 	}
 	
@@ -14,7 +17,7 @@ public class NullFilter extends AProductBacklogFilter {
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
+	protected ArrayList<StoryObject> FilterStories() {
 		return super.Stories;
 	}
 
