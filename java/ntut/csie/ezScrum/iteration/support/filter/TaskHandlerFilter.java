@@ -1,39 +1,37 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class TaskHandlerFilter extends AProductBacklogFilter {
-	public TaskHandlerFilter(ITask[] tasks, String info) {
+	public TaskHandlerFilter(ArrayList<TaskObject> tasks, String info) {
 		super(tasks, info);
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
+	protected ArrayList<StoryObject> FilterStories() {
 		return null;
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
-		ITask[] Tasks = super.mTasks;
-		
-		List<ITask> filerStories = new ArrayList<ITask>();
-		
-		if (this.mCompareInfo.equals("ALL")) {
-			filerStories.addAll(Arrays.asList(Tasks));
+	protected ArrayList<TaskObject> FilterTasks() {
+		ArrayList<TaskObject> Tasks = super.mTasks;
+
+		ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
+
+		if (mCompareInfo.equals("ALL")) {
+			filteredTasks.addAll(Tasks);
 		} else {
-			for (ITask task : Tasks) {
+			for (TaskObject task : Tasks) {
 				// task handler contains info
-				if ( (task.getAssignto() != null) && (task.getAssignto().equals(this.mCompareInfo)) ) {
-					filerStories.add(task);
+				if ((task.getHandler() != null) && (task.getHandler().getUsername().equals(this.mCompareInfo))) {
+					filteredTasks.add(task);
 				}
 			}
 		}
-			
-		return filerStories.toArray(new ITask[filerStories.size()]);
+
+		return filteredTasks;
 	}
 }
