@@ -81,7 +81,7 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * 移除Story和Story的關係
+	 * 移除Story和Sprint的關係
 	 * @param storyId
 	 */
 	public void removeStoryFromSprint(long storyId) {
