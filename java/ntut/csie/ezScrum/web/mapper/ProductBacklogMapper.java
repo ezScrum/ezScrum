@@ -3,14 +3,11 @@ package ntut.csie.ezScrum.web.mapper;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -26,7 +23,7 @@ public class ProductBacklogMapper {
 	private IProject mProject;
 	private MantisService mMantisService;
 
-	public ProductBacklogMapper(IProject project, IUserSession userSession) {
+	public ProductBacklogMapper(IProject project) {
 		mProject = project;
 		Configuration config = new Configuration();
 		mMantisService = new MantisService(config);
@@ -35,7 +32,7 @@ public class ProductBacklogMapper {
 	public ArrayList<StoryObject> getUnclosedStories() {
 		ProjectObject project = ProjectObject.get(mProject.getName());
 		ArrayList<StoryObject> unclosedStories = new ArrayList<StoryObject>();
-		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesByProjectId(project.getId());
+		ArrayList<StoryObject> stories = project.getStories();
 		for (StoryObject story : stories) {
 			if (story.getStatus() != StoryObject.STATUS_DONE) {
 				unclosedStories.add(story);
@@ -96,7 +93,6 @@ public class ProductBacklogMapper {
 		     .setImportance(storyInfo.importance)
 		     .setNotes(storyInfo.notes)
 		     .setHowToDemo(storyInfo.howToDemo)
-		     .setSprintId(storyInfo.sprintId)
 		     .setSprintId(storyInfo.sprintId)
 		     .setStatus(storyInfo.status)
 		     .setValue(storyInfo.value)
@@ -230,6 +226,11 @@ public class ProductBacklogMapper {
 			}
 		}
 		return tagsId;
+	}
+	
+	public ArrayList<StoryObject> getStories() {
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		return project.getStories();
 	}
 	
 	// will remove

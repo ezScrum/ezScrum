@@ -82,7 +82,7 @@ public class ProductBacklogMapperTest {
 		
 		// 建立 productbacklog 物件
 		IProject project = mCP.getProjectList().get(0);
-		mProductBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
+		mProductBacklogMapper = new ProductBacklogMapper(project);
 		
 		// ============= release ==============
 		ini = null;

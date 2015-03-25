@@ -381,7 +381,7 @@ public class ProductBacklogHelper {
 	private ArrayList<Long> addStoryToSprint(String sprintId, long issueId) {
 		ArrayList<Long> list = new ArrayList<Long>();
 		list.add(issueId);
-		mProductBacklogLogic.addIssueToSprint(list, sprintId);
+		mProductBacklogLogic.addStoriesToSprint(list, sprintId);
 		return list;
 	}
 
@@ -546,7 +546,7 @@ public class ProductBacklogHelper {
 			mProductBacklogLogic.addReleaseTagToIssue(issueList, moveId);
 		} else {
 			// 將此Story加入其他Sprint
-			mProductBacklogLogic.addIssueToSprint(issueList, moveId);
+			mProductBacklogLogic.addStoriesToSprint(issueList, moveId);
 			// 檢查Sprint是否有存在於某個Release中
 			ReleasePlanHelper releasePlan = new ReleasePlanHelper(mProject);
 			String sprintReleaseID = releasePlan.getReleaseID(moveId);
