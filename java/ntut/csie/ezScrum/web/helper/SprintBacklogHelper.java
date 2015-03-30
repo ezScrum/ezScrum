@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -31,9 +29,9 @@ public class SprintBacklogHelper {
 	 * 待刪
 	 */
 	@Deprecated
-	public SprintBacklogHelper(IProject project, IUserSession userSession) {
+	public SprintBacklogHelper(IProject project) {
 		mIProject = project;
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, "-1");
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
@@ -41,13 +39,13 @@ public class SprintBacklogHelper {
 	 * 待刪
 	 */
 	@Deprecated
-	public SprintBacklogHelper(IProject project, String sprintId) {
+	public SprintBacklogHelper(IProject project, long sprintId) {
 		mIProject = project;
 		try {
-			mSprintId = Long.parseLong(sprintId);
-			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, sprintId);
+			mSprintId = sprintId;
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mSprintId);
 		} catch (NumberFormatException e) {
-			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, "-1");
+			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
 		}
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
@@ -99,7 +97,6 @@ public class SprintBacklogHelper {
 	/**
 	 * ----- Task -----
 	 */
-
 	public TaskObject addTask(long projectId, TaskInfo taskInfo) {
 		long taskId = mSprintBacklogMapper.addTask(projectId, taskInfo);
 		return TaskObject.get(taskId);
@@ -210,13 +207,12 @@ public class SprintBacklogHelper {
 			if (mSprintBacklogMapper.getSprintId() > 0) {
 				ArrayList<StoryObject> stories = getStoriesByImportance();
 				// 取得 Sprint 日期的 Column
-				ArrayList<SprintBacklogDateColumn> cols = null;
 				if (mSprintBacklogLogic.getCurrentDateColumns() == null)
-					cols = mSprintBacklogLogic.calculateSprintBacklogDateList(
+					mSprintBacklogLogic.calculateSprintBacklogDateList(
 							mSprintBacklogMapper.getSprintStartDate(),
 							availableDays);
 				else
-					cols = mSprintBacklogLogic.getCurrentDateColumns();
+					mSprintBacklogLogic.getCurrentDateColumns();
 
 				for (StoryObject story : stories) {
 					SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(

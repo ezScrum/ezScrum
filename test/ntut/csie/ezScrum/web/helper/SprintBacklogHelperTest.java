@@ -69,7 +69,7 @@ public class SprintBacklogHelperTest {
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		String sprintId = "1";
+		long sprintId = 1;
 		mSprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 	}
 
