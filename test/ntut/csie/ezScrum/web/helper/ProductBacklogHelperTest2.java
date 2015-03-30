@@ -388,7 +388,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		// 將第一筆 Story Done
 		sprintBacklogLogic.closeStory(this.CPB.getIssueList().get(0).getIssueID(), this.CPB.TEST_STORY_NOTES + "1", null);
 		
-		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(9, AvailabelIssue.size());
 
 		// 從 ID 第二筆開始驗證
@@ -402,7 +402,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		// 將第十筆 Story Done
 		sprintBacklogLogic.closeStory(this.CPB.getIssueList().get(9).getIssueID(), this.CPB.TEST_STORY_NOTES + "10", null);
 		
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(8, AvailabelIssue.size());
 
 		// 從 ID 第二筆開始驗證到第九筆
@@ -432,7 +432,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		storiesId.add(this.CPB.getIssueList().get(0).getIssueID());
 		this.productBacklogLogic1.addReleaseTagToIssue(storiesId, Integer.toString(1));
 				
-		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -450,7 +450,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 //		this.helper.addRelease(StoryID, Integer.toString(1));
 		this.productBacklogLogic1.addReleaseTagToIssue(storiesId, Integer.toString(1));
 		
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(6, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -481,7 +481,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 //    	this.helper.add(StoryID, Integer.toString(1));
     	this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
     	
-		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -499,7 +499,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 //		this.helper.add(StoryID, Integer.toString(1));
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(6, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -532,7 +532,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(0).getIssueID());
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
-		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(9, AvailabelIssue.size());
 		
 		// 從 ID 第二筆開始驗證
@@ -548,7 +548,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.remove(0);
 		StoryID.add(this.CPB.getIssueList().get(1).getIssueID());
 		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(8, AvailabelIssue.size());
 		
 		// 從 ID 第三筆開始驗證
@@ -565,7 +565,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		StoryID.add(this.CPB.getIssueList().get(9).getIssueID());
 		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(7, AvailabelIssue.size());
 		
 		// 從 ID 第三筆開始驗證到第九筆
@@ -587,7 +587,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		}
 		
 		// 驗證取出 0 筆資料
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(0, AvailabelIssue.size());
     }
     
@@ -618,7 +618,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(1));
 		
 		// 驗證顯示剩下的 6-10 筆 StoryID
-		List<IStory> AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		List<IStory> AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(5, AvailabelIssue.size());
 		
 		// 從 ID 第六筆開始驗證
@@ -638,7 +638,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(2));
 		
 		// 驗證顯示剩下的 9, 10 筆 StoryID
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(2, AvailabelIssue.size());
 		
 		// 從 ID 第九筆開始驗證
@@ -657,7 +657,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(1));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(0, AvailabelIssue.size());
 		
 		// 將兩筆 Story (ID = 1, 2, 9, 10) 加入 Release 2
@@ -667,7 +667,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addReleaseTagToIssue(StoryID, Integer.toString(2));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(0, AvailabelIssue.size());
 		
 		
@@ -679,7 +679,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(3));
 		
 		// 驗證顯示 0 筆資料
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(0, AvailabelIssue.size());
 
 		// 將兩筆 Story (ID = 7, 8) 移除 Sprint 2
@@ -690,7 +690,7 @@ public class ProductBacklogHelperTest2 extends TestCase {
 		this.productBacklogLogic1.addStoriesToSprint(StoryID, Integer.toString(0));
 		
 		// 驗證顯示 2 筆資料
-		AvailabelIssue = this.productBacklogLogic1.getAddableStories();
+		AvailabelIssue = this.productBacklogLogic1.getExistingStories();
 		assertEquals(2, AvailabelIssue.size());
 		
 		// 從 ID 第七筆開始驗證

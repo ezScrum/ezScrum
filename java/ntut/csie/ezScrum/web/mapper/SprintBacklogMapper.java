@@ -248,7 +248,8 @@ public class SprintBacklogMapper {
 	 *************************************************************/
 
 	public void closeStory(long id, String name, String notes,
-			Date specificDate) {
+			String changeDate) {
+		Date specificDate = parseToDate(changeDate);
 		StoryObject story = StoryObject.get(id);
 		if (story != null) {
 			story.setName(name).setNotes(notes)
@@ -260,7 +261,8 @@ public class SprintBacklogMapper {
 	}
 
 	public void reopenStory(long id, String name, String notes,
-			Date specificDate) {
+			String changeDate) {
+		Date specificDate = parseToDate(changeDate);
 		StoryObject story = StoryObject.get(id);
 		if (story != null) {
 			story.setName(name).setNotes(notes)
@@ -401,5 +403,14 @@ public class SprintBacklogMapper {
 			mTasks.addAll((ArrayList<TaskObject>)story.getTasks());
 		}
 		mUpdateFlag = false;
+	}
+	
+	public Date parseToDate(String dateString) {
+		Date closeDate = new Date();
+		if (dateString != null && !dateString.equals("")) {
+			closeDate = DateUtil.dayFillter(dateString,
+					DateUtil._16DIGIT_DATE_TIME);
+		}
+		return closeDate;
 	}
 }

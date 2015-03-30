@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class SprintBacklogTreeStructure {
@@ -41,21 +41,21 @@ public class SprintBacklogTreeStructure {
 		// initial empty function
 	}
 
-	public SprintBacklogTreeStructure(IIssue story,
+	public SprintBacklogTreeStructure(StoryObject story,
 			ArrayList<TaskObject> tasks, ArrayList<Date> dates) {
 		Type = ScrumEnum.STORY_ISSUE_TYPE;
-		ID = Long.toString(story.getIssueID());
-		Name = HandleSpecialChar(story.getSummary());
+		ID = Long.toString(story.getId());
+		Name = HandleSpecialChar(story.getName());
 		Handler = " ";
-		Value = story.getValue();
-		Estimate = story.getEstimated();
-		Importance = story.getImportance();
+		Value = String.valueOf(story.getValue());
+		Estimate = String.valueOf(story.getEstimate());
+		Importance = String.valueOf(story.getImportance());
 		Tag = new Translation().Join(story.getTags(), ", ");
-		Status = story.getStatus();
+		Status = story.getStatusString();
 		Notes = HandleSpecialChar(story.getNotes());
-		Link = story.getIssueLink();
-		SprintID = story.getSprintID();
-		ReleaseID = story.getReleaseID();
+		Link = "";
+		SprintID = String.valueOf(story.getSprintId());
+		ReleaseID = "";
 		
 		leaf = false;
 		expanded = false;

@@ -94,7 +94,7 @@ public class ProductBacklogLogic {
 	 * get stories which are status new and no parent
 	 * @return
 	 */
-	public ArrayList<StoryObject> getAddableStories() {
+	public ArrayList<StoryObject> getExistingStories() {
 		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();

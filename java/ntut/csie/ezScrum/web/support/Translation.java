@@ -13,6 +13,8 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
@@ -385,13 +387,13 @@ public class Translation {
 	}
 
 	// for ShowSprintBacklogAction
-	public String translateStoryToJson(List<IIssue> issues, int currentSprintID, double currentPoint, double limitedPoint, double taskPoint, int releaseID, String SprintGoal) {
+	public String translateStoryToJson(ArrayList<StoryObject> stories, int currentSprintID, double currentPoint, double limitedPoint, double taskPoint, int releaseID, String SprintGoal) {
 		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
 
 		JsonObject obj = new JsonObject();
 
 		obj.append("success", true);
-		obj.append("Total", issues.size());
+		obj.append("Total", stories.size());
 
 		JsonObject sprint = new JsonObject();
 		sprint.append("Id", currentSprintID);
@@ -405,33 +407,33 @@ public class Translation {
 		obj.append("Sprint", sprint);
 
 		JsonArray jsonStories = new JsonArray();
-		for (IIssue issue : issues) {
+		for (StoryObject story : stories) {
 			JsonObject jsonStory = new JsonObject();
 
-			jsonStory.append("Id", issue.getIssueID());
-			jsonStory.append("Link", TranslateChar.TranslateJSONChar(issue.getIssueLink()));
-			jsonStory.append("Name", TranslateChar.TranslateJSONChar(issue.getSummary()));
-			jsonStory.append("Value", issue.getValue());
-			jsonStory.append("Importance", issue.getImportance());
-			jsonStory.append("Estimate", issue.getEstimated());
-			jsonStory.append("Status", issue.getStatus());
-			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(issue.getNotes()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(issue.getTags(), ",")));
-			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(issue.getHowToDemo()));
-			jsonStory.append("Release", TranslateChar.HandleNullString(issue.getReleaseID()));
-			jsonStory.append("Sprint", TranslateChar.HandleNullString(issue.getSprintID()));
+			jsonStory.append("Id", story.getId());
+			jsonStory.append("Link", "");
+			jsonStory.append("Name", TranslateChar.TranslateJSONChar(story.getName()));
+			jsonStory.append("Value", story.getValue());
+			jsonStory.append("Importance", story.getImportance());
+			jsonStory.append("Estimate", story.getEstimate());
+			jsonStory.append("Status", story.getStatusString());
+			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(story.getNotes()));
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(story.getTags(), ",")));
+			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(story.getHowToDemo()));
+			jsonStory.append("Release", "");
+			jsonStory.append("Sprint", story.getSprintId());
 
-			if (issue.getAttachFiles().size() == 0) jsonStory.append("Attach", "false");
+			if (story.getAttachFiles().size() == 0) jsonStory.append("Attach", "false");
 			else jsonStory.append("Attach", "true");
 
-			ArrayList<AttachFileObject> files = issue.getAttachFiles();
+			ArrayList<AttachFileObject> files = story.getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
 				jsonFile.append("IssueId", file.getIssueId());
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + issue.getProjectName()
+				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + ProjectObject.get(story.getProjectId()).getName()
 						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}

@@ -37,13 +37,9 @@ public class SprintBacklogLogic {
 	 * @param sprintId
 	 */
 	@Deprecated
-	public SprintBacklogLogic(IProject project, String sprintId) {
+	public SprintBacklogLogic(IProject project, long sprintId) {
 		mIProject = project;
-		if (sprintId == null || sprintId.equals("")) {
-			sprintId = "-1";
-		}
-		mSprintBacklogMapper = createSprintBacklogMapper(Long
-				.parseLong(sprintId));
+		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
 	}
 
 	public SprintBacklogMapper getSprintBacklogMapper() {
@@ -70,16 +66,6 @@ public class SprintBacklogLogic {
 			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
-	}
-
-	// for ezScrum 1.8
-	public void closeStory(long id, String name, String notes, Date specificDate) {
-		mSprintBacklogMapper.closeStory(id, name, notes, specificDate);
-	}
-
-	public void reopenStory(long id, String name, String notes,
-			Date specificDate) {
-		mSprintBacklogMapper.reopenStory(id, name, notes, specificDate);
 	}
 
 	public void checkOutTask(long id, String name, String handlerUsername,

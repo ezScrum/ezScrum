@@ -149,6 +149,14 @@ public class StoryObject implements IBaseObject {
 		return mStatus;
 	}
 	
+	public String getStatusString() {
+		if (mStatus == STATUS_UNCHECK) {
+			return "new";
+		} else {
+			return "closed";
+		}
+	}
+	
 	public long getSprintId() {
 		return mSprintId;
 	}
