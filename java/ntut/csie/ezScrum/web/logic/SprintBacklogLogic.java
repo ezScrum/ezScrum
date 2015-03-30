@@ -72,16 +72,6 @@ public class SprintBacklogLogic {
 		return sprintBacklogMapper;
 	}
 
-	// for ezScrum 1.8
-	public void closeStory(long id, String name, String notes, Date specificDate) {
-		mSprintBacklogMapper.closeStory(id, name, notes, specificDate);
-	}
-
-	public void reopenStory(long id, String name, String notes,
-			Date specificDate) {
-		mSprintBacklogMapper.reopenStory(id, name, notes, specificDate);
-	}
-
 	public void checkOutTask(long id, String name, String handlerUsername,
 			String partners, String notes, String changeDate) {
 		Date closeDate = new Date();

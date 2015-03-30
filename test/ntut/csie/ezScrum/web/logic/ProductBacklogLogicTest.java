@@ -177,12 +177,12 @@ public class ProductBacklogLogicTest {
 	}
 	
 	@Test
-	public void testGetAddableStories() {
-		Assert.assertEquals(0, mProductBacklogLogic.getAddableStories().size());
+	public void testGetExistingStories() {
+		Assert.assertEquals(0, mProductBacklogLogic.getExistingStories().size());
 		ArrayList<StoryObject> stories = mASTS.getStories();
 		stories.get(1).setSprintId(-1).save();
-		Assert.assertEquals(1, mProductBacklogLogic.getAddableStories().size());
-		StoryObject addableStory = mProductBacklogLogic.getAddableStories().get(0);
+		Assert.assertEquals(1, mProductBacklogLogic.getExistingStories().size());
+		StoryObject addableStory = mProductBacklogLogic.getExistingStories().get(0);
 		Assert.assertEquals(stories.get(1).getId(), addableStory.getId());
 		Assert.assertEquals(-1, addableStory.getSprintId());
 	}
