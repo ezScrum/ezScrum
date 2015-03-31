@@ -109,7 +109,7 @@ public class TaskBoardHelper {
 			stories = filterStory(stories, storyToTasks, filterName);					// filter story
 
 			for (StoryObject story : stories) {
-				storyList.add(create_TaskBoard_Story(story, storyToTasks.get(story.getId())));
+				storyList.add(createTaskBoardStory(story, storyToTasks.get(story.getId())));
 			}
 			storyLength = stories.size();
 		}
@@ -135,8 +135,8 @@ public class TaskBoardHelper {
 
 		public SprintInfoUI() {}
 
-		public SprintInfoUI(int ID, String goal, double sp, double tp, String rid, boolean current) {
-			ID = ID;
+		public SprintInfoUI(int id, String goal, double sp, double tp, String rid, boolean current) {
+			id = id;
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;
@@ -145,7 +145,7 @@ public class TaskBoardHelper {
 		}
 	}
 	
-	private ArrayList<StoryObject> filterStory(ArrayList<StoryObject> stories, Map<Long, ArrayList<TaskObject>> taskmap, String filtername) {
+	private ArrayList<StoryObject> filterStory(ArrayList<StoryObject> stories, Map<Long, ArrayList<TaskObject>> storyToTasksMap, String filtername) {
 		ArrayList<StoryObject> filterStories = new ArrayList<StoryObject>();
 		// All member, return all story
 		if (filtername.equals("ALL") || filtername.length() == 0) {
@@ -153,20 +153,20 @@ public class TaskBoardHelper {
 		} else {
 			// filter member name by handler, return the story and task map relation
 			for (StoryObject story : stories) {
-				ArrayList<TaskObject> tasks = taskmap.get(story.getId());
+				ArrayList<TaskObject> tasks = storyToTasksMap.get(story.getId());
 				if (tasks != null) {
-					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
+					ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
 
 					for (TaskObject task : tasks) {
 						String handlerUserName = task.getHandler() != null ? task.getHandler().getUsername() : "";
 						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
-							filtertask.add(task);
+							filteredTasks.add(task);
 						}
 					}
 
-					if (filtertask.size() > 0) {
+					if (filteredTasks.size() > 0) {
 						// cover new filter map
-						taskmap.put(story.getId(), filtertask);
+						storyToTasksMap.put(story.getId(), filteredTasks);
 						filterStories.add(story);
 					}
 				}
@@ -187,7 +187,7 @@ public class TaskBoardHelper {
 		return false;
 	}
 
-	private TaskBoard_Story create_TaskBoard_Story(StoryObject story, ArrayList<TaskObject> tasks) {
+	private TaskBoard_Story createTaskBoardStory(StoryObject story, ArrayList<TaskObject> tasks) {
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
 
 		if (tasks != null) {

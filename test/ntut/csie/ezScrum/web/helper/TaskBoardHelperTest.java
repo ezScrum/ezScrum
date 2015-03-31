@@ -91,6 +91,7 @@ public class TaskBoardHelperTest {
 	@Test
 	public void testGetTaskBoardStoryTaskListText_ALL() throws JSONException {
 		String response = mTaskBoardHelper.getTaskBoardStoryTaskListText("ALL").toString();
+		System.out.println(response);
 		JSONObject json = new JSONObject(response);
 
 		JSONArray stories = json.getJSONArray("Stories");
