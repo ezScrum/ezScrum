@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -18,6 +19,7 @@ import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -31,8 +33,15 @@ public class SprintPlanHelper {
 	public SprintPlanHelper(IProject project) {
 		mSprintPlanMapper = new SprintPlanMapper(project);
 		mSprintPlanLogic = new SprintPlanLogic(project);
-		mSprintBacklogMapper = (new SprintBacklogLogic(project, null,
-				String.valueOf(getCurrentSprintID())))
+		mSprintBacklogMapper = (new SprintBacklogLogic(project, getCurrentSprintID()))
+				.getSprintBacklogMapper();
+	}
+	
+	public SprintPlanHelper(ProjectObject project) {
+		IProject iProject = (new ProjectMapper()).getProjectByID(project.getName());
+		mSprintPlanMapper = new SprintPlanMapper(iProject);
+		mSprintPlanLogic = new SprintPlanLogic(iProject);
+		mSprintBacklogMapper = (new SprintBacklogLogic(iProject, getCurrentSprintID()))
 				.getSprintBacklogMapper();
 	}
 
@@ -187,13 +196,12 @@ public class SprintPlanHelper {
 	/*
 	 * from AjaxMoveSprintAction
 	 */
-	public void moveSprintPlan(IProject project, IUserSession session,
+	public void moveSprintPlan(ProjectObject project, IUserSession session,
 			int oldId, int newId) {
 		List<ISprintPlanDesc> descs = loadListPlans();
 		moveSprint(oldId, newId);
 
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session,
-				project);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		Map<String, ArrayList<IIssue>> map = PBHelper.getSprintHashMap();
 
 		ArrayList<Integer> sprintsId = new ArrayList<Integer>();
@@ -210,8 +218,7 @@ public class SprintPlanHelper {
 			}
 		}
 
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				session, project);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 		// 將story的中sprint id做修改
 		if (sprintsId.size() != 0) {
 			for (int i = 0; i < sprintsId.size(); i++) {

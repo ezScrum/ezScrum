@@ -602,7 +602,7 @@ public class SprintBacklogMapperTest {
 		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		Date updateTime = new Date();
+		String updateTime = "2015/03/30-11:35:27";
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
@@ -619,7 +619,7 @@ public class SprintBacklogMapperTest {
 		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		Date updateTime = new Date();
+		String updateTime = "2015/03/30-11:35:27";
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
@@ -630,7 +630,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 		
 		// reopen the story
-		updateTime = new Date();
+		updateTime = "2015/03/30-11:40:27";
 		mSprintBacklogMapper.reopenStory(storyId, reopenName, reopenName, updateTime);
 		story = StoryObject.get(storyId);
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());

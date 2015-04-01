@@ -16,9 +16,11 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -35,10 +37,18 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class ReleasePlanHelper {
 	private ReleasePlanMapper rpMapper;
 	private IProject m_project;
+	private ProjectObject mProject;
 	
+	@Deprecated
 	public ReleasePlanHelper(IProject project){
 		m_project = project;
 		rpMapper = new ReleasePlanMapper(project);
+	}
+	
+	public ReleasePlanHelper(ProjectObject project){
+		mProject = project;
+		m_project = (new ProjectMapper()).getProjectByID(mProject.getName());
+		rpMapper = new ReleasePlanMapper(m_project);
 	}
 	
 	// remove later

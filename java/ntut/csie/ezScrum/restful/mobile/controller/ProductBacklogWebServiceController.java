@@ -83,7 +83,7 @@ public class ProductBacklogWebServiceController {
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.readStory(null);
+			this.pbws.getStory(null);
 			jsonString = this.pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -197,7 +197,7 @@ public class ProductBacklogWebServiceController {
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.readStoryById(storyId);
+			this.pbws.getStory(storyId);
 			jsonString = this.pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -230,7 +230,7 @@ public class ProductBacklogWebServiceController {
 			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
-			this.pbws.readAllTags();
+			this.pbws.getAllTags();
 			jsonString = this.pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -264,7 +264,7 @@ public class ProductBacklogWebServiceController {
 			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
-			this.pbws.readStoryHistory(storyId);
+			this.pbws.getStoryHistory(storyId);
 			storyHistoryJsonString = this.pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +

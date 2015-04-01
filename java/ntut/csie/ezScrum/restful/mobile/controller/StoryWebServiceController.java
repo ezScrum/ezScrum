@@ -124,7 +124,7 @@ public class StoryWebServiceController {
 			decoder.decodeProjectID(projectID);
 			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			jsonString = mStoryWebService.getTaskInStory(storyID);
+			jsonString = mStoryWebService.getTasksInStory(storyID);
 		} catch (LogonException e) {
 			System.out
 					.println("class: StoryWebServiceController, "

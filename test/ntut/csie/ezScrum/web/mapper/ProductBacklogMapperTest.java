@@ -6,14 +6,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -31,6 +32,7 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +48,6 @@ public class ProductBacklogMapperTest {
 	private int mStoryCount = 2;
 	private ProductBacklogMapper mProductBacklogMapper = null;
 	private Configuration mConfig = null;
-	private MySQLControl mControl = null;
 	
 	private final String mFILE_NAME = "Initial.sql";
 	private final String mFILE_TYPE = "sql/plain";
@@ -56,9 +57,6 @@ public class ProductBacklogMapperTest {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-		
-		mControl = new MySQLControl(mConfig);
-		mControl.connect();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -81,7 +79,7 @@ public class ProductBacklogMapperTest {
 		mASTR.exe();
 		
 		// 建立 productbacklog 物件
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		mProductBacklogMapper = new ProductBacklogMapper(project);
 		
 		// ============= release ==============
@@ -110,7 +108,6 @@ public class ProductBacklogMapperTest {
     	mProductBacklogMapper = null;
     	projectManager = null;
     	mConfig = null;
-    	mControl = null;
 	}
 	
 	@Test
@@ -211,6 +208,7 @@ public class ProductBacklogMapperTest {
 	
 	@Test
 	public void testAddStory() throws SQLException {
+		long projectId = mCP.getAllProjects().get(0).getId();
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.name = "TEST_NAME";
 		storyInfo.howToDemo = "TEST_HOW_TO_DEMO";
@@ -219,7 +217,7 @@ public class ProductBacklogMapperTest {
 		storyInfo.value = 2;
 		storyInfo.importance = 3;
 		
-		StoryObject story = mProductBacklogMapper.addStory(storyInfo);
+		StoryObject story = mProductBacklogMapper.addStory(projectId, storyInfo);
 		story = StoryObject.get(story.getId());
 		
 		assertEquals(storyInfo.name, story.getName());

@@ -31,7 +31,6 @@ public class SprintBacklogMapper {
 	 * 若沒有指定的話,自動取得目前的 sprint#
 	 * 
 	 * @param project
-	 * @param userSession
 	 */
 	public SprintBacklogMapper(IProject project) {
 		mIProject = project;
@@ -48,7 +47,6 @@ public class SprintBacklogMapper {
 	 * 取得指定的 sprint backlog
 	 * 
 	 * @param project
-	 * @param userSession
 	 * @param sprintId
 	 */
 	public SprintBacklogMapper(IProject project, long sprintId) {

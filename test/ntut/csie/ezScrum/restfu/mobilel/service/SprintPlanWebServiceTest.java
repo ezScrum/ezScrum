@@ -1,11 +1,12 @@
-package ntut.csie.ezScrum.restful.service;
+package ntut.csie.ezScrum.restfu.mobilel.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
@@ -18,11 +19,14 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
@@ -41,7 +45,8 @@ public class SprintPlanWebServiceTest {
 	private CreateSprint mCS;
 	private CreateTask mCT;
 	private AddStoryToSprint mASTS;
-	private IProject mProject;
+	private IProject mIProject;
+	private ProjectObject mProject;
 	private IReleasePlanDesc mIReleasePlanDesc;
 	private SprintPlanHelper mSprintPlanHelper;
 	private SprintBacklogHelper mSprintBacklogHelper;
@@ -64,9 +69,10 @@ public class SprintPlanWebServiceTest {
 		mCR.exe();
 
 		mIReleasePlanDesc = mCR.getReleaseList().get(0);
-		mProject = mCP.getProjectList().get(0);
-		mSprintPlanHelper = new SprintPlanHelper(mProject);
-		mSprintBacklogHelper = new SprintBacklogHelper(mProject, mConfig.getUserSession());
+		mProject = mCP.getAllProjects().get(0);
+		mIProject = mCP.getProjectList().get(0);
+		mSprintPlanHelper = new SprintPlanHelper(mIProject);
+		mSprintBacklogHelper = new SprintBacklogHelper(mProject);
 	}
 
 	@After
@@ -88,7 +94,7 @@ public class SprintPlanWebServiceTest {
 		mCS = null;
 		mCT = null;
 		mASTS = null;
-		mProject = null;
+		mIProject = null;
 		mIReleasePlanDesc = null;
 		mSprintPlanHelper = null;
 		mSprintBacklogHelper = null;
@@ -101,7 +107,7 @@ public class SprintPlanWebServiceTest {
 		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
 		account.save();
 		
-		String projectID = mProject.getName();
+		String projectID = mIProject.getName();
 
 		// 沒有Sprint的時候
 		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, projectID);
@@ -140,7 +146,7 @@ public class SprintPlanWebServiceTest {
 		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
 		account.save();
 
-		String projectID = mProject.getName();
+		String projectID = mIProject.getName();
 
 		// create sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
@@ -154,10 +160,10 @@ public class SprintPlanWebServiceTest {
 
 		StoryWebService mStoryWebService = new StoryWebService(account, projectID);
 
-		List<IStory> storyList = mSprintBacklogHelper.getExistingStories(mIReleasePlanDesc.getID());
+		ArrayList<StoryObject> storyList = mSprintBacklogHelper.getExistingStories();
 
 		for (int i = 0; i < storyList.size(); i++) {
-			JSONArray taskJSONArray = new JSONArray(mStoryWebService.getTaskInStory(String.valueOf(storyList.get(i).getStoryId()))); // 從WebService取得Json
+			JSONArray taskJSONArray = new JSONArray(mStoryWebService.getTasksInStory(storyList.get(i).getId())); // 從WebService取得Json
 			ArrayList<TaskObject> tasksList = mCT.getTaskList();
 			
 			for (int j = 0; j < taskJSONArray.length(); j++) {

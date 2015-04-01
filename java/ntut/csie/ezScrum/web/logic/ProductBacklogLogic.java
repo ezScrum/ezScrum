@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogLogic {
-	private IProject mProject;
+	private ProjectObject mProject;
 	private ProductBacklogMapper mProductBacklogMapper;
 
-	public ProductBacklogLogic(IProject project) {
+	public ProductBacklogLogic(ProjectObject project) {
 		mProject = project;
 		mProductBacklogMapper = new ProductBacklogMapper(mProject);
 	}

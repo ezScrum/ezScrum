@@ -34,7 +34,6 @@ import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -73,8 +72,8 @@ public class ProductBacklogHelperTest {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
-		IProject project1 = mCP.getProjectList().get(0);
-		IProject project2 = mCP.getProjectList().get(1);
+		ProjectObject project1 = mCP.getAllProjects().get(0);
+		ProjectObject project2 = mCP.getAllProjects().get(1);
 
 		mProductBacklogHelper1 = new ProductBacklogHelper(project1);
 		mProductBacklogHelper2 = new ProductBacklogHelper(project2);

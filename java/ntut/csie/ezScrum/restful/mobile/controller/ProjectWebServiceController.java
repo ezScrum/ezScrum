@@ -18,7 +18,8 @@ import org.codehaus.jettison.json.JSONException;
 
 @Path("/")
 public class ProjectWebServiceController {
-	private ProjectWebService service = null;
+	private ProjectWebService mService = null;
+	
 	/***
 	 * 取得所有專案資訊。
 	 * 	Get		http://IP:8080/ezScrum/web-service/projects?userName={userName}&password={password}
@@ -33,8 +34,8 @@ public class ProjectWebServiceController {
 		try {
 			InformationDecoder decodeInformation = new InformationDecoder();
 			decodeInformation.decode( username, password );
-			this.service = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodePwd() );
-			jsonString += this.service.getRESTFulResponseString();
+			mService = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodePwd() );
+			jsonString += mService.getRESTFulResponseString();
 		}catch (LogonException e) {
 			System.out.println( "class: ProjectWebServiceController, " +
 								"method: getProjectList, " +
@@ -69,8 +70,8 @@ public class ProjectWebServiceController {
 		try {
 			InformationDecoder decodeInformation = new InformationDecoder();
 			decodeInformation.decode( username, password,projectID );
-			this.service = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodeUserName(), decodeInformation.getDecodeProjectID() );
-			jsonString += this.service.getRESTFulResponseString();
+			this.mService = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodeUserName(), decodeInformation.getDecodeProjectID() );
+			jsonString += this.mService.getRESTFulResponseString();
 		}catch (LogonException e) {
 			System.out.println(	"class: ProjectWebServiceController, " +
 								"method: getProjectList, " +

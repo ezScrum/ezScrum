@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.restful.service;
+package ntut.csie.ezScrum.restfu.mobilel.service;
 
 import static org.junit.Assert.*;
 import org.junit.After;
