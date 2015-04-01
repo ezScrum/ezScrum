@@ -431,7 +431,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
-		IIssue expectedStory = productBacklogHelper.getIssue(storyId);
+		IIssue expectedStory = productBacklogHelper.getStory(storyId);
 
 		try {
 			FileUtil.delete(targetPath);
@@ -517,7 +517,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
 		
-		IIssue expectedStory = productBacklogHelper.getIssue(stroyId);
+		IIssue expectedStory = productBacklogHelper.getStory(stroyId);
 		task.reload();
 		
 		try {

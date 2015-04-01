@@ -63,7 +63,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 			list.add(issue);
 			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
 		} else if (issueType.equals("Story")){
-			IIssue story = PBHelper.getIssue(issueId);
+			IIssue story = PBHelper.getStory(issueId);
 			result = new StringBuilder(new Translation().translateStoryToJson(story));
 		} else if (issueType.equals("Task")) {
 			TaskObject task = TaskObject.get(issueId);

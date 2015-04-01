@@ -149,19 +149,20 @@ public class ReleasePlanHelper {
 	}
 	
 	// return the releaseID which has the sprintID
-	public String getReleaseID(String sprintID) {
+	public String getReleaseID(long sprintId) {
 		String rid = "0";
 		IReleasePlanDesc[] plans = loadReleasePlans();
 		
 		for (IReleasePlanDesc plan : plans) {
 			if (plan.getSprintDescList() != null) {
 				for (ISprintPlanDesc s_id : plan.getSprintDescList()) {
-					if (s_id.getID().equals(sprintID)) {		// 找到此 sprint 所被包含的 release ID
+					// 找到此 sprint 所被包含的 release ID
+					if (s_id.getID().equals(String.valueOf(sprintId))) {
 						return plan.getID();
 					}
 				}
 			}
-		}		
+		}
 		
 		return rid;
 	}

@@ -191,6 +191,10 @@ public class ProjectObject implements IBaseObject {
 		return TagDAO.getInstance().getTagInProjectByName(mId, name);
 	}
 	
+	public ArrayList<TagObject> getTags() {
+		return TagDAO.getInstance().getTagsByProjectId(mId);
+	}
+	
 	@Override
     public void save() {
 		if (exists()) {

@@ -25,36 +25,6 @@ import org.codehaus.jettison.json.JSONObject;
 public class Translation {
 	public Translation() { /* empty */}
 
-	// useless
-	public String translateStory(IIssue[] stories) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("<ProductBacklog>");
-		sb.append("<Total>" + stories.length + "</Total>");
-		for (int i = 0; i < stories.length; i++) {
-			sb.append("<Story>");
-			sb.append("<Id>" + stories[i].getIssueID() + "</Id>");
-			sb.append("<Link>" + TranslateChar.TranslateXMLChar(stories[i].getIssueLink()) + "</Link>");
-			sb.append("<Name>" + TranslateChar.TranslateXMLChar(stories[i].getSummary()) + "</Name>");
-			sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-			sb.append("<Estimate>" + stories[i].getEstimated() + "</Estimate>");
-			sb.append("<Status>" + stories[i].getStatus() + "</Status>");
-			sb.append("<Notes>" + TranslateChar.TranslateXMLChar(stories[i].getNotes()) + "</Notes>");
-			sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(stories[i].getHowToDemo()) + "</HowToDemo>");
-			sb.append("<Release>" + TranslateChar.HandleNullString(stories[i].getReleaseID()) + "</Release>");
-			sb.append("<Sprint>" + TranslateChar.HandleNullString(stories[i].getSprintID()) + "</Sprint>");
-			sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(stories[i].getTags(), ",")) + "</Tag>");
-			if (stories[i].getAttachFiles().size() == 0) sb.append("<Attach>false</Attach>");
-			else sb.append("<Attach>true</Attach>");
-			sb.append("</Story>");
-		}
-
-		sb.append("</ProductBacklog>");
-
-		return sb.toString();
-	}
-
 	// for GetEditStoryInfoAction
 	public String translateStory(IIssue story) {
 		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
@@ -183,43 +153,43 @@ public class Translation {
 		return obj.toString();
 	}
 
-	public String translateStoryToJson(IIssue story) {
-		IIssue[] data = new IIssue[1];
-		data[0] = story;
-		return this.translateStoryToJson(data);
+	public String translateStoryToJson(StoryObject story) {
+		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
+		storie.add(story);
+		return translateStoryToJson(storie);
 	}
 
 	// for ShowProductBacklogAction
-	public String translateStoryToJson(IIssue[] stories) {
+	public String translateStoryToJson(ArrayList<StoryObject> stories) {
 		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
 
 		JsonObject obj = new JsonObject();
 
 		obj.append("success", true);
-		obj.append("Total", stories.length);
+		obj.append("Total", stories.size());
 
 		JsonArray jsonStroies = new JsonArray();
-		for (int i = 0; i < stories.length; i++) {
+		for (int i = 0; i < stories.size(); i++) {
 			JsonObject jsonStory = new JsonObject();
 
-			jsonStory.append("Id", stories[i].getIssueID());
-			jsonStory.append("Name", TranslateChar.TranslateJSONChar((stories[i].getSummary())));
-			jsonStory.append("Value", stories[i].getValue());
-			jsonStory.append("Estimate", stories[i].getEstimated());
-			jsonStory.append("Importance", stories[i].getImportance());
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories[i].getTags(), ",")));
-			jsonStory.append("Status", stories[i].getStatus());
-			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories[i].getNotes()));
-			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories[i].getHowToDemo()));
-			jsonStory.append("Link", TranslateChar.TranslateJSONChar(stories[i].getIssueLink()));
-			jsonStory.append("Release", TranslateChar.HandleNullString(stories[i].getReleaseID()));
-			jsonStory.append("Sprint", TranslateChar.HandleNullString(stories[i].getSprintID()));
-			jsonStory.append("FilterType", getFilterType(stories[i]));
+			jsonStory.append("Id", stories.get(i).getId());
+			jsonStory.append("Name", TranslateChar.TranslateJSONChar((stories.get(i).getName())));
+			jsonStory.append("Value", stories.get(i).getValue());
+			jsonStory.append("Estimate", stories.get(i).getEstimate());
+			jsonStory.append("Importance", stories.get(i).getImportance());
+			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
+			jsonStory.append("Status", stories.get(i).getStatus());
+			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories.get(i).getNotes()));
+			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
+			jsonStory.append("Link", "");
+			jsonStory.append("Release", "");
+			jsonStory.append("Sprint", stories.get(i).getSprintId());
+			jsonStory.append("FilterType", getFilterType(stories.get(i)));
 
-			if (stories[i].getAttachFiles().size() == 0) jsonStory.append("Attach", false);
+			if (stories.get(i).getAttachFiles().size() == 0) jsonStory.append("Attach", false);
 			else jsonStory.append("Attach", true);
 
-			ArrayList<AttachFileObject> files = stories[i].getAttachFiles();
+			ArrayList<AttachFileObject> files = stories.get(i).getAttachFiles();
 			JsonArray jsonFiles = new JsonArray();
 			for (AttachFileObject file : files) {
 				JsonObject jsonFile = new JsonObject();
@@ -227,13 +197,13 @@ public class Translation {
 				jsonFile.append("FileId", file.getId());
 				jsonFile.append("FileName", TranslateChar.TranslateJSONChar(file.getName()));
 
-				// parse Dateformat as Gson Default DateFormat (TaskBoard page)嚗� Taskboard ��交��澆�蝯曹�(銝��憪������Gson�瑕撟怨���
+				// parse Dateformat as Gson Default DateFormat (TaskBoard page)
 				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT);
 				Date date = new Date(file.getCreateTime());
 				String attachTime = dateFormat.format(date);
+				ProjectObject project = ProjectObject.get(stories.get(i).getId());
 				jsonFile.append("UploadDate", attachTime);
-				jsonFile.append("FilePath", "fileDownload.do?projectName=" + stories[i].getProjectName() + "&fileId=" + file.getId()
-						+ "&fileName=" + file.getName());
+				jsonFile.append("FilePath", "fileDownload.do?projectName=" + project.getName() + "&fileId=" + file.getId() + "&fileName=" + file.getName());
 				jsonFiles.append(jsonFile);
 			}
 			jsonStory.append("AttachFileList", jsonFiles);
@@ -336,20 +306,20 @@ public class Translation {
 		return obj.toString();
 	}
 
-	private String getFilterType(IIssue story) {
+	private String getFilterType(StoryObject storyObject) {
 
 		// status 為 Done
-		if (story.getStatus().equals(ITSEnum.S_CLOSED_STATUS)) {
+		if (storyObject.getStatus() == StoryObject.STATUS_DONE) {
 			return ScrumEnum.DONE;
 		}
 
 		// business value 存在 & estimate 存在 & importance 存在
-		if (((story.getValue() != null) && (!story.getValue().equals("0"))) &&
-		        ((story.getEstimated() != null) && (!story.getEstimated().equals("0"))) &&
-		        ((story.getImportance() != null) && (!story.getImportance().equals("0")))) {
+		if (((!(storyObject.getValue() == 0))) &&
+		    ((!(storyObject.getEstimate() == 0))) &&
+		    ((!(storyObject.getImportance() == 0)))) {
 
 			// status 為 new
-			if (story.getStatus().equals(ITSEnum.S_NEW_STATUS)) {
+			if (storyObject.getStatus() == StoryObject.NO_PARENT) {
 				return ScrumEnum.DETAIL;
 			}
 		}

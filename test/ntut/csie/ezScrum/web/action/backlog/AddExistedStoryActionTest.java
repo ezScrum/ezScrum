@@ -141,7 +141,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession(), mProject);
 
 		for (StoryObject story : mCPB.getStories()) {
-			String releaseID = productBacklogHelper.getIssue(story.getId())
+			String releaseID = productBacklogHelper.getStory(story.getId())
 					.getReleaseID();
 			assertEquals(Integer.toString(mCR.getReleaseCount()),
 					releaseID);

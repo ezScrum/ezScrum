@@ -176,7 +176,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 	 * @throws SQLException 
 	 */
 	public void readStoryHistory(long storyId) throws SQLException {
-		IIssue issue = mProductBacklogHelper.getIssue(storyId);
+		IIssue issue = mProductBacklogHelper.getStory(storyId);
 		if (issue.getHistories().size() > 0) {
 			try {
 				mResponseString = mConvertProductBacklog.getStoryHistory(issue.getHistories());
