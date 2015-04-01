@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.helper.TaskboardHelper;
+import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -38,6 +38,6 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 		String name = "ALL";
 		if (request.getParameter("UserID") != null) name = request.getParameter("UserID");	// filter name
 
-		return new TaskboardHelper(project, session, sprintID).getTaskBoardStoryTaskListTest(name);
+		return new TaskBoardHelper(project, session, sprintID).getTaskBoardStoryTaskListText(name);
 	}
 }

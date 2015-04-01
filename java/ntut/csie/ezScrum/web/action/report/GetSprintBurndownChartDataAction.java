@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
-import ntut.csie.ezScrum.web.helper.TaskboardHelper;
+import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -32,7 +32,7 @@ public class GetSprintBurndownChartDataAction extends Action {
 		String sprintID = request.getParameter("SprintID");
 		String type = request.getParameter("Type");
 		// 拿出SprintBurndownChart的資料
-		String responseText = new TaskboardHelper(project, session, sprintID).getSprintBurndownChartDataResponseText(type);
+		String responseText = new TaskBoardHelper(project, session, sprintID).getSprintBurndownChartDataResponseText(type);
 
 		try {
 			response.setContentType("text/html; charset=utf-8");

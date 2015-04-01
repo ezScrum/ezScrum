@@ -92,6 +92,7 @@ public class SprintBacklogMapper {
 	}
 
 	public ArrayList<StoryObject> getAllStories() {
+		mUpdateFlag = true;
 		refresh();
 		return mStories;
 	}

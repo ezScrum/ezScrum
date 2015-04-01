@@ -2,17 +2,15 @@ package ntut.csie.ezScrum.web.helper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -22,12 +20,11 @@ import ntut.csie.jcis.resource.core.IProject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class TaskboardHelper {
-	private IProject project;
-	private IUserSession userSession;
-	private SprintBacklogLogic sprintBacklogLogic;
-	private SprintBacklogMapper sprintBacklogMapper;
-	private String sprintID;
+public class TaskBoardHelper {
+	private IProject mProject;
+	private SprintBacklogLogic mSprintBacklogLogic;
+	private SprintBacklogMapper mSprintBacklogMapper;
+	private long mSprintId;
 
 	/**
 	 * for web service
@@ -35,19 +32,17 @@ public class TaskboardHelper {
 	 * @param project
 	 * @param userSession
 	 */
-	public TaskboardHelper(IProject project, IUserSession userSession) {
-		this.project = project;
-		this.userSession = userSession;
-		this.sprintBacklogLogic = new SprintBacklogLogic(this.project, this.userSession, null);
-		this.sprintBacklogMapper = this.sprintBacklogLogic.getSprintBacklogMapper();
+	public TaskBoardHelper(IProject project) {
+		mProject = project;
+		mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	public TaskboardHelper(IProject project, IUserSession userSession, String sprintID) {
-		this.project = project;
-		this.userSession = userSession;
-		this.sprintID = sprintID;
-		this.sprintBacklogLogic = new SprintBacklogLogic(this.project, this.userSession, this.sprintID);
-		this.sprintBacklogMapper = this.sprintBacklogLogic.getSprintBacklogMapper();
+	public TaskBoardHelper(IProject project, long sprintID) {
+		mProject = project;
+		mSprintId = sprintID;
+		mSprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 	
 	/**
@@ -55,11 +50,11 @@ public class TaskboardHelper {
 	 */
 	public String getSprintBurndownChartDataResponseText(String type) {
 		String responseText = "";
-		int sprintCount = (new SprintPlanHelper(project).loadListPlans()).size();
+		int sprintCount = (new SprintPlanHelper(mProject).loadListPlans()).size();
 		// backlog = null 代表沒有Sprint資訊
 		if (sprintCount != 0) {
 			// Get TaskBoard Data
-			TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
+			TaskBoard taskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 			// Get Sprint Data
 			if (taskBoard != null) {
 				Translation tans = new Translation();
@@ -81,17 +76,17 @@ public class TaskboardHelper {
 	public StringBuilder getSprintInfoForTaskBoardText() {
 		SprintInfoUI sprintInfoUI = null;
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
-		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0)) {
-			int currentSprintID = sprintBacklogMapper.getSprintId();
-			double currentPoint = sprintBacklogLogic.getUnclosePoint(ScrumEnum.STORY_ISSUE_TYPE);
-			double currentHours = sprintBacklogLogic.getUnclosePoint(ScrumEnum.TASK_ISSUE_TYPE);
+		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
+			int currentSprintID = mSprintBacklogMapper.getSprintId();
+			double currentPoint = mSprintBacklogLogic.getStoryUnclosedPoints();
+			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
-			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
+			ReleasePlanHelper rpHelper = new ReleasePlanHelper(mProject);
 			String releaseID = rpHelper.getReleaseID(Integer.toString(currentSprintID));
-			if (sprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
+			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
-			sprintInfoUI = new SprintInfoUI(currentSprintID, sprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseID, isCurrentSprint);
+			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseID, isCurrentSprint);
 		} else {
 			sprintInfoUI = new SprintInfoUI();
 		}
@@ -101,18 +96,20 @@ public class TaskboardHelper {
 	
 	/**
 	 * 將TaskBoard上所顯示的Story與Task以json方式丟出資料
+	 * 
+	 * @param filterName the handler's name you want to filter
 	 */
-	public StringBuilder getTaskBoardStoryTaskListTest(String name) {
+	public StringBuilder getTaskBoardStoryTaskListText(String filterName) {
 		int storyLength = 0;
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
-		if ((sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0)) {
-			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
-			Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklogMapper.getTasksMap(); 	// 取出Sprint中所有的task
-			stories = this.filterStory(stories, taskMap, name);					// filter story
+		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
+			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
+			HashMap<Long, ArrayList<TaskObject>> storyToTasks = getStoryToTasksMap(stories);
+			stories = filterStory(stories, storyToTasks, filterName);					// filter story
 
-			for (IIssue story : stories) {
-				storyList.add(create_TaskBoard_Story(story, taskMap.get(story.getIssueID())));
+			for (StoryObject story : stories) {
+				storyList.add(createTaskBoardStory(story, storyToTasks.get(story.getId())));
 			}
 			storyLength = stories.size();
 		}
@@ -138,43 +135,43 @@ public class TaskboardHelper {
 
 		public SprintInfoUI() {}
 
-		public SprintInfoUI(int ID, String goal, double sp, double tp, String rid, boolean current) {
-			this.ID = ID;
-			this.SprintGoal = goal;
-			this.CurrentStoryPoint = sp;
-			this.CurrentTaskPoint = tp;
-			this.ReleaseID = "Release #" + rid;
-			this.isCurrentSprint = current;
+		public SprintInfoUI(int id, String goal, double sp, double tp, String rid, boolean current) {
+			id = id;
+			SprintGoal = goal;
+			CurrentStoryPoint = sp;
+			CurrentTaskPoint = tp;
+			ReleaseID = "Release #" + rid;
+			isCurrentSprint = current;
 		}
 	}
 	
-	private List<IIssue> filterStory(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskmap, String filtername) {
-		List<IIssue> filterissues = new LinkedList<IIssue>();
+	private ArrayList<StoryObject> filterStory(ArrayList<StoryObject> stories, Map<Long, ArrayList<TaskObject>> storyToTasksMap, String filtername) {
+		ArrayList<StoryObject> filterStories = new ArrayList<StoryObject>();
 		// All member, return all story
 		if (filtername.equals("ALL") || filtername.length() == 0) {
 			return stories;
 		} else {
 			// filter member name by handler, return the story and task map relation
-			for (IIssue story : stories) {
-				ArrayList<TaskObject> tasks = taskmap.get(story.getIssueID());
+			for (StoryObject story : stories) {
+				ArrayList<TaskObject> tasks = storyToTasksMap.get(story.getId());
 				if (tasks != null) {
-					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
+					ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
 
 					for (TaskObject task : tasks) {
 						String handlerUserName = task.getHandler() != null ? task.getHandler().getUsername() : "";
 						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
-							filtertask.add(task);
+							filteredTasks.add(task);
 						}
 					}
 
-					if (filtertask.size() > 0) {
+					if (filteredTasks.size() > 0) {
 						// cover new filter map
-						taskmap.put(story.getIssueID(), filtertask);
-						filterissues.add(story);
+						storyToTasksMap.put(story.getId(), filteredTasks);
+						filterStories.add(story);
 					}
 				}
 			}
-			return filterissues;
+			return filterStories;
 		}
 	}
 
@@ -190,7 +187,7 @@ public class TaskboardHelper {
 		return false;
 	}
 
-	private TaskBoard_Story create_TaskBoard_Story(IIssue story, ArrayList<TaskObject> tasks) {
+	private TaskBoard_Story createTaskBoardStory(StoryObject story, ArrayList<TaskObject> tasks) {
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
 
 		if (tasks != null) {
@@ -202,11 +199,7 @@ public class TaskboardHelper {
 	}
 
 	/**
-	 * 嚙磊嚙踝蕭嚙瞌嚙踝蕭嚙豎也嚙磅嚙踝蕭嚙緣嚙瞌嚙踝蕭嚙誕堆蕭
-	 * Inner Class嚙璀嚙瞎嚙踝蕭峔荓NStory嚙踝蕭Task嚙賞成GSon嚙箠嚙瘡嚙賞換嚙踝蕭嚙踝蕭嚙踝蕭
-	 * 
 	 * @author OPH
-	 * 
 	 */
 	Translation tr = new Translation();
 
@@ -227,20 +220,20 @@ public class TaskboardHelper {
 		List<TaskBoard_AttachFile> AttachFileList;
 		ArrayList<TaskBoard_Task> Tasks;
 
-		public TaskBoard_Story(IIssue story) {
-			Id = Long.toString(story.getIssueID());
-			Name = HandleSpecialChar(story.getSummary());
-			Value = story.getValue();
-			Estimate = story.getEstimated();
-			Importance = story.getImportance();
+		public TaskBoard_Story(StoryObject story) {
+			Id = String.valueOf(story.getId());
+			Name = HandleSpecialChar(story.getName());
+			Value = String.valueOf(story.getValue());
+			Estimate = String.valueOf(story.getEstimate());
+			Importance = String.valueOf(story.getImportance());
 			Tag = tr.Join(story.getTags(), ",");
-			Status = story.getStatus();
+			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
-			Release = story.getReleaseID();
-			Sprint = story.getSprintID();
+			Release = "";
+			Sprint = String.valueOf(story.getSprintId());
 
-			Link = story.getIssueLink();
+			Link = "";
 			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
 			if (!AttachFileList.isEmpty()) Attach = true;
@@ -299,13 +292,12 @@ public class TaskboardHelper {
 		}
 	}
 
-
-	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, List<AttachFileObject> list) {
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(StoryObject story, List<AttachFileObject> list) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
 		for (AttachFileObject file : list) {
 			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(), "fileDownload.do?projectName="
-			        + story.getProjectName() + "&fileId=" + file.getId() + "&fileName=" + file.getName()
+			        + ProjectObject.get(story.getProjectId()).getName() + "&fileId=" + file.getId() + "&fileName=" + file.getName()
 			        , new Date(file.getCreateTime())));
 		}
 		return array;
@@ -330,5 +322,13 @@ public class TaskboardHelper {
 		}
 
 		return str;
+	}
+	
+	private HashMap<Long, ArrayList<TaskObject>> getStoryToTasksMap(ArrayList<StoryObject> stories) {
+		HashMap<Long, ArrayList<TaskObject>> storyToTasks = new HashMap<Long, ArrayList<TaskObject>>();
+		for (StoryObject story : stories) {
+			storyToTasks.put(story.getId(), story.getTasks());
+		}
+		return storyToTasks;
 	}
 }
