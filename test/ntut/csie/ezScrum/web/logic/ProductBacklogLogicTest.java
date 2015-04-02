@@ -1,6 +1,9 @@
 package ntut.csie.ezScrum.web.logic;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -10,6 +13,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -199,11 +203,57 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testGetUnclosedStories() {
+		// get stories in sprint
+		StoryObject story1 = mASTS.getStories().get(0);
+		StoryObject story2 = mASTS.getStories().get(1);
+		StoryObject story3 = mASTS.getStories().get(2);
+		StoryObject story4 = mASTS.getStories().get(3);
+		StoryObject story5 = mASTS.getStories().get(4);
+		StoryObject story6 = mASTS.getStories().get(5);
+		// set importance
+		story1.setImportance(20).save();
+		story2.setImportance(5).save();
+		story3.setImportance(8).save();
+		// close story 4~6
+		story4.setStatus(StoryObject.STATUS_DONE).save();
+		story5.setStatus(StoryObject.STATUS_DONE).save();
+		story6.setStatus(StoryObject.STATUS_DONE).save();
 		
+		// call GetUnclosedStories
+		ArrayList<StoryObject> actualStories = mProductBacklogLogic.getUnclosedStories();
+		
+		// assert
+		assertEquals(3, actualStories.size());
+		assertEquals(story2.getId(), actualStories.get(0).getId());
+		assertEquals(story3.getId(), actualStories.get(1).getId());
+		assertEquals(story1.getId(), actualStories.get(2).getId());
 	}
 	
 	@Test
 	public void testGetAddableStories() {
-		
+		// get stories in sprint
+		StoryObject story1 = mASTS.getStories().get(0);
+		StoryObject story2 = mASTS.getStories().get(1);
+		StoryObject story3 = mASTS.getStories().get(2);
+		StoryObject story4 = mASTS.getStories().get(3);
+		StoryObject story5 = mASTS.getStories().get(4);
+		StoryObject story6 = mASTS.getStories().get(5);
+		// remove from sprint
+		story1.setSprintId(StoryObject.NO_PARENT).save();
+		story3.setSprintId(StoryObject.NO_PARENT).save();
+		story5.setSprintId(StoryObject.NO_PARENT).save();
+		// close story
+		story2.setStatus(StoryObject.STATUS_DONE).save();
+		story4.setStatus(StoryObject.STATUS_DONE).save();
+		story6.setStatus(StoryObject.STATUS_DONE).save();
+
+		// call GetUnclosedStories
+		ArrayList<StoryObject> actualStories = mProductBacklogLogic.getAddableStories();
+
+		// assert
+		assertEquals(3, actualStories.size());
+		assertEquals(story1.getId(), actualStories.get(0).getId());
+		assertEquals(story3.getId(), actualStories.get(1).getId());
+		assertEquals(story5.getId(), actualStories.get(2).getId());
 	}
 }
