@@ -82,7 +82,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	 * 沒有stories and tasks
 	 */
 	public void testShowSprintBacklogListInfo_1(){
-		List<String> idList = mCS.getSprintIDList();
+		List<String> idList = mCS.getSprintIdList();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -110,7 +110,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	 * @throws Exception 
 	 */
 	public void testShowSprintBacklogListInfo_2() throws Exception{
-		List<String> idList = mCS.getSprintIDList();
+		List<String> idList = mCS.getSprintIdList();
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 5;
@@ -167,7 +167,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	}
 	
 	public void testShowSprintBacklogListInfo_3() throws Exception {
-		List<String> idList = mCS.getSprintIDList();
+		List<String> idList = mCS.getSprintIdList();
 		int sprintID = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;

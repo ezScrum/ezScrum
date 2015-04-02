@@ -50,7 +50,7 @@ public class ProductBacklogMapper {
 	}
 
 	// get all stories by release
-	public ArrayList<StoryObject> getStoryByRelease(String releaseId, String sprintId) {
+	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
 		

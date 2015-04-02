@@ -239,7 +239,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.getHowToDemo();
 		String expectedStoryNote = ASTS.getStories().get(0).getNotes();
 		long storyId = ASTS.getStories().get(0).getId();
-		String SprintId = CS.getSprintIDList().get(0);
+		String SprintId = CS.getSprintIdList().get(0);
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, mProject);
 		request.getSession().setAttribute("UserSession",

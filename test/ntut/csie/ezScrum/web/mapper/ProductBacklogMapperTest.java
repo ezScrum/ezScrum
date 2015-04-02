@@ -170,7 +170,7 @@ public class ProductBacklogMapperTest {
 		mASTS.exe();
 		
 		// test getStoriesByRelease
-		ArrayList<StoryObject> storie = mProductBacklogMapper.getStoryByRelease(mCR.getReleaseList().get(0).getID(), createSprint.getSprintIDList().get(0));
+		ArrayList<StoryObject> storie = mProductBacklogMapper.getStoriesByRelease(mCR.getReleaseList().get(0).getID());
 		// assert
 		assertEquals(storyCount, storie.size());
 	}

@@ -95,7 +95,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIdList().get(0));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -110,8 +110,8 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(mCS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
-		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIDList().get(0), sprintInfo.SprintGoal);
+		assertEquals(mCS.getSprintIdList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIdList().get(0), sprintInfo.SprintGoal);
 		assertEquals(STORY_COUNT * STORY_EST, storyPoint.intValue());
 		assertEquals(STORY_COUNT * TASK_COUNT * TASK_EST, taskPoint.intValue());
 		assertEquals("Release #0", sprintInfo.ReleaseID);
@@ -156,8 +156,8 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(mCS.getSprintIDList().get(0), String.valueOf(sprintInfo.ID));
-		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIDList().get(0), sprintInfo.SprintGoal);
+		assertEquals(mCS.getSprintIdList().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintIdList().get(0), sprintInfo.SprintGoal);
 		assertEquals((STORY_COUNT - 1) * STORY_EST, storyPoint.intValue());				// done 1個story
 		assertEquals((STORY_COUNT * TASK_COUNT - 2) * TASK_EST, taskPoint.intValue());	// done 2個task
 		assertEquals("Release #0", sprintInfo.ReleaseID);
