@@ -59,7 +59,7 @@ public class TaskBoardHelperTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 		
-		long sprintId = Long.parseLong(mCS.getSprintIDList().get(0));
+		long sprintId = Long.parseLong(mCS.getSprintIdList().get(0));
 		mTaskBoardHelper = new TaskBoardHelper(mCP.getProjectList().get(0), sprintId);
 	}
 	

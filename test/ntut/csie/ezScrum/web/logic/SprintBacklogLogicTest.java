@@ -66,7 +66,7 @@ public class SprintBacklogLogicTest {
 		mATTS.exe();
 
 		IProject project = mCP.getProjectList().get(0);
-		String sprintId = mCS.getSprintIDList().get(0);
+		long sprintId = mCS.getSprintIdList().get(0);
 		mSprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 	}
 

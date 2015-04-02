@@ -90,7 +90,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	}
 
 	public void testShowSprintBacklogTreeListInfo() throws Exception {
-		List<String> idList = mCS.getSprintIDList();
+		List<String> idList = mCS.getSprintIdList();
 		int sprintId = Integer.parseInt(idList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;
@@ -140,7 +140,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest1() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -183,7 +183,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest2() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -230,7 +230,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest3() throws Exception {
 		// 加入1個 Sprint
-		int sprintId = Integer.valueOf(mCS.getSprintIDList().get(0));
+		int sprintId = Integer.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -282,7 +282,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest1() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -324,7 +324,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest2() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -387,7 +387,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowTaskHistoryTest3() throws Exception {
 		// 加入1個 Sprint
-		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIdList().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
@@ -447,7 +447,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 * change task handler
 	 */
 	public void testShowTaskHistoryTest4() throws Exception {
-		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIdList().get(0));
 		
 		// Sprint 加入1個 Story
 		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
@@ -521,7 +521,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String issueId = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIdList().get(0));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("issueType", "Unplanned");
 
@@ -577,7 +577,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String issueID = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIdList().get(0));
 		addRequestParameter("issueID", issueID);
 		addRequestParameter("issueType", "Unplanned");
 
@@ -641,7 +641,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String issueId = String.valueOf(mCUI.getIdList().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("sprintID", mCS.getSprintIdList().get(0));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("issueType", "Unplanned");
 

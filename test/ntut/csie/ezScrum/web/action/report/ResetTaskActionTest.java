@@ -90,7 +90,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		IProject project = mCP.getProjectList().get(0);
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), mCS.getSprintIdList().get(0));
 
 		// ================== set parameter info ====================
 		addRequestParameter("Id", String.valueOf(taskId)); // 取得第一筆 Task ID

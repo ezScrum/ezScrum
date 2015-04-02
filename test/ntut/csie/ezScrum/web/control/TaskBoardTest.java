@@ -61,7 +61,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mConfig.getUserSession(), mCS.getSprintIdList().get(0));
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 		
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);

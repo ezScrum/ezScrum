@@ -82,7 +82,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 	 * 測試有一個 Droped Task 的情況
 	 */
 	public void testAddExistedTask() throws Exception {
-		long sprintId = Long.valueOf(mCS.getSprintIDList().get(0));
+		long sprintId = Long.valueOf(mCS.getSprintIdList().get(0));
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, (int) sprintId, mCP,
 				CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
