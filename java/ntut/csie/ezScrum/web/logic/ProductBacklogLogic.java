@@ -53,6 +53,10 @@ public class ProductBacklogLogic {
 		return stories;
 	}
 	
+	/**
+	 * 取出可以被加到 sprint 的 stories，story 為 unclosed 且沒有被加到 sprint 內
+	 * @return
+	 */
 	public ArrayList<StoryObject> getAddableStories() {
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 		for (StoryObject story : getUnclosedStories()) {

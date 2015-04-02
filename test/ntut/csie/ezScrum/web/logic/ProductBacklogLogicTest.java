@@ -203,7 +203,7 @@ public class ProductBacklogLogicTest {
 	}
 	
 	@Test
-	public void testAddableStories() {
+	public void testGetAddableStories() {
 		
 	}
 }
