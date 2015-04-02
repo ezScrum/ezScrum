@@ -21,7 +21,7 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * 
 	 * @return
 	 */
@@ -32,7 +32,7 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * @param release
 	 * @return
 	 */
@@ -45,12 +45,21 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * Unclosed Issues 根據IMPORTANCE排順序
-	 * @param category
+	 * Unclosed story 根據 IMPORTANCE 排順序
 	 */
 	public ArrayList<StoryObject> getUnclosedStories() {
 		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
 		stories = sortStoriesByImportance(stories);
+		return stories;
+	}
+	
+	public ArrayList<StoryObject> getAddableStories() {
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : getUnclosedStories()) {
+			if (story.getSprintId() <= 0) {
+				stories.add(story);
+			}
+		}
 		return stories;
 	}
 

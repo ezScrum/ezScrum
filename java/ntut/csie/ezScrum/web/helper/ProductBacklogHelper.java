@@ -65,6 +65,10 @@ public class ProductBacklogHelper {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(desc);
 		return stories;
 	}
+	
+	public ArrayList<StoryObject> getAddableStories() {
+		return mProductBacklogLogic.getAddableStories();
+	}
 
 	/**
 	 * 更新 Story 資訊

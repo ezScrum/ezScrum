@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -70,10 +69,9 @@ public class ProductBacklogHelperTest {
 		// 新增 Project
 		mCP = new CreateProject(ProjectCount);
 		mCP.exeCreate();
-		
+
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
-		
 
 		IProject project1 = mCP.getProjectList().get(0);
 		IProject project2 = mCP.getProjectList().get(1);
@@ -246,7 +244,7 @@ public class ProductBacklogHelperTest {
 		// create 1 story in each project
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-				
+
 		// 新增 Tag
 		mProductBacklogHelper1.addNewTag("Tag");
 		mProductBacklogHelper1.addNewTag("Project1_Tag1");
@@ -296,7 +294,7 @@ public class ProductBacklogHelperTest {
 		// create 1 story in each project
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-				
+
 		// 新增 Tag
 		mProductBacklogHelper1.addNewTag("Tag");
 		mProductBacklogHelper1.addNewTag("Project1_Tag1");
@@ -453,7 +451,7 @@ public class ProductBacklogHelperTest {
 
 	// 驗證 Story 狀態為 Done 時，不顯示
 	@Test
-	public void testGetAddableStories1() {
+	public void testGetUnclosedStories1() {
 		mCPB = new CreateProductBacklog(10, mCP);
 		mCPB.exe(); // 新增十筆 Story
 
@@ -461,15 +459,16 @@ public class ProductBacklogHelperTest {
 		CS.exe(); // 新增一筆 Sprint
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mCP
-				.getProjectList().get(0), null);
+				.getProjectList().get(0), -1);
 
 		// 將第一筆 Story Done
-		sprintBacklogLogic.closeStory(mCPB.getStories().get(0).getId(),
-				"TEST_STORY_NOTE_" + "1", mCPB.getStories().get(0).getNotes(),
-				new Date());
+		String changeDate = "2015/03/30-11:35:27";
+		sprintBacklogLogic.getSprintBacklogMapper().closeStory(
+				mCPB.getStories().get(0).getId(), "TEST_STORY_NOTE_" + "1",
+				mCPB.getStories().get(0).getNotes(), changeDate);
 
 		ArrayList<StoryObject> unclosedStories = mProductBacklogLogic1
-				.getAddableStories();
+				.getUnclosedStories();
 		assertEquals(9, unclosedStories.size());
 
 		// 從 ID 第二筆開始驗證
@@ -484,11 +483,12 @@ public class ProductBacklogHelperTest {
 		}
 
 		// 將第十筆 Story Done
-		sprintBacklogLogic.closeStory(mCPB.getStories().get(9).getId(),
-				"TEST_STORY_NOTE_" + "10", mCPB.getStories().get(9).getNotes(),
-				new Date());
+		changeDate = "2015/03/30-11:45:27";
+		sprintBacklogLogic.getSprintBacklogMapper().closeStory(
+				mCPB.getStories().get(9).getId(), "TEST_STORY_NOTE_" + "10",
+				mCPB.getStories().get(9).getNotes(), changeDate);
 
-		unclosedStories = mProductBacklogLogic1.getAddableStories();
+		unclosedStories = mProductBacklogLogic1.getUnclosedStories();
 		assertEquals(8, unclosedStories.size());
 
 		// 從 ID 第二筆開始驗證到第九筆
@@ -505,7 +505,7 @@ public class ProductBacklogHelperTest {
 
 	// 驗證 Story 存在於 Sprint 內，被查詢時不能出現
 	@Test
-	public void testGetAddableStories3() throws Exception {
+	public void testGetAddableStories1() throws Exception {
 		mCPB = new CreateProductBacklog(10, mCP);
 		mCPB.exe(); // 新增十筆 Story
 
@@ -517,19 +517,19 @@ public class ProductBacklogHelperTest {
 		storyIds.add(mCPB.getStories().get(0).getId());
 		mProductBacklogLogic1.addStoriesToSprint(storyIds, 1);
 
-		ArrayList<StoryObject> unclosedStories = mProductBacklogLogic1
+		ArrayList<StoryObject> addableStories = mProductBacklogLogic1
 				.getAddableStories();
-		assertEquals(9, unclosedStories.size());
+		assertEquals(9, addableStories.size());
 
 		// 從 ID 第二筆開始驗證
-		for (int i = 0; i < unclosedStories.size(); i++) {
-			assertEquals((i + 2), unclosedStories.get(i).getId());
+		for (int i = 0; i < addableStories.size(); i++) {
+			assertEquals((i + 2), addableStories.get(i).getId());
 			assertEquals("TEST_STORY_DEMO_" + Long.toString(i + 2),
-					unclosedStories.get(i).getHowToDemo());
-			assertEquals("TEST_STORY_" + Long.toString(i + 2), unclosedStories
+					addableStories.get(i).getHowToDemo());
+			assertEquals("TEST_STORY_" + Long.toString(i + 2), addableStories
 					.get(i).getName());
 			assertEquals("TEST_STORY_NOTE_" + Long.toString(i + 2),
-					unclosedStories.get(i).getNotes());
+					addableStories.get(i).getNotes());
 		}
 
 		// 再將三筆 Story 加入 Sprint 1 內
@@ -538,24 +538,24 @@ public class ProductBacklogHelperTest {
 		storyIds.add(mCPB.getStories().get(3).getId());
 		mProductBacklogLogic1.addStoriesToSprint(storyIds, 1);
 
-		unclosedStories = mProductBacklogLogic1.getAddableStories();
-		assertEquals(6, unclosedStories.size());
+		addableStories = mProductBacklogLogic1.getAddableStories();
+		assertEquals(6, addableStories.size());
 
 		// 從 ID 第二筆開始驗證
-		for (int i = 0; i < unclosedStories.size(); i++) {
-			assertEquals((i + 5), unclosedStories.get(i).getId());
+		for (int i = 0; i < addableStories.size(); i++) {
+			assertEquals((i + 5), addableStories.get(i).getId());
 			assertEquals("TEST_STORY_DEMO_" + Long.toString(i + 5),
-					unclosedStories.get(i).getHowToDemo());
-			assertEquals("TEST_STORY_" + Long.toString(i + 5), unclosedStories
+					addableStories.get(i).getHowToDemo());
+			assertEquals("TEST_STORY_" + Long.toString(i + 5), addableStories
 					.get(i).getName());
 			assertEquals("TEST_STORY_NOTE_" + Long.toString(i + 5),
-					unclosedStories.get(i).getNotes());
+					addableStories.get(i).getNotes());
 		}
 	}
 
 	// 驗證 Story 存在於 Sprint 而 Sprint 存在於 Release 內，被查詢時不能出現
 	@Test
-	public void testGetAddableStories5() throws Exception {
+	public void testGetAddableStories2() throws Exception {
 		mCPB = new CreateProductBacklog(10, mCP);
 		mCPB.exe(); // 新增十筆 Story
 
@@ -576,19 +576,19 @@ public class ProductBacklogHelperTest {
 		mProductBacklogLogic1.addStoriesToSprint(storyIds, 1);
 
 		// 驗證顯示剩下的 6-10 筆 StoryID
-		ArrayList<StoryObject> unclosedStories = mProductBacklogLogic1
+		ArrayList<StoryObject> addableStories = mProductBacklogLogic1
 				.getAddableStories();
-		assertEquals(5, unclosedStories.size());
+		assertEquals(5, addableStories.size());
 
 		// 從 ID 第六筆開始驗證
-		for (int i = 0; i < unclosedStories.size(); i++) {
-			assertEquals((i + 6), unclosedStories.get(i).getId());
+		for (int i = 0; i < addableStories.size(); i++) {
+			assertEquals((i + 6), addableStories.get(i).getId());
 			assertEquals("TEST_STORY_DEMO_" + Long.toString(i + 6),
-					unclosedStories.get(i).getHowToDemo());
-			assertEquals("TEST_STORY_" + Long.toString(i + 6), unclosedStories
+					addableStories.get(i).getHowToDemo());
+			assertEquals("TEST_STORY_" + Long.toString(i + 6), addableStories
 					.get(i).getName());
 			assertEquals("TEST_STORY_NOTE_" + Long.toString(i + 6),
-					unclosedStories.get(i).getNotes());
+					addableStories.get(i).getNotes());
 		}
 
 		// 將三筆 Story (ID = 6, 7, 8) 加入 Sprint 2
@@ -600,18 +600,18 @@ public class ProductBacklogHelperTest {
 		mProductBacklogLogic1.addStoriesToSprint(storyIds, 2);
 
 		// 驗證顯示剩下的 9, 10 筆 StoryID
-		unclosedStories = mProductBacklogLogic1.getAddableStories();
-		assertEquals(2, unclosedStories.size());
+		addableStories = mProductBacklogLogic1.getAddableStories();
+		assertEquals(2, addableStories.size());
 
 		// 從 ID 第九筆開始驗證
-		for (int i = 0; i < unclosedStories.size(); i++) {
-			assertEquals((i + 9), unclosedStories.get(i).getId());
+		for (int i = 0; i < addableStories.size(); i++) {
+			assertEquals((i + 9), addableStories.get(i).getId());
 			assertEquals("TEST_STORY_DEMO_" + Long.toString(i + 9),
-					unclosedStories.get(i).getHowToDemo());
-			assertEquals("TEST_STORY_" + Long.toString(i + 9), unclosedStories
+					addableStories.get(i).getHowToDemo());
+			assertEquals("TEST_STORY_" + Long.toString(i + 9), addableStories
 					.get(i).getName());
 			assertEquals("TEST_STORY_NOTE_" + Long.toString(i + 9),
-					unclosedStories.get(i).getNotes());
+					addableStories.get(i).getNotes());
 		}
 
 		// 將兩筆 Story (ID = 9, 10) 加入 Sprint 3 (Sprint 3 不存在)
@@ -622,8 +622,8 @@ public class ProductBacklogHelperTest {
 		mProductBacklogLogic1.addStoriesToSprint(storyIds, 3);
 
 		// 驗證顯示 0 筆資料
-		unclosedStories = mProductBacklogLogic1.getAddableStories();
-		assertEquals(0, unclosedStories.size());
+		addableStories = mProductBacklogLogic1.getAddableStories();
+		assertEquals(0, addableStories.size());
 
 		// 將兩筆 Story (ID = 7, 8) 移除 Sprint 2
 		storyIds.clear();
@@ -634,18 +634,18 @@ public class ProductBacklogHelperTest {
 		mProductBacklogLogic1.removeStoryFromSprint(8);
 
 		// 驗證顯示 2 筆資料
-		unclosedStories = mProductBacklogLogic1.getAddableStories();
-		assertEquals(2, unclosedStories.size());
+		addableStories = mProductBacklogLogic1.getAddableStories();
+		assertEquals(2, addableStories.size());
 
 		// 從 ID 第七筆開始驗證
-		for (int i = 0; i < unclosedStories.size(); i++) {
-			assertEquals((i + 7), unclosedStories.get(i).getId());
+		for (int i = 0; i < addableStories.size(); i++) {
+			assertEquals((i + 7), addableStories.get(i).getId());
 			assertEquals("TEST_STORY_DEMO_" + Long.toString(i + 7),
-					unclosedStories.get(i).getHowToDemo());
-			assertEquals("TEST_STORY_" + Long.toString(i + 7), unclosedStories
+					addableStories.get(i).getHowToDemo());
+			assertEquals("TEST_STORY_" + Long.toString(i + 7), addableStories
 					.get(i).getName());
 			assertEquals("TEST_STORY_NOTE_" + Long.toString(i + 7),
-					unclosedStories.get(i).getNotes());
+					addableStories.get(i).getNotes());
 		}
 	}
 
@@ -780,51 +780,55 @@ public class ProductBacklogHelperTest {
 		// create 1 story
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-		
+
 		ArrayList<StoryObject> stories = mCPB.getStories();
 		for (StoryObject story : stories) {
 			story.setSprintId(1).save();
 		}
-		
-		Map<Long, ArrayList<StoryObject>> sprintMap = mProductBacklogHelper1.getSprintHashMap();
+
+		Map<Long, ArrayList<StoryObject>> sprintMap = mProductBacklogHelper1
+				.getSprintHashMap();
 		assertEquals(1, sprintMap.get(1L).size());
-		assertEquals(mCPB.getStoryIds().get(0), sprintMap.get(1L).get(0).getId());
+		assertEquals(mCPB.getStoryIds().get(0), sprintMap.get(1L).get(0)
+				.getId());
 	}
 
 	@Test
-
 	public void testMoveStory() {
 		// create 1 story
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-		
+
 		StoryObject story = mCPB.getStories().get(0);
 		assertEquals(-1, story.getSprintId());
-		
+
 		long sprintId = Long.parseLong(mCS.getSprintIDList().get(0));
 		mProductBacklogHelper1.moveStory(story.getId(), sprintId);
-		
+
 		story.reload();
 		assertEquals(sprintId, story.getSprintId());
 	}
 
 	@Test
 	public void testCheckAccountInProject() {
-		CreateAccount ca = new CreateAccount(1);
-		ca.exe();
-		
-		AccountObject account = ca.getAccountList().get(0);
-		account.createProjectRole(mCP.getAllProjects().get(0).getId(), RoleEnum.ScrumTeam);
-		
-		boolean inProject = mProductBacklogHelper1.checkAccountInProject(new ArrayList<AccountObject>(), account);
+		CreateAccount CA = new CreateAccount(1);
+		CA.exe();
+
+		AccountObject account = CA.getAccountList().get(0);
+		account.createProjectRole(mCP.getAllProjects().get(0).getId(),
+				RoleEnum.ScrumTeam);
+
+		boolean inProject = mProductBacklogHelper1.checkAccountInProject(
+				new ArrayList<AccountObject>(), account);
 		assertEquals(false, inProject);
-				
+
 		ArrayList<AccountObject> members = new ArrayList<AccountObject>();
 		members.add(account);
-		
-		inProject = mProductBacklogHelper1.checkAccountInProject(members, account);
+
+		inProject = mProductBacklogHelper1.checkAccountInProject(members,
+				account);
 		assertEquals(true, inProject);
-	}  
+	}
 
 	@Test
 	public void testGetTagListResponseText() {
@@ -836,33 +840,40 @@ public class ProductBacklogHelperTest {
 		assertEquals(2, mProductBacklogHelper1.getTagList().size());
 
 		// 確認名稱
-		assertEquals("Tag", mProductBacklogHelper1.getTagList().get(0).getName());
-		assertEquals("Project1_Tag1", mProductBacklogHelper1.getTagList().get(1)
+		assertEquals("Tag", mProductBacklogHelper1.getTagList().get(0)
 				.getName());
-		
-		String response = mProductBacklogHelper1.getTagListResponseText().toString();
+		assertEquals("Project1_Tag1", mProductBacklogHelper1.getTagList()
+				.get(1).getName());
+
+		String response = mProductBacklogHelper1.getTagListResponseText()
+				.toString();
 		String expectString = "<IssueTag><Id>%s</Id><Name>%s</Name></IssueTag>";
-		assertEquals(true, response.contains(String.format(expectString, "1", "Tag")));
-		assertEquals(true, response.contains(String.format(expectString, "2", "Project1_Tag1")));
+		assertEquals(true,
+				response.contains(String.format(expectString, "1", "Tag")));
+		assertEquals(true, response.contains(String.format(expectString, "2",
+				"Project1_Tag1")));
 	}
 
 	@Test
 	public void testGetAddNewTagResponsetext() {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
-		
+
 		// assemble test Tag Response text
 		StringBuilder expectResponse = new StringBuilder();
 		expectResponse.append("<Tags><Result>true</Result>");
 		expectResponse.append("<IssueTag>");
 		expectResponse.append("<Id>" + 1 + "</Id>");
-		expectResponse.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(TEST_TAG_NAME) + "</Name>");
+		expectResponse.append("<Name>"
+				+ new TranslateSpecialChar().TranslateXMLChar(TEST_TAG_NAME)
+				+ "</Name>");
 		expectResponse.append("</IssueTag>");
 		expectResponse.append("</Tags>");
-		
+
 		// call GetAddNewTagResponsetext
-		StringBuilder actualResponse = mProductBacklogHelper1.getAddNewTagResponsetext(TEST_TAG_NAME);
-		
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getAddNewTagResponsetext(TEST_TAG_NAME);
+
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -872,18 +883,21 @@ public class ProductBacklogHelperTest {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 
 		// assemble test Tag Response text
 		StringBuilder expectResponse = new StringBuilder();
 		expectResponse.append("<Tags><Result>false</Result>");
-		expectResponse.append("<Message>Tag Name : " + TEST_TAG_NAME + " already exist</Message>");
+		expectResponse.append("<Message>Tag Name : " + TEST_TAG_NAME
+				+ " already exist</Message>");
 		expectResponse.append("</Tags>");
-		
+
 		// call GetAddNewTagResponsetext
-		StringBuilder actualResponse = mProductBacklogHelper1.getAddNewTagResponsetext(TEST_TAG_NAME);
-		
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getAddNewTagResponsetext(TEST_TAG_NAME);
+
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -893,18 +907,21 @@ public class ProductBacklogHelperTest {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME,";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 
 		// assemble test Tag Response text
 		StringBuilder expectResponse = new StringBuilder();
 		expectResponse.append("<Tags><Result>false</Result>");
-		expectResponse.append("<Message>TagName: \",\" is not allowed</Message>");
+		expectResponse
+				.append("<Message>TagName: \",\" is not allowed</Message>");
 		expectResponse.append("</Tags>");
-		
+
 		// call GetAddNewTagResponsetext
-		StringBuilder actualResponse = mProductBacklogHelper1.getAddNewTagResponsetext(TEST_TAG_NAME);
-		
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getAddNewTagResponsetext(TEST_TAG_NAME);
+
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -914,7 +931,8 @@ public class ProductBacklogHelperTest {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 
 		// assemble test Tag Response text
@@ -926,22 +944,24 @@ public class ProductBacklogHelperTest {
 		expectResponse.append("</TagList>");
 
 		// call GetAddNewTagResponsetext
-		StringBuilder actualResponse = mProductBacklogHelper1.getDeleteTagReponseText(newTag.getId());
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getDeleteTagReponseText(newTag.getId());
 
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
-	
+
 	@Test
 	public void testGetAddStoryTagResponseText() throws JSONException {
 		// create 1 story
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-				
+
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 		// Get Story
 		StoryObject story = mCPB.getStories().get(0);
@@ -950,9 +970,9 @@ public class ProductBacklogHelperTest {
 		JSONObject expectResponse = new JSONObject();
 		expectResponse.put("success", true);
 		expectResponse.put("Total", 1);
-		
+
 		JSONArray jsonStroies = new JSONArray();
-		
+
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
 		jsonStory.put("Name", story.getName());
@@ -968,15 +988,16 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Sprint", story.getSprintId());
 		jsonStory.put("FilterType", "BACKLOG");
 		jsonStory.put("Attach", false);
-		
+
 		JSONArray jsonFiles = new JSONArray();
 		jsonStory.put("AttachFileList", jsonFiles);
 		jsonStroies.put(jsonStory);
-		
+
 		expectResponse.put("Stories", jsonStroies);
-		
+
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1.getAddStoryTagResponseText(story.getId(), newTag.getId());
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getAddStoryTagResponseText(story.getId(), newTag.getId());
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -989,7 +1010,8 @@ public class ProductBacklogHelperTest {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 		// Get Story
 		StoryObject story = mCPB.getStories().get(0);
@@ -1024,11 +1046,12 @@ public class ProductBacklogHelperTest {
 		expectResponse.put("Stories", jsonStroies);
 
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1.getRemoveStoryTagResponseText(story.getId(), newTag.getId());
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getRemoveStoryTagResponseText(story.getId(), newTag.getId());
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
-	
+
 	@Test
 	public void testGetShowProductBacklogResponseText() throws JSONException {
 		// create 1 story
@@ -1039,7 +1062,8 @@ public class ProductBacklogHelperTest {
 		// Test filter type
 		String TEST_FILETER_TYPE = "BACKLOG";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
+				.get(0).getId());
 		newTag.save();
 		// Get Story
 		StoryObject story = mCPB.getStories().get(0);
@@ -1074,7 +1098,8 @@ public class ProductBacklogHelperTest {
 		expectResponse.put("Stories", jsonStroies);
 
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1.getShowProductBacklogResponseText("BACKLOG");
+		StringBuilder actualResponse = mProductBacklogHelper1
+				.getShowProductBacklogResponseText("BACKLOG");
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}

@@ -186,4 +186,24 @@ public class ProductBacklogLogicTest {
 		Assert.assertEquals(stories.get(1).getId(), addableStory.getId());
 		Assert.assertEquals(-1, addableStory.getSprintId());
 	}
+	
+	@Test
+	public void testGetStories() {
+		
+	}
+	
+	@Test
+	public void testGetStoriesByRelease() {
+		
+	}
+	
+	@Test
+	public void testGetUnclosedStories() {
+		
+	}
+	
+	@Test
+	public void testAddableStories() {
+		
+	}
 }
