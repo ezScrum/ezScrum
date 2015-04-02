@@ -259,12 +259,12 @@ public class SprintBacklogHelper {
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 
-			result = new Translation().translateStoryToJson(stories,
+			result = new Translation().translateSprintBacklogToJson(stories,
 					currentSprintId, totalStoryPoints, limitedPoint, totalTaskPoints,
 					releaseId, sprintGoal);
 		} else {
 			stories = new ArrayList<StoryObject>();
-			result = new Translation().translateStoryToJson(stories,
+			result = new Translation().translateSprintBacklogToJson(stories,
 					currentSprintId, totalStoryPoints, limitedPoint, totalTaskPoints,
 					releaseId, sprintGoal);
 		}

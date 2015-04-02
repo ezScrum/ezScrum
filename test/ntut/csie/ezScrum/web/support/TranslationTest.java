@@ -22,8 +22,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TranslationTest{
-	
+public class TranslationTest {
+
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateProductBacklog mCPB;
@@ -53,7 +53,7 @@ public class TranslationTest{
 		// 新增 Story
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
 		mCPB.exe();
-		
+
 		mProject = mCP.getProjectList().get(0);
 
 		// 為了不讓 SQL 跑太快而沒有正確更新值進去
@@ -73,7 +73,7 @@ public class TranslationTest{
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 
-		// 讓 config 回到  Production 模式
+		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -85,11 +85,87 @@ public class TranslationTest{
 		mConfig = null;
 		mProject = null;
 	}
+	
+	@Test
+	public void testTranslateCustomIssueToJson() {
+		
+	}
 
+	@Test
+	public void testTranslateStoryToXML() {
+		
+	}
+	
+	@Test
+	public void testTranslateStoryToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateStoriesToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateTaskToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateTaskboardIssueToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateTaskboardTaskToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateSprintInfoToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateSprintBacklogToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateWorkitemToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateStatusToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateBurndownChartDataToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateCPI_SPI_DataToJson() {
+		
+	}
+	
+	@Test
+	public void testTranslateEV_PV_TAC_DataToJson() {
+		
+	}
+	
+	@Test
+	public void testJoin() {
+		
+	}
+	
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
 	@Test
 	public void testTranslateStoryToJson2() throws Exception {
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(
+				mProject);
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 
 		// initial data
@@ -103,7 +179,7 @@ public class TranslationTest{
 			storyInfo.howToDemo = "0";
 			storyInfo.sprintId = 0;
 			productBacklogHelper.updateStory(storyInfo);
-			
+
 			StoryObject story = mCPB.getStories().get(i);
 			assertEquals(0, story.getEstimate());
 			assertEquals(0, story.getImportance());
@@ -115,7 +191,8 @@ public class TranslationTest{
 		for (int i = 0; i < 10; i++) {
 			stories.add(mCPB.getStories().get(i));
 			actualSB = new StringBuilder();
-			actualSB.append(new Translation().translateStoryToJson(stories.get(i)));
+			actualSB.append(new Translation().translateStoryToJson(stories
+					.get(i)));
 			assertFalse(actualSB.toString().contains("DONE"));
 			assertFalse(actualSB.toString().contains("DETAIL"));
 			assertTrue(actualSB.toString().contains("BACKLOG"));
@@ -156,12 +233,21 @@ public class TranslationTest{
 		}
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
-		productBacklogHelper.editStory(mCPB.getStories().get(4).getId(), "", "1", "1", "1", "", "", true);
+		StoryInfo storyInfo = new StoryInfo();
+		storyInfo.id = mCPB.getStories().get(4).getId();
+		storyInfo.name = "";
+		storyInfo.estimate = 1;
+		storyInfo.value = 1;
+		storyInfo.importance = 1;
+		storyInfo.howToDemo = "";
+		storyInfo.sprintId = 0;
+		productBacklogHelper.updateStory(storyInfo);
 		Thread.sleep(1000);
 
-		productBacklogHelper.editStory(mCPB.getStories().get(5).getId(), "", "1", "1", "1", "", "", true);
+		storyInfo.id = mCPB.getStories().get(5).getId();
+		productBacklogHelper.updateStory(storyInfo);
 		Thread.sleep(1000);
-		
+
 		// 驗證 done 狀態
 		for (int i = 0; i < 4; i++) {
 			StoryObject story = mCPB.getStories().get(i);

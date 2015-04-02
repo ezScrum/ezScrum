@@ -318,7 +318,7 @@ public class Translation {
 	}
 
 	// for ShowSprintBacklogAction
-	public String translateStoryToJson(ArrayList<StoryObject> stories,
+	public String translateSprintBacklogToJson(ArrayList<StoryObject> stories,
 			int currentSprintId, double currentPoint, double limitedPoint,
 			double taskPoint, int releaseID, String SprintGoal) {
 		
