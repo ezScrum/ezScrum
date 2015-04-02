@@ -77,7 +77,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 	}
 
 	public void testGetPartnerList() throws Exception {
-		List<String> sprintIdList = mCS.getSprintIDList();
+		List<String> sprintIdList = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,

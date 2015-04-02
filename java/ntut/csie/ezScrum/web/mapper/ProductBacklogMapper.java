@@ -50,7 +50,7 @@ public class ProductBacklogMapper {
 	}
 
 	// get all stories by release
-	public ArrayList<StoryObject> getStoryByRelease(String releaseId, String sprintId) {
+	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
 		
@@ -147,7 +147,8 @@ public class ProductBacklogMapper {
 
 	// 取得自訂分類標籤列表
 	public ArrayList<TagObject> getTags() {
-		ArrayList<TagObject> tags = TagObject.getTags();
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		ArrayList<TagObject> tags = project.getTags();
 		return tags;
 	}
 
@@ -178,16 +179,18 @@ public class ProductBacklogMapper {
 	}
 
 	public boolean isTagExisting(String name) {
-		TagObject tag = TagObject.get(name);
-		
-		if(tag != null){
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		TagObject tag = project.getTagByName(name);
+
+		if (tag != null) {
 			return true;
 		}
 		return false;
 	}
 
 	public TagObject getTagByName(String name) {
-		return TagObject.get(name);
+		ProjectObject project = ProjectObject.get(mProject.getName());
+		return project.getTagByName(name);
 	}
 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {

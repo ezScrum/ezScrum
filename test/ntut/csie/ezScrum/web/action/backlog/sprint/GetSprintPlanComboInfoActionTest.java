@@ -78,7 +78,7 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 	}
 
 	public void testGetSprintPlanComboInfo() throws JSONException{
-		List<String> idList = mCS.getSprintIDList();
+		List<String> idList = mCS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mIProject.getName();

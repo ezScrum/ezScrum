@@ -45,7 +45,7 @@ public class AjaxRemoveReleaseBacklogAction extends PermissionAction {
 		try{
 			if (issueId != 0) {
 				ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-				IIssue issue = PBHelper.getIssue(issueId);
+				IIssue issue = PBHelper.getStory(issueId);
 				
 				if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
 					 issue.getSprintID().equals("-1"))) {

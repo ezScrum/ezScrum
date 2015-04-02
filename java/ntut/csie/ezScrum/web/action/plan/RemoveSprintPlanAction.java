@@ -50,7 +50,7 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		List<IIssue> issues = sprintBacklogLogic.getStories();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);	
 		for(IIssue issue:issues){
-			productBacklogLogic.removeStoryFromSprint(issue.getIssueID());
+			productBacklogLogic.dropStoryFromSprint(issue.getIssueID());
 			
 			if(!(issue.getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) || 
 				 issue.getReleaseID().equals("-1"))){

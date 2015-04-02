@@ -11,7 +11,6 @@ import ntut.csie.ezScrum.restful.mobile.support.ConvertIProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
 

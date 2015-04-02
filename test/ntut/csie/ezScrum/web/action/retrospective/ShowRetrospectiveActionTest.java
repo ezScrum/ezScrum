@@ -142,7 +142,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintIDList().get(0);
+		String sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -177,7 +177,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintIDList().get(0);
+		String sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -212,7 +212,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintIDList().get(0);
+		String sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================

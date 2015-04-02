@@ -65,7 +65,7 @@ public class ShowIssueHistoryAction extends PermissionAction {
 				ihui = new IssueHistoryUI(task);
 			}
 		} else {
-			IIssue issue = PBHelper.getIssue(id);
+			IIssue issue = PBHelper.getStory(id);
 			try {
 				ihui = new IssueHistoryUI(issue);
 			} catch (SQLException e) {

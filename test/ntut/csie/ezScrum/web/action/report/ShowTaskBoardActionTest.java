@@ -130,7 +130,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story/Task Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), mCS.getSprintsId().get(0));
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());

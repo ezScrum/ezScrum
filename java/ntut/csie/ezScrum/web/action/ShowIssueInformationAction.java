@@ -49,7 +49,7 @@ public class ShowIssueInformationAction extends Action {
 
 		if (issueId != null && !issueId.equals("")) {
 			long issueID_int = Long.valueOf(issueId);
-			issue = PBHelper.getIssue(issueID_int);
+			issue = PBHelper.getStory(issueID_int);
 			if (issue != null) {
 				if (backlog.isScrumType(issue)) {
 					request.setAttribute("issue", issue);

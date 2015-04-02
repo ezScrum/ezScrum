@@ -83,7 +83,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", mCS.getSprintIDList().get(0));
+		addRequestParameter("Sid", mCS.getSprintsId().get(0));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -109,7 +109,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", mCS.getSprintIDList().get(0));
+		addRequestParameter("Sid", mCS.getSprintsId().get(0));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

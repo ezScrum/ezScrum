@@ -45,11 +45,11 @@ public class AjaxRemoveSprintBacklogAction extends PermissionAction {
 			ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
 			
 			// 將 Story 自 Sprint 移除
-			PBHelper.removeStoryFromSprint(issueId);
+			PBHelper.dropStoryFromSprint(issueId);
 			
 			// 移除 Sprint 下的 Story 與 Release 的關係
-			if(!(PBHelper.getIssue(issueId).getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
-				 PBHelper.getIssue(issueId).getReleaseID().equals("-1"))){
+			if(!(PBHelper.getStory(issueId).getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
+				 PBHelper.getStory(issueId).getReleaseID().equals("-1"))){
 				PBHelper.removeReleaseTagFromIssue(issueId);
 			}
 			

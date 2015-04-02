@@ -87,7 +87,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	}
 
 	public void testGetSprintBacklogDateInfoAction() {
-		List<String> sprintIdList = mCS.getSprintIDList();
+		List<String> sprintIdList = mCS.getSprintsId();
 
 		// ================ set request info ========================
 		String projectName = mIProject.getName();

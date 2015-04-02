@@ -21,7 +21,7 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * 
 	 * @return
 	 */
@@ -32,25 +32,38 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * @param release
 	 * @return
 	 */
 	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc release) {
 		// get Story back and sort it by importance
 		String releaseId = release.getID();
-		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoryByRelease(releaseId, null);
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoriesByRelease(releaseId);
 		stories = sortStoriesByImportance(stories);
 		return stories;
 	}
 
 	/**
-	 * Unclosed Issues 根據IMPORTANCE排順序
-	 * @param category
+	 * Unclosed story 根據 IMPORTANCE 排順序
 	 */
 	public ArrayList<StoryObject> getUnclosedStories() {
 		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
 		stories = sortStoriesByImportance(stories);
+		return stories;
+	}
+	
+	/**
+	 * 取出可以被加到 sprint 的 stories，story 為 unclosed 且沒有被加到 sprint 內
+	 * @return
+	 */
+	public ArrayList<StoryObject> getAddableStories() {
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : getUnclosedStories()) {
+			if (story.getSprintId() <= 0) {
+				stories.add(story);
+			}
+		}
 		return stories;
 	}
 
@@ -81,10 +94,10 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * 移除Story和Sprint的關係
+	 * 移除 Story 和 Sprint 的關係
 	 * @param storyId
 	 */
-	public void removeStoryFromSprint(long storyId) {
+	public void dropStoryFromSprint(long storyId) {
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		story.setSprintId(-1);
 		story.save();

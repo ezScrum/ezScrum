@@ -29,7 +29,7 @@ public class RemoveReleaseBacklogAction extends Action{
 		
 		if (issueId != null) {
 			ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-			IIssue issue = PBHelper.getIssue(Long.parseLong(issueId));
+			IIssue issue = PBHelper.getStory(Long.parseLong(issueId));
 			
 			if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE)) ||
 				 issue.getSprintID().equals("-1")) {

@@ -118,7 +118,7 @@ public class ReleaseBacklogTest {
 		// 把 Story 加入 release plan 1 中
 		productBacklogLogic.addReleaseTagToIssue(storyIdList, releaseId);
 		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintsId().get(0));
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
 			if (stories[i].getStoryId() != stories.length) {
@@ -162,7 +162,7 @@ public class ReleaseBacklogTest {
 
 		// 把 Story 加入 relaseplan 1 中
 		productBacklogLogic.addReleaseTagToIssue(storyIDList, releaseId);
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, mCS.getSprintsId().get(0));
 		IStory lastStory = null;
 		for (int i = 0; i < stories.length; i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done

@@ -48,7 +48,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			long issueId = Long.parseLong(request.getParameter("issueID"));
 			String issueType = request.getParameter("issueType");
 			if (issueType.equalsIgnoreCase("Story")) {
-				IIssue item = PBHelper.getIssue(issueId);
+				IIssue item = PBHelper.getStory(issueId);
 				if (item != null) {
 					result.append(getIssueJsonString(item, defaultHandlerUsername));
 				} else {

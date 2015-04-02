@@ -264,7 +264,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe();
-		List<String> sprintIDList = CS.getSprintIDList();
+		List<String> sprintIDList = CS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();

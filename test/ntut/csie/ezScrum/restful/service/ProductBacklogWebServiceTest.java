@@ -331,7 +331,7 @@ public class ProductBacklogWebServiceTest {
 			String response = productBacklogWebService.getRESTFulResponseString();
 			// call local method
 			mProductBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
-			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getIssue(mCPB.getStoryIds().get(i)).getHistories();
+			List<HistoryObject> iIssuehistorys = mProductBacklogHelper.getStory(mCPB.getStoryIds().get(i)).getHistories();
 
 			// JSON to JSONObject
 			JSONObject historyJSONObject = new JSONObject(response);

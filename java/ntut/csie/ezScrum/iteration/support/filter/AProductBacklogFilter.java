@@ -6,8 +6,8 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public abstract class AProductBacklogFilter {
-	protected ArrayList<StoryObject> mStories = null;
-	protected ArrayList<TaskObject> mTasks = null;
+	protected ArrayList<StoryObject> mStories = new ArrayList<StoryObject>();
+	protected ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
 	protected String mCompareInfo = null;
 	
 	protected abstract ArrayList<StoryObject> FilterStories();		// 過濾 Stories 的方法
