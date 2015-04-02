@@ -77,7 +77,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 	}
 
 	public void testGetEditTaskInfo() throws Exception {
-		List<String> sprintIds = mCS.getSprintIdList();
+		List<String> sprintIds = mCS.getSprintsId();
 		int sprintId = Integer.parseInt(sprintIds.get(0));
 		int storyCount = 1;
 		int storyEst = 2;

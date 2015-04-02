@@ -630,8 +630,8 @@ public class ProductBacklogHelperTest {
 		storyIds.add((long) 7);
 		storyIds.add((long) 8);
 		Thread.sleep(1000); // 速度太快，暫停一下，避免影響資料存的時間一樣
-		mProductBacklogLogic1.removeStoryFromSprint(7);
-		mProductBacklogLogic1.removeStoryFromSprint(8);
+		mProductBacklogLogic1.dropStoryFromSprint(7);
+		mProductBacklogLogic1.dropStoryFromSprint(8);
 
 		// 驗證顯示 2 筆資料
 		addableStories = mProductBacklogLogic1.getAddableStories();
@@ -734,7 +734,7 @@ public class ProductBacklogHelperTest {
 		storyInfo.howToDemo = "QAQ";
 		storyInfo.notes = "已哭";
 
-		StoryObject story = mProductBacklogHelper1.updateStory(storyInfo);
+		StoryObject story = mProductBacklogHelper1.updateStory(storyInfo.id, storyInfo);
 		// assert issue info
 		assertEquals(storyInfo.id, story.getId());
 		assertEquals(storyInfo.name, story.getName());
@@ -802,7 +802,7 @@ public class ProductBacklogHelperTest {
 		StoryObject story = mCPB.getStories().get(0);
 		assertEquals(-1, story.getSprintId());
 
-		long sprintId = mCS.getSprintIdList().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		mProductBacklogHelper1.moveStory(story.getId(), sprintId);
 
 		story.reload();

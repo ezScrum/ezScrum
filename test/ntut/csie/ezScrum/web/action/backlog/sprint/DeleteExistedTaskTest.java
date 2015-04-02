@@ -47,7 +47,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		int sprintCount = 1;
 		mCS = new CreateSprint(sprintCount, mCP);
 		mCS.exe();
-		mSprintId = Long.parseLong(mCS.getSprintIdList().get(0));
+		mSprintId = Long.parseLong(mCS.getSprintsId().get(0));
 
 		// create story to sprint
 		int storyCount = 1;

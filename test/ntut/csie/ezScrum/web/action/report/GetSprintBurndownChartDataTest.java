@@ -97,7 +97,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		// 拿出 sprint 的每一天日期放在 idealPointArray 當 expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIdList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -106,7 +106,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIdList().get(0));
+		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -147,7 +147,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIdList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -158,7 +158,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIdList().get(0));
+		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -203,7 +203,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIdList().get(0));
+		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s
@@ -213,7 +213,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIdList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -256,7 +256,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIdList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -267,7 +267,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIdList().get(0));
+		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s

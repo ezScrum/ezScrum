@@ -61,18 +61,18 @@ public class Translation {
 				if (customIssues.get(i).getAttachFiles().size() == 0) issue.put("Attach", "false");
 				else issue.put("Attach", "true");
 				
-				ArrayList<AttachFileObject> files = customIssues.get(i).getAttachFiles();
-				JSONArray jsonFiles = new JSONArray();
-				for (AttachFileObject file : files) {
+				ArrayList<AttachFileObject> attachFiles = customIssues.get(i).getAttachFiles();
+				JSONArray jsonAttachFiles = new JSONArray();
+				for (AttachFileObject file : attachFiles) {
 					JSONObject attachFile = new JSONObject();
 					attachFile.put("IssueId", file.getIssueId());
 					attachFile.put("FileId", file.getId());
 					attachFile.put("FileName", translateChar.TranslateXMLChar(translateChar.TranslateJSONChar(file.getName())));
 					attachFile.put("DownloadPath", "fileDownload.do?projectName=" + customIssues.get(i).getProjectName()
 							+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
-					jsonFiles.put(attachFile);
+					jsonAttachFiles.put(attachFile);
 				}
-				issue.put("AttachFileList", jsonFiles);
+				issue.put("AttachFileList", jsonAttachFiles);
 				issueArray.put(issue);
 			}
 			responseText.put("CustomIssues", issueArray);
@@ -145,24 +145,24 @@ public class Translation {
 				if (stories.get(i).getAttachFiles().size() == 0) jsonStory.put("Attach", false);
 				else jsonStory.put("Attach", true);
 				
-				ArrayList<AttachFileObject> files = stories.get(i).getAttachFiles();
-				JSONArray jsonFiles = new JSONArray();
-				for (AttachFileObject file : files) {
-					JSONObject jsonFile = new JSONObject();
-					jsonFile.put("IssueId", file.getIssueId());
-					jsonFile.put("FileId", file.getId());
-					jsonFile.put("FileName", translateChar.TranslateJSONChar(file.getName()));
+				ArrayList<AttachFileObject> attachFiles = stories.get(i).getAttachFiles();
+				JSONArray jsonAttachFiles = new JSONArray();
+				for (AttachFileObject attachFile : attachFiles) {
+					JSONObject jsonAttachFile = new JSONObject();
+					jsonAttachFile.put("IssueId", attachFile.getIssueId());
+					jsonAttachFile.put("FileId", attachFile.getId());
+					jsonAttachFile.put("FileName", translateChar.TranslateJSONChar(attachFile.getName()));
 					
 					// parse Dateformat as Gson Default DateFormat (TaskBoard page)
 					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT);
-					Date date = new Date(file.getCreateTime());
+					Date date = new Date(attachFile.getCreateTime());
 					String attachTime = dateFormat.format(date);
 					ProjectObject project = ProjectObject.get(stories.get(i).getId());
-					jsonFile.put("UploadDate", attachTime);
-					jsonFile.put("FilePath", "fileDownload.do?projectName=" + project.getName() + "&fileId=" + file.getId() + "&fileName=" + file.getName());
-					jsonFiles.put(jsonFile);
+					jsonAttachFile.put("UploadDate", attachTime);
+					jsonAttachFile.put("FilePath", "fileDownload.do?projectName=" + project.getName() + "&fileId=" + attachFile.getId() + "&fileName=" + attachFile.getName());
+					jsonAttachFiles.put(jsonAttachFile);
 				}
-				jsonStory.put("AttachFileList", jsonFiles);
+				jsonStory.put("AttachFileList", jsonAttachFiles);
 				
 				jsonStroies.put(jsonStory);
 			}

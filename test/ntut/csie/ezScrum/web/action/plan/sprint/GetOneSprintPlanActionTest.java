@@ -76,8 +76,8 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("lastsprint", mCS.getSprintIdList().get(0));
-		addRequestParameter("SprintID", mCS.getSprintIdList().get(0));
+		addRequestParameter("lastsprint", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -92,7 +92,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		TestTool testTool = new TestTool();
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"Sprints\":[{");
-		expectedResponseText.append("\"Id\":\"" + mCS.getSprintIdList().get(0) + "\",");
+		expectedResponseText.append("\"Id\":\"" + mCS.getSprintsId().get(0) + "\",");
 		expectedResponseText.append("\"Goal\":\"" + mCS.TEST_SPRINT_GOAL + 1 + "\",");
 		expectedResponseText.append("\"StartDate\":\"" + testTool.transformDate(mCS.mToday) + "\",");
 		expectedResponseText.append("\"Interval\":\"" + CreateSprint.SPRINT_INTERVAL + "\",");

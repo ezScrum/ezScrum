@@ -147,7 +147,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
 		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stroyId).append("\",")
 		        .append("\"Release\":\"\",")
-		        .append("\"Sprint\":\"").append(mCS.getSprintIdList().get(0)).append("\",")
+		        .append("\"Sprint\":\"").append(mCS.getSprintsId().get(0)).append("\",")
 		        .append("\"Attach\":false,")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Tasks\":[]}],")
@@ -204,7 +204,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(story.getStatus(), storyList.get(i).get("Status"));
 			assertEquals(story.getNotes(), storyList.get(i).get("Notes"));
 			assertEquals(story.getHowToDemo(), storyList.get(i).get("HowToDemo"));
-			assertEquals(mCS.getSprintIdList().get(0), storyList.get(i).get("Sprint"));
+			assertEquals(mCS.getSprintsId().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
 			assertEquals(story.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			assertEquals(new ArrayList<LinkedHashTreeMap>(), storyList.get(i).get("Tasks"));
@@ -266,7 +266,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
 		        .append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stroyId).append("\",")
 		        .append("\"Release\":\"\",")
-		        .append("\"Sprint\":\"").append(mCS.getSprintIdList().get(0)).append("\",")
+		        .append("\"Sprint\":\"").append(mCS.getSprintsId().get(0)).append("\",")
 		        .append("\"Attach\":false,")
 		        .append("\"AttachFileList\":[],")
 		        .append("\"Tasks\":[{")
@@ -373,7 +373,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			}
 			assertEquals(story.getNotes(), storyList.get(i).get("Notes"));
 			assertEquals(story.getHowToDemo(), storyList.get(i).get("HowToDemo"));
-			assertEquals(mCS.getSprintIdList().get(0), storyList.get(i).get("Sprint"));
+			assertEquals(mCS.getSprintsId().get(0), storyList.get(i).get("Sprint"));
 			assertEquals(false, storyList.get(i).get("Attach"));
 			assertEquals(story.getAttachFiles(), storyList.get(i).get("AttachFileList"));
 			for (int j = 0; j < taskList.size(); j++) {
@@ -468,7 +468,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(expectedStory.getHowToDemo(), storyList.get(0).get("HowToDemo"));
 		assertEquals(expectedStory.getIssueLink(), storyList.get(0).get("Link"));
 		assertEquals(expectedStory.getReleaseID(), storyList.get(0).get("Release"));
-		assertEquals(mCS.getSprintIdList().get(0), storyList.get(0).get("Sprint"));
+		assertEquals(mCS.getSprintsId().get(0), storyList.get(0).get("Sprint"));
 		assertEquals(!expectedStory.getAttachFiles().isEmpty(), storyList.get(0).get("Attach"));
 		LinkedHashTreeMap attachFile = ((List<LinkedHashTreeMap>) storyList.get(0).get("AttachFileList")).get(0);
 		assertEquals(expectedStory.getAttachFiles().get(0).getId(), ((Double) attachFile.get("FileId")).longValue());

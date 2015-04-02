@@ -99,7 +99,7 @@ public class UnplannedItemMapperTest {
 		String estimate = "6";
 		String actualHour = "6";
 		String notes = "已哭";
-		String sprintId = mCS.getSprintIdList().get(0);
+		String sprintId = mCS.getSprintsId().get(0);
 		Date date = new Date(System.currentTimeMillis());
 		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS, partners, estimate, actualHour, notes, sprintId, date);
 		// assert issue info

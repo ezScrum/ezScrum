@@ -59,7 +59,7 @@ public class CreateRetrospective {
 			RetrospectiveMapper rm = new RetrospectiveMapper(project, userSession);
 			
 			for (int j=0 ; j < sprintCount; j++) {
-				String sprintID = mCS.getSprintIdList().get(j);
+				String sprintID = mCS.getSprintsId().get(j);
 				// good
 				for (int k=0 ; k < mGoodCount ; k++) {
 					String prefix =mGoodRetrospective + String.valueOf(k+1);

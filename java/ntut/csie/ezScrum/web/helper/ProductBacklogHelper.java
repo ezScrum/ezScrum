@@ -76,10 +76,9 @@ public class ProductBacklogHelper {
 	 * @param storyInfo
 	 * @return StoryObject
 	 */
-	public StoryObject updateStory(StoryInfo storyInfo) {
-		long storyId = storyInfo.id;
+	public StoryObject updateStory(long id, StoryInfo storyInfo) {
 		mProductBacklogMapper.updateStory(storyInfo);
-		return mProductBacklogMapper.getStory(storyId);
+		return mProductBacklogMapper.getStory(id);
 	}
 
 	/**
@@ -350,8 +349,8 @@ public class ProductBacklogHelper {
 		mProductBacklogLogic.addStoriesToSprint(stories, targetSprintId);
 	}
 
-	public void removeStoryFromSprint(long storyId) {
-		mProductBacklogLogic.removeStoryFromSprint(storyId);
+	public void dropStoryFromSprint(long storyId) {
+		mProductBacklogLogic.dropStoryFromSprint(storyId);
 	}
 
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {

@@ -94,10 +94,10 @@ public class ProductBacklogLogic {
 	}
 
 	/**
-	 * 移除Story和Sprint的關係
+	 * 移除 Story 和 Sprint 的關係
 	 * @param storyId
 	 */
-	public void removeStoryFromSprint(long storyId) {
+	public void dropStoryFromSprint(long storyId) {
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		story.setSprintId(-1);
 		story.save();

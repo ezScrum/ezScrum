@@ -178,7 +178,7 @@ public class TranslationTest {
 			storyInfo.importance = 0;
 			storyInfo.howToDemo = "0";
 			storyInfo.sprintId = 0;
-			productBacklogHelper.updateStory(storyInfo);
+			productBacklogHelper.updateStory(storyInfo.id, storyInfo);
 
 			StoryObject story = mCPB.getStories().get(i);
 			assertEquals(0, story.getEstimate());

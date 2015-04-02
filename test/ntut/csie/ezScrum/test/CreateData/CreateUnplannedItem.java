@@ -58,7 +58,7 @@ public class CreateUnplannedItem {
 			UnplannedItemMapper um = new UnplannedItemMapper(project, userSession);
 
 			for (int j = 0; j < sprintCount; j++) {
-				String sprintID = mCS.getSprintIdList().get(j);
+				String sprintID = mCS.getSprintsId().get(j);
 
 				for (int k = 0; k < mItemCount; k++) {
 					// name = p1s1_TEST_NAME_1 -> project N, sprint N, NAME, index N

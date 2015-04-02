@@ -77,7 +77,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 * no story
 	 */
 	public void testShowExistedStory_1() {
-		String sprintId = mCS.getSprintIdList().get(0);
+		String sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		
 		// ================ set request info ========================
@@ -109,7 +109,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCP);
 		CPB.exe();
 
-		String sprintId = mCS.getSprintIdList().get(0);
+		String sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
 		String projectName = mIProject.getName();

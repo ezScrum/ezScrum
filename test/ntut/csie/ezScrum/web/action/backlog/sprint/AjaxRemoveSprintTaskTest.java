@@ -74,7 +74,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 
 	public void testRemoveSprintTask_1() throws Exception {
-		List<String> sprintIdList = mCS.getSprintIdList();
+		List<String> sprintIdList = mCS.getSprintsId();
 
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -123,7 +123,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 	
 	public void testRemoveSprintTask_2() throws Exception {
-		List<String> sprintIdList = mCS.getSprintIdList();
+		List<String> sprintIdList = mCS.getSprintsId();
 		int sprintId = Integer.parseInt(sprintIdList.get(0));
 		int storyCount = 1;
 		int storyEst = 2;

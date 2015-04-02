@@ -63,7 +63,7 @@ public class CreateSprint {
 		return mSprintCount;
 	}
 
-	public ArrayList<Long> getSprintIdList() {
+	public ArrayList<Long> getSprintsId() {
 		return mSprintsId;	// not implemented yet
 	}
 
