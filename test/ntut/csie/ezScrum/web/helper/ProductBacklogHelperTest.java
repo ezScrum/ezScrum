@@ -802,7 +802,7 @@ public class ProductBacklogHelperTest {
 		StoryObject story = mCPB.getStories().get(0);
 		assertEquals(-1, story.getSprintId());
 
-		long sprintId = Long.parseLong(mCS.getSprintIdList().get(0));
+		long sprintId = mCS.getSprintIdList().get(0);
 		mProductBacklogHelper1.moveStory(story.getId(), sprintId);
 
 		story.reload();

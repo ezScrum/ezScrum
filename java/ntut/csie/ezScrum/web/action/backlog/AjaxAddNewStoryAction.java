@@ -59,7 +59,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
 		IIssue issue = productBacklogHelper.addNewStory(storyInformation);
-		StringBuilder result = productBacklogHelper.translateStoryToJson(issue);
+		StringBuilder result = productBacklogHelper.translateStoriesToJson(issue);
 		return result;
 
 //		ProductBacklogHelper helper = new ProductBacklogHelper(project,	session);

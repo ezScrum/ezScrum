@@ -4,13 +4,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -23,224 +21,184 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class Translation {
-	public Translation() { /* empty */}
-
-	// for GetEditStoryInfoAction
-	public String translateStory(IIssue story) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("<ProductBacklog>");
-		sb.append("<Total>1</Total>");
-		sb.append("<Story>");
-		sb.append("<Id>" + story.getIssueID() + "</Id>");
-		sb.append("<Link>" + TranslateChar.TranslateXMLChar(story.getIssueLink()) + "</Link>");
-		sb.append("<Name>" + TranslateChar.TranslateXMLChar(story.getSummary()) + "</Name>");
-		sb.append("<Value>" + story.getValue() + "</Value>");
-		sb.append("<Importance>" + story.getImportance() + "</Importance>");
-		sb.append("<Estimate>" + story.getEstimated() + "</Estimate>");
-		sb.append("<Status>" + story.getStatus() + "</Status>");
-		sb.append("<Notes>" + TranslateChar.TranslateXMLChar(story.getNotes()) + "</Notes>");
-		sb.append("<HowToDemo>" + TranslateChar.TranslateXMLChar(story.getHowToDemo()) + "</HowToDemo>");
-		sb.append("<Release>" + TranslateChar.HandleNullString(story.getReleaseID()) + "</Release>");
-		sb.append("<Sprint>" + TranslateChar.HandleNullString(story.getSprintID()) + "</Sprint>");
-		sb.append("<Tag>" + TranslateChar.TranslateXMLChar(Join(story.getTags(), ",")) + "</Tag>");
-		if (story.getAttachFiles().size() == 0) sb.append("<Attach>false</Attach>");
-		else sb.append("<Attach>true</Attach>");
-		sb.append("</Story>");
-		sb.append("</ProductBacklog>");
-
-		return sb.toString();
-	}
-
-	// for ShowScrumIssueAction
-	public String translateScrumIssueToJson(List<IIssue> scrumIssues) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-
-		JsonObject obj = new JsonObject();
-
-		obj.append("success", true);
-		obj.append("Total", scrumIssues.size());
-
-		JsonArray jsonIssues = new JsonArray();
-		for (int i = 0; i < scrumIssues.size(); i++) {
-			JsonObject jsonIssue = new JsonObject();
-
-			jsonIssue.append("Id", scrumIssues.get(i).getIssueID());
-			jsonIssue.append("Link", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getIssueLink()));
-			jsonIssue.append("Category", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getCategory()));
-			jsonIssue.append("Name", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getSummary()));
-			jsonIssue.append("Estimate", scrumIssues.get(i).getEstimated());
-			jsonIssue.append("Status", scrumIssues.get(i).getStatus());
-			jsonIssue.append("Notes", TranslateChar.TranslateJSONChar(scrumIssues.get(i).getNotes()));
-			jsonIssue.append("Sprint", TranslateChar.HandleNullString(scrumIssues.get(i).getSprintID()));
-			if (scrumIssues.get(i).getAttachFiles().size() == 0) jsonIssue.append("Attach", "false");
-			else jsonIssue.append("Attach", "true");
-
-			ArrayList<AttachFileObject> files = scrumIssues.get(i).getAttachFiles();
-			JsonArray jsonFiles = new JsonArray();
-			for (AttachFileObject file : files) {
-				JsonObject jsonFile = new JsonObject();
-				jsonFile.append("IssueId", file.getIssueId());
-				jsonFile.append("FileId", file.getId());
-				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + scrumIssues.get(i).getProjectName() 
-						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
-				jsonFiles.append(jsonFile);
-			}
-			jsonIssue.append("AttachFileList", jsonFiles);
-
-			jsonIssues.append(jsonIssue);
-		}
-		obj.append("ScrumIssues", jsonIssues);
-
-		return obj.toString();
-	}
+	public Translation() {}
 
 	// 將 Custom issue 轉換成 Json 格式
 	public String translateCustomIssueToJson(List<IIssue> customIssues) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
-		JsonObject obj = new JsonObject();
-		obj.append("success", true);
-		obj.append("Total", customIssues.size());
-		JsonArray jsonIssues = new JsonArray();
-		for (int i = 0; i < customIssues.size(); i++) {
-			JsonObject jsonIssue = new JsonObject();
-			jsonIssue.append("Id", customIssues.get(i).getIssueID());
-			jsonIssue.append("ProjectName", TranslateChar.TranslateJSONChar(customIssues.get(i).getProjectName()));
-			jsonIssue.append("Link", "showIssueInformation.do?projectName=" + customIssues.get(i).getProjectName()
-			        + "&" + "issueID=" + customIssues.get(i).getIssueID());
-			jsonIssue.append("Category", TranslateChar.TranslateJSONChar(customIssues.get(i).getCategory()));
-			jsonIssue.append("Name", TranslateChar.TranslateJSONChar(customIssues.get(i).getSummary()));
-			jsonIssue.append("Status", customIssues.get(i).getFieldValue("Status"));
-			jsonIssue.append("Priority", customIssues.get(i).getFieldValue("Priority"));
-
-			if (customIssues.get(i).getFieldValue("Handled").equals("True")) jsonIssue.append("Handled", customIssues.get(i).getFieldValue("Handled"));
-			else jsonIssue.append("Handled", "False");
-
-			jsonIssue.append("ReportUserName", TranslateChar.TranslateJSONChar(customIssues.get(i).getFieldValue("ReportUserName")));
-
-			// 如果comment為-1則代表為空值，為了不讓ext在expander顯示上資訊，所以將資料替換為null
-			String comment = customIssues.get(i).getFieldValue("Comment");
-			if (comment == "-1") comment = "";
-
-			jsonIssue.append("Comment", TranslateChar.TranslateJSONChar(comment));
-
-			jsonIssue.append("Email", TranslateChar.TranslateJSONChar(customIssues.get(i).getFieldValue("Email")));
-			jsonIssue.append("Description", TranslateChar.TranslateJSONChar(customIssues.get(i).getDescription()));
-			jsonIssue.append("Handler", customIssues.get(i).getAssignto());
-
-			if (customIssues.get(i).getAttachFiles().size() == 0) jsonIssue.append("Attach", "false");
-			else jsonIssue.append("Attach", "true");
-
-			ArrayList<AttachFileObject> files = customIssues.get(i).getAttachFiles();
-			JsonArray jsonFiles = new JsonArray();
-			for (AttachFileObject file : files) {
-				JsonObject jsonFile = new JsonObject();
-				jsonFile.append("IssueId", file.getIssueId());
-				jsonFile.append("FileId", file.getId());
-				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + customIssues.get(i).getProjectName()
-						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
-				jsonFiles.append(jsonFile);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			responseText.put("Total", customIssues.size());
+			JSONArray issueArray = new JSONArray();
+			for (int i = 0; i < customIssues.size(); i++) {
+				JSONObject issue = new JSONObject();
+				issue.put("Id", customIssues.get(i).getIssueID());
+				issue.put("ProjectName", translateChar.TranslateJSONChar(customIssues.get(i).getProjectName()));
+				issue.put("Link", "showIssueInformation.do?projectName=" + customIssues.get(i).getProjectName()
+						+ "&" + "issueID=" + customIssues.get(i).getIssueID());
+				issue.put("Category", translateChar.TranslateJSONChar(customIssues.get(i).getCategory()));
+				issue.put("Name", translateChar.TranslateJSONChar(customIssues.get(i).getSummary()));
+				issue.put("Status", customIssues.get(i).getFieldValue("Status"));
+				issue.put("Priority", customIssues.get(i).getFieldValue("Priority"));
+				
+				if (customIssues.get(i).getFieldValue("Handled").equals("True")) issue.put("Handled", customIssues.get(i).getFieldValue("Handled"));
+				else issue.put("Handled", "False");
+				
+				issue.put("ReportUserName", translateChar.TranslateJSONChar(customIssues.get(i).getFieldValue("ReportUserName")));
+				
+				// 如果comment為-1則代表為空值，為了不讓ext在expander顯示上資訊，所以將資料替換為null
+				String comment = customIssues.get(i).getFieldValue("Comment");
+				if (comment == "-1") comment = "";
+				
+				issue.put("Comment", translateChar.TranslateJSONChar(comment));
+				
+				issue.put("Email", translateChar.TranslateJSONChar(customIssues.get(i).getFieldValue("Email")));
+				issue.put("Description", translateChar.TranslateJSONChar(customIssues.get(i).getDescription()));
+				issue.put("Handler", customIssues.get(i).getAssignto());
+				
+				if (customIssues.get(i).getAttachFiles().size() == 0) issue.put("Attach", "false");
+				else issue.put("Attach", "true");
+				
+				ArrayList<AttachFileObject> files = customIssues.get(i).getAttachFiles();
+				JSONArray jsonFiles = new JSONArray();
+				for (AttachFileObject file : files) {
+					JSONObject attachFile = new JSONObject();
+					attachFile.put("IssueId", file.getIssueId());
+					attachFile.put("FileId", file.getId());
+					attachFile.put("FileName", translateChar.TranslateXMLChar(translateChar.TranslateJSONChar(file.getName())));
+					attachFile.put("DownloadPath", "fileDownload.do?projectName=" + customIssues.get(i).getProjectName()
+							+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
+					jsonFiles.put(attachFile);
+				}
+				issue.put("AttachFileList", jsonFiles);
+				issueArray.put(issue);
 			}
-			jsonIssue.append("AttachFileList", jsonFiles);
-			jsonIssues.append(jsonIssue);
+			responseText.put("CustomIssues", issueArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		obj.append("CustomIssues", jsonIssues);
+		return responseText.toString();
+	}
 
-		return obj.toString();
+	// for GetEditStoryInfoAction
+	public String translateStoryToXML(StoryObject story) {
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
+
+		StringBuilder responseText = new StringBuilder();
+		responseText.append("<ProductBacklog>");
+		responseText.append("<Total>1</Total>");
+		responseText.append("<Story>");
+		responseText.append("<Id>" + story.getId() + "</Id>");
+		responseText.append("<Link></Link>");
+		responseText.append("<Name>" + translateChar.TranslateXMLChar(story.getName()) + "</Name>");
+		responseText.append("<Value>" + story.getValue() + "</Value>");
+		responseText.append("<Importance>" + story.getImportance() + "</Importance>");
+		responseText.append("<Estimate>" + story.getEstimate() + "</Estimate>");
+		responseText.append("<Status>" + story.getStatus() + "</Status>");
+		responseText.append("<Notes>" + translateChar.TranslateXMLChar(story.getNotes()) + "</Notes>");
+		responseText.append("<HowToDemo>" + translateChar.TranslateXMLChar(story.getHowToDemo()) + "</HowToDemo>");
+		responseText.append("<Release></Release>");
+		responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+		responseText.append("<Tag>" + translateChar.TranslateXMLChar(Join(story.getTags(), ",")) + "</Tag>");
+		if (story.getAttachFiles().size() == 0) responseText.append("<Attach>false</Attach>");
+		else responseText.append("<Attach>true</Attach>");
+		responseText.append("</Story>");
+		responseText.append("</ProductBacklog>");
+
+		return responseText.toString();
 	}
 
 	public String translateStoryToJson(StoryObject story) {
 		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
 		storie.add(story);
-		return translateStoryToJson(storie);
+		return translateStoriesToJson(storie);
 	}
 
 	// for ShowProductBacklogAction
-	public String translateStoryToJson(ArrayList<StoryObject> stories) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+	public String translateStoriesToJson(ArrayList<StoryObject> stories) {
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
-		JsonObject obj = new JsonObject();
-
-		obj.append("success", true);
-		obj.append("Total", stories.size());
-
-		JsonArray jsonStroies = new JsonArray();
-		for (int i = 0; i < stories.size(); i++) {
-			JsonObject jsonStory = new JsonObject();
-
-			jsonStory.append("Id", stories.get(i).getId());
-			jsonStory.append("Name", TranslateChar.TranslateJSONChar((stories.get(i).getName())));
-			jsonStory.append("Value", stories.get(i).getValue());
-			jsonStory.append("Estimate", stories.get(i).getEstimate());
-			jsonStory.append("Importance", stories.get(i).getImportance());
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
-			jsonStory.append("Status", stories.get(i).getStatus());
-			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(stories.get(i).getNotes()));
-			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
-			jsonStory.append("Link", "");
-			jsonStory.append("Release", "");
-			jsonStory.append("Sprint", stories.get(i).getSprintId());
-			jsonStory.append("FilterType", getFilterType(stories.get(i)));
-
-			if (stories.get(i).getAttachFiles().size() == 0) jsonStory.append("Attach", false);
-			else jsonStory.append("Attach", true);
-
-			ArrayList<AttachFileObject> files = stories.get(i).getAttachFiles();
-			JsonArray jsonFiles = new JsonArray();
-			for (AttachFileObject file : files) {
-				JsonObject jsonFile = new JsonObject();
-				jsonFile.append("IssueId", file.getIssueId());
-				jsonFile.append("FileId", file.getId());
-				jsonFile.append("FileName", TranslateChar.TranslateJSONChar(file.getName()));
-
-				// parse Dateformat as Gson Default DateFormat (TaskBoard page)
-				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT);
-				Date date = new Date(file.getCreateTime());
-				String attachTime = dateFormat.format(date);
-				ProjectObject project = ProjectObject.get(stories.get(i).getId());
-				jsonFile.append("UploadDate", attachTime);
-				jsonFile.append("FilePath", "fileDownload.do?projectName=" + project.getName() + "&fileId=" + file.getId() + "&fileName=" + file.getName());
-				jsonFiles.append(jsonFile);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			responseText.put("Total", stories.size());
+			JSONArray jsonStroies = new JSONArray();
+			for (int i = 0; i < stories.size(); i++) {
+				JSONObject jsonStory = new JSONObject();
+				
+				jsonStory.put("Id", stories.get(i).getId());
+				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
+				jsonStory.put("Value", stories.get(i).getValue());
+				jsonStory.put("Estimate", stories.get(i).getEstimate());
+				jsonStory.put("Importance", stories.get(i).getImportance());
+				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
+				jsonStory.put("Status", stories.get(i).getStatus());
+				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories.get(i).getNotes()));
+				jsonStory.put("HowToDemo", translateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
+				jsonStory.put("Link", "");
+				jsonStory.put("Release", "");
+				jsonStory.put("Sprint", stories.get(i).getSprintId());
+				jsonStory.put("FilterType", getFilterType(stories.get(i)));
+				
+				if (stories.get(i).getAttachFiles().size() == 0) jsonStory.put("Attach", false);
+				else jsonStory.put("Attach", true);
+				
+				ArrayList<AttachFileObject> files = stories.get(i).getAttachFiles();
+				JSONArray jsonFiles = new JSONArray();
+				for (AttachFileObject file : files) {
+					JSONObject jsonFile = new JSONObject();
+					jsonFile.put("IssueId", file.getIssueId());
+					jsonFile.put("FileId", file.getId());
+					jsonFile.put("FileName", translateChar.TranslateJSONChar(file.getName()));
+					
+					// parse Dateformat as Gson Default DateFormat (TaskBoard page)
+					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT);
+					Date date = new Date(file.getCreateTime());
+					String attachTime = dateFormat.format(date);
+					ProjectObject project = ProjectObject.get(stories.get(i).getId());
+					jsonFile.put("UploadDate", attachTime);
+					jsonFile.put("FilePath", "fileDownload.do?projectName=" + project.getName() + "&fileId=" + file.getId() + "&fileName=" + file.getName());
+					jsonFiles.put(jsonFile);
+				}
+				jsonStory.put("AttachFileList", jsonFiles);
+				
+				jsonStroies.put(jsonStory);
 			}
-			jsonStory.append("AttachFileList", jsonFiles);
-
-			jsonStroies.append(jsonStory);
+			responseText.put("Stories", jsonStroies);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		obj.append("Stories", jsonStroies);
- 
-		return obj.toString();
+		return responseText.toString();
 	}
 	
 	public String translateTaskToJson(TaskObject task) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-		JSONObject json = new JSONObject();
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
+		JSONObject responseText = new JSONObject();
 		try {
-			json.put("success", true);
-			json.put("Total", 1);
+			responseText.put("success", true);
+			responseText.put("Total", 1);
 			
-			JSONObject taskJson = new JSONObject();
-			taskJson.put("Id", task.getId());
-			taskJson.put("Name", TranslateChar.TranslateJSONChar((task.getName())));
-			taskJson.put("Value", "");
-			taskJson.put("Estimate", task.getEstimate());
-			taskJson.put("Importance", "");
-			taskJson.put("Tag", "");
-			taskJson.put("Status", task.getStatusString());
-			taskJson.put("Notes", TranslateChar.TranslateJSONChar(task.getNotes()));
-			taskJson.put("HowToDemo", "");
-			taskJson.put("Link", "");
-			taskJson.put("Release", "");
-			taskJson.put("Sprint", "");
-			taskJson.put("FilterType", "");
+			JSONObject jsonTask = new JSONObject();
+			jsonTask.put("Id", task.getId());
+			jsonTask.put("Name", translateChar.TranslateJSONChar((task.getName())));
+			jsonTask.put("Value", "");
+			jsonTask.put("Estimate", task.getEstimate());
+			jsonTask.put("Importance", "");
+			jsonTask.put("Tag", "");
+			jsonTask.put("Status", task.getStatusString());
+			jsonTask.put("Notes", translateChar.TranslateJSONChar(task.getNotes()));
+			jsonTask.put("HowToDemo", "");
+			jsonTask.put("Link", "");
+			jsonTask.put("Release", "");
+			jsonTask.put("Sprint", "");
+			jsonTask.put("FilterType", "");
 			
 			if (task.getAttachFiles().size() > 0) {
-				taskJson.put("Attach", true);
+				jsonTask.put("Attach", true);
 			} else {
-				taskJson.put("Attach", false);
+				jsonTask.put("Attach", false);
 			}
 			
 			JSONArray attachFiles = new JSONArray();
@@ -261,10 +219,10 @@ public class Translation {
 				attachFiles.put(attachFileJson);
 			}
 			
-			taskJson.put("AttachFileList", attachFiles);
-			json.put("Stories", new JSONArray().put(taskJson));
+			jsonTask.put("AttachFileList", attachFiles);
+			responseText.put("Stories", new JSONArray().put(jsonTask));
 			
-			return json.toString();
+			return responseText.toString();
 		} catch (JSONException e) {
 		}
 		return new JSONObject().toString();
@@ -272,38 +230,41 @@ public class Translation {
 
 	// for Taskboard, CO data, include Handler + Partners
 	public String translateTaskboardIssueToJson(IIssue issue) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-
-		JsonObject obj = new JsonObject();
-		obj.append("success", true);
-
-		JsonObject jsonIssue = new JsonObject();
-		// 若需要其他欄位請再新增
-		jsonIssue.append("Id", issue.getIssueID());
-		jsonIssue.append("Link", TranslateChar.TranslateJSONChar(issue.getIssueLink()));
-		jsonIssue.append("Name", TranslateChar.TranslateJSONChar((issue.getSummary())));
-		jsonIssue.append("Handler", issue.getAssignto());
-		jsonIssue.append("Partners", issue.getPartners());
-
-		obj.append("Issue", jsonIssue);
-
-		return obj.toString();
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			
+			JSONObject jsonIssue = new JSONObject();
+			// 若需要其他欄位請再新增
+			jsonIssue.put("Id", issue.getIssueID());
+			jsonIssue.put("Link", translateChar.TranslateJSONChar(issue.getIssueLink()));
+			jsonIssue.put("Name", translateChar.TranslateJSONChar((issue.getSummary())));
+			jsonIssue.put("Handler", issue.getAssignto());
+			jsonIssue.put("Partners", issue.getPartners());
+			responseText.put("Issue", jsonIssue);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return responseText.toString();
 	}
 	
 	public String translateTaskboardTaskToJson(TaskObject task) {
-		JsonObject obj = new JsonObject();
-		obj.append("success", true);
-
-		JsonObject jsonIssue = new JsonObject();
-		// 若需要其他欄位請再新增
-		jsonIssue.append("Id", task.getId());
-		jsonIssue.append("Link", "");
-		jsonIssue.append("Name", task.getName());
-		jsonIssue.append("Handler", task.getHandler() == null ? "" : task.getHandler().getUsername());
-		jsonIssue.append("Partners", task.getPartnersUsername());
-		obj.append("Issue", jsonIssue);
-
-		return obj.toString();
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			JSONObject jsonIssue = new JSONObject();
+			// 若需要其他欄位請再新增
+			jsonIssue.put("Id", task.getId());
+			jsonIssue.put("Link", "");
+			jsonIssue.put("Name", task.getName());
+			jsonIssue.put("Handler", task.getHandler() == null ? "" : task.getHandler().getUsername());
+			jsonIssue.put("Partners", task.getPartnersUsername());
+			responseText.put("Issue", jsonIssue);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return responseText.toString();
 	}
 
 	private String getFilterType(StoryObject storyObject) {
@@ -329,360 +290,287 @@ public class Translation {
 	}
 
 	// for AjaxGetSprintIndexInfoAction
-	public String translateSprintInfoToJson(int currentSprintID,
+	public String translateSprintInfoToJson(int currentSprintId,
 	        double InitialPoint, double CurrentPoint,
 	        double InitialHours, double CurrentHours,
-	        int releaseID, String SprintGoal,
-	        String StoryChartUrl, String TaskChartUrl, boolean isCurrentSprint) {
+	        int releaseId, String SprintGoal,
+	        String StoryChartUrl, String TaskChartUrl, boolean isCurrentSprint) throws JSONException {
 
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
-		JsonObject obj = new JsonObject();
-		obj.append("success", true);
-		obj.append("Total", 1);
-		JsonObject sprint = new JsonObject();
-		sprint.append("Id", currentSprintID);
-		sprint.append("Name", "Sprint #" + TranslateChar.TranslateJSONChar(String.valueOf(currentSprintID)));
-		sprint.append("InitialPoint", String.valueOf(InitialPoint));
-		sprint.append("CurrentPoint", String.valueOf(CurrentPoint));
-		sprint.append("InitialHours", String.valueOf(InitialHours));
-		sprint.append("CurrentHours", String.valueOf(CurrentHours));
-		sprint.append("ReleaseID", "Release #" + TranslateChar.HandleNullString(Integer.toString(releaseID)));
-		sprint.append("SprintGoal", TranslateChar.TranslateJSONChar(SprintGoal));
-		sprint.append("StoryChartUrl", StoryChartUrl);
-		sprint.append("TaskChartUrl", TaskChartUrl);
-		sprint.append("IsCurrentSprint", isCurrentSprint);
-		obj.append("Sprint", sprint);
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
+		JSONObject responseText = new JSONObject();
+		responseText.put("success", true);
+		responseText.put("Total", 1);
+		JSONObject sprint = new JSONObject();
+		sprint.put("Id", currentSprintId);
+		sprint.put("Name", "Sprint #" + translateChar.TranslateJSONChar(String.valueOf(currentSprintId)));
+		sprint.put("InitialPoint", String.valueOf(InitialPoint));
+		sprint.put("CurrentPoint", String.valueOf(CurrentPoint));
+		sprint.put("InitialHours", String.valueOf(InitialHours));
+		sprint.put("CurrentHours", String.valueOf(CurrentHours));
+		sprint.put("ReleaseID", "Release #" + translateChar.HandleNullString(Integer.toString(releaseId)));
+		sprint.put("SprintGoal", translateChar.TranslateJSONChar(SprintGoal));
+		sprint.put("StoryChartUrl", StoryChartUrl);
+		sprint.put("TaskChartUrl", TaskChartUrl);
+		sprint.put("IsCurrentSprint", isCurrentSprint);
+		responseText.put("Sprint", sprint);
 
-		return obj.toString();
+		return responseText.toString();
 	}
 
 	// for ShowSprintBacklogAction
-	public String translateStoryToJson(ArrayList<StoryObject> stories, int currentSprintID, double currentPoint, double limitedPoint, double taskPoint, int releaseID, String SprintGoal) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+	public String translateStoryToJson(ArrayList<StoryObject> stories,
+			int currentSprintId, double currentPoint, double limitedPoint,
+			double taskPoint, int releaseID, String SprintGoal) {
+		
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
-		JsonObject obj = new JsonObject();
-
-		obj.append("success", true);
-		obj.append("Total", stories.size());
-
-		JsonObject sprint = new JsonObject();
-		sprint.append("Id", currentSprintID);
-		sprint.append("Name", "Sprint #" + TranslateChar.TranslateJSONChar(String.valueOf(currentSprintID)));
-		sprint.append("CurrentPoint", String.valueOf(currentPoint));
-		sprint.append("LimitedPoint", String.valueOf(limitedPoint));
-		sprint.append("TaskPoint", String.valueOf(taskPoint));
-		sprint.append("ReleaseID", "Release #" + TranslateChar.HandleNullString(Integer.toString(releaseID)));
-
-		sprint.append("SprintGoal", SprintGoal);
-		obj.append("Sprint", sprint);
-
-		JsonArray jsonStories = new JsonArray();
-		for (StoryObject story : stories) {
-			JsonObject jsonStory = new JsonObject();
-
-			jsonStory.append("Id", story.getId());
-			jsonStory.append("Link", "");
-			jsonStory.append("Name", TranslateChar.TranslateJSONChar(story.getName()));
-			jsonStory.append("Value", story.getValue());
-			jsonStory.append("Importance", story.getImportance());
-			jsonStory.append("Estimate", story.getEstimate());
-			jsonStory.append("Status", story.getStatusString());
-			jsonStory.append("Notes", TranslateChar.TranslateJSONChar(story.getNotes()));
-			jsonStory.append("Tag", TranslateChar.TranslateJSONChar(Join(story.getTags(), ",")));
-			jsonStory.append("HowToDemo", TranslateChar.TranslateJSONChar(story.getHowToDemo()));
-			jsonStory.append("Release", "");
-			jsonStory.append("Sprint", story.getSprintId());
-
-			if (story.getAttachFiles().size() == 0) jsonStory.append("Attach", "false");
-			else jsonStory.append("Attach", "true");
-
-			ArrayList<AttachFileObject> files = story.getAttachFiles();
-			JsonArray jsonFiles = new JsonArray();
-			for (AttachFileObject file : files) {
-				JsonObject jsonFile = new JsonObject();
-				jsonFile.append("IssueId", file.getIssueId());
-				jsonFile.append("FileId", file.getId());
-				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + ProjectObject.get(story.getProjectId()).getName()
-						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
-				jsonFiles.append(jsonFile);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			responseText.put("Total", stories.size());
+			
+			JSONObject sprint = new JSONObject();
+			sprint.put("Id", currentSprintId);
+			sprint.put("Name", "Sprint #" + translateChar.TranslateJSONChar(String.valueOf(currentSprintId)));
+			sprint.put("CurrentPoint", String.valueOf(currentPoint));
+			sprint.put("LimitedPoint", String.valueOf(limitedPoint));
+			sprint.put("TaskPoint", String.valueOf(taskPoint));
+			sprint.put("ReleaseID", "Release #" + translateChar.HandleNullString(Integer.toString(releaseID)));
+			sprint.put("SprintGoal", SprintGoal);
+			responseText.put("Sprint", sprint);
+			
+			JSONArray jsonStories = new JSONArray();
+			for (StoryObject story : stories) {
+				JSONObject jsonStory = new JSONObject();
+				
+				jsonStory.put("Id", story.getId());
+				jsonStory.put("Link", "");
+				jsonStory.put("Name", translateChar.TranslateJSONChar(story.getName()));
+				jsonStory.put("Value", story.getValue());
+				jsonStory.put("Importance", story.getImportance());
+				jsonStory.put("Estimate", story.getEstimate());
+				jsonStory.put("Status", story.getStatusString());
+				jsonStory.put("Notes", translateChar.TranslateJSONChar(story.getNotes()));
+				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(story.getTags(), ",")));
+				jsonStory.put("HowToDemo", translateChar.TranslateJSONChar(story.getHowToDemo()));
+				jsonStory.put("Release", "");
+				jsonStory.put("Sprint", story.getSprintId());
+				
+				if (story.getAttachFiles().size() == 0) jsonStory.put("Attach", "false");
+				else jsonStory.put("Attach", "true");
+				
+				ArrayList<AttachFileObject> files = story.getAttachFiles();
+				JSONArray jsonFiles = new JSONArray();
+				for (AttachFileObject file : files) {
+					JSONObject jsonFile = new JSONObject();
+					jsonFile.put("IssueId", file.getIssueId());
+					jsonFile.put("FileId", file.getId());
+					jsonFile.put("FileName", translateChar.TranslateXMLChar(translateChar.TranslateJSONChar(file.getName())));
+					jsonFile.put("DownloadPath", "fileDownload.do?projectName=" + ProjectObject.get(story.getProjectId()).getName()
+							+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
+					jsonFiles.put(jsonFile);
+				}
+				jsonStory.put("AttachFileList", jsonFiles);
+				
+				jsonStories.put(jsonStory);
 			}
-			jsonStory.append("AttachFileList", jsonFiles);
-
-			jsonStories.append(jsonStory);
+			responseText.put("Stories", jsonStories);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		obj.append("Stories", jsonStories);
-		return obj.toString();
+		return responseText.toString();
 	}
 
 	// 將 Kanban WorkItem 轉換成 Json 格式
-	public String translateWorkitemToJson(List<IIssue> items, int typeID) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+	public String translateWorkitemToJson(List<IIssue> items, int typeId) {
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
-		JsonObject obj = new JsonObject();
-
-		obj.append("success", true);
-		obj.append("Total", items.size());
-
-		JsonObject type = new JsonObject();
-		type.append("Id", typeID);
-		obj.append("IssueType", type);
-
-		JsonArray jsonWorkItems = new JsonArray();
-		for (int i = 0; i < items.size(); i++) {
-			JsonObject jsonWorkItem = new JsonObject();
-
-			jsonWorkItem.append("Id", items.get(i).getIssueID());
-			jsonWorkItem.append("Link", "showIssueInformation.do?issueID=" + items.get(i).getIssueID());
-			jsonWorkItem.append("Name", TranslateChar.TranslateJSONChar(items.get(i).getSummary()));
-			jsonWorkItem.append("Type", items.get(i).getFieldValue("Type"));
-			jsonWorkItem.append("Status", items.get(i).getFieldValue("Status"));
-			jsonWorkItem.append("Priority", items.get(i).getFieldValue("Priority"));
-			jsonWorkItem.append("WorkState", items.get(i).getFieldValue("WorkState"));
-			jsonWorkItem.append("Size", items.get(i).getFieldValue("Size"));
-			jsonWorkItem.append("Handler", items.get(i).getAssignto());
-			jsonWorkItem.append("Deadline", items.get(i).getFieldValue("Deadline"));
-			jsonWorkItem.append("Description", TranslateChar.TranslateJSONChar(items.get(i).getDescription()));
-
-			if (items.get(i).getAttachFiles().size() == 0) jsonWorkItem.append("Attach", "false");
-			else jsonWorkItem.append("Attach", "true");
-
-			ArrayList<AttachFileObject> files = items.get(i).getAttachFiles();
-			JsonArray jsonFiles = new JsonArray();
-			for (AttachFileObject file : files) {
-				JsonObject jsonFile = new JsonObject();
-				jsonFile.append("IssueId", file.getIssueId());
-				jsonFile.append("FileId", file.getId());
-				jsonFile.append("FileName", TranslateChar.TranslateXMLChar(TranslateChar.TranslateJSONChar(file.getName())));
-				jsonFile.append("DownloadPath", "fileDownload.do?projectName=" + items.get(i).getProjectName()
-						+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
-				jsonFiles.append(jsonFile);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			responseText.put("Total", items.size());
+			
+			JSONObject type = new JSONObject();
+			type.put("Id", typeId);
+			responseText.put("IssueType", type);
+			
+			JSONArray jsonWorkItems = new JSONArray();
+			for (int i = 0; i < items.size(); i++) {
+				JSONObject jsonWorkItem = new JSONObject();
+				
+				jsonWorkItem.put("Id", items.get(i).getIssueID());
+				jsonWorkItem.put("Link", "showIssueInformation.do?issueID=" + items.get(i).getIssueID());
+				jsonWorkItem.put("Name", translateChar.TranslateJSONChar(items.get(i).getSummary()));
+				jsonWorkItem.put("Type", items.get(i).getFieldValue("Type"));
+				jsonWorkItem.put("Status", items.get(i).getFieldValue("Status"));
+				jsonWorkItem.put("Priority", items.get(i).getFieldValue("Priority"));
+				jsonWorkItem.put("WorkState", items.get(i).getFieldValue("WorkState"));
+				jsonWorkItem.put("Size", items.get(i).getFieldValue("Size"));
+				jsonWorkItem.put("Handler", items.get(i).getAssignto());
+				jsonWorkItem.put("Deadline", items.get(i).getFieldValue("Deadline"));
+				jsonWorkItem.put("Description", translateChar.TranslateJSONChar(items.get(i).getDescription()));
+				
+				if (items.get(i).getAttachFiles().size() == 0) jsonWorkItem.put("Attach", "false");
+				else jsonWorkItem.put("Attach", "true");
+				
+				ArrayList<AttachFileObject> files = items.get(i).getAttachFiles();
+				JSONArray jsonFiles = new JSONArray();
+				for (AttachFileObject file : files) {
+					JSONObject jsonFile = new JSONObject();
+					jsonFile.put("IssueId", file.getIssueId());
+					jsonFile.put("FileId", file.getId());
+					jsonFile.put("FileName", translateChar.TranslateXMLChar(translateChar.TranslateJSONChar(file.getName())));
+					jsonFile.put("DownloadPath", "fileDownload.do?projectName=" + items.get(i).getProjectName()
+							+ "&fileId=" + file.getId() + "&fileName=" + file.getName());
+					jsonFiles.put(jsonFile);
+				}
+				jsonWorkItem.put("AttachFileList", jsonFiles);
+				jsonWorkItems.put(jsonWorkItem);
 			}
-			jsonWorkItem.append("AttachFileList", jsonFiles);
-
-			jsonWorkItems.append(jsonWorkItem);
+			responseText.put("WorkItems", jsonWorkItems);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		obj.append("WorkItems", jsonWorkItems);
-
-		return obj.toString();
+		return responseText.toString();
 	}
 
 	// 將 Kanban Status 轉換成 Json 格式
-	public String translateStatusToJson(List<IIssue> items, int typeID) {
-		TranslateSpecialChar TranslateChar = new TranslateSpecialChar();
+	public String translateStatusToJson(List<IIssue> items, int typeId) {
+		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
-		JsonObject obj = new JsonObject();
-
-		obj.append("success", true);
-		obj.append("Total", items.size());
-
-		JsonObject type = new JsonObject();
-		type.append("Id", typeID);
-		obj.append("IssueType", type);
-
-		JsonArray jsonStatuses = new JsonArray();
-		for (int i = 0; i < items.size(); i++) {
-			JsonObject jsonStatus = new JsonObject();
-			jsonStatus.append("Id", items.get(i).getIssueID());
-			jsonStatus.append("Name", TranslateChar.TranslateJSONChar(items.get(i).getSummary()));
-			jsonStatus.append("Description", TranslateChar.TranslateJSONChar(items.get(i).getDescription()));
-			jsonStatus.append("Limit", items.get(i).getFieldValue("Limit"));
-
-			jsonStatuses.append(jsonStatus);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			responseText.put("Total", items.size());
+			
+			JSONObject type = new JSONObject();
+			type.put("Id", typeId);
+			responseText.put("IssueType", type);
+			
+			JSONArray jsonStatuses = new JSONArray();
+			for (int i = 0; i < items.size(); i++) {
+				JSONObject jsonStatus = new JSONObject();
+				jsonStatus.put("Id", items.get(i).getIssueID());
+				jsonStatus.put("Name", translateChar.TranslateJSONChar(items.get(i).getSummary()));
+				jsonStatus.put("Description", translateChar.TranslateJSONChar(items.get(i).getDescription()));
+				jsonStatus.put("Limit", items.get(i).getFieldValue("Limit"));
+				
+				jsonStatuses.put(jsonStatus);
+			}
+			responseText.put("Statuses", jsonStatuses);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		obj.append("Statuses", jsonStatuses);
-
-		return obj.toString();
+		return responseText.toString();
 	}
 
 	// 將 BundownChart Data 轉換成 Json 格式
 	public String translateBurndownChartDataToJson(LinkedHashMap<Date, Double> ideal, LinkedHashMap<Date, Double> real) {
-		JsonObject json = new JsonObject();
-		json.append("success", true);
-
-		JsonArray array = new JsonArray();
-
-		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-
-		Object[] idealPointArray = ideal.keySet().toArray();
-
-		for (int i = 0; i < idealPointArray.length; i++) {
-			JsonObject obj = new JsonObject();
-			obj.append("Date", formatter.format(idealPointArray[i]));
-			obj.append("IdealPoint", ideal.get(idealPointArray[i]));
-
-			if (real.get(idealPointArray[i]) != null) obj.append("RealPoint", real.get(idealPointArray[i]));
-			else obj.append("RealPoint", "null");
-
-			array.append(obj);
+		JSONObject responseText = new JSONObject();
+		try {
+			responseText.put("success", true);
+			
+			JSONArray array = new JSONArray();
+			DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+			Object[] idealPointArray = ideal.keySet().toArray();
+			
+			for (int i = 0; i < idealPointArray.length; i++) {
+				JSONObject obj = new JSONObject();
+				obj.put("Date", formatter.format(idealPointArray[i]));
+				obj.put("IdealPoint", ideal.get(idealPointArray[i]));
+				
+				if (real.get(idealPointArray[i]) != null) obj.put("RealPoint", real.get(idealPointArray[i]));
+				else obj.put("RealPoint", "null");
+				
+				array.put(obj);
+			}
+			responseText.put("Points", array);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-
-		json.append("Points", array);
-
-		return json.toString();
+		return responseText.toString();
 	}
 
 	// 將 CPI/SPI 圖表 data 轉成 JSON
-	public String translateCPI_SPI_DataToJson(List<Map.Entry<Integer, Double>> cpiTupleList, List<Map.Entry<Integer, Double>> spiTupleList, Double[] idealArray) {
-		JsonObject obj = new JsonObject();
-		// make sure spiArray and cpiArray with the same sprint amount
-		if (cpiTupleList.size() != spiTupleList.size()) {
-			obj.append("success", false);
-			return obj.toString();
+	public String translateCPI_SPI_DataToJson(List<Map.Entry<Integer, Double>> cpiTupleList,
+			List<Map.Entry<Integer, Double>> spiTupleList, Double[] idealArray) {
+		
+		JSONObject responseText = new JSONObject();
+		
+		try {
+			// make sure spiArray and cpiArray with the same sprint amount
+			if (cpiTupleList.size() != spiTupleList.size()) {
+				responseText.put("success", false);
+				return responseText.toString();
+			}
+			int sprintAmount = cpiTupleList.size();
+
+			responseText.put("success", true);
+
+			// jsonDatas means SPI_CPI Data
+			JSONArray jsonDatas = new JSONArray();
+			for (int i = 0; i < sprintAmount; i++) { // sprint number since from 1
+				JSONObject jsonData = new JSONObject();
+
+				jsonData.put("SprintId", cpiTupleList.get(i).getKey());
+				jsonData.put("CPI", cpiTupleList.get(i).getValue());
+				jsonData.put("SPI", spiTupleList.get(i).getValue());
+				jsonData.put("Ideal", idealArray[i]);
+
+				jsonDatas.put(jsonData);
+			}
+			responseText.put("CPI_SPI_Data", jsonDatas);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		int sprintAmount = cpiTupleList.size();
-
-		obj.append("success", true);
-
-		// jsonDatas means SPI_CPI Data
-		JsonArray jsonDatas = new JsonArray();
-		for (int i = 0; i < sprintAmount; i++) { // sprint number since from 1
-			JsonObject jsonData = new JsonObject();
-
-			jsonData.append("SprintId", cpiTupleList.get(i).getKey());
-			jsonData.append("CPI", cpiTupleList.get(i).getValue());
-			jsonData.append("SPI", spiTupleList.get(i).getValue());
-			jsonData.append("Ideal", idealArray[i]);
-
-			jsonDatas.append(jsonData);
-		}
-		obj.append("CPI_SPI_Data", jsonDatas);
-
-		return obj.toString();
+		return responseText.toString();
 	}
 
-	public String translateEV_PV_TAC_DataToJson(List<Map.Entry<Integer, Double>> evTupleList, List<Map.Entry<Integer, Double>> pvTupleList, List<Map.Entry<Integer, Double>> tacTupleList) {
-		JsonObject obj = new JsonObject();
-		// make sure spiArray and cpiArray with the same sprint amount
-		if (evTupleList.size() != pvTupleList.size() || evTupleList.size() != tacTupleList.size() || pvTupleList.size() != tacTupleList.size()) {
-			obj.append("success", false);
-			return obj.toString();
+	public String translateEV_PV_TAC_DataToJson(List<Map.Entry<Integer, Double>> evTupleList,
+			List<Map.Entry<Integer, Double>> pvTupleList,
+			List<Map.Entry<Integer, Double>> tacTupleList) {
+		
+		JSONObject obj = new JSONObject();
+		
+		try {
+			// make sure spiArray and cpiArray with the same sprint amount
+			if (evTupleList.size() != pvTupleList.size() || evTupleList.size() != tacTupleList.size() || pvTupleList.size() != tacTupleList.size()) {
+				obj.put("success", false);
+				return obj.toString();
+			}
+			int sprintAmount = evTupleList.size();
+
+			obj.put("success", true);
+
+			// jsonDatas means SPI_CPI Data
+			JSONArray jsonDatas = new JSONArray();
+			for (int i = 0; i < sprintAmount; i++) { // sprint number since from 1
+				JSONObject jsonData = new JSONObject();
+
+				jsonData.put("SprintId", evTupleList.get(i).getKey());
+				jsonData.put("EV", evTupleList.get(i).getValue());
+				jsonData.put("PV", pvTupleList.get(i).getValue());
+				jsonData.put("TAC", tacTupleList.get(i).getValue());
+
+				jsonDatas.put(jsonData);
+			}
+			obj.put("PV_EV_TAC_Data", jsonDatas);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		int sprintAmount = evTupleList.size();
-
-		obj.append("success", true);
-
-		// jsonDatas means SPI_CPI Data
-		JsonArray jsonDatas = new JsonArray();
-		for (int i = 0; i < sprintAmount; i++) { // sprint number since from 1
-			JsonObject jsonData = new JsonObject();
-
-			jsonData.append("SprintId", evTupleList.get(i).getKey());
-			jsonData.append("EV", evTupleList.get(i).getValue());
-			jsonData.append("PV", pvTupleList.get(i).getValue());
-			jsonData.append("TAC", tacTupleList.get(i).getValue());
-
-			jsonDatas.append(jsonData);
-		}
-		obj.append("PV_EV_TAC_Data", jsonDatas);
-
 		return obj.toString();
 	}
 
 	public String Join(List<TagObject> tags, String delimiter) {
 		if (tags.isEmpty()) return "";
 
-		StringBuilder sb = new StringBuilder();
+		StringBuilder text = new StringBuilder();
 
 		for (TagObject x : tags)
-			sb.append(x.getName() + delimiter);
+			text.append(x.getName() + delimiter);
 
-		sb.delete(sb.length() - delimiter.length(), sb.length());
+		text.delete(text.length() - delimiter.length(), text.length());
 
-		return sb.toString();
-	}
-}
-
-class JsonObject
-{
-	protected Map<String, Object> _data;
-
-	public JsonObject()
-	{
-		_data = new LinkedHashMap<String, Object>();
-	}
-
-	public void append(String name, String value)
-	{
-		_data.put(name, "\"" + value + "\"");
-	}
-
-	public void append(String name, int value)
-	{
-		_data.put(name, String.valueOf(value));
-	}
-
-	public void append(String name, double value)
-	{
-		_data.put(name, String.valueOf(value));
-	}
-
-	public void append(String name, JsonObject value)
-	{
-		_data.put(name, value);
-	}
-
-	public void append(String name, JsonArray value)
-	{
-		_data.put(name, value);
-	}
-
-	public void append(String name, boolean value)
-	{
-		if (value) _data.put(name, "true");
-		else _data.put(name, "false");
-	}
-
-	public void append(String name, long value)
-	{
-		_data.put(name, String.valueOf(value));
-	}
-
-	public String toString()
-	{
-		Iterator<String> iter = _data.keySet().iterator();
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		while (iter.hasNext())
-		{
-			String key = iter.next();
-			Object obj = _data.get(key);
-			sb.append("\"" + key + "\":" + obj.toString() + ",");
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		sb.append("}");
-
-		return sb.toString();
-	}
-}
-
-class JsonArray
-{
-	private List<Object> _data;
-
-	public JsonArray()
-	{
-		_data = new ArrayList<Object>();
-	}
-
-	public void append(Object obj)
-	{
-		_data.add(obj);
-	}
-
-	public String toString()
-	{
-		Iterator<Object> iter = _data.iterator();
-		StringBuilder sb = new StringBuilder();
-		sb.append("[");
-		while (iter.hasNext())
-		{
-			Object obj = iter.next();
-			sb.append(obj.toString() + ",");
-		}
-		if (sb.charAt(sb.length() - 1) == ',') sb.deleteCharAt(sb.length() - 1);
-		sb.append("]");
-
-		return sb.toString();
+		return text.toString();
 	}
 }

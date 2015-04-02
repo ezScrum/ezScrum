@@ -50,7 +50,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
 		IIssue issue = productBacklogHelper.editStory(id, name, value, importances, estimate, howToDemo, notes, true);
-		StringBuilder result = productBacklogHelper.translateStoryToJson(issue);
+		StringBuilder result = productBacklogHelper.translateStoriesToJson(issue);
 		
 		return result;
 	}

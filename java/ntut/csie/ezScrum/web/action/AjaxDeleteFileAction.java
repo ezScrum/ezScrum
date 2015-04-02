@@ -52,7 +52,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		StringBuilder result = new StringBuilder("{\"success\":false}");
 		
 		// 透過file的 id 刪除attach file
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		PBHelper.deleteAttachFile(fileId);
 		
 		// 如果是在CustomIssue的頁面attach file的話，則translate custom issue的json
@@ -64,7 +64,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
 		} else if (issueType.equals("Story")){
 			IIssue story = PBHelper.getStory(issueId);
-			result = new StringBuilder(new Translation().translateStoryToJson(story));
+			result = new StringBuilder(new Translation().translateStoriesToJson(story));
 		} else if (issueType.equals("Task")) {
 			TaskObject task = TaskObject.get(issueId);
 			result = new StringBuilder(new Translation().translateTaskToJson(task));

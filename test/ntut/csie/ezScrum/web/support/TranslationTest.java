@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -88,12 +89,21 @@ public class TranslationTest{
 	// 測試是否有將 FilterType 加入 Story 的屬性之一
 	@Test
 	public void testTranslateStoryToJson2() throws Exception {
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mConfig.getUserSession(), mProject);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 
 		// initial data
 		for (int i = 0; i < 10; i++) {
-			productBacklogHelper.editStory(mCPB.getStories().get(i).getId(), "0", "0", "0", "0", "0", "0", true);
+			StoryInfo storyInfo = new StoryInfo();
+			storyInfo.id = mCPB.getStories().get(i).getId();
+			storyInfo.name = "0";
+			storyInfo.estimate = 0;
+			storyInfo.value = 0;
+			storyInfo.importance = 0;
+			storyInfo.howToDemo = "0";
+			storyInfo.sprintId = 0;
+			productBacklogHelper.updateStory(storyInfo);
+			
 			StoryObject story = mCPB.getStories().get(i);
 			assertEquals(0, story.getEstimate());
 			assertEquals(0, story.getImportance());

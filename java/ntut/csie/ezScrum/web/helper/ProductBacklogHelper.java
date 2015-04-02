@@ -44,7 +44,7 @@ public class ProductBacklogHelper {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByFilterType(filterType);
 
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStoryToJson(stories));
+		result.append(new Translation().translateStoriesToJson(stories));
 
 		return result;
 	}
