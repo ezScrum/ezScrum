@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
-import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
+import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -222,8 +222,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		ArrayList<StoryObject> stories = ASTS.getStories();
-		CheckOutIssue COI = new CheckOutIssue(stories, mCP);
-		COI.exeDone_Issues();
+		ChangeIssueStatus CIS = new ChangeIssueStatus(stories, mCP);
+		CIS.exeCloseStories();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -295,8 +295,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		ArrayList<StoryObject> stories = ASTS.getStories();
-		CheckOutIssue COI = new CheckOutIssue(stories, mCP);
-		COI.exeDone_Issues();
+		ChangeIssueStatus CIS = new ChangeIssueStatus(stories, mCP);
+		CIS.exeCloseStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);

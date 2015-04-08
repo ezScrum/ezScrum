@@ -17,7 +17,7 @@ import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
+import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -383,8 +383,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		tasks.add(mATTS.getTasks().get(0)); // 加入第一筆
 		tasks.add(mATTS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(tasks, mCP);
-		COI.exeCheckOut_Issues(); // 將此兩筆 Task Check-out
+		ChangeIssueStatus CIS = new ChangeIssueStatus(tasks, mCP);
+		CIS.exeCheckOutTasks(); // 將此兩筆 Task Check-out
 		// =============== set move action ======================
 
 		// ================ set session info ========================
@@ -428,7 +428,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ============= release ==============
 		project = null;
 		tasks = null;
-		COI = null;
+		CIS = null;
 		exceptedTaskBoard = null;
 	}
 
@@ -449,8 +449,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		tasks.add(mATTS.getTasks().get(0)); // 加入第一筆
 		tasks.add(mATTS.getTasks().get(1)); // 加入第二筆
 
-		CheckOutIssue COI = new CheckOutIssue(tasks, mCP);
-		COI.exeDone_Tasks(); // 將此兩筆 Task Done
+		ChangeIssueStatus CIS = new ChangeIssueStatus(tasks, mCP);
+		CIS.exeCloseTasks(); // 將此兩筆 Task Done
 		// =============== set move action ======================
 
 		// ================ set session info ========================
@@ -493,7 +493,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ============= release ==============
 		project = null;
 		tasks = null;
-		COI = null;
+		CIS = null;
 		exceptedTaskBoard = null;
 
 	}

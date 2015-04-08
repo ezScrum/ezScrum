@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -109,10 +107,6 @@ public class SprintBacklogLogic {
 	public void resetTask(long id, String name, String notes, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
 		mSprintBacklogMapper.resetTask(id, name, notes, closeDate);
-	}
-
-	public void updateTask(long taskId, TaskInfo taskInfo) {
-		mSprintBacklogMapper.updateTask(taskId, taskInfo);
 	}
 
 	/**
