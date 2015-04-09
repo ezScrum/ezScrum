@@ -178,7 +178,7 @@ public class ProductBacklogWebServiceController {
 	@GET
 	@Path("storylist/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String retrieveStory(@QueryParam("username") String username, 
+	public String getStory(@QueryParam("username") String username, 
 								@QueryParam("password") String password, 
 								@PathParam("projectName") String projectName, 
 								@PathParam("storyId") long storyId) {

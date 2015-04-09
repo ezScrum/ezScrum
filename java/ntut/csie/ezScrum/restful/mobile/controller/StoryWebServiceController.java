@@ -70,7 +70,7 @@ public class StoryWebServiceController {
 	 */
 	@PUT
 	@Path("update")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public String updateStory(@PathParam("projectName") String projectName,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password, String storyJson) {
@@ -110,10 +110,10 @@ public class StoryWebServiceController {
 	 * @return
 	 */
 	@GET
-	@Path("{storyID}/tasks")
+	@Path("{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTaskInStory(@PathParam("projectName") String projectName,
-			@PathParam("storyId") long storyID,
+	public String getTasksInStory(@PathParam("projectName") String projectName,
+			@PathParam("storyId") long storyId,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String jsonString = "";
@@ -123,7 +123,7 @@ public class StoryWebServiceController {
 			decoder.decodeProjectName(projectName);
 			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
-			jsonString = mStoryWebService.getTasksInStory(storyID);
+			jsonString = mStoryWebService.getTasksInStory(storyId);
 		} catch (LogonException e) {
 			System.out
 					.println("class: StoryWebServiceController, "
@@ -148,7 +148,7 @@ public class StoryWebServiceController {
 	 * @return
 	 */
 	@POST
-	@Path("{storyID}/add-existed-task")
+	@Path("{storyId}/add-existed-task")
 	@Produces(MediaType.APPLICATION_JSON)
 	public void addExistedTask(@PathParam("projectName") String projectName,
 			@PathParam("storyId") long storyId,

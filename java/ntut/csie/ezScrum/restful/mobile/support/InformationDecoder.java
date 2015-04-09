@@ -18,12 +18,12 @@ public class InformationDecoder {
 	}
 
 	public void decode(String encodeUsername, String encodePassword,
-			String encodeProjectID) throws IOException {
+			String encodeProjectName) throws IOException {
 		byte[] userName = Base64.decode(encodeUsername.toCharArray());
 		byte[] pwd = Base64.decode(encodePassword.toCharArray());
 		setDecodeUserName(new String(userName));
 		setDecodePwd(new String(pwd));
-		setDecodeProjectName(encodeProjectID);
+		setDecodeProjectName(encodeProjectName);
 	}
 
 	public void decodeProjectName(String encodeProjectName) throws IOException {

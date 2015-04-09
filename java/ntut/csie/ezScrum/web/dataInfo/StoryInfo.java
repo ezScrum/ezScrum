@@ -33,12 +33,12 @@ public class StoryInfo {
 		}
 		name = story.getString("name");
 		notes = story.getString("notes");
-		howToDemo = story.getString("howToDemo");
+		howToDemo = story.getString("how_to_demo");
 		importance = story.getInt("importance");
 		value = story.getInt("value");
 		estimate = story.getInt("estimate");
 		status = story.getInt("status");
-		sprintId = story.getLong("sprint");
-		tags = story.getString("tagsId");
+		sprintId = story.getLong("sprint_id");
+		tags = story.getString("tags");
 	}
 }

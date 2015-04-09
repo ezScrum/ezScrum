@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.restfu.mobilel.service;
+package ntut.csie.ezScrum.restful.mobilel.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

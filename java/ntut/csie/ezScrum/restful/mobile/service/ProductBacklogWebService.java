@@ -106,7 +106,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 	 * 取得所有的 tag
 	 */
 	public void getAllTags() {
-		ArrayList<TagObject> tagList = mProductBacklogHelper.getTagList();
-		mResponse = new Gson().toJson(tagList);
+		ArrayList<TagObject> tags = mProductBacklogHelper.getTagList();
+		mResponse = mConvertProductBacklog.getTagList(tags);
 	}
 }
