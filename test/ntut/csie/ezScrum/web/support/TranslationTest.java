@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CheckOutIssue;
+import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -198,9 +198,9 @@ public class TranslationTest {
 			assertTrue(actualSB.toString().contains("BACKLOG"));
 		}
 
-		CheckOutIssue coi = new CheckOutIssue(stories, mCP);
+		ChangeIssueStatus CIS = new ChangeIssueStatus(stories, mCP);
 		// 將前四筆狀態 done
-		coi.exeDone_Issues();
+		CIS.exeCloseStories();
 
 		stories.clear();
 

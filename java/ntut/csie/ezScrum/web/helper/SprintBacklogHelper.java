@@ -174,8 +174,7 @@ public class SprintBacklogHelper {
 		mSprintBacklogMapper.closeStory(id, name, notes, changeDate);
 	}
 
-	public void reopenStory(long id, String name, String notes,
-			String changeDate) {
+	public void reopenStory(long id, String name, String notes, String changeDate) {
 		mSprintBacklogMapper.reopenStory(id, name, notes, changeDate);
 	}
 
