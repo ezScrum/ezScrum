@@ -31,7 +31,7 @@ public class LoginWebServiceController {
 		try {
 			InformationDecoder decodeInfo = new InformationDecoder();
 			decodeInfo.decode(userName, password);
-			this.service = new LoginWebService(decodeInfo.getDecodeUserName(), decodeInfo.getDecodePwd());
+			service = new LoginWebService(decodeInfo.getDecodeUserName(), decodeInfo.getDecodePwd());
 			AccountObject theAccount = service.getAccount();
 			Gson gson = new Gson();
 			if (theAccount != null) {

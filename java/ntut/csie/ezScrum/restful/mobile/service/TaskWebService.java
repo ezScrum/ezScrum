@@ -40,12 +40,10 @@ public class TaskWebService extends ProjectWebService {
 	}
 	
 	private void initialize(long projectId) {
-		UserSession userSession = new UserSession(super.getAccount());
 		mProjectHelper = new ProjectHelper();
 		mProject = mProjectHelper.getProject(projectId);
-		IProject project = new ProjectMapper().getProjectByID(mProject.getName());
-		mSprintBacklogHelper = new SprintBacklogHelper(project, userSession);
-		mProductBacklogHelper = new ProductBacklogHelper(userSession, project);
+		mSprintBacklogHelper = new SprintBacklogHelper(mProject);
+		mProductBacklogHelper = new ProductBacklogHelper(mProject);
 	}
 	
 	/**

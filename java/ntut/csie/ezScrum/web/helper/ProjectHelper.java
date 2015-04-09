@@ -176,7 +176,7 @@ public class ProjectHelper {
 	}
 	
 	/**
-	 * get project use DAO
+	 * Get project by id
 	 * @param id
 	 * @return project object
 	 */
@@ -185,7 +185,16 @@ public class ProjectHelper {
 	}
 	
 	/**
-	 * update project use DAO
+	 * Get project by project name
+	 * @param projectName
+	 * @return project object
+	 */
+	public ProjectObject getProjectByName(String projectName) {
+		return mProjectMapper.getProject(projectName);
+	}
+	
+	/**
+	 * Update project use DAO
 	 * @param id 必要參數
 	 * @param projectInfo 其他資訊都包成 Info
 	 */

@@ -10,8 +10,10 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -19,7 +21,7 @@ import ntut.csie.jcis.resource.core.IProject;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SprintBacklogLogic {
-
+	private ProjectObject mProject;
 	private IProject mIProject;
 	private SprintBacklogMapper mSprintBacklogMapper;
 
@@ -39,6 +41,12 @@ public class SprintBacklogLogic {
 	@Deprecated
 	public SprintBacklogLogic(IProject project, long sprintId) {
 		mIProject = project;
+		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
+	}
+	
+	public SprintBacklogLogic(ProjectObject project, long sprintId) {
+		mProject = project;
+		mIProject = (new ProjectMapper()).getProjectByID(mProject.getName());
 		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
 	}
 

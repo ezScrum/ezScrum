@@ -21,14 +21,13 @@ import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogHelper {
 	private ProductBacklogMapper mProductBacklogMapper;
 	private ProductBacklogLogic mProductBacklogLogic;
-	private IProject mProject;
+	private ProjectObject mProject;
 
-	public ProductBacklogHelper(IProject project) {
+	public ProductBacklogHelper(ProjectObject project) {
 		mProductBacklogMapper = new ProductBacklogMapper(project);
 		mProductBacklogLogic = new ProductBacklogLogic(project);
 		mProject = project;
@@ -55,9 +54,9 @@ public class ProductBacklogHelper {
 	 * @param storyInfo
 	 * @return StoryObject
 	 */
-	public StoryObject addNewStory(StoryInfo storyInfo) {
-		StoryObject newStory = mProductBacklogMapper.addStory(storyInfo);
-		return mProductBacklogMapper.getStory(newStory.getId());
+	public long addStory(long projectId, StoryInfo storyInfo) {
+		StoryObject newStory = mProductBacklogMapper.addStory(projectId, storyInfo);
+		return newStory.getId();
 	}
 
 	// 秀出此 release 加入的 stories，以及此 release 的 sprint 包含的 stories
@@ -68,6 +67,14 @@ public class ProductBacklogHelper {
 	
 	public ArrayList<StoryObject> getAddableStories() {
 		return mProductBacklogLogic.getAddableStories();
+	}
+	
+	public ArrayList<StoryObject> getStoriesByFilterType(String filterType) {
+		return mProductBacklogLogic.getStoriesByFilterType(filterType);
+	}
+	
+	public ArrayList<StoryObject> getStories() {
+		return mProductBacklogLogic.getStories();
 	}
 
 	/**
@@ -244,8 +251,7 @@ public class ProductBacklogHelper {
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		ProjectObject project = ProjectObject.get(mProject.getName());
-		tasks = project.getTasksWithNoParent();
+		tasks = mProject.getTasksWithNoParent();
 		return tasks;
 	}
 

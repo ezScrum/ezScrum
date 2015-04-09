@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.mapper;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
@@ -20,19 +21,18 @@ import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapper {
-	private IProject mProject;
+	private ProjectObject mProject;
 	private MantisService mMantisService;
 
-	public ProductBacklogMapper(IProject project) {
+	public ProductBacklogMapper(ProjectObject project) {
 		mProject = project;
 		Configuration config = new Configuration();
 		mMantisService = new MantisService(config);
 	}
 	
 	public ArrayList<StoryObject> getUnclosedStories() {
-		ProjectObject project = ProjectObject.get(mProject.getName());
 		ArrayList<StoryObject> unclosedStories = new ArrayList<StoryObject>();
-		ArrayList<StoryObject> stories = project.getStories();
+		ArrayList<StoryObject> stories = mProject.getStories();
 		for (StoryObject story : stories) {
 			if (story.getStatus() != StoryObject.STATUS_DONE) {
 				unclosedStories.add(story);
@@ -51,7 +51,8 @@ public class ProductBacklogMapper {
 
 	// get all stories by release
 	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
-		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
+		IProject project = (new ProjectMapper()).getProjectByID(mProject.getName());
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
 		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
@@ -84,10 +85,9 @@ public class ProductBacklogMapper {
 	         .save();
 	}
 
-	public StoryObject addStory(StoryInfo storyInfo) {
-		ProjectObject project = ProjectObject.get(mProject.getName());
+	public StoryObject addStory(long projectId, StoryInfo storyInfo) {
 		ArrayList<Long> tagsId = getTagsIdByTagsName(storyInfo.tags);
-		StoryObject story = new StoryObject(project.getId());
+		StoryObject story = new StoryObject(projectId);
 		story.setName(storyInfo.name)
 		     .setEstimate(storyInfo.estimate)
 		     .setImportance(storyInfo.importance)
@@ -131,8 +131,7 @@ public class ProductBacklogMapper {
 
 	// 新增自訂分類標籤
 	public long addNewTag(String name) {
-		ProjectObject project = ProjectObject.get(mProject.getName());
-		TagObject tag = new TagObject(name, project.getId());
+		TagObject tag = new TagObject(name, mProject.getId());
 		tag.save();
 		return tag.getId();
 	}
@@ -232,8 +231,7 @@ public class ProductBacklogMapper {
 	}
 	
 	public ArrayList<StoryObject> getStories() {
-		ProjectObject project = ProjectObject.get(mProject.getName());
-		return project.getStories();
+		return mProject.getStories();
 	}
 	
 	// will remove

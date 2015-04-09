@@ -6,11 +6,13 @@ import java.util.List;
 
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic.SprintBacklogDateColumn;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -21,9 +23,17 @@ import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
 	private IProject mIProject;
+	private ProjectObject mProject;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private long mSprintId;
+
+	public SprintBacklogHelper(ProjectObject project) {
+		mProject = project;
+		mIProject = new ProjectMapper().getProjectByID(mProject.getName());
+		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
+	}
 
 	/**
 	 * 待刪
@@ -65,16 +75,18 @@ public class SprintBacklogHelper {
 	public ArrayList<StoryObject> getStoriesByImportance() {
 		return mSprintBacklogLogic.getStoriesByImp();
 	}
-	
+
 	/**
 	 * Add exist story to sprint
 	 * 
 	 * @param storiesId
 	 */
 	public void addExistingStory(ArrayList<Long> storiesId) {
+		ProjectObject project = (new ProjectMapper()).getProject(mIProject
+				.getName());
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				mIProject);
-		
+				project);
+
 		if ((mSprintId != 0) && (mSprintId != -1)) {
 			// 將 Story 加入 Sprint 當中
 			productBacklogLogic.addStoriesToSprint(storiesId, mSprintId);
@@ -88,8 +100,10 @@ public class SprintBacklogHelper {
 	 */
 	public ArrayList<StoryObject> getExistingStories() {
 		ArrayList<StoryObject> stories = null;
+		ProjectObject project = (new ProjectMapper()).getProject(mIProject
+				.getName());
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				mIProject);
+				project);
 		stories = productBacklogLogic.getExistingStories();
 		return stories;
 	}
@@ -216,7 +230,8 @@ public class SprintBacklogHelper {
 
 				for (StoryObject story : stories) {
 					SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							story, story.getTasks(), mSprintBacklogLogic.getCurrentDateList());
+							story, story.getTasks(),
+							mSprintBacklogLogic.getCurrentDateList());
 					SBtree.add(tree);
 				}
 			} else {
@@ -254,19 +269,19 @@ public class SprintBacklogHelper {
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mIProject);
-			releaseId = Integer.parseInt(releasePlanHelper.getReleaseID(Integer
-					.toString(currentSprintId)));
+			releaseId = Integer.parseInt(releasePlanHelper
+					.getReleaseID(currentSprintId));
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 
 			result = new Translation().translateSprintBacklogToJson(stories,
-					currentSprintId, totalStoryPoints, limitedPoint, totalTaskPoints,
-					releaseId, sprintGoal);
+					currentSprintId, totalStoryPoints, limitedPoint,
+					totalTaskPoints, releaseId, sprintGoal);
 		} else {
 			stories = new ArrayList<StoryObject>();
 			result = new Translation().translateSprintBacklogToJson(stories,
-					currentSprintId, totalStoryPoints, limitedPoint, totalTaskPoints,
-					releaseId, sprintGoal);
+					currentSprintId, totalStoryPoints, limitedPoint,
+					totalTaskPoints, releaseId, sprintGoal);
 		}
 		return result;
 	}

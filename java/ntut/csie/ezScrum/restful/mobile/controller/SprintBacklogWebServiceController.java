@@ -99,7 +99,7 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeProjectID(), iteration);
 			}
 
-			jsonString = this.mSprintBacklogWebService
+			jsonString = mSprintBacklogWebService
 					.getSprintBacklog(handler);
 
 		} catch (IOException e) {
@@ -142,7 +142,7 @@ public class SprintBacklogWebServiceController {
 			user.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(user,
 					decoder.getDecodeProjectID());
-			jsonString = this.mSprintPlanWebService.getCurrentSprint();
+			jsonString = mSprintPlanWebService.getCurrentSprint();
 		} catch (Exception e) {
 			System.out.println("class: SprintBacklogWebServiceController, "
 					+ "method: getCurrentSprintBacklog, " + "exception: "

@@ -262,6 +262,7 @@ public class StoryObject implements IBaseObject {
 
 	@Override
 	public boolean delete() {
+		HistoryDAO.getInstance().deleteByIssue(mId, IssueTypeEnum.TYPE_STORY);
 		boolean success = StoryDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;
@@ -287,7 +288,7 @@ public class StoryObject implements IBaseObject {
 		JSONArray tags = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.toJSON());
+			tasks.put(task.getId());
 		}
 		
 		for (HistoryObject history : getHistories()) {
@@ -446,6 +447,8 @@ public class StoryObject implements IBaseObject {
 		setEstimate(story.getEstimate());
 		setStatus(story.getStatus());
 		setSprintId(story.getSprintId());
+		setCreateTime(story.getCreateTime());
+		setUpdateTime(story.getUpdateTime());
 	}
 	
 	private boolean isTagExistingInStory(long tagId) {

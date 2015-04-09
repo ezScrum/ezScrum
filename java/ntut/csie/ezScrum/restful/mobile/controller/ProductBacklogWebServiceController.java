@@ -79,12 +79,12 @@ public class ProductBacklogWebServiceController {
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectID);
-			this.pbws = new ProductBacklogWebService(
+			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.readStory(null);
-			jsonString = this.pbws.getRESTFulResponseString();
+			pbws.getStory(null);
+			jsonString = pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: getProductBacklogList, " +
@@ -155,12 +155,12 @@ public class ProductBacklogWebServiceController {
 		try{
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectID);
-			this.pbws = new ProductBacklogWebService(
+			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.deleteStory(storyID);
-			responseString += this.pbws.getRESTFulResponseString();
+			pbws.deleteStory(storyID);
+			responseString += pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			responseString += "LogonException";
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -193,12 +193,12 @@ public class ProductBacklogWebServiceController {
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectId);
-			this.pbws = new ProductBacklogWebService(
+			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectID());
-			this.pbws.readStoryById(storyId);
-			jsonString = this.pbws.getRESTFulResponseString();
+			pbws.getStory(storyId);
+			jsonString = pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: getProductBacklogList, " +
@@ -227,11 +227,11 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(userName, password, projectId);
-			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
-			this.pbws.readAllTags();
-			jsonString = this.pbws.getRESTFulResponseString();
+			pbws.getAllTags();
+			jsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: decode, " +
@@ -261,11 +261,11 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(userName, password, projectId);
-			this.pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectID());
-			this.pbws.readStoryHistory(storyId);
-			storyHistoryJsonString = this.pbws.getRESTFulResponseString();
+			pbws.getStoryHistory(storyId);
+			storyHistoryJsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: decode, " +
