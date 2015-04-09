@@ -39,11 +39,11 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode( userName, password, projectID );
-			this.bcws = new BurndownChartWebService( decoder.getDecodeUserName(), 
+			bcws = new BurndownChartWebService( decoder.getDecodeUserName(), 
 													 decoder.getDecodePwd(), 
 													 decoder.getDecodeProjectID() ,
 													 Integer.parseInt( sprintID ) ) ;
-			storyPointsJsonString = this.bcws.getRESTFulStoryPointMapResponseString();
+			storyPointsJsonString = bcws.getRESTFulStoryPointMapResponseString();
 		} catch (IOException e) {
 			System.out.println(	"class: InformationDecoder, " + 
 								"method: decode, " + 
@@ -82,11 +82,11 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode( userName, password, projectID );
-			this.bcws = new BurndownChartWebService( decoder.getDecodeUserName(),
+			bcws = new BurndownChartWebService( decoder.getDecodeUserName(),
 													 decoder.getDecodePwd(),
 													 decoder.getDecodeProjectID(),
 													 Integer.parseInt( sprintID ) );
-			taskPointsJsonString = this.bcws.getRESTFulTaskPointMapResponseString();
+			taskPointsJsonString = bcws.getRESTFulTaskPointMapResponseString();
 		} catch (IOException e) {
 			System.out.println(	"class: InformationDecoder, " + 
 								"method: decode, " + 

@@ -70,8 +70,8 @@ public class ProjectWebServiceController {
 		try {
 			InformationDecoder decodeInformation = new InformationDecoder();
 			decodeInformation.decode( username, password,projectID );
-			this.mService = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodeUserName(), decodeInformation.getDecodeProjectID() );
-			jsonString += this.mService.getRESTFulResponseString();
+			mService = new ProjectWebService( decodeInformation.getDecodeUserName(), decodeInformation.getDecodeUserName(), decodeInformation.getDecodeProjectID() );
+			jsonString += mService.getRESTFulResponseString();
 		}catch (LogonException e) {
 			System.out.println(	"class: ProjectWebServiceController, " +
 								"method: getProjectList, " +

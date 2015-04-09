@@ -9,7 +9,7 @@ import ntut.csie.jcis.account.core.LogonException;
 import org.codehaus.jettison.json.JSONException;
 
 public class BurndownChartWebService extends ProjectWebService {
-	private TaskBoard taskBoard;
+	private TaskBoard mTaskBoard;
 
 	public BurndownChartWebService(String username, String password,
 			String projectName, long sprintId) throws LogonException {
@@ -19,14 +19,14 @@ public class BurndownChartWebService extends ProjectWebService {
 				.getAllProjects().get(0), sprintId);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic
 				.getSprintBacklogMapper();
-		taskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
+		mTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
 	}
 
 	public String getRESTFulStoryPointMapResponseString()
 			throws JSONException {
 		
 		ConvertBurndownChart convertBurndownChart = new ConvertBurndownChart();
-		convertBurndownChart.convertStoryPoint(taskBoard
+		convertBurndownChart.convertStoryPoint(mTaskBoard
 				.getStoryRealPointMap());
 		return convertBurndownChart.getStoryBurndownChartJSONString();
 	}
@@ -35,7 +35,7 @@ public class BurndownChartWebService extends ProjectWebService {
 			throws JSONException {
 		
 		ConvertBurndownChart convertBurndownChart = new ConvertBurndownChart();
-		convertBurndownChart.convertTaskPoint(taskBoard
+		convertBurndownChart.convertTaskPoint(mTaskBoard
 				.getTaskRealPointMap());
 		return convertBurndownChart.getTaskBurndownChartJSONString();
 	}
