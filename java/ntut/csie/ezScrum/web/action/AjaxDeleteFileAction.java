@@ -1,19 +1,17 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.service.IssueBacklog;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -40,7 +38,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		
 		// 取得刪除file前需要的資料
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
@@ -61,15 +59,14 @@ public class AjaxDeleteFileAction extends PermissionAction {
 			IIssue issue = backlog.getIssue(issueId);
 			ArrayList<IIssue> list = new ArrayList<IIssue>();
 			list.add(issue);
-			result = new StringBuilder(new Translation().translateCustomIssueToJson(list));
+			result = new StringBuilder(Translation.translateCustomIssueToJson(list));
 		} else if (issueType.equals("Story")){
-			IIssue story = PBHelper.getStory(issueId);
-			result = new StringBuilder(new Translation().translateStoriesToJson(story));
+			StoryObject story = PBHelper.getStory(issueId);
+			result = new StringBuilder(Translation.translateStoryToJson(story));
 		} else if (issueType.equals("Task")) {
 			TaskObject task = TaskObject.get(issueId);
-			result = new StringBuilder(new Translation().translateTaskToJson(task));
+			result = new StringBuilder(Translation.translateTaskToJson(task));
 		}
-
 		return result;
 	}
 }

@@ -71,9 +71,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 
 		return false;
 	}
-
-	Translation tr = new Translation();
-
+	
 	private class TaskBoard_Story {
 		String Id;
 		String Name;
@@ -96,7 +94,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			Value = story.getValue();
 			Estimate = story.getEstimated();
 			Importance = story.getImportance();
-			Tag = tr.Join(story.getTags(), ",");
+			Tag = Translation.Join(story.getTags(), ",");
 			Status = story.getStatus();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());

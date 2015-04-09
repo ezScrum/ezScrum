@@ -68,7 +68,7 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 				isCurrentSprint = true;
 		} 
 		
-		result = new Translation().translateSprintInfoToJson(
+		result = Translation.translateSprintInfoToJson(
 				currentSprintID, initialPoint, currentPoint, initialHours, currentHours, releaseID, SprintGoal,
 				StoryChartUrl, TaskChartUrl,isCurrentSprint);
 		try {

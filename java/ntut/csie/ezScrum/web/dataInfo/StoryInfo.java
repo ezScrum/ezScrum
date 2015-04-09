@@ -7,9 +7,9 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class StoryInfo {
 	public long id = -1;
-	public String name;
-	public String notes;
-	public String howToDemo;
+	public String name = "";
+	public String notes = "";
+	public String howToDemo = "";
 	public int importance = 0;
 	public int value = 0;
 	public int estimate = 0;

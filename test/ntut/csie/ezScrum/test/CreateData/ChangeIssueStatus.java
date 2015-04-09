@@ -14,8 +14,8 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ChangeIssueStatus {
-	private ArrayList<TaskObject> mTasks;
-	private ArrayList<StoryObject> mStories;
+	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
+	private ArrayList<StoryObject> mStories = new ArrayList<StoryObject>();
 	private CreateProject mCP;
 	private Date mSetDoneDate = null;
 	private Configuration mConfiguration = new Configuration();

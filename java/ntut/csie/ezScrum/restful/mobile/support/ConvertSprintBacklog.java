@@ -362,9 +362,6 @@ public class ConvertSprintBacklog {
 		return TB_Story;
 	}
 
-	// 協助將資料轉換的 Translater
-	Translation tr = new Translation();
-
 	// 欲打包成json格式的 story 物件
 	private class TaskBoard_Story {
 		String Id;
@@ -389,7 +386,7 @@ public class ConvertSprintBacklog {
 			Value = String.valueOf(story.getValue());
 			Estimate = String.valueOf(story.getEstimate());
 			Importance = String.valueOf(story.getImportance());
-			Tag = tr.Join(story.getTags(), ",");
+			Tag = Translation.Join(story.getTags(), ",");
 			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
