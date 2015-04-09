@@ -21,16 +21,16 @@ public class LoginWebServiceController {
 	
 	/***
 	 * 取得帳號是否存在資訊
-	 * http://IP:8080/ezScrum/web-service/user/login?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/user/login?username={userName}&password={password}
 	 * */
 	@GET
 	@Path("login")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String login(@QueryParam("userName") String userName, @QueryParam("password") String password) {
+	public String login(@QueryParam("username") String username, @QueryParam("password") String password) {
 		String response = "";
 		try {
 			InformationDecoder decodeInfo = new InformationDecoder();
-			decodeInfo.decode(userName, password);
+			decodeInfo.decode(username, password);
 			service = new LoginWebService(decodeInfo.getDecodeUserName(), decodeInfo.getDecodePwd());
 			AccountObject theAccount = service.getAccount();
 			Gson gson = new Gson();

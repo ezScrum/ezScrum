@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,33 +17,32 @@ import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
-@Path("{projectID}/product-backlog/")
+@Path("{projectName}/product-backlog/")
 public class ProductBacklogWebServiceController {
 	private ProductBacklogWebService pbws;
 	
 	/**
 	 * 建立一個Story
 	 * 需要Post Story JSON 字串
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/create?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/create?username={username}&password={password}
 	 */
 	@POST
 	@Path("create")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createStory(@PathParam("projectID") String projectID,
-						      @QueryParam("userName") String userName,
+	public String createStory(@PathParam("projectName") String projectName,
+						      @QueryParam("username") String username,
 							  @QueryParam("password") String password,
 							  String storyJson) {
 		String storyCreateJsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectID);
+			informationDecoder.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 											    informationDecoder.getDecodePwd(),
-											    informationDecoder.getDecodeProjectID());
+											    informationDecoder.getDecodeProjectName());
 			
-	        pbws.createStory(new JSONObject(storyJson));
+	        pbws.createStory(storyJson);
 	        storyCreateJsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -67,23 +65,23 @@ public class ProductBacklogWebServiceController {
 	
 	/**
 	 * 取得專案底下所有Story Get
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/storylist?username={username}&password={password}
 	 **/
 	@GET
 	@Path("storylist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getProductBacklogList(@QueryParam("userName") String username,
+	public String getProductBacklogList(@QueryParam("username") String username,
 										@QueryParam("password") String password,
-										@PathParam("projectID") String projectID) {
+										@PathParam("projectName") String projectName) {
 		String jsonString = "";
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
-			decodeAccount.decode(username, password, projectID);
+			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
-					decodeAccount.getDecodeProjectID());
-			pbws.getStory(null);
+					decodeAccount.getDecodeProjectName());
+			pbws.getStories();
 			jsonString = pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -102,24 +100,24 @@ public class ProductBacklogWebServiceController {
 	/**
 	 * update Story
 	 * 需要Post Story JSON 字串
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/update?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/update?username={username}&password={password}
 	 */
 	@POST
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateStory(@PathParam("projectID") String projectID,
-						      @QueryParam("userName") String userName,
+	public String updateStory(@PathParam("projectName") String projectName,
+						      @QueryParam("username") String username,
 							  @QueryParam("password") String password,
 							  String storyJson) {
 		String storyUpdateJsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectID);
+			informationDecoder.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 											    informationDecoder.getDecodePwd(),
-											    informationDecoder.getDecodeProjectID());
+											    informationDecoder.getDecodeProjectName());
 			
-	        pbws.updateStory(new JSONObject(storyJson));
+	        pbws.updateStory(storyJson);
 	        storyUpdateJsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
@@ -131,35 +129,30 @@ public class ProductBacklogWebServiceController {
 								"method: updateStory, " +
 								"exception: "+ e.toString());
 			e.printStackTrace();
-		}  catch (JSONException e) {
-			System.out.println("class: ProductBacklogWebServiceController, " +
-					"method: updateStory, " +
-					"exception: "+ e.toString());
-            e.printStackTrace();
-        }
+		}
 		return storyUpdateJsonString;
 	}
 	
 	/**	刪除Story	DELETE
-	 * 	http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist/{storyID}?userName={userName}&password={password}
+	 * 	http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/storylist/{storyID}?username={username}&password={password}
 	 * **/
 	@DELETE
-	@Path("storylist/{storyID}")
+	@Path("storylist/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String deleteStory(@QueryParam("userName") String username,
+	public String deleteStory(@QueryParam("username") String username,
 							  @QueryParam("password") String password,
-							  @PathParam("projectID") String projectID,
-							  @PathParam("storyID") String storyID){
+							  @PathParam("projectName") String projectName,
+							  @PathParam("storyId") long storyId){
 		String responseString = "";
 		try{
 			InformationDecoder decodeAccount = new InformationDecoder();
-			decodeAccount.decode(username, password, projectID);
+			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
-					decodeAccount.getDecodeProjectID());
-			pbws.deleteStory(storyID);
+					decodeAccount.getDecodeProjectName());
+			pbws.deleteStory(storyId);
 			responseString += pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
 			responseString += "LogonException";
@@ -180,23 +173,23 @@ public class ProductBacklogWebServiceController {
 	
 	/**
 	 * 取得專案底下指定Story Get
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/storylist/{storyID}?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/storylist/{storyID}?username={username}&password={password}
 	 **/
 	@GET
-	@Path("storylist/{storyID}")
+	@Path("storylist/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String retrieveStory(@QueryParam("userName") String username, 
+	public String retrieveStory(@QueryParam("username") String username, 
 								@QueryParam("password") String password, 
-								@PathParam("projectID") String projectId, 
-								@PathParam("storyID") long storyId) {
+								@PathParam("projectName") String projectName, 
+								@PathParam("storyId") long storyId) {
 		String jsonString = "";
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
-			decodeAccount.decode(username, password, projectId);
+			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
 					decodeAccount.getDecodeUserName(),
 					decodeAccount.getDecodePwd(), 
-					decodeAccount.getDecodeProjectID());
+					decodeAccount.getDecodeProjectName());
 			pbws.getStory(storyId);
 			jsonString = pbws.getRESTFulResponseString();
 		} catch (LogonException e) {
@@ -215,21 +208,21 @@ public class ProductBacklogWebServiceController {
 	
 	/**
 	 * 取得專案底下所有的tag
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/taglist?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/taglist?username={username}&password={password}
 	 */
 	@GET
 	@Path("taglist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTagList(@PathParam("projectID") String projectId,
-							 @QueryParam("userName") String userName,
+	public String getTagList(@PathParam("projectName") String projectName,
+							 @QueryParam("username") String username,
 							 @QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectId);
+			informationDecoder.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
-													 informationDecoder.getDecodeProjectID());
+													 informationDecoder.getDecodeProjectName());
 			pbws.getAllTags();
 			jsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
@@ -248,22 +241,22 @@ public class ProductBacklogWebServiceController {
 	
 	/**
 	 * 取得專案底下Story History
-	 * http://IP:8080/ezScrum/web-service/{projectID}/product-backlog/{storyID}/history?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/product-backlog/{storyID}/history?username={username}&password={password}
 	 */
 	@GET
-	@Path("{storyID}/history")
+	@Path("{storyId}/history")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getStoryHistory(@PathParam("projectID") String projectId,
-								  @QueryParam("userName") String userName,
+	public String getStoryHistory(@PathParam("projectName") String projectName,
+								  @QueryParam("username") String username,
 								  @QueryParam("password") String password,
-								  @PathParam("storyID") long storyId) {
+								  @PathParam("storyId") long storyId) {
 		String storyHistoryJsonString = "";
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
-			informationDecoder.decode(userName, password, projectId);
+			informationDecoder.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
 													 informationDecoder.getDecodePwd(),
-													 informationDecoder.getDecodeProjectID());
+													 informationDecoder.getDecodeProjectName());
 			pbws.getStoryHistory(storyId);
 			storyHistoryJsonString = pbws.getRESTFulResponseString();
 		} catch (IOException e) {
@@ -272,11 +265,6 @@ public class ProductBacklogWebServiceController {
 								"exception: "+ e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
-			System.out.println("class: ProductBacklogWebServiceController, " +
-								"method: getStoryHistory, " +
-								"exception: "+ e.toString());
-			e.printStackTrace();
-		} catch (SQLException e) {
 			System.out.println("class: ProductBacklogWebServiceController, " +
 								"method: getStoryHistory, " +
 								"exception: "+ e.toString());
