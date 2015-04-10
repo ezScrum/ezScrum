@@ -50,7 +50,7 @@ public class SprintBacklogTreeStructure {
 		Value = String.valueOf(story.getValue());
 		Estimate = String.valueOf(story.getEstimate());
 		Importance = String.valueOf(story.getImportance());
-		Tag = new Translation().Join(story.getTags(), ", ");
+		Tag = Translation.Join(story.getTags(), ", ");
 		Status = story.getStatusString();
 		Notes = HandleSpecialChar(story.getNotes());
 		Link = "";

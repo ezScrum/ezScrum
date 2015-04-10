@@ -3,9 +3,9 @@ package ntut.csie.ezScrum.web.action.report;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -46,18 +46,18 @@ public class ReopenIssueAction extends PermissionAction {
 		String changeDate = request.getParameter("ChangeDate");
 		String issueType = request.getParameter("IssueType");
 
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 		StringBuilder result = new StringBuilder("");
 		
 		if (issueType.equals("Story")) {
 			sprintBacklogHelper.reopenStory(issueId, name, notes, changeDate);
 			// return re open 的 issue的相關資訊
-			IIssue issue = sprintBacklogHelper.getStory(issueId);
-			result.append(new Translation().translateTaskboardIssueToJson(issue));
+			StoryObject story = sprintBacklogHelper.getStory(issueId);
+			result.append(Translation.translateTaskboardStoryToJson(story));
 		} else if (issueType.equals("Task")) {
 			sprintBacklogHelper.reopenTask(issueId, name, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(issueId);
-			result.append(new Translation().translateTaskboardTaskToJson(task));
+			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
 
 		return result;

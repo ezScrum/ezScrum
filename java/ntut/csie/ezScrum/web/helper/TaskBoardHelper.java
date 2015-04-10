@@ -57,11 +57,10 @@ public class TaskBoardHelper {
 			TaskBoard taskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 			// Get Sprint Data
 			if (taskBoard != null) {
-				Translation tans = new Translation();
 				if (type.equals("story")) {
-					responseText = tans.translateBurndownChartDataToJson(taskBoard.getStoryIdealPointMap(), taskBoard.getStoryRealPointMap());
+					responseText = Translation.translateBurndownChartDataToJson(taskBoard.getStoryIdealPointMap(), taskBoard.getStoryRealPointMap());
 				} else if (type.equals("task")) {
-					responseText = tans.translateBurndownChartDataToJson(taskBoard.getTaskIdealPointMap(), taskBoard.getTaskRealPointMap());
+					responseText = Translation.translateBurndownChartDataToJson(taskBoard.getTaskIdealPointMap(), taskBoard.getTaskRealPointMap());
 				}
 			}
 		} else {
@@ -198,11 +197,6 @@ public class TaskBoardHelper {
 		return TB_Story;
 	}
 
-	/**
-	 * @author OPH
-	 */
-	Translation tr = new Translation();
-
 	private class TaskBoard_Story {
 		String Id;
 		String Name;
@@ -226,7 +220,7 @@ public class TaskBoardHelper {
 			Value = String.valueOf(story.getValue());
 			Estimate = String.valueOf(story.getEstimate());
 			Importance = String.valueOf(story.getImportance());
-			Tag = tr.Join(story.getTags(), ",");
+			Tag = Translation.Join(story.getTags(), ",");
 			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());

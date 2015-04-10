@@ -56,7 +56,7 @@ public class CheckOutTaskAction extends PermissionAction {
 				df.parse(changeDate);
 			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
-			result.append(new Translation().translateTaskboardTaskToJson(task));
+			result.append(Translation.translateTaskboardTaskToJson(task));
 		} catch (ParseException e) {								// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");
 		} catch (NullPointerException e) {							// issue為null

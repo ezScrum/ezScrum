@@ -51,7 +51,7 @@ public class ResetTaskAction extends PermissionAction {
 		TaskObject task = sprintBacklogHelper.getTask(issueID);
 		//IIssue issue = sprintBacklogHelper.getStory(issueID);
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateTaskboardTaskToJson(task));
+		result.append(Translation.translateTaskboardTaskToJson(task));
 
 		return result;
 	}

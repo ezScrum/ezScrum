@@ -643,8 +643,7 @@ public class ReleasePlanHelper {
 		try {
 			releaseBacklog = new ReleaseBacklog(project, plan, pbHelper.getStoriesByRelease(plan));
 			ReleaseBoard board = new ReleaseBoard(releaseBacklog);
-			Translation tr = new Translation();
-			result.append(tr.translateBurndownChartDataToJson(board.getStoryIdealPointMap(), board.getStoryRealPointMap()));
+			result.append(Translation.translateBurndownChartDataToJson(board.getStoryIdealPointMap(), board.getStoryRealPointMap()));
 		} catch (Exception e) {
 			releaseBacklog = null;
 			result.append("{success: \"false\"}");

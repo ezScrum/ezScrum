@@ -43,7 +43,7 @@ public class ProductBacklogHelper {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByFilterType(filterType);
 
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStoriesToJson(stories));
+		result.append(Translation.translateStoriesToJson(stories));
 
 		return result;
 	}
@@ -212,7 +212,7 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder translateStoryToJson(StoryObject story) {
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStoryToJson(story));
+		result.append(Translation.translateStoryToJson(story));
 		return result;
 	}
 
@@ -238,15 +238,6 @@ public class ProductBacklogHelper {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	private void addTagsToStory(String tagIds, long storyId) {
-		String[] ids = tagIds.split(",");
-		if (!(tagIds.isEmpty()) && ids.length > 0) {
-			for (String tagId : ids) {
-				mProductBacklogMapper.addTagToStory(storyId, Long.parseLong(tagId));
-			}
-		}
 	}
 	
 	public ArrayList<TaskObject> getTasksWithNoParent() {

@@ -273,12 +273,12 @@ public class SprintBacklogHelper {
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 
-			result = new Translation().translateSprintBacklogToJson(stories,
+			result = Translation.translateSprintBacklogToJson(stories,
 					currentSprintId, totalStoryPoints, limitedPoint,
 					totalTaskPoints, releaseId, sprintGoal);
 		} else {
 			stories = new ArrayList<StoryObject>();
-			result = new Translation().translateSprintBacklogToJson(stories,
+			result = Translation.translateSprintBacklogToJson(stories,
 					currentSprintId, totalStoryPoints, limitedPoint,
 					totalTaskPoints, releaseId, sprintGoal);
 		}
@@ -339,7 +339,7 @@ public class SprintBacklogHelper {
 			sb.append("<Release></Release>");
 			sb.append("<Sprint>" + sprintId + "</Sprint>");
 			sb.append("<Tag>"
-					+ tsc.TranslateXMLChar(new Translation().Join(
+					+ tsc.TranslateXMLChar(Translation.Join(
 							story.getTags(), ",")) + "</Tag>");
 			sb.append("</Story>");
 		}
