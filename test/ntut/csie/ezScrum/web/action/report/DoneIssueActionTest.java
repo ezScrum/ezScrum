@@ -119,7 +119,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 
@@ -163,7 +163,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("Name", story.getName());
 		addRequestParameter("Notes", story.getNotes());
 		addRequestParameter("ChangeDate", "2015/02/06-12:00:00");
-		addRequestParameter("Actualhour", story.getActualHour());
+		addRequestParameter("Actualhour", Long.toString(story.getEstimate()));
 		addRequestParameter("IssueType", "Story");
 
 		// ================ set session info ========================
@@ -177,7 +177,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		story = sprintBacklogMapper.getStory(storyId);
 		
@@ -185,15 +185,16 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
 							.append("\"Issue\":{")
-							.append("\"Id\":").append(String.valueOf(storyId)).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(String.valueOf(storyId)).append("\",")
+							.append("\"Id\":").append(storyId).append(",")
+							.append("\"Link\":\"").append("\",")
 							.append("\"Name\":\"").append(story.getName()).append("\",")
-							.append("\"Handler\":\"").append(story.getAssignto()).append("\",")
-							.append("\"Partners\":\"").append(story.getPartners()).append("\"}")
+							.append("\"Estimate\":").append(story.getEstimate()).append(",")
+							.append("\"Handler\":\"").append("\",")
+							.append("\"Partners\":\"").append("\"}")
 							.append("}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-		assertEquals("closed", story.getStatus()); // 判斷Story是不是已經closed了
+		assertEquals(StoryObject.STATUS_DONE, story.getStatus()); // 判斷Story是不是已經closed了
 
 		// ============= release ==============
 		project = null;
