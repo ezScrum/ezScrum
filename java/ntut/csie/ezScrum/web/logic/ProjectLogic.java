@@ -13,7 +13,6 @@
  */
 
 package ntut.csie.ezScrum.web.logic;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,18 +21,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.service.IssueBacklog;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -138,30 +133,6 @@ public class ProjectLogic {
 			}
 		}
 		return map;
-	}
-
-	/**
-	 * 回傳過濾可以讓使用者回報 issue 的專案，條件為此專案存在且存在一筆以上的 issue type 為 public
-	 * 
-	 * @return
-	 */
-	public IProject[] getAllCustomProjects() {
-		ArrayList<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
-		ArrayList<ProjectObject> projects = getProjects();
-
-		for (ProjectObject P : projects) {
-			IssueBacklog IB = new IssueBacklog(P, new UserSession(null));
-
-			if (IB.isReportProject()) {
-				CustomProjects.add(P);
-			}
-		}
-
-		if ((CustomProjects != null) && (CustomProjects.size() > 0)) {
-			return CustomProjects.toArray(new IProject[CustomProjects.size()]);
-		} else {
-			return null;
-		}
 	}
 
 	/**

@@ -66,15 +66,6 @@ public class ProjectHelperTest {
 		mConfig = null;
 	}
 
-	@Test  // 測試沒有專案存在的錯誤
-	public void testGetAllCustomProjectsWrongParameter() throws Exception {
-		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
-
-		IProject[] ActualProjects = mProjectLogic.getAllCustomProjects();
-		assertNull(ActualProjects);
-	}
-
 	@Test  // 測試根據專案名稱取得專案
 	public void testGetProject() {
 		String name = this.mCP.mProjectName + Integer.toString(this.mCP.getProjectList().size());
