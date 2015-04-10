@@ -82,12 +82,12 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	 * 沒有stories and tasks
 	 */
 	public void testShowSprintBacklogListInfo_1(){
-		List<String> idList = mCS.getSprintsId();
+		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -110,11 +110,10 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	 * @throws Exception 
 	 */
 	public void testShowSprintBacklogListInfo_2() throws Exception{
-		List<String> idList = mCS.getSprintsId();
-		int sprintID = Integer.parseInt(idList.get(0));
+		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintsId.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
@@ -125,7 +124,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -138,7 +137,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		verifyNoActionMessages();
 		//	assert response text
 		String actualResponseText = response.getWriterBuffer().toString();
-//		System.out.println("actualResponseText = " + actualResponseText);
+		
 		//	story
 		String storyType = "\"Type\":\"Story\"";
 		String storyName = "\"Name\":\"TEST_STORY_1\"";
@@ -167,11 +166,10 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 	}
 	
 	public void testShowSprintBacklogListInfo_3() throws Exception {
-		List<String> idList = mCS.getSprintsId();
-		int sprintID = Integer.parseInt(idList.get(0));
+		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintsId.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
@@ -182,7 +180,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================  執行 action ==============================
@@ -198,9 +196,9 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		int storyValue = addStoryToSprint.getStories().get(0).getValue();		
 		int storyEstimate = addStoryToSprint.getStories().get(0).getEstimate();
 		int storyImportance = addStoryToSprint.getStories().get(0).getImportance();
-		int storyStatus = addStoryToSprint.getStories().get(0).getStatus();
+		String storyStatus = addStoryToSprint.getStories().get(0).getStatusString();
 		String storyNotes = addStoryToSprint.getStories().get(0).getNotes();
-		String storyLink = "\"/ezScrum/showIssueInformation.do?issueID\\u003d1\"";
+		String storyLink = "\"\"";
 		
 		// 取得 Story 日期
 		List<String> storyDate = new ArrayList<String>();
@@ -232,7 +230,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Status\":\"" + storyStatus + "\"")
 							.append(",\"Notes\":\"" + storyNotes + "\"")
 							.append(",\"Link\":" + storyLink)
-							.append(",\"SprintID\":\"" + idList.get(0) + "\"")
+							.append(",\"SprintID\":\"" + sprintsId.get(0) + "\"")
 							.append(",\"ReleaseID\":\"\"")
 							.append(",\"dateList\":[");
 		for(int i = 0; i < storyDate.size(); i++){
@@ -256,6 +254,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"Importance\":\"\"")
 							.append(",\"Status\":\"" + taskStatus + "\"")
 							.append(",\"Notes\":\"" + taskNotes + "\"")
+							.append(",\"Link\":" + storyLink)
 							.append(",\"SprintID\":\"\"")
 							.append(",\"ReleaseID\":\"\"")
 							.append(",\"dateList\":[");

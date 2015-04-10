@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -20,36 +21,38 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowSprintBacklogListInfoAction extends Action {
-	private static Log log = LogFactory.getLog(ShowSprintBacklogListInfoAction.class);
+	private static Log log = LogFactory
+			.getLog(ShowSprintBacklogListInfoAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog List Information in ShowSprintBacklogListInfo.");
-		
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		
-		String sprintID = request.getParameter("sprintID");
-		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
-		String reponseText = this.reContructString( sprintBacklogHelper.getSprintBacklogListInfoText() );
-		
+
+		ProjectObject projectObject = (ProjectObject) SessionManager
+				.getProjectObject(request);
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
+				projectObject, sprintId);
+		String reponseText = this.reContructString(sprintBacklogHelper
+				.getSprintBacklogListInfoText());
+
 		response.setContentType("text/html; charset=utf-8");
 		try {
 			response.getWriter().write(reponseText);
-			LogFactory.getLog(SecurityRequestProcessor.class).debug("Current Time : " + new Date().toString());
+			LogFactory.getLog(SecurityRequestProcessor.class).debug(
+					"Current Time : " + new Date().toString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
-	
-	// 重建 json 字串讓資料可以對應 ext TreeGrid Column 
-	private String reContructString(String jsonStr){
-		while(jsonStr.contains("\"dateToHourMap\":{")){
+	// 重建 json 字串讓資料可以對應 ext TreeGrid Column
+	private String reContructString(String jsonStr) {
+		while (jsonStr.contains("\"dateToHourMap\":{")) {
 			int headIndex = jsonStr.indexOf("\"dateToHourMap\":{");
 			int endIndex = jsonStr.indexOf("}", headIndex) + 2;
 			String oriSubStr = jsonStr.substring(headIndex, endIndex);
@@ -57,10 +60,10 @@ public class ShowSprintBacklogListInfoAction extends Action {
 			changeSubStr = changeSubStr.replace("}", "");
 			if (changeSubStr.equals(","))
 				changeSubStr = "";
-			
+
 			jsonStr = jsonStr.replace(oriSubStr, changeSubStr);
 		}
-		
+
 		return jsonStr;
 	}
 }
