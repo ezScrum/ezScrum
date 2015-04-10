@@ -17,7 +17,7 @@ import org.codehaus.jettison.json.JSONException;
 
 @Path("{projectName}/burndown-chart/")
 public class BurndownChartWebServiceController {
-	private BurndownChartWebService bcws;
+	private BurndownChartWebService burndownChartWebService;
 
 	/**
 	 * 取得指定sprint 的 story burndown chart
@@ -43,10 +43,10 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			bcws = new BurndownChartWebService(decoder.getDecodeUserName(),
+			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName(),
 					Integer.parseInt(sprintId));
-			storyPointsJsonString = bcws
+			storyPointsJsonString = burndownChartWebService
 					.getRESTFulStoryPointMapResponseString();
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
@@ -88,10 +88,10 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			bcws = new BurndownChartWebService(decoder.getDecodeUserName(),
+			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUserName(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName(),
 					Integer.parseInt(sprintId));
-			taskPointsJsonString = bcws.getRESTFulTaskPointMapResponseString();
+			taskPointsJsonString = burndownChartWebService.getRESTFulTaskPointMapResponseString();
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
 					+ "method: decode, " + "exception: " + e.toString());
