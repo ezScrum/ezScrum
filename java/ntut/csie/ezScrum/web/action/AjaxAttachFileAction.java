@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -38,7 +37,6 @@ public class AjaxAttachFileAction extends Action {
 		log.info(" Attach File. ");
 
 		// get project from session or DB
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		StringBuilder result = new StringBuilder("");
@@ -89,7 +87,7 @@ public class AjaxAttachFileAction extends Action {
 					
 					if (issueTypeStr.equals("Story")) {
 						StoryObject story = pbHelper.getStory(issueId);
-						result = new StringBuilder(Translation.translateStoriesToJson(story));
+						result = new StringBuilder(Translation.translateStoryToJson(story));
 					} else if (issueTypeStr.equals("Task")) {
 						TaskObject task = TaskObject.get(issueId);
 						result = new StringBuilder(Translation.translateTaskToJson(task));
