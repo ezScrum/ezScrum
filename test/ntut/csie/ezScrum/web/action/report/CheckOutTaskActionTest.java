@@ -112,7 +112,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		task.getHistories();
@@ -172,7 +172,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		task.getHistories(); // 重新取得 History
