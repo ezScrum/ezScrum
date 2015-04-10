@@ -390,7 +390,6 @@ public class SprintBacklogHelperTest {
 		assertEquals("Release #None", sprint.getString("ReleaseID"));
 		assertEquals("TEST_SPRINTGOAL_1", sprint.getString("SprintGoal"));
 		
-		System.out.println(actualJson.toString());
 		JSONArray stories = actualJson.getJSONArray("Stories");
 		for (int i = 0; i < mASTS.getStories().size(); i++) {
 			String storyIndex = String.valueOf(i + 1);
