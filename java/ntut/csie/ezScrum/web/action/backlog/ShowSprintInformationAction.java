@@ -1,18 +1,16 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
-import java.text.NumberFormat;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -22,7 +20,6 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -34,8 +31,7 @@ public class ShowSprintInformationAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*
@@ -49,27 +45,25 @@ public class ShowSprintInformationAction extends Action {
 		request.setAttribute(IProjectSummaryEnum.PROJECT, project);
 
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintID);
-		long sprintId = backlog.getSprintId();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		if (backlog == null || sprintId == -1 || sprintId == 0) {
 			return mapping.findForward("error");
 		}
 		
-		List<IIssue> issues = sprintBacklogHelper.getStoriesByImportance();
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
 		
 		request.setAttribute("SprintID", backlog.getSprintId());
-		request.setAttribute("Stories", issues);
+		request.setAttribute("Stories", stories);
 
-		NumberFormat nf = NumberFormat.getInstance();
-		request.setAttribute("StoryPoint", nf.format(sprintBacklogLogic.getStoryPoint(ScrumEnum.STORY_ISSUE_TYPE)));
+		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintId());
 		request.setAttribute("SprintPlan", plan);
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(projectObject.getId()));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "
