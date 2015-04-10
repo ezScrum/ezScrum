@@ -38,7 +38,7 @@ public class StoryWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			responseString = mStoryWebService.createStory(storyJson);
 		} catch (JSONException e) {
@@ -78,7 +78,7 @@ public class StoryWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			storyAfterEdit = mStoryWebService.updateStory(storyJson);
 		} catch (LogonException e) {
@@ -121,7 +121,7 @@ public class StoryWebServiceController {
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			jsonString = mStoryWebService.getTasksInStory(storyId);
 		} catch (LogonException e) {
@@ -158,7 +158,7 @@ public class StoryWebServiceController {
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			mStoryWebService.addExistedTask(storyId, tasksIdJson);
 		} catch (LogonException e) {

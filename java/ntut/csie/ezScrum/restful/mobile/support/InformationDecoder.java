@@ -6,14 +6,14 @@ import java.net.URLDecoder;
 import ch.ethz.ssh2.crypto.Base64;
 
 public class InformationDecoder {
-	private String decodeUsername;
-	private String decodePwd;
-	private String decodeProjectName;
+	private String mDecodeUsername;
+	private String mDecodePwd;
+	private String mDecodeProjectName;
 
 	public void decode(String username, String password) throws IOException {
 		byte[] userName = Base64.decode(username.toCharArray());
 		byte[] Pwd = Base64.decode(password.toCharArray());
-		setDecodeUserName(new String(userName));
+		setDecodeUsername(new String(userName));
 		setDecodePwd(new String(Pwd));
 	}
 
@@ -21,7 +21,7 @@ public class InformationDecoder {
 			String encodeProjectName) throws IOException {
 		byte[] userName = Base64.decode(encodeUsername.toCharArray());
 		byte[] pwd = Base64.decode(encodePassword.toCharArray());
-		setDecodeUserName(new String(userName));
+		setDecodeUsername(new String(userName));
 		setDecodePwd(new String(pwd));
 		setDecodeProjectName(encodeProjectName);
 	}
@@ -31,27 +31,27 @@ public class InformationDecoder {
 		setDecodeProjectName(projectName);
 	}
 
-	private void setDecodeUserName(String decodeUsername) {
-		this.decodeUsername = decodeUsername;
+	private void setDecodeUsername(String decodeUsername) {
+		this.mDecodeUsername = decodeUsername;
 	}
 
-	public String getDecodeUserName() {
-		return decodeUsername;
+	public String getDecodeUsername() {
+		return mDecodeUsername;
 	}
 
 	private void setDecodePwd(String decodePwd) {
-		this.decodePwd = decodePwd;
+		this.mDecodePwd = decodePwd;
 	}
 
 	public String getDecodePwd() {
-		return decodePwd;
+		return mDecodePwd;
 	}
 
 	private void setDecodeProjectName(String decodeUrl) {
-		this.decodeProjectName = decodeUrl;
+		this.mDecodeProjectName = decodeUrl;
 	}
 
 	public String getDecodeProjectName() {
-		return decodeProjectName;
+		return mDecodeProjectName;
 	}
 }

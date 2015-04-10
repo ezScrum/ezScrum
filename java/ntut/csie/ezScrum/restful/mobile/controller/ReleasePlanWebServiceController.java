@@ -33,7 +33,7 @@ public class ReleasePlanWebServiceController {
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
-			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUserName(), decodeAccount.getDecodePwd(), projectName);
+			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUsername(), decodeAccount.getDecodePwd(), projectName);
 			jsonString = mReleasePlanWebService.getReleasePlan(releaseId);
 		} catch (LogonException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
@@ -69,7 +69,7 @@ public class ReleasePlanWebServiceController {
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
-			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUserName(), decodeAccount.getDecodePwd(), projectName);
+			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUsername(), decodeAccount.getDecodePwd(), projectName);
 			jsonString = mReleasePlanWebService.getAllReleasePlan();
 		} catch (LogonException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
@@ -99,7 +99,7 @@ public class ReleasePlanWebServiceController {
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
-			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUserName(), decodeAccount.getDecodePwd(), projectName);
+			mReleasePlanWebService = new ReleasePlanWebService(decodeAccount.getDecodeUsername(), decodeAccount.getDecodePwd(), projectName);
 			jsonString = mReleasePlanWebService.getAllReleasePlanWithAllItem();
 		} catch (LogonException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +

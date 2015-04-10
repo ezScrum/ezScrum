@@ -43,7 +43,7 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUserName(),
+			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName(),
 					Integer.parseInt(sprintId));
 			storyPointsJsonString = burndownChartWebService
@@ -88,7 +88,7 @@ public class BurndownChartWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUserName(),
+			burndownChartWebService = new BurndownChartWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName(),
 					Integer.parseInt(sprintId));
 			taskPointsJsonString = burndownChartWebService.getRESTFulTaskPointMapResponseString();

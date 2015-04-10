@@ -36,7 +36,7 @@ public class ProjectWebServiceController {
 			InformationDecoder decodeInformation = new InformationDecoder();
 			decodeInformation.decode(username, password);
 			mService = new ProjectWebService(
-					decodeInformation.getDecodeUserName(),
+					decodeInformation.getDecodeUsername(),
 					decodeInformation.getDecodePwd());
 			jsonString += mService.getRESTFulResponseString();
 		} catch (LogonException e) {
@@ -77,8 +77,8 @@ public class ProjectWebServiceController {
 			InformationDecoder decodeInformation = new InformationDecoder();
 			decodeInformation.decode(username, password, projectName);
 			mService = new ProjectWebService(
-					decodeInformation.getDecodeUserName(),
-					decodeInformation.getDecodeUserName(),
+					decodeInformation.getDecodeUsername(),
+					decodeInformation.getDecodeUsername(),
 					decodeInformation.getDecodeProjectName());
 			jsonString += mService.getRESTFulResponseString();
 		} catch (LogonException e) {

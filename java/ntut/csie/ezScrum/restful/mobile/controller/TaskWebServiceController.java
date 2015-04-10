@@ -41,7 +41,7 @@ public class TaskWebServiceController {
 		String result = "false";
 		try {
 			decoder.decode(username, password, projectName);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			result = mTaskWebService.updateTask(taskJson);
 		} catch (IOException e) {
@@ -78,7 +78,7 @@ public class TaskWebServiceController {
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
 		} catch (LogonException e) {
@@ -118,13 +118,13 @@ public class TaskWebServiceController {
 			@QueryParam("username") String username,
 			@QueryParam("password") String password, String taskJson) {
 		InformationDecoder decoder = new InformationDecoder();
-		String newtaskId = "";
+		String newTaskId = "";
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
-			newtaskId = mTaskWebService.createTaskInStory(storyId, taskJson);
+			newTaskId = mTaskWebService.createTaskInStory(storyId, taskJson);
 		} catch (IOException e) {
 			System.out
 					.println("class: TaskWebServiceController, "
@@ -143,7 +143,7 @@ public class TaskWebServiceController {
 					+ e.toString());
 			e.printStackTrace();
 		}
-		return newtaskId;
+		return newTaskId;
 	}
 
 	/****
@@ -166,7 +166,7 @@ public class TaskWebServiceController {
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			mTaskWebService.deleteTask(taskId, storyId);
 		} catch (IOException e) {
@@ -201,7 +201,7 @@ public class TaskWebServiceController {
 		try {
 			decoder.decode(username, password);
 			decoder.decodeProjectName(projectName);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			mTaskWebService.dropTask(taskId, storyId);
 		} catch (IOException e) {

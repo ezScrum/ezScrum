@@ -40,7 +40,7 @@ public class SprintBacklogWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			AccountObject user = new AccountObject(decoder.getDecodeUserName());
+			AccountObject user = new AccountObject(decoder.getDecodeUsername());
 			user.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(user,
 					decoder.getDecodeProjectName());
@@ -90,12 +90,12 @@ public class SprintBacklogWebServiceController {
 			decoder.decode(userName, password, projectName);
 			if (sprintId.equals("currentSprint")) {
 				mSprintBacklogWebService = new SprintBacklogWebService(
-						decoder.getDecodeUserName(), decoder.getDecodePwd(),
+						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName());
 			} else {
 				int iteration = Integer.parseInt(sprintId);
 				mSprintBacklogWebService = new SprintBacklogWebService(
-						decoder.getDecodeUserName(), decoder.getDecodePwd(),
+						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName(), iteration);
 			}
 
@@ -137,7 +137,7 @@ public class SprintBacklogWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			AccountObject user = new AccountObject(decoder.getDecodeUserName());
+			AccountObject user = new AccountObject(decoder.getDecodeUsername());
 			user.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(user,
 					decoder.getDecodeProjectName());
@@ -176,12 +176,12 @@ public class SprintBacklogWebServiceController {
 			decoder.decode(username, password, projectName);
 			if (sprintId.equals("the-latest")) {
 				mSprintBacklogWebService = new SprintBacklogWebService(
-						decoder.getDecodeUserName(), decoder.getDecodePwd(),
+						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName());
 			} else {
 				int iteration = Integer.parseInt(sprintId);
 				mSprintBacklogWebService = new SprintBacklogWebService(
-						decoder.getDecodeUserName(), decoder.getDecodePwd(),
+						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName(), iteration);
 			}
 			jsonString = mSprintBacklogWebService.getRESTFulResponseString();
@@ -223,7 +223,7 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
-					decoder.getDecodeUserName(), decoder.getDecodePwd(),
+					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
 			taskIDListJsonString = mSprintBacklogWebService
 					.getTaskIDList(storyId);
@@ -273,7 +273,7 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
-					decoder.getDecodeUserName(), decoder.getDecodePwd(),
+					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
 			taskHistoryJsonString = mSprintBacklogWebService
 					.getTaskHsitoryList(taskId);
@@ -327,7 +327,7 @@ public class SprintBacklogWebServiceController {
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
-					decoder.getDecodeUserName(), decoder.getDecodePwd(),
+					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName());
 			jsonString = mSprintBacklogWebService.getTaskInformation(taskId);
 		} catch (IOException e) {

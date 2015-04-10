@@ -38,7 +38,7 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(username, password, projectName);
-			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUsername(),
 											    informationDecoder.getDecodePwd(),
 											    informationDecoder.getDecodeProjectName());
 			
@@ -70,7 +70,7 @@ public class ProductBacklogWebServiceController {
 	@GET
 	@Path("storylist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getProductBacklogList(@QueryParam("username") String username,
+	public String getProductBacklog(@QueryParam("username") String username,
 										@QueryParam("password") String password,
 										@PathParam("projectName") String projectName) {
 		String jsonString = "";
@@ -78,7 +78,7 @@ public class ProductBacklogWebServiceController {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
-					decodeAccount.getDecodeUserName(),
+					decodeAccount.getDecodeUsername(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectName());
 			pbws.getStories();
@@ -113,7 +113,7 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(username, password, projectName);
-			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUsername(),
 											    informationDecoder.getDecodePwd(),
 											    informationDecoder.getDecodeProjectName());
 			
@@ -149,7 +149,7 @@ public class ProductBacklogWebServiceController {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
-					decodeAccount.getDecodeUserName(),
+					decodeAccount.getDecodeUsername(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectName());
 			pbws.deleteStory(storyId);
@@ -187,7 +187,7 @@ public class ProductBacklogWebServiceController {
 			InformationDecoder decodeAccount = new InformationDecoder();
 			decodeAccount.decode(username, password, projectName);
 			pbws = new ProductBacklogWebService(
-					decodeAccount.getDecodeUserName(),
+					decodeAccount.getDecodeUsername(),
 					decodeAccount.getDecodePwd(), 
 					decodeAccount.getDecodeProjectName());
 			pbws.getStory(storyId);
@@ -220,7 +220,7 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(username, password, projectName);
-			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUsername(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectName());
 			pbws.getAllTags();
@@ -254,7 +254,7 @@ public class ProductBacklogWebServiceController {
 		InformationDecoder informationDecoder = new InformationDecoder();
 		try {
 			informationDecoder.decode(username, password, projectName);
-			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUserName(),
+			pbws = new ProductBacklogWebService(informationDecoder.getDecodeUsername(),
 													 informationDecoder.getDecodePwd(),
 													 informationDecoder.getDecodeProjectName());
 			pbws.getStoryHistory(storyId);
