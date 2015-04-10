@@ -31,31 +31,18 @@ public class SprintBacklogHelper {
 	public SprintBacklogHelper(ProjectObject project) {
 		mProject = project;
 		mIProject = new ProjectMapper().getProjectByID(mProject.getName());
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
+		mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	/**
-	 * 待刪
-	 */
-	@Deprecated
-	public SprintBacklogHelper(IProject project) {
-		mIProject = project;
-		mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
-		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
-	}
-
-	/**
-	 * 待刪
-	 */
-	@Deprecated
-	public SprintBacklogHelper(IProject project, long sprintId) {
-		mIProject = project;
+	public SprintBacklogHelper(ProjectObject project, long sprintId) {
+		mProject = project;
+		mIProject = new ProjectMapper().getProjectByID(mProject.getName());
 		try {
 			mSprintId = sprintId;
-			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, mSprintId);
+			mSprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
 		} catch (NumberFormatException e) {
-			mSprintBacklogLogic = new SprintBacklogLogic(mIProject, -1);
+			mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		}
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
@@ -82,10 +69,8 @@ public class SprintBacklogHelper {
 	 * @param storiesId
 	 */
 	public void addExistingStory(ArrayList<Long> storiesId) {
-		ProjectObject project = (new ProjectMapper()).getProject(mIProject
-				.getName());
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				project);
+				mProject);
 
 		if ((mSprintId != 0) && (mSprintId != -1)) {
 			// 將 Story 加入 Sprint 當中
@@ -100,10 +85,8 @@ public class SprintBacklogHelper {
 	 */
 	public ArrayList<StoryObject> getExistingStories() {
 		ArrayList<StoryObject> stories = null;
-		ProjectObject project = (new ProjectMapper()).getProject(mIProject
-				.getName());
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				project);
+				mProject);
 		stories = productBacklogLogic.getExistingStories();
 		return stories;
 	}

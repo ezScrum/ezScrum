@@ -15,9 +15,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -68,7 +68,7 @@ public class SprintBacklogHelperTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		long sprintId = 1;
 		mSprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 	}
@@ -390,6 +390,7 @@ public class SprintBacklogHelperTest {
 		assertEquals("Release #None", sprint.getString("ReleaseID"));
 		assertEquals("TEST_SPRINTGOAL_1", sprint.getString("SprintGoal"));
 		
+		System.out.println(actualJson.toString());
 		JSONArray stories = actualJson.getJSONArray("Stories");
 		for (int i = 0; i < mASTS.getStories().size(); i++) {
 			String storyIndex = String.valueOf(i + 1);
