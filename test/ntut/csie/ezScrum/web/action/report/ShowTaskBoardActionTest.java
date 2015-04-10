@@ -141,8 +141,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		}
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
-		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
-		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
+		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
 		for(IIssue issue: exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
@@ -273,8 +273,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
-		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
-		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
+		assertEquals(1, actualTaskBoard.getSprintId());
 		
 		// 因為沒有此使用者，所以沒有跟此使用者有關的Story
 		assertEquals(0,actualTaskBoard.getStories().size());
@@ -414,8 +414,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard
 				.getSprintGoal());
-		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
-		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
+		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
 		for (IIssue issue:exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());
@@ -478,8 +478,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		}
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
-		assertEquals(exceptedTaskBoard.getSprintID(), actualTaskBoard.getSprintID());
-		assertEquals(1, actualTaskBoard.getSprintID());
+		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
+		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
 		for (IIssue issue:exceptedTaskBoard.getStories() ) {
 			assertEquals(issue.getIssueID(), issue.getIssueID());

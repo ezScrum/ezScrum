@@ -36,14 +36,14 @@ public class PerformanceIndexDataMaker {
 		double earnedValue = 0;
 		for( SprintBacklogLogic sprintBacklogLogic : sprintBacklogList ){  //sprintBacklog不能包含目前的正在執行的sprint
 //			int sprintID = sprintBacklog.getSprintPlanId();
-			int sprintID = sprintBacklogLogic.getSprintBacklogMapper().getSprintId();
+			long sprintId = sprintBacklogLogic.getSprintBacklogMapper().getSprintId();
 			List<IIssue> storyArray = sprintBacklogLogic.getStories();
 			for( IIssue story:storyArray ){
 				if(story.getStatus().equals("closed")){  //completed 的 story
 					earnedValue += Double.parseDouble(story.getEstimated())*baselineCostPerStoryPoint;  //才可以將該closed story points加入 
 				}
 			}
-			earnedValueTuplelist.add( this.tuple(sprintID, earnedValue) );
+			earnedValueTuplelist.add( this.tuple(sprintId, earnedValue) );
 		}
 		return earnedValueTuplelist;
 	}

@@ -52,7 +52,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		String releaseID = "";
 		
 		StoryInfo storyInformation = new StoryInfo(name, importance, estimate, value, howToDemo, notes, description, sprintID, releaseID, tagIDs);
-		releaseID = new ReleasePlanHelper(project).getReleaseID(storyInformation.getSprintID());
+		releaseID = new ReleasePlanHelper(project).getReleaseID(storyInformation.sprintId);
 		if (!releaseID.equals("0")){
 			storyInformation.setReleaseID(releaseID);
 		}

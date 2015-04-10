@@ -34,13 +34,13 @@ public class TaskBoard {
 	private LinkedHashMap<Date, Double> mDateToTaskRealPoint;
 	private Date mCurrentDate = new Date();
 	private Date mGeneratedTime = new Date();
-	private String mIteration = "0";
+	private long mSprintId = 1;
 	final private long mOneDay = ScrumEnum.DAY_MILLISECOND;
 
 	public TaskBoard(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sprintBacklogMapper) {
 		mSprintBacklogLogic = sprintBacklogLogic;
 		mSprintBacklogMapper = sprintBacklogMapper;
-		mIteration = Integer.toString(sprintBacklogMapper.getSprintId());
+		mSprintId = sprintBacklogMapper.getSprintId();
 		init();
 	}
 
@@ -121,7 +121,7 @@ public class TaskBoard {
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if (story.getSprintId() == mSprintBacklogMapper.getSprintId()) {
+		if (story.getSprintId() == mSprintId) {
 			point = story.getEstimate();
 		} 
 		else {
@@ -223,8 +223,8 @@ public class TaskBoard {
 		return mSprintBacklogMapper.getSprintGoal();
 	}
 
-	public int getSprintID() {
-		return mSprintBacklogMapper.getSprintId();
+	public long getSprintId() {
+		return mSprintId;
 	}
 
 	public String getStoryPoint() {
@@ -257,14 +257,14 @@ public class TaskBoard {
 		// workspace/project/_metadata/TaskBoard/ChartLink
 		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + NAME + File.separator + "Sprint"
-		        + getSprintID() + File.separator + STORY_CHART_FILE;
+		        + getSprintId() + File.separator + STORY_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.STORY_ISSUE_TYPE, chartPath, "Story Points");
 
 		String link = "./Workspace/" + project.getName() + "/"
 		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + getSprintID() + "/" + STORY_CHART_FILE;
+		        + getSprintId() + "/" + STORY_CHART_FILE;
 
 		return link;
 	}
@@ -274,14 +274,14 @@ public class TaskBoard {
 		// workspace/project/_metadata/TaskBoard/Sprint1/ChartLink
 		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + NAME + File.separator + "Sprint"
-		        + getSprintID() + File.separator + TASK_CHART_FILE;
+		        + getSprintId() + File.separator + TASK_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.TASK_ISSUE_TYPE, chartPath, "Remaining Hours");
 
 		String link = "./Workspace/" + project.getName() + "/"
 		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + getSprintID() + "/" + TASK_CHART_FILE;
+		        + getSprintId() + "/" + TASK_CHART_FILE;
 
 		return link;
 	}
@@ -290,7 +290,7 @@ public class TaskBoard {
 		// 設定圖表內容
 		ChartUtil chartUtil = new ChartUtil((type
 		        .equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories")
-		        + " Burndown Chart in Sprint #" + mSprintBacklogMapper.getSprintId(),
+		        + " Burndown Chart in Sprint #" + getSprintId(),
 		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper
 		                .getSprintEndDate().getTime() + 24 * 3600 * 1000));
 

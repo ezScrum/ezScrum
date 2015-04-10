@@ -79,7 +79,7 @@ public class ViewProjectSummaryAction extends Action {
 		if (sprintBacklogMapper != null) {
 			board = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
 			request.setAttribute("TaskBoard", board);
-			request.setAttribute("SprintID", board.getSprintID());
+			request.setAttribute("SprintID", board.getSprintId());
 		} else {
 			request.setAttribute("TaskBoard", board);
 			request.setAttribute("SprintID", "null");

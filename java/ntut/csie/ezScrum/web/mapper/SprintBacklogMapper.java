@@ -13,7 +13,7 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintBacklogMapper {
-	private int mSprintId = 0;
+	private long mSprintId = 0;
 	private IProject mIProject;
 	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
@@ -220,7 +220,7 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 
-	public int getSprintId() {
+	public long getSprintId() {
 		return mSprintId;
 	}
 

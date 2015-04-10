@@ -569,7 +569,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		String expectedSprint_Current_Story_Undone_Total_Point = "16.0 / 16.0";
 		String expectedSprint_Current_Task_Undone_Total_Point = "12.0 / 12.0";
 		TaskBoard taskBoard = (TaskBoard) request.getAttribute("TaskBoard");
-		assertEquals(expectedSprintId, taskBoard.getSprintID());
+		assertEquals(expectedSprintId, taskBoard.getSprintId());
 		assertEquals(expectedSprintGoal, taskBoard.getSprintGoal());
 		assertEquals(expectedSprint_Current_Story_Undone_Total_Point,
 				taskBoard.getStoryPoint());

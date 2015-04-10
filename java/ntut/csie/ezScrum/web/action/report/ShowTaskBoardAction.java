@@ -84,7 +84,7 @@ public class ShowTaskBoardAction extends Action {
 			}
 
 			request.setAttribute("TaskBoard", board);
-			request.setAttribute("SprintID", board.getSprintID());
+			request.setAttribute("SprintID", board.getSprintId());
 		} else {
 			List<String> ActorList = new ArrayList<String>();
 			request.setAttribute("ActorList", ActorList);

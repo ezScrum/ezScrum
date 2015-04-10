@@ -49,7 +49,7 @@ public class ScheduleReport {
 	private DateTickUnit mDtu = null;;
 	private IProject mProject = null;
 	private IUserSession mSession;
-	private int mIteration = -1;
+	private long mIteration = -1;
 	private String mFolderName = "ScheduleReport"; 
 	private String mFileName = "ScheduleReport.png";
 	private String mChartPath ="";
@@ -282,7 +282,7 @@ public class ScheduleReport {
 		String duration = startDate +" ~ "+endtDate;		
 		return duration;
 	}
-	public int getIteration(){
+	public long getIteration(){
 		return mIteration;
 	}
 	
