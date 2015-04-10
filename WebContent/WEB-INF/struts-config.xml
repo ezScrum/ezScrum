@@ -499,12 +499,6 @@
              -->
         <action path="/showScrumIssue" forward="scrumIssue.show" />
         <action path="/showCustomIssue" forward="customIssue.show" />
-
-        <action path="/viewIssueInfo" type="ntut.csie.ezScrum.web.action.ShowIssueInformationAction" >
-            <forward name="scrumIssue" path="viewScrumIssue.show"/>
-            <forward name="customIssue" path="viewCustomIssue.show"/>
-            <forward name="error" path="/Error.jsp" />
-        </action>
 				   
     </action-mappings>
 
