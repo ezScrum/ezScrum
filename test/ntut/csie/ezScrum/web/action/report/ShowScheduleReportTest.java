@@ -98,7 +98,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		int sprintId = Integer.parseInt(mCS.getSprintsId().get(0));
+		long sprintId = mCS.getSprintsId().get(0);
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), mCS.getSprintsId().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		List<IIssue> stories = sprintBacklogLogic.getStories();
