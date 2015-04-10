@@ -51,6 +51,7 @@ public class SprintBacklogMapper {
 	 */
 	public SprintBacklogMapper(IProject project, long sprintId) {
 		mIProject = project;
+		mProject = ProjectObject.get(mIProject.getName());
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintId = Integer.parseInt(mIterPlanDesc.getID());

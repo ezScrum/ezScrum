@@ -190,7 +190,6 @@ public class TaskBoard {
 
 		// 尋訪現有的所有Droped Story
 		for (StoryObject story : mDroppedStories) {
-			double estimation;
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
 			if (story.getStatus() == StoryObject.STATUS_DONE) {
 				continue;

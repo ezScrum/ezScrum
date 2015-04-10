@@ -2,8 +2,6 @@ package ntut.csie.ezScrum.web.control;
 
 import java.io.IOException;
 import java.util.List;
-
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -14,7 +12,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
@@ -62,7 +59,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0), mCS.getSprintsId().get(0));
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mCS.getSprintsId().get(0));
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 		
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
@@ -102,18 +99,10 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// 驗證 Story 數量
 		assertEquals(mStoryCount, stories.size());
 		// 驗證 Story 是否依 Importance 排列
-		int impA = Integer.valueOf(stories.get(0).getImportance());
-		int impB = Integer.valueOf(stories.get(1).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(1).getImportance());
-		impB = Integer.valueOf(stories.get(2).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(2).getImportance());
-		impB = Integer.valueOf(stories.get(3).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(3).getImportance());
-		impB = Integer.valueOf(stories.get(4).getImportance());
-		assertEquals(true, (impA > impB));
+		assertTrue(stories.get(0).getImportance() == stories.get(1).getImportance());
+		assertTrue(stories.get(1).getImportance() == stories.get(2).getImportance());
+		assertTrue(stories.get(2).getImportance() == stories.get(3).getImportance());
+		assertTrue(stories.get(3).getImportance() == stories.get(4).getImportance());
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試2

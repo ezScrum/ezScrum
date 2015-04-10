@@ -385,8 +385,8 @@ public class SprintBacklogLogic {
 		public int compare(StoryObject story1, StoryObject story2) {
 			if (mType == TYPE_EST) {
 				return story1.getEstimate() - story2.getEstimate();
-			} else if (mType == TYPE_IMP) {
-				return story1.getImportance() - story2.getImportance();
+			} else if (mType == TYPE_IMP) { // Importance from large to small
+				return story2.getImportance() - story1.getImportance();
 			} else if (mType == TYPE_VAL) {
 				return story1.getValue() - story2.getValue();
 			} else {

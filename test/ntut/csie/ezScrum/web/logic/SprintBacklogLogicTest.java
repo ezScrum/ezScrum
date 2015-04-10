@@ -279,7 +279,7 @@ public class SprintBacklogLogicTest {
 		for (int i = 0; i < stories.size() - 1; i++) {
 			int importance1 = stories.get(i).getImportance();
 			int importance2 = stories.get(i + 1).getImportance();
-			assertTrue(importance1 <= importance2);
+			assertTrue(importance1 >= importance2);
 		}
 
 	}
