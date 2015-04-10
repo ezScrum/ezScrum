@@ -6,42 +6,52 @@ import java.net.URLDecoder;
 import ch.ethz.ssh2.crypto.Base64;
 
 public class InformationDecoder {
-	private String decodeUserName;
-	private String decodePwd;
-	private String decodeProjectID;
-	public void decode( String username, String password ) throws IOException{
-		byte[] userName = Base64.decode( username.toCharArray() );
-		byte[] Pwd = Base64.decode( password.toCharArray() );
-		setDecodeUserName( new String(userName) );
-		setDecodePwd( new String(Pwd) );
+	private String mDecodeUsername;
+	private String mDecodePwd;
+	private String mDecodeProjectName;
+
+	public void decode(String username, String password) throws IOException {
+		byte[] userName = Base64.decode(username.toCharArray());
+		byte[] Pwd = Base64.decode(password.toCharArray());
+		setDecodeUsername(new String(userName));
+		setDecodePwd(new String(Pwd));
 	}
-	public void decode( String encodeUsername, String encodePassword, String encodeProjectID ) throws IOException{
-		byte[] userName = Base64.decode( encodeUsername.toCharArray() );
-		byte[] pwd = Base64.decode( encodePassword.toCharArray() );
-		setDecodeUserName( new String(userName) );
-		setDecodePwd( new String(pwd) );
-		setDecodeProjectID( encodeProjectID );
+
+	public void decode(String encodeUsername, String encodePassword,
+			String encodeProjectName) throws IOException {
+		byte[] userName = Base64.decode(encodeUsername.toCharArray());
+		byte[] pwd = Base64.decode(encodePassword.toCharArray());
+		setDecodeUsername(new String(userName));
+		setDecodePwd(new String(pwd));
+		setDecodeProjectName(encodeProjectName);
 	}
-	public void decodeProjectID( String encodeProjectID ) throws IOException{
-		String projectID = URLDecoder.decode( encodeProjectID, "UTF-8");
-		setDecodeProjectID( projectID );
+
+	public void decodeProjectName(String encodeProjectName) throws IOException {
+		String projectName = URLDecoder.decode(encodeProjectName, "UTF-8");
+		setDecodeProjectName(projectName);
 	}
-	private void setDecodeUserName( String decodeUserName ) {
-		this.decodeUserName = decodeUserName;
+
+	private void setDecodeUsername(String decodeUsername) {
+		this.mDecodeUsername = decodeUsername;
 	}
-	public String getDecodeUserName() {
-		return decodeUserName;
+
+	public String getDecodeUsername() {
+		return mDecodeUsername;
 	}
-	private void setDecodePwd( String decodePwd ) {
-		this.decodePwd = decodePwd;
+
+	private void setDecodePwd(String decodePwd) {
+		this.mDecodePwd = decodePwd;
 	}
+
 	public String getDecodePwd() {
-		return decodePwd;
+		return mDecodePwd;
 	}
-	private void setDecodeProjectID( String decodeUrl ) {
-		this.decodeProjectID = decodeUrl;
+
+	private void setDecodeProjectName(String decodeUrl) {
+		this.mDecodeProjectName = decodeUrl;
 	}
-	public String getDecodeProjectID() {
-		return decodeProjectID;
+
+	public String getDecodeProjectName() {
+		return mDecodeProjectName;
 	}
 }

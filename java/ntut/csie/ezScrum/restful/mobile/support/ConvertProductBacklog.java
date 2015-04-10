@@ -155,12 +155,11 @@ public class ConvertProductBacklog {
 		JSONArray tagListJsonArray = new JSONArray();
 		try {
 			for (TagObject tag : tags) {
-				String tagName = tag.getName();
-				tagListJsonArray.put(tagName);
+				tagListJsonArray.put(tag.toJSON());
 			}
-			tagJsonObject.put("tagList", tagListJsonArray);
+			tagJsonObject.put("tags", tagListJsonArray);
 		} catch (JSONException e) {
-			return "{\"tagList\": []}";
+			return "{\"tags\": []}";
 		}
 		return tagJsonObject.toString();
 	}

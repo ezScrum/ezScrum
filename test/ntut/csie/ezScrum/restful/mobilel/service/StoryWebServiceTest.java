@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.restfu.mobilel.service;
+package ntut.csie.ezScrum.restful.mobilel.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -108,9 +108,9 @@ public class StoryWebServiceTest {
 	public void testCreateStory() throws JSONException {
 		JSONObject storyJson = new JSONObject();
 		storyJson.put("name", "TEST_NAME").put("notes", "TEST_NOTES")
-				.put("howToDemo", "TEST_HOW_TO_DEMO").put("importance", 99)
+				.put("how_to_demo", "TEST_HOW_TO_DEMO").put("importance", 99)
 				.put("value", 15).put("estimate", 21).put("status", 0)
-				.put("sprint", -1).put("tagsId", "");
+				.put("sprint_id", -1).put("tags", "");
 
 		String response = mStoryWebService.createStory(storyJson.toString());
 
@@ -125,9 +125,9 @@ public class StoryWebServiceTest {
 
 		JSONObject storyJson = new JSONObject();
 		storyJson.put("id", story.getId()).put("name", "NAME")
-				.put("notes", "NOTES").put("howToDemo", "HOW_TO_DEMO")
+				.put("notes", "NOTES").put("how_to_demo", "HOW_TO_DEMO")
 				.put("importance", 99).put("value", 15).put("estimate", 21)
-				.put("status", StoryObject.STATUS_DONE).put("sprint", 1L).put("tagsId", "");
+				.put("status", StoryObject.STATUS_DONE).put("sprint_id", 1L).put("tags", "");
 		
 		String response = mStoryWebService.updateStory(storyJson.toString());
 		JSONObject responseJson = new JSONObject(response);

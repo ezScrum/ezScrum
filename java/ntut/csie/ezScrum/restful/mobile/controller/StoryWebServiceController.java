@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,13 +17,13 @@ import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
 
-@Path("{projectID}/story/")
+@Path("{projectName}/story/")
 public class StoryWebServiceController {
 	StoryWebService mStoryWebService;
 
 	/****
 	 * 建立新的 story
-	 * http://IP:8080/ezScrum/web-service/{projectID}/story/create?userName
+	 * http://IP:8080/ezScrum/web-service/{projectName}/story/create?userName
 	 * ={userName}&password={password}
 	 * 
 	 * @return
@@ -32,15 +31,15 @@ public class StoryWebServiceController {
 	@POST
 	@Path("create")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createStory(@PathParam("projectID") String projectID,
-			@QueryParam("userName") String username,
+	public String createStory(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, String storyJson) {
 		String responseString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectID);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decode(username, password, projectName);
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			responseString = mStoryWebService.createStory(storyJson);
 		} catch (JSONException e) {
 			responseString += "JSONException";
@@ -64,23 +63,23 @@ public class StoryWebServiceController {
 
 	/****
 	 * 更新 story
-	 * http://IP:8080/ezScrum/web-service/{projectID}/story/update?userName
+	 * http://IP:8080/ezScrum/web-service/{projectName}/story/update?userName
 	 * ={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@PUT
 	@Path("update")
-	@Produces("application/json")
-	public String updateStory(@PathParam("projectID") String projectID,
-			@QueryParam("userName") String username,
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateStory(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, String storyJson) {
 		String storyAfterEdit = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectID);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decode(username, password, projectName);
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			storyAfterEdit = mStoryWebService.updateStory(storyJson);
 		} catch (LogonException e) {
 			storyAfterEdit += "LogonException";
@@ -93,8 +92,8 @@ public class StoryWebServiceController {
 					+ "method: updateStory, " + "api:InformationDecoder, "
 					+ "exception: " + e.toString());
 			e.printStackTrace();
-		} catch (SQLException e) {
-			storyAfterEdit += "SQLException";
+		} catch (JSONException e) {
+			storyAfterEdit += "JSONException";
 			System.out.println("class: ProductBacklogWebServiceController, "
 					+ "method: updateStory, " + "api:InformationDecoder, "
 					+ "exception: " + e.toString());
@@ -105,26 +104,26 @@ public class StoryWebServiceController {
 
 	/****
 	 * 取得 story 中所有的 task
-	 * http://IP:8080/ezScrum/web-service/{projectID}/story/{storyID
-	 * }/tasks?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/story/{storyID
+	 * }/tasks?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
-	@Path("{storyID}/tasks")
+	@Path("{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTaskInStory(@PathParam("projectID") String projectID,
-			@PathParam("storyID") String storyID,
-			@QueryParam("userName") String username,
+	public String getTasksInStory(@PathParam("projectName") String projectName,
+			@PathParam("storyId") long storyId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			jsonString = mStoryWebService.getTasksInStory(storyID);
+			decoder.decodeProjectName(projectName);
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
+			jsonString = mStoryWebService.getTasksInStory(storyId);
 		} catch (LogonException e) {
 			System.out
 					.println("class: StoryWebServiceController, "
@@ -143,25 +142,25 @@ public class StoryWebServiceController {
 
 	/****
 	 * 將已經存在的 task 加入 story
-	 * http://IP:8080/ezScrum/web-service/{projectID}/story/
-	 * {storyID}/add-existed-task?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/story/
+	 * {storyID}/add-existed-task?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@POST
-	@Path("{storyID}/add-existed-task")
+	@Path("{storyId}/add-existed-task")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void addExistedTask(@PathParam("projectID") String projectID,
-			@PathParam("storyID") String storyID,
-			@QueryParam("userName") String username,
-			@QueryParam("password") String password, String taskIDsJson) {
+	public void addExistedTask(@PathParam("projectName") String projectName,
+			@PathParam("storyId") long storyId,
+			@QueryParam("username") String username,
+			@QueryParam("password") String password, String tasksIdJson) {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectID);
-			mStoryWebService = new StoryWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
-			mStoryWebService.addExistedTask(storyID, taskIDsJson);
+			decoder.decodeProjectName(projectName);
+			mStoryWebService = new StoryWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
+			mStoryWebService.addExistedTask(storyId, tasksIdJson);
 		} catch (LogonException e) {
 			System.out
 					.println("class: StoryWebServiceController, "

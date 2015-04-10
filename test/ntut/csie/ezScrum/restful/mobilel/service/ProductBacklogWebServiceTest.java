@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.restfu.mobilel.service;
+package ntut.csie.ezScrum.restful.mobilel.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -79,7 +79,6 @@ public class ProductBacklogWebServiceTest {
 		mCR = null;
 		mCPB = null;
 		mProject = null;
-		mProject = null;
 		mConfig = null;
 		mProductBacklogHelper = null;
 	}
@@ -102,11 +101,11 @@ public class ProductBacklogWebServiceTest {
 			.put("importance", 100)
 			.put("estimate", 2)
 			.put("value", 50)
-			.put("howToDemo", "TEST_STORY_DEMO")
+			.put("how_to_demo", "TEST_STORY_DEMO")
 			.put("notes", "TEST_STORY_NOTE")
 			.put("status", 1)
-			.put("sprint", -1)
-			.put("tagsId", "");
+			.put("sprint_id", -1)
+			.put("tags", "");
 
 		// call RESTFUL method
 		service.createStory(storyJson.toString());
@@ -208,11 +207,11 @@ public class ProductBacklogWebServiceTest {
 			.put("importance", 100)
 			.put("estimate", 2)
 			.put("value", 50)
-			.put("howToDemo", "TEST_STORY_DEMO")
+			.put("how_to_demo", "TEST_STORY_DEMO")
 			.put("notes", "TEST_STORY_NOTE")
 			.put("status", 0)
-			.put("sprint", -1)
-			.put("tagsId", "QOQ,QAQ");
+			.put("sprint_id", -1)
+			.put("tags", "QOQ,QAQ");
 		service.createStory(storyJson.toString());
 		
 		// create tags
@@ -230,11 +229,11 @@ public class ProductBacklogWebServiceTest {
 			.put("importance", 90)
 			.put("estimate", 8)
 			.put("value", 100)
-			.put("howToDemo", "要死啦")
+			.put("how_to_demo", "要死啦")
 			.put("notes", "改不完拉")
 			.put("status", 1)
-			.put("sprint", 1)
-			.put("tagsId", "QAQ,QWQ");
+			.put("sprint_id", 1)
+			.put("tags", "QAQ,QWQ");
 		
 		// call RESTFUL method
 		service.updateStory(storyJson.toString());
@@ -295,10 +294,11 @@ public class ProductBacklogWebServiceTest {
 		mProductBacklogHelper = new ProductBacklogHelper(mProject);
 		ArrayList<TagObject> tags = mProductBacklogHelper.getTagList();
 		// JSON to JSONArray 
-		JSONArray tagJSONArray = new JSONArray(response);
+		JSONObject responseJson = new JSONObject(response);
+		JSONArray tagsJson = responseJson.getJSONArray("tags");
 
-		for (int i = 0; i < tagJSONArray.length(); i++) {
-			JSONObject JSONObject = (JSONObject) tagJSONArray.get(i);
+		for (int i = 0; i < tagsJson.length(); i++) {
+			JSONObject JSONObject = (JSONObject) tagsJson.get(i);
 			assertEquals(String.valueOf(tags.get(i).getId()), JSONObject.get("id"));
 			assertEquals(String.valueOf(tags.get(i).getName()), JSONObject.get("tagName"));
 		}

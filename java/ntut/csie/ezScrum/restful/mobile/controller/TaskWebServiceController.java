@@ -13,39 +13,36 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.jettison.json.JSONException;
-
 import ntut.csie.ezScrum.restful.mobile.service.TaskWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.account.core.LogonException;
 
-import com.google.gson.Gson;
+import org.codehaus.jettison.json.JSONException;
 
-@Path("{projectID}/task/")
+@Path("{projectName}/task/")
 public class TaskWebServiceController {
 	TaskWebService mTaskWebService;
 
 	/****
 	 * 修改 task 需 post task json string
-	 * http://IP:8080/ezScrum/web-service/{projectID
-	 * }/task/update?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName
+	 * }/task/update?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@POST
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateTask(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+	public String updateTask(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, String taskJson) {
 		System.out.println("task json : " + taskJson);
 		InformationDecoder decoder = new InformationDecoder();
 		String result = "false";
 		try {
-			decoder.decode(username, password, projectId);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decode(username, password, projectName);
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			result = mTaskWebService.updateTask(taskJson);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
@@ -66,23 +63,23 @@ public class TaskWebServiceController {
 	/****
 	 * 取得所有已存在的 task 沒被 assign 到 story 的 task
 	 * http://IP:8080/ezScrum/web-service/
-	 * {projectID}/task/existed?userName={userName}&password={password}
+	 * {projectName}/task/existed?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
 	@Path("existed")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getExistedTask(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+	public String getExistedTask(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String existedTaskListJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectId);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decodeProjectName(projectName);
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
 		} catch (LogonException e) {
 			System.out
@@ -108,25 +105,25 @@ public class TaskWebServiceController {
 
 	/****
 	 * 將新的 task 加入 story
-	 * http://IP:8080/ezScrum/web-service/{projectID}/task/create
-	 * /{storyID}?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/task/create
+	 * /{storyId}?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@POST
-	@Path("create/{storyID}")
+	@Path("create/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createTaskInStory(@PathParam("projectID") String projectId,
-			@PathParam("storyID") long storyId,
-			@QueryParam("userName") String username,
+	public String createTaskInStory(@PathParam("projectName") String projectName,
+			@PathParam("storyId") long storyId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, String taskJson) {
 		InformationDecoder decoder = new InformationDecoder();
 		String newTaskId = "";
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectId);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decodeProjectName(projectName);
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			newTaskId = mTaskWebService.createTaskInStory(storyId, taskJson);
 		} catch (IOException e) {
 			System.out
@@ -151,26 +148,26 @@ public class TaskWebServiceController {
 
 	/****
 	 * 刪除 task
-	 * http://IP:8080/ezScrum/web-service/{projectID}/task/delete/{taskID
-	 * }/from/{storyID}?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/task/delete/{taskId
+	 * }/from/{storyId}?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@DELETE
-	@Path("delete/{taskID}/from/{storyID}")
+	@Path("delete/{taskId}/from/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteTask(@PathParam("projectID") String projectId,
-			@PathParam("taskID") String taskId,
-			@PathParam("storyID") String storyId,
-			@QueryParam("userName") String username,
+	public void deleteTask(@PathParam("projectName") String projectName,
+			@PathParam("taskId") String taskId,
+			@PathParam("storyId") String storyId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectId);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decodeProjectName(projectName);
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			mTaskWebService.deleteTask(taskId, storyId);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
@@ -186,26 +183,26 @@ public class TaskWebServiceController {
 
 	/****
 	 * 將 task 從 story 中移除
-	 * http://IP:8080/ezScrum/web-service/{projectID}/task/drop
-	 * /{taskID}/from/{storyID}?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/task/drop
+	 * /{taskId}/from/{storyId}?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@DELETE
-	@Path("drop/{taskID}/from/{storyID}")
+	@Path("drop/{taskId}/from/{storyId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void dropTask(@PathParam("projectID") String projectId,
-			@PathParam("taskID") String taskId,
-			@PathParam("storyID") String storyId,
-			@QueryParam("userName") String username,
+	public void dropTask(@PathParam("projectName") String projectName,
+			@PathParam("taskId") String taskId,
+			@PathParam("storyId") String storyId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password);
-			decoder.decodeProjectID(projectId);
-			mTaskWebService = new TaskWebService(decoder.getDecodeUserName(),
-					decoder.getDecodePwd(), decoder.getDecodeProjectID());
+			decoder.decodeProjectName(projectName);
+			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
+					decoder.getDecodePwd(), decoder.getDecodeProjectName());
 			mTaskWebService.dropTask(taskId, storyId);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "

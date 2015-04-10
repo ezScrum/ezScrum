@@ -24,20 +24,20 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.google.gson.Gson;
 
-@Path("{projectID}/sprint/")
+@Path("{projectName}/sprint/")
 public class SprintPlanWebServiceController {
 	SprintPlanWebService mSprintPlanWebService;
 
 	/**
 	 * Create Sprint
-	 * http://IP:8080/ezScrum/web-service/{projectID}/sprint/create
-	 * ?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint/create
+	 * ?username={userName}&password={password}
 	 * **/
 	@POST
 	@Path("create")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createSprint(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+	public String createSprint(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, JSONObject sprintJson) {
 		Gson gson = new Gson();
 		String responseString = "";
@@ -45,12 +45,12 @@ public class SprintPlanWebServiceController {
 			SprintObject sprintObject = gson.fromJson(sprintJson.toString(),
 					SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(username, password, projectId);
+			decoder.decode(username, password, projectName);
 			// 使用者帳號
-			AccountObject account = new AccountObject(decoder.getDecodeUserName());
+			AccountObject account = new AccountObject(decoder.getDecodeUsername());
 			account.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(account,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			mSprintPlanWebService.createSprint(sprintObject);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
@@ -75,24 +75,24 @@ public class SprintPlanWebServiceController {
 
 	/**
 	 * Delete Sprint
-	 * http://IP:8080/ezScrum/web-service/{projectID}/sprint/delete
-	 * /{sprintID}?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint/delete
+	 * /{sprintId}?username={userName}&password={password}
 	 * **/
 	@DELETE
-	@Path("delete/{sprintID}")
+	@Path("delete/{sprintId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String deleteSprint(@PathParam("projectID") String projectId,
-			@PathParam("sprintID") String sprintId,
-			@QueryParam("userName") String username,
+	public String deleteSprint(@PathParam("projectName") String projectName,
+			@PathParam("sprintId") String sprintId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String responseString = "";
 		try {
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(username, password, projectId);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectName);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			mSprintPlanWebService.deleteSprint(sprintId);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
@@ -117,25 +117,25 @@ public class SprintPlanWebServiceController {
 
 	/**
 	 * Update Sprint
-	 * http://IP:8080/ezScrum/web-service/{projectID}/sprint/update
-	 * ?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint/update
+	 * ?username={userName}&password={password}
 	 * **/
 	@PUT
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateSprint(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+	public String updateSprint(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password, String sprintJson) {
 		Gson gson = new Gson();
 		String responseString = "";
 		try {
 			SprintObject sprint = gson.fromJson(sprintJson, SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
-			decoder.decode(username, password, projectId);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectName);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			mSprintPlanWebService.updateSprint(sprint);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
@@ -160,25 +160,25 @@ public class SprintPlanWebServiceController {
 
 	/****
 	 * 取得 project 中所有的 sprint
-	 * http://IP:8080/ezScrum/web-service/{projectID}/sprint
-	 * /all?userName={userName}&password={password}
+	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint
+	 * /all?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllSprint(@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+	public String getAllSprint(@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectId);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectName);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			jsonString = mSprintPlanWebService.getAllSprint();
 		} catch (LogonException e) {
 			System.out.println("class: SprintWebServiceController, "
@@ -201,26 +201,26 @@ public class SprintPlanWebServiceController {
 	/****
 	 * 取得 project 中所有的 sprint 包含 story 和 task
 	 * http://IP:8080/ezScrum/web-service/
-	 * {projectID}/sprint/{sprintID}/all?userName={userName}&password={password}
+	 * {projectName}/sprint/{sprintId}/all?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
-	@Path("{sprintID}/all")
+	@Path("{sprintId}/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSprintWithAllItem(
-			@PathParam("projectID") String projectId,
-			@PathParam("sprintID") String sprintId,
-			@QueryParam("userName") String username,
+			@PathParam("projectName") String projectName,
+			@PathParam("sprintId") String sprintId,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String sprintJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectId);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectName);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			sprintJson = mSprintPlanWebService.getSprintWithAllItem(sprintId);
 		} catch (IOException e) {
 			System.out
@@ -246,7 +246,7 @@ public class SprintPlanWebServiceController {
 	/****
 	 * 取得 project 中所有的 sprint 包含 story 和 task
 	 * http://IP:8080/ezScrum/web-service/
-	 * {projectID}/sprint/all/all?userName={userName}&password={password}
+	 * {projectName}/sprint/all/all?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
@@ -254,17 +254,17 @@ public class SprintPlanWebServiceController {
 	@Path("/all/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getAllSprintWithAllItem(
-			@PathParam("projectID") String projectId,
-			@QueryParam("userName") String username,
+			@PathParam("projectName") String projectName,
+			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String sprintJson = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
-			decoder.decode(username, password, projectId);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUserName());
+			decoder.decode(username, password, projectName);
+			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectID());
+					decoder.getDecodeProjectName());
 			sprintJson = mSprintPlanWebService.getSprintWithAllItem();
 		} catch (IOException e) {
 			System.out
