@@ -32,12 +32,13 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 		String name = "ALL";
-		if (request.getParameter("UserID") != null) name = request.getParameter("UserID");	// filter name
+		if (request.getParameter("UserID") != null) { 
+			name = request.getParameter("UserID");	// filter name
+		}
 
-		return new TaskBoardHelper(project, session, sprintID).getTaskBoardStoryTaskListText(name);
+		return new TaskBoardHelper(project, Long.parseLong(sprintId)).getTaskBoardStoryTaskListText(name);
 	}
 }
