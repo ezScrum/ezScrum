@@ -142,6 +142,7 @@ public class SprintBacklogMapper {
 	 * @return
 	 */
 	public ArrayList<TaskObject> getAllTasks() {
+		mUpdateFlag = true;
 		refresh();
 		return mTasks;
 	}
@@ -393,11 +394,10 @@ public class SprintBacklogMapper {
 		if (mStories == null || mTasks == null) {
 			mStories = new ArrayList<StoryObject>();
 			mTasks = new ArrayList<TaskObject>();
-		} else {
-			mStories.clear();
-			mTasks.clear();
 		}
+		
 		mStories = getStoriesBySprintId(mSprintId);
+		mTasks.clear();
 		for (StoryObject story : mStories) {
 			mTasks.addAll((ArrayList<TaskObject>)story.getTasks());
 		}

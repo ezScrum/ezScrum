@@ -16,8 +16,10 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.ExcelHandler;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.FileUtil;
 import ntut.csie.jcis.resource.core.IPath;
 import ntut.csie.jcis.resource.core.IProject;
@@ -50,6 +52,7 @@ public class ImportStoriesAction extends PermissionAction {
 		// get session info
 		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject projectObject = (ProjectObject) SessionManager.getProjectObject(request);
 		
 		// 處理上傳附件所新增的form bean
 		// get parameter info
@@ -79,8 +82,7 @@ public class ImportStoriesAction extends PermissionAction {
 				handler.load();
 				//如果取得的stories為null，代表可能發生了error的情況
 				List<IIssue> stories = handler.getStories();
-//				ProductBacklogHelper helper = new ProductBacklogHelper(project,session);
-				ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
+				ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(projectObject);
 				if(stories!=null) {
 					for(int i=0;i<stories.size();i++){
 						String summary = stories.get(i).getSummary();

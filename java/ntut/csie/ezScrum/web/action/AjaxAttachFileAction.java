@@ -89,7 +89,7 @@ public class AjaxAttachFileAction extends Action {
 					
 					if (issueTypeStr.equals("Story")) {
 						StoryObject story = pbHelper.getStory(issueId);
-						result = new StringBuilder(Translation.translateStoriesToJson(story));
+						result = new StringBuilder(Translation.translateStoryToJson(story));
 					} else if (issueTypeStr.equals("Task")) {
 						TaskObject task = TaskObject.get(issueId);
 						result = new StringBuilder(Translation.translateTaskToJson(task));
