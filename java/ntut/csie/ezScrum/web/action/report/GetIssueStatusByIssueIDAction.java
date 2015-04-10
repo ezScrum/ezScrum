@@ -7,14 +7,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +21,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import com.google.gson.Gson;
-import com.sshtools.common.ui.SessionManager;
 
 public class GetIssueStatusByIssueIDAction extends PermissionAction {
 	private static Log log = LogFactory
@@ -44,26 +42,17 @@ public class GetIssueStatusByIssueIDAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		String issueStage = null;
-		IProject project = (IProject) request.getSession().getAttribute(
-				"Project");
-		IUserSession userSession = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 
-		String sprintID = request.getParameter("sprintID");// sprintID
-		int sprintIDInt = Integer.parseInt(sprintID);
+		String sprintId = request.getParameter("sprintID");// sprintID
+		int sprintIDInt = Integer.parseInt(sprintId);
 
 		long issueID = Long.parseLong(request.getParameter("issueID"));// issueID
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
-				userSession, sprintID);
-		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic
-				.getSprintBacklogMapper();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
 		try {
 			// retrieve stories
-			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
-			// retrieve storyID task map
-			Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklogMapper
-					.getTasksMap();
+			List<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
 
 			SprintPlanHelper sph = new SprintPlanHelper(project);
 			// get taskBoardStageMap to query status name
@@ -72,18 +61,16 @@ public class GetIssueStatusByIssueIDAction extends PermissionAction {
 
 			// traverse every task in every story to find issueID, not efficient
 			// but worked now.
-			for (IIssue story : stories) {
+			for (StoryObject story : stories) {
 				// every story is a root
-				if (story.getIssueID() == issueID) {
+				if (story.getId() == issueID) {
 					// story query map to get status name by status id(called
 					// value)
-					String storyStage = taskBoardStageMap.get(story
-							.getStatusValue());
+					String storyStage = taskBoardStageMap.get(story.getStatusString());
 					issueStage = storyStage;
 					break;
 				} else { // every task is a story child
-					ArrayList<TaskObject> tasks = taskMap.get(story
-							.getIssueID());
+					ArrayList<TaskObject> tasks = story.getTasks();
 					for (TaskObject task : tasks) {
 						if (task.getId() == issueID) {
 							String taskStage = task.getStatusString();
