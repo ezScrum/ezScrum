@@ -47,21 +47,22 @@ public class ShowSprintInformationAction extends Action {
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
-		if (backlog == null || sprintId == -1 || sprintId == 0) {
+		sprintId = sprintBacklogMapper.getSprintId();
+		if (sprintBacklogMapper == null || sprintId == -1 || sprintId == 0) {
 			return mapping.findForward("error");
 		}
 		
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
 		
-		request.setAttribute("SprintID", backlog.getSprintId());
+		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
 		request.setAttribute("Stories", stories);
 
 		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintId());
+		ISprintPlanDesc plan = spHelper.loadPlan(sprintBacklogMapper.getSprintId());
 		request.setAttribute("SprintPlan", plan);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),

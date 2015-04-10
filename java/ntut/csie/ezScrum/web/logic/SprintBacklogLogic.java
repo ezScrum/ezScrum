@@ -280,9 +280,9 @@ public class SprintBacklogLogic {
 	 * 
 	 * @return total story point
 	 */
-	public double getTotalStoryPoints() {
+	public int getTotalStoryPoints() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
-		double point = 0;
+		int point = 0;
 		for (StoryObject story : stories) {
 			point += story.getEstimate();
 		}
