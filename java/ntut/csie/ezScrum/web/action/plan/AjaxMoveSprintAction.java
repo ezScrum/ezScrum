@@ -1,16 +1,11 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -35,23 +30,23 @@ public class AjaxMoveSprintAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		IProject iProject = (IProject) SessionManager.getProject(request);
+		ProjectObject project = new ProjectObject(iProject.getName());
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-	
+
 		// get parameter info
 		String oldID = request.getParameter("OldID");
 		String newID = request.getParameter("NewID");
 		int oldID_int = Integer.parseInt(oldID);
 		int newID_int = Integer.parseInt(newID);
-		
+
 		//移動iterPlan.xml的資訊
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
+		SprintPlanHelper SPhelper = new SprintPlanHelper(iProject);
 		SPhelper.moveSprintPlan(project, session, oldID_int, newID_int);
-		
+
 		StringBuilder result = new StringBuilder("true");
 		return result;
 	}
