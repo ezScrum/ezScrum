@@ -45,6 +45,11 @@ public class SprintBacklogHelper {
 			mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		}
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
+		
+		// check sprint is existed
+		if (mSprintBacklogMapper == null) {
+			throw new RuntimeException("Sprint#" + sprintId + " is not existed.");
+		}
 	}
 
 	/**
@@ -100,9 +105,15 @@ public class SprintBacklogHelper {
 	}
 
 	public void addExistingTasksToStory(String[] selectedTaskIds, long storyId) {
+		// check story is existed
+		StoryObject story = mSprintBacklogMapper.getStory(storyId);
+		if (story == null) {
+			throw new RuntimeException("Story#" + storyId + " is not existed.");
+		}
+		
 		ArrayList<Long> tasksId = new ArrayList<Long>();
-		for (String task : selectedTaskIds) {
-			tasksId.add(Long.parseLong(task));
+		for (String taskId : selectedTaskIds) {
+			tasksId.add(Long.parseLong(taskId));
 		}
 		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
 	}

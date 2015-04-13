@@ -55,6 +55,9 @@ public class SprintBacklogMapper {
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintId = Integer.parseInt(mIterPlanDesc.getID());
+		if (mSprintId == -1) {
+			throw new RuntimeException("Sprint#2 is not existed.");
+		}
 		initSprintInformation();
 	}
 
@@ -191,6 +194,8 @@ public class SprintBacklogMapper {
 			if (task != null) {
 				task.setStoryId(storyId);
 				task.save();
+			} else {
+				throw new RuntimeException("Task#" + taskId + " is not existed.");
 			}
 		}
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新

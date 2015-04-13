@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,10 +10,13 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class AddExistedStoryAction extends PermissionAction {
+	private static Log log = LogFactory.getLog(AddExistedStoryAction.class);
 	
 	@Override
 	public boolean isValidAction() {
@@ -30,19 +32,20 @@ public class AddExistedStoryAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info("Add wild stories in AddExistedStoryAction");
 		
 		// get parameter info
 		ProjectObject project = SessionManager.getProjectObject(request);
-		String[] storiesId = request.getParameterValues("selects");
+		String[] selectedStoriesId = request.getParameterValues("selects");
 		long sprintId;
 		try {
 			sprintId = Long.parseLong(request.getParameter("sprintID"));
-		} catch (ParseException e) {
+		} catch (NumberFormatException e) {
 			sprintId = -1;
 		}
 		
 		ArrayList<Long> addedStoriesId = new ArrayList<Long>();
-		for (String storyId : storiesId) {
+		for (String storyId : selectedStoriesId) {
 			addedStoriesId.add(Long.parseLong(storyId));
 		}
 		
