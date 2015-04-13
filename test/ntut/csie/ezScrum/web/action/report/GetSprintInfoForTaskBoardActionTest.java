@@ -18,7 +18,7 @@ import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
 
-public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
+public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
@@ -26,7 +26,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 	private Gson mGson;
 	private Configuration mConfig;
 
-	public GetSprintInfoForTaskBoardTest(String testMethod) {
+	public GetSprintInfoForTaskBoardActionTest(String testMethod) {
 		super(testMethod);
 	}
 
