@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IStory;
@@ -10,8 +11,9 @@ import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
@@ -69,7 +71,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	
 	public void testExecute() throws Exception
 	{
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		
 		//在Release中加入一個Sprint
 		AddSprintToRelease ASTR = new AddSprintToRelease(1,mCR,mCP);
@@ -81,6 +83,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		addRequestParameter("Description", "Test Add New Story Description");
 		addRequestParameter("Importance", "100");
 		addRequestParameter("Estimation", "1");
+		addRequestParameter("Value", "50");
 		addRequestParameter("HowToDemo", "Test Add New Story HowToDemo");
 		addRequestParameter("Notes", "Test Add New Story Notes");
 		addRequestParameter("sprintId","1");
@@ -99,19 +102,10 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		/*-----------------------------------------------------------
 		*	驗證Story是否有被加入Sprint 1
 		-------------------------------------------------------------*/
-		IStory[] stories = (new ProductBacklogLogic(mConfig.getUserSession(), project)).getStories();
+		ArrayList<StoryObject> stories = (new ProductBacklogLogic(project)).getStories();
+		assertEquals(1, stories.size());
 		
-		assertEquals(1, stories.length);
-		
-		IStory story = stories[0];
-		
-		assertEquals("1", story.getSprintID());
-		
-		/*-----------------------------------------------------------
-		*	驗證Story是否有被加入Release 1
-		-------------------------------------------------------------*/
-		
-		assertEquals("1", story.getReleaseID());
-		
+		StoryObject story = stories.get(0);
+		assertEquals(1, story.getSprintId());
 	}
 }
