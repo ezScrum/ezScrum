@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -72,6 +73,17 @@ public class SprintBacklogLogic {
 			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
+	}
+	
+	public void closeStory(long id, String name, String notes, String changeDate) {
+		Date closeDate = parseToDate(changeDate);
+		mSprintBacklogMapper.closeStory(id, name, notes, closeDate);
+	}
+	
+	public void reopenStory(long id, String name, String notes,
+			String changeDate) {
+		Date reopenDate = parseToDate(changeDate);
+		mSprintBacklogMapper.reopenStory(id, name, notes, reopenDate);
 	}
 
 	public void checkOutTask(long id, String name, String handlerUsername,

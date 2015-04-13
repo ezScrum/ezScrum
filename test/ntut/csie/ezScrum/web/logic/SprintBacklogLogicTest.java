@@ -213,7 +213,7 @@ public class SprintBacklogLogicTest {
 		int estimate = doingTask.getEstimate();
 		mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
 				doingTask.getId(), doingTask.getName(), doingTask.getNotes(),
-				new Date());
+				doingTask.getActual(), new Date());
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();
 		expectedTotalEstimatePont = TASK_COUNT * TASK_ESTIMATE * STORY_COUNT
@@ -225,7 +225,7 @@ public class SprintBacklogLogicTest {
 		estimate = doingTask.getEstimate();
 		mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
 				doingTask.getId(), doingTask.getName(), doingTask.getNotes(),
-				new Date());
+				doingTask.getActual(), new Date());
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();
 		expectedTotalEstimatePont = TASK_COUNT * TASK_ESTIMATE * STORY_COUNT
@@ -235,7 +235,8 @@ public class SprintBacklogLogicTest {
 		// After done all tasks
 		for (TaskObject task : mATTS.getTasks()) {
 			mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
-					task.getId(), task.getName(), task.getNotes(), new Date());
+					task.getId(), task.getName(), task.getNotes(),
+					doingTask.getActual(), new Date());
 		}
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();

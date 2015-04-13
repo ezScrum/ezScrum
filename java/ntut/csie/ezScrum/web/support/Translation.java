@@ -310,7 +310,7 @@ public class Translation {
 
 	// for ShowSprintBacklogAction
 	public static String translateSprintBacklogToJson(
-			ArrayList<StoryObject> stories, int currentSprintId,
+			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
 			int releaseId, String sprintGoal) {
 

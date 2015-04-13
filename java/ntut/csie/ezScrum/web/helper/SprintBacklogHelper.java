@@ -154,11 +154,11 @@ public class SprintBacklogHelper {
 	}
 
 	public void closeStory(long id, String name, String notes, String changeDate) {
-		mSprintBacklogMapper.closeStory(id, name, notes, changeDate);
+		mSprintBacklogLogic.closeStory(id, name, notes, changeDate);
 	}
 
 	public void reopenStory(long id, String name, String notes, String changeDate) {
-		mSprintBacklogMapper.reopenStory(id, name, notes, changeDate);
+		mSprintBacklogLogic.reopenStory(id, name, notes, changeDate);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class SprintBacklogHelper {
 		String result;
 		// 建立 this Sprint Store 的資料
 		ArrayList<StoryObject> stories = null;
-		int currentSprintId = 0;
+		long currentSprintId = 0;
 		int releaseId = 0;
 		double totalStoryPoints = 0.0d;
 		double limitedPoint = 0.0d;
