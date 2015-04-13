@@ -32,8 +32,7 @@ public class ShowSprintPlanAction extends Action {
 	// Variables
 	private static Log log = LogFactory.getLog(ShowSprintPlanAction.class);
 	// --------------------------------------------------------- Methods
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		IProject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
@@ -73,19 +72,7 @@ public class ShowSprintPlanAction extends Action {
 				Map<String, String> pointMap = new HashMap<String, String>();
 
 				for (ISprintPlanDesc desc : descs) {
-
-//					SprintBacklogMapper backlog = new SprintBacklogMapper(project, session, Integer.parseInt(desc.getID()));
-//
-//					permissionMap.put(desc.getID(), !backlog.isOutOfSprint());
-//
-//					hm.put(desc.getID(), true);
-//
-//					pointMap.put(desc.getID(), " / " + backlog.getLimitedPoint());
-//					if (!backlog.isOutOfSprint() && Integer.parseInt(desc.getID()) != currentSprint)
-//						totalSprintID.add(desc.getID());
-					
-//					SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, session, Integer.parseInt(desc.getID()));
-					SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, desc.getID());
+					SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(desc.getID()));
 					SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 					permissionMap.put(desc.getID(), !sprintBacklogLogic.isOutOfSprint());
 

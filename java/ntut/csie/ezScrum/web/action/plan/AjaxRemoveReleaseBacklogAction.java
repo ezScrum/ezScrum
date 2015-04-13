@@ -7,6 +7,8 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -36,7 +38,8 @@ public class AjaxRemoveReleaseBacklogAction extends PermissionAction {
 		log.info(" Remove Release Backlog. ");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		IProject iProject = (IProject) SessionManager.getProject(request);
+		ProjectObject project = new ProjectObject(iProject.getName());
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		// get parameter info
 		long issueId = Long.parseLong(request.getParameter("issueID"));
@@ -44,19 +47,17 @@ public class AjaxRemoveReleaseBacklogAction extends PermissionAction {
 		String result = "";
 		try{
 			if (issueId != 0) {
-				ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-				IIssue issue = PBHelper.getStory(issueId);
-				
-				if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
-					 issue.getSprintID().equals("-1"))) {
+				ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
+				StoryObject story = PBHelper.getStory(issueId);
+
+				if (story.getSprintId() > 0) {
 					// remove release, sprint tag to mantis notes
 					PBHelper.removeReleaseSprint(issueId);
-				}
-				else {
+				} else {
 					// remove release tag to mantis notes
 					PBHelper.removeReleaseTagFromIssue(issueId);
 				}
-				
+
 				result = "<DropStory><Result>true</Result><Story><Id>" + issueId + "</Id></Story></DropStory>";
 			} else {
 				result = "<DropStory><Result>false</Result></DropStory>";

@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -196,13 +195,12 @@ public class SprintPlanHelper {
 	/*
 	 * from AjaxMoveSprintAction
 	 */
-	public void moveSprintPlan(ProjectObject project, IUserSession session,
-			int oldId, int newId) {
+	public void moveSprintPlan(ProjectObject project, IUserSession session, int oldId, int newId) {
 		List<ISprintPlanDesc> descs = loadListPlans();
 		moveSprint(oldId, newId);
 
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
-		Map<String, ArrayList<IIssue>> map = PBHelper.getSprintHashMap();
+		Map<Long, ArrayList<StoryObject>> map = PBHelper.getSprintHashMap();
 
 		ArrayList<Integer> sprintsId = new ArrayList<Integer>();
 		// 取出需要修改的sprint ID
@@ -223,32 +221,30 @@ public class SprintPlanHelper {
 		if (sprintsId.size() != 0) {
 			for (int i = 0; i < sprintsId.size(); i++) {
 				if ((i + 1) != sprintsId.size()) {
-					String sprintID = String.valueOf(sprintsId.get(i));
-					String nextSprintID = String.valueOf(sprintsId.get(i + 1));
-					List<IIssue> stories = map.get(sprintID);
+					long sprintID = sprintsId.get(i);
+					long nextSprintID = sprintsId.get(i + 1);
+					ArrayList<StoryObject> stories = map.get(sprintID);
 					if (stories != null) {
 						ArrayList<Long> total = convertToLong(stories);
-						productBacklogLogic.addStoriesToSprint(total,
-								nextSprintID);
+						productBacklogLogic.addStoriesToSprint(total, nextSprintID);
 					}
 				} else {
-					String sprintID = String.valueOf(sprintsId.get(i));
-					String nextSprintID = String.valueOf(sprintsId.get(0));
-					List<IIssue> stories = map.get(sprintID);
+					long sprintID = sprintsId.get(i);
+					long nextSprintID = sprintsId.get(0);
+					ArrayList<StoryObject> stories = map.get(sprintID);
 					if (stories != null) {
 						ArrayList<Long> total = convertToLong(stories);
-						productBacklogLogic.addStoriesToSprint(total,
-								nextSprintID);
+						productBacklogLogic.addStoriesToSprint(total, nextSprintID);
 					}
 				}
 			}
 		}
 	}
 
-	private ArrayList<Long> convertToLong(List<IIssue> stories) {
+	private ArrayList<Long> convertToLong(ArrayList<StoryObject> stories) {
 		ArrayList<Long> total = new ArrayList<Long>();
-		for (IIssue story : stories) {
-			total.add(story.getIssueID());
+		for (StoryObject story : stories) {
+			total.add(story.getId());
 		}
 		return total;
 	}
@@ -305,19 +301,15 @@ public class SprintPlanHelper {
 				.getSprintPlanList());
 	}
 
-	public SprintObject getSprint(String sprintId)
-			throws SQLException {
+	public SprintObject getSprint(String sprintId) throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintId));
 		// 找出 sprint 中所有的 story
-		IIssue[] storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long
-				.parseLong(sprintId));
-		for (IIssue storyIssue : storyIIssues) {
-			StoryObject story = new StoryObject(storyIssue);
+		ArrayList<StoryObject> storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintId));
+		for (StoryObject story : storyIIssues) {
 			// 找出 story 中所有的 task
-			ArrayList<TaskObject> tasks = mSprintBacklogMapper
-					.getTasksByStoryId(Long.parseLong(story.id));
+			ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(story.getId());
 			for (TaskObject task : tasks) {
-				story.addTask(task);
+				task.setStoryId(story.getId());
 			}
 			sprint.addStory(story);
 		}

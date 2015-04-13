@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,6 +9,8 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -37,10 +41,11 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		log.info(" Show Story From Release. ");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		IProject iProject = (IProject) SessionManager.getProject(request);
+		ProjectObject project = new ProjectObject(iProject.getName());
+		
 		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		
 		// get parameter info
 		String releaseId = request.getParameter("Rid");
@@ -48,7 +53,7 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		// 取得 ReleasePlan
 		IReleasePlanDesc plan = planHelper.getReleasePlan(releaseId);
 		
-		IStory[] storyList = PBHelper.getStoriesByRelease(plan);
-		return planHelper.showStoryFromReleae(project, releaseId, storyList);
+		ArrayList<StoryObject> storyList = PBHelper.getStoriesByRelease(plan);
+		return planHelper.showStoryFromRelease(iProject, releaseId, storyList);
 	}
 }

@@ -1,28 +1,30 @@
 package ntut.csie.ezScrum.iteration.iternal;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleaseBacklog {
 	private IProject m_project;
 	private IReleasePlanDesc m_planDesc;
-	private IStory[] m_stories;
+	private ArrayList<StoryObject> m_stories;
 	private Date m_startDate;
 	private Date m_endDate;
 
 	final private long OneDay = ScrumEnum.DAY_MILLISECOND;
 
-	public ReleaseBacklog(IProject project, IReleasePlanDesc plan, IStory[] stories) {
+	public ReleaseBacklog(IProject project, IReleasePlanDesc plan, ArrayList<StoryObject> storyList) {
 		m_project = project;
 		m_planDesc = plan;
 		//Release Plan下所有的Story
-		m_stories = stories;
+		m_stories = storyList;
 
 		init();
 	}
@@ -52,13 +54,13 @@ public class ReleaseBacklog {
 		return m_endDate;
 	}
 	
-	public IStory[] getStory(){
+	public ArrayList<StoryObject> getStory(){
 		return m_stories;
 	}
 		
-	public int getStoryCount(){
+	public int getStoryCount() {
 		if (m_stories != null)
-			return m_stories.length;
+			return m_stories.size();
 
 		return 0;
 	}
@@ -70,7 +72,7 @@ public class ReleaseBacklog {
 	// 取得該日期前已完成的Story數量
 	public double getDoneStoryByDate(Date date) {
 		double count = 0;
-		for (IStory item : m_stories) {
+		for (StoryObject item : m_stories) {
 			// Story Close的時間
 			Date closedDate = item.getStatusUpdated(new Date(date.getTime()	+ OneDay), ITSEnum.CLOSED_STATUS);
 			if (closedDate != null){

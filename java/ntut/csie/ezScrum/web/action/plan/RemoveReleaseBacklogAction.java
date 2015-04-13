@@ -6,7 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
@@ -23,17 +26,19 @@ public class RemoveReleaseBacklogAction extends Action{
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Remove ReleaseBacklog. ");
 		
-		IProject project = (IProject) request.getSession().getAttribute("Project");
+		IProject iProject = (IProject) request.getSession().getAttribute("Project");
+		ProjectObject project = new ProjectObject(iProject.getName());
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ReleasePlanHelper helper = new ReleasePlanHelper(project);
 		String issueId = request.getParameter("issueID");
 		
 		if (issueId != null) {
-			ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-			IIssue issue = PBHelper.getStory(Long.parseLong(issueId));
+			ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
+			StoryObject story = PBHelper.getStory(Long.parseLong(issueId));
 			
-			if(!(issue.getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE)) ||
-				 issue.getSprintID().equals("-1")) {
+			if(story.getSprintId() > 0) {
 				// remove release tag to mantis notes
+				helper.deleteReleasePlan(id);
 				PBHelper.removeReleaseTagFromIssue(Long.parseLong(issueId));
 			} else {
 				// remove release, sprint tag to mantis notes

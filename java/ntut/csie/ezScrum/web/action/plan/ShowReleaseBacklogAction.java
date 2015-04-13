@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -23,43 +24,41 @@ import org.apache.struts.action.ActionMapping;
 public class ShowReleaseBacklogAction extends Action {
 	private static Log log = LogFactory.getLog(ShowReleaseBacklogAction.class);
 	
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Show Release Backlog. ");
 		
 		// get session info
-		IProject project = (IProject) request.getSession().getAttribute("Project");
+		IProject iProject = (IProject) request.getSession().getAttribute("Project");
+		ProjectObject project = new ProjectObject(iProject.getName());
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
 		String ReleaseId = request.getParameter("releaseID");
 		
 		//取得ReleasePlan
-		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
-		ProductBacklogHelper productHelper = new ProductBacklogHelper(session, project);
+		ReleasePlanHelper planHelper = new ReleasePlanHelper(iProject);
+		ProductBacklogHelper productHelper = new ProductBacklogHelper(project);
 		IReleasePlanDesc plan = planHelper.getReleasePlan(ReleaseId);
 		
 		ReleaseBacklog releaseBacklog;
 		try {
-			releaseBacklog = new ReleaseBacklog(project, plan, 
-					productHelper.getStoriesByRelease(plan));
-		}
-		catch (Exception e) {
+			releaseBacklog = new ReleaseBacklog(iProject, plan, productHelper.getStoriesByRelease(plan));
+		} catch (Exception e) {
 			releaseBacklog = null;
 		}
 	
-		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, session.getAccount());
-		
-		if (ReleaseId != null && scrumRole.getAccessReleasePlan()) {			
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(iProject, session.getAccount());
+
+		if (ReleaseId != null && scrumRole.getAccessReleasePlan()) {
 			request.setAttribute("releaseID", ReleaseId);			// return release Id
 			request.setAttribute("releaseName", plan.getName());	// return release Name
 
 			request.setAttribute("Stories", releaseBacklog.getStory());
-			
+
 			// release burndown chart draw by ReleaseBoard
 			ReleaseBoard rboard = new ReleaseBoard(releaseBacklog);
 			request.setAttribute("ReleaseBoard", rboard);
-			
+
 			return mapping.findForward("success");
 		} else {
 			return mapping.findForward("GuestOnly");

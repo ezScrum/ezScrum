@@ -1,14 +1,14 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -36,25 +36,22 @@ public class ShowExistedStoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		IProject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		String sprintID = request.getParameter("sprintID");
+		
 		String releaseID = request.getParameter("releaseID");
 		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintID);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(new ProjectObject(project.getName()), Long.parseLong(sprintID));
 		
 		// ProductBacklog Helper
-    	List<IStory> stories = null;
+    	ArrayList<StoryObject> stories = null;
     	
     	boolean NumberError = false;
     	// Select from Sprint Backlog
     	try{
-    		stories = sprintBacklogHelper.getExistingStories(releaseID);
-		} catch (SQLException e) {
-			System.out.println("class : ShowExistedStoryAction, method : execute, exception : " + e.toString());
-    		NumberError = true;
+    		stories = sprintBacklogHelper.getExistingStories();
 		} catch (NumberFormatException e) {
 			System.out.println("class : ShowExistedStoryAction, method : execute, exception : " + e.toString());
     		NumberError = true;

@@ -1,14 +1,13 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -35,27 +34,21 @@ public class RemoveSprintPlanAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Remove SprintPlan. ");
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		IProject iProject = (IProject) SessionManager.getProject(request);
+		ProjectObject project = new ProjectObject(iProject.getName());
 		
 		// get parameter info
 		String sprintId = request.getParameter("sprintID");
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, session, sprintId);
-		List<IIssue> issues = sprintBacklogLogic.getStories();
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);	
-		for(IIssue issue:issues){
-			productBacklogLogic.dropStoryFromSprint(issue.getIssueID());
-			
-			if(!(issue.getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) || 
-				 issue.getReleaseID().equals("-1"))){
-				productBacklogLogic.removeReleaseTagFromIssue(issue.getIssueID());
-			}
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
+		for (StoryObject story : stories) {
+			productBacklogLogic.dropStoryFromSprint(story.getId());
 		}
 		
 		//刪除sprint資訊

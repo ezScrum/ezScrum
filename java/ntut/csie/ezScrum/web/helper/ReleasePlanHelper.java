@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -349,17 +350,17 @@ public class ReleasePlanHelper {
     // 取得Sprint的Story資訊
     private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
     	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
-    	IIssue[] stories = SBhelper.getStoryBySprintId(Long.parseLong(sprintID));
+    	ArrayList<StoryObject> stories = SBhelper.getStoryBySprintId(Long.parseLong(sprintID));
     	int storypoint = 0;
     	int storydonecount = 0;
-    	for (IIssue story : stories) {
-    		if (story.getStatus() == ITSEnum.S_CLOSED_STATUS) {
-    			storypoint += Integer.valueOf(story.getEstimated());
+    	for (StoryObject story : stories) {
+    		if (story.getStatus() == StoryObject.STATUS_DONE) {
+    			storypoint += story.getEstimate();
     			storydonecount++;
     		}
     	}
     	storyinfo.put("StoryPoint", storypoint);
-    	storyinfo.put("StoryCount", stories.length);
+    	storyinfo.put("StoryCount", stories.size());
     	storyinfo.put("StoryDoneCount", storydonecount);
     	return storyinfo;
     }
@@ -418,47 +419,41 @@ public class ReleasePlanHelper {
 	 * from AjaxShowStoryFromReleaseAction
 	 */
 	
-	public StringBuilder showStoryFromReleae(IProject project, String R_ID, IStory[] storyList) {
-		IReleasePlanDesc plan = this.getReleasePlan(R_ID);
+	public StringBuilder showStoryFromRelease(IProject project, String R_ID, ArrayList<StoryObject> storyList) {
+		IReleasePlanDesc plan = getReleasePlan(R_ID);
 		
 		ReleaseBacklog releaseBacklog;
 		try {
 			releaseBacklog = new ReleaseBacklog(project, plan, storyList);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
 			releaseBacklog = null;
 		}
 		
-		if (R_ID != null) {			
-			IIssue[] stories = releaseBacklog.getStory();
-			stories = this.sortStory(stories);
+		if (R_ID != null) {
+			ArrayList<StoryObject> stories = releaseBacklog.getStory();
+			stories = sortStory(stories);
 			
 			// write stories to XML format
 			StringBuilder sb = new StringBuilder();
-			sb.append("<ExistingStories>");			
-			for(int i = 0; i < stories.length; i++)
-			{
-				String releaseId = stories[i].getReleaseID();
-				if(releaseId.equals("") || releaseId.equals("0") || releaseId.equals("-1"))
-					releaseId = "None";
+			sb.append("<ExistingStories>");
+			
+			for (int i = 0; i < stories.size(); i++) {
 				
-				String sprintId = stories[i].getSprintID();
-				if(sprintId.equals("") || sprintId.equals("0") || sprintId.equals("-1"))
-					sprintId = "None";
+				long sprintId = stories.get(i).getSprintId();
 				sb.append("<Story>");
-				sb.append("<Id>" + stories[i].getIssueID() + "</Id>");
-				sb.append("<Link>" + this.replaceStr(stories[i].getIssueLink()) + "</Link>");
-				sb.append("<Name>" + this.replaceStr(stories[i].getSummary())+ "</Name>");
-				sb.append("<Value>" + stories[i].getValue()+"</Value>");
-				sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-				sb.append("<Estimate>" + stories[i].getEstimated() + "</Estimate>");
-				sb.append("<Status>" + stories[i].getStatus() + "</Status>");
-				sb.append("<Notes>" + this.replaceStr(stories[i].getNotes()) + "</Notes>");
-				sb.append("<HowToDemo>" + this.replaceStr(stories[i].getHowToDemo()) + "</HowToDemo>");
-				sb.append("<Release>" + releaseId + "</Release>");
+				sb.append("<Id>" + stories.get(i).getId() + "</Id>");
+				sb.append("<Link></Link>");
+				sb.append("<Name>" + replaceStr(stories.get(i).getName()) + "</Name>");
+				sb.append("<Value>" + stories.get(i).getValue() + "</Value>");
+				sb.append("<Importance>" + stories.get(i).getImportance() + "</Importance>");
+				sb.append("<Estimate>" + stories.get(i).getEstimate() + "</Estimate>");
+				sb.append("<Status>" + stories.get(i).getStatus() + "</Status>");
+				sb.append("<Notes>" + replaceStr(stories.get(i).getNotes()) + "</Notes>");
+				sb.append("<HowToDemo>" + replaceStr(stories.get(i).getHowToDemo()) + "</HowToDemo>");
+				sb.append("<Release>" + R_ID + "</Release>");
 				sb.append("<Sprint>" + sprintId + "</Sprint>");
-				sb.append("<Tag>" + this.replaceStr(this.joinTagOnStory(stories[i].getTags(), ",")) + "</Tag>");
+				sb.append("<Tag>" + replaceStr(this.joinTagOnStory(stories.get(i).getTags(), ",")) + "</Tag>");
 				sb.append("</Story>");
 			}
 			sb.append("</ExistingStories>");
@@ -470,20 +465,20 @@ public class ReleasePlanHelper {
 	}
 
 	// sort story information by importance
-	private IIssue[] sortStory(IIssue[] issues) {
-		List<IIssue> list = new ArrayList<IIssue>();
-	
-		for (IIssue issue : issues) {
+	private ArrayList<StoryObject> sortStory(ArrayList<StoryObject> stories) {
+		ArrayList<StoryObject> list = new ArrayList<StoryObject>();
+
+		for (StoryObject issue : stories) {
 			int index = 0;
-			for (index=0 ; index<list.size() ; index++) {
-				if ( Integer.parseInt(issue.getImportance()) > Integer.parseInt(list.get(index).getImportance()) ) {
+			for (index = 0; index < list.size(); index++) {
+				if (issue.getImportance() > list.get(index).getImportance()) {
 					break;
 				}
 			}
 			list.add(index, issue);
 		}
-	
-		return list.toArray(new IIssue[list.size()]);
+
+		return list;
 	}
 	
 	private String joinTagOnStory(List<TagObject> tags, String delimiter)
@@ -569,14 +564,15 @@ public class ReleasePlanHelper {
 	 */	
 	
 	//加入 Release 日期範圍內 Sprint 底下的 Story
-	public void addReleaseSprintStory(IProject project, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
+	public void addReleaseSprintStory(IProject iProject, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
+		ProjectObject project = new ProjectObject(iProject.getName());
 		List<ISprintPlanDesc> newSprintList =  reDesc.getSprintDescList();
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 		ArrayList<Long> storyList;
 		
 		//For deleting old sprint. Taking original SprintList to compare with new SprintList.
 		if(oldSprintList != null){	
-			storyList = compareReleaseSprint(oldSprintList, newSprintList, project, session);
+			storyList = compareReleaseSprint(oldSprintList, newSprintList, iProject, session);
 			for(long story : storyList) {
 				productBacklogLogic.removeReleaseTagFromIssue(story);
 			}
@@ -584,7 +580,7 @@ public class ReleasePlanHelper {
 		}
 
 		//For adding new sprint. Taking new SprintList to compare with original SprintList.
-		storyList = this.compareReleaseSprint(newSprintList, oldSprintList, project, session);
+		storyList = compareReleaseSprint(newSprintList, oldSprintList, iProject, session);
 		productBacklogLogic.addReleaseTagToIssue(storyList, ID);
 
 	}
@@ -596,35 +592,30 @@ public class ReleasePlanHelper {
 		SprintBacklogLogic sprintBacklogLogic;
 		ArrayList<Long> storyList = new ArrayList<Long>();
 		boolean deleteOrAdd = true;
-		
-		if(sprintList2 != null) {
-			for(ISprintPlanDesc list1 : sprintList1) {
-				for(ISprintPlanDesc list2 : sprintList2) {
-					if(list1.getID().equals(list2.getID())) {//Sprint still exists.
+
+		if (sprintList2 != null) {
+			for (ISprintPlanDesc list1 : sprintList1) {
+				for (ISprintPlanDesc list2 : sprintList2) {
+					if (list1.getID().equals(list2.getID())) {//Sprint still exists.
 						deleteOrAdd = false;
 						break;
 					}
 				}
-				if(deleteOrAdd == true) {//Finding sprint not existing in list2.
-//					sprintBacklog = new SprintBacklogMapper(project, session, Integer.parseInt(list1.getID()));
-//					List<IIssue> stories = sprintBacklog.getStories();
-					sprintBacklogLogic =  new SprintBacklogLogic(project, session, list1.getID());
-					List<IIssue> stories = sprintBacklogLogic.getStories();
-					for(IIssue story : stories) {
-						storyList.add(story.getIssueID());
+				if (deleteOrAdd == true) {//Finding sprint not existing in list2.
+					sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
+					ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+					for (StoryObject story : stories) {
+						storyList.add(story.getId());
 					}
 				}
 				deleteOrAdd = true;//For next sprint.
 			}
-		}
-		else { // For creating a new sprint
-			for(ISprintPlanDesc list1 : sprintList1) {
-//				sprintBacklog = new SprintBacklogMapper(project, session, Integer.parseInt(list1.getID()));
-//				List<IIssue> stories = sprintBacklog.getStories();
-				sprintBacklogLogic = new SprintBacklogLogic(project, session, list1.getID());
-				List<IIssue> stories = sprintBacklogLogic.getStories();
-				for(IIssue story : stories) {
-					storyList.add(story.getIssueID());
+		} else { // For creating a new sprint
+			for (ISprintPlanDesc list1 : sprintList1) {
+				sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
+				ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+				for (StoryObject story : stories) {
+					storyList.add(story.getId());
 				}
 			}
 		}
@@ -635,9 +626,9 @@ public class ReleasePlanHelper {
 	 * from GetReleaseBurndownChartDataAction
 	 */
 	public StringBuilder getReleaseBurndownChartData(IProject project, IUserSession session, String releaseId) {
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(session, project);
+		ProductBacklogHelper pbHelper = new ProductBacklogHelper(new ProjectObject(project.getName()));
 		IReleasePlanDesc plan = this.getReleasePlan(releaseId);
-		
+
 		ReleaseBacklog releaseBacklog = null;
 		StringBuilder result = new StringBuilder("");
 		try {
@@ -648,8 +639,8 @@ public class ReleasePlanHelper {
 			releaseBacklog = null;
 			result.append("{success: \"false\"}");
 		}
-		
-		return result;		
+
+		return result;
 	}
 	
 }
