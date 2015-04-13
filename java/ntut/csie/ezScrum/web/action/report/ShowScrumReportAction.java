@@ -24,14 +24,13 @@ public class ShowScrumReportAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("execute Show Scrum Report Action");
-//		IProject project = (IProject) request.getSession().getAttribute("Project");
 		IProject project = SessionManager.getProject(request);
-    	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// get Account, ScrumRole
     	AccountObject account = session.getAccount();
 //		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
-		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
+		ScrumRole scrumRoleLogic = new ScrumRoleLogic().getScrumRole(project, account);
 //		MantisAccountMapper accountHelper = new MantisAccountMapper(project, session);
 //		
 //		// 檢查帳號不通過，提示錯誤頁面		    // 檢查此帳號是否允許操作  action 的權限
@@ -43,7 +42,7 @@ public class ShowScrumReportAction extends Action {
 		AccountLogic accountLogic = new AccountLogic();
 		
 		// 檢查帳號不通過，提示錯誤頁面		    // 檢查此帳號是否允許操作  action 的權限
-    	if ( accountLogic.checkAccount(request) && sr.getAccessTaskBoard() ) {
+    	if (accountLogic.checkAccount(request) && scrumRoleLogic.getAccessTaskBoard()) {
 			return mapping.findForward("success");
 		}else{
 			return mapping.findForward("permissionDenied");
