@@ -35,7 +35,7 @@ public class Translation {
 		responseText.append("<Importance>" + story.getImportance()
 				+ "</Importance>");
 		responseText.append("<Estimate>" + story.getEstimate() + "</Estimate>");
-		responseText.append("<Status>" + story.getStatus() + "</Status>");
+		responseText.append("<Status>" + story.getStatusString() + "</Status>");
 		responseText
 				.append("<Notes>"
 						+ translateChar.TranslateXMLChar(story.getNotes())
@@ -44,7 +44,11 @@ public class Translation {
 				+ translateChar.TranslateXMLChar(story.getHowToDemo())
 				+ "</HowToDemo>");
 		responseText.append("<Release></Release>");
-		responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+		if (story.getSprintId() == StoryObject.NO_PARENT) {
+			responseText.append("<Sprint>None</Sprint>");			
+		} else {
+			responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+		}
 		responseText.append("<Tag>"
 				+ translateChar.TranslateXMLChar(Join(story.getTags(), ","))
 				+ "</Tag>");

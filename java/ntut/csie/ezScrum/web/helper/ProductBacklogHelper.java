@@ -213,6 +213,18 @@ public class ProductBacklogHelper {
 		result.append(Translation.translateStoryToJson(story));
 		return result;
 	}
+	
+	/**
+	 * 將 story 資訊轉換成 JSon format
+	 * 
+	 * @param story
+	 * @return StringBuilder
+	 */
+	public StringBuilder translateStoryToXML(StoryObject story) {
+		StringBuilder result = new StringBuilder("");
+		result.append(Translation.translateStoryToXML(story));
+		return result;
+	}
 
 	// 透過 map 得到所有 sprint 的 stories
 	public Map<Long, ArrayList<StoryObject>> getSprintHashMap() {
