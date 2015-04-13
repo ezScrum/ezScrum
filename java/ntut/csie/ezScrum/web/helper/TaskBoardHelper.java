@@ -125,7 +125,7 @@ public class TaskBoardHelper {
 	}
 	
 	private class SprintInfoUI {
-		private int ID = 0;
+		private long ID = 0;
 		private String SprintGoal = "";
 		private double CurrentStoryPoint = 0d;
 		private double CurrentTaskPoint = 0d;
@@ -135,7 +135,7 @@ public class TaskBoardHelper {
 		public SprintInfoUI() {}
 
 		public SprintInfoUI(long id, String goal, double sp, double tp, String rid, boolean current) {
-			id = id;
+			ID = id;
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;
