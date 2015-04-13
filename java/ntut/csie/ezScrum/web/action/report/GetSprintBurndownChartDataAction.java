@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -28,11 +27,10 @@ public class GetSprintBurndownChartDataAction extends Action {
 
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		String sprintID = request.getParameter("SprintID");
+		String sprintId = request.getParameter("SprintID");
 		String type = request.getParameter("Type");
 		// 拿出SprintBurndownChart的資料
-		String responseText = new TaskBoardHelper(project, session, sprintID).getSprintBurndownChartDataResponseText(type);
+		String responseText = new TaskBoardHelper(project, Long.parseLong(sprintId)).getSprintBurndownChartDataResponseText(type);
 
 		try {
 			response.setContentType("text/html; charset=utf-8");
