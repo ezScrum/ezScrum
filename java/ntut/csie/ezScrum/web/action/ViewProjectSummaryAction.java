@@ -72,7 +72,7 @@ public class ViewProjectSummaryAction extends Action {
 		ProjectObject projectObject = SessionManager.getProjectObject(request);
 
 		// 取得 TaskBoard資訊
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, "-1");
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(projectObject, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		TaskBoard board = null;

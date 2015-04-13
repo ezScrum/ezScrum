@@ -92,12 +92,19 @@ public class ImportStoriesAction extends PermissionAction {
 						String howToDemo = stories.get(i).getHowToDemo();
 						String notes = stories.get(i).getNotes();
 						String value = stories.get(i).getTagValue(ScrumEnum.VALUE);
-//						helper.addStory(summary, des,value,imp, estimation, howToDemo, notes);
 						String sprintID = stories.get(i).getSprintID();
 						String tagIDs = "";
 						String releaseID = "";
-						StoryInfo storyInformation = new StoryInfo(summary, imp, estimate, value, howToDemo, notes, des, sprintID, releaseID, tagIDs);
-//						productBacklogHelper.addStory(storyInformation);
+						
+						StoryInfo storyInfo = new StoryInfo();
+						storyInfo.name = name;
+						storyInfo.importance = Integer.parseInt(importance);
+						storyInfo.estimate = Integer.parseInt(estimate);
+						storyInfo.value = Integer.parseInt(value);
+						storyInfo.howToDemo = howToDemo;
+						storyInfo.notes = notes;
+						storyInfo.sprintId = Long.parseLong(sprintId);
+						storyInfo.tags = tags;
 						productBacklogHelper.addNewStory(storyInformation);
 					}
 					
