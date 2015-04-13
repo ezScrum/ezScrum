@@ -62,7 +62,7 @@ public class ShowSprintInformationAction extends Action {
 		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc plan = spHelper.loadPlan(sprintBacklogMapper.getSprintId());
+		ISprintPlanDesc plan = spHelper.loadPlan(String.valueOf(sprintBacklogMapper.getSprintId()));
 		request.setAttribute("SprintPlan", plan);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),

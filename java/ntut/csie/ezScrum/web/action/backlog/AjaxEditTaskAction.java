@@ -3,22 +3,18 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class AjaxEditTaskAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(AjaxEditTaskAction.class);
 	
 	@Override
 	public boolean isValidAction() {
@@ -37,11 +33,10 @@ public class AjaxEditTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		String sprintId = request.getParameter("sprintId");
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
 		// 表格的資料
@@ -61,7 +56,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		taskInfo.notes = notes;
 		taskInfo.actual = actual;
 		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintId);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		sprintBacklogHelper.updateTask(taskInfo, handler, partners);
 		
 		TaskObject task = TaskObject.get(taskId);
