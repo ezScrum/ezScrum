@@ -11,10 +11,9 @@ import jxl.write.WritableSheet;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.FormCheckUtil;
@@ -49,31 +48,30 @@ public class ExcelHandler {
 		}
 	}
 
-	public void save(IStory[] stories) {
+	public void save(ArrayList<StoryObject> stories) {
 		setTitle();
 		// index 當做Y軸的坐標，i=0已經被title所使用
 		int index = 1;
-		for (IStory story : stories) {
+		for (StoryObject story : stories) {
 			try {
 				((WritableSheet) sheet).addCell(new Label(0, index, String
-						.valueOf(story.getIssueID())));
+						.valueOf(story.getId())));
 				// tag is a list, so we translate it to a string
 				String result = Join(story.getTags(), ",");
 				((WritableSheet) sheet).addCell(new Label(1, index, result));
 				((WritableSheet) sheet).addCell(new Label(2, index, story
-						.getSummary()));
-				((WritableSheet) sheet).addCell(new Label(3, index, story
-						.getReleaseID()));
-				((WritableSheet) sheet).addCell(new Label(4, index, story
-						.getSprintID()));
-				((WritableSheet) sheet).addCell(new Label(5, index, story
-						.getValue()));
-				((WritableSheet) sheet).addCell(new Label(6, index, story
-						.getImportance()));
-				((WritableSheet) sheet).addCell(new Label(7, index, story
-						.getEstimated()));
+						.getName()));
+				((WritableSheet) sheet).addCell(new Label(3, index, ""));
+				((WritableSheet) sheet).addCell(new Label(4, index, String
+						.valueOf(story.getSprintId())));
+				((WritableSheet) sheet).addCell(new Label(5, index, String
+						.valueOf(story.getValue())));
+				((WritableSheet) sheet).addCell(new Label(6, index, String
+						.valueOf(story.getImportance())));
+				((WritableSheet) sheet).addCell(new Label(7, index, String
+						.valueOf(story.getEstimate())));
 				((WritableSheet) sheet).addCell(new Label(8, index, story
-						.getStatus()));
+						.getStatusString()));
 				((WritableSheet) sheet).addCell(new Label(9, index, story
 						.getNotes()));
 				((WritableSheet) sheet).addCell(new Label(10, index, story
