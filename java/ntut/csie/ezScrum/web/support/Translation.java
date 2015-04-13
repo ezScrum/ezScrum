@@ -84,14 +84,18 @@ public class Translation {
 				jsonStory.put("Importance", stories.get(i).getImportance());
 				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(
 						stories.get(i).getTags(), ",")));
-				jsonStory.put("Status", stories.get(i).getStatus());
+				jsonStory.put("Status", stories.get(i).getStatusString());
 				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories
 						.get(i).getNotes()));
 				jsonStory.put("HowToDemo", translateChar
 						.TranslateJSONChar(stories.get(i).getHowToDemo()));
 				jsonStory.put("Link", "");
 				jsonStory.put("Release", "");
-				jsonStory.put("Sprint", stories.get(i).getSprintId());
+				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
+					jsonStory.put("Sprint", "None");
+				} else {
+					jsonStory.put("Sprint", stories.get(i).getSprintId());					
+				}
 				jsonStory.put("FilterType", getFilterType(stories.get(i)));
 
 				if (stories.get(i).getAttachFiles().size() == 0)

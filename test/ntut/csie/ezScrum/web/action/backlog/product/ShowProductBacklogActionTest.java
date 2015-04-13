@@ -124,15 +124,15 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 			expectedResponseText
 					.append("{\"Id\":").append(CPB.getStories().get(i).getId()).append(",")
 					.append("\"Name\":\"").append(CPB.getStories().get(i).getName()).append("\",")
-					.append("\"Value\":\"").append(CPB.getStories().get(i).getValue()).append("\",")
-					.append("\"Estimate\":\"").append(CPB.getStories().get(i).getEstimate()).append("\",")
-					.append("\"Importance\":\"").append(CPB.getStories().get(i).getImportance()).append("\",")
+					.append("\"Value\":").append(CPB.getStories().get(i).getValue()).append(",")
+					.append("\"Estimate\":").append(CPB.getStories().get(i).getEstimate()).append(",")
+					.append("\"Importance\":").append(CPB.getStories().get(i).getImportance()).append(",")
 					.append("\"Tag\":\"\",")
 					.append("\"Status\":\"new\",")
 					.append("\"Notes\":\"").append(CPB.getStories().get(i).getNotes()).append("\",")
 					.append("\"HowToDemo\":\"").append(CPB.getStories().get(i).getHowToDemo()).append("\",")
-					.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(CPB.getStories().get(i).getId()).append("\",")
-					.append("\"Release\":\"None\",")
+					.append("\"Link\":\"\",")
+					.append("\"Release\":\"\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"DETAIL\",")
 					.append("\"Attach\":false,")
@@ -176,19 +176,20 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,\"Total\":2,").append(
 				"\"Stories\":[");
 		// 取2次Story資料
-		for (int i = 1; i >= 0; i--) {
+		for (int i = 1; i < 3; i++) {
+			StoryObject story = stories.get(i - 1);
 			expectedResponseText
-					.append("{\"Id\":").append(stories.get(i).getId()).append(",")
-					.append("\"Name\":\"").append(stories.get(i).getName()).append("\",")
-					.append("\"Value\":\"").append(stories.get(i).getValue()).append("\",")
-					.append("\"Estimate\":\"").append(stories.get(i).getEstimate()).append("\",")
-					.append("\"Importance\":\"").append(stories.get(i).getImportance()).append("\",")
+					.append("{\"Id\":").append(story.getId()).append(",")
+					.append("\"Name\":\"").append(story.getName()).append("\",")
+					.append("\"Value\":").append(story.getValue()).append(",")
+					.append("\"Estimate\":").append(story.getEstimate()).append(",")
+					.append("\"Importance\":").append(story.getImportance()).append(",")
 					.append("\"Tag\":\"\",")
 					.append("\"Status\":\"new\",")
-					.append("\"Notes\":\"").append(stories.get(i).getNotes()).append("\",")
-					.append("\"HowToDemo\":\"").append(stories.get(i).getHowToDemo()).append("\",")
-					.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stories.get(i).getId()).append("\",")
-					.append("\"Release\":\"None\",")
+					.append("\"Notes\":\"").append(story.getNotes()).append("\",")
+					.append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
+					.append("\"Link\":\"\",")
+					.append("\"Release\":\"\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"BACKLOG\",")
 					.append("\"Attach\":false,")
@@ -266,7 +267,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo)
 				.append("\",")
 				.append("\"Link\":\"\",").append("\"Release\":\"\",")
-				.append("\"Sprint\":\"").append(SprintId).append("\",")
+				.append("\"Sprint\":").append(SprintId).append(",")
 				.append("\"FilterType\":\"DONE\",").append("\"Attach\":false,")
 				.append("\"AttachFileList\":[]").append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
@@ -340,5 +341,6 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append("\"Attach\":false,").append("\"AttachFileList\":[]")
 				.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
+		assertEquals(expectedResponseText.toString(), actualResponseText);
  	}
 }

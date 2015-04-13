@@ -33,7 +33,7 @@ public class ShowProductBacklogAction extends PermissionAction {
 		log.debug("Show Product Backlog in ShowProductBacklogAction.");
 		
 		// get session info
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get paramter info
 		String filterType = request.getParameter("FilterType");		// 取得過濾的條件

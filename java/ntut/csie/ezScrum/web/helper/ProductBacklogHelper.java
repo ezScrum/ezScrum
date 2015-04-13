@@ -41,10 +41,8 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getShowProductBacklogResponseText(String filterType) {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByFilterType(filterType);
-
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateStoriesToJson(stories));
-
 		return result;
 	}
 
