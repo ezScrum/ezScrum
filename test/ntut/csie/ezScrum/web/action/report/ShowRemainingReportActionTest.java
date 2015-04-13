@@ -19,18 +19,19 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.RemainingWorkReport;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowRemainingReportTest extends MockStrutsTestCase {
+public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Configuration mConfig;
 
-	public ShowRemainingReportTest(String testMethod) {
+	public ShowRemainingReportActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -49,7 +50,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 
@@ -161,15 +162,15 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintId); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintId)); // 取得第一筆 SprintPlan
 		addRequestParameter("type", "Task"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
@@ -193,7 +194,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(1, report.getAssignedQuantity());
 		assertEquals(1, report.getDoneQuantity());
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -215,9 +216,9 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintID = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintID);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
@@ -252,7 +253,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(1, report.getAssignedQuantity());
 		assertEquals(1, report.getDoneQuantity());
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -274,9 +275,9 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
@@ -301,7 +302,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(1, report.getAssignedQuantity());
 		assertEquals(1, report.getDoneQuantity());
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -323,9 +324,9 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
@@ -360,7 +361,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(1, report.getAssignedQuantity());
 		assertEquals(1, report.getDoneQuantity());
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -382,14 +383,14 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 1個story設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getNotes(), DONE_TIME);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getName(), ASTS.getStories().get(0).getNotes(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintId); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintId)); // 取得第一筆 SprintPlan
 		addRequestParameter("type", "Story"); // 沒有指定User ID資料
 
 		// ================ set session info ========================
@@ -412,7 +413,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(1, report.getAssignedQuantity());
 		assertEquals(1, report.getDoneQuantity());
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -433,9 +434,9 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
@@ -469,7 +470,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(2, report.getAssignedQuantity()); // task checkout or done 的數量
 		assertEquals(0, report.getDoneQuantity()); // story done 的數量
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
@@ -491,9 +492,9 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		ATTS.exe(); 	// 新增兩筆 Task 到各個 Stories 內
 		Thread.sleep(1000);
 
-		String sprintId = CS.getSprintsId().get(0);
+		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), sprintId);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 		Thread.sleep(1000);
@@ -528,7 +529,7 @@ public class ShowRemainingReportTest extends MockStrutsTestCase {
 		assertEquals(2, report.getAssignedQuantity()); // task checkout or done 的數量
 		assertEquals(0, report.getDoneQuantity());  // story done 的數量
 
-		assertEquals(CS.getSprintsId().get(0), request.getAttribute("iteration").toString());
+		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
 		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());

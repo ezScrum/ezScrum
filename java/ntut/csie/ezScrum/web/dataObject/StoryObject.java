@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
@@ -147,6 +149,44 @@ public class StoryObject implements IBaseObject {
 	
 	public int getStatus() {
 		return mStatus;
+	}
+	
+	public int getStatus(Date date) {
+		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
+		int status = STATUS_UNCHECK;
+		ArrayList<HistoryObject> histories = getHistories();
+		for (HistoryObject history : histories) {
+			long historyTime = history.getCreateTime();
+			int historyType = history.getHistoryType();
+			if (historyType == HistoryObject.TYPE_STATUS
+					&& historyTime <= lastSecondOfTheDate) {
+				String statusInHistory = history.getNewValue();
+				if (statusInHistory.equals(String.valueOf(STATUS_UNCHECK))) {
+					status = STATUS_UNCHECK;
+				} else if (history.getNewValue().equals(
+						String.valueOf(STATUS_DONE))) {
+					status = STATUS_DONE;
+				}
+			}
+		}
+		return status;
+	}
+	
+	private long getLastMillisecondOfDate(Date date) {
+		if (date == null) {
+			date = new Date();
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY,
+				calendar.getMaximum(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+		calendar.set(Calendar.MILLISECOND,
+				calendar.getMaximum(Calendar.MILLISECOND));
+		Date endOfDate = calendar.getTime();
+		long lastSecondOfDate = endOfDate.getTime();
+		return lastSecondOfDate;
 	}
 	
 	public String getStatusString() {

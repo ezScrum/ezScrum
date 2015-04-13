@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -18,6 +19,7 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
 import ntut.csie.ezScrum.restful.mobile.support.IScrumReport;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
@@ -73,7 +75,6 @@ public class RemainingWorkReport {
 	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid, Date setDate) {
 		mSprintId = sprintid;
 		mProject = project;
-		mUserSession = userSession;
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		mToday = setDate;
@@ -105,13 +106,13 @@ public class RemainingWorkReport {
 		nowExistReport();
 	}
 
-	private void init(int sprintid) {
+	private void init(int sprintId) {
 		mAssignedQuantity = 0;
 		mTotalQuantity = 0;
 		mDoneQuantity = 0;
 		mNonAssignQuantity = 0;
 		// 設計sprint NO.
-		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(sprintid))).getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, sprintId)).getSprintBacklogMapper();
 		// 設定起始時間
 		mChartStartDate = sprintBacklogMapper.getSprintStartDate();
 		// 設定結束時間
@@ -120,7 +121,7 @@ public class RemainingWorkReport {
 	}
 
 	private void createTaskDataBySprint() {
-		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId))).getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mSprintId)).getSprintBacklogMapper();
 		ArrayList<TaskObject> tasks = sprintBacklogMapper.getAllTasks();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
@@ -174,25 +175,23 @@ public class RemainingWorkReport {
 	}
 	
 	private void createStoryDataBySprint() {
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId));
-		SprintBacklogMapper sprintBacklog = sprintBacklogLogic.getSprintBacklogMapper();
-		List<IIssue> stories = sprintBacklogLogic.getStories();
-		Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklog.getTasksMap();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
+		List<StoryObject> stories = sprintBacklogLogic.getStories();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
 			if ((mToday.getDate() == timeStamp.getDate()) &&
 			        (Math.abs(mToday.getTime() - timeStamp.getTime()) <= mOneDay)) {
-				countStoryStatusChange(stories, taskMap, mToday);
+				countStoryStatusChange(stories, mToday);
 				break;
 			} else {
-				countStoryStatusChange(stories, taskMap, timeStamp);
+				countStoryStatusChange(stories, timeStamp);
 			}
 			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
 		}
 	}
 
-	private void countStoryStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
+	private void countStoryStatusChange(List<StoryObject> stories, Date date) {
 		int doneCount = 0, assignCount = 0, nonCount = 0;
 		if (date.getTime() != mToday.getTime()) {
 			// 當日期不為當天時，要做處理
@@ -206,15 +205,15 @@ public class RemainingWorkReport {
 			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
 		}
 		boolean flag = false;
-		for (IIssue story : stories) {
-			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
+		for (StoryObject story : stories) {
+			ArrayList<TaskObject> tasks = story.getTasks();
 			// skip the story that without any task
 			if (tasks == null) {
 				nonCount++; // story count +1
 				continue;
 			}
 			for (TaskObject task : tasks) {
-				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
+				if (story.getStatus(date) == StoryObject.STATUS_DONE) {
 					doneCount++;
 					flag = true;
 					break;
