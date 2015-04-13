@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
@@ -29,15 +30,15 @@ public class EditActualCostAction extends PermissionAction{
 		// TODO Auto-generated method stub
 		// get session info
 		
-		IProject project = (IProject) request.getSession().getAttribute("Project");
+		IProject project = SessionManager.getProject(request);
 			
 //		int sprintID = Integer.parseInt(request.getParameter("sprintID"));
 //		Double actualCost = Double.valueOf(request.getParameter("actualCost"));
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 		String actualCost = request.getParameter("actualCost");
 		
 		SprintPlanHelper sprintPlanHelper  = new SprintPlanHelper( project );
-		sprintPlanHelper.editSprintPlanForActualCost(sprintID, actualCost);
+		sprintPlanHelper.editSprintPlanForActualCost(sprintId, actualCost);
 		
 //		ISprintPlanDesc sprintPlan = sprintPlanHelper.loadPlan( sprintID );
 //		sprintPlan.setActualCost( String.valueOf( actualCost ) );

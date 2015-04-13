@@ -31,14 +31,14 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		IProject project = SessionManager.getProject(request);
 		// get parameter info
-		String sprintId = request.getParameter("sprintID");
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		String name = "ALL";
 		if (request.getParameter("UserID") != null) { 
 			name = request.getParameter("UserID");	// filter name
 		}
 
-		return new TaskBoardHelper(project, Long.parseLong(sprintId)).getTaskBoardStoryTaskListText(name);
+		return new TaskBoardHelper(project, sprintId).getTaskBoardStoryTaskListText(name);
 	}
 }

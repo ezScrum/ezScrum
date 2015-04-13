@@ -28,10 +28,10 @@ public class GetTasksByStoryIDAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		ProjectObject project = SessionManager.getProjectObject(request);
 
-		String storyId = request.getParameter("storyID");
-		String sprintId = request.getParameter("sprintID");
+		long storyId = Long.parseLong(request.getParameter("storyID"));
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(
-				project, Long.parseLong(sprintId))).getSprintBacklogMapper();
+				project, sprintId)).getSprintBacklogMapper();
 
 		// 封裝 Task 成 XML
 		StringBuilder stringBuilder = new StringBuilder();
@@ -39,8 +39,7 @@ public class GetTasksByStoryIDAction extends Action {
 		if (sprintBacklogMapper != null) {
 			stringBuilder.append("<Tasks>");
 			// 取出 指定 Story 底下的 Tasks
-			StoryObject story = sprintBacklogMapper.getStory(Long
-					.parseLong(storyId));
+			StoryObject story = sprintBacklogMapper.getStory(storyId);
 			ArrayList<TaskObject> tasks = story.getTasks();
 			if (tasks != null) {
 				for (TaskObject task : tasks) {

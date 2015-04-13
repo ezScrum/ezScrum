@@ -27,10 +27,10 @@ public class GetSprintBurndownChartDataAction extends Action {
 
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
-		String sprintId = request.getParameter("SprintID");
+		long sprintId = Long.parseLong(request.getParameter("SprintID"));
 		String type = request.getParameter("Type");
 		// 拿出SprintBurndownChart的資料
-		String responseText = new TaskBoardHelper(project, Long.parseLong(sprintId)).getSprintBurndownChartDataResponseText(type);
+		String responseText = new TaskBoardHelper(project, sprintId).getSprintBurndownChartDataResponseText(type);
 
 		try {
 			response.setContentType("text/html; charset=utf-8");

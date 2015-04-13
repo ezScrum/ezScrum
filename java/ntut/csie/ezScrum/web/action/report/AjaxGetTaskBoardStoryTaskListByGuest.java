@@ -5,28 +5,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import com.google.gson.Gson;
 
 public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 
-		IProject project = (IProject) request.getSession().getAttribute("Project");
-		String sprintId = request.getParameter("sprintID");
+		IProject project = SessionManager.getProject(request);
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		List<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
 
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();

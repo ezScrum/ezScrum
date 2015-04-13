@@ -45,18 +45,19 @@ public class GetIssueStatusByIssueIDAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		String sprintId = request.getParameter("sprintID");// sprintID
-		int sprintIDInt = Integer.parseInt(sprintId);
+		long sprintIdLong = Long.parseLong(sprintId);
+		int sprintIdInt = Integer.parseInt(sprintId);
 
 		long issueID = Long.parseLong(request.getParameter("issueID"));// issueID
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintIdLong);
 		try {
 			// retrieve stories
 			List<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
 
 			SprintPlanHelper sph = new SprintPlanHelper(project);
 			// get taskBoardStageMap to query status name
-			Map<Integer, String> taskBoardStageMap = sph.loadPlan(sprintIDInt)
+			Map<Integer, String> taskBoardStageMap = sph.loadPlan(sprintIdInt)
 					.getTaskBoardStageMap();
 
 			// traverse every task in every story to find issueID, not efficient

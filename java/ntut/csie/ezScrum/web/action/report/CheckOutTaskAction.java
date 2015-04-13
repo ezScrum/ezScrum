@@ -44,13 +44,13 @@ public class CheckOutTaskAction extends PermissionAction {
 		String partners = request.getParameter("Partners");
 		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
-		DateFormat df = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME); // 設定changeDate正確的時間格式
+		DateFormat dateFormat = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME); // 設定changeDate正確的時間格式
 		StringBuilder result = new StringBuilder("");
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
-				df.parse(changeDate);
+				dateFormat.parse(changeDate);
 			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
 			result.append(Translation.translateTaskboardTaskToJson(task));
