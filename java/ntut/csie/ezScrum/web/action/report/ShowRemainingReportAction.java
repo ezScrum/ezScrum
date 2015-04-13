@@ -33,10 +33,10 @@ public class ShowRemainingReportAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		IProject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 		String category = request.getParameter("type");
 		String date = request.getParameter("Date");
 
@@ -100,10 +100,10 @@ public class ShowRemainingReportAction extends Action {
 				request.setAttribute("setDate", format.format(currentDate));
 			} else {
 				// generate by sprint
-				if (sprintID == null) {
+				if (sprintId == null) {
 					currentID = Integer.parseInt(spHelper.loadCurrentPlan().getID());
 				} else {
-					currentID = Integer.parseInt(sprintID);
+					currentID = Integer.parseInt(sprintId);
 				}
 
 				report = new RemainingWorkReport(project, session, category, currentID);
