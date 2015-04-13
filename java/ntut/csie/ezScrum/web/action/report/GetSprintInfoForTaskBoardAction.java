@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.action.report;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -32,10 +31,9 @@ public class GetSprintInfoForTaskBoardAction extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
 		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		String sprintID = request.getParameter("SprintID");
-		return new TaskBoardHelper(project, userSession, sprintID).getSprintInfoForTaskBoardText();
+		String sprintId = request.getParameter("SprintID");
+		return new TaskBoardHelper(project, Long.parseLong(sprintId)).getSprintInfoForTaskBoardText();
 	}
 }
