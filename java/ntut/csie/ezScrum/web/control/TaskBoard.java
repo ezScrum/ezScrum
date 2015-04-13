@@ -252,6 +252,10 @@ public class TaskBoard {
 		return mStories;
 	}
 
+	public void setStories(List<StoryObject> stories) {
+		mStories = stories;
+	}
+
 	public String getStoryChartLink() {
 		IProject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
@@ -334,13 +338,5 @@ public class TaskBoard {
 
 	public String getGeneratedTime() {
 		return DateUtil.format(mGeneratedTime, DateUtil._16DIGIT_DATE_TIME);
-	}
-
-	public List<StoryObject> getM_stories() {
-		return mStories;
-	}
-
-	public void setM_stories(List<StoryObject> stories) {
-		mStories = stories;
 	}
 }

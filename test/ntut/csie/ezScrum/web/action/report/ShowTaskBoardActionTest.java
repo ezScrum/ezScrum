@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -23,6 +22,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -130,22 +130,22 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story/Task Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), mCS.getSprintsId().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintsId().get(0));
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
-		assertEquals(exceptedTaskBoard.getM_stories().size(),actualTaskBoard.getM_stories().size());
-		for( IIssue issue:exceptedTaskBoard.getM_stories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
+		for(StoryObject story : exceptedTaskBoard.getStories()) {
+			assertEquals(story.getId(), story.getId());
 		}
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
 		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
 		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
-		for(IIssue issue: exceptedTaskBoard.getStories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		for(StoryObject story : exceptedTaskBoard.getStories() ) {
+			assertEquals(story.getId(), story.getId());
 		}
 		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
@@ -260,7 +260,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(UserID), String.valueOf(mCS.getSprintCount() - 1));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintCount() - 1);
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		// 因為沒有此使用者，所以回傳跟此使用者有關的Story Point為0
@@ -269,7 +269,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals("0.0 / -", actualTaskBoard.getInitialTaskPoint());
 		
 		// 因為沒有此使用者，所以沒有跟此使用者有關的Story
-		assertEquals(0,actualTaskBoard.getM_stories().size());
+		assertEquals(0,actualTaskBoard.getStories().size());
 		
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
@@ -401,14 +401,14 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 測試 Story/Task Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(mCS.getSprintCount() - 1));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintCount() - 1);
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
-		assertEquals(exceptedTaskBoard.getM_stories().size(), actualTaskBoard.getM_stories().size());
-		for (IIssue issue:exceptedTaskBoard.getM_stories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
+		for (StoryObject story : exceptedTaskBoard.getStories()) {
+			assertEquals(story.getId(), story.getId());
 		}
 		
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
@@ -417,8 +417,8 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
 		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(),actualTaskBoard.getStories().size());
-		for (IIssue issue:exceptedTaskBoard.getStories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		for (StoryObject story : exceptedTaskBoard.getStories()) {
+			assertEquals(story.getId(), story.getId());
 		}
 		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard.getStoryChartLink());
 		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
@@ -467,22 +467,22 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 測試 Story/Task Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, CreateUserSession(), String.valueOf(mCS.getSprintCount() - 1));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintCount() - 1);
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
 		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("8.0 / -", actualTaskBoard.getInitialTaskPoint());
-		assertEquals(exceptedTaskBoard.getM_stories().size(), actualTaskBoard.getM_stories().size());
-		for (IIssue issue:exceptedTaskBoard.getM_stories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
+		for (StoryObject story : exceptedTaskBoard.getStories()) {
+			assertEquals(story.getId(), story.getId());
 		}
 		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
 		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
 		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
 		assertEquals(1, actualTaskBoard.getSprintId());
 		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
-		for (IIssue issue:exceptedTaskBoard.getStories() ) {
-			assertEquals(issue.getIssueID(), issue.getIssueID());
+		for (StoryObject story : exceptedTaskBoard.getStories()) {
+			assertEquals(story.getId(), story.getId());
 		}
 		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard
 				.getStoryChartLink());
@@ -495,7 +495,6 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		tasks = null;
 		CIS = null;
 		exceptedTaskBoard = null;
-
 	}
 
 	// 不同天數的移動 Task ，測試輸出點數是否正確
