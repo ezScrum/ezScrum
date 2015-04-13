@@ -2,6 +2,10 @@ package ntut.csie.ezScrum.web.action.project;
 
 import java.io.File;
 import java.util.List;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -277,26 +281,21 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		List<String> sprintDateList = tool.getSprintDate(project, getUserSession(account));
 		//	減一代表Sprint開始的第一天是SprintPlanning所以第一天不工作，因此總工作天必須減一。
 		int workDateCount = sprintDateList.size() - 1;
-		List<String> storyIdealLinePoints = tool.getStoryIdealLinePoint( workDateCount, 16.0 );
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("{\"success\":true,")
-							.append("\"Points\":[");
+		List<String> storyIdealLinePoints = tool.getStoryIdealLinePoint(workDateCount, 16.0);
+		String actualResponseText = response.getWriterBuffer().toString();
+		JSONObject actualResponseJson = new JSONObject(actualResponseText);
+		JSONArray points = actualResponseJson.getJSONArray("Points");
+		assertEquals(true, actualResponseJson.getBoolean("success"));
+		assertEquals(10, points.length());
 		for(int i = 0; i <= workDateCount; i++) {
-			expectedResponseText.append("{")
-								.append("\"Date\":\"").append(sprintDateList.get(i)).append("\",")
-								.append("\"IdealPoint\":").append(storyIdealLinePoints.get(i)).append(",")
-								.append("\"RealPoint\":");
+			assertEquals(sprintDateList.get(i), points.getJSONObject(i).getString("Date"));
+			assertEquals(storyIdealLinePoints.get(i), String.valueOf(points.getJSONObject(i).getDouble("IdealPoint")));
 			if(i == 0) {
-				expectedResponseText.append("16.0},");
+				assertEquals(16.0d, points.getJSONObject(i).getDouble("RealPoint"));
 			} else {
-				expectedResponseText.append("\"null\"},");
+				assertEquals("null", points.getJSONObject(i).getString("RealPoint"));
 			}
 		}
-		expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
-		expectedResponseText.append("]}");
-		
-		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 	
 	/**
@@ -347,25 +346,20 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		List<String> sprintDateList = tool.getSprintDate(project, getUserSession(account));
 		//	減一代表Sprint開始的第一天是SprintPlanning所以第一天不工作，因此總工作天必須減一。
 		int workDateCount = sprintDateList.size() - 1;
-		List<String> taskIdealLinePoints = tool.getTaskIdealLinePoint( workDateCount, 12.0 );
-		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("{\"success\":true,")
-							.append("\"Points\":[");
+		List<String> taskIdealLinePoints = tool.getTaskIdealLinePoint(workDateCount, 12.0);
+		String actualResponseText = response.getWriterBuffer().toString();
+		JSONObject actualResponseJson = new JSONObject(actualResponseText);
+		JSONArray points = actualResponseJson.getJSONArray("Points");
+		assertEquals(true, actualResponseJson.getBoolean("success"));
+		assertEquals(10, points.length());
 		for(int i = 0; i <= workDateCount; i++) {
-			expectedResponseText.append("{")
-								.append("\"Date\":\"").append(sprintDateList.get(i)).append("\",")
-								.append("\"IdealPoint\":").append(taskIdealLinePoints.get(i)).append(",")
-								.append("\"RealPoint\":");
+			assertEquals(sprintDateList.get(i), points.getJSONObject(i).getString("Date"));
+			assertEquals(taskIdealLinePoints.get(i), String.valueOf(points.getJSONObject(i).getDouble("IdealPoint")));
 			if(i == 0) {
-				expectedResponseText.append("12.0},");
+				assertEquals(12.0d, points.getJSONObject(i).getDouble("RealPoint"));
 			} else {
-				expectedResponseText.append("\"null\"},");
+				assertEquals("null", points.getJSONObject(i).getString("RealPoint"));
 			}
 		}
-		expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
-		expectedResponseText.append("]}");
-		
-		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }

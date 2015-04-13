@@ -452,7 +452,6 @@
     	<action path="/reopenIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ReopenIssueAction" />
     	<action path="/resetTask"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ResetTaskAction" />
     	<action path="/showCheckOutIssue" 				type="ntut.csie.ezScrum.web.action.report.ShowCheckOutIssueAction" />
-    	<action path="/editActualCost"					type="ntut.csie.ezScrum.web.action.report.EditActualCostAction" />
     	<action path="/GetIssueStatusByIssueIDAction"	type="ntut.csie.ezScrum.web.action.report.GetIssueStatusByIssueIDAction" />
     	
     	<action path="/showRemainingReport"				type="ntut.csie.ezScrum.web.action.report.ShowRemainingReportAction">

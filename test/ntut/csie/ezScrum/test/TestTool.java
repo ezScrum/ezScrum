@@ -91,7 +91,7 @@ public class TestTool {
 		//		Date iter_End_Work_Date = m_backlog.getSprintEndWorkDate();
 		// Sprint的起始與結束日期資訊
 		//		SprintBacklogMapper m_backlog = new SprintBacklogMapper(project, userSession);
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		Date iter_Start_Work_Date = sprintBacklogLogic.getSprintStartWorkDate();
 		Date iter_End_Work_Date = sprintBacklogLogic.getSprintEndWorkDate();
 
