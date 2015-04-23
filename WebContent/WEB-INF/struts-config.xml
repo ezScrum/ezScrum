@@ -326,7 +326,6 @@
     		<!-- release plan -->
     		<action path="/AjaxGetRPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetReleasePlanPermissionAction" />
     		<action path="/moveStorySprint"			type="ntut.csie.ezScrum.web.action.plan.AjaxMoveStorySprint" />
-    		<action path="/ajaxRemoveReleaseBacklog"		type="ntut.csie.ezScrum.web.action.plan.AjaxRemoveReleaseBacklogAction" />
     		<action path="/AjaxShowSprintfromRelease"		type="ntut.csie.ezScrum.web.action.plan.AjaxShowSprintFromReleaseAction" />
     		<action path="/notYetEndSprintForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndSprintForMoveStory" />
     		<action path="/notYetEndReleaseForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndReleaseForMoveStory" />
@@ -340,11 +339,6 @@
 				<forward name="success" path="releaseBacklog.show"/>
 				<forward name="error" path="/Error.jsp" />
 	        </action>
-	            		
-			<action path="/removeReleaseBacklog"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleaseBacklogAction">
-            	<forward name="success" path="/showReleaseBacklog.do"/> 
-				<forward name="error" path="error.show" />
-			</action>
 			
 			<action path="/showReleasePlan"					type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlanAction">
 	            <forward name="success" path="releasePlan.show"/>

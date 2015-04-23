@@ -7,11 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;

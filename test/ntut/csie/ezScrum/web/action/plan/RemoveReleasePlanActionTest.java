@@ -122,7 +122,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
     	
-    	actionPerform();		// 執行 action
+		actionPerform();		// 執行 action
     	
     	// 驗證回傳 path
     	verifyForwardPath(null);

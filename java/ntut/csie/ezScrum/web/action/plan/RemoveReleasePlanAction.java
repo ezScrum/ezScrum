@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -42,7 +41,7 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		log.info(" Remove Release Plan. ");
 		
 		// get session info
-		IProject iProject = (IProject) SessionManager.getProject(request);
+		IProject iProject = SessionManager.getProject(request);
 		ProjectObject project = new ProjectObject(iProject.getName());
 		
 		// get parameter info
@@ -53,22 +52,26 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		
-		ArrayList<StoryObject> stories = PBHelper.getStoriesByRelease(desc);
-		List<ISprintPlanDesc> sprintPlanDescs = desc.getSprintDescList();
-		
-		for(ISprintPlanDesc sprintPlanDesc : sprintPlanDescs){
-			sprintPlanHelper.deleteSprint(sprintPlanDesc.getID());
-		}
+		if (desc == null) {
+			return new StringBuilder("false");
+		} else {
+			ArrayList<StoryObject> stories = PBHelper.getStoriesByRelease(desc);
+			List<ISprintPlanDesc> sprintPlanDescs = desc.getSprintDescList();
 
-		// 移除 sprint 與底下 Story 的關係
-		for (int index = 0; index < stories.size(); index++) {
-			if (stories.get(index).getSprintId() > 0) {
-				PBHelper.dropStoryFromSprint(stories.get(index).getId());
+			for (ISprintPlanDesc sprintPlanDesc : sprintPlanDescs) {
+				sprintPlanHelper.deleteSprint(sprintPlanDesc.getID());
 			}
-		}
-		// 刪除Release
-		helper.deleteReleasePlan(ReleaseId);
 
-		return new StringBuilder("true");
+			// 移除 sprint 與底下 Story 的關係
+			for (int index = 0; index < stories.size(); index++) {
+				if (stories.get(index).getSprintId() > 0) {
+					PBHelper.dropStoryFromSprint(stories.get(index).getId());
+				}
+			}
+			// 刪除Release
+			helper.deleteReleasePlan(ReleaseId);
+
+			return new StringBuilder("true");
+		}
 	}
 }
