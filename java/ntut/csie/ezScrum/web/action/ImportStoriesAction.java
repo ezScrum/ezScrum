@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.action;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import ntut.csie.ezScrum.iteration.support.ExcelHandler;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -81,33 +83,32 @@ public class ImportStoriesAction extends PermissionAction {
 				ExcelHandler handler = new ExcelHandler(sheet);
 				handler.load();
 				//如果取得的stories為null，代表可能發生了error的情況
-				List<IIssue> stories = handler.getStories();
+				ArrayList<StoryObject> stories = handler.getStories();
 				ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(projectObject);
 				if(stories!=null) {
-					for(int i=0;i<stories.size();i++){
-						String summary = stories.get(i).getSummary();
-						String des ="";
-						String imp = stories.get(i).getImportance();
-						String estimate = stories.get(i).getEstimated();
+					for (int i = 0; i < stories.size(); i++) {
+						String name = stories.get(i).getName();
+						String des = "";
+						int importance = stories.get(i).getImportance();
+						int estimate = stories.get(i).getEstimate();
 						String howToDemo = stories.get(i).getHowToDemo();
 						String notes = stories.get(i).getNotes();
-						String value = stories.get(i).getTagValue(ScrumEnum.VALUE);
-						String sprintID = stories.get(i).getSprintID();
+						int value = stories.get(i).getValue(); //.getTagValue(ScrumEnum.VALUE);
+						long sprintID = stories.get(i).getSprintId();
 						String tagIDs = "";
 						String releaseID = "";
-						
+
 						StoryInfo storyInfo = new StoryInfo();
 						storyInfo.name = name;
-						storyInfo.importance = Integer.parseInt(importance);
-						storyInfo.estimate = Integer.parseInt(estimate);
-						storyInfo.value = Integer.parseInt(value);
+						storyInfo.importance = importance;
+						storyInfo.estimate = estimate;
+						storyInfo.value = value;
 						storyInfo.howToDemo = howToDemo;
 						storyInfo.notes = notes;
-						storyInfo.sprintId = Long.parseLong(sprintId);
-						storyInfo.tags = tags;
-						productBacklogHelper.addNewStory(storyInformation);
+						storyInfo.sprintId = sprintID;
+						storyInfo.tags = tagIDs;
+						productBacklogHelper.addStory(projectObject.getId(), storyInfo);
 					}
-					
 					result = "{\"success\":true}";
 				} else {
 					result = "{\"success\":false, \"msg\":\"檔案格式出錯\"}";
