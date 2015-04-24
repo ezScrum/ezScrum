@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Locale;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 // import ntut.csie.ezScrum.web.dataObject.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class TestTool {
 
@@ -84,7 +84,7 @@ public class TestTool {
 	 * @param userSession
 	 * @return
 	 */
-	public List<String> getSprintDate(IProject project, IUserSession userSession) {
+	public List<String> getSprintDate(ProjectObject project, IUserSession userSession) {
 		//		SprintBacklogMapper m_backlog = new SprintBacklogMapper(project, userSession);
 		// Sprint的起始與結束日期資訊
 		//		Date iter_Start_Work_Date = m_backlog.getSprintStartWorkDate();

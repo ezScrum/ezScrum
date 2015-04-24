@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -89,7 +90,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testexecute() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "";
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
@@ -149,7 +150,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testWrongParameter1() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "";
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();

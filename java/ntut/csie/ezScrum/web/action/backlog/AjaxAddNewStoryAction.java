@@ -37,21 +37,21 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		
 		String name = request.getParameter("Name");
 		String importance = request.getParameter("Importance");
-		String estimate = request.getParameter("Estimation");
+		String estimate = request.getParameter("Estimate");
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
-		String sprintId = request.getParameter("sprintId");
-		String tags = request.getParameter("TagIDs");
+		String sprintId = request.getParameter("SprintId");
+		String tags = request.getParameter("Tags");
 		
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.name = name;
-		storyInfo.importance = Integer.parseInt(importance);
-		storyInfo.estimate = Integer.parseInt(estimate);
-		storyInfo.value = Integer.parseInt(value);
+		storyInfo.importance = (importance == null || importance.isEmpty() ? 0 : Integer.parseInt(importance));
+		storyInfo.estimate = (estimate == null || estimate.isEmpty() ? 0 : Integer.parseInt(estimate));
+		storyInfo.value = (value == null || value.isEmpty() ? 0 : Integer.parseInt(value));
 		storyInfo.howToDemo = howToDemo;
 		storyInfo.notes = notes;
-		storyInfo.sprintId = Long.parseLong(sprintId);
+		storyInfo.sprintId = (sprintId == null || sprintId.isEmpty()) ? -1 : Long.parseLong(sprintId);
 		storyInfo.tags = tags;
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);

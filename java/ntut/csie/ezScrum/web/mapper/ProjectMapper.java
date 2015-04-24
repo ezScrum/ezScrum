@@ -278,8 +278,9 @@ public class ProjectMapper {
 	 * @return
 	 */
 	@Deprecated
-	public ProjectInfoForm getProjectInfoForm(IProject project) {
-		IProjectDescription desc = project.getProjectDesc();
+	public ProjectInfoForm getProjectInfoForm(ProjectObject project) {
+		IProject iProject = getProjectByID(project.getName());
+		IProjectDescription desc = iProject.getProjectDesc();
 
 		ProjectInfoForm form = new ProjectInfoForm();
 		String fileSize = desc.getAttachFileSize();
@@ -299,7 +300,6 @@ public class ProjectMapper {
 		form.setServerType(cvs.getServerType());
 		form.setCvsConnectionType(cvs.getConnectionType());
 		form.setCvsHost(cvs.getHost());
-		// form.setCvsModuleName(cvs.getModuleName());
 		form.setCvsUserID(cvs.getUserID());
 		form.setCvsRepositoryPath(cvs.getRepositoryPath() + "/" + cvs.getModuleName());
 		form.setCvsPassword(cvs.getPassword());

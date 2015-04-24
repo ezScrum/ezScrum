@@ -5,19 +5,16 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowExistedStoryAction extends PermissionAction {
-//	private static Log log = LogFactory.getLog(ShowExistedStoryAction.class);
 	
 	@Override
 	public boolean isValidAction() {
@@ -36,14 +33,19 @@ public class ShowExistedStoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
+		String sprintIdString = request.getParameter("sprintID");
+		long sprintId;
 		
-		String releaseID = request.getParameter("releaseID");
+		try{
+			sprintId = Long.parseLong(sprintIdString);
+		} catch(NumberFormatException e){
+			sprintId = -1;
+		}
 		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(new ProjectObject(project.getName()), Long.parseLong(sprintID));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
 		// ProductBacklog Helper
     	ArrayList<StoryObject> stories = null;

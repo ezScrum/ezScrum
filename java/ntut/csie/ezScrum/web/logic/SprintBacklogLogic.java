@@ -45,7 +45,6 @@ public class SprintBacklogLogic {
 	
 	public SprintBacklogLogic(ProjectObject project, long sprintId) {
 		mProject = project;
-		mIProject = (new ProjectMapper()).getProjectByID(mProject.getName());
 		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
 	}
 
@@ -64,10 +63,9 @@ public class SprintBacklogLogic {
 
 		try {
 			if (sprintId == -1 || sprintId == 0) {
-				sprintBacklogMapper = new SprintBacklogMapper(mIProject);
+				sprintBacklogMapper = new SprintBacklogMapper(mProject);
 			} else {
-				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-						sprintId);
+				sprintBacklogMapper = new SprintBacklogMapper(mProject, sprintId);
 			}
 		} catch (Exception e) {
 			sprintBacklogMapper = null;
@@ -139,7 +137,7 @@ public class SprintBacklogLogic {
 		SprintBacklogMapper backlog = createSprintBacklogMapper(sprintId);
 		int availableDays = 0;
 		if (backlog.getSprintId() > 0) {
-			ISprintPlanDesc sprint = (new SprintPlanMapper(mIProject))
+			ISprintPlanDesc sprint = (new SprintPlanMapper(mProject))
 					.getSprintPlan(Long.toString(backlog.getSprintId()));
 			availableDays = Integer.parseInt(sprint.getInterval()) * 5; // 一個禮拜五天
 		}
@@ -280,9 +278,9 @@ public class SprintBacklogLogic {
 	 * 
 	 * @return total story point
 	 */
-	public int getTotalStoryPoints() {
+	public double getTotalStoryPoints() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
-		int point = 0;
+		double point = 0;
 		for (StoryObject story : stories) {
 			point += story.getEstimate();
 		}

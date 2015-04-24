@@ -12,8 +12,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class ReleasePlanDescLoaderTest {
 	
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
-	private IProject mProject = null;
+	private ProjectObject mProject = null;
 	private ReleasePlanMapper mReleasePlanMapper = null;
 	
 	@Before
@@ -38,9 +38,9 @@ public class ReleasePlanDescLoaderTest {
 		init.exe();
 		
 		// create project
-		this.mCP = new CreateProject(1);
-		this.mCP.exeCreate();
-		this.mProject = this.mCP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getAllProjects().get(0);
 		
 		// initial loader
 		this.mReleasePlanMapper = new ReleasePlanMapper(mProject);

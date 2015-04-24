@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,7 +64,7 @@ public class SprintBacklogLogicTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		long sprintId = mCS.getSprintsId().get(0);
 		mSprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 	}

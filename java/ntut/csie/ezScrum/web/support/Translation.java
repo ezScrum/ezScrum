@@ -81,24 +81,20 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
-				jsonStory.put("Name", translateChar.TranslateJSONChar((stories
-						.get(i).getName())));
+				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
 				jsonStory.put("Importance", stories.get(i).getImportance());
-				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(
-						stories.get(i).getTags(), ",")));
+				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
 				jsonStory.put("Status", stories.get(i).getStatusString());
-				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories
-						.get(i).getNotes()));
-				jsonStory.put("HowToDemo", translateChar
-						.TranslateJSONChar(stories.get(i).getHowToDemo()));
+				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories.get(i).getNotes()));
+				jsonStory.put("HowToDemo", translateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
 				jsonStory.put("Link", "");
 				jsonStory.put("Release", "");
 				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
 					jsonStory.put("Sprint", "None");
 				} else {
-					jsonStory.put("Sprint", stories.get(i).getSprintId());					
+					jsonStory.put("Sprint", stories.get(i).getSprintId());				
 				}
 				jsonStory.put("FilterType", getFilterType(stories.get(i)));
 
@@ -107,15 +103,13 @@ public class Translation {
 				else
 					jsonStory.put("Attach", true);
 
-				ArrayList<AttachFileObject> attachFiles = stories.get(i)
-						.getAttachFiles();
+				ArrayList<AttachFileObject> attachFiles = stories.get(i).getAttachFiles();
 				JSONArray jsonAttachFiles = new JSONArray();
 				for (AttachFileObject attachFile : attachFiles) {
 					JSONObject jsonAttachFile = new JSONObject();
 					jsonAttachFile.put("IssueId", attachFile.getIssueId());
 					jsonAttachFile.put("FileId", attachFile.getId());
-					jsonAttachFile.put("FileName", translateChar
-							.TranslateJSONChar(attachFile.getName()));
+					jsonAttachFile.put("FileName", translateChar.TranslateJSONChar(attachFile.getName()));
 
 					// parse Dateformat as Gson Default DateFormat (TaskBoard
 					// page)

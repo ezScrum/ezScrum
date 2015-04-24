@@ -17,7 +17,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ReopenIssueActionTest extends MockStrutsTestCase {
@@ -157,11 +156,10 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 	// 測試Story ReOpen時的狀況
 	public void testReopenIssue_Story() {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		StoryObject story = mASTS.getStories().get(0);
 		Long storyId = story.getId();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
-				-1);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic
 				.getSprintBacklogMapper();
 
@@ -181,8 +179,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 																	// ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
-		sprintBacklogMapper.closeStory(story.getId(), "", story.getNotes(),
-				Calendar.getInstance().getTime()); // 先設定Story為closed的狀態 在測試
+		sprintBacklogMapper.closeStory(story.getId(), "", story.getNotes(), Calendar.getInstance().getTime()); // 先設定Story為closed的狀態 在測試
 		actionPerform();
 		// 驗證回傳 path
 		verifyNoActionErrors();

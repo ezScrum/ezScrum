@@ -80,9 +80,9 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	 */
 	public void testShowAddExistTask_1() throws Exception {
 		// 加入1個Sprint
-		int sprintID = Integer.valueOf(mCS.getSprintsId().get(0));
+		long sprintID = mCS.getSprintsId().get(0);
 		// Sprint加入1個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		// Story加入1個Task
 		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
@@ -119,9 +119,9 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	 */
 	public void testShowAddExistTask_2() throws Exception {
 		// 加入1個Sprint
-		int sprintID = Integer.valueOf(mCS.getSprintsId().get(0));
+		long sprintID = mCS.getSprintsId().get(0);
 		// Sprint加入1個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		// Story加入1個Task
 		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);

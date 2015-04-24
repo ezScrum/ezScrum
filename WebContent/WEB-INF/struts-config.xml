@@ -252,7 +252,6 @@
         </action>
         
         <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
-        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">
 			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />

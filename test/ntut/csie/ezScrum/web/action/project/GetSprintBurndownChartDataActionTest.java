@@ -3,9 +3,6 @@ package ntut.csie.ezScrum.web.action.project;
 import java.io.File;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -20,7 +17,12 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
@@ -240,7 +242,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * @throws Exception
 	 */
 	public void testUserGetSprintBurndownChartDataAction_StoryAndInformation() throws Exception{
-		IProject project = mCP.getProjectList().get(0); 
+		ProjectObject project = mCP.getAllProjects().get(0); 
 		String projectID = project.getName();
 		AccountObject account = mCA.getAccountList().get(0);
 		
@@ -305,7 +307,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * @throws Exception
 	 */
 	public void testUserGetSprintBurndownChartDataAction_TaskAndInformation() throws Exception{
-		IProject project = mCP.getProjectList().get(0); 
+		ProjectObject project = mCP.getAllProjects().get(0); 
 		String projectID = project.getName();
 		AccountObject account = mCA.getAccountList().get(0);
 		

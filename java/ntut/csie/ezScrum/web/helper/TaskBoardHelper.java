@@ -15,13 +15,12 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class TaskBoardHelper {
-	private IProject mProject;
+	private ProjectObject mProject;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private long mSprintId;
@@ -32,13 +31,12 @@ public class TaskBoardHelper {
 	 * @param project
 	 * @param userSession
 	 */
-	public TaskBoardHelper(IProject project) {
+	public TaskBoardHelper(ProjectObject project) {
 		mProject = project;
-		mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	public TaskBoardHelper(IProject project, long sprintId) {
+	public TaskBoardHelper(ProjectObject project, long sprintId) {
 		mProject = project;
 		mSprintId = sprintId;
 		mSprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);

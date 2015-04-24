@@ -19,6 +19,7 @@ import ntut.csie.ezScrum.test.CreateData.EditUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -302,6 +303,54 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		assertData(expectedHistoryType, expectedDescription,
 				historyObj.getJSONArray("IssueHistories"));
 	}
+	
+	/**
+	 * change story status
+	 */
+	public void testShowStoryHistoryTest4() throws Exception {
+		// 加入1個 Sprint
+		long sprintId = Long.valueOf(mCS.getSprintsId().get(0));
+		// Sprint 加入1個 Story
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		addStoryToSprint.exe();
+		// projectName
+		String projectName = mProject.getName();
+
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, sprintId);
+		// story Not Check Out -> Done
+		StoryObject story = addStoryToSprint.getStories().get(0);
+		sprintBacklogHelper.closeStory(story.getId(), story.getName(), story.getNotes(), "");
+
+		// ================ set request info ========================
+		// 設定 Session 資訊
+		request.setHeader("Referer", "?PID=" + projectName);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
+
+		// 先 assert story 的 history
+		addRequestParameter("sprintID", String.valueOf(sprintId));
+		addRequestParameter("issueID", String.valueOf(story.getId()));
+		addRequestParameter("issueType", String.valueOf("Story"));
+
+		// 執行 action
+		actionPerform();
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+
+		// get assert data
+		String actualResponseText = response.getWriterBuffer().toString();
+		JSONObject storyHistory = new JSONObject(actualResponseText);
+		
+		// assert
+		assertEquals(1, storyHistory.getLong("Id"));
+		assertEquals(story.getName(), storyHistory.getString("Name"));
+		assertEquals("Story", storyHistory.getString("IssueType"));
+		
+		JSONArray histories = storyHistory.getJSONArray("IssueHistories");
+		assertEquals("Not Check Out => Done", histories.getJSONObject(2).getString("Description"));
+		assertEquals("Status", histories.getJSONObject(2).getString("HistoryType"));
+	}
+
 
 	/**
 	 * test add 1 task
@@ -379,8 +428,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		taskInfo.notes = "煩死啦";
 
 		// edit task info
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(mCP
-				.getProjectList().get(0));
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(mCP.getAllProjects().get(0));
 		sprintBacklogMapper.updateTask(taskInfo.taskId, taskInfo);
 
 		// ================ set request info ========================
@@ -415,7 +463,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * change task ststus
+	 * change task status
 	 */
 	public void testShowTaskHistoryTest3() throws Exception {
 		// 加入1個 Sprint
@@ -552,7 +600,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		assertData(expectedHistoryType, expectedDescription,
 				historyObj.getJSONArray("IssueHistories"));
 	}
-
+	
 	/**
 	 * UnplanedItem History 的測試 1 unplanedItem without editing
 	 */

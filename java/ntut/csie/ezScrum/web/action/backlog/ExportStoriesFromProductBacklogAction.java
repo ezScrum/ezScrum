@@ -24,24 +24,23 @@ import org.apache.struts.actions.DownloadAction;
 
 public class ExportStoriesFromProductBacklogAction extends DownloadAction {
 	protected StreamInfo getStreamInfo(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ProjectObject mProject = SessionManager.getProjectObject(request);
+		IUserSession mUserSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// get all stories
-		ArrayList<StoryObject> stories = new ProductBacklogLogic(project).getStories();
+		ArrayList<StoryObject> mStories = new ProductBacklogLogic(mProject).getStories();
 
 		// set the path of the temp file
-		File temp = File.createTempFile("ezScrumExcel",
-				Long.toString(System.nanoTime()));
-		String path = temp.getAbsolutePath();
+		File mTempFile = File.createTempFile("ezScrumExcel", Long.toString(System.nanoTime()));
+		String mPath = mTempFile.getAbsolutePath();
 
 		try {
-			WritableWorkbook workbook = Workbook.createWorkbook(new File(path));
+			// 建立 Excel
+			WritableWorkbook workbook = Workbook.createWorkbook(new File(mPath));
 			WritableSheet sheet = workbook.createSheet("BACKLOG", 0);
 			// delicate to excel handler
-			ExcelHandler handler = new ExcelHandler(sheet);
-			handler.save(stories);
+			ExcelHandler handler = new ExcelHandler(mProject.getId(), sheet);
+			handler.save(mStories);
 
 			// 寫入excel
 			workbook.write();
@@ -50,14 +49,12 @@ public class ExportStoriesFromProductBacklogAction extends DownloadAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		response.setHeader("Content-disposition",
-				"inline; filename=" + project.getName() + "_ProductBacklog.xls");
+		response.setHeader("Content-disposition", "inline; filename=" + mProject.getName() + "_ProductBacklog.xls");
 
 		String contentType = "application/vnd.ms-excel";
-		File file = new File(path);
+		File file = new File(mPath);
 
-		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project,
-				session.getAccount());
+		ScrumRole sr = new ScrumRoleLogic().getScrumRole(mProject, mUserSession.getAccount());
 		if (sr.getAccessProductBacklog()) {
 			return new FileStreamInfo(contentType, file);
 		} else {

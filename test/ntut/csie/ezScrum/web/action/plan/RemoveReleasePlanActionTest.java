@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
@@ -70,7 +70,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     // 正常執行
     public void testExecute() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	// ================ set initial data =======================
     	
     	
@@ -92,10 +92,10 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyForward(null);
     	verifyNoActionErrors();
     	
-    	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
-    	IReleasePlanDesc relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
-    	assertNull(relasePlan);
+		// 驗證 ReleasePlan 資料
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
+		IReleasePlanDesc relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+		assertNull(relasePlan);
     	
     	
     	// ============= release ==============
@@ -107,7 +107,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     // 代入錯誤的 ReleaseID 參數
     public void testExecuteWrongParameter() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	// ================ set initial data =======================
     	
     	
@@ -130,7 +130,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
     	
     	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	IReleasePlanDesc relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
     	assertNotNull(relasePlan);		// 沒有刪除掉第一筆 Release Plan
     	

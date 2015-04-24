@@ -93,11 +93,16 @@ public class ProductBacklogHelper {
 	 * @return StringBuilder
 	 */
 	public StringBuilder deleteStory(long storyId) {
-		removeTask(storyId);
-		mProductBacklogMapper.deleteStory(storyId);
-
+		StoryObject story = getStory(storyId);
 		StringBuilder result = new StringBuilder("");
-		result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+
+		if (story != null) {
+			removeTask(storyId);
+			mProductBacklogMapper.deleteStory(storyId);
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+		} else {
+			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
+		}
 		return result;
 	}
 

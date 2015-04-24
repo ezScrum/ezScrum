@@ -19,11 +19,13 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
 import ntut.csie.ezScrum.restful.mobile.support.IScrumReport;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.ChartUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -31,12 +33,11 @@ import ntut.csie.jcis.resource.core.IProject;
 public class RemainingWorkReport {
 	final private String mNAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
 	final private long mOneDay = 24 * 3600 * 1000;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Date mChartStartDate = null;
 	private Date mChartEndDate = null;
 	private int mInterval = 1;
 	private IITSService mIITS;
-	private IUserSession mUserSession;
 	private String mCategory;
 	private Configuration mConfiguration;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
@@ -46,16 +47,15 @@ public class RemainingWorkReport {
 	private int mTotalQuantity;
 	private int mDoneQuantity;
 	private int mNonAssignQuantity;
-	private int mSprintId;
+	private long mSprintId;
 	private Map<Date, Integer> mNonAssignMap = new TreeMap<Date, Integer>();
 	private Map<Date, Integer> mAssignedMap = new TreeMap<Date, Integer>();
 	private Map<Date, Integer> mDoneMap = new TreeMap<Date, Integer>();
 	private Date mToday = new Date();
 
-	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid) {
+	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid) {
 		mSprintId = sprintid;
 		mProject = project;
-		mUserSession = userSession;
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
@@ -72,7 +72,7 @@ public class RemainingWorkReport {
 		drawGraph();
 	}
 
-	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid, Date setDate) {
+	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid, Date setDate) {
 		mSprintId = sprintid;
 		mProject = project;
 		mConfiguration = new Configuration(userSession);
@@ -106,7 +106,7 @@ public class RemainingWorkReport {
 		nowExistReport();
 	}
 
-	private void init(int sprintId) {
+	private void init(long sprintId) {
 		mAssignedQuantity = 0;
 		mTotalQuantity = 0;
 		mDoneQuantity = 0;
@@ -323,10 +323,11 @@ public class RemainingWorkReport {
 	}
 
 	private void nowExistReport() {
-		String chartPath1 = mProject.getFolder(IProject.METADATA).getFullPath()
+		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
+		String chartPath1 = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE1;
-		String chartPath2 = mProject.getFolder(IProject.METADATA).getFullPath()
+		String chartPath2 = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE2;
 		File f1 = new File(chartPath1);
@@ -343,9 +344,10 @@ public class RemainingWorkReport {
 	}
 
 	private String getReportPath() {
+		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
 		// 圖片儲存的真正路徑
 		// workspace/project/_metadata/RemainingWork/
-		String chartPath = mProject.getFolder(IProject.METADATA).getFullPath()
+		String chartPath = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + mChartPath;
 		return chartPath;

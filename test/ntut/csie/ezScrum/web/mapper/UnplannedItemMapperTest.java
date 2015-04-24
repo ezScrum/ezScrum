@@ -99,9 +99,9 @@ public class UnplannedItemMapperTest {
 		String estimate = "6";
 		String actualHour = "6";
 		String notes = "已哭";
-		String sprintId = mCS.getSprintsId().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		Date date = new Date(System.currentTimeMillis());
-		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS, partners, estimate, actualHour, notes, sprintId, date);
+		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS, partners, estimate, actualHour, notes, String.valueOf(sprintId), date);
 		// assert issue info
 		IIssue unplanned = mUnplannedMapper.getById(issueId);
 		assertEquals(issueId, unplanned.getIssueID());
@@ -111,7 +111,7 @@ public class UnplannedItemMapperTest {
 		assertEquals(estimate, unplanned.getEstimated());
 		assertEquals(actualHour, unplanned.getActualHour());
 		assertEquals(notes, unplanned.getNotes());
-		assertEquals(sprintId, unplanned.getSprintID());
+		assertEquals(String.valueOf(sprintId), unplanned.getSprintID());
 		// get histories
 		ArrayList<HistoryObject> histories = unplanned.getHistories();
 		/*

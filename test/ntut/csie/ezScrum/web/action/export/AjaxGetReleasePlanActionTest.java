@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -107,7 +108,7 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
 		// ================ set initial data =======================
 		mCR = new CreateRelease(1, mCP);
 		mCR.exe();										// 新增一個release plan
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -154,7 +155,7 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
     	// ================ set initial data =======================
     	mCR = new CreateRelease(5, mCP);
     	mCR.exe();										// 新增5個release plan
-		IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
 		Thread.sleep(1000);
     	
     	// ================ set session info ========================

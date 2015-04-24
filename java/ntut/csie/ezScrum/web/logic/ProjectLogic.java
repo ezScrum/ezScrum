@@ -78,8 +78,7 @@ public class ProjectLogic {
 	 * @param userSession
 	 * @return
 	 */
-	public boolean isUserExistInProject(IProject project, IUserSession userSession) {
-		// ezScrum v1.8
+	public boolean isUserExistInProject(ProjectObject project, IUserSession userSession) {
 		AccountObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		if (scrumRole != null) {
@@ -93,16 +92,14 @@ public class ProjectLogic {
 	 * 比對專案是否存在
 	 * ezScrum v1.8
 	 * 
-	 * @param projectID
+	 * @param projectName
 	 * @return
 	 */
-	public boolean isProjectExisted(String projectID) {
-		List<ProjectObject> projects = this.getProjects();
-		
+	public boolean isProjectExisted(String projectName) {
+		ArrayList<ProjectObject> projects = getProjects();
 		for (ProjectObject project : projects) {
-			String PID = project.getName();
-			if (PID.equals(projectID)) {
-				// System.out.println( PID );
+			String name = project.getName();
+			if (name.equals(projectName)) {
 				return true;
 			}
 		}

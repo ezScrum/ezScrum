@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.mapper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
@@ -15,7 +14,6 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintBacklogMapper {
 	private long mSprintId = 0;
-	private IProject mIProject;
 	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
@@ -33,9 +31,8 @@ public class SprintBacklogMapper {
 	 * 
 	 * @param project
 	 */
-	public SprintBacklogMapper(IProject project) {
-		mIProject = project;
-		mProject = ProjectObject.get(mIProject.getName());
+	public SprintBacklogMapper(ProjectObject project) {
+		mProject = project;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
@@ -50,14 +47,13 @@ public class SprintBacklogMapper {
 	 * @param project
 	 * @param sprintId
 	 */
-	public SprintBacklogMapper(IProject project, long sprintId) {
-		mIProject = project;
-		mProject = ProjectObject.get(mIProject.getName());
+	public SprintBacklogMapper(ProjectObject project, long sprintId) {
+		mProject = project;
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintId = Integer.parseInt(mIterPlanDesc.getID());
 		if (mSprintId == -1) {
-			throw new RuntimeException("Sprint#2 is not existed.");
+			throw new RuntimeException("Sprint#-1 is not existed.");
 		}
 		initSprintInformation();
 	}
@@ -231,7 +227,8 @@ public class SprintBacklogMapper {
 	}
 
 	public IProject getProject() {
-		return mIProject;
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		return iProject;
 	}
 
 	public Date getSprintStartDate() {

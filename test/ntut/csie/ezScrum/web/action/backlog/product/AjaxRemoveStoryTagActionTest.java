@@ -113,9 +113,6 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		
-		// ================ assert ========================
-		verifyNoActionErrors();
-		verifyNoActionMessages();
 		//	assert response text
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")

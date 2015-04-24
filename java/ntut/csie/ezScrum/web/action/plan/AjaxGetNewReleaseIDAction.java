@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +32,7 @@ public class AjaxGetNewReleaseIDAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		
 		ReleasePlanHelper helper = new ReleasePlanHelper(project);
 		return helper.getNewReleaseId();

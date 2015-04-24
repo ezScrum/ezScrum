@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,8 +32,7 @@ public class AjaxMoveSprintAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		IProject iProject = (IProject) SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
@@ -44,7 +42,7 @@ public class AjaxMoveSprintAction extends PermissionAction {
 		int newID_int = Integer.parseInt(newID);
 
 		//移動iterPlan.xml的資訊
-		SprintPlanHelper SPhelper = new SprintPlanHelper(iProject);
+		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
 		SPhelper.moveSprintPlan(project, session, oldID_int, newID_int);
 
 		StringBuilder result = new StringBuilder("true");

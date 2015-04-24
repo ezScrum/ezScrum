@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -27,6 +28,12 @@ public class SprintPlanMapper {
 	private final String ITER_PLAN_FILE = ScrumEnum.ITER_PLAN_FILE;
 	private IProject m_project;
 	private String m_projectId;
+	
+	public SprintPlanMapper(ProjectObject project) {
+		m_project = new ProjectMapper().getProjectByID(project.getName());
+		m_projectId = m_project.getName();
+		loaderLoadElement();
+	}
 	
 	public SprintPlanMapper(IProject project) {
 		m_project = project;

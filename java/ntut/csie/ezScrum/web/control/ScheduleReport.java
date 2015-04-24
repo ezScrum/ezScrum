@@ -13,9 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.CloseStreamUtil;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -46,8 +48,7 @@ public class ScheduleReport {
 	private Date mEndDate = new Date();
 	private int mInterval = 7;
 	private DateTickUnit mDtu = null;;
-	private IProject mProject = null;
-	private IUserSession mSession;
+	private ProjectObject mProject;
 	private long mIteration = -1;
 	private String mFolderName = "ScheduleReport";
 	private String mFileName = "ScheduleReport.png";
@@ -55,15 +56,13 @@ public class ScheduleReport {
 	private String mSprintGoal = "";
 	private int mSize = 0;
 
-	public ScheduleReport(IProject project, IUserSession session, int iteration) {
+	public ScheduleReport(ProjectObject project, IUserSession session, int iteration) {
 		mProject = project;
-		mSession = session;
 		mIteration = iteration;
 	}
 
-	public ScheduleReport(IProject project, IUserSession session) {
+	public ScheduleReport(ProjectObject project, IUserSession session) {
 		mProject = project;
-		mSession = session;
 	}
 
 	public void generateChart() {
@@ -237,7 +236,8 @@ public class ScheduleReport {
 	}
 
 	private void saveChart(JFreeChart chart) {
-		mChartPath = mProject.getFolder(IProject.METADATA).getFullPath()
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		mChartPath = iProject.getFolder(IProject.METADATA).getFullPath()
 				+ File.separator + mFolderName + File.separator + "Sprint"
 				+ mIteration + File.separator + mFileName;
 

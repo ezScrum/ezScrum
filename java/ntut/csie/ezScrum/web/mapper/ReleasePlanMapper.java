@@ -7,6 +7,7 @@ import java.util.List;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.IWorkspaceRoot;
@@ -19,10 +20,10 @@ public class ReleasePlanMapper {
 	 * merge Loader & Saver
 	 */
 	private final String RELEASE_PLAN_FILE = ScrumEnum.RELEASE_PLAN_FILE;	// releasePlan.xml	
-	private IProject m_project;
+	private ProjectObject mProject;
 
-	public ReleasePlanMapper(IProject project) {
-		m_project = project;
+	public ReleasePlanMapper(ProjectObject project) {
+		mProject = project;
 	}	
 	
 	public void addReleasePlan(IReleasePlanDesc desc) {
@@ -116,7 +117,8 @@ public class ReleasePlanMapper {
 	}		
 	
 	private String getUsrMetadataPath() {
-		String theUsrFile = m_project.getFolder(IProject.METADATA).getFullPath().toString();
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		String theUsrFile = iProject.getFolder(IProject.METADATA).getFullPath().toString();
 		return theUsrFile;
 	}	
 		
@@ -170,7 +172,8 @@ public class ReleasePlanMapper {
 	
 
 	private String getSysMetadataPath() {
-		IWorkspaceRoot m_workspaceRoot = m_project.getWorkspaceRoot();
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		IWorkspaceRoot m_workspaceRoot = iProject.getWorkspaceRoot();
 		String theSysFile = m_workspaceRoot.getFolder(IProject.METADATA).getFullPath().toString();
 
 		return theSysFile;

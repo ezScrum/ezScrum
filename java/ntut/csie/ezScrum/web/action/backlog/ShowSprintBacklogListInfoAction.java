@@ -6,12 +6,10 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,16 +19,20 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowSprintBacklogListInfoAction extends Action {
-	private static Log log = LogFactory
-			.getLog(ShowSprintBacklogListInfoAction.class);
+	private static Log log = LogFactory.getLog(ShowSprintBacklogListInfoAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog List Information in ShowSprintBacklogListInfo.");
 
-		ProjectObject projectObject = (ProjectObject) SessionManager
-				.getProjectObject(request);
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		ProjectObject projectObject = (ProjectObject) SessionManager.getProjectObject(request);
+		String sprintIdString = request.getParameter("sprintID");
+		long sprintId;
+		if (sprintIdString == null) {
+			sprintId = -1;
+		} else {
+			sprintId = Long.parseLong(sprintIdString);
+		}
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				projectObject, sprintId);

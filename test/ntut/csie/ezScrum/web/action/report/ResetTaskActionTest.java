@@ -11,9 +11,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ResetTaskActionTest extends MockStrutsTestCase {
@@ -84,7 +84,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 	// 測試Task ReOpen時的狀況
 	public void testResetTask() {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintsId().get(0));

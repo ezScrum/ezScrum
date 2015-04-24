@@ -12,14 +12,13 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -36,7 +35,7 @@ public class ShowPrintableReleaseAction extends Action {
 		LinkedHashMap<Long, ArrayList<TaskObject>> TaskMap;
 		
 		// get session info
-		IProject project = SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// get parameter info

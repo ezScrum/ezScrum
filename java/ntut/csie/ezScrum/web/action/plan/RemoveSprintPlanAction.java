@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +37,7 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		log.info(" Remove SprintPlan. ");
 		
 		// get project from session or DB
-		IProject iProject = (IProject) SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
 		String sprintId = request.getParameter("sprintID");

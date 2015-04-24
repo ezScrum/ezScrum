@@ -35,7 +35,16 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		long sprintId;
+		
+		String sprintIdString = request.getParameter("sprintID");
+		
+		if (sprintIdString == null || sprintIdString.length() == 0) {
+			sprintId = -1;
+		} else {
+			sprintId = Long.parseLong(sprintIdString);
+		}
+		
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);

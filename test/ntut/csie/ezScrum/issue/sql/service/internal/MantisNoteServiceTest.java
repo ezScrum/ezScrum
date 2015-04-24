@@ -80,51 +80,6 @@ public class MantisNoteServiceTest {
 	}
 	
 	@Test
-	public void testGetIssueNotes(){
-		mCPB = new CreateProductBacklog(StoryCount, mCP);
-		mCPB.exe();
-		
-		// get the issues by creating data
-		List<IIssue> issues = mCPB.getIssueList();
-		mMantisService.openConnect();
-
-		int index = 0;
-		int imp = 200;
-		int est = 21;
-		int value = 300;
-		// override the note info.
-		for(IIssue issue : issues){
-			addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
-									  Integer.toString(value + index), "demo_"+Integer.toString(index + 1),
-									  "note_"+Integer.toString(index + 1));
-			index++;
-		}
-			
-		//assert the issueNote info.
-		index = 0;
-		for(IIssue issue : issues){
-			// test method
-			List<IIssueNote> notes = mMantisNoteService.getIssueNotes(issue);
-			// test method
-			for (IIssueNote note : notes) {
-				mTextParserGeneraterForNote = new TextParserGeneraterForNote();
-				mTextParserGeneraterForNote.parserNoteText(note.getText());
-				assertEquals(index + 1, note.getIssueID());// 1, 2 .. 
-				assertEquals(index + 1, note.getNoteID());// 1, 2 ..
-				assertEquals("admin", note.getHandler());// default = 1 (administrator)
-				assertEquals(Integer.toString(imp + index), mTextParserGeneraterForNote.getImportance());// 200, 201, 202 ..
-				assertEquals(Integer.toString(est + index), mTextParserGeneraterForNote.getEstimation());// 21, 22 , 23 ..
-				assertEquals(Integer.toString(value + index), mTextParserGeneraterForNote.getValue());// 300, 301, 302 ..
-				assertEquals("demo_" + Integer.toString(index + 1), mTextParserGeneraterForNote.getHowToDemo());// demo_1, 2 ..
-				assertEquals("note_" + Integer.toString(index + 1), mTextParserGeneraterForNote.getNotes());// note_1, 2 ..
-			}
-			index++;
-		}
-		// close connection
-		mMantisService.closeConnect();
-	}
-	
-	@Test
 	public void testUpdateBugNote(){
 		IProject project = mCP.getProjectList().get(0);
 		List<IIssue> issues = new LinkedList<IIssue>();
@@ -390,60 +345,6 @@ public class MantisNoteServiceTest {
 				assertEquals(value, mTextParserGeneraterForNote.getValue());				// 251, 252, 253 ..
 				assertEquals(howToDemo, mTextParserGeneraterForNote.getHowToDemo());		// demo_1, 2 ..
 				assertEquals(notesString, mTextParserGeneraterForNote.getNotes());				// note_1, 2 ..
-			}
-		}
-		// close connection
-		mMantisService.closeConnect();
-	}
-	
-	@Test
-	public void testRemoveNote(){
-		mCPB = new CreateProductBacklog(StoryCount, mCP);
-		mCPB.exe();
-		
-		// get the issues by creating data
-		List<IIssue> issues = mCPB.getIssueList();
-		mMantisService.openConnect();
-
-		int index = 0;
-		int imp = 200, est = 21, value = 300;
-		// override the note info.
-		for(IIssue issue : issues){
-			addTagElement(issue, Integer.toString(imp + index), Integer.toString(est + index), 
-									  Integer.toString(value + index), "demo_"+Integer.toString(index+1),
-									  "note_"+Integer.toString(index + 1));
-			index++;
-		}
-		
-		for(IIssue issue : issues){
-			String issueID = Long.toString(issue.getIssueID());
-			//test method
-			mMantisNoteService.removeNote(issueID);
-
-			// assert no note exist in bug note table
-			IQueryValueSet valueSet = new MySQLQuerySet();
-			valueSet.addTableName("mantis_bugnote_table");
-			valueSet.addFieldEqualCondition("mantis_bugnote_table.id", issueID);
-			String query = valueSet.getSelectQuery();
-			ResultSet result = mMantisService.getControl().executeQuery(query);
-			try {
-				assertTrue(!result.next());
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-
-			// assert no note exist in bugnote_text table
-			valueSet.clear();
-			valueSet.addTableName("mantis_bugnote_text_table");
-			valueSet.addFieldEqualCondition("mantis_bugnote_text_table.id", issueID);
-			query = valueSet.getSelectQuery();
-			result = mMantisService.getControl().executeQuery(query);
-			try {
-				assertTrue(!result.next());
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
 			}
 		}
 		// close connection

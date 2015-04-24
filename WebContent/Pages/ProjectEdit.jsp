@@ -119,7 +119,12 @@
 				if (projectStore.getTotalCount() == 1)
 				{
 					var record = projectStore.getAt(0);
-					projectInfoForm.getForm().setValues({Name : record.data['Name'], DisplayName : record.data['DisplayName'], Comment : record.data['Comment'], ProjectManager : record.data['ProjectManager'], AttachFileSize : record.data['AttachFileSize']});
+					projectInfoForm.getForm().setValues({
+						Name : record.data['Name'],
+						DisplayName : record.data['DisplayName'],
+						Comment : record.data['Comment'],
+						ProjectManager : record.data['ProjectManager'],
+						AttachFileSize : record.data['AttachFileSize']});
 					projectInfoForm.getForm().findField('Name').getEl().dom.readOnly = true;					
 				}
 			},

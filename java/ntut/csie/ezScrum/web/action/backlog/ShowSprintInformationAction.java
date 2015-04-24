@@ -20,6 +20,7 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
+import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -32,6 +33,7 @@ public class ShowSprintInformationAction extends Action {
 
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
+		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*
@@ -42,17 +44,17 @@ public class ShowSprintInformationAction extends Action {
 		 * 3. displayName對應 IProjectPreference(class) 的 getDisplayName(method)
 		 * 目的:解決開不同分頁瀏覽不同專案時，在Sprint backlog點選Sprint Information顯示正確的sprint information.
 		 */
-		request.setAttribute(IProjectSummaryEnum.PROJECT, project);
+		request.setAttribute(IProjectSummaryEnum.PROJECT, iProject);
 
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
-		sprintId = sprintBacklogMapper.getSprintId();
-		if (sprintBacklogMapper == null || sprintId == -1 || sprintId == 0) {
+		if (sprintBacklogMapper == null) {
 			return mapping.findForward("error");
 		}
+		sprintId = sprintBacklogMapper.getSprintId();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
 		

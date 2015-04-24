@@ -15,7 +15,6 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,13 +40,12 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		log.info(" Remove Release Plan. ");
 		
 		// get session info
-		IProject iProject = SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
 		String ReleaseId = request.getParameter("releaseID");
 
-		ReleasePlanHelper helper = new ReleasePlanHelper(iProject);		
+		ReleasePlanHelper helper = new ReleasePlanHelper(project);		
 		IReleasePlanDesc desc = helper.getReleasePlan(ReleaseId);
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);

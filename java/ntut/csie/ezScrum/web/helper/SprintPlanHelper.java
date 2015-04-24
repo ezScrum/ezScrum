@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -29,6 +28,7 @@ public class SprintPlanHelper {
 	private SprintPlanLogic mSprintPlanLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
 
+	@Deprecated
 	public SprintPlanHelper(IProject project) {
 		mSprintPlanMapper = new SprintPlanMapper(project);
 		mSprintPlanLogic = new SprintPlanLogic(project);
@@ -37,11 +37,9 @@ public class SprintPlanHelper {
 	}
 	
 	public SprintPlanHelper(ProjectObject project) {
-		IProject iProject = (new ProjectMapper()).getProjectByID(project.getName());
-		mSprintPlanMapper = new SprintPlanMapper(iProject);
-		mSprintPlanLogic = new SprintPlanLogic(iProject);
-		mSprintBacklogMapper = (new SprintBacklogLogic(iProject, getCurrentSprintID()))
-				.getSprintBacklogMapper();
+		mSprintPlanMapper = new SprintPlanMapper(project);
+		mSprintPlanLogic = new SprintPlanLogic(project);
+		mSprintBacklogMapper = (new SprintBacklogLogic(project, getCurrentSprintID())).getSprintBacklogMapper();
 	}
 
 	public List<ISprintPlanDesc> loadListPlans() {
@@ -170,8 +168,8 @@ public class SprintPlanHelper {
 			return Integer.parseInt(descs.get(descs.size() - 1).getID());
 	}
 
-	public int getSprintIDbyDate(Date date) {
-		int sprintID = -1;
+	public long getSprintIDbyDate(Date date) {
+		long sprintId = -1;
 		List<ISprintPlanDesc> sprints = mSprintPlanLogic
 				.getSprintPlanListAndSortByStartDate();
 
@@ -183,13 +181,13 @@ public class SprintPlanHelper {
 				// 兩者成立表示此使用者設定的日期在這個 sprint 區間內，回傳此 sprint ID
 				if (DateUtil.dayFilter(date).getTime() >= (DateUtil
 						.dayFilter(sp.getStartDate())).getTime()) {
-					sprintID = Integer.parseInt(sp.getID());
+					sprintId = Long.parseLong(sp.getID());
 					break;
 				}
 			}
 		}
 
-		return sprintID;
+		return sprintId;
 	}
 
 	/*

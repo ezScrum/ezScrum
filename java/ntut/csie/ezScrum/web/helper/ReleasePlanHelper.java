@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -34,19 +33,11 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ReleasePlanHelper {
 	private ReleasePlanMapper rpMapper;
-	private IProject m_project;
 	private ProjectObject mProject;
-	
-	@Deprecated
-	public ReleasePlanHelper(IProject project){
-		m_project = project;
-		rpMapper = new ReleasePlanMapper(project);
-	}
 	
 	public ReleasePlanHelper(ProjectObject project){
 		mProject = project;
-		m_project = (new ProjectMapper()).getProjectByID(mProject.getName());
-		rpMapper = new ReleasePlanMapper(m_project);
+		rpMapper = new ReleasePlanMapper(mProject);
 	}
 	
 	// remove later
@@ -89,7 +80,7 @@ public class ReleasePlanHelper {
 			
 			// 自動尋找此 release date 內的 sprint plan
 			List<ISprintPlanDesc> ReleaseSprintList = new LinkedList<ISprintPlanDesc>();
-			SprintPlanMapper spMapper = new SprintPlanMapper(m_project);
+			SprintPlanMapper spMapper = new SprintPlanMapper(mProject);
 			List<ISprintPlanDesc> AllSprintList = spMapper.getSprintPlanList();
 			
 			Date releaseStartDate = DateUtil.dayFilter(desc.getStartDate());	// release start date get from XML
@@ -561,30 +552,24 @@ public class ReleasePlanHelper {
 	 */	
 	
 	//加入 Release 日期範圍內 Sprint 底下的 Story
-	public void addReleaseSprintStory(IProject iProject, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
-		ProjectObject project = new ProjectObject(iProject.getName());
+	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
 		List<ISprintPlanDesc> newSprintList =  reDesc.getSprintDescList();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 		ArrayList<Long> storyList;
 		
 		//For deleting old sprint. Taking original SprintList to compare with new SprintList.
 		if(oldSprintList != null){	
-			storyList = compareReleaseSprint(oldSprintList, newSprintList, iProject, session);
-			for(long story : storyList) {
-				productBacklogLogic.removeReleaseTagFromIssue(story);
-			}
+			storyList = compareReleaseSprint(oldSprintList, newSprintList, project, session);
 			storyList.clear();
 		}
 
 		//For adding new sprint. Taking new SprintList to compare with original SprintList.
-		storyList = compareReleaseSprint(newSprintList, oldSprintList, iProject, session);
-		productBacklogLogic.addReleaseTagToIssue(storyList, ID);
-
+		storyList = compareReleaseSprint(newSprintList, oldSprintList, project, session);
 	}
 	
 	//SprintList，舊日期的list 與 新日期的list做比對
 	private ArrayList<Long> compareReleaseSprint(List<ISprintPlanDesc> sprintList1, List<ISprintPlanDesc> sprintList2,
-											   IProject project, IUserSession session) {
+											   ProjectObject project, IUserSession session) {
 //		SprintBacklogMapper sprintBacklog;
 		SprintBacklogLogic sprintBacklogLogic;
 		ArrayList<Long> storyList = new ArrayList<Long>();
@@ -622,8 +607,8 @@ public class ReleasePlanHelper {
 	/*
 	 * from GetReleaseBurndownChartDataAction
 	 */
-	public StringBuilder getReleaseBurndownChartData(IProject project, IUserSession session, String releaseId) {
-		ProductBacklogHelper pbHelper = new ProductBacklogHelper(new ProjectObject(project.getName()));
+	public StringBuilder getReleaseBurndownChartData(ProjectObject project, IUserSession session, String releaseId) {
+		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project);
 		IReleasePlanDesc plan = this.getReleasePlan(releaseId);
 
 		ReleaseBacklog releaseBacklog = null;

@@ -7,7 +7,6 @@ import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,8 +33,7 @@ public class AjaxMoveStorySprint extends PermissionAction {
 		*	從Request中取得要變更的資訊
 		-------------------------------------------------------------*/
 		//Project
-		IProject iProject = (IProject) SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		long storyId = Long.parseLong(request.getParameter("issueID"));
 		String targetSprintId = request.getParameter("moveID");	//	Sprint ID

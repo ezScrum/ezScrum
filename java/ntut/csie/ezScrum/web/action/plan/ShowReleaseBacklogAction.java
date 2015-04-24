@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,26 +27,25 @@ public class ShowReleaseBacklogAction extends Action {
 		log.info(" Show Release Backlog. ");
 		
 		// get session info
-		IProject iProject = (IProject) request.getSession().getAttribute("Project");
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = (ProjectObject) request.getSession().getAttribute("Project");
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
 		String ReleaseId = request.getParameter("releaseID");
 		
 		//取得ReleasePlan
-		ReleasePlanHelper planHelper = new ReleasePlanHelper(iProject);
+		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
 		ProductBacklogHelper productHelper = new ProductBacklogHelper(project);
 		IReleasePlanDesc plan = planHelper.getReleasePlan(ReleaseId);
 		
 		ReleaseBacklog releaseBacklog;
 		try {
-			releaseBacklog = new ReleaseBacklog(iProject, plan, productHelper.getStoriesByRelease(plan));
+			releaseBacklog = new ReleaseBacklog(project, plan, productHelper.getStoriesByRelease(plan));
 		} catch (Exception e) {
 			releaseBacklog = null;
 		}
 	
-		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(iProject, session.getAccount());
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, session.getAccount());
 
 		if (ReleaseId != null && scrumRole.getAccessReleasePlan()) {
 			request.setAttribute("releaseID", ReleaseId);			// return release Id

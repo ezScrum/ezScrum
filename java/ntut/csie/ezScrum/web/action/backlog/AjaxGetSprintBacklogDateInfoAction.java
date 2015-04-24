@@ -20,14 +20,19 @@ public class AjaxGetSprintBacklogDateInfoAction extends Action {
 	private static Log log = LogFactory.getLog(AjaxGetSprintBacklogDateInfoAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Sprint Backlog Date.");
-		
-		ProjectObject project = SessionManager.getProjectObject(request);
-		
-		long sprintID = Long.parseLong(request.getParameter("sprintID"));
 
-		String result = (new SprintBacklogHelper(project, sprintID)).getAjaxGetSprintBacklogDateInfo();
+		ProjectObject project = SessionManager.getProjectObject(request);
+		String sprintIdString = request.getParameter("sprintID");
+		
+		long sprintId = -1;
+
+		if (sprintIdString != null && sprintIdString.length() > 0) {
+			sprintId = Long.parseLong(request.getParameter("sprintID"));
+		}
+
+		String result = (new SprintBacklogHelper(project, sprintId)).getAjaxGetSprintBacklogDateInfo();
 		response.setContentType("text/html; charset=utf-8");
 		try {
 			response.getWriter().write(result);
@@ -35,7 +40,7 @@ public class AjaxGetSprintBacklogDateInfoAction extends Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 }

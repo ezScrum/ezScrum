@@ -3,12 +3,9 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,8 +18,6 @@ public class CreateTag {
 	public String TEST_TAG_NAME = "TEST_TAG_"; // Tag Name
 
 	private ProjectObject mProject;
-	private IUserSession mUserSession;
-	private Configuration mConfig = new Configuration();
 
 	private ArrayList<TagObject> mTags = new ArrayList<TagObject>();
 	private ProductBacklogMapper mProductBacklogMapper = null;
@@ -34,7 +29,6 @@ public class CreateTag {
 
 	// create tag in project
 	public void exe() {
-		mUserSession = mConfig.getUserSession();
 		for (int projectIndex = 0; projectIndex < mCP.getProjectList()
 				.size(); projectIndex++) {
 			mProject = mCP.getAllProjects().get(projectIndex); // TEST_PROJECT_X

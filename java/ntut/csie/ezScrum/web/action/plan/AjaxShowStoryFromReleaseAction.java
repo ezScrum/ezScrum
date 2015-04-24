@@ -6,13 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -41,8 +40,8 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		log.info(" Show Story From Release. ");
 		
 		// get session info
-		IProject iProject = (IProject) SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
 		
 		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);

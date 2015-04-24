@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class DropTask {
 	private CreateProject mCP;
@@ -15,7 +15,7 @@ public class DropTask {
 	}
 
 	public void exe() {
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, mSprintId);
 		sprintBacklogMapper.dropTask(mTaskId);
 	}

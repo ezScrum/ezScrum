@@ -12,8 +12,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.SprintInfoUIObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
@@ -22,7 +22,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Gson mGson;
 	private Configuration mConfig;
 
@@ -42,7 +42,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);

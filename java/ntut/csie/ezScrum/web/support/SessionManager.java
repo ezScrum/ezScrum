@@ -67,18 +67,21 @@ public class SessionManager {
 		
 		if (projectID != null) {
 			// 拿session裡的project資料
-			IProject project = (IProject) session.getAttribute(projectID);
+			ProjectObject project = (ProjectObject) session.getAttribute(projectID);
+			IProject iProject = null;
 			/**
 			 * 如果session拿不到project的資料，則往DB找
 			 */
 			if (project == null) {
 				// project = ResourceFacade.getProject(projectID);
-				project = new ProjectMapper().getProjectByID(projectID);
-				if (project != null) {
+				iProject = new ProjectMapper().getProjectByID(projectID);
+				if (iProject != null) {
 					session.setAttribute(projectID, project);
 				}
+				return iProject;
 			}
-			return project;
+			iProject = new ProjectMapper().getProjectByID(projectID);
+			return iProject;
 		}
 		return null;
 	}

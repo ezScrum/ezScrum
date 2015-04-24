@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -66,7 +67,7 @@ public class SprintBacklogMapperTest {
 		mATTS = new AddTaskToStory(taskCount, taskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		mSprintBacklogMapper = new SprintBacklogMapper(project);
 	}
 

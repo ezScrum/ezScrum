@@ -10,7 +10,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,8 +34,7 @@ public class AjaxShowStoryFromSprintAction extends PermissionAction {
 		log.info("Show Story From Sprint in AjaxShowStoryFromSprintAction.");
 
 		// get project from session or DB
-		IProject iProject = (IProject) SessionManager.getProject(request);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 
 		// get parameter info
 		String SprintID = request.getParameter("Sid");

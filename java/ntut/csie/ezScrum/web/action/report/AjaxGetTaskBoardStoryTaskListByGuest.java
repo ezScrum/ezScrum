@@ -15,7 +15,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -28,7 +27,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 
-		IProject project = SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);

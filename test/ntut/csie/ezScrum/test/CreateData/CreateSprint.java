@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -70,7 +72,7 @@ public class CreateSprint {
 
 		for (int i = 0; i < mCP.getProjectList().size(); i++) {
 			mToday = cal.getTime();									// get Today
-			IProject project = mCP.getProjectList().get(i);			// get Project
+			ProjectObject project = mCP.getAllProjects().get(i);	// get Project
 
 			for (int j = 0; j < mSprintCount; j++) {
 				ISprintPlanDesc desc = createDesc(j);

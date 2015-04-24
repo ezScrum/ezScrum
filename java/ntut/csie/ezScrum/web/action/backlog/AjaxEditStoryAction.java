@@ -57,8 +57,10 @@ public class AjaxEditStoryAction extends PermissionAction {
 		storyInfo.notes = notes;
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
-		StoryObject issue = productBacklogHelper.updateStory(id, storyInfo);
-		StringBuilder result = productBacklogHelper.translateStoryToJson(issue);
+		StoryObject story = productBacklogHelper.getStory(id);
+		storyInfo.sprintId = story.getSprintId();
+		story = productBacklogHelper.updateStory(id, storyInfo);
+		StringBuilder result = productBacklogHelper.translateStoryToJson(story);
 		return result;
 	}
 }

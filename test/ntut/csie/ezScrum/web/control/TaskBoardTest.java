@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.control;
 
 import java.io.IOException;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -59,7 +60,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mCS.getSprintsId().get(0));
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0), mCS.getSprintsId().get(0));
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 		
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);

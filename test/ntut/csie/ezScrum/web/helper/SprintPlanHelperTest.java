@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.control;
+package ntut.csie.ezScrum.web.helper;
 
 import static org.junit.Assert.assertEquals;
 

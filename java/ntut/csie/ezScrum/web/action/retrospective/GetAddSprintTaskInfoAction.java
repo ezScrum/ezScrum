@@ -26,16 +26,17 @@ public class GetAddSprintTaskInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Add Sprint Task Information in GetAddSprintTaskInfoAction");
 		
-		IProject project = (IProject) request.getSession().getAttribute("Project");	
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		IProject mProject = (IProject) request.getSession().getAttribute("Project");	
+		IUserSession mUserSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
-		StringBuilder sb = new StringBuilder();
+		StringBuilder mStringBuilder = new StringBuilder();
 
-		String sprintID = request.getParameter("sprintId");
+		String mSprintID = request.getParameter("sprintId");
 
-		if ( (sprintID == null) || (sprintID.length() <= 0 ) || (sprintID.equals("")) || (sprintID.equals("0")) || (sprintID.equals("-1")) ) {
+		if ( (mSprintID == null) || (mSprintID.length() <= 0 ) || (mSprintID.equals("")) || (mSprintID.equals("0")) || (mSprintID.equals("-1")) ) {
 			// default data for empty sprint backlog information
-			sb.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
+			mStringBuilder.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
 		}
 		
 //		SprintBacklogMapper backlog = null;
@@ -46,36 +47,35 @@ public class GetAddSprintTaskInfoAction extends Action {
 //			System.out.println("class: GetAddSprintTaskInfoAction, method: execute, exception: " + e.toString());
 //		}
 		
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper();
-	
-		if ( (backlog != null) && (backlog.getSprintId() > 0) ) {
-//			MantisAccountMapper helper = new MantisAccountMapper(project, session);
-//			List<String> actorList = helper.getScrumWorkerList();
-			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, project);
-			String defaultActor="";
-			if(actorList!=null){
-				for(int i=0;i<actorList.size();i++){
+		SprintBacklogMapper backlog = (new SprintBacklogLogic(mProject, Long.parseLong(mSprintID))).getSprintBacklogMapper();
+
+		if ((backlog != null) && (backlog.getSprintId() > 0)) {
+			//	MantisAccountMapper helper = new MantisAccountMapper(project, session);
+			//	List<String> actorList = helper.getScrumWorkerList();
+			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(mUserSession, mProject);
+			String defaultActor = "";
+			if (actorList != null) {
+				for (int i = 0; i < actorList.size(); i++) {
 					//預設角色會有一個為null
-					if(i>1){
-						defaultActor +="; ";
+					if (i > 1) {
+						defaultActor += "; ";
 					}
 					defaultActor += actorList.get(i);
 				}
 			}
 			
-			sb.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
-			for (String handler : actorList)
-			{
-				sb.append("<Handler>");
-				sb.append("<Name>" + handler + "</Name>");
-				sb.append("</Handler>");
+			mStringBuilder.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
+			for (String handler : actorList) {
+				mStringBuilder.append("<Handler>");
+				mStringBuilder.append("<Name>" + handler + "</Name>");
+				mStringBuilder.append("</Handler>");
 			}
-			sb.append("</Handlers>");
+			mStringBuilder.append("</Handlers>");
 		}
 		
 		try {
 			response.setContentType("text/xml; charset=utf-8");
-			response.getWriter().write(sb.toString());
+			response.getWriter().write(mStringBuilder.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
@@ -258,6 +260,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"SprintID\":\"\"")
 							.append(",\"ReleaseID\":\"\"")
 							.append(",\"dateList\":[");
+		
 		for(int i = 0; i < TaskDate.size(); i++){
 			if(i != TaskDate.size() - 1) {
 				expectedResponseTest.append("\"" + TaskDate.get(i) + " 12:00:00 AM\",");
@@ -265,22 +268,15 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 				expectedResponseTest.append("\"" + TaskDate.get(i) + " 12:00:00 AM\"]");
 			}
 		}
-		expectedResponseTest.append(",\"Date_9\":\"\"")
-							.append(",\"Date_10\":\"\"")
-							.append(",\"Date_1\":\"2.0\"")
-							.append(",\"Date_2\":\"\"")
-							.append(",\"Date_3\":\"\"")
-							.append(",\"Date_4\":\"\"")
-							.append(",\"Date_5\":\"\"")
-							.append(",\"Date_6\":\"\"")
-							.append(",\"Date_7\":\"\"")
-							.append(",\"Date_8\":\"\"")
-							.append(",\"leaf\":true")
+		
+		String actualResponseText = response.getWriterBuffer().toString();
+		assertTrue(actualResponseText.startsWith(expectedResponseTest.toString()));
+		
+		StringBuilder expectedResponseTest2 = new StringBuilder();
+		expectedResponseTest2.append(",\"leaf\":true")
 							.append(",\"expanded\":false")
 							.append(",\"id\":\"Task:1\"")
 							.append(",\"cls\":\"file\"}]}]");
-		
-		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseTest.toString(), actualResponseText);
+		assertTrue(actualResponseText.endsWith(expectedResponseTest2.toString()));
 	}
 }

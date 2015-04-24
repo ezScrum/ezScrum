@@ -16,7 +16,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
@@ -71,9 +70,8 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 	}
 
 	public void testExecute() throws Exception {
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = new ProjectObject(iProject.getName());
-
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
 		// 在Release中加入3個Sprint
 		AddSprintToRelease ASTR = new AddSprintToRelease(3, mCR, mCP);
 		ASTR.exe();

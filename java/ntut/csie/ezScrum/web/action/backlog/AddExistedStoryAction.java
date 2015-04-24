@@ -49,8 +49,11 @@ public class AddExistedStoryAction extends PermissionAction {
 			addedStoriesId.add(Long.parseLong(storyId));
 		}
 		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
-		sprintBacklogHelper.addExistingStory(addedStoriesId);
+		try {			
+			SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
+			sprintBacklogHelper.addExistingStory(addedStoriesId);
+		} catch(Exception e) {
+		}
 		
 		return new StringBuilder("");
 	}
