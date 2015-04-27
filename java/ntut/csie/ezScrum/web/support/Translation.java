@@ -359,7 +359,7 @@ public class Translation {
 						story.getTags(), ",")));
 				jsonStory.put("HowToDemo",
 						translateChar.TranslateJSONChar(story.getHowToDemo()));
-				jsonStory.put("Release", "");
+				jsonStory.put("Release", "None");
 				jsonStory.put("Sprint", story.getSprintId());
 
 				if (story.getAttachFiles().size() == 0) {
