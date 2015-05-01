@@ -1344,6 +1344,15 @@ CREATE TABLE `serial_number` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT UNSIGNED NOT NULL,
+  `public_token` TEXT NOT NULL,
+  `private_token` TEXT NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
 LOCK TABLES `system` WRITE;
 INSERT INTO `system` VALUES (1, 1);
 UNLOCK TABLES;
