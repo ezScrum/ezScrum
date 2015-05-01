@@ -5,10 +5,14 @@ import java.security.MessageDigest;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
 public class TokenValidator {
+	
+	private final static boolean CHECK_TIME = true;
+	private final static boolean CHECK_PUBLIC_TOKEN = true;
+	private final static boolean CHECK_DISPOSABLE_TOKEN = true;
+	private final static int EXPIRED_TIME = 60;
 
 	public static boolean verify(long accountId, String clientPublicToken,
 			String clientDisposableToken, long timestamp) {
-		boolean isValidate = false;
 		TokenObject token = TokenObject.getByAccountId(accountId);
 		String disposableToken;
 		try {
@@ -17,11 +21,27 @@ public class TokenValidator {
 		} catch (Exception e) {
 			return false;
 		}
-		if (clientPublicToken.equals(token.getPublicToken())
-				&& clientDisposableToken.equals(disposableToken)) {
-			isValidate = true;
+		
+		if (CHECK_TIME) {
+			long currentTime = System.currentTimeMillis();
+			if (currentTime - timestamp > EXPIRED_TIME) {
+				return false;
+			}
 		}
-		return isValidate;
+		
+		if (CHECK_PUBLIC_TOKEN) {
+			if (!clientPublicToken.equals(token.getPublicToken())) {
+				return false;
+			}
+		}
+		
+		if (CHECK_DISPOSABLE_TOKEN) {
+			if (!clientDisposableToken.equals(disposableToken)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	private static String genDisposable(String publicToken,
