@@ -10,7 +10,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class StoryApi extends BaseAuthApi {
 	
 	@Override
-	protected Response doGet(long resourceId) {
+	protected Response get(long resourceId) {
 		JSONObject json = new JSONObject();
 		try {
 			json.put("msg", "OK");
@@ -20,4 +20,27 @@ public class StoryApi extends BaseAuthApi {
 		return response(200, json.toString());
 	}
 
+	@Override
+	protected Response getList() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Response post(String entity) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Response put(long resourceId, String entity) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Response delete(long resourceId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
