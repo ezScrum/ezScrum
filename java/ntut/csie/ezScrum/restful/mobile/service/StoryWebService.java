@@ -30,9 +30,9 @@ public class StoryWebService extends ProjectWebService {
 		initialize();
 	}
 
-	public StoryWebService(String username, String userpwd, String projectID)
+	public StoryWebService(String username, String userpwd, String projectName)
 			throws LogonException {
-		super(username, userpwd, projectID);
+		super(username, userpwd, projectName);
 		mProject = getAllProjects().get(0);
 		initialize();
 	}

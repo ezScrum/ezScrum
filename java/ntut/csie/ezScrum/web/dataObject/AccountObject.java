@@ -262,6 +262,8 @@ public class AccountObject implements IBaseObject {
 
 	private void doCreate() {
 		mId = AccountDAO.getInstance().create(this);
+		TokenObject token = new TokenObject(mId);
+		token.save();
 		reload();
 	}
 

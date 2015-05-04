@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.security.MessageDigest;
 import java.util.Random;
 
 import ntut.csie.ezScrum.dao.TokenDAO;
@@ -51,6 +52,14 @@ public class TokenObject implements IBaseObject {
 
 	public String getPrivateToken() {
 		return mPrivateToken;
+	}
+	
+	public String getDisposableToken(long timestamp) {
+		try {
+			return genDisposable(mPublicToken, mPrivateToken, timestamp);
+		} catch (Exception e) {
+			return "ERROR_ON_GEN_DISPOSABLE_TOKEN";
+		}
 	}
 
 	public void rehash() {
@@ -128,5 +137,14 @@ public class TokenObject implements IBaseObject {
 			stringBuilder.append(candicates.charAt(random.nextInt(candicates
 					.length())));
 		return stringBuilder.toString();
+	}
+	
+	private static String genDisposable(String publicToken,
+			String privateToken, long timestamp) throws Exception {
+		String plainCode = publicToken + privateToken + timestamp;
+		byte[] bytesOfMessage = plainCode.getBytes("UTF-8");
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		byte[] digest = md.digest(bytesOfMessage);
+		return new String(digest);
 	}
 }

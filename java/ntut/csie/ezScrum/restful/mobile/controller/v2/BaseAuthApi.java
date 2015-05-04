@@ -12,6 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+
 import org.codehaus.jettison.json.JSONObject;
 
 public abstract class BaseAuthApi {
@@ -19,6 +21,8 @@ public abstract class BaseAuthApi {
 	private final static int METHOD_GET = 0, METHOD_GET_LIST = 1,
 			METHOD_POST = 2, METHOD_PUT = 3, METHOD_DELETE = 4;
 	private final static boolean IGNORE = true;
+	
+	private AccountObject mUser;
 
 	@GET
 	@Path("/{resourceId}")
@@ -81,6 +85,14 @@ public abstract class BaseAuthApi {
 		resBuilder.status(200).entity(entity);
 		return resBuilder.build();
 	}
+	
+	protected Response responseOK() {
+		return response(200, "{\"msg\":\"ok\"}");
+	}
+	
+	protected AccountObject getUser() {
+		return mUser;
+	}
 
 	protected abstract Response get(long resourceId) throws Exception;
 
@@ -102,6 +114,7 @@ public abstract class BaseAuthApi {
 			if (IGNORE
 					|| TokenValidator.verify(userId, publicToken,
 							disposableToken, timestamp)) {
+				mUser = AccountObject.get(userId);
 				switch (method) {
 				case METHOD_GET:
 					response = get(resourceId);
@@ -126,7 +139,7 @@ public abstract class BaseAuthApi {
 			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return response(417, "{\"msg\":\"Error\"}");
+			return response(417, "{\"msg\":\"" + e.getMessage() + "\"}");
 		}
 	}
 }
