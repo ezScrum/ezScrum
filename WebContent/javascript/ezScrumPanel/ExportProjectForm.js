@@ -6,8 +6,9 @@ var myCheckboxGroup = new Ext.form.CheckboxGroup({
     // Put all controls in a single column with width 100%
     columns: 1,
     items: [
-            {boxLabel: 'Project1', name: 'cb-col-1'},
-            {boxLabel: 'Project2', name: 'cb-col-1', checked: true}
+            {boxLabel: 'Item 1', name: 'cb-col-1'},
+            {boxLabel: 'Item 2', name: 'cb-col-2', checked: true},
+            {boxLabel: 'Item 3', name: 'cb-col-3'}
         ]
 });
 
@@ -74,8 +75,15 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url: obj.url,
 			success : function(response) {
 				ProjectStore.loadData(response.responseXML);
+				for (i = 0; i < ProjectStore.getCount(); i++) {
+					var record = ProjectStore.getAt(i);
+//					console.log(record);
+					myCheckboxGroup.items.add(new Ext.form.Checkbox({boxLabel: record.get('Name'), name: 'cb-col-4'}));
+		    	}
+				console.log(myCheckboxGroup);
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
 				loadmask.hide();
+				obj.doLayout();
 			},
 			failure : function(){
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
