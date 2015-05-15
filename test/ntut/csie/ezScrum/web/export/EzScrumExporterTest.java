@@ -1,5 +1,8 @@
 package ntut.csie.ezScrum.web.export;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -10,7 +13,6 @@ import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,23 +51,34 @@ public class EzScrumExporterTest {
 		this.CP = null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetJsonFile() throws ParseException {
+	public void testGetJsonFile() throws IOException {
 		ArrayList<String> projectsName = new ArrayList<String>();
 		projectsName.add(this.CP.getProjectList().get(0).getName());
 		EzScrumExporter exporter = new EzScrumExporter(projectsName);
-		String jsonString = exporter.getJsonData();
+		File file = exporter.getJsonFile();
 		JSONParser parser = new JSONParser();
-		// JSONObject jsonObject = new JSONObject(jsonString);
-		JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-		JSONArray projectsJsonArray = (JSONArray) jsonObject.get("projects");
-		JSONObject projectJson = (JSONObject) projectsJsonArray.get(0);
-		Assert.assertEquals("TEST_PROJECT_1", projectJson.get("name"));
-		Assert.assertEquals("TEST_PROJECT_1", projectJson.get("displayName"));
-		Assert.assertEquals("This is Test Project - 1",
-				projectJson.get("comment"));
-		Assert.assertEquals("Project_Manager_1",
-				projectJson.get("productOwner"));
-		Assert.assertEquals("2", projectJson.get("attachMaxSize"));
+		FileReader reader = new FileReader(file.getAbsoluteFile());
+		System.out.println("file path: "+file.getAbsolutePath());
+		try {
+			JSONObject jsonObject = (JSONObject) parser.parse(reader);
+			JSONArray projectsJsonArray = (JSONArray) jsonObject
+					.get("projects");
+			JSONObject projectJson = (JSONObject) projectsJsonArray.get(0);
+			Assert.assertEquals("TEST_PROJECT_1", projectJson.get("name"));
+			Assert.assertEquals("TEST_PROJECT_1",
+					projectJson.get("displayName"));
+			Assert.assertEquals("This is Test Project - 1",
+					projectJson.get("comment"));
+			Assert.assertEquals("Project_Manager_1",
+					projectJson.get("productOwner"));
+			Assert.assertEquals("2", projectJson.get("attachMaxSize"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			reader.close();
+			Assert.assertTrue(file.delete());
+		}
 	}
 }
