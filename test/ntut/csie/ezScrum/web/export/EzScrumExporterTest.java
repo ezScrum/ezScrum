@@ -60,7 +60,6 @@ public class EzScrumExporterTest {
 		File file = exporter.getJsonFile();
 		JSONParser parser = new JSONParser();
 		FileReader reader = new FileReader(file.getAbsoluteFile());
-		System.out.println("file path: "+file.getAbsolutePath());
 		try {
 			JSONObject jsonObject = (JSONObject) parser.parse(reader);
 			JSONArray projectsJsonArray = (JSONArray) jsonObject

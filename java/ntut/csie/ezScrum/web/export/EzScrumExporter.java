@@ -42,10 +42,12 @@ public class EzScrumExporter {
 	public File getJsonFile() throws IOException {
 		createFolderIfNotExist();
 		JSONObject resultJsonObject = getJsonObject();
-		Date date = DateUtil.dayFillter(DateUtil.getNow(), DateUtil._16DIGIT_DATE_TIME);
-		String dateDescription = DateUtil.format(date, DateUtil._16DIGIT_DATE_TIME_2);
-		String filePath = FOLDER_NAME + SLASH + BACKUP_TITLE + dateDescription + SUFFIX;
-		System.out.println("file path: " + filePath);
+		Date date = DateUtil.dayFillter(DateUtil.getNow(),
+				DateUtil._16DIGIT_DATE_TIME);
+		String dateDescription = DateUtil.format(date,
+				DateUtil._16DIGIT_DATE_TIME_2);
+		String filePath = FOLDER_NAME + SLASH + BACKUP_TITLE + dateDescription
+				+ SUFFIX;
 		FileWriter fileWriter = new FileWriter(filePath);
 		try {
 			fileWriter.write(resultJsonObject.toJSONString());
