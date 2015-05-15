@@ -1,19 +1,17 @@
 package ntut.csie.ezScrum.web.export;
 
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import java.util.Date;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.jcis.core.util.DateUtil;
+
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ntut.csie.jcis.core.util.DateUtil;
-
-import java.util.Date;
-
 public class JsonTranslaterTest {
 	@Test
-	public void testTranslateProject() throws JSONException {
+	public void testTranslateProject() {
 		ProjectObject project = new ProjectObject();
 		project.setName("projectName");
 		project.setDisplayName("projectDisplayName");
