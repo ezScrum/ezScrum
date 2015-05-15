@@ -1,0 +1,61 @@
+package ntut.csie.ezScrum.web.export;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.actions.DownloadAction;
+
+public class ExportProjectAction extends DownloadAction {
+	protected StreamInfo getStreamInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		// IProject project = (IProject)
+		// request.getSession().getAttribute("Project");
+		// IUserSession session = (IUserSession)
+		// request.getSession().getAttribute("UserSession");
+		// // attach file的資訊
+		// String fileID = request.getParameter("fileID");
+		// String fileName = request.getParameter("fileName");
+		// String fileType = request.getParameter("fileType");
+		String projectsName = "";
+		try {
+			projectsName = request.getParameter("projectsName");
+			System.out.println(projectsName);
+		} catch (Exception e) {
+		}
+		//
+		// // 如果project以及session的資訊是空的 則透過專案名稱抓取資料
+		// if (project == null & session == null) {
+		// project = ResourceFacade.getProject(projectName); // 根據專案名稱取得
+		// IProject 物件
+		// // session = new UserSession(new Account("guest"));
+		// session = new UserSession(null);
+		// }
+
+		// 取得檔案
+//		ArrayList<String> projectsName = new ArrayList<String>();
+//		projectsName.add("Project1");
+		EzScrumExporter exporter = new EzScrumExporter(projectsName);
+		File file = exporter.getJsonFile();
+		;
+		/*
+		 * 將字串的 UTF-8 編碼轉成 response 預設編碼 ISO-8859-1
+		 * jetty預設處理getParameter的編碼是UTF-8 tomcat預設處理getParameter的邊碼是ISO-8859-1
+		 * 也就是 jetty server可以跑 new String(
+		 * fileName.getBytes("UTF-8"),"ISO-8859-1"); tomcat server可以跑 new
+		 * String( fileName.getBytes("ISO-8859-1"),"ISO-8859-1");
+		 */
+		String fileName = new String(file.getName().getBytes("UTF-8"), "ISO-8859-1");
+		response.setHeader("Content-disposition",
+				"inline; filename=\"" + fileName + "\"");
+
+		// 用fileType預設檔案類型
+		String contentType = "application/gzip";
+		return new FileStreamInfo(contentType, file);
+	}
+}

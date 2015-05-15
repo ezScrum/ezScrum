@@ -259,6 +259,7 @@
         </action>
         
         <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
+        <action path="/exportProject" type="ntut.csie.ezScrum.web.export.ExportProjectAction" />
         <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">

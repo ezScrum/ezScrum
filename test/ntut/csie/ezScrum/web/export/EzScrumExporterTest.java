@@ -80,4 +80,23 @@ public class EzScrumExporterTest {
 			Assert.assertTrue(file.delete());
 		}
 	}
+	
+	@Test
+	public void testParseProjectsName() {
+		ArrayList<String> projectsName = new ArrayList<String>();
+		projectsName.add(this.CP.getProjectList().get(0).getName());
+		EzScrumExporter exporter = new EzScrumExporter(projectsName);
+		ArrayList<String> projectNameList = exporter.parseProjectsName("");
+		Assert.assertEquals(0, projectNameList.size());
+		projectNameList = exporter.parseProjectsName(",");
+		Assert.assertEquals(0, projectNameList.size());
+		projectNameList = exporter.parseProjectsName("p1");
+		Assert.assertEquals(1, projectNameList.size());
+		projectNameList = exporter.parseProjectsName("p1,");
+		Assert.assertEquals(1, projectNameList.size());
+		projectNameList = exporter.parseProjectsName("p1,p2");
+		Assert.assertEquals(2, projectNameList.size());
+		projectNameList = exporter.parseProjectsName("p1,p2,");
+		Assert.assertEquals(2, projectNameList.size());
+	}
 }

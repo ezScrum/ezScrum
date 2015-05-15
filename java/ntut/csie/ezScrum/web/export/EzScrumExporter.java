@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,22 @@ public class EzScrumExporter {
 
 	public EzScrumExporter(ArrayList<String> projectsName) {
 		mProjectsName = projectsName;
+	}
+	
+	public EzScrumExporter(String projectsName) {
+		System.out.println("EzScrumExporter: "+projectsName);
+		mProjectsName = parseProjectsName(projectsName);
+		System.out.println("EzScrumExporter name count: "+mProjectsName.size());
+	}
+	
+	public ArrayList<String> parseProjectsName(String projectsName) {
+		ArrayList<String> projectNameList = new ArrayList<String>();
+		if (projectsName.equals("") || projectsName.equals(",")) {
+			return projectNameList;
+		}
+		String[] splitedProjectsName = projectsName.split(",");
+		projectNameList = new ArrayList<String>(Arrays.asList(splitedProjectsName));
+		return projectNameList;
 	}
 
 	@SuppressWarnings("unchecked")

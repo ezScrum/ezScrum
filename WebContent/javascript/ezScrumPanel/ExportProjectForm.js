@@ -45,7 +45,7 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	initComponent	: function() {
 		var config = {
 			url			: 'viewProjectList.do',
-			export_url	: 'saveConfiguration.do',	
+			export_url	: 'exportProject.do',	
 			items		: myCheckboxGroup,
 	        buttons : [{
 	        	formBind : true,
@@ -74,7 +74,6 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url: obj.url,
 			success : function(response) {
 				ProjectStore.loadData(response.responseXML);
-				console.log(ProjectStore.data);
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
 				loadmask.hide();
 			},
@@ -98,23 +97,15 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var obj = this;
     	var form = this.getForm();
     	this.showMask('loading info...');
-    	Ext.Ajax.request({
-    		url		: obj.export_url,
-    		params	: form.getValues(),
-    		success	: function(response) {
-				var result = response.responseText;
-				if (result == "success") {
-					Ext.example.msg('Modify DB Config', 'Success.');
-				} else {
-					Ext.example.msg('Modify DB Config', 'Sorry, the action is failure.');
-				}
-				obj.closeMask();
-    		},
-    		failure	: function(response){
-    			obj.closeMask();
-    			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-    		}
-    	});
+    	var projectsName = "";
+    	for (i = 1; i <= 2; i++) {
+    		projectsName += "Project" + i + ",";
+    	}
+    	console.log(projectsName);
+    	window.open('http://127.0.0.1:8080/ezScrum/exportProject.do?projectsName=' + projectsName);
+    	var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
+    	Ext.example.msg('Success', 'Export Project Success');
+		loadmask.hide();
 	}
 });
 
