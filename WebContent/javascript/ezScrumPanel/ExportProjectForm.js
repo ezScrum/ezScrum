@@ -100,7 +100,7 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url: obj.verify_export_url,
 			success: function(response) {
 				var result = Ext.decode(response.responseText);
-				if (result.isSuccess) {
+				if (result.isDatabaseVersionValid) {
 					obj.exportProjects();
 				} else {
 					Ext.example.msg('Export Failure', 'Database version error.');

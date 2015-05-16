@@ -18,8 +18,7 @@ public class VerifyExportProjectAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		JSONObject json = new JSONObject();
-		json.put("isSuccess", true);
-		System.out.println("json string: " + json.toJSONString());
+		json.put("isDatabaseVersionValid", true);
 		// 設定response 內容和型態
 		try {
 			response.setContentType("text/json; charset=utf-8");

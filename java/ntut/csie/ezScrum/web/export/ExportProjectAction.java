@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.export;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
