@@ -27,9 +27,7 @@ public class EzScrumExporter {
 	}
 	
 	public EzScrumExporter(String projectsName) {
-		System.out.println("EzScrumExporter: "+projectsName);
 		mProjectsName = parseProjectsName(projectsName);
-		System.out.println("EzScrumExporter name count: "+mProjectsName.size());
 	}
 	
 	public ArrayList<String> parseProjectsName(String projectsName) {
