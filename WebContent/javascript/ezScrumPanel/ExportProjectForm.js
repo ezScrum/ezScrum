@@ -1,17 +1,3 @@
-var myCheckboxGroup = new Ext.form.CheckboxGroup({
-    id:'myGroup',
-    xtype: 'checkboxgroup',
-    fieldLabel: 'Existing Project List',
-    itemCls: 'x-check-group-alt',
-    // Put all controls in a single column with width 100%
-    columns: 1,
-    items: [
-            {boxLabel: 'Item 1', name: 'cb-col-1'},
-            {boxLabel: 'Item 2', name: 'cb-col-2', checked: true},
-            {boxLabel: 'Item 3', name: 'cb-col-3'}
-        ]
-});
-
 var Project = Ext.data.Record.create(['ID', 'Name', 'Comment', 'ProjectManager', 'CreateDate', 'DemoDate']);
 
 var ProjectReader = new Ext.data.XmlReader({
@@ -37,7 +23,7 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	border			: false,
 	frame			: true,
 	store			: ProjectStore,
-	title			: 'Export Project',
+	title			: 'Select the projects you want to export:',
 	bodyStyle		: 'padding:0px',
 	labelAlign		: 'right',
 	labelWidth		: 150,
@@ -47,9 +33,9 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var config = {
 			url			: 'viewProjectList.do',
 			export_url	: 'exportProject.do',	
-			items		: myCheckboxGroup,
+			items		: [],
 	        buttons : [{
-	        	formBind : true,
+	        	id: 'exportButton',
 	        	scope    : this,
 	        	text     : 'Export',
 	        	disabled : true,
@@ -67,6 +53,22 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	closeMask : function() {
 		this.loadmask.hide();
 	},
+	updateButtonStatus : function() {
+		var exportButton = Ext.getCmp('exportButton');
+		var isValid = false;
+		for (i = 0; i < ProjectStore.getCount(); i++) {
+			var checkBox = Ext.getCmp(ProjectStore.getAt(i).get('ID'));
+			if (checkBox.checked) {
+				isValid = true;
+				break;
+			}
+		}
+		if (isValid) {
+			exportButton.enable();
+		} else {
+			exportButton.disable();
+		}
+	},
 	loadDataModel: function() {
 		var obj = this;
 		var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
@@ -77,13 +79,16 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 				ProjectStore.loadData(response.responseXML);
 				for (i = 0; i < ProjectStore.getCount(); i++) {
 					var record = ProjectStore.getAt(i);
-//					console.log(record);
-					myCheckboxGroup.items.add(new Ext.form.Checkbox({boxLabel: record.get('Name'), name: 'cb-col-4'}));
-		    	}
-				console.log(myCheckboxGroup);
+					obj.items.add(new Ext.form.Checkbox({
+								id: record.get('ID'), 
+								boxLabel: record.get('Name'), 
+								listeners:{
+									check: function() {
+										obj.updateButtonStatus();
+									}}}));
+				}
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
 				loadmask.hide();
-				obj.doLayout();
 			},
 			failure : function(){
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
@@ -92,24 +97,17 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			}
 		});
 	},
-    setDataModel: function(record) {
-    	this.getForm().reset();
-    	this.getForm().setValues({
-			ServerUrl	: record.get('ServerUrl'),
-			DBAccount	: record.get('DBAccount'),
-			DBType		: record.get('DBType'),
-			DBName		: record.get('DBName')
-		});
-    },
     doExport: function() {
 		var obj = this;
     	var form = this.getForm();
     	this.showMask('loading info...');
     	var projectsName = "";
-    	for (i = 1; i <= 2; i++) {
-    		projectsName += "Project" + i + ",";
-    	}
-    	console.log(projectsName);
+    	for (i = 0; i < ProjectStore.getCount(); i++) {
+			var checkBox = Ext.getCmp(ProjectStore.getAt(i).get('ID'));
+			if (checkBox.checked) {
+				projectsName += checkBox.id + ",";
+			}
+		}
     	window.open('http://127.0.0.1:8080/ezScrum/exportProject.do?projectsName=' + projectsName);
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
     	Ext.example.msg('Success', 'Export Project Success');
