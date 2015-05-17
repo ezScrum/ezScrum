@@ -24,7 +24,6 @@ public class EzScrumExporterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		config.DATABASE_NAME = "ezscrum_export_test";
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe();

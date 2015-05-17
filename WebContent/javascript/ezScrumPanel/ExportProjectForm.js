@@ -104,6 +104,7 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 					obj.exportProjects();
 				} else {
 					Ext.example.msg('Export Failure', 'Database version error.');
+					console.log('error report: ' + result.report);
 				}
 			},
 			failure: function(response) {
