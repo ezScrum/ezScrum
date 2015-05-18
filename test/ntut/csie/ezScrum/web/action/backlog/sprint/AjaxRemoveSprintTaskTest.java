@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -74,7 +74,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 
 	public void testRemoveSprintTask_1() throws Exception {
-		List<String> sprintIdList = mCS.getSprintsId();
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
 
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -94,7 +94,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintIdList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintIdList.get(0)));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", parentId);
 
@@ -123,12 +123,11 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 	
 	public void testRemoveSprintTask_2() throws Exception {
-		List<String> sprintIdList = mCS.getSprintsId();
-		int sprintId = Integer.parseInt(sprintIdList.get(0));
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
+		long sprintId = sprintIdList.get(0);
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;
@@ -138,15 +137,14 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 
 		TaskObject task = ATS.getTasks().get(0);
 
-		String expectedSprintId = sprintIdList.get(0);
+		long expectedSprintId = sprintIdList.get(0);
 		String issueId = String.valueOf(ATS.getTasksId().get(0));
-		String expectedStoryId = String.valueOf(ASS.getStories().get(0)
-				.getId());
+		String expectedStoryId = String.valueOf(ASS.getStories().get(0).getId());
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", expectedSprintId);
+		addRequestParameter("sprintID", String.valueOf(expectedSprintId));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", expectedStoryId);
 
@@ -173,7 +171,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 		
-		vaildateShowExistedTasks(expectedSprintId, expectedStoryId, task);
+		vaildateShowExistedTasks(String.valueOf(expectedSprintId), expectedStoryId, task);
 	}
 	
 	private void vaildateShowExistedTasks(String expectedSprintId, String expectedStoryId, TaskObject task){

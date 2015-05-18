@@ -9,11 +9,12 @@ public class DetailedFilter extends AProductBacklogFilter {
 
 	public DetailedFilter(ArrayList<StoryObject> issues) {
 		super(issues);
+		mStories = FilterStories();
 	}
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.mStories;
+		ArrayList<StoryObject> stories = mStories;
 		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
 		for (StoryObject story : stories) {
 			// business value 存在  & estimate 存在 & importance 存在

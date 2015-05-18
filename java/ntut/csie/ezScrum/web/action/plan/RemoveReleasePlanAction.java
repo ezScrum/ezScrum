@@ -1,17 +1,20 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,34 +36,40 @@ public class RemoveReleasePlanAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Remove Release Plan. ");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
 		String ReleaseId = request.getParameter("releaseID");
 
 		ReleasePlanHelper helper = new ReleasePlanHelper(project);		
 		IReleasePlanDesc desc = helper.getReleasePlan(ReleaseId);
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-		IStory[] stories = PBHelper.getStoriesByRelease(desc);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		
-		// 移除 Release 與底下 Story 的關係
-		for(int index = 0; index < stories.length; index++){
-			if(!(stories[index].getSprintID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
-				 stories[index].getSprintID().equals("-1")) ) {
-				PBHelper.removeReleaseTagFromIssue(stories[index].getIssueID());
-			} else {
-				PBHelper.removeReleaseSprint(stories[index].getIssueID());
+		if (desc == null) {
+			return new StringBuilder("false");
+		} else {
+			ArrayList<StoryObject> stories = PBHelper.getStoriesByRelease(desc);
+			List<ISprintPlanDesc> sprintPlanDescs = desc.getSprintDescList();
+
+			for (ISprintPlanDesc sprintPlanDesc : sprintPlanDescs) {
+				sprintPlanHelper.deleteSprint(sprintPlanDesc.getID());
 			}
+
+			// 移除 sprint 與底下 Story 的關係
+			for (int index = 0; index < stories.size(); index++) {
+				if (stories.get(index).getSprintId() > 0) {
+					PBHelper.dropStoryFromSprint(stories.get(index).getId());
+				}
+			}
+			// 刪除Release
+			helper.deleteReleasePlan(ReleaseId);
+
+			return new StringBuilder("true");
 		}
-		// 刪除Release
-		helper.deleteReleasePlan(ReleaseId);
-		
-		return new StringBuilder("true");
 	}
 }

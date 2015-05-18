@@ -4,12 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.form.ProjectInfoForm;
-import ntut.csie.ezScrum.web.helper.ProjectHelper;
-import ntut.csie.ezScrum.web.logic.ProjectLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,33 +36,19 @@ public class AjaxModifyProjectAction extends PermissionAction {
 		String comment = CheckStringValue(request.getParameter("Commnet"));
 		String projectManager = CheckStringValue(request.getParameter("ProjectManager"));
 
-		// get project info form
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectInfoForm projectform = projectMapper.getProjectInfoForm(project);
-
-		projectform.setDisplayName(projectDisplayName);
-		projectform.setAttachFileSize(attachFileSize);
-		projectform.setComment(comment);
-		projectform.setProjectManager(projectManager);
-
-		// save back to project info form
-		project = projectMapper.updateProject(projectform);
-
-		// 設定 session
-		request.getSession().removeAttribute(project.getName());
-		request.getSession().setAttribute(project.getName(), project);
-
-		// ezScrum v1.8
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
-		projectObject
+		ProjectObject project = SessionManager.getProjectObject(request);
+		project
 			.setDisplayName(projectDisplayName)
 			.setAttachFileSize(Long.parseLong(attachFileSize))
 			.setComment(comment)
 			.setManager(projectManager)
 			.save();
+		
+		request.getSession().removeAttribute(project.getName());
+		request.getSession().setAttribute(project.getName(), project);
+		
 		SessionManager sessionManager = new SessionManager(request);
-		sessionManager.setProjectObject(request, projectObject);
+		sessionManager.setProjectObject(request, project);
 		
 		return new StringBuilder("success");
 	}

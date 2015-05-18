@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +42,8 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 		log.info("Get Sprint Plan Combo Information in GetSprintPlanComboInfoAction");
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+
 		// get parameter
 		String currentSprintID = request.getParameter("SprintID");
 		

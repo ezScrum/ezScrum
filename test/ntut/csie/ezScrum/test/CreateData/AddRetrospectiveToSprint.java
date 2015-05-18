@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
@@ -94,9 +97,10 @@ public class AddRetrospectiveToSprint {
 //		IssueList.addAll(createStory.getIssueList());
 	}
 	
-	private void addRetrospectiveToSprint(IProject p, ArrayList<Long> list, String sprintID) {
-//		ProductBacklog pb = new ProductBacklog(p, config.getUserSession());
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, mConfig.getUserSession());
+	private void addRetrospectiveToSprint(IProject iproject, ArrayList<Long> list, String sprintID) {
+		// ProductBacklog pb = new ProductBacklog(p, config.getUserSession());
+		ProjectObject project = new ProjectObject(iproject.getName());
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project);
 		
 		for (long issueID : list) {
 //			IIssue issue = pb.getIssue(issueID);

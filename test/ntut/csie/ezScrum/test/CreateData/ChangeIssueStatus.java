@@ -6,12 +6,12 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ChangeIssueStatus {
 	private ArrayList<TaskObject> mTasks = new ArrayList<TaskObject>();
@@ -36,7 +36,7 @@ public class ChangeIssueStatus {
 	public void exeCheckOutTasks() {
 		IUserSession userSession = mConfiguration.getUserSession();
 		String handlerUsername = userSession.getAccount().getUsername();
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 
@@ -55,7 +55,7 @@ public class ChangeIssueStatus {
 	}
 	
 	public void exeCloseTasks() {
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 
@@ -75,17 +75,16 @@ public class ChangeIssueStatus {
 	}
 	
 	public void exeCloseStories() {
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
 		for (StoryObject story : mStories) {
 			long id = story.getId();
 			String name = story.getName();
 			String notes = story.getNotes();
-			SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
 			if (mSetDoneDate != null) {
-				sprintBacklogMapper.closeStory(id, name, notes, format.format(mSetDoneDate));
+				sprintBacklogMapper.closeStory(id, name, notes, mSetDoneDate);
 			} else {
-				sprintBacklogMapper.closeStory(id, name, notes, format.format(new Date()));
+				sprintBacklogMapper.closeStory(id, name, notes, new Date());
 			}
 			System.out.println("移動Story " + id + " 到 Done 成功");
 		}

@@ -142,55 +142,6 @@ ezScrum.ReleasePlan_MasterPanel = Ext.extend(Ext.Panel, {
 						SprintPlan_Window.showTheWindow_Edit(Ext.getCmp('releasePlanMasterPanel'), record.attributes['ID']);
 					}
 				}]
-			}, {
-				id: 'storyAction',
-				xtype: 'buttongroup',
-				columns: 2,
-				title: '<u><b>Story Action</b></u>',
-				items: [{
-					id: 'ReleasePlan_addExStoryBtn',
-					disabled: true,
-					text: 'Add Existed Story',
-					icon: 'images/add.gif',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						var id = selectedNode.attributes['ID'];
-						var type = selectedNode.attributes['Type'];
-						if (type == "Release") {
-							AddExistedStory_Window.showTheWindow_Release(Ext.getCmp('releasePlanMasterPanel'), id);
-						}
-					}
-				}, {
-					id: 'ReleasePlan_MoveStoryBtn',
-					disabled: true,
-					text: 'Move Story',
-					icon: 'images/arrow_right.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_StoryGrid').getSelectionModel().getSelected();
-						// 取出 Story 的 Issue ID 與 Sprint ID
-						var issueID = selectedNode.get('Id');
-						var sprintID = selectedNode.get('Sprint');
-						var releaseID = selectedNode.get('Release');
-
-						MoveStory_Window.showTheWindow_MoveStory(Ext.getCmp('releasePlanMasterPanel'), issueID, sprintID, releaseID);
-					}
-				}, {
-					id: 'ReleasePlan_DropStoryBtn',
-					disabled: true,
-					text: 'Drop Story',
-					icon: 'images/drop2.png',
-					handler: function() {
-						var selectedNode = Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode();
-						var type = selectedNode.attributes['Type'];
-						var type_id = selectedNode.attributes['ID'];
-						var sel = Ext.getCmp('ReleasePlan_StoryGrid').getSelectionModel().getSelected();
-						if (type == "Release") {
-							dropStoryFromReleaseWidget.dropStory(sel.id, type_id);
-						} else {
-							ReleasePlan_DropStoryWindow.dropStory(sel.id, type_id);
-						}
-					}
-				}]
 			}]
 		}
 

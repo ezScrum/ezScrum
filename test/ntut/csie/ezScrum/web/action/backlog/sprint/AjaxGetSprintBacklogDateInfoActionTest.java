@@ -8,14 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
@@ -23,9 +22,8 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private long mSprintId;
-	private IUserSession mUserSession;
 	private final String mActionPath = "/AjaxGetSprintBacklogDateInfo";
 
 	public AjaxGetSprintBacklogDateInfoActionTest(String testName) {
@@ -50,9 +48,8 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		mCS.exe();
 
 		mSprintId = 1;
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
-		mUserSession = mConfig.getUserSession();
 		super.setUp();
 
 		// ================ set action info ========================
@@ -82,21 +79,19 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCS = null;
 		mConfig = null;
-		mIProject = null;
-		mUserSession = null;
+		mProject = null;
 	}
 
 	public void testGetSprintBacklogDateInfoAction() {
-		List<String> sprintIdList = mCS.getSprintsId();
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("SprintID", sprintIdList.get(0));
+		addRequestParameter("SprintID", String.valueOf(sprintIdList.get(0)));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -105,8 +100,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		int availableDays = new SprintBacklogLogic(mIProject, mUserSession,
-				String.valueOf(mSprintId)).getSprintAvailableDays(mSprintId);
+		int availableDays = new SprintBacklogLogic(mProject, mSprintId).getSprintAvailableDays(mSprintId);
 		List<String> dateList = getWorkDate(mCS.mToday, availableDays);
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"Dates\":[");

@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetHandlerListTest extends MockStrutsTestCase {
@@ -18,7 +18,7 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private final String mActionPath = "/AjaxGetHandlerList";
-	private IProject mProject;
+	private ProjectObject mProject;
 	
 	public AjaxGetHandlerListTest(String testMethod) {
         super(testMethod);
@@ -34,7 +34,7 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
 		
     	mCP = new CreateProject(1);
     	mCP.exeCreate();								// 新增一測試專案
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
     	
     	mCS = new CreateSprint(2, mCP);
     	mCS.exe();										// 新增二筆Sprint Plan

@@ -8,8 +8,8 @@ import java.util.List;
 import ntut.csie.ezScrum.plugin.util.PluginModifier;
 import ntut.csie.ezScrum.pluginLoader.PluginManager;
 import ntut.csie.ezScrum.pluginLoader.PluginWrapper;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.PluginUI;
 import ntut.csie.ui.protocol.UIConfig;
@@ -130,10 +130,10 @@ public class EzScrumRoot {
 	}
 
 	public Object getDynamic(String token, StaplerRequest request, StaplerResponse response) {
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 
 		if (token.equals("project")) {
-			return new Project(project.getProjectDesc().getName());
+			return project;
 		}
 
 		if (token.equals("plugin")) {//enter to plugin

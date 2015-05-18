@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -77,12 +77,12 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 	}
 
 	public void testGetEditTaskInfo() throws Exception {
-		List<String> sprintIds = mCS.getSprintsId();
-		int sprintId = Integer.parseInt(sprintIds.get(0));
+		ArrayList<Long> sprintIds = mCS.getSprintsId();
+		long sprintId = sprintIds.get(0);
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+				sprintIds.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;
@@ -97,7 +97,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintIds.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintIds.get(0)));
 		addRequestParameter("issueID", taskId);
 
 		// ================ set session info ========================

@@ -33,10 +33,9 @@ public class TaskBoardHelperTest {
 	private static final String CREATE_PRODUCTBACKLOG_TYPE = "EST";
 	private TaskBoardHelper mTaskBoardHelper = null; 
 	
-
 	@Before
 	public void setUp() throws Exception {
-		// initialize database
+		// initialize Configuration
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -58,9 +57,9 @@ public class TaskBoardHelperTest {
 
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
-		
-		long sprintId = Long.parseLong(mCS.getSprintsId().get(0));
-		mTaskBoardHelper = new TaskBoardHelper(mCP.getProjectList().get(0), sprintId);
+
+		long sprintId = mCS.getSprintsId().get(0);
+		mTaskBoardHelper = new TaskBoardHelper(mCP.getAllProjects().get(0), sprintId);
 	}
 	
 	@After
@@ -91,7 +90,6 @@ public class TaskBoardHelperTest {
 	@Test
 	public void testGetTaskBoardStoryTaskListText_ALL() throws JSONException {
 		String response = mTaskBoardHelper.getTaskBoardStoryTaskListText("ALL").toString();
-		System.out.println(response);
 		JSONObject json = new JSONObject(response);
 
 		JSONArray stories = json.getJSONArray("Stories");

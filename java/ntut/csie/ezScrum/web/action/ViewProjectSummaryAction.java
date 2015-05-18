@@ -7,17 +7,13 @@ import javax.servlet.http.HttpSession;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.form.ProjectInfoForm;
-import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
-import ntut.csie.ezScrum.web.logic.ProjectLogic;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,59 +23,52 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ViewProjectSummaryAction extends Action {
+	
 	private static Log log = LogFactory.getLog(ViewProjectSummaryAction.class);
-	private SessionManager m_projectSessionManager = null;
+	private SessionManager mProjectSessionManager = null;
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 	        HttpServletResponse response) {
+		
 		HttpSession session = request.getSession();
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		String projectID = request.getParameter("PID");					//	取得Project ID
-		IProject project = (IProject) request.getAttribute(projectID);	//	根據project ID 取得專案
-		log.debug("Parameter=" + projectID);	//	project id log information
+		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectHelper projectHelper = new ProjectHelper();
+		String projectName = request.getParameter("PID");
+		log.debug("Parameter=" + projectName);
 
-		ProjectLogic projectLogic = new ProjectLogic();
-
-		// 比對PID是否存在
-		if (!projectLogic.isProjectExisted(projectID)) {
+		// 比對 project name 是否存在
+		if (!projectHelper.isProjectExisted(projectName)) {
 			return mapping.findForward("error");
 		}
 
-		//	判斷session中專案是否為空，空的話則建立新的專案於session中
+		// 判斷 session 中專案是否為空，空的話則建立新的專案於 session 中
 		if (project == null) {
-			ProjectMapper projectMapper = new ProjectMapper();
-			project = projectMapper.getProjectByID(projectID);
-			session.setAttribute(projectID, project);
+			project = projectHelper.getProjectByName(projectName);
+			session.setAttribute(projectName, project);
 		}
 
 		// 判斷該使用者是否存在於專案中
-		if (!projectLogic.isUserExistInProject(project, userSession)) {
-			session.removeAttribute(projectID);
+		if (!projectHelper.isUserExistInProject(project, userSession)) {
+			session.removeAttribute(projectName);
 			return mapping.findForward("permissionDenied");
 		}
 
-		m_projectSessionManager = new SessionManager(request);
+		mProjectSessionManager = new SessionManager(request);
+		request.setAttribute("projectObject", project);
 
-		// 以ProjectMapper來取得Project內的設定資料
-		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectInfoForm projectInfo = projectMapper.getProjectInfoForm(project);
-		request.setAttribute(IProjectSummaryEnum.PROJECT_INFO_FORM, projectInfo);
+		// 更新 session 中的資料
+		mProjectSessionManager.setProjectObject(request, project);
 
-		// 更新session中的資料
-		m_projectSessionManager.setProject(project);
-		m_projectSessionManager.setProjectInfoForm(projectInfo);
-		// ezScrum v1.8
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
-
-		// 取得 TaskBoard資訊
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, "-1");
+		// 取得 TaskBoard 資訊
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 
 		TaskBoard board = null;
 		if (sprintBacklogMapper != null) {
 			board = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
 			request.setAttribute("TaskBoard", board);
-			request.setAttribute("SprintID", board.getSprintID());
+			request.setAttribute("SprintID", board.getSprintId());
 		} else {
 			request.setAttribute("TaskBoard", board);
 			request.setAttribute("SprintID", "null");

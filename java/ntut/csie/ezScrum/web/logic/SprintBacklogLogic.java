@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -44,7 +45,6 @@ public class SprintBacklogLogic {
 	
 	public SprintBacklogLogic(ProjectObject project, long sprintId) {
 		mProject = project;
-		mIProject = (new ProjectMapper()).getProjectByID(mProject.getName());
 		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
 	}
 
@@ -63,15 +63,25 @@ public class SprintBacklogLogic {
 
 		try {
 			if (sprintId == -1 || sprintId == 0) {
-				sprintBacklogMapper = new SprintBacklogMapper(mIProject);
+				sprintBacklogMapper = new SprintBacklogMapper(mProject);
 			} else {
-				sprintBacklogMapper = new SprintBacklogMapper(mIProject,
-						sprintId);
+				sprintBacklogMapper = new SprintBacklogMapper(mProject, sprintId);
 			}
 		} catch (Exception e) {
 			sprintBacklogMapper = null;
 		}
 		return sprintBacklogMapper;
+	}
+	
+	public void closeStory(long id, String name, String notes, String changeDate) {
+		Date closeDate = parseToDate(changeDate);
+		mSprintBacklogMapper.closeStory(id, name, notes, closeDate);
+	}
+	
+	public void reopenStory(long id, String name, String notes,
+			String changeDate) {
+		Date reopenDate = parseToDate(changeDate);
+		mSprintBacklogMapper.reopenStory(id, name, notes, reopenDate);
 	}
 
 	public void checkOutTask(long id, String name, String handlerUsername,
@@ -127,8 +137,8 @@ public class SprintBacklogLogic {
 		SprintBacklogMapper backlog = createSprintBacklogMapper(sprintId);
 		int availableDays = 0;
 		if (backlog.getSprintId() > 0) {
-			ISprintPlanDesc sprint = (new SprintPlanMapper(mIProject))
-					.getSprintPlan(Integer.toString(backlog.getSprintId()));
+			ISprintPlanDesc sprint = (new SprintPlanMapper(mProject))
+					.getSprintPlan(Long.toString(backlog.getSprintId()));
 			availableDays = Integer.parseInt(sprint.getInterval()) * 5; // 一個禮拜五天
 		}
 		return availableDays;
@@ -385,8 +395,8 @@ public class SprintBacklogLogic {
 		public int compare(StoryObject story1, StoryObject story2) {
 			if (mType == TYPE_EST) {
 				return story1.getEstimate() - story2.getEstimate();
-			} else if (mType == TYPE_IMP) {
-				return story1.getImportance() - story2.getImportance();
+			} else if (mType == TYPE_IMP) { // Importance from large to small
+				return story2.getImportance() - story1.getImportance();
 			} else if (mType == TYPE_VAL) {
 				return story1.getValue() - story2.getValue();
 			} else {

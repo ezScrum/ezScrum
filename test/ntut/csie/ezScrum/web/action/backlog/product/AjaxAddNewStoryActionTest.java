@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -83,17 +82,17 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryEstimation= "0";
 		String expectedStoryValue= "0";
 		String expectedSprintId= null;
-		String expectedTagIDs = "";
+		String expectedTagNames = "";
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
-		addRequestParameter("Estimation", expectedStoryEstimation);
+		addRequestParameter("Estimate", expectedStoryEstimation);
 		addRequestParameter("Value", expectedStoryValue);
 		addRequestParameter("HowToDemo", expectedStoryHoewToDemo);
 		addRequestParameter("Notes", expectedStoryNote);
-		addRequestParameter("sprintId", expectedSprintId);
-		addRequestParameter("TagIDs", expectedTagIDs);
+		addRequestParameter("SprintId", expectedSprintId);
+		addRequestParameter("Tags", expectedTagNames);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -111,15 +110,15 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 							.append("\"Stories\":[{")
 							.append("\"Id\":1,")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")			
+							.append("\"Estimate\":").append(expectedStoryEstimation).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")
 							.append("\"Tag\":\"\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=1\",")
-							.append("\"Release\":\"None\",")
+							.append("\"Link\":\"\",")
+							.append("\"Release\":\"\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"BACKLOG\",")
 							.append("\"Attach\":false,")
@@ -143,17 +142,17 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryEstimation= "0";
 		String expectedStoryValue= "0";
 		String expectedSprintId= "";
-		String expectedTagIDs = null;
+		String expectedTagNames = null;
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
-		addRequestParameter("Estimation", expectedStoryEstimation);
+		addRequestParameter("Estimate", expectedStoryEstimation);
 		addRequestParameter("Value", expectedStoryValue);
 		addRequestParameter("HowToDemo", expectedStoryHoewToDemo);
 		addRequestParameter("Notes", expectedStoryNote);
-		addRequestParameter("sprintId", expectedSprintId);
-		addRequestParameter("TagIDs", expectedTagIDs);
+		addRequestParameter("SprintId", expectedSprintId);
+		addRequestParameter("Tags", expectedTagNames);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -171,15 +170,15 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 							.append("\"Stories\":[{")
 							.append("\"Id\":1,")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")			
+							.append("\"Estimate\":").append(expectedStoryEstimation).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")
 							.append("\"Tag\":\"\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=1\",")
-							.append("\"Release\":\"None\",")
+							.append("\"Link\":\"\",")
+							.append("\"Release\":\"\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"BACKLOG\",")
 							.append("\"Attach\":false,")
@@ -206,18 +205,17 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryEstimation = "0";
 		String expectedStoryValue = "0";
 		String expectedSprintId = "";
-		String expectedTagIDs = tagList.get(0).getId() + "," + tagList.get(1).getId();
 		String expectedTagNames = tagList.get(0).getName() + "," + tagList.get(1).getName();
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
-		addRequestParameter("Estimation", expectedStoryEstimation);
+		addRequestParameter("Estimate", expectedStoryEstimation);
 		addRequestParameter("Value", expectedStoryValue);
 		addRequestParameter("HowToDemo", expectedStoryHoewToDemo);
 		addRequestParameter("Notes", expectedStoryNote);
-		addRequestParameter("sprintId", expectedSprintId);
-		addRequestParameter("TagIDs", expectedTagIDs);
+		addRequestParameter("SprintId", expectedSprintId);
+		addRequestParameter("Tags", expectedTagNames);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -235,15 +233,15 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 							.append("\"Stories\":[{")
 							.append("\"Id\":1,")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")
+							.append("\"Estimate\":").append(expectedStoryEstimation).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")
 							.append("\"Tag\":\"").append(expectedTagNames).append("\",")			
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=1\",")
-							.append("\"Release\":\"None\",")
+							.append("\"Link\":\"\",")
+							.append("\"Release\":\"\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"BACKLOG\",")
 							.append("\"Attach\":false,")
@@ -264,28 +262,27 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		
 		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe();
-		List<String> sprintIDList = CS.getSprintsId();
+		List<Long> sprintIDList = CS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
-		String expectedStoryEstimation= "0";
-		String expectedStoryValue= "0";
-		String expectedSprintId= sprintIDList.get(0);
-		String expectedTagIDs = tagList.get(0).getId() + "," + tagList.get(1).getId();
+		String expectedStoryEstimation = "0";
+		String expectedStoryValue = "0";
+		String expectedSprintId = String.valueOf(sprintIDList.get(0));
 		String expectedTagNames = tagList.get(0).getName() + "," + tagList.get(1).getName();
 		String expectedStoryHoewToDemo = "UT for Add New Story for How to Demo";
 		String expectedStoryNote = "UT for Add New Story for Notes";
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
-		addRequestParameter("Estimation", expectedStoryEstimation);
+		addRequestParameter("Estimate", expectedStoryEstimation);
 		addRequestParameter("Value", expectedStoryValue);
 		addRequestParameter("HowToDemo", expectedStoryHoewToDemo);
 		addRequestParameter("Notes", expectedStoryNote);
-		addRequestParameter("sprintId", expectedSprintId);
-		addRequestParameter("TagIDs", expectedTagIDs);
+		addRequestParameter("SprintId", expectedSprintId);
+		addRequestParameter("Tags", expectedTagNames);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -303,16 +300,16 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 							.append("\"Stories\":[{")
 							.append("\"Id\":1,")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")		
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")		
+							.append("\"Estimate\":").append(expectedStoryEstimation).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")
 							.append("\"Tag\":\"").append(expectedTagNames).append("\",")	
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=1\",")
-							.append("\"Release\":\"None\",")
-							.append("\"Sprint\":\"").append(expectedSprintId).append("\",")
+							.append("\"Link\":\"\",")
+							.append("\"Release\":\"\",")
+							.append("\"Sprint\":").append(expectedSprintId).append(",")
 							.append("\"FilterType\":\"BACKLOG\",")
 							.append("\"Attach\":false,")
 							.append("\"AttachFileList\":[]")

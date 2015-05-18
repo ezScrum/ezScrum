@@ -2,7 +2,7 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -79,12 +79,12 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	 * 沒有Sprint
 	 */
 	public void testShowSprintBacklog_1(){
-		List<String> idList = mCS.getSprintsId();
+		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
@@ -95,17 +95,17 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedSprintId= idList.get(0);
+		long expectedSprintId= sprintsId.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10.0";
+		String expectedSprintHoursToCommit = "10";
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,\"Total\":0,")
 							.append("\"Sprint\":{")
 							.append("\"Id\":").append(expectedSprintId).append(",")
 							.append("\"Name\":\"Sprint #").append(expectedSprintId).append("\",")
-							.append("\"CurrentPoint\":\"0.0\",")
-							.append("\"LimitedPoint\":\"").append(expectedSprintHoursToCommit).append("\",")
-							.append("\"TaskPoint\":\"0.0\",")
+							.append("\"CurrentPoint\":0,")
+							.append("\"LimitedPoint\":").append(expectedSprintHoursToCommit).append(",")
+							.append("\"TaskPoint\":0,")
 							.append("\"ReleaseID\":\"Release #None\",")
 							.append("\"SprintGoal\":\"").append(expectedSprintGoal).append("\"},")
 							.append("\"Stories\":[]}");
@@ -118,11 +118,11 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	 * @throws Exception 
 	 */
 	public void testShowSprintBacklog_2() throws Exception{
-		List<String> idList = mCS.getSprintsId();
-		int sprintID = Integer.parseInt(idList.get(0));
+		ArrayList<Long> sprintsId = mCS.getSprintsId();
+		long sprintID = sprintsId.get(0);
 		int storyCount = 1;
 		int storyEst = 5;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintsId.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		
 		int taskCount = 1;
@@ -133,7 +133,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -151,9 +151,9 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		int expectedStoryValue = addStoryToSprint.getStories().get(0).getValue();
 		String expectedStoryHoewToDemo = addStoryToSprint.getStories().get(0).getHowToDemo();
 		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
-		String expectedSprintId= idList.get(0);
+		long expectedSprintId= sprintsId.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10.0";
+		String expectedSprintHoursToCommit = "10";
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 		
 		StringBuilder expectedResponseText = new StringBuilder();
@@ -162,25 +162,25 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 							.append("\"Sprint\":{")
 							.append("\"Id\":").append(expectedSprintId).append(",")
 							.append("\"Name\":\"Sprint #").append(expectedSprintId).append("\",")
-							.append("\"CurrentPoint\":\"").append(expectedStoryEstimate).append(".0\",")
-							.append("\"LimitedPoint\":\"").append(expectedSprintHoursToCommit).append("\",")
-							.append("\"TaskPoint\":\"").append(taskEstValue).append(".0\",")
+							.append("\"CurrentPoint\":").append(expectedStoryEstimate).append(",")
+							.append("\"LimitedPoint\":").append(expectedSprintHoursToCommit).append(",")
+							.append("\"TaskPoint\":").append(taskEstValue).append(",")
 							.append("\"ReleaseID\":\"Release #None\",")
 							.append("\"SprintGoal\":\"").append(expectedSprintGoal).append("\"},")
 							.append("\"Stories\":[{")
 							.append("\"Id\":").append(storyId).append(",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(storyId).append("\",")
+							.append("\"Link\":\"\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimate).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")			
+							.append("\"Estimate\":").append(expectedStoryEstimate).append(",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"Tag\":\"\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Release\":\"None\",")
-							.append("\"Sprint\":\"").append(expectedSprintId).append("\",")
-							.append("\"Attach\":\"false\",")
+							.append("\"Release\":\"\",")
+							.append("\"Sprint\":").append(expectedSprintId).append(",")
+							.append("\"Attach\":false,")
 							.append("\"AttachFileList\":[]")
 							.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();

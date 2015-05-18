@@ -114,6 +114,13 @@ var taskJSReader = new Ext.data.JsonReader({
    totalProperty: 'Total'
 }, Task);
 
+/* Story Jason Parser */
+var storyJSReader = new Ext.data.JsonReader({
+   root: 'Story',
+   id : 'Id',
+   totalProperty: 'Total'
+}, Story);
+
 /* Issue Jason Parser, include Story and Task */
 var jsonIssueReader = new Ext.data.JsonReader({
    root: 'Issue',

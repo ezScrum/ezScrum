@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -88,7 +89,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 	
 	//測試加入 DB 中已經存在的tag 名稱，並檢視request訊息要包含XML的轉換
 	public void testAddExistTag() throws Exception{
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		String tagDB = "HELLO COOL";
 		String tag = "HELLO COOL";
@@ -99,7 +100,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
-		(new ProductBacklogHelper(mConfig.getUserSession(), project)).addNewTag(tagDB);
+		new ProductBacklogHelper(project).addNewTag(tagDB);
 		
 		addRequestParameter("newTagName", tag);//增加新的tag
 		
@@ -112,7 +113,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 	
 	//測試新增 tag ，並從 DB 中取出比對
 	public void testAddNewTag() throws Exception{
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		List<String> tagList = new ArrayList<String>();
 		//tagList.add("&/<>\'\"");
@@ -148,7 +149,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 			response.reset();
 		}
 		
-		ArrayList<TagObject> tags = (new ntut.csie.ezScrum.web.helper.ProductBacklogHelper( mConfig.getUserSession(), project)).getTagList();
+		ArrayList<TagObject> tags = (new ProductBacklogHelper(project)).getTagList();
 		
 		assertEquals(tags.size(), tagList.size());
 		for(int i = 0; i < tags.size(); i++){

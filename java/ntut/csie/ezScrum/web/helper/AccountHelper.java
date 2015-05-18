@@ -17,7 +17,6 @@ import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
-import ntut.csie.jcis.account.core.IRole;
 
 public class AccountHelper {
 	private final String SYSTEM = "system";

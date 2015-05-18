@@ -148,7 +148,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				name: 'HowToDemo',
 				height: 150
 			}, {
-				name: 'sprintId',
+				name: 'SprintId',
 				hidden: true
 			}, {
 				xtype: 'RequireFieldLabel'
@@ -198,7 +198,9 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 		IssueTagMenu.items.each(function() {
 			obj.UpdateStoryTag(this.tagId, this.text, this.checked);
 		});
-
+		
+		
+		
 		Ext.Ajax.request({
 			url: obj.editurl,
 			params: form.getValues(),
@@ -381,7 +383,7 @@ ezScrum.window.StoryWindow = Ext.extend(ezScrum.layout.Window, {
 		// initial form info
 		this.StoryForm.initialAddForm();
 		this.StoryForm.getForm().setValues({
-			sprintId: sprintID
+			SprintId: sprintID
 		});
 		this.StoryForm.notifyPanel = panel;
 

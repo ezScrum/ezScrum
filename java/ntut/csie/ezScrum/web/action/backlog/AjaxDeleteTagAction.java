@@ -3,11 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,25 +33,13 @@ public class AjaxDeleteTagAction extends PermissionAction {
 		log.info("Delete Tag in AjaxDeleteTagAction.");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-    	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 
     	// get parameter info
     	long tagId = Long.parseLong(request.getParameter("tagId"));
-    	ProductBacklogHelper PBHelper = new ProductBacklogHelper(session,project);    	
+    	ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);    	
     	StringBuilder result = PBHelper.getDeleteTagReponseText(tagId);
 
 		return result;
-//    	ProductBacklogHelper PBHelper = new ProductBacklogHelper(project,session);    	
-//    	PBHelper.deleteTag(tagId);
-//
-//		StringBuilder result = new StringBuilder("");
-//		result.append("<TagList><Result>success</Result>");
-//		result.append("<IssueTag>");
-//		result.append("<Id>" + tagId + "</Id>");
-//		result.append("</IssueTag>");
-//		result.append("</TagList>");
-//
-//		return result;
 	}
 }

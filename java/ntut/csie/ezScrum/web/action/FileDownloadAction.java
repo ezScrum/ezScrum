@@ -42,7 +42,7 @@ public class FileDownloadAction extends DownloadAction {
 		}
 		
 		// 用 file id 取得檔案
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(projectObject);
 		ProjectHelper projectHelper = new ProjectHelper();
 		AttachFileObject attachFile = productBacklogHelper.getAttachFile(fileId);
 		boolean validDownload = productBacklogHelper.checkAccountInProject(projectHelper.getProjectMemberList(projectObject), userObject);

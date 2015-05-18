@@ -2,7 +2,7 @@ Ext.ns('ezScrum');
 Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
-var IssueStore_ForDoneIssue = new Ext.data.Store({
+var IssueStore_ForDoneTask = new Ext.data.Store({
 	idIndex	: 0,
 	id		: 0,
 	fields	:[
@@ -13,6 +13,19 @@ var IssueStore_ForDoneIssue = new Ext.data.Store({
 		{name : 'Partners'}
 		],
 	reader	: taskJSReader
+});
+
+var IssueStore_ForDoneStory = new Ext.data.Store({
+	idIndex	: 0,
+	id		: 0,
+	fields	:[
+		{name : 'Id'},
+		{name : 'IssueType'},
+		{name : 'Name'},
+		{name : 'Notes'},
+		{name : 'Partners'}
+		],
+	reader	: storyJSReader
 });
 
 /* Check out Issue Form */
@@ -92,8 +105,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     		var rs = jsonIssueReader.read(response);
 			if(rs.success) {
 				var record = rs.records[0];
-				if(record)
-				{
+				if(record) {
 					this.fireEvent('DOSuccess', this, response, record);
 				}
 			}
@@ -105,8 +117,16 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     onLoadSuccess: function(response) {
     	ConfirmWidget.loadData(response);
     	if (ConfirmWidget.confirmAction()) {
-    		IssueStore_ForDoneIssue.loadData(Ext.decode(response.responseText));		// load issue info
-			var record = IssueStore_ForDoneIssue.getAt(0);
+    		// load issue info
+    		var record;
+    		if (response.responseText.includes('Story')) {
+    			IssueStore_ForDoneStory.loadData(Ext.decode(response.responseText));
+    			record = IssueStore_ForDoneStory.getAt(0);
+    		} else {
+    			IssueStore_ForDoneTask.loadData(Ext.decode(response.responseText));
+    			record = IssueStore_ForDoneTask.getAt(0);
+    		}
+			
 			if(record) {
 				this.getForm().setValues({
 					Id			: record.data['Id'],
@@ -118,8 +138,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				});
 				
 				// append issueID to window title. "DoneIssueWindow" define in TaskBoardCardFormPanel.js
-				DoneIssueWindow.setTitle('Done Issue #' + record.data['Id']);
-				//this.fireEvent('LoadSuccess', this, response, record);
+				DoneIssueWindow.setTitle('Done ' + record.json['IssueType'] + ' #' + record.data['Id']);
 			}
     	}
     },

@@ -7,11 +7,11 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -33,7 +33,7 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
@@ -56,7 +56,8 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 		
 		// Add new unplanned item
 		UnplannedItemHelper helper = new UnplannedItemHelper(project, session);
-		long id = helper.addUnplannedItem(taskName,taskEst, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME),ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE,SprintID);
+		long id = helper.addUnplannedItem(taskName, taskEst, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE,
+		          Long.parseLong(SprintID));
 
 		// return result of new unplanned item in XML
 		IIssue unplannedItem = helper.getIssue(id);
@@ -76,7 +77,6 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 			  .append("<Notes>").append(tsc.TranslateXMLChar(unplannedItem.getNotes())).append("</Notes>")
 			  .append("</UnplannedItem>")
 			  .append("</AddUnplannedItem>");
-		
 		return result;
 	}
 }

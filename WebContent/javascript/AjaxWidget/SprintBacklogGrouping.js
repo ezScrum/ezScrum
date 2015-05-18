@@ -388,7 +388,7 @@ var masterWidget = new Ext.Panel({
 	// move story to release or other sprint
     moveStory:function() {
         var storyRecord = TreeWidget.getSelectionModel().getSelectedNode();
-		moveStoryWidget.moveStory(storyRecord.attributes['ID'], storyRecord.attributes['SprintID'], storyRecord.attributes['ReleaseID']);
+		moveStoryWidget.moveStory(storyRecord.attributes['ID'], storyRecord.attributes['SprintID']);
     },
     
     // Show Sprint Information

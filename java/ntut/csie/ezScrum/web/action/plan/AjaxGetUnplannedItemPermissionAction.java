@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -23,7 +23,7 @@ public class AjaxGetUnplannedItemPermissionAction extends Action {
 		
 		try{
 			//取得專案名稱
-			IProject project = (IProject) SessionManager.getProject(request);
+			ProjectObject project = SessionManager.getProjectObject(request);
 			String projrctName = project.getName();
 			
 			Map<String, ScrumRole> scrumRoles = ( Map<String, ScrumRole> )request.getSession().getAttribute("ScrumRoles");

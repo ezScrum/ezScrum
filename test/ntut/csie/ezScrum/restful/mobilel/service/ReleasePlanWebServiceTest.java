@@ -1,8 +1,10 @@
 package ntut.csie.ezScrum.restful.mobilel.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.sql.SQLException;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -12,9 +14,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
-import ntut.csie.jcis.resource.core.IProject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,7 +31,7 @@ public class ReleasePlanWebServiceTest {
 	private int mSprintCount = 3;
 	private CreateProject mCP;
 	private CreateRelease mCR;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private ReleasePlanHelper mReleasePlanHelper;
 	private ReleasePlanWebService mReleasePlanWebService;
 	private Configuration mConfig;
@@ -50,7 +53,7 @@ public class ReleasePlanWebServiceTest {
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
 		
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(mProject);
 	}
 

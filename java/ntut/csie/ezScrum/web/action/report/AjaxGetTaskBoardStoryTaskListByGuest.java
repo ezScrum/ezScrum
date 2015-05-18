@@ -9,12 +9,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -27,16 +27,15 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 
-		IProject project = (IProject) request.getSession().getAttribute("Project");
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		String sprintID = request.getParameter("sprintID");
+		ProjectObject project = SessionManager.getProjectObject(request);
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
-		List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
 
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
-		for (IIssue story : stories) {
+		for (StoryObject story : stories) {
 			storyList.add(new TaskBoard_Story(story));
 		}
 
@@ -88,20 +87,20 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 		String Attach;
 		List<TaskBoard_AttachFile> AttachFileList;
 
-		public TaskBoard_Story(IIssue story) {
-			Id = Long.toString(story.getIssueID());
-			Name = HandleSpecialChar(story.getSummary());
-			Value = story.getValue();
-			Estimate = story.getEstimated();
-			Importance = story.getImportance();
+		public TaskBoard_Story(StoryObject story) {
+			Id = Long.toString(story.getId());
+			Name = HandleSpecialChar(story.getName());
+			Value = Long.toString(story.getValue());
+			Estimate = Long.toString(story.getEstimate());
+			Importance = Long.toString(story.getImportance());
 			Tag = Translation.Join(story.getTags(), ",");
-			Status = story.getStatus();
+			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
-			Release = story.getReleaseID();
-			Sprint = story.getSprintID();
+			Release = "";
+			Sprint = Long.toString(story.getSprintId());
 
-			Link = story.getIssueLink();
+			Link = "";
 			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
 			if (!AttachFileList.isEmpty())
@@ -131,12 +130,14 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	}
 
 	// 嚙諄抬蕭嚙緻IIssue嚙踝蕭AttachFile嚙踝蕭Path
-	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story, ArrayList<AttachFileObject> list) {
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(StoryObject story, ArrayList<AttachFileObject> attachFiles) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
-		for (AttachFileObject attachFile : list) {
+		for (AttachFileObject attachFile : attachFiles) {
+			ProjectObject project = ProjectObject.get(story.getProjectId());
+			String projectName = project.getName();
 			array.add(new TaskBoard_AttachFile(attachFile.getId(), attachFile.getName(), "fileDownload.do?projectName="
-			        + story.getProjectName() + "&fileId=" + attachFile.getId() + "&fileName=" + attachFile.getName()
+			        + projectName + "&fileId=" + attachFile.getId() + "&fileName=" + attachFile.getName()
 			        , new Date(attachFile.getCreateTime())));
 		}
 		return array;

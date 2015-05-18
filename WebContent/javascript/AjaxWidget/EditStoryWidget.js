@@ -47,23 +47,19 @@ var tagMenu_forEdit = new Ext.menu.Menu({
         var tagRaw = tagTriggerField_forEdit.getValue();
         var tagIDRaw = tagIDTextField_forEdit.getValue();
         
-        if (tagRaw.length != 0)
-        {
+        if (tagRaw.length != 0) {
             tags = tagRaw.split(",");
             tagIDs = tagIDRaw.split(",");
-        } else
-        {
+        } else {
             tags = [];
             tagIDs = [];
         }
-        if (checked)
-        {
+        if (checked) {
             tags.push(item.text);
 
             tagIDs.push(item.tagId);
 
-        } else
-        {
+        } else {
             var index = tags.indexOf(item.text);
             tags.splice(index, 1);
             tagIDs.splice(index, 1);
@@ -253,7 +249,14 @@ ezScrum.EditStoryForm = Ext.extend(Ext.form.FormPanel, {
 					//確保 record 在 TagStore reload 之前 set 好, setCheck 才不會有問題
 					CreateStoryWidgetTagStore_forEdit.reload();
 					this.record = record;
-					this.getForm().setValues({issueID:record.data['Id'], Name : record.data['Name'],Value : record.data['Value'], Importance : record.data['Importance'], Estimate : record.data['Estimate'], Notes : record.data['Notes'], HowToDemo : record.data['HowToDemo']});
+					this.getForm().setValues({
+						issueID:record.data['Id'],
+						Name : record.data['Name'],
+						Value : record.data['Value'],
+						Importance : record.data['Importance'],
+						Estimate : record.data['Estimate'],
+						Notes : record.data['Notes'],
+						HowToDemo : record.data['HowToDemo']});
 					this.fireEvent('LoadSuccess', this, response, record);
 				}
 			}

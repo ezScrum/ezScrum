@@ -76,11 +76,11 @@ Ext.onReady(function() {
 			<tr>
 				<td class="SummaryTableBodyBorder">
 				<li class="SummaryFieldText">Project comment: <span
-					class="SummaryDataText">${projectInfoForm.comment}</span></li>
+					class="SummaryDataText">${projectObject.getComment()}</span></li>
 				<li class="SummaryFieldText">Project Manager: <span
-					class="SummaryDataText">${projectInfoForm.projectManager}</span></li>
+					class="SummaryDataText">${projectObject.getManager()}</span></li>
 				<li class="SummaryFieldText">Create Date: <span
-					class="SummaryDataText">${projectInfoForm.createDate}</span></li>
+					class="SummaryDataText">${new Date(projectObject.getCreateTime())}</span></li>
 
 
 				</td>

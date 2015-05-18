@@ -12,12 +12,12 @@ public class TaskHandlerFilter extends AProductBacklogFilter {
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		return null;
+		return mStories;
 	}
 
 	@Override
 	protected ArrayList<TaskObject> FilterTasks() {
-		ArrayList<TaskObject> Tasks = super.mTasks;
+		ArrayList<TaskObject> Tasks = mTasks;
 
 		ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
 
@@ -26,7 +26,7 @@ public class TaskHandlerFilter extends AProductBacklogFilter {
 		} else {
 			for (TaskObject task : Tasks) {
 				// task handler contains info
-				if ((task.getHandler() != null) && (task.getHandler().getUsername().equals(this.mCompareInfo))) {
+				if ((task.getHandler() != null) && (task.getHandler().getUsername().equals(mCompareInfo))) {
 					filteredTasks.add(task);
 				}
 			}

@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -23,7 +23,7 @@ public class GetTaskBoardStagesAction extends Action {
 		
 		String result = "";
 //		String projectID = request.getParameter("PID");
-		IProject project = (IProject) request.getSession().getAttribute("Project");		
+		ProjectObject project = (ProjectObject) request.getSession().getAttribute("Project");		
 		int sprintIDInt  = Integer.parseInt( request.getParameter("sprintID") );
 				
 		SprintPlanHelper sph = new SprintPlanHelper(project);

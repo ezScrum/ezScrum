@@ -12,16 +12,16 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddExistedTask extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIPoject;
+	private ProjectObject mProject;
 	private final String mActionPath = "/addExistedTask";
 
 	public AjaxAddExistedTask(String testName) {
@@ -45,7 +45,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
-		mIPoject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 		// ================ set action info ========================
@@ -75,7 +75,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		mCP = null;
 		mCS = null;
 		mConfig = null;
-		mIPoject = null;
+		mProject = null;
 	}
 
 	/**
@@ -83,8 +83,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 	 */
 	public void testAddExistedTask() throws Exception {
 		long sprintId = Long.valueOf(mCS.getSprintsId().get(0));
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, (int) sprintId, mCP,
-				CreateProductBacklog.COLUMN_TYPE_EST);
+		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		long storyId = ASS.getStories().get(0).getId();
@@ -96,13 +95,12 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		dropTask.exe();
 
 		// ================ set request info ========================
-		String projectName = mIPoject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 
 		// 設定 Session 資訊
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
-		request.getSession().setAttribute("Project", mIPoject);
+		request.getSession().setAttribute("UserSession",mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);
 
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
@@ -120,10 +118,8 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(
-				mIPoject, mConfig.getUserSession(), sprintId);
-		ArrayList<TaskObject> tasks = sprintBacklogMapper
-				.getTasksByStoryId(storyId);
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(mProject, sprintId);
+		ArrayList<TaskObject> tasks = sprintBacklogMapper.getTasksByStoryId(storyId);
 		assertEquals(expectedTaskId, String.valueOf(tasks.get(0).getId()));
 	}
 }

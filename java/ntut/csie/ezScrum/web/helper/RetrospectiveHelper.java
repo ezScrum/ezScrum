@@ -7,15 +7,15 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.RetrospectiveMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class RetrospectiveHelper {
 	
 	private RetrospectiveMapper retrospectiveMapper;
 
-	public RetrospectiveHelper(IProject project, IUserSession userSession) {
+	public RetrospectiveHelper(ProjectObject project, IUserSession userSession) {
 		this.retrospectiveMapper = new RetrospectiveMapper(project, userSession);
 	}
 

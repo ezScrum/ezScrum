@@ -1,21 +1,19 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +39,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
@@ -75,25 +73,6 @@ public class SaveReleasePlanAction extends PermissionAction {
 			//Edit Release Plan 後, 重新抓取日期範圍內 Sprint 底下的 Story
 			rphelper.addReleaseSprintStory(project, session, ID, oldSprintList, rphelper.getReleasePlan(ID));
 		}	
-		
-//		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
-//			return null;
-//		} else if (request.getParameter("action").equals("save")) {
-//			rphelper.editReleasePlan(ID, Name, StartDate, EndDate, Description, "save");
-//			
-//			//Add release Plan 後, 自動加入日期範圍內 Sprint 底下的 Story
-//			addReleaseSprintStory(project, session, ID, null, rphelper.getReleasePlan(ID));
-//			
-//		} else if (request.getParameter("action").equals("edit")) {
-//			IReleasePlanDesc reDesc = rphelper.getReleasePlan(ID);
-//			List<ISprintPlanDesc> oldSprintList =  reDesc.getSprintDescList();//get the original list of sprint
-//			
-//			rphelper.editReleasePlan(ID, Name, StartDate, EndDate, Description, "edit");
-//			
-//			//Edit Release Plan 後, 重新抓取日期範圍內 Sprint 底下的 Story
-//			addReleaseSprintStory(project, session, ID, oldSprintList, rphelper.getReleasePlan(ID));
-//		}
-		
 		return new StringBuilder("true");
 	}
 	

@@ -1,17 +1,15 @@
 package ntut.csie.ezScrum.web.action;
 
-import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.service.IssueBacklog;
+
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -34,15 +32,13 @@ public class AjaxDeleteFileAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		log.info(" Delete File. ");
+		log.info("Delete File.");
 		
 		// 取得刪除file前需要的資料
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		String entryPoint = request.getParameter("entryPoint");
 		long issueId = Integer.parseInt(request.getParameter("issueId"));
 		long fileId = Long.parseLong(request.getParameter("fileId"));
 		String issueType = request.getParameter("issueType");
@@ -54,13 +50,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		PBHelper.deleteAttachFile(fileId);
 		
 		// 如果是在CustomIssue的頁面attach file的話，則translate custom issue的json
-		if(entryPoint!=null && entryPoint.equals("CustomIssue")) {
-			IssueBacklog backlog = new IssueBacklog(project, session);
-			IIssue issue = backlog.getIssue(issueId);
-			ArrayList<IIssue> list = new ArrayList<IIssue>();
-			list.add(issue);
-			result = new StringBuilder(Translation.translateCustomIssueToJson(list));
-		} else if (issueType.equals("Story")){
+		if (issueType.equals("Story")){
 			StoryObject story = PBHelper.getStory(issueId);
 			result = new StringBuilder(Translation.translateStoryToJson(story));
 		} else if (issueType.equals("Task")) {

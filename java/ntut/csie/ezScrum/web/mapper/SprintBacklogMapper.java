@@ -13,8 +13,7 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintBacklogMapper {
-	private int mSprintId = 0;
-	private IProject mIProject;
+	private long mSprintId = 0;
 	private ProjectObject mProject;
 	private ISprintPlanDesc mIterPlanDesc;
 	private Date mStartDate;
@@ -32,9 +31,8 @@ public class SprintBacklogMapper {
 	 * 
 	 * @param project
 	 */
-	public SprintBacklogMapper(IProject project) {
-		mIProject = project;
-		mProject = ProjectObject.get(mIProject.getName());
+	public SprintBacklogMapper(ProjectObject project) {
+		mProject = project;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
 		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
 		if (mIterPlanDesc != null) {
@@ -49,11 +47,14 @@ public class SprintBacklogMapper {
 	 * @param project
 	 * @param sprintId
 	 */
-	public SprintBacklogMapper(IProject project, long sprintId) {
-		mIProject = project;
+	public SprintBacklogMapper(ProjectObject project, long sprintId) {
+		mProject = project;
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
 		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
 		mSprintId = Integer.parseInt(mIterPlanDesc.getID());
+		if (mSprintId == -1) {
+			throw new RuntimeException("Sprint#-1 is not existed.");
+		}
 		initSprintInformation();
 	}
 
@@ -142,6 +143,7 @@ public class SprintBacklogMapper {
 	 * @return
 	 */
 	public ArrayList<TaskObject> getAllTasks() {
+		mUpdateFlag = true;
 		refresh();
 		return mTasks;
 	}
@@ -189,6 +191,8 @@ public class SprintBacklogMapper {
 			if (task != null) {
 				task.setStoryId(storyId);
 				task.save();
+			} else {
+				throw new RuntimeException("Task#" + taskId + " is not existed.");
 			}
 		}
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
@@ -218,12 +222,13 @@ public class SprintBacklogMapper {
 		mUpdateFlag = true;
 	}
 
-	public int getSprintId() {
+	public long getSprintId() {
 		return mSprintId;
 	}
 
 	public IProject getProject() {
-		return mIProject;
+		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
+		return iProject;
 	}
 
 	public Date getSprintStartDate() {
@@ -247,8 +252,7 @@ public class SprintBacklogMapper {
 	 *************************************************************/
 
 	public void closeStory(long id, String name, String notes,
-			String changeDate) {
-		Date specificDate = parseToDate(changeDate);
+			Date specificDate) {
 		StoryObject story = StoryObject.get(id);
 		if (story != null) {
 			story.setName(name).setNotes(notes)
@@ -260,8 +264,7 @@ public class SprintBacklogMapper {
 	}
 
 	public void reopenStory(long id, String name, String notes,
-			String changeDate) {
-		Date specificDate = parseToDate(changeDate);
+			Date specificDate) {
 		StoryObject story = StoryObject.get(id);
 		if (story != null) {
 			story.setName(name).setNotes(notes)
@@ -290,25 +293,6 @@ public class SprintBacklogMapper {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes).setActual(actual)
-					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
-					.setUpdateTime(specificDate.getTime())
-					.save(specificDate.getTime());
-		}
-		mUpdateFlag = true;
-	}
-
-	/**
-	 * From Checked Out to Done
-	 * 
-	 * @param id
-	 * @param name
-	 * @param notes
-	 * @param specificDate
-	 */
-	public void closeTask(long id, String name, String notes, Date specificDate) {
-		TaskObject task = TaskObject.get(id);
-		if (task != null) {
-			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
@@ -393,11 +377,10 @@ public class SprintBacklogMapper {
 		if (mStories == null || mTasks == null) {
 			mStories = new ArrayList<StoryObject>();
 			mTasks = new ArrayList<TaskObject>();
-		} else {
-			mStories.clear();
-			mTasks.clear();
 		}
+		
 		mStories = getStoriesBySprintId(mSprintId);
+		mTasks.clear();
 		for (StoryObject story : mStories) {
 			mTasks.addAll((ArrayList<TaskObject>)story.getTasks());
 		}

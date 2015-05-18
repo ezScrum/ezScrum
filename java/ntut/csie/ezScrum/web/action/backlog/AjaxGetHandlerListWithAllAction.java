@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
@@ -35,12 +36,13 @@ public class AjaxGetHandlerListWithAllAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Handler List With All in AjaxGetHandlerListWithAllAction.java");
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 //		MantisAccountMapper helper = new MantisAccountMapper(project, session);
 //		List<String> actors = helper.getScrumWorkerList();
-		List<String> actors = (new ProjectMapper()).getProjectScrumWorkerList(userSession, project);
+		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
+		List<String> actors = (new ProjectMapper()).getProjectScrumWorkerList(userSession, iProject);
 
 		StringBuilder result = new StringBuilder();
 		result.append("<Handlers><Result>success</Result>");

@@ -12,8 +12,8 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveReleasePlanActionTest extends MockStrutsTestCase {
@@ -73,7 +73,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     // 測試 Save 路徑
     public void testExecuteSave() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	Calendar cal = Calendar.getInstance();
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
@@ -111,7 +111,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	assertEquals("true", response.getWriterBuffer().toString());
     	
     	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount() + 1));
     	assertEquals(Integer.toString(mCR.getReleaseCount() + 1), releasePlan.getID());
     	assertEquals(releaseName, releasePlan.getName());
@@ -130,7 +130,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     // 測試 Edit 路徑
     public void testExecuteEdit() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	Calendar cal = Calendar.getInstance();
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
@@ -167,7 +167,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
     	
     	// 驗證ReleasePlan資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
     	assertEquals(Integer.toString(mCR.getReleaseCount()), releasePlan.getID());
     	assertEquals(releaseName, releasePlan.getName());
@@ -238,7 +238,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     // 測試參數沒有給正確數值，如，（日期格式錯誤）
     public void testExecuteWrongParameter1() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	Calendar cal = Calendar.getInstance();
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
@@ -274,7 +274,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
     	
     	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
     	assertNotNull(releasePlan);
     	
@@ -289,7 +289,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     // 測試參數沒有給正確數值，如，（Name 為 null）
     public void testExecuteWrongParameter2() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = mCP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	Calendar cal = Calendar.getInstance();
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
@@ -325,7 +325,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
     	
     	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
     	assertNotNull(releasePlan);
     	

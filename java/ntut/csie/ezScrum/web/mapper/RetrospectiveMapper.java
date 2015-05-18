@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
@@ -18,36 +17,33 @@ import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.jdom.Element;
 
 public class RetrospectiveMapper {
+	private ProjectObject mProject;
+	private ITSServiceFactory mITSFactory;
+	private Configuration mConfiguration;
+	private IUserSession mUserSession;	
 	
-	private IProject m_project;	
-	private ITSServiceFactory m_itsFactory;
-	private Configuration m_config;
-	private IUserSession m_userSession;	
-	
-	public RetrospectiveMapper(IProject project, IUserSession userSession) {
-		m_project = project;
-		m_userSession = userSession;
+	public RetrospectiveMapper(ProjectObject project, IUserSession userSession) {
+		mProject = project;
+		mUserSession = userSession;
 		// 初始ITS的設定
-		m_itsFactory = ITSServiceFactory.getInstance();
-		m_config = new Configuration(m_userSession);
+		mITSFactory = ITSServiceFactory.getInstance();
+		mConfiguration = new Configuration(mUserSession);
 	}
 	
 	// from helper: addIssue
 	public long add(String name, String description, String sprintID, String type) {		
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		itsService.openConnect();
 		IIssue issue = new Issue();
 
-		issue.setProjectID(m_project.getName());
+		issue.setProjectID(mProject.getName());
 		issue.setSummary(name);
 		issue.setDescription(description);
 		issue.setCategory(type);
@@ -63,7 +59,7 @@ public class RetrospectiveMapper {
 	
 	// from helper: getIssue
 	public IIssue getById(long id) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		itsService.openConnect();
 		IIssue issue = itsService.getIssue(id);
 		itsService.closeConnect();
@@ -76,9 +72,9 @@ public class RetrospectiveMapper {
 
 	// from helper: getRetrospectiveList
 	public List<IScrumIssue> getList(String type) throws SQLException {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		itsService.openConnect();
-		IIssue[] issues = itsService.getIssues(m_project.getName(), type);
+		IIssue[] issues = itsService.getIssues(mProject.getName(), type);
 		List<IScrumIssue> list = new ArrayList<IScrumIssue>();
 
 		for (IIssue issue : issues) {
@@ -100,7 +96,7 @@ public class RetrospectiveMapper {
 		if(status!=null)
 		issue.setStatus(status);
 
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		itsService.openConnect();
 
 		itsService.updateIssueContent(issue);
@@ -112,7 +108,7 @@ public class RetrospectiveMapper {
 
 	// from helper: delete
 	public void delete(String issueID) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		
 		itsService.openConnect();
 		itsService.removeIssue(issueID);
@@ -161,7 +157,7 @@ public class RetrospectiveMapper {
 	}	
 	
 	private void updateTagValue(IIssue issue, IIssueNote note) {
-		IITSService itsService = m_itsFactory.getService(ITSEnum.MANTIS_SERVICE_ID, m_config);
+		IITSService itsService = mITSFactory.getService(ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
 		itsService.openConnect();
 		itsService.updateIssueNote(issue, note);
 		itsService.closeConnect();

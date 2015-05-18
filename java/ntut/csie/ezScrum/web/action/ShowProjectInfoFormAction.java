@@ -4,10 +4,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import ntut.csie.jcis.project.core.IProjectDescription;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,27 +21,22 @@ public class ShowProjectInfoFormAction extends Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response) {
     	try {
-	        HttpSession session = request.getSession();
-	        IProject project = (IProject) session.getAttribute("Project");
+	        ProjectObject project = SessionManager.getProjectObject(request);
 	        
-	        IProjectDescription desc = project.getProjectDesc();
-	        
-	        String fileSize = desc.getAttachFileSize();
+	        long fileSize = project.getAttachFileSize();
 	        String attachFileSize = "";
-			if(fileSize==null||fileSize.compareTo("")==0)
-				attachFileSize = "2";
-			else
-				attachFileSize = desc.getAttachFileSize();
+			if(fileSize == 0 || fileSize == -1)
+				fileSize = 2;
 	
 	        log.info("project=" + project.getName());
 	
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("<Root><ProjectInfo>");
-	        sb.append("<Name>" + desc.getName() + "</Name>");
-	        sb.append("<DisplayName>" + desc.getDisplayName()+ "</DisplayName>");
+	        sb.append("<Name>" + project.getName() + "</Name>");
+	        sb.append("<DisplayName>" + project.getDisplayName()+ "</DisplayName>");
 	        sb.append("<AttachFileSize>" + attachFileSize + "</AttachFileSize>");
-	        sb.append("<Comment>" + desc.getComment()+ "</Comment>");
-	        sb.append("<ProjectManager>" + desc.getProjectManager()+ "</ProjectManager>");
+	        sb.append("<Comment>" + project.getComment()+ "</Comment>");
+	        sb.append("<ProjectManager>" + project.getManager()+ "</ProjectManager>");
 	        sb.append("</ProjectInfo></Root>");
 	    	
 	        response.setContentType("text/xml; charset=utf-8");

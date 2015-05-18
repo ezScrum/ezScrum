@@ -26,6 +26,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	}
 
 	protected void setUp() throws Exception {
+		super.setUp();
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -38,8 +39,6 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 		mProject = mCP.getAllProjects().get(0);
-
-		super.setUp();
 
 		// ================ set action info ========================
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
@@ -125,15 +124,15 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 			expectedResponseText
 					.append("{\"Id\":").append(CPB.getStories().get(i).getId()).append(",")
 					.append("\"Name\":\"").append(CPB.getStories().get(i).getName()).append("\",")
-					.append("\"Value\":\"").append(CPB.getStories().get(i).getValue()).append("\",")
-					.append("\"Estimate\":\"").append(CPB.getStories().get(i).getEstimate()).append("\",")
-					.append("\"Importance\":\"").append(CPB.getStories().get(i).getImportance()).append("\",")
+					.append("\"Value\":").append(CPB.getStories().get(i).getValue()).append(",")
+					.append("\"Estimate\":").append(CPB.getStories().get(i).getEstimate()).append(",")
+					.append("\"Importance\":").append(CPB.getStories().get(i).getImportance()).append(",")
 					.append("\"Tag\":\"\",")
 					.append("\"Status\":\"new\",")
 					.append("\"Notes\":\"").append(CPB.getStories().get(i).getNotes()).append("\",")
 					.append("\"HowToDemo\":\"").append(CPB.getStories().get(i).getHowToDemo()).append("\",")
-					.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(CPB.getStories().get(i).getId()).append("\",")
-					.append("\"Release\":\"None\",")
+					.append("\"Link\":\"\",")
+					.append("\"Release\":\"\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"DETAIL\",")
 					.append("\"Attach\":false,")
@@ -150,9 +149,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Backlog() {
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(mProject, "0", "0", "0"); // backlog
-		CPB.createBacklogStory(mProject, "0", "1", "0"); // backlog
-		CPB.createBacklogStory(mProject, "1", "2", "3"); // detail
+		CPB.createBacklogStory(mProject, 0, 0, 0); // backlog
+		CPB.createBacklogStory(mProject, 0, 1, 0); // backlog
+		CPB.createBacklogStory(mProject, 1, 2, 3); // detail
 		ArrayList<StoryObject> stories = CPB.getStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
@@ -177,19 +176,20 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,\"Total\":2,").append(
 				"\"Stories\":[");
 		// 取2次Story資料
-		for (int i = 1; i >= 0; i--) {
+		for (int i = 1; i < 3; i++) {
+			StoryObject story = stories.get(i - 1);
 			expectedResponseText
-					.append("{\"Id\":").append(stories.get(i).getId()).append(",")
-					.append("\"Name\":\"").append(stories.get(i).getName()).append("\",")
-					.append("\"Value\":\"").append(stories.get(i).getValue()).append("\",")
-					.append("\"Estimate\":\"").append(stories.get(i).getEstimate()).append("\",")
-					.append("\"Importance\":\"").append(stories.get(i).getImportance()).append("\",")
+					.append("{\"Id\":").append(story.getId()).append(",")
+					.append("\"Name\":\"").append(story.getName()).append("\",")
+					.append("\"Value\":").append(story.getValue()).append(",")
+					.append("\"Estimate\":").append(story.getEstimate()).append(",")
+					.append("\"Importance\":").append(story.getImportance()).append(",")
 					.append("\"Tag\":\"\",")
 					.append("\"Status\":\"new\",")
-					.append("\"Notes\":\"").append(stories.get(i).getNotes()).append("\",")
-					.append("\"HowToDemo\":\"").append(stories.get(i).getHowToDemo()).append("\",")
-					.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(stories.get(i).getId()).append("\",")
-					.append("\"Release\":\"None\",")
+					.append("\"Notes\":\"").append(story.getNotes()).append("\",")
+					.append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
+					.append("\"Link\":\"\",")
+					.append("\"Release\":\"\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"BACKLOG\",")
 					.append("\"Attach\":false,")
@@ -208,9 +208,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowProductBacklog_Done() throws Exception {
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(mProject, "0", "0", "0"); // backlog
-		CPB.createBacklogStory(mProject, "0", "1", "0"); // backlog
-		CPB.createBacklogStory(mProject, "1", "2", "3"); // detail
+		CPB.createBacklogStory(mProject, 0, 0, 0); // backlog
+		CPB.createBacklogStory(mProject, 0, 1, 0); // backlog
+		CPB.createBacklogStory(mProject, 1, 2, 3); // detail
 
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -239,7 +239,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.getHowToDemo();
 		String expectedStoryNote = ASTS.getStories().get(0).getNotes();
 		long storyId = ASTS.getStories().get(0).getId();
-		String SprintId = CS.getSprintsId().get(0);
+		long SprintId = CS.getSprintsId().get(0);
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, mProject);
 		request.getSession().setAttribute("UserSession",
@@ -257,18 +257,17 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append("\"Total\":1,").append("\"Stories\":[{")
 				.append("\"Id\":").append(storyId).append(",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
-				.append("\"Value\":\"").append(expectedStoryValue)
-				.append("\",").append("\"Estimate\":\"")
-				.append(expectedStoryEstimate).append("\",")
-				.append("\"Importance\":\"").append(expectedStoryImportance)
-				.append("\",").append("\"Tag\":\"\",")
+				.append("\"Value\":").append(expectedStoryValue)
+				.append(",").append("\"Estimate\":")
+				.append(expectedStoryEstimate).append(",")
+				.append("\"Importance\":").append(expectedStoryImportance)
+				.append(",").append("\"Tag\":\"\",")
 				.append("\"Status\":\"closed\",").append("\"Notes\":\"")
 				.append(expectedStoryNote).append("\",")
 				.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo)
 				.append("\",")
-				.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=")
-				.append(storyId).append("\",").append("\"Release\":\"None\",")
-				.append("\"Sprint\":\"").append(SprintId).append("\",")
+				.append("\"Link\":\"\",").append("\"Release\":\"\",")
+				.append("\"Sprint\":").append(SprintId).append(",")
 				.append("\"FilterType\":\"DONE\",").append("\"Attach\":false,")
 				.append("\"AttachFileList\":[]").append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
@@ -281,9 +280,9 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 
 	public void testShowProductBacklog_Detail() throws Exception {
 		CreateProductBacklog CPB = new CreateProductBacklog();
-		CPB.createBacklogStory(mProject, "0", "0", "0"); // backlog
-		CPB.createBacklogStory(mProject, "0", "1", "0"); // backlog
-		CPB.createBacklogStory(mProject, "1", "2", "3"); // detail
+		CPB.createBacklogStory(mProject, 0, 0, 0); // backlog
+		CPB.createBacklogStory(mProject, 0, 1, 0); // backlog
+		CPB.createBacklogStory(mProject, 1, 2, 3); // detail
 
 		int sprintCount = 1;
 		int storyCount = 1;
@@ -327,22 +326,21 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append("\"Total\":1,").append("\"Stories\":[{")
 				.append("\"Id\":").append(storyId).append(",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
-				.append("\"Value\":\"").append(expectedStoryValue)
-				.append("\",").append("\"Estimate\":\"")
-				.append(expectedStoryEstimation).append("\",")
-				.append("\"Importance\":\"").append(expectedStoryImportance)
-				.append("\",").append("\"Tag\":\"\",")
+				.append("\"Value\":").append(expectedStoryValue)
+				.append(",").append("\"Estimate\":")
+				.append(expectedStoryEstimation).append(",")
+				.append("\"Importance\":").append(expectedStoryImportance)
+				.append(",").append("\"Tag\":\"\",")
 				.append("\"Status\":\"new\",").append("\"Notes\":\"")
 				.append(expectedStoryNote).append("\",")
 				.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo)
 				.append("\",")
-				.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=")
-				.append(storyId).append("\",").append("\"Release\":\"None\",")
+				.append("\"Link\":\"\",").append("\"Release\":\"\",")
 				.append("\"Sprint\":\"None\",")
 				.append("\"FilterType\":\"DETAIL\",")
 				.append("\"Attach\":false,").append("\"AttachFileList\":[]")
 				.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
-	}
+ 	}
 }

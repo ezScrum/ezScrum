@@ -28,7 +28,6 @@ notYetStartSprintStore.on('load',function(store,records,options) {
 var ROSstore = new Ext.data.SimpleStore({
     fields: ['Id', 'Text'],
     data: [
-        ["release", "Release"],
         ["sprint", "Sprint"]
     ]
 });
@@ -95,9 +94,7 @@ ezScrum.MoveStoreDetailForm = Ext.extend(Ext.FormPanel, {
         this.PlanTypeCombo.addListener(
 			'select', function() {
 				// load mapping data
-				if (this.getValue() == "release") {
-					MoveIDStore.loadData(MoveReleaseIDArr);
-				} else if (this.getValue() == "sprint") {
+				if (this.getValue() == "sprint") {
 					MoveIDStore.loadData(MoveSprintIDArr);
 				} else {
 					MoveIDStore.loadData([]);
@@ -161,7 +158,7 @@ ezScrum.window.MoveStoreWindow = Ext.extend(ezScrum.layout.Window, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
     	ezScrum.window.MoveStoreWindow.superclass.initComponent.apply(this, arguments);
     },
-    showTheWindow_MoveStory: function (panel, IssueId, SprintID, ReleaseID) {
+    showTheWindow_MoveStory: function (panel, IssueId, SprintID) {
     	this.MoveStoryForm.notifyPanel = panel;
         this.MoveStoryForm.IssueID = IssueId;
         this.MoveStoryForm.reset();

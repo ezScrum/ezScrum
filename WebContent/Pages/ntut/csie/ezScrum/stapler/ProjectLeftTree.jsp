@@ -11,7 +11,7 @@
 	<%@page import="ntut.csie.ezScrum.stapler.Project"%>
 	<%
 		String projectID = request.getParameter("PID");
-		ProjectObject projectObject = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject projectObject = SessionManager.getProjectObject(request);
 		
 		if (projectObject != null) {
 			projectID = projectObject.getName();

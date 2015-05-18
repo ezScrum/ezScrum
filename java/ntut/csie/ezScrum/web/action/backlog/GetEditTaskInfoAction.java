@@ -3,20 +3,17 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class GetEditTaskInfoAction extends PermissionAction {
-//	private static Log log = LogFactory.getLog(GetEditTaskInfoAction.class);
 
 	@Override
 	public boolean isValidAction() {
@@ -35,14 +32,22 @@ public class GetEditTaskInfoAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		String sprintId = request.getParameter("sprintID");
+		long sprintId;
+		
+		String sprintIdString = request.getParameter("sprintID");
+		
+		if (sprintIdString == null || sprintIdString.length() == 0) {
+			sprintId = -1;
+		} else {
+			sprintId = Long.parseLong(sprintIdString);
+		}
+		
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession, sprintId);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
 		StringBuilder result = new StringBuilder();
 		TaskObject task = sprintBacklogHelper.getTask(taskId);

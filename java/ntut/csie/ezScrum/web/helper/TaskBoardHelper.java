@@ -15,13 +15,12 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.resource.core.IProject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class TaskBoardHelper {
-	private IProject mProject;
+	private ProjectObject mProject;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private long mSprintId;
@@ -32,15 +31,14 @@ public class TaskBoardHelper {
 	 * @param project
 	 * @param userSession
 	 */
-	public TaskBoardHelper(IProject project) {
+	public TaskBoardHelper(ProjectObject project) {
 		mProject = project;
-		mSprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	public TaskBoardHelper(IProject project, long sprintID) {
+	public TaskBoardHelper(ProjectObject project, long sprintId) {
 		mProject = project;
-		mSprintId = sprintID;
+		mSprintId = sprintId;
 		mSprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
@@ -76,12 +74,12 @@ public class TaskBoardHelper {
 		SprintInfoUI sprintInfoUI = null;
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
-			int currentSprintID = mSprintBacklogMapper.getSprintId();
+			long currentSprintID = mSprintBacklogMapper.getSprintId();
 			double currentPoint = mSprintBacklogLogic.getStoryUnclosedPoints();
 			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
-			ReleasePlanHelper rpHelper = new ReleasePlanHelper(mProject);
-			String releaseID = rpHelper.getReleaseID(Integer.toString(currentSprintID));
+			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
+			String releaseID = releasePlanHelper.getReleaseID(currentSprintID);
 			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
@@ -125,7 +123,7 @@ public class TaskBoardHelper {
 	}
 	
 	private class SprintInfoUI {
-		private int ID = 0;
+		private long ID = 0;
 		private String SprintGoal = "";
 		private double CurrentStoryPoint = 0d;
 		private double CurrentTaskPoint = 0d;
@@ -134,8 +132,8 @@ public class TaskBoardHelper {
 
 		public SprintInfoUI() {}
 
-		public SprintInfoUI(int id, String goal, double sp, double tp, String rid, boolean current) {
-			id = id;
+		public SprintInfoUI(long id, String goal, double sp, double tp, String rid, boolean current) {
+			ID = id;
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -457,14 +458,13 @@ public class ProductBacklogHelperTest {
 		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe(); // 新增一筆 Sprint
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mCP
-				.getProjectList().get(0), -1);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0), -1);
 
 		// 將第一筆 Story Done
-		String changeDate = "2015/03/30-11:35:27";
+		//String changeDate = "2015/03/30-11:35:27";
 		sprintBacklogLogic.getSprintBacklogMapper().closeStory(
 				mCPB.getStories().get(0).getId(), "TEST_STORY_NOTE_" + "1",
-				mCPB.getStories().get(0).getNotes(), changeDate);
+				mCPB.getStories().get(0).getNotes(), new Date());
 
 		ArrayList<StoryObject> unclosedStories = mProductBacklogLogic1
 				.getUnclosedStories();
@@ -482,10 +482,10 @@ public class ProductBacklogHelperTest {
 		}
 
 		// 將第十筆 Story Done
-		changeDate = "2015/03/30-11:45:27";
+		//changeDate = "2015/03/30-11:45:27";
 		sprintBacklogLogic.getSprintBacklogMapper().closeStory(
 				mCPB.getStories().get(9).getId(), "TEST_STORY_NOTE_" + "10",
-				mCPB.getStories().get(9).getNotes(), changeDate);
+				mCPB.getStories().get(9).getNotes(), new Date());
 
 		unclosedStories = mProductBacklogLogic1.getUnclosedStories();
 		assertEquals(8, unclosedStories.size());
@@ -959,8 +959,7 @@ public class ProductBacklogHelperTest {
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
-				.get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
 		newTag.save();
 		// Get Story
 		StoryObject story = mCPB.getStories().get(0);
@@ -979,13 +978,13 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Estimate", story.getEstimate());
 		jsonStory.put("Importance", story.getImportance());
 		jsonStory.put("Tag", TEST_TAG_NAME);
-		jsonStory.put("Status", story.getStatus());
+		jsonStory.put("Status", story.getStatusString());
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
 		jsonStory.put("Release", "");
-		jsonStory.put("Sprint", story.getSprintId());
-		jsonStory.put("FilterType", "BACKLOG");
+		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
+		jsonStory.put("FilterType", "DETAIL");
 		jsonStory.put("Attach", false);
 
 		JSONArray jsonFiles = new JSONArray();
@@ -995,8 +994,7 @@ public class ProductBacklogHelperTest {
 		expectResponse.put("Stories", jsonStroies);
 
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1
-				.getAddStoryTagResponseText(story.getId(), newTag.getId());
+		StringBuilder actualResponse = mProductBacklogHelper1.getAddStoryTagResponseText(story.getId(), newTag.getId());
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -1029,13 +1027,13 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Estimate", story.getEstimate());
 		jsonStory.put("Importance", story.getImportance());
 		jsonStory.put("Tag", "");
-		jsonStory.put("Status", story.getStatus());
+		jsonStory.put("Status", story.getStatusString());
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
 		jsonStory.put("Release", "");
-		jsonStory.put("Sprint", story.getSprintId());
-		jsonStory.put("FilterType", "BACKLOG");
+		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
+		jsonStory.put("FilterType", "DETAIL");
 		jsonStory.put("Attach", false);
 
 		JSONArray jsonFiles = new JSONArray();
@@ -1045,8 +1043,7 @@ public class ProductBacklogHelperTest {
 		expectResponse.put("Stories", jsonStroies);
 
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1
-				.getRemoveStoryTagResponseText(story.getId(), newTag.getId());
+		StringBuilder actualResponse = mProductBacklogHelper1.getRemoveStoryTagResponseText(story.getId(), newTag.getId());
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}
@@ -1056,16 +1053,15 @@ public class ProductBacklogHelperTest {
 		// create 1 story
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
+		// get Story
+		StoryObject story = mCPB.getStories().get(0);
 		// Test Tag Name
 		String TEST_TAG_NAME = "TEST_TAG_NAME";
 		// Test filter type
-		String TEST_FILETER_TYPE = "BACKLOG";
+		String TEST_FILETER_TYPE = "DETAIL";
 		// Create Tag
-		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects()
-				.get(0).getId());
+		TagObject newTag = new TagObject(TEST_TAG_NAME, mCP.getAllProjects().get(0).getId());
 		newTag.save();
-		// Get Story
-		StoryObject story = mCPB.getStories().get(0);
 
 		// assemble test json data
 		JSONObject expectResponse = new JSONObject();
@@ -1081,12 +1077,12 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Estimate", story.getEstimate());
 		jsonStory.put("Importance", story.getImportance());
 		jsonStory.put("Tag", "");
-		jsonStory.put("Status", story.getStatus());
+		jsonStory.put("Status", story.getStatusString());
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
 		jsonStory.put("Release", "");
-		jsonStory.put("Sprint", story.getSprintId());
+		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
 		jsonStory.put("FilterType", TEST_FILETER_TYPE);
 		jsonStory.put("Attach", false);
 
@@ -1097,8 +1093,7 @@ public class ProductBacklogHelperTest {
 		expectResponse.put("Stories", jsonStroies);
 
 		// getAddStoryTagResponseText
-		StringBuilder actualResponse = mProductBacklogHelper1
-				.getShowProductBacklogResponseText("BACKLOG");
+		StringBuilder actualResponse = mProductBacklogHelper1.getShowProductBacklogResponseText("DETAIL");
 		// assert
 		assertEquals(expectResponse.toString(), actualResponse.toString());
 	}

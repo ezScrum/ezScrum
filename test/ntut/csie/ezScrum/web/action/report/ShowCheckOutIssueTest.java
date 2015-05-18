@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -12,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -129,8 +129,8 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
 		long storyId = mASTS.getStories().get(0).getId();
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, mConfig.getUserSession());
-		IIssue story = productBacklogMapper.getStory(storyId);
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project);
+		StoryObject story = productBacklogMapper.getStory(storyId);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
@@ -150,12 +150,12 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("{\"Task\":{")
-							.append("\"Id\":\"").append(story.getIssueID()).append("\",")
-							.append("\"Name\":\"").append(story.getSummary()).append("\",")
-							.append("\"Partners\":\"").append(story.getPartners()).append("\",")
+		expectedResponseTest.append("{\"Story\":{")
+							.append("\"Id\":\"").append(story.getId()).append("\",")
+							.append("\"Name\":\"").append(story.getName()).append("\",")
+							.append("\"Partners\":\"").append("\",")
 							.append("\"Notes\":\"").append(story.getNotes()).append("\",")
-							.append("\"Handler\":\"").append(mConfig.USER_ID).append("\",")
+							.append("\"Handler\":\"").append("\",")
 							.append("\"IssueType\":\"").append("Story").append("\",")
 							.append("},\"success\":true,\"Total\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();

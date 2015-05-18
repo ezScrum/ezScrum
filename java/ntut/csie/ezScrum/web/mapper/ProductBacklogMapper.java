@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogMapper {
 	private ProjectObject mProject;
@@ -51,8 +50,7 @@ public class ProductBacklogMapper {
 
 	// get all stories by release
 	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
-		IProject project = (new ProjectMapper()).getProjectByID(mProject.getName());
-		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 		IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> storie = new ArrayList<StoryObject>();
@@ -219,8 +217,8 @@ public class ProductBacklogMapper {
 	private ArrayList<Long> getTagsIdByTagsName(String originTagsName){
 		// process story info tag String
 		ArrayList<Long> tagsId = new ArrayList<Long>();
-		if (originTagsName.length() > 0) {
-			for(String tagName : originTagsName.split(",")) {
+		if (originTagsName != null && originTagsName.length() > 0) {
+			for (String tagName : originTagsName.split(",")) {
 				TagObject tag = TagObject.get(tagName);
 				if (tag != null) {
 					tagsId.add(tag.getId());

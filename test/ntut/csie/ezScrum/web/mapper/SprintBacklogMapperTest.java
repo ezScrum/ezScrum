@@ -14,8 +14,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
@@ -65,7 +67,7 @@ public class SprintBacklogMapperTest {
 		mATTS = new AddTaskToStory(taskCount, taskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		mSprintBacklogMapper = new SprintBacklogMapper(project);
 	}
 
@@ -233,10 +235,11 @@ public class SprintBacklogMapperTest {
 		droppedStories = mSprintBacklogMapper.getDroppedStories();
 		allStories = mSprintBacklogMapper.getAllStories();
 		
-		assertEquals(StoryObject.DEFAULT_VALUE, allStories.get(0).getSprintId());
+		assertEquals(StoryObject.DEFAULT_VALUE, droppedStories.get(0).getSprintId());
+		assertEquals(1, allStories.get(0).getSprintId());
 		assertEquals(1, allStories.get(1).getSprintId());
-		assertEquals(1, allStories.get(2).getSprintId());
 		assertEquals(1, droppedStories.size());
+		assertEquals(2, allStories.size());
 	}
 
 	@Test
@@ -602,7 +605,7 @@ public class SprintBacklogMapperTest {
 		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		String updateTime = "2015/03/30-11:35:27";
+		Date updateTime = DateUtil.dayFillter("2015/03/30-11:35:27", DateUtil._16DIGIT_DATE_TIME);
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
@@ -619,7 +622,7 @@ public class SprintBacklogMapperTest {
 		String closeName = "CLOSE_NAME";
 		StoryObject story = mASTS.getStories().get(0);
 		long storyId = story.getId();
-		String updateTime = "2015/03/30-11:35:27";
+		Date updateTime = DateUtil.dayFillter("2015/03/30-11:35:27", DateUtil._16DIGIT_DATE_TIME);
 
 		// story default status is UNCHECK
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
@@ -630,7 +633,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(StoryObject.STATUS_DONE, story.getStatus());
 		
 		// reopen the story
-		updateTime = "2015/03/30-11:40:27";
+		updateTime = DateUtil.dayFillter("2015/03/30-11:40:27", DateUtil._16DIGIT_DATE_TIME);;
 		mSprintBacklogMapper.reopenStory(storyId, reopenName, reopenName, updateTime);
 		story = StoryObject.get(storyId);
 		assertEquals(StoryObject.STATUS_UNCHECK, story.getStatus());
@@ -641,6 +644,7 @@ public class SprintBacklogMapperTest {
 	public void testCloseTask() {
 		String closeName = "CLOSE_NAME";
 		String closeNote = "CLOSE_NOTE";
+		int actual = 3;
 		Date specificDate = new Date(System.currentTimeMillis());
 
 		// assert status, default status should be UNCHECK
@@ -648,7 +652,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, specificDate);
+		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, actual, specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(closeName, closedTask.getName());

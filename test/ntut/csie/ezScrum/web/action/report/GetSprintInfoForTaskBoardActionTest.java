@@ -12,21 +12,21 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.SprintInfoUIObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
 
-public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
+public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Gson mGson;
 	private Configuration mConfig;
 
-	public GetSprintInfoForTaskBoardTest(String testMethod) {
+	public GetSprintInfoForTaskBoardActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -42,7 +42,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);
@@ -95,7 +95,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("sprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -107,10 +107,11 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		String result = response.getWriterBuffer().toString();
+		System.out.print("result:" + result + "\n");
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(mCS.getSprintsId().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(String.valueOf(mCS.getSprintsId().get(0)), String.valueOf(sprintInfo.ID));
 		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintsId().get(0), sprintInfo.SprintGoal);
 		assertEquals(STORY_COUNT * STORY_EST, storyPoint.intValue());
 		assertEquals(STORY_COUNT * TASK_COUNT * TASK_EST, taskPoint.intValue());
@@ -132,16 +133,16 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		AddTaskToStory ATTS = new AddTaskToStory(TASK_COUNT, TASK_EST, ASTS, mCP);
 		ATTS.exe();
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		// 將第1個story跟task全都拉到done
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, "");
 		sprintBacklogLogic.closeTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), "", 0, "");
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "");
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "", "");
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", "1");
+		addRequestParameter("SprintID", "1");
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -156,7 +157,7 @@ public class GetSprintInfoForTaskBoardTest extends MockStrutsTestCase {
 		SprintInfoUIObject sprintInfo = mGson.fromJson(result, SprintInfoUIObject.class);
 		Double storyPoint = sprintInfo.CurrentStoryPoint;
 		Double taskPoint = sprintInfo.CurrentTaskPoint;
-		assertEquals(mCS.getSprintsId().get(0), String.valueOf(sprintInfo.ID));
+		assertEquals(String.valueOf(mCS.getSprintsId().get(0)), String.valueOf(sprintInfo.ID));
 		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintsId().get(0), sprintInfo.SprintGoal);
 		assertEquals((STORY_COUNT - 1) * STORY_EST, storyPoint.intValue());				// done 1個story
 		assertEquals((STORY_COUNT * TASK_COUNT - 2) * TASK_EST, taskPoint.intValue());	// done 2個task

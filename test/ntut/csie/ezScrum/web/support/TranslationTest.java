@@ -135,7 +135,7 @@ public class TranslationTest {
 			expectedText.append("<Value>0</Value>");
 			expectedText.append("<Importance>0</Importance>");
 			expectedText.append("<Estimate>0</Estimate>");
-			expectedText.append("<Status>0</Status>");
+			expectedText.append("<Status>new</Status>");
 			expectedText.append("<Notes>0</Notes>");
 			expectedText.append("<HowToDemo>0</HowToDemo>");
 			expectedText.append("<Release></Release>");
@@ -187,7 +187,7 @@ public class TranslationTest {
 			expectedText.append("<Value>" + storyInfo.value + "</Value>");
 			expectedText.append("<Importance>" + storyInfo.importance + "</Importance>");
 			expectedText.append("<Estimate>" + storyInfo.estimate + "</Estimate>");
-			expectedText.append("<Status>" + storyInfo.status + "</Status>");
+			expectedText.append("<Status>closed</Status>");
 			expectedText.append("<Notes>" + storyInfo.notes + "</Notes>");
 			expectedText.append("<HowToDemo>" + storyInfo.howToDemo + "</HowToDemo>");
 			expectedText.append("<Release></Release>");
@@ -237,7 +237,7 @@ public class TranslationTest {
 			assertTrue(actualText.contains("\"Estimate\":" + story.getEstimate()));
 			assertTrue(actualText.contains("\"Importance\":" + story.getImportance()));
 			assertTrue(actualText.contains("\"Tag\":\"" + story.getTags().get(0).getName() + "\""));
-			assertTrue(actualText.contains("\"Status\":" + story.getStatus()));
+			assertTrue(actualText.contains("\"Status\":\"" + story.getStatusString() + "\""));
 			assertTrue(actualText.contains("\"Notes\":\"" + story.getNotes() + "\""));
 			assertTrue(actualText.contains("\"HowToDemo\":\"" + story.getHowToDemo() + "\""));
 			assertTrue(actualText.contains("\"Sprint\":" + story.getSprintId()));
@@ -436,10 +436,10 @@ public class TranslationTest {
 			assertTrue(storyJson.toString().contains("\"Estimate\":" + TEST_STORY_ESTIMATE));
 			assertTrue(storyJson.toString().contains("\"Importance\":" + TEST_STORY_IMPORTANCE));
 			assertTrue(storyJson.toString().contains("\"Tag\":\"" + tagName + "\""));
-			assertTrue(storyJson.toString().contains("\"Status\":" + TEST_STORY_STATUS));
+			assertTrue(storyJson.toString().contains("\"Status\":\"new\""));
 			assertTrue(storyJson.toString().contains("\"Notes\":\"" + TEST_STORY_NOTES + "\""));
 			assertTrue(storyJson.toString().contains("\"HowToDemo\":\"" + TEST_STORY_HOWTODEMO + "\""));
-			assertTrue(storyJson.toString().contains("\"Sprint\":" + TEST_STORY_SPRINTID));
+			assertTrue(storyJson.toString().contains("\"Sprint\":\"None\""));
 			assertTrue(storyJson.toString().contains("\"FilterType\":\"DETAIL\""));
 			assertTrue(storyJson.toString().contains("\"Attach\":false"));
 		}

@@ -216,6 +216,7 @@ public class TagDAOTest {
 		}
 		assertEquals(0, TagDAO.getInstance().getTagsByStoryId(story.getId()).size());
 		story.addTag(2);
+		story.save();
 		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByStoryId(story.getId());
 		assertEquals(1, tags.size());
 		assertEquals("TEST_TAG_NAME_1", tags.get(0).getName());

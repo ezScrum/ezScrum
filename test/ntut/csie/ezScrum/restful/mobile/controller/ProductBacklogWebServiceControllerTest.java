@@ -20,21 +20,21 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ethz.ssh2.crypto.Base64;
-
-import com.google.appengine.repackaged.org.apache.http.HttpResponse;
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpDelete;
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpGet;
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpPost;
-import com.google.appengine.repackaged.org.apache.http.entity.BasicHttpEntity;
-import com.google.appengine.repackaged.org.apache.http.impl.client.DefaultHttpClient;
-import com.google.appengine.repackaged.org.apache.http.util.EntityUtils;
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
@@ -42,7 +42,7 @@ public class ProductBacklogWebServiceControllerTest {
 	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/web-service";
 	private static String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/product-backlog/%s?username=%s&password=%s";
 	private static HttpServer mServer;
-	private DefaultHttpClient mClient;
+	private HttpClient mHttpClient;
 	private String mUsername = "admin";
 	private String mPassword = "admin";
 	
@@ -61,7 +61,7 @@ public class ProductBacklogWebServiceControllerTest {
 		mServer = HttpServerFactory.create(SERVER_URL);
 		mServer.start();
 		
-		mClient = new DefaultHttpClient();
+		mHttpClient = HttpClientBuilder.create().build();
 
 		// change to test mode
 		mConfig = new Configuration();
@@ -82,8 +82,8 @@ public class ProductBacklogWebServiceControllerTest {
 		mProject = mCP.getAllProjects().get(0);
 		
 		mProjectName = mProject.getName();
-		mUsername = new String(Base64.encode(mUsername.getBytes()));
-		mPassword = new String(Base64.encode(mPassword.getBytes()));
+		mUsername = new String(Base64.encodeBase64(mUsername.getBytes()));
+		mPassword = new String(Base64.encodeBase64(mPassword.getBytes()));
 	}
 
 	@After
@@ -113,7 +113,7 @@ public class ProductBacklogWebServiceControllerTest {
 	public void testGetProductBacklogList() throws Exception {
 		String URL = String.format(API_URL, mProjectName, "storylist", mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mClient.execute(httpGet);
+		HttpResponse httpResponse = mHttpClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		ArrayList<StoryObject> stories = mCPB.getStories();
@@ -140,7 +140,7 @@ public class ProductBacklogWebServiceControllerTest {
 		
 		String URL = String.format(API_URL, mProjectName, "storylist/" + story.getId(), mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mClient.execute(httpGet);
+		HttpResponse httpResponse = mHttpClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		JSONObject storyJson = new JSONObject(response);
@@ -176,7 +176,7 @@ public class ProductBacklogWebServiceControllerTest {
 		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
 		entity.setContentEncoding("utf-8");
 		httpPost.setEntity(entity);
-		HttpResponse httpResponse = mClient.execute(httpPost);
+		HttpResponse httpResponse = mHttpClient.execute(httpPost);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		// assert result
@@ -218,7 +218,7 @@ public class ProductBacklogWebServiceControllerTest {
 		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
 		entity.setContentEncoding("utf-8");
 		httpPost.setEntity(entity);
-		HttpResponse httpResponse = mClient.execute(httpPost);
+		HttpResponse httpResponse = mHttpClient.execute(httpPost);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		// assert first time
@@ -253,7 +253,7 @@ public class ProductBacklogWebServiceControllerTest {
 		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
 		entity.setContentEncoding("utf-8");
 		httpPost.setEntity(entity);
-		httpResponse = mClient.execute(httpPost);
+		httpResponse = mHttpClient.execute(httpPost);
 		response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		// assert second time, make sure update successfully
@@ -274,7 +274,7 @@ public class ProductBacklogWebServiceControllerTest {
 		StoryObject story = mCPB.getStories().get(0);
 		String URL = String.format(API_URL, mProjectName, "storylist/" + story.getId(), mUsername, mPassword);
 		HttpDelete httpDelete = new HttpDelete(URL);
-		HttpResponse httpResponse = mClient.execute(httpDelete);
+		HttpResponse httpResponse = mHttpClient.execute(httpDelete);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		JSONObject responseJson = new JSONObject(response);
@@ -296,7 +296,7 @@ public class ProductBacklogWebServiceControllerTest {
 		
 		String URL = String.format(API_URL, mProjectName, "taglist", mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mClient.execute(httpGet);
+		HttpResponse httpResponse = mHttpClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByProjectId(mProject.getId());
@@ -318,7 +318,7 @@ public class ProductBacklogWebServiceControllerTest {
 		
 		String URL = String.format(API_URL, mProjectName, story.getId() + "/history", mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mClient.execute(httpGet);
+		HttpResponse httpResponse = mHttpClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		JSONObject responseJson = new JSONObject(response);

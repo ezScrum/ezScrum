@@ -9,11 +9,12 @@ public class BacklogedFilter extends AProductBacklogFilter {
 
 	public BacklogedFilter(ArrayList<StoryObject> stories) {
 		super(stories);
+		mStories = FilterStories();
 	}
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.mStories;
+		ArrayList<StoryObject> stories = mStories;
 		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
 		for (StoryObject story : stories) {
 			// business value 不存在, 或 estimate 不存在, 或 importance 不存在

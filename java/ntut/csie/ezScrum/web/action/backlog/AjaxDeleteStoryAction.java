@@ -3,11 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,22 +32,20 @@ public class AjaxDeleteStoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Delete Story in AjaxDeleteStoryAction.");
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		long ID = Long.parseLong(request.getParameter("issueID"));
+		long storyId;
 		
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
-		StringBuilder result = productBacklogHelper.deleteStory(Long.toString(ID));	
+		try{
+			storyId = Long.parseLong(request.getParameter("issueID"));
+		} catch (NumberFormatException e){
+			storyId = -1;
+		}
+		
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
+		StringBuilder result = productBacklogHelper.deleteStory(storyId);
 		
 		return result;
-//		ProductBacklogHelper helper = new ProductBacklogHelper(project, session);
-//		helper.productBacklogHelper.deleteStory(helper, Long.toString(ID));	
-//
-//		StringBuilder result = new StringBuilder("");
-//		result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":"+ID+"}]}");
-//		
-//		return result;
 	}
 }

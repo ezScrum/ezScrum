@@ -75,7 +75,7 @@ public class UnplannedItemMapper {
 
 	public long add(String name, String estimate,
 	        String handler, String partners, String notes, Date date,
-	        String unplanneditemIssueType, String sprintId) {
+	        String unplanneditemIssueType, long sprintId) {
 
 		mMantisService.openConnect();
 		
@@ -83,20 +83,20 @@ public class UnplannedItemMapper {
 		unplannedItem.setProjectID(mProject.getName());
 		unplannedItem.setSummary(name);
 		unplannedItem.setCategory(unplanneditemIssueType);
-		unplannedItem.setParentId(Long.parseLong(sprintId));
+		unplannedItem.setParentId(sprintId);
 		
 		
 		long unplannedId = mMantisService.newIssue(unplannedItem);
 		unplannedItem = mMantisService.getIssue(unplannedId);
 
 		// 將此 unPlannedItem 的關係加入 Story Relation Table
-		mMantisService.updateStoryRelationTable(unplannedId, mProject.getName(), "-1", sprintId, null, null, date);
+		mMantisService.updateStoryRelationTable(unplannedId, mProject.getName(), "-1", String.valueOf(sprintId), null, null, date);
 
 		String actualHour = "0";
 
 //		modifyHandler(unplannedId, handler, date);
 		// 利用 edit 來增加 tag
-		editNote(unplannedId, estimate, partners, actualHour, notes, date, sprintId);
+ 		editNote(unplannedId, estimate, partners, actualHour, notes, date, String.valueOf(sprintId));
 
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
 		mUpdateFlag = true;
@@ -143,7 +143,7 @@ public class UnplannedItemMapper {
 
 		// 將此 unPlannedItem 的關係加入 Story Relation Table
 		mMantisService.updateStoryRelationTable(issueId, mProject.getName(), null, sprintId, estimated, null, date);
-		editNote(issueId, estimated, partners, actualHour, notes, date, sprintId);
+		editNote(issueId, estimated, partners, actualHour, notes, date, String.valueOf(sprintId));
 		mMantisService.closeConnect();
 	}
 

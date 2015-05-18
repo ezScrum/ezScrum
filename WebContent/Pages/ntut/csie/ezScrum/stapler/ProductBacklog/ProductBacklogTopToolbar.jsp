@@ -8,14 +8,14 @@
 </head>
 <body>
 <%@page import="ntut.csie.ezScrum.web.support.SessionManager"%>
-<%@page import="ntut.csie.jcis.resource.core.IProject"%>
+<%@page import="ntut.csie.ezScrum.web.dataObject.ProjectObject"%>
 <%@ page import="ntut.csie.ezScrum.stapler.ProductBacklog" %>
 <%
 String projectID = request.getParameter("PID");
 
-IProject project = (IProject) SessionManager.getProject( request );
+ProjectObject project = SessionManager.getProjectObject(request);
 if( project != null ){
-	projectID = project.getProjectDesc().getName();
+	projectID = project.getName();
 }
 
 ProductBacklog p = new ProductBacklog( projectID );

@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,7 +64,7 @@ public class SprintBacklogLogicTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		long sprintId = mCS.getSprintsId().get(0);
 		mSprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 	}
@@ -213,7 +212,7 @@ public class SprintBacklogLogicTest {
 		int estimate = doingTask.getEstimate();
 		mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
 				doingTask.getId(), doingTask.getName(), doingTask.getNotes(),
-				new Date());
+				doingTask.getActual(), new Date());
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();
 		expectedTotalEstimatePont = TASK_COUNT * TASK_ESTIMATE * STORY_COUNT
@@ -225,7 +224,7 @@ public class SprintBacklogLogicTest {
 		estimate = doingTask.getEstimate();
 		mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
 				doingTask.getId(), doingTask.getName(), doingTask.getNotes(),
-				new Date());
+				doingTask.getActual(), new Date());
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();
 		expectedTotalEstimatePont = TASK_COUNT * TASK_ESTIMATE * STORY_COUNT
@@ -235,7 +234,8 @@ public class SprintBacklogLogicTest {
 		// After done all tasks
 		for (TaskObject task : mATTS.getTasks()) {
 			mSprintBacklogLogic.getSprintBacklogMapper().closeTask(
-					task.getId(), task.getName(), task.getNotes(), new Date());
+					task.getId(), task.getName(), task.getNotes(),
+					doingTask.getActual(), new Date());
 		}
 		// assert
 		totalRemainPoint = mSprintBacklogLogic.getTaskRemainsPoints();
@@ -279,7 +279,7 @@ public class SprintBacklogLogicTest {
 		for (int i = 0; i < stories.size() - 1; i++) {
 			int importance1 = stories.get(i).getImportance();
 			int importance2 = stories.get(i + 1).getImportance();
-			assertTrue(importance1 <= importance2);
+			assertTrue(importance1 >= importance2);
 		}
 
 	}

@@ -3,14 +3,12 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,66 +33,31 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Add New Story in AjaxAddNewStoryAction.");
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-//		ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
-//		String mantisUrl = prefs.getServerUrl();
 		String name = request.getParameter("Name");
 		String importance = request.getParameter("Importance");
 		String estimate = request.getParameter("Estimate");
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
-		String description = "";
-		String sprintID = request.getParameter("sprintId");
-		String tagIDs = request.getParameter("TagIDs");
-		String releaseID = "";
+		String sprintId = request.getParameter("SprintId");
+		String tags = request.getParameter("Tags");
 		
-		StoryInfo storyInformation = new StoryInfo(name, importance, estimate, value, howToDemo, notes, description, sprintID, releaseID, tagIDs);
-		releaseID = new ReleasePlanHelper(project).getReleaseID(storyInformation.getSprintID());
-		if (!releaseID.equals("0")){
-			storyInformation.setReleaseID(releaseID);
-		}
+		StoryInfo storyInfo = new StoryInfo();
+		storyInfo.name = name;
+		storyInfo.importance = (importance == null || importance.isEmpty() ? 0 : Integer.parseInt(importance));
+		storyInfo.estimate = (estimate == null || estimate.isEmpty() ? 0 : Integer.parseInt(estimate));
+		storyInfo.value = (value == null || value.isEmpty() ? 0 : Integer.parseInt(value));
+		storyInfo.howToDemo = howToDemo;
+		storyInfo.notes = notes;
+		storyInfo.sprintId = (sprintId == null || sprintId.isEmpty()) ? -1 : Long.parseLong(sprintId);
+		storyInfo.tags = tags;
 		
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(session, project);
-		IIssue issue = productBacklogHelper.addNewStory(storyInformation);
-		StringBuilder result = productBacklogHelper.translateStoriesToJson(issue);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
+		long storyId = productBacklogHelper.addStory(project.getId(), storyInfo);
+		StoryObject story = StoryObject.get(storyId);
+		StringBuilder result = productBacklogHelper.translateStoryToJson(story);
 		return result;
-
-//		ProductBacklogHelper helper = new ProductBacklogHelper(project,	session);
-//		Long issueID = helper.addStory(name, description,value,importance, estimation, howToDemo, notes);
-//		// 將 Story 加入 Sprint
-//		if (sprintID != null || sprintID.length() != 0) {
-//			ArrayList<Long> list = new ArrayList<Long>();
-//			list.add(issueID);
-//			helper.add(list, sprintID);
-//			
-//			// 如果這個SprintID有Release資訊，那麼也將此Story加入Release
-//			ReleasePlanHelper releaseHelper = new ReleasePlanHelper(project);
-//			String releaseID = releaseHelper.getReleaseID(sprintID);
-//			if (!(releaseID.equals("0")))
-//				helper.addRelease(list, releaseID);
-//		}
-//		
-//		// 如果這個SprintID有Release資訊，那麼也將此Story加入Release
-//		ReleasePlanHelper releaseHelper = new ReleasePlanHelper(project);
-//		String releaseID = releaseHelper.getReleaseID(sprintID);
-//		if (!(releaseID.equals("0")))
-//			helper.addRelease(list, releaseID);
-//		
-//		// 新增Tag至Story上面
-//		String[] IDs = tagIDs.split(",");
-//		if ( ! (tagIDs.isEmpty()) && IDs.length > 0) {
-//			for (String tagId : IDs) {
-//				helper.addStoryTag(Long.toString(issueID), tagId);
-//			}
-//		}
-//		
-//		IIssue issue = helper.getIssue(issueID);
-//		
-//		StringBuilder result = new StringBuilder("");
-////		result.append(new Translation(mantisUrl).translateStoryToJson(issue));
-//		result.append(new Translation().translateStoryToJson(issue));
 	}
 }

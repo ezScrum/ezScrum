@@ -77,7 +77,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 	}
 
 	public void testGetPartnerList() throws Exception {
-		List<String> sprintIdList = mCS.getSprintsId();
+		List<Long> sprintsId = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
@@ -96,7 +96,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintIdList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		addRequestParameter("issueID", issueId);
 
 		// ================ set session info ========================

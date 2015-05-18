@@ -22,6 +22,8 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -42,11 +44,8 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		mConfig = new Configuration();
-		mConfig.setTestMode(false);
-		mConfig.save();
-		
 		// 初始化 SQL
+		mConfig = new Configuration(); // reload config info
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
@@ -54,6 +53,9 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 
+		mConfig.setTestMode(false);
+		mConfig.save();
+		
 		// ============= release ==============
 		ini = null;
 		mCP = null;
@@ -67,56 +69,55 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 	 * 
 	 */
 	public void testSaveConfigurationAction() throws JSONException {
-//		
-//		String originServerUrl = configuration.getServerUrl();
-//		String originDBAccount = configuration.getDBAccount();
-//		String originDBPassword = configuration.getDBPassword();
-//		String originDBName = configuration.getDBName();
-//		String originDBType= configuration.getDBType();
-//		
-//		// ================ set request info ========================
-//		String projectName = project.getName();
-//		String actualServerUrl = "127.0.0.1";
-//		String actualDBAccount = "test";
-//		String actualDBPassword = "1234";
-//		String actualDBType = "MySQL";
-//		String actualDBName = "ezscrum_test";
-//		request.setHeader("Referer", "?PID=" + projectName);
-//		addRequestParameter("ServerUrl", actualServerUrl);
-//		addRequestParameter("DBAccount", actualDBAccount);
-//		addRequestParameter("DBPassword", actualDBPassword);
-//		addRequestParameter("DBType", actualDBType);
-//		addRequestParameter("DBName", actualDBName);
-//		
-//		// ================ set session info ========================
-//		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-//		
-//		// ================ 執行 action ===============================
-//		actionPerform();
-//
-//		// ================ assert ==================================
-//		verifyNoActionErrors();
-//		verifyNoActionMessages();
-//		
-//		configuration = new Configuration();
-//		
-//		// assert response text
-//		String expectServerUrl = configuration.getServerUrl();
-//		String expectDBAccount = configuration.getDBAccount();
-//		String expectDBType = configuration.getDBType();
-//		String expectDBName = configuration.getDBName();
-//		
-//		assertEquals(expectServerUrl, actualServerUrl);
-//		assertEquals(expectDBAccount, actualDBAccount);
-//		assertEquals(expectDBType, actualDBType);
-//		assertEquals(expectDBName, actualDBName);
-//		
-//		request.setHeader("Referer", "?PID=" + projectName);
-//		addRequestParameter("ServerUrl", originServerUrl);
-//		addRequestParameter("DBAccount", originDBAccount);
-//		addRequestParameter("DBPassword", originDBPassword);
-//		addRequestParameter("DBType", originDBType);
-//		addRequestParameter("DBName", originDBName);
-//		actionPerform();
+		String originServerUrl = mConfig.getServerUrl();
+		String originDBAccount = mConfig.getDBAccount();
+		String originDBPassword = mConfig.getDBPassword();
+		String originDBName = mConfig.getDBName();
+		String originDBType= mConfig.getDBType();
+		
+		// ================ set request info ========================
+		String actualServerUrl = "127.0.0.1";
+		String actualDBAccount = "test";
+		String actualDBPassword = "1234";
+		String actualDBType = "MySQL";
+		String actualDBName = "ezscrum_test";
+		addRequestParameter("ServerUrl", actualServerUrl);
+		addRequestParameter("DBAccount", actualDBAccount);
+		addRequestParameter("DBPassword", actualDBPassword);
+		addRequestParameter("DBType", actualDBType);
+		addRequestParameter("DBName", actualDBName);
+		
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		
+		// ================ 執行 action ===============================
+		actionPerform();
+
+		// ================ assert ==================================
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+		
+		mConfig = new Configuration();
+		
+		// assert response text
+		String expectServerUrl = mConfig.getServerUrl();
+		String expectDBAccount = mConfig.getDBAccount();
+		String expectDBType = mConfig.getDBType();
+		String expectDBName = mConfig.getDBName();
+		
+		assertEquals(expectServerUrl, actualServerUrl);
+		assertEquals(expectDBAccount, actualDBAccount);
+		assertEquals(expectDBType, actualDBType);
+		assertEquals(expectDBName, actualDBName);
+		
+		// 將 ezScrum.ini 改回原來的值
+		addRequestParameter("ServerUrl", originServerUrl);
+		addRequestParameter("DBAccount", originDBAccount);
+		addRequestParameter("DBPassword", originDBPassword);
+		addRequestParameter("DBType", originDBType);
+		addRequestParameter("DBName", originDBName);
+		
+		// ================ 執行 action ===============================
+		actionPerform();
 	}
 }
