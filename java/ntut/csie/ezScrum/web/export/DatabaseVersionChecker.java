@@ -1,10 +1,10 @@
 package ntut.csie.ezScrum.web.export;
 
-import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
@@ -92,9 +92,8 @@ public class DatabaseVersionChecker {
 		if (isDatabaseVersionValid()) {
 			return report;
 		}
-		report += "Database version error";
 		if (!mLossesTablesName.isEmpty()) {
-			report += "\nLoss tables: ";
+			report += "Loss tables: ";
 			for (int i = 0; i < mLossesTablesName.size(); i++) {
 				String tableName = mLossesTablesName.get(i);
 				if (i == mLossesTablesName.size() - 1) {
@@ -103,9 +102,10 @@ public class DatabaseVersionChecker {
 					report += tableName + ", ";
 				}
 			}
+			report += "</br>";
 		}
 		if (!mInvalidTablesName.isEmpty()) {
-			report += "\nInvalid tables: ";
+			report += "Invalid tables: ";
 			for (int i = 0; i < mInvalidTablesName.size(); i++) {
 				String tableName = mInvalidTablesName.get(i);
 				if (i == mInvalidTablesName.size() - 1) {

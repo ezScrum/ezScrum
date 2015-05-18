@@ -77,15 +77,19 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url: obj.url,
 			success : function(response) {
 				ProjectStore.loadData(response.responseXML);
-				for (i = 0; i < ProjectStore.getCount(); i++) {
-					var record = ProjectStore.getAt(i);
-					obj.items.add(new Ext.form.Checkbox({
-								id: record.get('ID'), 
-								boxLabel: record.get('Name'), 
-								listeners:{
-									check: function() {
-										obj.updateButtonStatus();
-									}}}));
+				if (ProjectStore.getCount() > 0) {
+					for (i = 0; i < ProjectStore.getCount(); i++) {
+						var record = ProjectStore.getAt(i);
+						obj.items.add(new Ext.form.Checkbox({
+									id: record.get('ID'), 
+									boxLabel: record.get('Name'),
+									listeners:{
+										check: function() {
+											obj.updateButtonStatus();
+										}}}));
+					}
+				} else {
+					Ext.example.msg('Can not Export', 'There is no project can be export.');
 				}
 			},
 			failure : function(){
@@ -103,8 +107,24 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 				if (result.isDatabaseVersionValid) {
 					obj.exportProjects();
 				} else {
-					Ext.example.msg('Export Failure', 'Database version error.');
-					console.log('error report: ' + result.report);
+					Ext.Msg.show({
+						   title:'View Report?',
+						   msg: 'Export project fail due to database version, do you want to view report?',
+						   buttons: Ext.Msg.YESNO,
+						   fn: function(button) {
+							   if (button == 'yes') {
+								   Ext.Msg.show({
+									   title:'Database Version Error',
+									   msg: result.report,
+									   buttons: Ext.Msg.OK,
+									   animEl: 'elId',
+									   icon: Ext.MessageBox.ERROR
+									});
+							   } 
+						   },
+						   animEl: 'elId',
+						   icon: Ext.MessageBox.QUESTION
+						});
 				}
 			},
 			failure: function(response) {
@@ -112,7 +132,6 @@ ExportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
 			}
 		});
-		
 	},
 	exportProjects() {
 		var projectsName = "";
