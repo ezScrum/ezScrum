@@ -142,11 +142,11 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintsId().get(0);
+		long sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -163,7 +163,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(sprintID);
+    	String expected = genXML(String.valueOf(sprintID));
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}			
 	
@@ -177,11 +177,11 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintsId().get(0);
+		long sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -198,7 +198,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(sprintID);
+    	String expected = genXML(String.valueOf(sprintID));
      	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}	
 	
@@ -212,11 +212,11 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String sprintID = mCS.getSprintsId().get(0);
+		long sprintID = mCS.getSprintsId().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", sprintID); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -233,7 +233,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(sprintID);
+    	String expected = genXML(String.valueOf(sprintID));
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}				
 	

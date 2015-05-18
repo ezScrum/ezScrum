@@ -58,16 +58,16 @@ public class CreateUnplannedItem {
 			UnplannedItemMapper um = new UnplannedItemMapper(project, userSession);
 
 			for (int j = 0; j < sprintCount; j++) {
-				String sprintID = mCS.getSprintsId().get(j);
+				long sprintId = mCS.getSprintsId().get(j);
 
 				for (int k = 0; k < mItemCount; k++) {
 					// name = p1s1_TEST_NAME_1 -> project N, sprint N, NAME, index N
 					name = "p" + String.valueOf(i + 1) + "s" + String.valueOf(j + 1) + "_" + TEST_NAME + String.valueOf(k + 1);
-					unplannedId = um.add(name, TEST_EST, TEST_HANDLER, TEST_PARTNER, TEST_NOTE + String.valueOf(k + 1), date, issueType, sprintID);
+					unplannedId = um.add(name, TEST_EST, TEST_HANDLER, TEST_PARTNER, TEST_NOTE + String.valueOf(k + 1), date, issueType, sprintId);
 					mUnplannedItemsId.add(unplannedId);
 					mUnplannedItems.add(um.getById(unplannedId));
 				}
-				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintID + " 創建" + mItemCount + "個unplanned item(s) 成功.");
+				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintId + " 創建" + mItemCount + "個unplanned item(s) 成功.");
 			}
 		}
 		System.out.println("Create " + String.valueOf(projectCount) + " project(s) " + String.valueOf(sprintCount) + " sprint(s)" + String.valueOf(mItemCount) + " UnplannedItem Finish!");

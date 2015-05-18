@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -18,10 +19,13 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
 import ntut.csie.ezScrum.restful.mobile.support.IScrumReport;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.ChartUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -29,12 +33,11 @@ import ntut.csie.jcis.resource.core.IProject;
 public class RemainingWorkReport {
 	final private String mNAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
 	final private long mOneDay = 24 * 3600 * 1000;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Date mChartStartDate = null;
 	private Date mChartEndDate = null;
 	private int mInterval = 1;
 	private IITSService mIITS;
-	private IUserSession mUserSession;
 	private String mCategory;
 	private Configuration mConfiguration;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
@@ -44,16 +47,15 @@ public class RemainingWorkReport {
 	private int mTotalQuantity;
 	private int mDoneQuantity;
 	private int mNonAssignQuantity;
-	private int mSprintId;
+	private long mSprintId;
 	private Map<Date, Integer> mNonAssignMap = new TreeMap<Date, Integer>();
 	private Map<Date, Integer> mAssignedMap = new TreeMap<Date, Integer>();
 	private Map<Date, Integer> mDoneMap = new TreeMap<Date, Integer>();
 	private Date mToday = new Date();
 
-	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid) {
+	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid) {
 		mSprintId = sprintid;
 		mProject = project;
-		mUserSession = userSession;
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
@@ -70,10 +72,9 @@ public class RemainingWorkReport {
 		drawGraph();
 	}
 
-	public RemainingWorkReport(IProject project, IUserSession userSession, String category, int sprintid, Date setDate) {
+	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid, Date setDate) {
 		mSprintId = sprintid;
 		mProject = project;
-		mUserSession = userSession;
 		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		mToday = setDate;
@@ -105,13 +106,13 @@ public class RemainingWorkReport {
 		nowExistReport();
 	}
 
-	private void init(int sprintid) {
+	private void init(long sprintId) {
 		mAssignedQuantity = 0;
 		mTotalQuantity = 0;
 		mDoneQuantity = 0;
 		mNonAssignQuantity = 0;
 		// 設計sprint NO.
-		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(sprintid))).getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, sprintId)).getSprintBacklogMapper();
 		// 設定起始時間
 		mChartStartDate = sprintBacklogMapper.getSprintStartDate();
 		// 設定結束時間
@@ -120,7 +121,7 @@ public class RemainingWorkReport {
 	}
 
 	private void createTaskDataBySprint() {
-		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId))).getSprintBacklogMapper();
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mSprintId)).getSprintBacklogMapper();
 		ArrayList<TaskObject> tasks = sprintBacklogMapper.getAllTasks();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
@@ -174,25 +175,23 @@ public class RemainingWorkReport {
 	}
 	
 	private void createStoryDataBySprint() {
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mUserSession, String.valueOf(mSprintId));
-		SprintBacklogMapper sprintBacklog = sprintBacklogLogic.getSprintBacklogMapper();
-		List<IIssue> stories = sprintBacklogLogic.getStories();
-		Map<Long, ArrayList<TaskObject>> taskMap = sprintBacklog.getTasksMap();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
+		List<StoryObject> stories = sprintBacklogLogic.getStories();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
 			if ((mToday.getDate() == timeStamp.getDate()) &&
 			        (Math.abs(mToday.getTime() - timeStamp.getTime()) <= mOneDay)) {
-				countStoryStatusChange(stories, taskMap, mToday);
+				countStoryStatusChange(stories, mToday);
 				break;
 			} else {
-				countStoryStatusChange(stories, taskMap, timeStamp);
+				countStoryStatusChange(stories, timeStamp);
 			}
 			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
 		}
 	}
 
-	private void countStoryStatusChange(List<IIssue> stories, Map<Long, ArrayList<TaskObject>> taskMap, Date date) {
+	private void countStoryStatusChange(List<StoryObject> stories, Date date) {
 		int doneCount = 0, assignCount = 0, nonCount = 0;
 		if (date.getTime() != mToday.getTime()) {
 			// 當日期不為當天時，要做處理
@@ -206,15 +205,15 @@ public class RemainingWorkReport {
 			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
 		}
 		boolean flag = false;
-		for (IIssue story : stories) {
-			ArrayList<TaskObject> tasks = taskMap.get(story.getIssueID());
+		for (StoryObject story : stories) {
+			ArrayList<TaskObject> tasks = story.getTasks();
 			// skip the story that without any task
 			if (tasks == null) {
 				nonCount++; // story count +1
 				continue;
 			}
 			for (TaskObject task : tasks) {
-				if (story.getDateStatus(date) == ITSEnum.CLOSED_STATUS) {
+				if (story.getStatus(date) == StoryObject.STATUS_DONE) {
 					doneCount++;
 					flag = true;
 					break;
@@ -324,10 +323,11 @@ public class RemainingWorkReport {
 	}
 
 	private void nowExistReport() {
-		String chartPath1 = mProject.getFolder(IProject.METADATA).getFullPath()
+		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
+		String chartPath1 = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE1;
-		String chartPath2 = mProject.getFolder(IProject.METADATA).getFullPath()
+		String chartPath2 = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE2;
 		File f1 = new File(chartPath1);
@@ -344,9 +344,10 @@ public class RemainingWorkReport {
 	}
 
 	private String getReportPath() {
+		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
 		// 圖片儲存的真正路徑
 		// workspace/project/_metadata/RemainingWork/
-		String chartPath = mProject.getFolder(IProject.METADATA).getFullPath()
+		String chartPath = mIProject.getFolder(IProject.METADATA).getFullPath()
 		        + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + mChartPath;
 		return chartPath;

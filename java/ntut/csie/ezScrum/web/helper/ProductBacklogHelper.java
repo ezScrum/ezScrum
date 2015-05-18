@@ -41,10 +41,8 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getShowProductBacklogResponseText(String filterType) {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByFilterType(filterType);
-
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateStoriesToJson(stories));
-
 		return result;
 	}
 
@@ -95,11 +93,16 @@ public class ProductBacklogHelper {
 	 * @return StringBuilder
 	 */
 	public StringBuilder deleteStory(long storyId) {
-		removeTask(storyId);
-		mProductBacklogMapper.deleteStory(storyId);
-
+		StoryObject story = getStory(storyId);
 		StringBuilder result = new StringBuilder("");
-		result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+
+		if (story != null) {
+			removeTask(storyId);
+			mProductBacklogMapper.deleteStory(storyId);
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+		} else {
+			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
+		}
 		return result;
 	}
 
@@ -213,6 +216,18 @@ public class ProductBacklogHelper {
 	public StringBuilder translateStoryToJson(StoryObject story) {
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateStoryToJson(story));
+		return result;
+	}
+	
+	/**
+	 * 將 story 資訊轉換成 JSon format
+	 * 
+	 * @param story
+	 * @return StringBuilder
+	 */
+	public StringBuilder translateStoryToXML(StoryObject story) {
+		StringBuilder result = new StringBuilder("");
+		result.append(Translation.translateStoryToXML(story));
 		return result;
 	}
 

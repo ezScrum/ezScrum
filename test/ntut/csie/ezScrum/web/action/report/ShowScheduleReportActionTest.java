@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -20,6 +19,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
@@ -28,7 +29,7 @@ import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowScheduleReportTest extends MockStrutsTestCase {
+public class ShowScheduleReportActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -36,7 +37,7 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 	private Configuration mConfig;
 	private final String mActionPath = "/showScheduleReport";
 
-	public ShowScheduleReportTest(String testMethod) {
+	public ShowScheduleReportActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -97,11 +98,11 @@ public class ShowScheduleReportTest extends MockStrutsTestCase {
 		mATTS.exe(); // 新增2筆Task到Story內
 
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		int sprintId = Integer.parseInt(mCS.getSprintsId().get(0));
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), mCS.getSprintsId().get(0));
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintsId().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		List<IIssue> stories = sprintBacklogLogic.getStories();
+		List<StoryObject> stories = sprintBacklogLogic.getStories();
 
 		// ================ set request info ========================
 		String projectName = project.getName();

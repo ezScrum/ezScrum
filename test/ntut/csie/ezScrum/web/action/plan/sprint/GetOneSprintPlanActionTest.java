@@ -76,8 +76,8 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("lastsprint", mCS.getSprintsId().get(0));
-		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("lastsprint", String.valueOf(mCS.getSprintsId().get(0)));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

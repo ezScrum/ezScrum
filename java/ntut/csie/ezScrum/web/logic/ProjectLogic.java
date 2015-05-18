@@ -13,7 +13,6 @@
  */
 
 package ntut.csie.ezScrum.web.logic;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,18 +21,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.service.IssueBacklog;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
 import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.resource.core.IProject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -83,8 +78,7 @@ public class ProjectLogic {
 	 * @param userSession
 	 * @return
 	 */
-	public boolean isUserExistInProject(IProject project, IUserSession userSession) {
-		// ezScrum v1.8
+	public boolean isUserExistInProject(ProjectObject project, IUserSession userSession) {
 		AccountObject account = userSession.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		if (scrumRole != null) {
@@ -98,16 +92,14 @@ public class ProjectLogic {
 	 * 比對專案是否存在
 	 * ezScrum v1.8
 	 * 
-	 * @param projectID
+	 * @param projectName
 	 * @return
 	 */
-	public boolean isProjectExisted(String projectID) {
-		List<ProjectObject> projects = this.getProjects();
-		
+	public boolean isProjectExisted(String projectName) {
+		ArrayList<ProjectObject> projects = getProjects();
 		for (ProjectObject project : projects) {
-			String PID = project.getName();
-			if (PID.equals(projectID)) {
-				// System.out.println( PID );
+			String name = project.getName();
+			if (name.equals(projectName)) {
 				return true;
 			}
 		}
@@ -138,30 +130,6 @@ public class ProjectLogic {
 			}
 		}
 		return map;
-	}
-
-	/**
-	 * 回傳過濾可以讓使用者回報 issue 的專案，條件為此專案存在且存在一筆以上的 issue type 為 public
-	 * 
-	 * @return
-	 */
-	public IProject[] getAllCustomProjects() {
-		ArrayList<ProjectObject> CustomProjects = new ArrayList<ProjectObject>();	// 可以讓使用者回報 issue 的專案
-		ArrayList<ProjectObject> projects = getProjects();
-
-		for (ProjectObject P : projects) {
-			IssueBacklog IB = new IssueBacklog(P, new UserSession(null));
-
-			if (IB.isReportProject()) {
-				CustomProjects.add(P);
-			}
-		}
-
-		if ((CustomProjects != null) && (CustomProjects.size() > 0)) {
-			return CustomProjects.toArray(new IProject[CustomProjects.size()]);
-		} else {
-			return null;
-		}
 	}
 
 	/**

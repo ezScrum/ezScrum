@@ -87,7 +87,7 @@ public class ProductBacklogLogic {
 	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
 		for (long storyId : storiesId) {
 			StoryObject story = mProductBacklogMapper.getStory(storyId);
-			if (sprintId > 0) {
+			if (sprintId > 0 && story != null) {
 				// 更新 Stroy與Srpint對應的關係
 				mProductBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}

@@ -3,7 +3,8 @@ package ntut.csie.ezScrum.restful.mobile.support;
 import java.io.IOException;
 import java.net.URLDecoder;
 
-import ch.ethz.ssh2.crypto.Base64;
+import org.apache.commons.codec.binary.Base64;
+
 
 public class InformationDecoder {
 	private String mDecodeUsername;
@@ -11,16 +12,16 @@ public class InformationDecoder {
 	private String mDecodeProjectName;
 
 	public void decode(String username, String password) throws IOException {
-		byte[] userName = Base64.decode(username.toCharArray());
-		byte[] Pwd = Base64.decode(password.toCharArray());
+		byte[] userName = Base64.decodeBase64(username.getBytes());
+		byte[] Pwd = Base64.decodeBase64(password.getBytes());
 		setDecodeUsername(new String(userName));
 		setDecodePwd(new String(Pwd));
 	}
 
 	public void decode(String encodeUsername, String encodePassword,
 			String encodeProjectName) throws IOException {
-		byte[] userName = Base64.decode(encodeUsername.toCharArray());
-		byte[] pwd = Base64.decode(encodePassword.toCharArray());
+		byte[] userName = Base64.decodeBase64(encodeUsername.getBytes());
+		byte[] pwd = Base64.decodeBase64(encodePassword.getBytes());
 		setDecodeUsername(new String(userName));
 		setDecodePwd(new String(pwd));
 		setDecodeProjectName(encodeProjectName);

@@ -172,7 +172,7 @@ public class TaskObject implements IBaseObject {
 
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
-		int status = TaskObject.STATUS_UNCHECK;
+		int status = STATUS_UNCHECK;
 		ArrayList<HistoryObject> histories = getHistories();
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();

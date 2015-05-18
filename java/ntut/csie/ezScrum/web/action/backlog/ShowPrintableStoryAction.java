@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -13,6 +14,8 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.MakePDFService;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -34,32 +37,14 @@ public class ShowPrintableStoryAction extends DownloadAction {
 	        ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
-
-		//		SprintBacklogMapper backlog = null;
-		//		try{
-		//			backlog = (new SprintBacklogLogic(project, userSession, sprintID)).getSprintBacklogMapper();
-		//		}catch (Exception e) {
-		//		}
-		//		
-		////		SprintBacklog backlog = null;
-		////		try {
-		////			if (sprintID==null||sprintID.equals(""))    	
-		////				backlog = new SprintBacklog(project,userSession);
-		////			else
-		////				backlog = new SprintBacklog(project,userSession,Integer.parseInt(sprintID));
-		////		} catch (Exception e){
-		////			//return mapping.findForward("error");
-		////		}
-		//
-		//		List<IIssue> issues = backlog.getStories();
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		List<IIssue> issues = sprintBacklogLogic.getStoriesByImp();
+		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesByImp();
 
 		request.setAttribute("SprintID", backlog.getSprintId());
 		request.setAttribute("Stories", issues);
@@ -80,7 +65,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 
 		response.setHeader("Content-disposition", "inline; filename=SprintStory.pdf");
 
-		AccountObject account = userSession.getAccount();
+		AccountObject account = session.getAccount();
 		//		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (file == null) {

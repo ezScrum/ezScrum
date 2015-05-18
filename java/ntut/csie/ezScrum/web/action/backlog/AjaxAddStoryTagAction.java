@@ -3,11 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,29 +33,13 @@ public class AjaxAddStoryTagAction extends PermissionAction {
 		log.info("Ajax Add Story Tag in AjaxAddStoryTagAction.");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
-		String storyId = request.getParameter("storyId");
+		long storyId = Long.parseLong(request.getParameter("storyId"));
 		long tagId = Long.parseLong(request.getParameter("tagId"));
 		
-		StringBuilder result = new ProductBacklogHelper(session, project).getAddStoryTagResponseText(storyId, tagId);
+		StringBuilder result = new ProductBacklogHelper(project).getAddStoryTagResponseText(storyId, tagId);
 		
 		return result;
-		
-////		ITSPrefsStorage prefs = new ITSPrefsStorage(project, session);
-////		String mantisUrl = prefs.getServerUrl();
-//		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project, session);
-//		
-//		PBHelper.addStoryTag(storyId, tagId);
-//		
-//		IIssue issue = PBHelper.getIssue(Long.parseLong(storyId));
-//		
-//		StringBuilder result = new StringBuilder("");
-//		
-////		result.append(new Translation(mantisUrl).translateStoryToJson(issue));
-//		result.append(new Translation().translateStoryToJson(issue));
-//
-//		return result;
 	}
 }

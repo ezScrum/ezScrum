@@ -9,11 +9,12 @@ public class DoneFilter extends AProductBacklogFilter {
 
 	public DoneFilter(ArrayList<StoryObject> issues) {
 		super(issues);
+		mStories = FilterStories();
 	}
 
 	@Override
 	protected ArrayList<StoryObject> FilterStories() {
-		ArrayList<StoryObject> stories = super.mStories;
+		ArrayList<StoryObject> stories = mStories;
 		ArrayList<StoryObject> filererStories = new ArrayList<StoryObject>();
 		for (StoryObject story : stories) {
 			// status is closed

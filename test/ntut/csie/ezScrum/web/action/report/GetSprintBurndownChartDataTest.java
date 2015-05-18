@@ -17,9 +17,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Gson mGson;
 	private Configuration mConfig;
 
@@ -49,7 +49,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);
@@ -97,7 +97,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		// 拿出 sprint 的每一天日期放在 idealPointArray 當 expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -106,7 +106,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -147,18 +147,18 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ASTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將story移到done
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "");
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getName(), "", "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID",  String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -203,7 +203,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s
@@ -213,7 +213,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -256,7 +256,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintsId().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -267,7 +267,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintsId().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s

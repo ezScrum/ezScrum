@@ -78,7 +78,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	 * no story
 	 */
 	public void testAddExistedStory_1() {
-		String sprintId = mCS.getSprintsId().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		String[] selects = {};
 
@@ -86,7 +86,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("selects", selects);
-		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
 
 		// ================ set session info ========================
@@ -113,7 +113,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
 
-		String sprintId = mCS.getSprintsId().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		String releaseID = "-1";
 		String[] selects = { "1", "2" };
 
@@ -121,12 +121,11 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("selects", selects);
-		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseID);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -149,7 +148,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -164,16 +163,14 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// assert response text
 		String expectedStoryEstimation = "2";
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10.0";
+		String expectedSprintHoursToCommit = "10";
 		for (int i = 0; i < mCS.getSprintCount() - 1; i++) {
 			expectedResponseText.append("{\"success\":true,\"Total\":2,")
 					.append("\"Sprint\":{").append("\"Id\":").append(sprintId)
 					.append(",").append("\"Name\":\"Sprint #").append(sprintId)
-					.append("\",").append("\"CurrentPoint\":\"")
-					.append(Integer.parseInt(expectedStoryEstimation) * 2)
-					.append(".0\",").append("\"LimitedPoint\":\"")
-					.append(expectedSprintHoursToCommit).append("\",")
-					.append("\"TaskPoint\":\"0.0\",")
+					.append("\",").append("\"CurrentPoint\":").append(Integer.parseInt(expectedStoryEstimation) * 2).append(",")
+					.append("\"LimitedPoint\":").append(Integer.parseInt(expectedSprintHoursToCommit)).append(",")
+					.append("\"TaskPoint\":0,")
 					.append("\"ReleaseID\":\"Release #None\",")
 					.append("\"SprintGoal\":\"").append(expectedSprintGoal)
 					.append("\"},").append("\"Stories\":[");
@@ -181,22 +178,21 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 			for (StoryObject story : CPB.getStories()) {
 				expectedResponseText
 						.append("{\"Id\":").append(story.getId()).append(",")
-						.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(story.getId()).append("\",")
+						.append("\"Link\":\"").append("\",")
 						.append("\"Name\":\"").append(story.getName()).append("\",")
-						.append("\"Value\":\"").append(story.getValue()).append("\",")
-						.append("\"Importance\":\"").append(story.getImportance()).append("\",")
-						.append("\"Estimate\":\"").append(story.getEstimate()).append("\",")
+						.append("\"Value\":").append(story.getValue()).append(",")
+						.append("\"Importance\":").append(story.getImportance()).append(",")
+						.append("\"Estimate\":").append(story.getEstimate()).append(",")
 						.append("\"Status\":\"new\",")
 						.append("\"Notes\":\"").append(story.getNotes()).append("\",")
 						.append("\"Tag\":\"\",")
 						.append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
-						.append("\"Release\":\"None\",")
-						.append("\"Sprint\":\"").append(sprintId).append("\",")
-						.append("\"Attach\":\"false\",")
+						.append("\"Release\":\"\",")
+						.append("\"Sprint\":").append(sprintId).append(",")
+						.append("\"Attach\":false,")
 						.append("\"AttachFileList\":[]},");
 			}
-			expectedResponseText
-					.deleteCharAt(expectedResponseText.length() - 1);
+			expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
 			expectedResponseText.append("]}");
 		}
 		actualResponseText = response.getWriterBuffer().toString();

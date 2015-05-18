@@ -1,19 +1,17 @@
 package ntut.csie.ezScrum.web.support;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
@@ -23,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SprintBacklogTreeStructureTest {
-	private IIssue mStory;
+	private StoryObject mStory;
 	private TaskObject mTask;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private Configuration mConfig = null;
@@ -48,8 +46,8 @@ public class SprintBacklogTreeStructureTest {
 		mCP.exeCreate();
 		mProjectId = mCP.getAllProjects().get(0).getId();
 		// create story
-		mStory = new Issue();
-		mStory.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
+		mStory = new StoryObject(mProjectId);
+		mStory.save();
 		// create handler
 		mHandler = new AccountObject("account_handler");
 		mHandler.save();

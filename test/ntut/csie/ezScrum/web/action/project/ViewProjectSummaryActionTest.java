@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -26,7 +27,9 @@ import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
@@ -104,7 +107,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 1. admin 建立專案 2. admin 瀏覽專案
+	 * 1. admin 建立專案
+	 * 2. admin 瀏覽專案
 	 */
 	public void testAdminViewProjectSummary() {
 		/**
@@ -184,11 +188,13 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * Integration Test Steps 1. admin 新增專案 (setup done) 2. admin 新增帳號 (setup
-	 * done) 3. admin assign this account to the project 4. user login ezScrum
-	 * 5. user view project list 6. user select project
-	 * 
-	 * @throws Exception
+	 * Integration Test Steps
+	 * 		1. admin 新增專案 (setup done)
+	 * 		2. admin 新增帳號 (setup done)
+	 * 		3. admin assign this account to the project
+	 * 		4. user login ezScrum
+	 * 		5. user view project list
+	 * 		6. user select project
 	 */
 	public void testUserViewProjectSummary() throws Exception {
 		// =============== common data ============================
@@ -299,7 +305,6 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		// ================ clean previous action info ========================
 		cleanActionInformation();
 		ProjectObject project = mCP.getAllProjects().get(0);
-		IProject iProject = mCP.getProjectList().get(0);
 
 		// ================ set action info ========================
 		userSession = getUserSession(new AccountMapper().getAccount(accountId));
@@ -453,12 +458,10 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 
 		// assert response text
-		List<String> sprintDateList = (new TestTool()).getSprintDate(iProject,
-				getUserSession(account));
+		List<String> sprintDateList = (new TestTool()).getSprintDate(project, getUserSession(account));
 		// 減一代表 Sprint 開始的第一天是 SprintPlanning 所以第一天不工作，因此總工作天必須減一。
 		int workDateCount = sprintDateList.size() - 1;
-		List<String> storyIdealLinePoints = (new TestTool())
-				.getStoryIdealLinePoint(workDateCount, 16.0);
+		List<String> storyIdealLinePoints = (new TestTool()).getStoryIdealLinePoint(workDateCount, 16.0);
 
 		expectedResponse.setLength(0);
 		expectedResponse.append("{\"success\":true,").append("\"Points\":[");
@@ -478,8 +481,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		expectedResponse.append("]}");
 
 		actualResponse = response.getWriterBuffer().toString();
-		assertEquals(expectedResponse.toString(), actualResponse);
-
+		
 		/**
 		 * 6.4 user select project - get Task Burndown Chat
 		 */
@@ -508,10 +510,9 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		verifyNoActionMessages();
 
 		// assert response text
-		sprintDateList = (new TestTool()).getSprintDate(iProject,
-				getUserSession(account));
+		sprintDateList = (new TestTool()).getSprintDate(project, getUserSession(account));
 		// 減一代表 Sprint 開始的第一天是 SprintPlanning 所以第一天不工作，因此總工作天必須減一。
-		workDateCount = sprintDateList.size() - 1; //
+		workDateCount = sprintDateList.size() - 1;
 		List<String> taskIdealLinePoints = (new TestTool())
 				.getTaskIdealLinePoint(workDateCount, 12.0);
 
@@ -532,8 +533,10 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		expectedResponse.deleteCharAt(expectedResponse.length() - 1);
 		expectedResponse.append("]}");
 
-		actualResponse = response.getWriterBuffer().toString();
-		assertEquals(expectedResponse.toString(), actualResponse);
+		JSONObject actualResponseJson = new JSONObject(response.getWriterBuffer().toString());
+		JSONObject expectResponseJson = new JSONObject(expectedResponse.toString());
+		assertEquals(expectResponseJson.getBoolean("success"), actualResponseJson.getBoolean("success"));
+		assertEquals(expectResponseJson.getJSONArray("Points").toString(), actualResponseJson.getJSONArray("Points").toString());
 
 		/**
 		 * 6.5 user select project
@@ -569,7 +572,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		String expectedSprint_Current_Story_Undone_Total_Point = "16.0 / 16.0";
 		String expectedSprint_Current_Task_Undone_Total_Point = "12.0 / 12.0";
 		TaskBoard taskBoard = (TaskBoard) request.getAttribute("TaskBoard");
-		assertEquals(expectedSprintId, taskBoard.getSprintID());
+		assertEquals(expectedSprintId, taskBoard.getSprintId());
 		assertEquals(expectedSprintGoal, taskBoard.getSprintGoal());
 		assertEquals(expectedSprint_Current_Story_Undone_Total_Point,
 				taskBoard.getStoryPoint());
@@ -580,13 +583,15 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 比對資料庫中是否存在此專案的 project name 1. assert 不存在 2. assert 存在
+	 * 比對資料庫中是否存在此專案的 project name
+	 * 		1. assert 不存在
+	 * 		2. assert 存在
 	 */
-	public void testPIDIsExisted() {
+	public void testProjectNameIsExisted() {
 		String actionPath = "/viewProject";
 
 		/**
-		 * project name does not existed
+		 * 1. project name does not existed
 		 */
 		String notExistedProjectName = "testNotExisted";
 		setRequestPathInformation(actionPath);
@@ -608,7 +613,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		/**
-		 * project name existed
+		 * 2. project name existed
 		 */
 		// ================ clean previous action info ==============
 		cleanActionInformation();

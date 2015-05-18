@@ -15,9 +15,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -68,7 +68,7 @@ public class SprintBacklogHelperTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		long sprintId = 1;
 		mSprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 	}
@@ -384,9 +384,9 @@ public class SprintBacklogHelperTest {
 		JSONObject sprint = actualJson.getJSONObject("Sprint");
 		assertEquals(1, sprint.getInt("Id"));
 		assertEquals("Sprint #1", sprint.getString("Name"));
-		assertEquals("15.0", sprint.getString("CurrentPoint"));
-		assertEquals("10.0", sprint.getString("LimitedPoint"));
-		assertEquals("72.0", sprint.getString("TaskPoint"));
+		assertEquals(15, sprint.getInt("CurrentPoint"));
+		assertEquals(10, sprint.getInt("LimitedPoint"));
+		assertEquals(72, sprint.getInt("TaskPoint"));
 		assertEquals("Release #None", sprint.getString("ReleaseID"));
 		assertEquals("TEST_SPRINTGOAL_1", sprint.getString("SprintGoal"));
 		

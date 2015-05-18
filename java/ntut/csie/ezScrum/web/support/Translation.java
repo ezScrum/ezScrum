@@ -35,7 +35,7 @@ public class Translation {
 		responseText.append("<Importance>" + story.getImportance()
 				+ "</Importance>");
 		responseText.append("<Estimate>" + story.getEstimate() + "</Estimate>");
-		responseText.append("<Status>" + story.getStatus() + "</Status>");
+		responseText.append("<Status>" + story.getStatusString() + "</Status>");
 		responseText
 				.append("<Notes>"
 						+ translateChar.TranslateXMLChar(story.getNotes())
@@ -44,7 +44,11 @@ public class Translation {
 				+ translateChar.TranslateXMLChar(story.getHowToDemo())
 				+ "</HowToDemo>");
 		responseText.append("<Release></Release>");
-		responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+		if (story.getSprintId() == StoryObject.NO_PARENT) {
+			responseText.append("<Sprint>None</Sprint>");			
+		} else {
+			responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+		}
 		responseText.append("<Tag>"
 				+ translateChar.TranslateXMLChar(Join(story.getTags(), ","))
 				+ "</Tag>");
@@ -77,21 +81,21 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
-				jsonStory.put("Name", translateChar.TranslateJSONChar((stories
-						.get(i).getName())));
+				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
 				jsonStory.put("Importance", stories.get(i).getImportance());
-				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(
-						stories.get(i).getTags(), ",")));
-				jsonStory.put("Status", stories.get(i).getStatus());
-				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories
-						.get(i).getNotes()));
-				jsonStory.put("HowToDemo", translateChar
-						.TranslateJSONChar(stories.get(i).getHowToDemo()));
+				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
+				jsonStory.put("Status", stories.get(i).getStatusString());
+				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories.get(i).getNotes()));
+				jsonStory.put("HowToDemo", translateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
 				jsonStory.put("Link", "");
 				jsonStory.put("Release", "");
-				jsonStory.put("Sprint", stories.get(i).getSprintId());
+				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
+					jsonStory.put("Sprint", "None");
+				} else {
+					jsonStory.put("Sprint", stories.get(i).getSprintId());				
+				}
 				jsonStory.put("FilterType", getFilterType(stories.get(i)));
 
 				if (stories.get(i).getAttachFiles().size() == 0)
@@ -99,15 +103,13 @@ public class Translation {
 				else
 					jsonStory.put("Attach", true);
 
-				ArrayList<AttachFileObject> attachFiles = stories.get(i)
-						.getAttachFiles();
+				ArrayList<AttachFileObject> attachFiles = stories.get(i).getAttachFiles();
 				JSONArray jsonAttachFiles = new JSONArray();
 				for (AttachFileObject attachFile : attachFiles) {
 					JSONObject jsonAttachFile = new JSONObject();
 					jsonAttachFile.put("IssueId", attachFile.getIssueId());
 					jsonAttachFile.put("FileId", attachFile.getId());
-					jsonAttachFile.put("FileName", translateChar
-							.TranslateJSONChar(attachFile.getName()));
+					jsonAttachFile.put("FileName", translateChar.TranslateJSONChar(attachFile.getName()));
 
 					// parse Dateformat as Gson Default DateFormat (TaskBoard
 					// page)
@@ -310,7 +312,7 @@ public class Translation {
 
 	// for ShowSprintBacklogAction
 	public static String translateSprintBacklogToJson(
-			ArrayList<StoryObject> stories, int currentSprintId,
+			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
 			int releaseId, String sprintGoal) {
 

@@ -7,14 +7,14 @@
 </head>
 <body>
 	<%@page import="ntut.csie.ezScrum.web.support.SessionManager"%>
-	<%@page import="ntut.csie.jcis.resource.core.IProject"%>
+	<%@page import="ntut.csie.ezScrum.web.dataObject.ProjectObject"%>
 	<%@page import="ntut.csie.ezScrum.stapler.ReleasePlan"%>
 	<%
 		String projectID = request.getParameter("PID");
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		if (project != null) {
-			projectID = project.getProjectDesc().getName();
+			projectID = project.getName();
 		}
 		ReleasePlan releasePlan = new ReleasePlan(projectID);
 	%>

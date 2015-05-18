@@ -7,11 +7,12 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,23 +38,19 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		StringBuilder result = new StringBuilder("");
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 
 		String defaultHandlerUsername = session.getAccount().getUsername();
 		try {
 			long issueId = Long.parseLong(request.getParameter("issueID"));
 			String issueType = request.getParameter("issueType");
 			if (issueType.equalsIgnoreCase("Story")) {
-				IIssue item = PBHelper.getStory(issueId);
-				if (item != null) {
-					result.append(getIssueJsonString(item, defaultHandlerUsername));
-				} else {
-					result.append(getIssueJsonString(null, defaultHandlerUsername));
-				}				
+				StoryObject story = productBacklogHelper.getStory(issueId);
+				result.append(getStoryJsonString(story));			
 			} else if (issueType.equalsIgnoreCase("Task")) {
 				TaskObject task = sprintBacklogHelper.getTask(issueId);
 				result.append(getTaskJsonString(task, defaultHandlerUsername));
@@ -69,7 +66,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		TranslateSpecialChar translate = new TranslateSpecialChar();
 		if (issue != null) {
-			result.append("{\"Task\":{")
+			result.append("{\"Story\":{")
 			        .append("\"Id\":\"").append(issue.getIssueID()).append("\",")
 			        .append("\"Name\":\"").append(translate.TranslateJSONChar(issue.getSummary())).append("\",")
 			        .append("\"Partners\":\"").append(issue.getPartners()).append("\",")
@@ -97,6 +94,27 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(task.getNotes())).append("\",")
 			        .append("\"Handler\":\"").append(handlerUsername).append("\",")
 			        .append("\"IssueType\":\"").append("Task").append("\"")
+			        .append("},")
+			        .append("\"success\":true,")
+			        .append("\"Total\":1")
+			        .append("}");
+		} else {
+			result.append("");
+		}
+		return result;
+	}
+	
+	private StringBuilder getStoryJsonString(StoryObject story) {
+		StringBuilder result = new StringBuilder();
+		TranslateSpecialChar translate = new TranslateSpecialChar();
+		if (story != null) {
+			result.append("{\"Story\":{")
+			        .append("\"Id\":\"").append(story.getId()).append("\",")
+			        .append("\"Name\":\"").append(translate.TranslateJSONChar(story.getName())).append("\",")
+			        .append("\"Partners\":\"").append("\",")
+			        .append("\"Notes\":\"").append(translate.TranslateJSONChar(story.getNotes())).append("\",")
+			        .append("\"Handler\":\"").append("\",")
+			        .append("\"IssueType\":\"").append("Story").append("\",")
 			        .append("},")
 			        .append("\"success\":true,")
 			        .append("\"Total\":1")

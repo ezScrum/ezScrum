@@ -7,6 +7,8 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
@@ -17,6 +19,11 @@ public class UnplannedItemHelper {
 
 	public UnplannedItemHelper(IProject project, IUserSession userSession) {
 		mUnplannedMapper = new UnplannedItemMapper(project, userSession);
+	}
+	
+	public UnplannedItemHelper(ProjectObject project, IUserSession userSession) {
+		IProject iProject = (new ProjectMapper()).getProjectByID(project.getName());
+		mUnplannedMapper = new UnplannedItemMapper(iProject, userSession);
 	}
 
 	public void modifyUnplannedItemIssue(long issueId, String name,
@@ -51,7 +58,7 @@ public class UnplannedItemHelper {
 
 	public long addUnplannedItem(String name, String estimate,
 	        String handler, String partners, String notes, Date date,
-	        String unplanneditemIssueType, String SprintId) {
+	        String unplanneditemIssueType, long SprintId) {
 		return mUnplannedMapper.add(name, estimate, handler, partners, notes, date, unplanneditemIssueType, SprintId);
 	}
 

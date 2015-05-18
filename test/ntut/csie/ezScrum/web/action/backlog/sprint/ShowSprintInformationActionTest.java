@@ -2,10 +2,9 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
@@ -19,15 +18,16 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private Configuration mConfig;
 	private final String mACTION_PATH = "/showSprintInformation";
-	private IProject mProject;
+	private ProjectObject mProject;
 
 	public ShowSprintInformationActionTest(String testMethod) {
 		super(testMethod);
@@ -45,7 +45,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 
@@ -83,11 +83,11 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowInformationAction_1() {
 		// ================ set request info ========================
-		String sprintID = "1";
+		String sprintId = "1";
 		String projectName = mProject.getName();
 		
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintID);
+		addRequestParameter("sprintID", sprintId);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -141,7 +141,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String actualActors = String.valueOf(request.getAttribute("Actors"));
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
-		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
+		ArrayList<StoryObject> actualIIssueList = (ArrayList<StoryObject>) request.getAttribute("Stories");
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
@@ -150,7 +150,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		assertEquals(expectedSprintID, actualSprintID);		//	verify sprint ID
-		assertEquals("0", actualStoryPoint);				//	verify story points
+		assertEquals("0.0", actualStoryPoint);				//	verify story points
 		assertNotNull(actualSprintPlan);					//	verify sprint plan object
 		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getGoal());	//	verify sprint goal
 		assertEquals("[]", actualActors);					//	verify 參與此專案的人(因為尚未加入團隊成員因此為空的)
@@ -158,7 +158,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	verify story information
 		assertNotNull(actualIIssueList);
 		assertEquals(0, actualIIssueList.size());
-		assertEquals("0", actualStoryPoint);				//	verify story points
+		assertEquals("0.0", actualStoryPoint);				//	verify story points
 	}
 
 	/**
@@ -212,9 +212,9 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
-		List<IIssue> actualIIssueList = (List<IIssue>) request.getAttribute("Stories");
+		ArrayList<StoryObject> actualStories = (ArrayList<StoryObject>) request.getAttribute("Stories");
 		@SuppressWarnings("unchecked")
-		List<String> actualActors = (List<String>) request.getAttribute("Actors");
+		ArrayList<String> actualActors = (ArrayList<String>) request.getAttribute("Actors");
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
@@ -229,9 +229,9 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		assertEquals(expectedSprintID, actualSprintID);
 
 		//	verify story information
-		assertNotNull(actualIIssueList);
-		assertEquals((new CreateProductBacklog()).mTestStoryName + 1, actualIIssueList.get(0).getSummary());
-		assertEquals(String.valueOf(expectStoryEstimation), actualStoryPoint);
+		assertNotNull(actualStories);
+		assertEquals("TEST_STORY_1", actualStories.get(0).getName());
+		assertEquals("5.0", actualStoryPoint);
 
 		//	verify sprint plan information
 		assertNotNull(actualSprintPlan);

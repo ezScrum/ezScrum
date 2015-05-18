@@ -251,10 +251,13 @@ public class HistoryObject implements IBaseObject {
 			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
 			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
 			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
+		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
+			map.put(String.valueOf(StoryObject.STATUS_UNCHECK), "Not Check Out");
+			map.put(String.valueOf(StoryObject.STATUS_DONE), "Done");
 		} else {
 			map.put("10", "Not Check Out");
 			map.put("50", "Check Out");
-			map.put("90", "Done");			
+			map.put("90", "Done");
 		}
 		
 		return map.get(mOldValue) + " => " + map.get(mNewValue);

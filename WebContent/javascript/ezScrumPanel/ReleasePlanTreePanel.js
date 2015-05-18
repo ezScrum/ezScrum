@@ -21,26 +21,12 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 				buffer : 10,
 				fn : function(sm) {
 					var sel = sm.getSelections();
-					if (sel[0] == null || StoryPanelObj.getSelectionModel().getSelected().data["Status"] == "closed") {
-						Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
-						Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
-					} else {
-						Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').enable();
-						Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').enable();
-					}
 					
 					// 檢查story是否有附屬在某個sprint下，如果沒有就是直接附屬在release下的story就要檢查該release是否已經結束，如果已經結束則不能對story做任何操作
 					if (sel[0] != null && StoryPanelObj.getSelectionModel().getSelected().data["Sprint"] == "None") {
 						var today = new Date();
 						
 						var releaseEndDate = Date.parseDate(Ext.getCmp('ReleasePlan_ReleaseTree').getSelectionModel().getSelectedNode().attributes["EndDate"], 'Y/m/d');
-						if (releaseEndDate >= today) {
-							Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').enable();
-							Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').enable();
-						} else {
-							Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
-							Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
-						}
 					}
 				}
 			}
@@ -51,9 +37,6 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 		if (selectedNode == null) {
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_EditReleaseBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_DeReleaseBtn').disable();
-			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
-			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
-			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_addExStoryBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showReleaseBacklogBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').disable();
 			Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_editSprintBtn').disable();
@@ -68,14 +51,11 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 			if (type == "Release") {
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_EditReleaseBtn').enable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_DeReleaseBtn').enable();
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_addExStoryBtn').enable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showReleaseBacklogBtn').enable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').enable();
 				if (Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn'))
 					Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_downloadReleaseBtn').enable();
 
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_editSprintBtn').disable();
 				
 				var loadmask = new Ext.LoadMask(StoryPanelObj.getEl(), {msg:"loading info..."});
@@ -96,11 +76,8 @@ ezScrum.ReleasePlan_StoryPannel = Ext.extend(Ext.grid.GridPanel, {
 					}
 				});
 			} else {
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_addExStoryBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_EditReleaseBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_DeReleaseBtn').disable();
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_DropStoryBtn').disable();
-				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('storyAction').get('ReleasePlan_MoveStoryBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showReleaseBacklogBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('releaseAction').get('ReleasePlan_showPritableBtn').disable();
 				Ext.getCmp('releasePlanMasterPanel').getTopToolbar().get('sprintAction').get('ReleasePlan_editSprintBtn').enable();

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.mobile.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -18,20 +19,19 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ethz.ssh2.crypto.Base64;
-
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpGet;
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpPost;
-import com.google.appengine.repackaged.org.apache.http.client.methods.HttpPut;
-import com.google.appengine.repackaged.org.apache.http.entity.BasicHttpEntity;
-import com.google.appengine.repackaged.org.apache.http.impl.client.DefaultHttpClient;
-import com.google.appengine.repackaged.org.apache.http.protocol.HTTP;
-import com.google.appengine.repackaged.org.apache.http.util.EntityUtils;
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
@@ -39,7 +39,7 @@ public class StoryWebServiceControllerTest {
 	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/web-service";
 	private static String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/story/%s?username=%s&password=%s";
 	private static HttpServer mServer;
-	private DefaultHttpClient mClient;
+	private HttpClient mHttpClient;
 	private String mUsername = "admin";
 	private String mPassword = "admin";
 	
@@ -58,8 +58,8 @@ public class StoryWebServiceControllerTest {
 		// start server
 		mServer = HttpServerFactory.create(SERVER_URL);
 		mServer.start();
-		
-		mClient = new DefaultHttpClient();
+		// get http client
+		mHttpClient = HttpClientBuilder.create().build();
 		
 		// change to test mode
 		mConfig = new Configuration();
@@ -100,8 +100,9 @@ public class StoryWebServiceControllerTest {
 		mProject = mCP.getAllProjects().get(0);
 		mProjectName = mProject.getName();
 		
-		mUsername = new String(Base64.encode(mUsername.getBytes()));
-		mPassword = new String(Base64.encode(mPassword.getBytes()));
+		
+		mUsername = new String(Base64.encodeBase64(mUsername.getBytes()));
+		mPassword = new String(Base64.encodeBase64(mPassword.getBytes()));
 	}
 	
 	@After
@@ -146,7 +147,7 @@ public class StoryWebServiceControllerTest {
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(URL);
 		httpPost.setEntity(entity);
-		String result = EntityUtils.toString(mClient.execute(httpPost).getEntity(), HTTP.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpPost).getEntity(), StandardCharsets.UTF_8);
 		JSONObject response = new JSONObject(result);
 		
 		// 新增一個 story，project 內的 story 要有六個
@@ -172,7 +173,7 @@ public class StoryWebServiceControllerTest {
 		entity.setContentEncoding("utf-8");
 		HttpPut httpPut = new HttpPut(URL);
 		httpPut.setEntity(entity);
-		String result = EntityUtils.toString(mClient.execute(httpPut).getEntity(), HTTP.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpPut).getEntity(), StandardCharsets.UTF_8);
 		JSONObject response = new JSONObject(result);
 		
 		assertEquals(storyJson.getLong("id"), response.getLong("id"));
@@ -198,7 +199,7 @@ public class StoryWebServiceControllerTest {
 		// initial request data
 		String URL = String.format(API_URL, mProjectName, story.getId() + "/tasks", mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mClient.execute(httpGet).getEntity(), HTTP.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
 		JSONObject response = new JSONObject(result);
 		
 		assertEquals(taskCount, response.getJSONArray("tasks").length());
@@ -225,7 +226,7 @@ public class StoryWebServiceControllerTest {
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(URL);
 		httpPost.setEntity(entity);
-		mClient.execute(httpPost);
+		mHttpClient.execute(httpPost);
 		
 		story.reload();
 		assertEquals(2, story.getTasks().size());

@@ -42,15 +42,13 @@ public class SprintPlanWebServiceController {
 		Gson gson = new Gson();
 		String responseString = "";
 		try {
-			SprintObject sprintObject = gson.fromJson(sprintJson.toString(),
-					SprintObject.class);
+			SprintObject sprintObject = gson.fromJson(sprintJson.toString(), SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(username, password, projectName);
 			// 使用者帳號
 			AccountObject account = new AccountObject(decoder.getDecodeUsername());
 			account.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(account,
-					decoder.getDecodeProjectName());
+			mSprintPlanWebService = new SprintPlanWebService(account, decoder.getDecodeProjectName());
 			mSprintPlanWebService.createSprint(sprintObject);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {

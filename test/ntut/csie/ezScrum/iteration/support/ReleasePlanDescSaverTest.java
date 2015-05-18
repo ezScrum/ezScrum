@@ -13,8 +13,8 @@ import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +24,7 @@ public class ReleasePlanDescSaverTest {
 	
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
-	private IProject mProject = null;
+	private ProjectObject mProject = null;
 	private ReleasePlanMapper mRelasePlanMapper = null;
 	
 	@Before
@@ -40,7 +40,7 @@ public class ReleasePlanDescSaverTest {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 		
 		// initial loader
 		mRelasePlanMapper = new ReleasePlanMapper(mProject);

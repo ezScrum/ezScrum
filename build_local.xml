@@ -89,13 +89,17 @@
 		<fileset dir="${Local.Library.Dir}/test" casesensitive="yes">
 			<filename name="*.jar" />
 		</fileset>
+		<fileset dir="${Local.Library.Dir}/test/http" casesensitive="yes">
+			<filename name="*.jar" />
+		</fileset>
 		<!-- Web LIB -->
 		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
 			<include name="JCIS_*.jar" /><!-- 待移除 -->
 			<include name="ezScrum_*.jar" /><!-- 待移除 -->
-			<include name="ezTrack*.jar" /><!-- 待移除 -->
 			<include name="mysql-*.jar" />
 			<include name="struts*.jar" />
+			<include name="commons-*.jar" />
+			<include name="jersey-*.jar" />
 			<!-- plugin used -->
 			<include name="gson-*.jar" />
 			<include name="jettison-*.jar" />

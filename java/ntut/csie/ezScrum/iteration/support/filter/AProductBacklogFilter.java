@@ -13,8 +13,8 @@ public abstract class AProductBacklogFilter {
 	protected abstract ArrayList<StoryObject> FilterStories();		// 過濾 Stories 的方法
 	protected abstract ArrayList<TaskObject> FilterTasks();			// 過濾 Tasks 的方法
 	
-	public ArrayList<StoryObject> getStories() { return this.mStories; }
-	public ArrayList<TaskObject> getTasks() { return this.mTasks; }
+	public ArrayList<StoryObject> getStories() { return mStories; }
+	public ArrayList<TaskObject> getTasks() { return mTasks; }
 	
 	public <E> AProductBacklogFilter(ArrayList<E> issues){
 		for(Object object : issues){
@@ -29,6 +29,8 @@ public abstract class AProductBacklogFilter {
 	}
 	
 	public <E> AProductBacklogFilter(ArrayList<E> issues, String compareinfo) {
+		mCompareInfo = compareinfo;
+		
 		for(Object object : issues){
 			if (object instanceof StoryObject) {
 				StoryObject story = (StoryObject) object;
@@ -38,7 +40,6 @@ public abstract class AProductBacklogFilter {
 				mTasks.add(task);
 			}
 		}
-		mCompareInfo = compareinfo;
 		
 		if(issues.get(0) instanceof StoryObject){
 			mStories = FilterStories();

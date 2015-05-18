@@ -16,18 +16,6 @@ public class FowardAction extends Action{
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-//		IProject project = (IProject) SessionManager.getProject(request);
-//		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		
-//		MantisAccountMapper accountHelper = new MantisAccountMapper(project, session);
-//		
-//		// 檢查帳號不通過，提示錯誤頁面
-//		if ( accountHelper.CheckAccount(request) ){
-//			return mapping.findForward("success");
-//		}else{
-//			return mapping.findForward("permissionDenied");
-//		}
-		
 		AccountLogic accountLogic = new AccountLogic();
 		
 		// 檢查帳號不通過，提示錯誤頁面
