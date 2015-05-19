@@ -77,13 +77,13 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	 * no story
 	 */
 	public void testShowExistedStory_1() {
-		String sprintId = mCS.getSprintIDList().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
 
 		// ================ set session info ========================
@@ -109,12 +109,12 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		CreateProductBacklog CPB = new CreateProductBacklog(storycount, mCP);
 		CPB.exe();
 
-		String sprintId = mCS.getSprintIDList().get(0);
+		long sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
 
 		// ================ set session info ========================
@@ -127,36 +127,36 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		// assert response text
-		String releaseIdAndSprintId = "None";
+		long releaseIdAndSprintId = -1;
 		String storyStatus = "new";
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText
 			.append("<ExistingStories>")
 				.append("<Story>")
 					.append("<Id>1</Id>")
-					.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
-					.append("<Name>").append(CPB.TEST_STORY_NAME + 1).append("</Name>")
-					.append("<Value>").append(CPB.TEST_STORY_VALUE).append("</Value>")
-					.append("<Importance>").append(CPB.TEST_STORY_IMP).append("</Importance>")
-					.append("<Estimate>").append(CPB.TEST_STORY_EST).append("</Estimate>")
+					.append("<Link></Link>")
+					.append("<Name>").append("TEST_STORY_" + 1).append("</Name>")
+					.append("<Value>").append(50).append("</Value>")
+					.append("<Importance>").append(100).append("</Importance>")
+					.append("<Estimate>").append(2).append("</Estimate>")
 					.append("<Status>").append(storyStatus).append("</Status>")
-					.append("<Notes>").append(CPB.TEST_STORY_NOTES + 1).append("</Notes>")
-					.append("<HowToDemo>").append(CPB.TEST_STORY_HOW_TO_DEMO + 1).append("</HowToDemo>")
-					.append("<Release>").append(releaseIdAndSprintId).append("</Release>")
+					.append("<Notes>").append("TEST_STORY_NOTE_" + 1).append("</Notes>")
+					.append("<HowToDemo>").append("TEST_STORY_DEMO_" + 1).append("</HowToDemo>")
+					.append("<Release></Release>")
 					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
 					.append("<Tag></Tag>")
 				.append("</Story>")
 				.append("<Story>")
 					.append("<Id>2</Id>")
-					.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
-					.append("<Name>").append(CPB.TEST_STORY_NAME + 2).append("</Name>")
-					.append("<Value>").append(CPB.TEST_STORY_VALUE).append("</Value>")
-					.append("<Importance>").append(CPB.TEST_STORY_IMP).append("</Importance>")
-					.append("<Estimate>").append(CPB.TEST_STORY_EST).append("</Estimate>")
+					.append("<Link></Link>")
+					.append("<Name>").append("TEST_STORY_" + 2).append("</Name>")
+					.append("<Value>").append(50).append("</Value>")
+					.append("<Importance>").append(100).append("</Importance>")
+					.append("<Estimate>").append(2).append("</Estimate>")
 					.append("<Status>").append(storyStatus).append("</Status>")
-					.append("<Notes>").append(CPB.TEST_STORY_NOTES + 2).append("</Notes>")
-					.append("<HowToDemo>").append(CPB.TEST_STORY_HOW_TO_DEMO + 2).append("</HowToDemo>")
-					.append("<Release>").append(releaseIdAndSprintId).append("</Release>")
+					.append("<Notes>").append("TEST_STORY_NOTE_" + 2).append("</Notes>")
+					.append("<HowToDemo>").append("TEST_STORY_DEMO_" + 2).append("</HowToDemo>")
+					.append("<Release></Release>")
 					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
 					.append("<Tag></Tag>")
 				.append("</Story>")
@@ -188,7 +188,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		String expectedResponseText = "";
+		String expectedResponseText = "<ExistingStories></ExistingStories>";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}
@@ -216,7 +216,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		String expectedResponseText = "";
+		String expectedResponseText = "<ExistingStories></ExistingStories>";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}
@@ -244,7 +244,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 
-		String expectedResponseText = "";
+		String expectedResponseText = "<ExistingStories></ExistingStories>";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
 	}

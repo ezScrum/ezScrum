@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -12,6 +11,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
@@ -79,30 +80,28 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 	 * 測試 drop story 後，story 要從 release 跟 sprint 的關係中切除
 	 */
 	public void testRemoveStory() throws Exception {
-		IProject project = mCP.getProjectList().get(0);
-		String lastReleaseId = String.valueOf(mCR.getReleaseCount());
+		IProject iProject = mCP.getProjectList().get(0);
+		ProjectObject project = new ProjectObject(iProject.getName());
 		AddSprintToRelease ASR = new AddSprintToRelease(5, mCR, mCP);
 		ASR.exe();
 
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(iProject);
 		int SprintCount = sprintPlanHelper.getLastSprintId();
 
 		// 5個 Sprint，每個 Sprint 加入1個 Story
-		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, SprintCount, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, SprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				mConfig.getUserSession(), project);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 
 		// 取出所有 Story
-		IStory[] stories = productBacklogLogic.getStories();
+		ArrayList<StoryObject> stories = productBacklogLogic.getStories();
 		ArrayList<Long> storyList = new ArrayList<Long>();
-		for (IStory story : stories) {
-			storyList.add(story.getIssueID());
+		for (StoryObject story : stories) {
+			storyList.add(story.getId());
 		}
 		// 將所有 Story 加入最後一個 Release
-		productBacklogLogic.addReleaseTagToIssue(storyList, lastReleaseId);
+		// productBacklogLogic.addReleaseTagToIssue(storyList, lastReleaseId);
 
 		// 增加 delay 時間，因為新增 release 與刪除 release 的秒速過近，會造成系統抓錯資料導致 assert 錯誤
 		// (系統抓資料抓到秒，但是新增到 actionPerfome 回來刪掉 release 可能只花費毫秒，因此秒的單位會一樣)
@@ -114,10 +113,9 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		// 設定 Session 資訊
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
-		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", iProject);
+		request.setHeader("Referer", "?PID=" + iProject.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -125,15 +123,12 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		// ================ assert =============================
 		// Story 自 Sprint 移除時，應該自 Release 中移除
 		stories = productBacklogLogic.getStories();
-		for (IStory story : stories) {
-			if (story.getIssueID() == 1) {
-				assertEquals("0", story.getSprintID());
-				assertEquals("0", story.getReleaseID());
+		for (StoryObject story : stories) {
+			if (story.getId() == 1) {
+				assertEquals(0, story.getSprintId());
 			} else {
 				// 因為1個 sprint 有1個 story 所以 id 是對應的，因此拿來確認 story 所對應 sprint 有無錯誤
-				assertEquals(String.valueOf(story.getIssueID()),
-						story.getSprintID());
-				assertEquals(lastReleaseId, story.getReleaseID());
+				assertEquals(story.getId(), story.getSprintId());
 			}
 		}
 	}

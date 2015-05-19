@@ -1,16 +1,15 @@
 package ntut.csie.ezScrum.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -22,6 +21,10 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TaskDAOTest {
 	private MySQLControl mControl = null;
@@ -93,6 +96,7 @@ public class TaskDAOTest {
 		while (result.next()) {
 			tasks.add(TaskDAO.convert(result));
 		}
+		closeResultSet(result);
 
 		assertEquals(3, tasks.size());
 		for (int i = 0; i < 3; i++) {
@@ -214,6 +218,7 @@ public class TaskDAOTest {
 			tasks.add(TaskDAO.convert(resultSet));
 		}
 		assertEquals(2, tasks.size());
+		closeResultSet(resultSet);
 	}
 
 	@Test
@@ -235,7 +240,7 @@ public class TaskDAOTest {
 			assertNotSame(-1, taskId);
 		}
 		
-		// get tasks by story
+		// get tasks by story id
 		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksByStoryId(1);
 		assertEquals(2, tasks.size());
 	}
@@ -257,7 +262,7 @@ public class TaskDAOTest {
 			assertNotSame(-1, taskId);
 		}
 		
-		// get Wild Tasks
+		// get wild tasks
 		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(sProjectId);
 		assertEquals(2, tasks.size());
 	}
@@ -325,7 +330,7 @@ public class TaskDAOTest {
 	}
 	
 	@Test
-	public void testAddPartner() {
+	public void testAddPartner() throws SQLException {
 		long TEST_TASK_ID = 3;
 		long TEST_PARTNER_ID = 5;
 		// create get partners id query
@@ -339,16 +344,11 @@ public class TaskDAOTest {
 		ArrayList<Long> partnerIdList = new ArrayList<Long>();
 		// execute get partners id query
 		ResultSet result = mControl.executeQuery(getPartnersIdQuery);
-		try {
-			while (result.next()) {
-				partnerIdList.add(result
-						.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeResultSet(result);
+		while (result.next()) {
+			partnerIdList.add(result.getLong(IssuePartnerRelationEnum.ACCOUNT_ID));
 		}
+		closeResultSet(result);
+		
 		// before add partner
 		assertEquals(0, partnerIdList.size());
 		// add partner
@@ -483,6 +483,7 @@ public class TaskDAOTest {
 		ResultSet result= mControl.executeQuery(query);
 		result.next();
 		TaskObject actual = TaskDAO.convert(result);
+		closeResultSet(result);
 		
 		assertEquals(id, actual.getId());
 		assertEquals(TEST_SERIAL_NUMBER, actual.getSerialId());
@@ -506,5 +507,4 @@ public class TaskDAOTest {
 			}			
 		}
 	}
-	
 }

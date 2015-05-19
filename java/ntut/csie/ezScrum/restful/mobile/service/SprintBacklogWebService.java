@@ -18,18 +18,15 @@ import ntut.csie.jcis.account.core.LogonException;
 import org.codehaus.jettison.json.JSONException;
 
 public class SprintBacklogWebService extends ProjectWebService {
-	SprintBacklogMapper sprintBacklog;
-	SprintBacklogLogic sprintBacklogLogic;
+	SprintBacklogMapper mSprintBacklogMapper;
+	SprintBacklogLogic mSprintBacklogLogic;
 
 	public SprintBacklogWebService(String username, String userpwd,
 			String projectID, int iteration) throws LogonException {
 		super(username, userpwd, projectID);
-		// sprintBacklog = new SprintBacklogMapper( super.getProjectList().get(
-		// 0 ) , new UserSession( super.getAccount() ) , iteration ) ;
-		this.sprintBacklogLogic = new SprintBacklogLogic(super.getProjectList()
-				.get(0), new UserSession(super.getAccount()),
-				String.valueOf(iteration));
-		this.sprintBacklog = this.sprintBacklogLogic.getSprintBacklogMapper();
+		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
+				.get(0), iteration);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
 	public SprintBacklogWebService(String username, String userpwd,
@@ -37,23 +34,21 @@ public class SprintBacklogWebService extends ProjectWebService {
 		super(username, userpwd, projectID);
 		// sprintBacklog = new SprintBacklogMapper( super.getProjectList().get(
 		// 0 ) , new UserSession( super.getAccount() ) ) ;
-		this.sprintBacklogLogic = new SprintBacklogLogic(super.getProjectList()
-				.get(0), new UserSession(super.getAccount()), null);
-		this.sprintBacklog = this.sprintBacklogLogic.getSprintBacklogMapper();
+		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
+				.get(0), -1);
+		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
 	public String getRESTFulResponseString() throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		return csb.readStoryIDList(this.sprintBacklogLogic);
-		// return csb.readStoryIDList( sprintBacklog );
+		return csb.readStoryIDList(mSprintBacklogLogic);
 	}
 
-	public String getTaskIDList(String storyID) throws JSONException {
+	public String getTaskIDList(long storyId) throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		ArrayList<TaskObject> tasks = sprintBacklog.getTasksMap().get(
-				Long.parseLong(storyID));
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getStory(storyId).getTasks();
 		String taskIDListJsonString = csb
-				.convertTaskIDList(storyID, tasks);
+				.convertTaskIdList(storyId, tasks);
 		return taskIDListJsonString;
 	}
 
@@ -119,13 +114,13 @@ public class SprintBacklogWebService extends ProjectWebService {
 	/**
 	 * 取得task information
 	 * 
-	 * @param taskID
+	 * @param taskId
 	 * @return
 	 * @throws JSONException
 	 */
-	public String getTaskInformation(String taskID) throws JSONException {
+	public String getTaskInformation(long taskId) throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		IIssue currentTask = sprintBacklog.getStory(Long.parseLong(taskID));
+		TaskObject currentTask = mSprintBacklogMapper.getTask(taskId);
 		return csb.readTaskInformationList(currentTask);
 	}
 
@@ -137,8 +132,8 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getSprintBacklog(String handlerID) throws JSONException {
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
-		return csb.convertStoryTaskInformationList(this.sprintBacklogLogic,
-				this.sprintBacklog, handlerID);
+		return csb.convertStoryTaskInformationList(mSprintBacklogLogic,
+				mSprintBacklogMapper, handlerID);
 		// return csb.convertStoryTaskInformationList( sprintBacklog, handlerID
 		// );
 	}

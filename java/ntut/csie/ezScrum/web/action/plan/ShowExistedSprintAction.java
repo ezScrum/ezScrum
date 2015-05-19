@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,10 +27,8 @@ public class ShowExistedSprintAction extends Action {
 	private static Log log = LogFactory.getLog(ShowExistedSprintAction.class);
 	private ReleasePlanHelper RPhelper;
 	// --------------------------------------------------------- Methods
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
-		IProject project = (IProject) request.getSession().getAttribute("Project");
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		ProjectObject project = (ProjectObject) request.getSession().getAttribute("Project");
 	
 		log.info("project=" + project.getName());
 

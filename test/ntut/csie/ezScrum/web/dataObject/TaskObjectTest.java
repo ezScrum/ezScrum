@@ -683,35 +683,6 @@ public class TaskObjectTest {
 	}
 
 	@Test
-	public void testGetTasksByStory() {
-		long storyId = 1;
-		// 新增三筆 task 但有兩筆在 story 下
-		for (int i = 1; i <= 3; i++) {
-			TaskObject task = new TaskObject(1);
-			task.setName("TEST_NAME_" + i).setNotes("TEST_NOTES_" + i).setEstimate(10).setActual(0);
-			if (i != 2) {
-				task.setStoryId(storyId);
-			}
-			task.save();
-		}
-
-		ArrayList<TaskObject> tasks = TaskObject.getTasksByStory(storyId);
-		assertEquals(2, tasks.size());
-
-		assertEquals("TEST_NAME_1", tasks.get(0).getName());
-		assertEquals("TEST_NOTES_1", tasks.get(0).getNotes());
-		assertEquals(10, tasks.get(0).getEstimate());
-		assertEquals(10, tasks.get(0).getRemains());
-		assertEquals(0, tasks.get(0).getActual());
-
-		assertEquals("TEST_NAME_3", tasks.get(1).getName());
-		assertEquals("TEST_NOTES_3", tasks.get(1).getNotes());
-		assertEquals(10, tasks.get(1).getEstimate());
-		assertEquals(10, tasks.get(1).getRemains());
-		assertEquals(0, tasks.get(1).getActual());
-	}
-
-	@Test
 	public void testGetStatus_WithSpecificDate() {
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);

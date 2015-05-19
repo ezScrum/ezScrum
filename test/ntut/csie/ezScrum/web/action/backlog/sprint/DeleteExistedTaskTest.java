@@ -11,7 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class DeleteExistedTaskTest extends MockStrutsTestCase {
@@ -21,7 +21,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 	private AddStoryToSprint mASS;
 	private Configuration mConfig;
 	private final String mActionPath = "/deleteExistedTask";
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private long mSprintId;
 	private long mStoryId;
 
@@ -41,20 +41,20 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		// create sprint
 		int sprintCount = 1;
 		mCS = new CreateSprint(sprintCount, mCP);
 		mCS.exe();
-		mSprintId = Long.parseLong(mCS.getSprintIDList().get(0));
+		mSprintId = mCS.getSprintsId().get(0);
 
 		// create story to sprint
 		int storyCount = 1;
 		mASS = new AddStoryToSprint(storyCount, 1, (int) mSprintId, mCP,
-				CreateProductBacklog.TYPE_ESTIMATION);
+				CreateProductBacklog.COLUMN_TYPE_EST);
 		mASS.exe();
-		mStoryId = mASS.getStories().get(storyCount - 1).getIssueID();
+		mStoryId = mASS.getStories().get(storyCount - 1).getId();
 
 		super.setUp();
 
@@ -80,7 +80,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		mCS = null;
 		mASS = null;
 		mConfig = null;
-		mIProject = null;
+		mProject = null;
 		super.tearDown();
 	}
 
@@ -95,7 +95,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		DT.exe();
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", tasksId);
@@ -134,7 +134,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		DT2.exe();
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", tasksId);
@@ -180,12 +180,12 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		response.reset();
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession",
 				mConfig.getUserSession());
-		request.getSession().setAttribute("Project", mIProject);
+		request.getSession().setAttribute("Project", mProject);
 		// 設定新增Task所需的資訊
 		String expectedStoryId = "1";
 		String expectedSprintId = "1";

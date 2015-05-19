@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
@@ -157,9 +159,17 @@ public class ProjectObject implements IBaseObject {
 		return projectWorkers;
 	}
 	
+	public ArrayList<StoryObject> getStoriesWithNoParent() {
+		return StoryDAO.getInstance().getStoriesWithNoParent(mId);
+	}
+	
+	// get all stories
+	public ArrayList<StoryObject> getStories() {
+		return StoryDAO.getInstance().getStoriesByProjectId(mId);
+	}
+
 	public ArrayList<TaskObject> getTasksWithNoParent() {
-		ArrayList<TaskObject> tasksWithNoParent = TaskDAO.getInstance().getTasksWithNoParent(mId);
-		return tasksWithNoParent;
+		return TaskDAO.getInstance().getTasksWithNoParent(mId);
 	}
 	
 	public ScrumRole getScrumRole(RoleEnum role) {
@@ -169,6 +179,20 @@ public class ProjectObject implements IBaseObject {
 	public void updateScrumRole(ScrumRole scrumRole) {
 		ProjectDAO.getInstance().updateScrumRole(mId, 
 				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
+	}
+	
+	/**
+	 * 透過 Tag Name 取得 Tag
+	 * @param name
+	 * @param ProjectId
+	 * @return
+	 */
+	public TagObject getTagByName(String name){
+		return TagDAO.getInstance().getTagInProjectByName(mId, name);
+	}
+	
+	public ArrayList<TagObject> getTags() {
+		return TagDAO.getInstance().getTagsByProjectId(mId);
 	}
 	
 	@Override

@@ -1,8 +1,10 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
+import java.util.ArrayList;
+
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 
 public class ProductBacklogFilterFactory {
@@ -20,11 +22,10 @@ public class ProductBacklogFilterFactory {
 		return factory;		
 	}
 	
-	public AProductBacklogFilter getPBFilterFilter(String type, IStory[] stories) {
+	public AProductBacklogFilter getPBFilterFilter(String type, ArrayList<StoryObject> stories) {
 		if (type == null) {
 			return new NullFilter(stories);
 		}
-		
 		if (type.equals(ScrumEnum.BACKLOG)) {
 			return new BacklogedFilter(stories);
 		} else if (type.equals(ScrumEnum.DETAIL)) {
@@ -36,29 +37,24 @@ public class ProductBacklogFilterFactory {
 		}
 	}
 	
-	public AProductBacklogFilter getStoryFilter_byInfo(String type, IStory[] stories, String info) {
+	public AProductBacklogFilter getStoryFilter_byInfo(String type, ArrayList<StoryObject> stories, String info) {
 		if (type == null) {
 			return new NullFilter(stories);
 		}
-		
 		if (type.equals(ScrumEnum.FILTER_NANE)) {
 			return new IssueNameFilter(stories, info);
-		} else if (type.equals(ScrumEnum.FILTER_DESCRIPTION)) {
-			return new IssueDescFilter(stories, info);
 		} else {
 			return new NullFilter(stories);
 		}
 	}
 	
-	public AProductBacklogFilter getTaskFilter_byInfo(String type, ITask[] tasks, String info) {
+	public AProductBacklogFilter getTaskFilter_byInfo(String type, ArrayList<TaskObject> tasks, String info) {
 		if (type == null) {
 			return new NullFilter(tasks);
 		}
-		
+
 		if (type.equals(ScrumEnum.FILTER_NANE)) {
 			return new IssueNameFilter(tasks, info);
-		} else if (type.equals(ScrumEnum.FILTER_DESCRIPTION)) {
-			return new IssueDescFilter(tasks, info);
 		} else if (type.equals(ScrumEnum.FILTER_HANDLER)) {
 			return new TaskHandlerFilter(tasks, info);
 		} else {

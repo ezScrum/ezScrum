@@ -21,7 +21,7 @@ public class SprintPlanWebService extends ProjectWebService{
 	
 	public SprintPlanWebService(AccountObject user, String projectID) throws LogonException {
 		super(user, projectID);
-		mSprintPlanHelper = new SprintPlanHelper(super.getProjectList().get(0));
+		mSprintPlanHelper = new SprintPlanHelper(getAllProjects().get(0));
 	}
 
 	/**

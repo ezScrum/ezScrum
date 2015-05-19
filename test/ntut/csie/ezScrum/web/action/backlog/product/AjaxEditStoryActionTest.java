@@ -86,7 +86,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryValue = "5";
 		String expectedStoryHoewToDemo = "UT for Update Story for How to Demo";
 		String expectedStoryNote = "UT for Update Story for Notes";
-		String storyId = String.valueOf(CPB.getIssueIDList().get(0));
+		String storyId = String.valueOf(CPB.getStoryIds().get(0));
 		addRequestParameter("issueID", storyId);
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
@@ -111,15 +111,15 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 							.append("\"Stories\":[{")
 							.append("\"Id\":").append(storyId).append(",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
-							.append("\"Value\":\"").append(expectedStoryValue).append("\",")			
-							.append("\"Estimate\":\"").append(expectedStoryEstimation).append("\",")
-							.append("\"Importance\":\"").append(expectedStoryImportance).append("\",")
+							.append("\"Value\":").append(expectedStoryValue).append(",")			
+							.append("\"Estimate\":").append(expectedStoryEstimation).append(",")
+							.append("\"Importance\":").append(expectedStoryImportance).append(",")
 							.append("\"Tag\":\"\",")
 							.append("\"Status\":\"new\",")
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
-							.append("\"Link\":\"/ezScrum/showIssueInformation.do?issueID=").append(storyId).append("\",")
-							.append("\"Release\":\"None\",")
+							.append("\"Link\":\"\",")
+							.append("\"Release\":\"\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"DETAIL\",")
 							.append("\"Attach\":false,")

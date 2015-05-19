@@ -4,19 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -96,12 +94,12 @@ public class ConvertSprintBacklog {
 			throws JSONException {
 		JSONObject storyIds = new JSONObject();
 		JSONArray storyArray = new JSONArray();
-		List<IIssue> stroyArray = sprintBacklogLogic.getStories();
-		for (IIssue item : stroyArray) {
-			JSONObject story = new JSONObject();
-			story.put("id", item.getIssueID());
-			story.put("point", (int) Double.parseDouble(item.getEstimated()));
-			story.put("status", item.getStatus());
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+		for (StoryObject story : stories) {
+			JSONObject stroyJson = new JSONObject();
+			stroyJson.put("id", story.getId());
+			stroyJson.put("point", story.getEstimate());
+			stroyJson.put("status", story.getStatusString());
 			storyArray.put(story);
 		}
 		storyIds.put(SprintPlanUtil.TAG_STORYLIST, storyArray);
@@ -116,7 +114,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String convertTaskIDList(String storyId, ArrayList<TaskObject> tasks)
+	public String convertTaskIdList(long storyId, ArrayList<TaskObject> tasks)
 			throws JSONException {
 		JSONObject story = new JSONObject();
 		JSONObject storyProperties = new JSONObject();
@@ -173,15 +171,15 @@ public class ConvertSprintBacklog {
 
 		public HistoryItemInfo(String desc, String type) {
 			description = desc;
-			this.type = type;
+			type = type;
 		}
 
 		private void setDescription(String description) {
-			this.description = description;
+			description = description;
 		}
 
 		private void setType(String type) {
-			this.type = type;
+			type = type;
 		}
 
 		public String getDescription() {
@@ -214,27 +212,27 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String readTaskInformationList(IIssue iTaskInformaion)
+	public String readTaskInformationList(TaskObject task)
 			throws JSONException {
 		JSONObject taskInformation = new JSONObject();
 		JSONObject taskInformations = new JSONObject();
 		JSONArray partnersArray = new JSONArray();
 		taskInformations.put(SprintBacklogUtil.TAG_ID,
-				"" + iTaskInformaion.getIssueID());// 加上""使輸出格式從ID變為"ID"
+				"" + task.getId());// 加上""使輸出格式從ID變為"ID"
 		taskInformations.put(SprintBacklogUtil.TAG_NAME,
-				iTaskInformaion.getSummary());// getName
+				task.getName());// getName
 		taskInformations.put(SprintBacklogUtil.TAG_HANDLER,
-				iTaskInformaion.getAssignto());// getHandler
-		partnersArray.put(iTaskInformaion.getPartners());
+				task.getHandler() != null ? task.getHandler().getUsername() : "");// getHandler
+		partnersArray.put(task.getPartners());
 		taskInformations.put(SprintBacklogUtil.TAG_PARTERNERS, partnersArray);
 		taskInformations.put(SprintBacklogUtil.TAG_ESTIMATION,
-				iTaskInformaion.getEstimated());
+				task.getEstimate());
 		taskInformations.put(SprintBacklogUtil.TAG_REMAINHOUR,
-				iTaskInformaion.getRemains());
+				task.getRemains());
 		taskInformations.put(SprintBacklogUtil.TAG_ACTUALHOUR,
-				iTaskInformaion.getActualHour());
+				task.getActual());
 		taskInformations.put(SprintBacklogUtil.TAG_NOTES,
-				iTaskInformaion.getNotes());
+				task.getNotes());
 
 		taskInformation.put(SprintBacklogUtil.TAG_TASKINFORMATION,
 				taskInformations);
@@ -248,12 +246,12 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String readTasksInformationList(IIssue[] tasks) throws JSONException {
+	public String readTasksInformationList(ArrayList<TaskObject> tasks) throws JSONException {
 		JSONObject taskList = new JSONObject();
 		JSONArray taskArray = new JSONArray();
 		if (tasks == null)
 			return "";
-		for (IIssue task : tasks) {
+		for (TaskObject task : tasks) {
 			taskArray.put(readTaskInformationList(task));
 		}
 		taskList.put(SprintBacklogUtil.TAG_TASKLIST, taskArray);
@@ -274,14 +272,14 @@ public class ConvertSprintBacklog {
 		int storyLength = 0;
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
-		if ((sb != null) && (sb.getSprintPlanId() > 0)) {
-			List<IIssue> stories = sprintBacklogLogic.getStoriesByImp();
-			Map<Long, ArrayList<TaskObject>> taskMap = sb.getTasksMap();
-			stories = this.filterStory(stories, taskMap, handler);
+		if ((sb != null) && (sb.getSprintId() > 0)) {
+			ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
+			Map<Long, ArrayList<TaskObject>> taskMap = getStoryToTasksMap(stories);
+			stories = filterStory(stories, taskMap, handler);
 
-			for (IIssue story : stories) {
+			for (StoryObject story : stories) {
 				storyList.add(createTaskBoardStory(story,
-						taskMap.get(story.getIssueID())));
+						taskMap.get(story.getId())));
 			}
 			storyLength = stories.size();
 		} else { // no sprint exist
@@ -299,38 +297,42 @@ public class ConvertSprintBacklog {
 	}
 
 	// filter story and task by handler name
-	private List<IIssue> filterStory(List<IIssue> stories,
-			Map<Long, ArrayList<TaskObject>> taskmap, String filtername) {
-		ArrayList<IIssue> filterissues = new ArrayList<IIssue>();
-
+	private ArrayList<StoryObject> filterStory(ArrayList<StoryObject> stories, Map<Long, ArrayList<TaskObject>> storyToTasksMap, String filtername) {
+		ArrayList<StoryObject> filterStories = new ArrayList<StoryObject>();
 		// All member, return all story
 		if (filtername.equals("ALL") || filtername.length() == 0) {
 			return stories;
 		} else {
-			// filter member name by handler, return the story and task map
-			// relation
-			for (IIssue story : stories) {
-				ArrayList<TaskObject> tasks = taskmap.get(story.getIssueID());
+			// filter member name by handler, return the story and task map relation
+			for (StoryObject story : stories) {
+				ArrayList<TaskObject> tasks = storyToTasksMap.get(story.getId());
 				if (tasks != null) {
-					ArrayList<TaskObject> filtertask = new ArrayList<TaskObject>();
+					ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
 
 					for (TaskObject task : tasks) {
-						if (checkParent(filtername, task.getPartnersUsername(),
-								task.getHandler().getUsername())) {
-							filtertask.add(task);
+						String handlerUserName = task.getHandler() != null ? task.getHandler().getUsername() : "";
+						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
+							filteredTasks.add(task);
 						}
 					}
 
-					if (filtertask.size() > 0) {
+					if (filteredTasks.size() > 0) {
 						// cover new filter map
-						taskmap.put(story.getIssueID(), filtertask);
-						filterissues.add(story);
+						storyToTasksMap.put(story.getId(), filteredTasks);
+						filterStories.add(story);
 					}
 				}
 			}
-			return filterissues;
-			// return filterissues.toArray(new IIssue[filterissues.size()]);
+			return filterStories;
 		}
+	}
+	
+	private HashMap<Long, ArrayList<TaskObject>> getStoryToTasksMap(ArrayList<StoryObject> stories) {
+		HashMap<Long, ArrayList<TaskObject>> storyToTasks = new HashMap<Long, ArrayList<TaskObject>>();
+		for (StoryObject story : stories) {
+			storyToTasks.put(story.getId(), story.getTasks());
+		}
+		return storyToTasks;
 	}
 
 	// if partner of assignto is equals usename, return it
@@ -348,7 +350,7 @@ public class ConvertSprintBacklog {
 	}
 
 	// 將 tasks 塞到 story裡方便用Gson轉成Json string
-	private TaskBoard_Story createTaskBoardStory(IIssue story, ArrayList<TaskObject> tasks) {
+	private TaskBoard_Story createTaskBoardStory(StoryObject story, ArrayList<TaskObject> tasks) {
 
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
 
@@ -359,9 +361,6 @@ public class ConvertSprintBacklog {
 		}
 		return TB_Story;
 	}
-
-	// 協助將資料轉換的 Translater
-	Translation tr = new Translation();
 
 	// 欲打包成json格式的 story 物件
 	private class TaskBoard_Story {
@@ -381,20 +380,20 @@ public class ConvertSprintBacklog {
 		List<TaskBoard_AttachFile> AttachFileList;
 		List<TaskBoard_Task> Tasks;
 
-		public TaskBoard_Story(IIssue story) {
-			Id = Long.toString(story.getIssueID());
-			Name = HandleSpecialChar(story.getSummary());
-			Value = story.getValue();
-			Estimate = story.getEstimated();
-			Importance = story.getImportance();
-			Tag = tr.Join(story.getTags(), ",");
-			Status = story.getStatus();
+		public TaskBoard_Story(StoryObject story) {
+			Id = Long.toString(story.getId());
+			Name = HandleSpecialChar(story.getName());
+			Value = String.valueOf(story.getValue());
+			Estimate = String.valueOf(story.getEstimate());
+			Importance = String.valueOf(story.getImportance());
+			Tag = Translation.Join(story.getTags(), ",");
+			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
-			Release = story.getReleaseID();
-			Sprint = story.getSprintID();
+			Release = "";
+			Sprint = String.valueOf(story.getSprintId());
 
-			Link = story.getIssueLink();
+			Link = "";
 			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
 			if (!AttachFileList.isEmpty())
@@ -460,13 +459,13 @@ public class ConvertSprintBacklog {
 	}
 
 	// 將 attach file的資訊組成有效的連結
-	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(IIssue story,
+	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(StoryObject story,
 			ArrayList<AttachFileObject> list) {
 
 		ArrayList<TaskBoard_AttachFile> array = new ArrayList<TaskBoard_AttachFile>();
 		for (AttachFileObject file : list) {
 			array.add(new TaskBoard_AttachFile(file.getId(), file.getName(),
-					"fileDownload.do?projectName=" + story.getProjectName()
+					"fileDownload.do?projectName=" + ProjectObject.get(story.getProjectId()).getName()
 							+ "&fileID=" + file.getId() + "&fileName="
 							+ file.getName(), new Date(file.getCreateTime())));
 		}

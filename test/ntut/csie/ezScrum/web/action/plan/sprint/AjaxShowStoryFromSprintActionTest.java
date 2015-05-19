@@ -31,22 +31,27 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
+		ini.exe();
 		
+		// 新增一測試專案
     	mCP = new CreateProject(1);
-    	mCP.exeCreate();								// 新增一測試專案
+    	mCP.exeCreate();
     	mProject = mCP.getProjectList().get(0);
     	
+		// 新增一筆Release Plan
     	mCR = new CreateRelease(1, mCP);
-    	mCR.exe();										// 新增一筆Release Plan
+    	mCR.exe();
     	
+		// 新增二筆Sprint Plan
     	mCS = new CreateSprint(2, mCP);
-    	mCS.exe();										// 新增二筆Sprint Plan
+    	mCS.exe();
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( mActionPath );
     	
@@ -83,7 +88,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", mCS.getSprintIDList().get(0));
+		addRequestParameter("Sid", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -103,13 +108,13 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	public void testShowStoryFromSprint_2() throws Exception{
 		int storycount = 2;
 		
-		AddStoryToSprint ASTS = new AddStoryToSprint(storycount, 2, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(storycount, 2, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", mCS.getSprintIDList().get(0));
+		addRequestParameter("Sid", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -126,7 +131,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 					.append("<ExistingStories>")
 						.append("<Story>")
 							.append("<Id>1</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
+							.append("<Link></Link>")
 							.append("<Name>TEST_STORY_1</Name>")
 							.append("<Value>50</Value>")
 							.append("<Importance>100</Importance>")
@@ -134,13 +139,13 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 							.append("<Status>new</Status>")
 							.append("<Notes>TEST_STORY_NOTE_1</Notes>")
 							.append("<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>")
-							.append("<Release>None</Release>")
+							.append("<Release></Release>")
 							.append("<Sprint>1</Sprint>")
 							.append("<Tag></Tag>")
 						.append("</Story>")
 						.append("<Story>")
 							.append("<Id>2</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+							.append("<Link></Link>")
 							.append("<Name>TEST_STORY_2</Name>")
 							.append("<Value>50</Value>")
 							.append("<Importance>100</Importance>")
@@ -148,7 +153,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 							.append("<Status>new</Status>")
 							.append("<Notes>TEST_STORY_NOTE_2</Notes>")
 							.append("<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>")
-							.append("<Release>None</Release>")
+							.append("<Release></Release>")
 							.append("<Sprint>1</Sprint>")
 							.append("<Tag></Tag>")
 						.append("</Story>")

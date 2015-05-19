@@ -252,7 +252,6 @@
         </action>
         
         <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
-        <action path="/AjaxGetCustomIssueType" type="ntut.csie.ezScrum.web.action.other.AjaxGetCustomIssueTypeAction" />
         
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">
 			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />
@@ -326,7 +325,6 @@
     		<!-- release plan -->
     		<action path="/AjaxGetRPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetReleasePlanPermissionAction" />
     		<action path="/moveStorySprint"			type="ntut.csie.ezScrum.web.action.plan.AjaxMoveStorySprint" />
-    		<action path="/ajaxRemoveReleaseBacklog"		type="ntut.csie.ezScrum.web.action.plan.AjaxRemoveReleaseBacklogAction" />
     		<action path="/AjaxShowSprintfromRelease"		type="ntut.csie.ezScrum.web.action.plan.AjaxShowSprintFromReleaseAction" />
     		<action path="/notYetEndSprintForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndSprintForMoveStory" />
     		<action path="/notYetEndReleaseForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndReleaseForMoveStory" />
@@ -340,11 +338,6 @@
 				<forward name="success" path="releaseBacklog.show"/>
 				<forward name="error" path="/Error.jsp" />
 	        </action>
-	            		
-			<action path="/removeReleaseBacklog"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleaseBacklogAction">
-            	<forward name="success" path="/showReleaseBacklog.do"/> 
-				<forward name="error" path="error.show" />
-			</action>
 			
 			<action path="/showReleasePlan"					type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlanAction">
 	            <forward name="success" path="releasePlan.show"/>
@@ -452,14 +445,6 @@
     	<action path="/reopenIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ReopenIssueAction" />
     	<action path="/resetTask"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ResetTaskAction" />
     	<action path="/showCheckOutIssue" 				type="ntut.csie.ezScrum.web.action.report.ShowCheckOutIssueAction" />
-    	<action path="/showPerformanceIndex"			type="ntut.csie.ezScrum.web.action.report.ShowPerformanceIndexAction" />
-    	<action path="/show_EV_PV_TAC"			        type="ntut.csie.ezScrum.web.action.report.Show_EV_PV_TAC_Action" />
-    	<action path="/showActualCost"					type="ntut.csie.ezScrum.web.action.report.ShowActualCostAction" />
-    	<action path="/editActualCost"					type="ntut.csie.ezScrum.web.action.report.EditActualCostAction" />
-    	<action path="/show_BC_SP"					    type="ntut.csie.ezScrum.web.action.report.Show_BC_SP_Action" />
-    	<action path="/edit_BC_SP"		                type="ntut.csie.ezScrum.web.action.report.Edit_BC_SP_Action" />
-    	<action path="/show_BV"					        type="ntut.csie.ezScrum.web.action.report.Show_BV_Action" />
-    	<action path="/edit_BV"		                    type="ntut.csie.ezScrum.web.action.report.Edit_BV_Action" />
     	<action path="/GetIssueStatusByIssueIDAction"	type="ntut.csie.ezScrum.web.action.report.GetIssueStatusByIssueIDAction" />
     	
     	<action path="/showRemainingReport"				type="ntut.csie.ezScrum.web.action.report.ShowRemainingReportAction">
@@ -505,12 +490,6 @@
              -->
         <action path="/showScrumIssue" forward="scrumIssue.show" />
         <action path="/showCustomIssue" forward="customIssue.show" />
-
-        <action path="/viewIssueInfo" type="ntut.csie.ezScrum.web.action.ShowIssueInformationAction" >
-            <forward name="scrumIssue" path="viewScrumIssue.show"/>
-            <forward name="customIssue" path="viewCustomIssue.show"/>
-            <forward name="error" path="/Error.jsp" />
-        </action>
 				   
     </action-mappings>
 

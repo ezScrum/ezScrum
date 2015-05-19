@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -15,7 +14,6 @@ import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -38,13 +36,10 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		IProject project = (IProject)SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 
 		// get parameter info
-		String sprintId = request.getParameter("sprintId");
-		
+		long sprintId = Long.parseLong(request.getParameter("sprintId"));
 		long storyId = Long.parseLong(request.getParameter("issueID"));
 		int estimate = request.getParameter("Estimate").equals("") ? 0 : Integer.parseInt(request.getParameter("Estimate"));
 		String name = request.getParameter("Name");
@@ -68,7 +63,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		
 		ProjectObject projectObject = ProjectObject.get(project.getName());
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				project, session, sprintId);
+				project, sprintId);
 		TaskObject task = sprintBacklogHelper.addTask(projectObject.getId(), taskInfo);
 
 		// 組出回傳資訊

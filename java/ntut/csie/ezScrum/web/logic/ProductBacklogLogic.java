@@ -1,72 +1,71 @@
 package ntut.csie.ezScrum.web.logic;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-import org.jdom.Element;
-
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ProductBacklogLogic {
-	private IUserSession mUserSession;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private ProductBacklogMapper mProductBacklogMapper;
 
-	public ProductBacklogLogic(IUserSession session, IProject project) {
-		mUserSession = session;
+	public ProductBacklogLogic(ProjectObject project) {
 		mProject = project;
-		mProductBacklogMapper = new ProductBacklogMapper(mProject, mUserSession);
+		mProductBacklogMapper = new ProductBacklogMapper(mProject);
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * 
 	 * @return
 	 */
-	public IStory[] getStories() {
-		try {
-			ArrayList<IStory> list = mProductBacklogMapper.getAllStoriesByProjectName();
-			list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-			return list.toArray(new IStory[list.size()]);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new IStory[0];
+	public ArrayList<StoryObject> getStories() {
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getStories();
+		stories = sortStoriesByImportance(stories);
+		return stories;
 	}
 
 	/**
-	 * get stories ,default = importance high to low polymorphism get stories by signed and situation
+	 * Get stories ,default = importance high to low polymorphism get stories by signed and situation
 	 * @param release
 	 * @return
 	 */
-	public IStory[] getStoriesByRelease(IReleasePlanDesc release) {
+	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc release) {
 		// get Story back and sort it by importance
 		String releaseId = release.getID();
-		ArrayList<IStory> list = mProductBacklogMapper.connectToGetStoryByRelease(releaseId, null);
-		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-		return list.toArray(new IStory[list.size()]);
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoriesByRelease(releaseId);
+		stories = sortStoriesByImportance(stories);
+		return stories;
 	}
 
 	/**
-	 * Unclosed Issues 根據IMPORTANCE排順序
-	 * @param category
+	 * Unclosed story 根據 IMPORTANCE 排順序
 	 */
-	public IStory[] getUnclosedIssues(String category) throws SQLException {
-		ArrayList<IStory> list = mProductBacklogMapper.getUnclosedIssues(category);
-		list = sortStories(list, ScrumEnum.IMPORTANCE, false);
-		return list.toArray(new IStory[list.size()]);
+	public ArrayList<StoryObject> getUnclosedStories() {
+		ArrayList<StoryObject> stories = mProductBacklogMapper.getUnclosedStories();
+		stories = sortStoriesByImportance(stories);
+		return stories;
+	}
+	
+	/**
+	 * 取出可以被加到 sprint 的 stories，story 為 unclosed 且沒有被加到 sprint 內
+	 * @return
+	 */
+	public ArrayList<StoryObject> getAddableStories() {
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : getUnclosedStories()) {
+			if (story.getSprintId() <= 0) {
+				stories.add(story);
+			}
+		}
+		return stories;
 	}
 
 	/**
@@ -75,284 +74,62 @@ public class ProductBacklogLogic {
 	 * @param filterType
 	 * @return
 	 */
-	public IStory[] getStoriesByFilterType(String filterType) {
-		IStory[] storyList = getStories();
-		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(filterType, storyList);
-		IStory[] stories = filter.getStories();						// 回傳過濾後的 Stories
-		return stories;
+	public ArrayList<StoryObject> getStoriesByFilterType(String filterType) {
+		ArrayList<StoryObject> allStories = getStories();
+		AProductBacklogFilter filter = ProductBacklogFilterFactory.getInstance().getPBFilterFilter(filterType, allStories);
+		ArrayList<StoryObject> filteredStories = filter.getStories();						// 回傳過濾後的 Stories
+		return filteredStories;
 	}
 
 	/************************************************************
-	 * 將列表中的 Issue ID 都加入此 Sprint 之下
-	 * @param issue2
+	 * 將列表中的 Story ID 都加入此 Sprint 之下
 	 *************************************************************/
-	public void addIssueToSprint(List<Long> issueIdList, String sprintId) {
-		for (long issueId : issueIdList) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
-			String oldSprintId = issue.getSprintID();
-			
-			if (sprintId != null && !sprintId.equals("") &&
-					Integer.parseInt(sprintId) >= 0) {
-
-				// history node
-				Element history = new Element(ScrumEnum.HISTORY_TAG);
-
-				Date current = new Date();
-				String dateTime = DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2);
-				history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, dateTime);
-
-				// iteration node
-				Element iteration = new Element(ScrumEnum.SPRINT_ID);
-				iteration.setText(sprintId);
-				history.addContent(iteration);
-				issue.addTagValue(history);
-
-				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
-				mProductBacklogMapper.addHistory(issue.getIssueID(), issue.getIssueType(), HistoryObject.TYPE_APPEND, oldSprintId, sprintId);
-				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
-				mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), sprintId, null, null, current);
+	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
+		for (long storyId : storiesId) {
+			StoryObject story = mProductBacklogMapper.getStory(storyId);
+			if (sprintId > 0 && story != null) {
+				// 更新 Stroy與Srpint對應的關係
+				mProductBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}
 
 	/**
-	 * 新增Story和Release的關係 add <Release/> tag to the issues
-	 * 
-	 * @param issueList
-	 * @param releaseId
+	 * 移除 Story 和 Sprint 的關係
+	 * @param storyId
 	 */
-	public void addReleaseTagToIssue(List<Long> issueList, String releaseId) {
-		for (long issueId : issueList) {
-			IIssue issue = mProductBacklogMapper.getIssue(issueId);
-
-			if (releaseId != null && !releaseId.equals("") && Integer.parseInt(releaseId) >= 0) {
-				// history node
-				Element history = new Element(ScrumEnum.HISTORY_TAG);
-				Date current = new Date();
-				history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2));
-
-				// release node
-				Element release = new Element(ScrumEnum.RELEASE_TAG);
-				release.setText(releaseId);
-				history.addContent(release);
-				issue.addTagValue(history);
-
-				// 最後將修改的結果更新至DB
-				mProductBacklogMapper.updateIssueValue(issue, false);
-				mProductBacklogMapper.updateStoryRelation(issueId, releaseId, issue.getSprintID(), null, null, current);
-			}
-		}
+	public void dropStoryFromSprint(long storyId) {
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
+		story.setSprintId(-1);
+		story.save();
 	}
 
 	/**
-	 * 1. 移除 Story 和 Release 的關係 2. remove <Release/> tag to the issues
-	 * @param issueId
-	 */
-	public void removeReleaseTagFromIssue(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
-
-		// history node
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		Date current = new Date();
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2));
-
-		// release node
-		Element release = new Element(ScrumEnum.RELEASE_TAG);
-		release.setText(ScrumEnum.DIGITAL_BLANK_VALUE);
-		history.addContent(release);
-
-		issue.addTagValue(history);
-
-		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
-		mProductBacklogMapper.updateStoryRelation(issueId, "-1", issue.getSprintID(), null, null, current);
-	}
-
-	/**
-	 * 移除Story和Story的關係
-	 * @param issueId
-	 */
-	public void removeStoryFromSprint(long issueId) {
-		IIssue issue = mProductBacklogMapper.getIssue(issueId);
-
-		// history node
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		Date current = new Date();
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
-
-		// iteration node
-		Element iteration = new Element(ScrumEnum.SPRINT_ID);
-		iteration.setText(ScrumEnum.DIGITAL_BLANK_VALUE);
-		history.addContent(iteration);
-		issue.addTagValue(history);
-
-		// 最後將修改的結果更新至DB
-		mProductBacklogMapper.updateIssueValue(issue, true);
-		mProductBacklogMapper.updateStoryRelation(issueId, issue.getReleaseID(), ScrumEnum.DIGITAL_BLANK_VALUE, null, null, current);
-	}
-
-	/**
-	 * release plan select stories 2010.06.02 by taoyu modify
+	 * get stories which are status new and no parent
 	 * @return
 	 */
-	public ArrayList<IStory> getAddableStories() throws SQLException {
-		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
-
+	public ArrayList<StoryObject> getExistingStories() {
+		ArrayList<StoryObject> allStories = getUnclosedStories();
 		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
-		ArrayList<IStory> stories = new ArrayList<IStory>();
-
-		for (IStory issue : issues) {
-			String story_SID = issue.getSprintID();
-			String story_RID = issue.getReleaseID();
-
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (StoryObject story : allStories) {
+			long sprintId = story.getSprintId();
 			// 此 story ID 有包含於 sprint ID，則不列入 list
-			if ((story_SID != null) && (Integer.parseInt(story_SID) > 0)) {
+			if (sprintId > 0) {
 				continue;
 			}
-
-			// 此 story ID 有 release ID，則不列入 list
-			if ((story_RID != null) && (Integer.parseInt(story_RID) > 0)) {
-				continue;
-			}
-
-			stories.add(issue);
+			stories.add(story);
 		}
 		return stories;
 	}
-
-	/**
-	 * sprint backlog select stories 2009.12.18 by chiachi
-	 * 
-	 * @param sprintId
-	 * @param releaseId
-	 */
-	public ArrayList<IStory> getAddableStories(String sprintId, String releaseId) throws SQLException {
-		IStory[] issues = getUnclosedIssues(ScrumEnum.STORY_ISSUE_TYPE);
-
-		// 不能直接使用Arrays.asList,因為沒有實作到remove,所以必須要使用Arrays
-		ArrayList<IStory> list = new ArrayList<IStory>();
-
-		for (IStory issue : issues) {
-			String story_SID = issue.getSprintID();
-			String story_RID = issue.getReleaseID();
-
-			// 此 story 有包含 sprint ID，則不列入 list
-			if ((story_SID != null) && (Integer.parseInt(story_SID) > 0)) {
-				continue;
+	
+	private ArrayList<StoryObject> sortStoriesByImportance(ArrayList<StoryObject> stories) {
+		Collections.sort(stories, new Comparator<StoryObject>() {
+			@Override
+			public int compare(StoryObject story1, StoryObject story2) {
+				return story1.getImportance() - story2.getImportance();
 			}
-
-			// 此 story 有 包含非本release ID，，則不列入 list
-			if ((story_RID != null) && (Integer.parseInt(story_RID) > 0)) {
-				if (!story_RID.equals(releaseId)) continue;
-			}
-			list.add(issue);
-		}
-		return list;
-	}
-
-	private ArrayList<IStory> sortStories(ArrayList<IStory> stories, String type, boolean desc) {
-		ArrayList<IStory> sortedList = new ArrayList<IStory>();
-		// ID & Importance 為數字排序
-		if (type.compareTo(ScrumEnum.ID_ATTR) == 0 || type.compareTo(ScrumEnum.IMPORTANCE) == 0) {
-			if (desc) {
-				// 數字從小到大
-				for (IStory issue : stories) {
-					int index = 0;
-					int valueSource = 0;
-					if (issue.getValueByType(type) != null) {
-						valueSource = Integer.parseInt(issue.getValueByType(type));
-					}
-					for (IStory sortedIssue : sortedList) {
-						int valueTarget = 0;
-						if (sortedIssue.getValueByType(type) != null) {
-							valueTarget = Integer.parseInt(sortedIssue.getValueByType(type));
-						}
-						if (valueSource < valueTarget) {
-							break;
-						}
-						index++;
-					}
-					sortedList.add(index, issue);
-				}
-			} else {
-				// 數字從大到小
-				for (IStory issue : stories) {
-					int index = 0;
-					int valueSource = 0;
-					if (issue.getValueByType(type) != null) {
-						valueSource = Integer.parseInt(issue.getValueByType(type));
-					}
-					for (IStory sortedIssue : sortedList) {
-						int valueTarget = 0;
-						if (sortedIssue.getValueByType(type) != null) {
-							valueTarget = Integer.parseInt(sortedIssue.getValueByType(type));
-						}
-						if (valueSource > valueTarget) {
-							break;
-						}
-						index++;
-					}
-					sortedList.add(index, issue);
-				}
-			}
-		} else {
-			sortedList.addAll(stories);
-			if (!sortedList.isEmpty()) {
-				if (desc) {
-					insertionSort(sortedList, type); // 遞增
-				}
-				else {
-					insertionSort_asc(sortedList, type); // 遞減
-				}
-			}
-		}
-		return sortedList;
-	}
-
-	private void insertionSort_asc(List<IStory> sortedList, String type) {
-		int length = sortedList.size();
-		int firstOutOfOrder, location;
-		IStory temp;
-
-		for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++) { // Starts at second term, goes until the end of the array.
-			String firstValue = sortedList.get(firstOutOfOrder).getValueByType(type);
-			String secondValue = sortedList.get(firstOutOfOrder - 1).getValueByType(type);
-
-			if ((firstValue.compareTo(secondValue)) > 0) { // If the two are out of order, we move the element to its rightful place.
-				temp = sortedList.get(firstOutOfOrder);
-				location = firstOutOfOrder;
-
-				do { // Keep moving down the array until we find exactly where it's supposed to go.
-					sortedList.set(location, sortedList.get(location - 1));
-					location--;
-				} while (location > 0 && (sortedList.get(location - 1).getValueByType(type).compareTo(temp.getValueByType(type))) < 0);
-
-				sortedList.set(location, temp);
-			}
-		}
-	}
-
-	private void insertionSort(List<IStory> sortedList, String type) {
-		int length = sortedList.size();
-		int firstOutOfOrder, location;
-		IStory temp;
-
-		for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++) { // Starts at second term, goes until the end of the array.
-			String firstValue = sortedList.get(firstOutOfOrder).getValueByType(type);
-			String secondValue = sortedList.get(firstOutOfOrder - 1).getValueByType(type);
-
-			if (firstValue.compareTo(secondValue) < 0) { // If the two are out of order, we move the element to its rightful place.
-				temp = sortedList.get(firstOutOfOrder);
-				location = firstOutOfOrder;
-
-				do { // Keep moving down the array until we find exactly where it's supposed to go.
-					sortedList.set(location, sortedList.get(location - 1));
-					location--;
-				} while (location > 0 && sortedList.get(location - 1).getValueByType(type).compareTo(temp.getValueByType(type)) > 0);
-
-				sortedList.set(location, temp);
-			}
-		}
+		});
+		return stories;
 	}
 }

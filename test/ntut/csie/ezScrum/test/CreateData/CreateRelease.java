@@ -5,10 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
-import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,9 +61,9 @@ public class CreateRelease {
 		
 		for (int i=0 ; i<mCP.getProjectList().size() ; i++) {
 			mToday = cal.getTime();									// get Today
-			IProject project = mCP.getProjectList().get(i);			// get Project
+			ProjectObject project = mCP.getAllProjects().get(i);	// get Project
 			
-			setInitialDate();											// initial Data
+			setInitialDate();										// initial Data
 
 			ReleasePlanMapper saver = new ReleasePlanMapper(project);
 			for (int j=0 ; j<mReleaseCount ; j++) {

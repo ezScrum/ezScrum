@@ -28,22 +28,23 @@ public class ProjectHelper {
 
 	private static Log log = LogFactory.getLog(ProjectHelper.class);
 	private ProjectMapper mProjectMapper;
+	private ProjectLogic mProjectLogic;
 
 	public ProjectHelper() {
 		mProjectMapper = new ProjectMapper();
+		mProjectLogic = new ProjectLogic();
 	}
 
 	public String getProjectListXML(AccountObject account) {
 		log.info(" handle project list xml format");
 
 		// get all projects
-		ProjectLogic projectLogic = new ProjectLogic();
-		List<IProject> projects = projectLogic.getAllProjects();
+		List<IProject> projects = mProjectLogic.getAllProjects();
 		// ezScrum v1.8
-		ArrayList<ProjectObject> projectObjects = projectLogic.getProjects();
+		ArrayList<ProjectObject> projectObjects = mProjectLogic.getProjects();
 		
 		// get the user and projects permission mapping
-		Map<String, Boolean> map = projectLogic.getProjectPermissionMap(account);
+		Map<String, Boolean> map = mProjectLogic.getProjectPermissionMap(account);
 
 		// get the demo date
 		HashMap<String, String> hm = new HashMap<String, String>();
@@ -83,8 +84,7 @@ public class ProjectHelper {
 	 * @param project
 	 */
 	public List<String> getProjectScrumWorkerList(IUserSession userSession, IProject project) {
-		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectScrumWorkerList(userSession, project);
+		return mProjectMapper.getProjectScrumWorkerList(userSession, project);
 	}
 	
 	/**
@@ -95,14 +95,12 @@ public class ProjectHelper {
 	 * @param project
 	 */
 	public List<AccountObject> getProjectScrumWorkersForDb(IUserSession userSession, ProjectObject project) {
-		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getProjectWorkers(project.getId());
+		return mProjectMapper.getProjectWorkers(project.getId());
 	}
 
 	public String getCreateProjectXML(HttpServletRequest request,
 			IUserSession userSession, String fromPage, ProjectInfo projectInfo) {
 		StringBuilder sb = new StringBuilder();
-		ProjectMapper projectMapper = new ProjectMapper();
 		sb.append("<Root>");
 
 		// create project
@@ -116,7 +114,7 @@ public class ProjectHelper {
 					// 轉換格式
 					ProjectInfoForm projectInfoForm = convertProjectInfo(projectInfo);
 
-					iproject = projectMapper.createProject(userSession, projectInfoForm);
+					iproject = mProjectMapper.createProject(userSession, projectInfoForm);
 
 					// 重新設定權限, 當專案被建立時, 重新讀取此 User 的權限資訊
 					SessionManager sessionManager = new SessionManager(request);
@@ -124,7 +122,7 @@ public class ProjectHelper {
 					AccessPermissionManager.setupPermission(request, userSession);
 					
 					// -- ezScrum v1.8 --
-					long projectId = projectMapper.createProject(projectInfo.name, projectInfo);
+					long projectId = mProjectMapper.createProject(projectInfo.name, projectInfo);
 					project = ProjectObject.get(projectId);
 					sessionManager.setProjectObject(request, project);
 					
@@ -132,7 +130,7 @@ public class ProjectHelper {
 					sb.append("<ID>" + project.getName() + "</ID>");
 					// -- ezScrum v1.8 --
 				} catch (Exception e) {
-					projectMapper.deleteProject(project.getId());
+					mProjectMapper.deleteProject(project.getId());
                     e.printStackTrace();
                 }
 
@@ -176,7 +174,7 @@ public class ProjectHelper {
 	}
 	
 	/**
-	 * get project use DAO
+	 * Get project by id
 	 * @param id
 	 * @return project object
 	 */
@@ -185,11 +183,28 @@ public class ProjectHelper {
 	}
 	
 	/**
-	 * update project use DAO
+	 * Get project by project name
+	 * @param projectName
+	 * @return project object
+	 */
+	public ProjectObject getProjectByName(String projectName) {
+		return mProjectMapper.getProject(projectName);
+	}
+	
+	/**
+	 * Update project use DAO
 	 * @param id 必要參數
 	 * @param projectInfo 其他資訊都包成 Info
 	 */
 	public void updateProject(long id, ProjectInfo projectInfo) {
 		mProjectMapper.updateProject(id, projectInfo);
+	}
+	
+	public boolean isProjectExisted(String projectName) {
+		return mProjectLogic.isProjectExisted(projectName);
+	}
+	
+	public boolean isUserExistInProject(ProjectObject project, IUserSession userSession) {
+		return mProjectLogic.isUserExistInProject(project, userSession);
 	}
 }

@@ -186,7 +186,9 @@ public class AccountObjectTest{
 		        .put(AccountEnum.USERNAME, account.getUsername())
 		        .put(AccountEnum.NICK_NAME, account.getNickName())
 		        .put(AccountEnum.EMAIL, account.getEmail())
-		        .put(AccountEnum.ENABLE, account.getEnable());
+		        .put(AccountEnum.ENABLE, account.getEnable())
+		        .put(AccountEnum.CREATE_TIME, account.getCreateTime())
+		        .put(AccountEnum.UPDATE_TIME, account.getUpdateTime());
 		
 		String expectedString = json.toString();
 		assertEquals(expectedString, account.toString());

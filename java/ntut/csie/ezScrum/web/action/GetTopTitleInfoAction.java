@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -22,22 +22,21 @@ public class GetTopTitleInfoAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-//		IProject project = (IProject) request.getSession().getAttribute("Project");
-		IProject project = SessionManager.getProject(request);
+		
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		
 		String userName = account.getUsername();
 		String nickName = account.getNickName();
-
 		String userInfo = userName + "(" + nickName + ")";
-		String projectInfo = "";
+		String projectName = "";
 		
 		if (project != null) {
-			projectInfo = project.getName();
+			projectName = project.getName();
 		}
 		
-		TopTitleInfoUI ttiui = new TopTitleInfoUI(userInfo, projectInfo);
+		TopTitleInfoUI ttiui = new TopTitleInfoUI(userInfo, projectName);
 		Gson gson = new Gson();
 		
 		response.setContentType("text/html; charset=utf-8");

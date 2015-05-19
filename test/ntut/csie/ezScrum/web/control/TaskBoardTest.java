@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.control;
 import java.io.IOException;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -12,8 +11,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
@@ -54,14 +53,14 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mCS.exe();
 
 		// 新增Story
-		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
 		
 		// 新增 Task
 		mATTS = new AddTaskToStory(mTaskCount, mTaskEstimate, mASTS, mCP);
 		mATTS.exe();
 
-		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getProjectList().get(0), mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0), mCS.getSprintsId().get(0));
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 		
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
@@ -97,131 +96,66 @@ public class TaskBoardTest extends MockStrutsTestCase {
 	// TaskBoard getStories 照 Importance 排序測試1
 	public void testGetStrories_SortByImportance1() throws Exception {
 		// Story 建立時即為遞減排序測試
-		List<IIssue> stories = mTaskBoard.getStories();
+		List<StoryObject> stories = mTaskBoard.getStories();
 		// 驗證 Story 數量
 		assertEquals(mStoryCount, stories.size());
 		// 驗證 Story 是否依 Importance 排列
-		int impA = Integer.valueOf(stories.get(0).getImportance());
-		int impB = Integer.valueOf(stories.get(1).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(1).getImportance());
-		impB = Integer.valueOf(stories.get(2).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(2).getImportance());
-		impB = Integer.valueOf(stories.get(3).getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories.get(3).getImportance());
-		impB = Integer.valueOf(stories.get(4).getImportance());
-		assertEquals(true, (impA > impB));
+		assertTrue(stories.get(0).getImportance() == stories.get(1).getImportance());
+		assertTrue(stories.get(1).getImportance() == stories.get(2).getImportance());
+		assertTrue(stories.get(2).getImportance() == stories.get(3).getImportance());
+		assertTrue(stories.get(3).getImportance() == stories.get(4).getImportance());
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試2
 	public void testGetStrories_SortByImportance2() throws Exception {
 		// Story 建立時即為遞增排序測試
-		List<IIssue> storyList = this.mTaskBoard.getStories();
-		IIssue[] stories = storyList.toArray(new IIssue[storyList.size()]);
+		List<StoryObject> stories = mTaskBoard.getStories();
 		// 驗證 Story 數量
-		assertEquals(this.mStoryCount, stories.length);
-		
-		ProductBacklogHelper helper = new ProductBacklogHelper(mConfig.getUserSession(), this.mCP.getProjectList().get(0));
-		IIssue issue = null;
-		issue = helper.editStory(stories[0].getIssueID(), stories[0].getSummary(), "10", "10", stories[0].getEstimated(),
-				stories[0].getHowToDemo(), stories[0].getNotes(), true);
-		assertNotNull(issue);
-		issue = helper.editStory(stories[1].getIssueID(), stories[1]
-				.getSummary(), "10", "20", stories[1].getEstimated(), stories[1].getHowToDemo(), stories[1].getNotes(), true);
-		assertNotNull(issue);
-		issue = helper.editStory(stories[2].getIssueID(), stories[2]
-				.getSummary(), "10", "30", stories[2].getEstimated(),
-				stories[2].getHowToDemo(), stories[2].getNotes(), true);
-		assertNotNull(issue);
-		issue = helper.editStory(stories[3].getIssueID(), stories[3]
-				.getSummary(), "10", "40", stories[3].getEstimated(),
-				stories[3].getHowToDemo(), stories[3].getNotes(), true);
-		assertNotNull(issue);
-		issue = helper.editStory(stories[4].getIssueID(), stories[4]
-				.getSummary(), "10", "50", stories[4].getEstimated(),
-				stories[4].getHowToDemo(), stories[4].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
+		assertEquals(mStoryCount, stories.size());
+		stories.get(0).setImportance(10).save();
+		stories.get(1).setImportance(20).save();
+		stories.get(2).setImportance(30).save();
+		stories.get(3).setImportance(40).save();
+		stories.get(4).setImportance(50).save();
+		mSprintBacklogMapper.forceRefresh();
 
-		this.mTaskBoard = new TaskBoard(this.mSprintBacklogLogic, this.mSprintBacklogMapper);
-		storyList = this.mTaskBoard.getStories();
-		stories = storyList.toArray(new IIssue[storyList.size()]);
+		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
+		stories = mTaskBoard.getStories();
 		// 驗證 Story 是否依 Importance 排列
-		int impA = Integer.valueOf(stories[0].getImportance());
-		int impB = Integer.valueOf(stories[1].getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories[1].getImportance());
-		impB = Integer.valueOf(stories[2].getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories[2].getImportance());
-		impB = Integer.valueOf(stories[3].getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories[3].getImportance());
-		impB = Integer.valueOf(stories[4].getImportance());
-		assertEquals(true, (impA > impB));
+		assertTrue(stories.get(0).getImportance() > stories.get(1).getImportance());
+		assertTrue(stories.get(1).getImportance() > stories.get(2).getImportance());
+		assertTrue(stories.get(2).getImportance() > stories.get(3).getImportance());
+		assertTrue(stories.get(3).getImportance() > stories.get(4).getImportance());
 	}
 
 	// TaskBoard getStories 照 Importance 排序測試3
 	public void testGetStrories_SortByImportance() throws Exception {
 		// Story 建立時即為任意順序測試
-		List<IIssue> storyList = this.mTaskBoard.getStories();
-		IIssue[] stories = storyList.toArray(new IIssue[storyList.size()]);
+		List<StoryObject> stories = mTaskBoard.getStories();
 		// 驗證 Story 數量
-		assertEquals(this.mStoryCount, stories.length);
+		assertEquals(mStoryCount, stories.size());
+		stories.get(0).setImportance(40).save();
+		stories.get(1).setImportance(30).save();
+		stories.get(2).setImportance(10).save();
+		stories.get(3).setImportance(30).save();
+		stories.get(4).setImportance(40).save();
+		mSprintBacklogMapper.forceRefresh();
 
-		ProductBacklogHelper helper = new ProductBacklogHelper(mConfig.getUserSession(), this.mCP.getProjectList().get(0));
-		IIssue issue = null;
-		issue = helper.editStory(stories[0].getIssueID(), stories[0]
-				.getSummary(), "10", "40", stories[0].getEstimated(),
-				stories[0].getHowToDemo(), stories[0].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
-		issue = helper.editStory(stories[1].getIssueID(), stories[1]
-				.getSummary(), "10", "30", stories[1].getEstimated(),
-				stories[1].getHowToDemo(), stories[1].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
-		issue = helper.editStory(stories[2].getIssueID(), stories[2]
-				.getSummary(), "10", "10", stories[2].getEstimated(),
-				stories[2].getHowToDemo(), stories[2].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
-		issue = helper.editStory(stories[3].getIssueID(), stories[3]
-				.getSummary(), "10", "30", stories[3].getEstimated(),
-				stories[3].getHowToDemo(), stories[3].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
-		issue = helper.editStory(stories[4].getIssueID(), stories[4]
-				.getSummary(), "10", "40", stories[4].getEstimated(),
-				stories[4].getHowToDemo(), stories[4].getNotes(), true);
-		assertNotNull(issue);
-		this.mSprintBacklogMapper.forceRefresh();
-
-		this.mTaskBoard = new TaskBoard(this.mSprintBacklogLogic, this.mSprintBacklogMapper);
-		storyList = this.mTaskBoard.getStories();
-		stories = storyList.toArray(new IIssue[storyList.size()]);
+		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
+		stories = mTaskBoard.getStories();
 		// 驗證 Story 是否依 Importance 排列
-		int impA = Integer.valueOf(stories[0].getImportance());
-		int impB = Integer.valueOf(stories[1].getImportance());
-		assertEquals(true, (impA == impB));
-		impA = Integer.valueOf(stories[1].getImportance());
-		impB = Integer.valueOf(stories[2].getImportance());
-		assertEquals(true, (impA > impB));
-		impA = Integer.valueOf(stories[2].getImportance());
-		impB = Integer.valueOf(stories[3].getImportance());
-		assertEquals(true, (impA == impB));
-		impA = Integer.valueOf(stories[3].getImportance());
-		impB = Integer.valueOf(stories[4].getImportance());
-		assertEquals(true, (impA > impB));
+		// 驗證 Story 是否依 Importance 排列
+		assertTrue(stories.get(0).getImportance() == stories.get(1).getImportance());
+		assertTrue(stories.get(1).getImportance() > stories.get(2).getImportance());
+		assertTrue(stories.get(2).getImportance() == stories.get(3).getImportance());
+		assertTrue(stories.get(3).getImportance() > stories.get(4).getImportance());
 	}
 	
 	public void testGetTaskPoint(){
 		// 初始 Task Point String = 120 / 120
 		String actualTaskPointString = mTaskBoard.getTaskPoint();
-		String expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / " 
-		                               + String.valueOf(mSprintBacklogLogic.getTaskCurrentEstimatePoint());
+		String expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
+		                               + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 一個Task Done
@@ -230,8 +164,8 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mSprintBacklogLogic.closeTask(task1.getId(), task1.getName(), task1.getNotes(), task1.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
-		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / " 
-		                        + String.valueOf(mSprintBacklogLogic.getTaskCurrentEstimatePoint());
+		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
+		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 兩個 Task Done
@@ -239,8 +173,8 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		mSprintBacklogLogic.closeTask(task2.getId(), task2.getName(), task2.getNotes(), task2.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
-		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskCurrentEstimatePoint());
+		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
+		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 全部Task Done
@@ -249,8 +183,8 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		}
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
-		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskCurrnetRemainsPoint()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskCurrentEstimatePoint());
+		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
+		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 	}
 }

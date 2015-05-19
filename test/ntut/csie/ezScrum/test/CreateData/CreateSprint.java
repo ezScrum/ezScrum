@@ -4,16 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateSprint {
 	private int mSprintCount = 1;
 	private CreateProject mCP = null;
-	private List<String> mSprintsId;
+	private ArrayList<Long> mSprintsId;
 
 	public String TEST_SPRINT_GOAL = "TEST_SPRINTGOAL_";		// Sprint Goal
 	public String TEST_SPRINT_NOTE = "TEST_SPRINTNOTE_";		// Sprint Notes
@@ -35,12 +36,12 @@ public class CreateSprint {
 		mCP = CP;
 
 		mAutoSetSprint = false;
-		mSprintsId = new ArrayList<String>();
+		mSprintsId = new ArrayList<Long>();
 	}
 
 	public CreateSprint(int sprintCount, int Index, Date today, IProject project) {
 		mSprintCount = sprintCount;
-		mSprintsId = new ArrayList<String>();
+		mSprintsId = new ArrayList<Long>();
 
 		mToday = today;
 		mAutoSetSprint = false;
@@ -50,7 +51,7 @@ public class CreateSprint {
 
 	public CreateSprint(int SPcount, int Index, Date today, CreateProject cp) {
 		mSprintCount = SPcount;
-		mSprintsId = new ArrayList<String>();
+		mSprintsId = new ArrayList<Long>();
 
 		mToday = today;
 		mAutoSetSprint = false;
@@ -62,7 +63,7 @@ public class CreateSprint {
 		return mSprintCount;
 	}
 
-	public List<String> getSprintIDList() {
+	public ArrayList<Long> getSprintsId() {
 		return mSprintsId;	// not implemented yet
 	}
 
@@ -71,13 +72,13 @@ public class CreateSprint {
 
 		for (int i = 0; i < mCP.getProjectList().size(); i++) {
 			mToday = cal.getTime();									// get Today
-			IProject project = mCP.getProjectList().get(i);			// get Project
+			ProjectObject project = mCP.getAllProjects().get(i);	// get Project
 
 			for (int j = 0; j < mSprintCount; j++) {
 				ISprintPlanDesc desc = createDesc(j);
 				SprintPlanMapper spMapper = new SprintPlanMapper(project);
 				spMapper.addSprintPlan(desc);
-				mSprintsId.add(String.valueOf((j + 1)));
+				mSprintsId.add((long) (j + 1));
 			}
 
 			System.out.println("  " + project.getName() + " create " + mSprintCount + " sprint success.");

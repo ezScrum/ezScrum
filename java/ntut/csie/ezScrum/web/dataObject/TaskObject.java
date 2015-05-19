@@ -41,13 +41,6 @@ public class TaskObject implements IBaseObject {
 		return TaskDAO.getInstance().get(id);
 	}
 
-	/*
-	 * 之後要搬到StoryObject
-	 */
-	public static ArrayList<TaskObject> getTasksByStory(long storyId) {
-		return TaskDAO.getInstance().getTasksByStoryId(storyId);
-	}
-
 	public TaskObject(long projectId) {
 		mProjectId = projectId;
 	}
@@ -179,7 +172,7 @@ public class TaskObject implements IBaseObject {
 
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
-		int status = TaskObject.STATUS_UNCHECK;
+		int status = STATUS_UNCHECK;
 		ArrayList<HistoryObject> histories = getHistories();
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
@@ -353,7 +346,7 @@ public class TaskObject implements IBaseObject {
 		for (HistoryObject history : getHistories()) {
 			histories.put(history.toJSON());
 		}
-
+		
 		task.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
 				.put(TaskEnum.ACTUAL, mActual).put(TaskEnum.STORY_ID, mStoryId)
 				.put(TaskEnum.PROJECT_ID, mProjectId)
@@ -362,10 +355,15 @@ public class TaskObject implements IBaseObject {
 				.put(TaskEnum.SERIAL_ID, mSerialId).put(TaskEnum.ID, mId)
 				.put(TaskEnum.CREATE_TIME, mCreateTime)
 				.put(TaskEnum.UPDATE_TIME, mUpdateTime)
-				.put(TaskEnum.HANDLER, getHandler().toJSON())
 				.put("partners", partners).put("attach_files", attachFiles)
 				.put("histories", histories);
 
+		if (getHandler() != null) {
+			task.put(TaskEnum.HANDLER, getHandler().toJSON());
+		} else {
+			task.put(TaskEnum.HANDLER, new JSONObject());
+		}
+		
 		return task;
 	}
 

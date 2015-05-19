@@ -229,9 +229,9 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return mControl.executeUpdate(query);
 	}
 
-	public ScrumRole convertScrumRole(String projectId, String role,
+	public ScrumRole convertScrumRole(String projectName, String role,
 			ResultSet result) throws SQLException {
-		ScrumRole scrumRole = new ScrumRole(projectId, role);
+		ScrumRole scrumRole = new ScrumRole(projectName, role);
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
 		scrumRole.setAccessProductBacklog(result
 				.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
@@ -475,10 +475,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		String password = result.getString(AccountEnum.PASSWORD);
 		String email = result.getString(AccountEnum.EMAIL);
 		boolean enable = result.getBoolean(AccountEnum.ENABLE);
-
+		long createTime = result.getLong(AccountEnum.CREATE_TIME);
+		long updateTime = result.getLong(AccountEnum.UPDATE_TIME);
 		AccountObject account = new AccountObject(id, username);
 		account.setPassword(password).setNickName(nickName).setEmail(email)
-				.setEnable(enable);
+				.setEnable(enable).setCreateTime(createTime).setUpdateTime(updateTime);
 		return account;
 	}
 

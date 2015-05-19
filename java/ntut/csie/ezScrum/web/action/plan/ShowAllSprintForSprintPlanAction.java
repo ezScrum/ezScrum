@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.SprintPlanUI;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,9 +38,10 @@ public class ShowAllSprintForSprintPlanAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info("Show all sprint for SprintPlan.");
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
 		String lastsprint = request.getParameter("lastsprint");

@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -46,7 +47,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 
 		int Story_Count = 5;
 		int Story_Estimation = 2;
-		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS = new AddStoryToSprint(Story_Count, Story_Estimation, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();		// 新增五筆 Stories 到 Sprints 內，並設計 Sprint 的 Story 點數總和為 10
 
 		int Task_Count = 2;
@@ -89,7 +90,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testexecute() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "";
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
@@ -112,7 +113,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		task.getHistories();
@@ -149,7 +150,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testWrongParameter1() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "";
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
@@ -172,7 +173,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 驗證是否正確存入資料
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), null);
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		task = sprintBacklogMapper.getTask(taskId); // 重新取得Task資訊
 		task.getHistories(); // 重新取得 History

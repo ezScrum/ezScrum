@@ -182,7 +182,6 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/ProductBacklogFunctionSupport.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/IssueGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ProductBacklogPanel.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPanel/CPI_SPI_ReportPanel.js"></script>
 
 <script type="text/javascript" src="javascript/ezScrumPanel/ReleaseBacklogGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumWidget/ShowReleaseBacklogWindow.js"></script><!-- Widget after "ReleaseBacklogGridPanel.js", "ReleaseBurndownChartFormPanel.js"-->

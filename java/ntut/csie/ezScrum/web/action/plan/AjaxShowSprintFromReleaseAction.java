@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +32,7 @@ public class AjaxShowSprintFromReleaseAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		String ReleaseID = request.getParameter("Rid");

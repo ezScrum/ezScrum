@@ -16,7 +16,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class AjaxDeleteSprintTaskAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(AjaxAddSprintTaskAction.class);
 	
 	@Override
 	public boolean isValidAction() {
@@ -35,15 +34,13 @@ public class AjaxDeleteSprintTaskAction extends PermissionAction {
 		
 		// get session info
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
-		long parentId = Long.parseLong(request.getParameter("parentID"));
 		// delete task 單選的 task ID
 		long taskId = Long.parseLong(request.getParameter("issueID"));
 		
-		SprintBacklogMapper backlog = new SprintBacklogLogic(project, session, sprintId).getSprintBacklogMapper();
+		SprintBacklogMapper backlog = new SprintBacklogLogic(project, sprintId).getSprintBacklogMapper();
 		backlog.deleteTask(taskId);
 		String result = "<DeleteTask><Result>true</Result><Task><Id>" + taskId + "</Id></Task></DeleteTask>";
 		return new StringBuilder(result);

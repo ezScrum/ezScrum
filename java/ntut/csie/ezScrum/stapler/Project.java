@@ -6,8 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import ntut.csie.ezScrum.plugin.util.PluginConfigManager;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.protocal.PluginConfig;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.ProjectUI;
@@ -85,12 +85,12 @@ public class Project {
 	public Object getDynamic(String token, StaplerRequest request, StaplerResponse response) {
 		HttpSession session = request.getSession();
 
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		if (session == null || project == null) {
 			return this;
 		}
 
-		String projectName = project.getProjectDesc().getName();
+		String projectName = project.getName();
 
 		if (token.equals("productBacklog")) { // when user enter to project
 			return new ProductBacklog(projectName);

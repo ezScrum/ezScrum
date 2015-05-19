@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,18 +17,19 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedHashTreeMap;
 
 public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private Gson mGson;
 	private Configuration mConfig;
 
@@ -42,15 +42,16 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		mConfig.setTestMode(true);
 		mConfig.save();
 		
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
-		// 新增1筆Sprint Plan
+		// 新增1筆 Sprint Plan
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
@@ -65,9 +66,10 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
+	 	// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); 	// 初始化 SQL
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
@@ -86,16 +88,16 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * 測試Story的burndown chart在都沒有done的情況下的圖資料是否正確
+	 * 測試 Story 的 burndown chart 在都沒有 done 的情況下的圖資料是否正確
 	 */
 	public void testGetSprintBurndownChartData_Story_1() throws Exception {
 		final int STORY_COUNT = 2, STORY_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
-		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		// 拿出 sprint 的每一天日期放在 idealPointArray 當 expecte 天數
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -104,7 +106,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -141,22 +143,22 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Story_2() throws Exception {
 		final int STORY_COUNT = 2, STORY_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將story移到done
-		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getIssueID(), "", "");
+		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getName(), "", "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("SprintID",  String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
 		// ================ set session info ========================s
@@ -192,7 +194,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Task_1() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task
@@ -201,7 +203,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s
@@ -211,7 +213,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		actionPerform();
 
 		// 拿出sprint的每一天日期放在idealPointArray當expecte 天數
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -246,7 +248,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	public void testGetSprintBurndownChartData_Task_2() throws Exception {
 		final int STORY_COUNT = 2, TASK_COUNT = 2, STORY_EST = 5, TASK_EST = 5;
 		// Sprint加入2個Story
-		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASTS = new AddStoryToSprint(STORY_COUNT, STORY_EST, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 每個Story加入2個task
@@ -254,7 +256,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// 拿出sprint的每一天日期
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mConfig.getUserSession(), mCS.getSprintIDList().get(0));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
@@ -265,7 +267,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?PID=" + mProject.getName());
-		addRequestParameter("SprintID", mCS.getSprintIDList().get(0));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
 		// ================ set session info ========================s

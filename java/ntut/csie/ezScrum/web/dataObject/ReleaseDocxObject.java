@@ -9,7 +9,7 @@ public class ReleaseDocxObject {
 	private List<SprintObject> sprintDescList;
 	private HashMap<String, List<StoryObject>> stories;
 	private LinkedHashMap<Long, List<TaskObject>> taskMap;
-	private HashMap<String, Float> totalStoryPoints;
+	private HashMap<String, Double> totalStoryPoints;
 	
 	public ReleaseDocxObject() {}
 
@@ -45,11 +45,11 @@ public class ReleaseDocxObject {
 	    this.taskMap = taskMap;
     }
 
-	public HashMap<String, Float> getTotalStoryPoints() {
+	public HashMap<String, Double> getTotalStoryPoints() {
 	    return totalStoryPoints;
     }
 
-	public void setTotalStoryPoints(HashMap<String, Float> totalStoryPoints) {
+	public void setTotalStoryPoints(HashMap<String, Double> totalStoryPoints) {
 	    this.totalStoryPoints = totalStoryPoints;
     }
 }

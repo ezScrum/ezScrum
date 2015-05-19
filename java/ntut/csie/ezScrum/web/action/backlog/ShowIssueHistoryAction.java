@@ -10,13 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,38 +42,40 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Show Issue History. ");
-		
+
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		// get parameter info
-		String issueId = request.getParameter("issueID");
+		long issueId = Long.parseLong(request.getParameter("issueID"));
 		String issueType = request.getParameter("issueType");
-		long id = -1L;
-		if ((issueId != null) && (!issueId.equals("-1"))) {
-			id = Long.parseLong(issueId);
-		}
 
 		// 用Gson轉換issue為json格式傳出
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(session, project);
-		
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
+
 		IssueHistoryUI ihui = null;
 		if (issueType.equals("Task")) {
-			TaskObject task = TaskObject.get(id);
+			TaskObject task = TaskObject.get(issueId);
 			if (task != null) {
 				ihui = new IssueHistoryUI(task);
 			}
-		} else {
-			IIssue issue = PBHelper.getIssue(id);
+		} else if (issueType.equals("Story")){
+			StoryObject story = productBacklogHelper.getStory(issueId);
+			try {
+				ihui = new IssueHistoryUI(story);
+			} catch (SQLException e) {
+			}
+		} else { // for unplanned
+			ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project);
+			IIssue issue = productBacklogMapper.getIssue(issueId);
 			try {
 				ihui = new IssueHistoryUI(issue);
 			} catch (SQLException e) {
 			}
 		}
 		Gson gson = new Gson();
-		return new StringBuilder(gson.toJson(ihui));			
+		return new StringBuilder(gson.toJson(ihui));
 	}
 
 	private class IssueHistoryUI {
@@ -82,32 +85,49 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		private String IssueType = "";
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
-
+		
 		public IssueHistoryUI(IIssue issue) throws SQLException {
 			if (issue != null) {
-				this.Id = issue.getIssueID();
-				this.Link = issue.getIssueLink();
-				this.Name = issue.getSummary();
-				this.IssueType = issue.getCategory();
+				Id = issue.getIssueID();
+				Link = issue.getIssueLink();
+				Name = issue.getSummary();
+				IssueType = issue.getCategory();
 
 				if (issue.getHistories().size() > 0) {
 					for (HistoryObject history : issue.getHistories()) {
 						if (history.getDescription().length() > 0) {
-							this.IssueHistories.add(new IssueHistoryList(history));
+							IssueHistories.add(new IssueHistoryList(history));
 						}
 					}
 				}
 			}
 		}
-		
+
+		public IssueHistoryUI(StoryObject story) throws SQLException {
+			if (story != null) {
+				Id = story.getId();
+				Link = "";
+				Name = story.getName();
+				IssueType = "Story";
+
+				if (story.getHistories().size() > 0) {
+					for (HistoryObject history : story.getHistories()) {
+						if (history.getDescription().length() > 0) {
+							IssueHistories.add(new IssueHistoryList(history));
+						}
+					}
+				}
+			}
+		}
+
 		public IssueHistoryUI(TaskObject task) {
-			this.Id = task.getId();
-			this.Link = "";
-			this.Name = task.getName();
-			this.IssueType = "Task";
-			
+			Id = task.getId();
+			Link = "";
+			Name = task.getName();
+			IssueType = "Task";
+
 			for (HistoryObject history : task.getHistories()) {
-				this.IssueHistories.add(new IssueHistoryList(history));
+				IssueHistories.add(new IssueHistoryList(history));
 			}
 		}
 	}

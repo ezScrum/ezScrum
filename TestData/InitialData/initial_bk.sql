@@ -1193,15 +1193,16 @@ ENGINE = InnoDB DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS `story`;
 CREATE TABLE `story` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id` BIGINT UNSIGNED NOT NULL,
   `serial_id` BIGINT UNSIGNED NOT NULL,
+  `sprint_id` BIGINT NULL,
   `name` TEXT NOT NULL,
-  `estimation` INT NOT NULL DEFAULT 0,
+  `status` INT UNSIGNED NOT NULL,
+  `estimate` INT NOT NULL DEFAULT 0,
   `importance` INT NOT NULL DEFAULT 0,
   `value` INT NOT NULL DEFAULT 0,
   `notes` TEXT NULL,
   `how_to_demo` TEXT NULL,
-  `project_id` BIGINT UNSIGNED NOT NULL,
-  `sprint_id` BIGINT UNSIGNED NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
@@ -1252,6 +1253,7 @@ CREATE TABLE `tag` (
   `name` VARCHAR(255) NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

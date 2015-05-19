@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -11,8 +11,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
@@ -20,7 +20,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private final String mActionPath = "/ajaxRemoveSprintTask";
 
 	public AjaxRemoveSprintTaskTest(String testName) {
@@ -44,7 +44,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 		// ================ set action info ========================
@@ -74,13 +74,13 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 
 	public void testRemoveSprintTask_1() throws Exception {
-		List<String> sprintIdList = mCS.getSprintIDList();
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
 
 		int sprintCount = 1;
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				sprintCount, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+				sprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;
@@ -89,12 +89,12 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		ATS.exe();
 
 		String issueId = String.valueOf(ATS.getTasksId().get(0));
-		String parentId = String.valueOf(ASS.getStories().get(0).getIssueID());
+		String parentId = String.valueOf(ASS.getStories().get(0).getId());
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", sprintIdList.get(0));
+		addRequestParameter("sprintID", String.valueOf(sprintIdList.get(0)));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", parentId);
 
@@ -123,12 +123,11 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 	}
 	
 	public void testRemoveSprintTask_2() throws Exception {
-		List<String> sprintIdList = mCS.getSprintIDList();
-		int sprintId = Integer.parseInt(sprintIdList.get(0));
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
+		long sprintId = sprintIdList.get(0);
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
-				sprintId, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe();
 
 		int taskCount = 1;
@@ -138,15 +137,14 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 
 		TaskObject task = ATS.getTasks().get(0);
 
-		String expectedSprintId = sprintIdList.get(0);
+		long expectedSprintId = sprintIdList.get(0);
 		String issueId = String.valueOf(ATS.getTasksId().get(0));
-		String expectedStoryId = String.valueOf(ASS.getStories().get(0)
-				.getIssueID());
+		String expectedStoryId = String.valueOf(ASS.getStories().get(0).getId());
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", expectedSprintId);
+		addRequestParameter("sprintID", String.valueOf(expectedSprintId));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", expectedStoryId);
 
@@ -173,7 +171,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 		
-		vaildateShowExistedTasks(expectedSprintId, expectedStoryId, task);
+		vaildateShowExistedTasks(String.valueOf(expectedSprintId), expectedStoryId, task);
 	}
 	
 	private void vaildateShowExistedTasks(String expectedSprintId, String expectedStoryId, TaskObject task){
@@ -182,11 +180,11 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		clearRequestParameters();
 		
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", mIProject);	
+		request.getSession().setAttribute("Project", mProject);	
 		
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);

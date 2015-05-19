@@ -2,7 +2,20 @@ Ext.ns('ezScrum');
 Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
-var IssueStore_ForReOpenIssue = new Ext.data.Store( {
+var IssueStore_ForReOpenStory = new Ext.data.Store( {
+	idIndex : 0,
+	id : 0,
+	fields : [
+		{name : 'Id'},
+		{name : 'IssueType'},
+		{name : 'Name'},
+		{name : 'Notes'},
+		{name : 'Partners'}
+	],
+	reader : storyJSReader
+});
+
+var IssueStore_ForReOpenTask = new Ext.data.Store( {
 	idIndex : 0,
 	id : 0,
 	fields : [
@@ -89,8 +102,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     		var rs = jsonIssueReader.read(response);
 			if(rs.success) {
 				var record = rs.records[0];
-				if(record)
-				{
+				if(record) {
 					this.fireEvent('ReOSuccess', this, response, record);
 				}
 			}
@@ -102,8 +114,16 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	onLoadSuccess : function(response) {
 		ConfirmWidget.loadData(response);
 		if (ConfirmWidget.confirmAction()) {
-			IssueStore_ForReOpenIssue.loadData(Ext.decode(response.responseText)); // load issue info
-			var record = IssueStore_ForReOpenIssue.getAt(0);
+			var record;
+			// load issue info
+    		if (response.responseText.includes('Story')) {
+    			IssueStore_ForReOpenStory.loadData(Ext.decode(response.responseText));
+    			record = IssueStore_ForReOpenStory.getAt(0);
+    		} else {
+    			IssueStore_ForReOpenTask.loadData(Ext.decode(response.responseText));
+    			record = IssueStore_ForReOpenTask.getAt(0);
+    		}
+    		
 			if (record) {
 				this.getForm().setValues( {
 					Id : record.data['Id'],
@@ -114,8 +134,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				});
 
 				// append issueID to window title. "RE_OpenIssueWindow" define in TaskBoardCardFormPanel.js
-				RE_OpenIssueWindow.setTitle('Re Opened Issue #' + record.data['Id']);
-				// this.fireEvent('LoadSuccess', this, response, record);
+				RE_OpenIssueWindow.setTitle('Re Opened ' + record.json['IssueType'] + ' #' + record.data['Id']);
 			}
 		}
 	},

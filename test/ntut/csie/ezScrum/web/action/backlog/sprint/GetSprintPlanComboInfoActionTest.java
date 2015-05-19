@@ -1,11 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.util.List;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -13,6 +9,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
@@ -78,12 +79,12 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 	}
 
 	public void testGetSprintPlanComboInfo() throws JSONException{
-		List<String> idList = mCS.getSprintIDList();
+		ArrayList<Long> idList = mCS.getSprintsId();
 		
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("SprintID", idList.get(0));
+		addRequestParameter("SprintID", String.valueOf(idList.get(0)));
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -100,13 +101,13 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 		JSONArray sprints = actualResponse.getJSONArray("Sprints");
 		for (int i = 0; i < 2; i++) {
 			JSONObject sprint = sprints.getJSONObject(i);
-			assertEquals(idList.get(i), sprint.getString("Id"));
+			assertEquals(String.valueOf(idList.get(i)), sprint.getString("Id"));
 			assertEquals("Sprint #" + idList.get(i), sprint.getString("Info"));
 			assertEquals("true", sprint.getString("Edit"));
 		}
 		
 		JSONObject currentSprint = actualResponse.getJSONObject("CurrentSprint");
-		assertEquals(idList.get(0), currentSprint.getString("Id"));
+		assertEquals(String.valueOf(idList.get(0)), currentSprint.getString("Id"));
 		assertEquals("Sprint #" + idList.get(0), currentSprint.getString("Info"));
 		assertEquals("true", currentSprint.getString("Edit"));
 	}
