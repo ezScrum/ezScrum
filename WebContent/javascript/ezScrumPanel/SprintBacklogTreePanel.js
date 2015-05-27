@@ -103,7 +103,7 @@ ezScrum.SprintBacklog_Tree = Ext.extend(Ext.ux.tree.TreeGrid, {
     columns		: SprintBacklogColumns,
     dataUrl		: 'showSprintBacklogTreeListInfo.do',
 	initComponent : function() {
-		var obj = this;    	
+		var obj = this;
     	this.getSelectionModel().on({
     	    'selectionchange': {
     	        buffer: 25,
@@ -128,6 +128,20 @@ ezScrum.SprintBacklog_Tree = Ext.extend(Ext.ux.tree.TreeGrid, {
 			this.expandAll();
     	});
     	ezScrum.SprintBacklog_Tree.superclass.initComponent.apply(this, arguments);
+    	// Override DblClick Event to prevent
+    	// toggle node on double click
+    	Ext.override(Ext.tree.TreeNodeUI, { 
+    		onDblClick : function(e){
+    	        e.preventDefault();
+    	        if(this.disabled){
+    	            return;
+    	        }
+    	        if(this.checkbox){
+    	            this.toggleCheck();
+    	        }
+    	        this.fireEvent("dblclick", this.node, e);
+    	    }
+    	});
     },
     saveTreeSate : function () {//紀錄操作動作前樹的狀態
         var nodePathArray = [];
@@ -168,6 +182,21 @@ ezScrum.SprintBacklog_Tree = Ext.extend(Ext.ux.tree.TreeGrid, {
         if(typeof nodePathArray[ nodePathArray.length - 1 ] != 'undefined') {
             this.selectPath( nodePathArray[ nodePathArray.length - 1 ]);
         }
+    },
+    listeners: {
+        dblclick: function() {
+        	// get selected Node
+            var selectedNode = this.getSelectionModel().getSelectedNode();
+            // get Node Type
+            var nodeType = selectedNode.attributes['Type'];
+            // handle Story or Task
+            if(nodeType == 'Story'){
+            	Ext.getCmp('SprintBacklog_Page_Event').editStory();
+            } else if(nodeType == 'Task'){
+            	Ext.getCmp('SprintBacklog_Page_Event').editTask();
+            }
+        },
+        element: 'el'
     },
     reloadData: function( sprintID ) {
     	var newUrl;
