@@ -41,13 +41,13 @@ public class ConvertSprint {
 	// 將 sprint object 轉成 sprint plan desc
 	public static ISprintPlanDesc convertSprintObjectToDesc(SprintObject object) {
 		ISprintPlanDesc sprint = new SprintPlanDesc();
-		sprint.setID(object.id);
-		sprint.setStartDate(object.startDate);
-		sprint.setInterval(object.interval);
-		sprint.setMemberNumber(object.members);
+		sprint.setID(object.mId);
+		sprint.setStartDate(object.mStartDate);
+		sprint.setInterval(object.mInterval);
+		sprint.setMemberNumber(object.mMembers);
 		sprint.setFocusFactor(object.focusFactor);
-		sprint.setGoal(object.sprintGoal);
-		sprint.setAvailableDays(object.hoursCanCommit);
+		sprint.setGoal(object.mSprintGoal);
+		sprint.setAvailableDays(object.mHoursCanCommit);
 		sprint.setDemoDate(object.demoDate);
 		sprint.setDemoPlace(object.demoPlace);
 		return sprint;

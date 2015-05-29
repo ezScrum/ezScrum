@@ -125,14 +125,14 @@ public class SprintPlanWebServiceTest {
 
 		for (int i = 0; i < mSprintCount; i++) {
 			JSONObject sprintJSONObject = (JSONObject) sprintJSONArray.get(i);
-			assertEquals(sprintlist.get(i).id, sprintJSONObject.get("id"));
-			assertEquals(sprintlist.get(i).sprintGoal, sprintJSONObject.get("sprintGoal"));
-			assertEquals(sprintlist.get(i).startDate, sprintJSONObject.get("startDate"));
+			assertEquals(sprintlist.get(i).mId, sprintJSONObject.get("id"));
+			assertEquals(sprintlist.get(i).mSprintGoal, sprintJSONObject.get("sprintGoal"));
+			assertEquals(sprintlist.get(i).mStartDate, sprintJSONObject.get("startDate"));
 			assertEquals(sprintlist.get(i).demoDate, sprintJSONObject.get("demoDate"));
-			assertEquals(sprintlist.get(i).interval, sprintJSONObject.get("interval"));
+			assertEquals(sprintlist.get(i).mInterval, sprintJSONObject.get("interval"));
 			assertEquals(sprintlist.get(i).focusFactor, sprintJSONObject.get("focusFactor"));
-			assertEquals(sprintlist.get(i).members, sprintJSONObject.get("members"));
-			assertEquals(sprintlist.get(i).hoursCanCommit, sprintJSONObject.get("hoursCanCommit"));
+			assertEquals(sprintlist.get(i).mMembers, sprintJSONObject.get("members"));
+			assertEquals(sprintlist.get(i).mHoursCanCommit, sprintJSONObject.get("hoursCanCommit"));
 			assertEquals(sprintlist.get(i).demoPlace, sprintJSONObject.get("demoPlace"));
 		}
 

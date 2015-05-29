@@ -67,7 +67,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 			List<SprintObject> sprints = releaseObject.getSprintPlan();
 			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
 			for (SprintObject sprint : sprints) {
-				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(sprint.id));
+				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(sprint.mId));
 			}
 			releaseObject.setSprintPlan(sprintsWithAllItem);
 			releases.add(releaseObject);
@@ -103,7 +103,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 		releaseObject.setSprintDescList(sprintPlanList);
 		if (sprintPlanList != null) {
 			for (SprintObject desc : sprintPlanList) {	// set story, task, story points to release object
-				long sprintId = Long.parseLong(desc.id);
+				long sprintId = Long.parseLong(desc.mId);
 				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 				ArrayList<StoryObject> storyList = sprintBacklogLogic.getStoriesByImp();
 				double total = sprintBacklogLogic.getTotalStoryPoints();	// the sum of story points

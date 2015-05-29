@@ -86,7 +86,7 @@ public class SprintPlanWebService extends ProjectWebService{
 		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
 		List<SprintObject> result = new ArrayList<SprintObject>();
 		for (SprintObject sprint : sprintList) {
-			result.add(mSprintPlanHelper.getSprint(sprint.id));
+			result.add(mSprintPlanHelper.getSprint(sprint.mId));
 		}
 		return gson.toJson(result);
 	}
