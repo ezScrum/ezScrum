@@ -100,7 +100,7 @@ public class SprintDAOTest {
 		
 		// call DAO
 		long sprintId = SprintDAO.getInstance().create(sprint);
-		assertNotSame(-1, sprintId);
+		assertEquals(2, sprintId);
 		
 		SprintObject sprintFromDB = null;
 		

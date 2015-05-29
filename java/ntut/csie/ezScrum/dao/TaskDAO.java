@@ -31,9 +31,9 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
 				task.getProjectId());
 
+		long taskId = serialNumber.getTaskId() + 1;
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addInsertValue(TaskEnum.SERIAL_ID,
-				serialNumber.getTaskId() + 1);
+		valueSet.addInsertValue(TaskEnum.SERIAL_ID, taskId);
 		valueSet.addInsertValue(TaskEnum.NAME, task.getName());
 		valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
 		valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
@@ -53,7 +53,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setId(SerialNumberEnum.TASK, serialNumber.getTaskId() + 1);
+		serialNumber.setId(SerialNumberEnum.TASK, taskId);
 		serialNumber.save();
 
 		return id;

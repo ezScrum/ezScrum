@@ -25,11 +25,11 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
-				story.getProjectId());
+		        story.getProjectId());
 
+		long storyId = serialNumber.getStoryId() + 1;
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
-		valueSet.addInsertValue(StoryEnum.SERIAL_ID,
-				serialNumber.getStoryId() + 1);
+		valueSet.addInsertValue(StoryEnum.SERIAL_ID, storyId);
 		valueSet.addInsertValue(StoryEnum.NAME, story.getName());
 		valueSet.addInsertValue(StoryEnum.STATUS, story.getStatus());
 		valueSet.addInsertValue(StoryEnum.ESTIMATE, story.getEstimate());
@@ -44,7 +44,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		serialNumber.setId(SerialNumberEnum.STORY,
-				serialNumber.getStoryId() + 1);
+		        storyId);
 		serialNumber.save();
 		return id;
 	}
@@ -156,18 +156,18 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 
 	public static StoryObject convert(ResultSet result) throws SQLException {
 		StoryObject story = new StoryObject(result.getLong(StoryEnum.ID),
-				result.getLong(StoryEnum.SERIAL_ID),
-				result.getLong(StoryEnum.PROJECT_ID));
+		        result.getLong(StoryEnum.SERIAL_ID),
+		        result.getLong(StoryEnum.PROJECT_ID));
 		story.setName(result.getString(StoryEnum.NAME))
-				.setStatus(result.getInt(StoryEnum.STATUS))
-				.setEstimate(result.getInt(StoryEnum.ESTIMATE))
-				.setImportance(result.getInt(StoryEnum.IMPORTANCE))
-				.setValue(result.getInt(StoryEnum.VALUE))
-				.setNotes(result.getString(StoryEnum.NOTES))
-				.setHowToDemo(result.getString(StoryEnum.HOW_TO_DEMO))
-				.setSprintId(result.getLong(StoryEnum.SPRINT_ID))
-				.setCreateTime(result.getLong(StoryEnum.CREATE_TIME))
-				.setUpdateTime(result.getLong(StoryEnum.UPDATE_TIME));
+		        .setStatus(result.getInt(StoryEnum.STATUS))
+		        .setEstimate(result.getInt(StoryEnum.ESTIMATE))
+		        .setImportance(result.getInt(StoryEnum.IMPORTANCE))
+		        .setValue(result.getInt(StoryEnum.VALUE))
+		        .setNotes(result.getString(StoryEnum.NOTES))
+		        .setHowToDemo(result.getString(StoryEnum.HOW_TO_DEMO))
+		        .setSprintId(result.getLong(StoryEnum.SPRINT_ID))
+		        .setCreateTime(result.getLong(StoryEnum.CREATE_TIME))
+		        .setUpdateTime(result.getLong(StoryEnum.UPDATE_TIME));
 		return story;
 	}
 }

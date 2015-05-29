@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
@@ -239,6 +240,9 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId
+				, 0, 0, 0, 0, 0, 0);
+		serialNumber.save();
         reload();
 	}
 	
