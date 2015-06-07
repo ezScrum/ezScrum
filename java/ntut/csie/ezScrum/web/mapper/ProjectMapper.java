@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
@@ -19,7 +18,6 @@ import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.jcis.project.core.ICVS;
 import ntut.csie.jcis.project.core.IProjectDescription;
@@ -52,14 +50,8 @@ public class ProjectMapper {
 			.setManager(projectInfo.manager)
 			.setAttachFileSize(projectInfo.attachFileSize)
 			.save();
-		project.reload();
-		
 		// 新建 project，也把 serial number 建起來
 		long projectId = project.getId();
-		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-		serialnumberDAO.create(new SerialNumberObject(projectId
-				, 0, 0, 0, 0, 0, 0));
-				
 		return projectId;
 	}
 	

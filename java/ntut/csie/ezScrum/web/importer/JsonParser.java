@@ -1,8 +1,11 @@
 package ntut.csie.ezScrum.web.importer;
 
-import org.json.simple.JSONObject;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class JsonParser {
 	// project key set
@@ -21,5 +24,15 @@ public class JsonParser {
 				.setComment((String) projectJson.get(PROJECT_COMMENT))
 				.setDisplayName((String) projectJson.get(PROJECT_DISPLAY_NAME));
 		return project;
+	}
+	
+	public static ArrayList<ProjectObject> parseProjects(JSONArray projectJsonArray) {
+		ArrayList<ProjectObject> projects = new ArrayList<>();
+		for (int i = 0; i < projectJsonArray.size(); i++) {
+			JSONObject projectJson = (JSONObject) projectJsonArray.get(i);
+			ProjectObject project = parseProject(projectJson);
+			projects.add(project);
+		}
+		return projects;
 	}
 }

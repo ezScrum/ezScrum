@@ -3,11 +3,11 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
