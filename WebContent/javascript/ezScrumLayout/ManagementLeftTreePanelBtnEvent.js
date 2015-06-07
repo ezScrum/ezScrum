@@ -20,10 +20,12 @@ ezScrum.ManagementLeftPanel_Event = Ext.extend(ezScrum.Management_LeftTreePanel,
 		var obj = this;
 		if (node.parentNode.id == "RBACMgt") {
 			obj.event_RBACManagement(node);
-		} else if(node.parentNode.id == "PluginMgt"){
+		} else if (node.parentNode.id == "PluginMgt"){
 			obj.event_PlugintManagement(node);
-		} else if(node.parentNode.id == "DbConfigMgt") {
+		} else if (node.parentNode.id == "DbConfigMgt") {
 			obj.event_DbConfigManagement(node);
+		} else if (node.parentNode.id == "ImportMgt") {
+			obj.event_ImportManagement(node);
 		}
 		/*
 		 * Management頁面，update相關功能尚未實作完，因此先註解掉
@@ -61,6 +63,13 @@ ezScrum.ManagementLeftPanel_Event = Ext.extend(ezScrum.Management_LeftTreePanel,
 	event_DbConfigManagement: function(node) {
 		if (node.id == "DbConfigUrl") {
 			this.Page_Index = 3;
+		} else {
+			this.Page_Index = 0;
+		}
+	},
+	event_ImportManagement: function(node) {
+		if (node.id == "ImportProjectUrl") {
+			this.Page_Index = 4;
 		} else {
 			this.Page_Index = 0;
 		}

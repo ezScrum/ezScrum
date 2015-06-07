@@ -62,6 +62,7 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/Management_ScrumRole_Panel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/PluginGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/DbConfigForm.js"></script>
+<script type="text/javascript" src="javascript/ezScrumPanel/ImportProjectForm.js"></script>
 
 
 <!-- Page -->
@@ -69,6 +70,7 @@
 <script type="text/javascript" src="javascript/ezScrumPage/ScrumRoleManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/PluginManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/DbConfigPage.js"></script>
+<script type="text/javascript" src="javascript/ezScrumPage/ImportProjectPage.js"></script>
 <!-- 這2個page似乎拔掉了? 待確認
 <script type="text/javascript" src="javascript/ezScrumPage/CheckUpdateManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ServerManagement.js"></script>
