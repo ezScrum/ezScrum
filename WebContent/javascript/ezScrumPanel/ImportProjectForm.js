@@ -32,7 +32,7 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	initComponent	: function() {
 		var config = {
 			url			: 'viewProjectList.do',
-			export_url	: 'saveConfiguration.do',	
+			import_url	: 'importProject.do',	
 			items		: [{
 				xtype:'fileuploadfield',
 				emptyText: 'Select a file',
@@ -89,26 +89,22 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
     },
     doImport: function() {
 		var obj = this;
-    	var form = this.getForm();
-    	this.showMask('loading info...');
-    	Ext.Ajax.request({
-    		url		: obj.export_url,
-    		params	: form.getValues(),
-    		success	: function(response) {
-				var result = response.responseText;
-				if (result == "success") {
-					Ext.example.msg('Modify DB Config', 'Success.');
-				} else {
-					Ext.example.msg('Modify DB Config', 'Sorry, the action is failure.');
-				}
-				obj.closeMask();
-    		},
-    		failure	: function(response){
-    			obj.closeMask();
-    			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-    		}
-    	});
-	}
+		if(this.getForm().isValid()){
+			var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
+			myMask.show();
+			var obj = this;
+			// var readUrl = this.url + "?issueID=" + this.issueId;
+			var form = this.getForm().submit({
+				url:this.import_url,
+				success: function(form, action) {
+			       obj.onSuccess(action);
+			    },
+			    failure:function(form, action) {
+			    	
+			    }
+			});
+		}
+	},
 });
 
 Ext.reg('ImportProjectForm', ImportProjectFormLayout);
