@@ -60,9 +60,8 @@ public class ProjectObjectTest{
 			.setManager(productOwner)
 			.setAttachFileSize(attachFileSize)
 			.save();
-		project.reload();
 		
-		assertNotSame(-1, project.getId());
+		assertEquals(1, project.getId());
 	}
 	
 	@Test

@@ -239,6 +239,9 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId
+				, 0, 0, 0, 0, 0, 0);
+		serialNumber.save();
         reload();
 	}
 	

@@ -36,8 +36,6 @@ public class ProjectHelper {
 	}
 
 	public String getProjectListXML(AccountObject account) {
-		log.info(" handle project list xml format");
-
 		// get all projects
 		List<IProject> projects = mProjectLogic.getAllProjects();
 		// ezScrum v1.8

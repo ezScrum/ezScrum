@@ -302,8 +302,8 @@ public class SprintPlanHelper {
 	public SprintObject getSprint(String sprintId) throws SQLException {
 		SprintObject sprint = new SprintObject(loadPlan(sprintId));
 		// 找出 sprint 中所有的 story
-		ArrayList<StoryObject> storyIIssues = mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintId));
-		for (StoryObject story : storyIIssues) {
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesBySprintId(Long.parseLong(sprintId));
+		for (StoryObject story : stories) {
 			// 找出 story 中所有的 task
 			ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksByStoryId(story.getId());
 			for (TaskObject task : tasks) {

@@ -120,20 +120,20 @@ public class SprintPlanWebServiceTest {
 
 		mSprintPlanWebService = new SprintPlanWebService(account, projectID);
 
-		List<SprintObject> sprintlist = mSprintPlanHelper.getAllSprint();
+		List<SprintObject> sprints = mSprintPlanHelper.getAllSprint();
 		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprint()); // 從WebService取得Json
 
 		for (int i = 0; i < mSprintCount; i++) {
 			JSONObject sprintJSONObject = (JSONObject) sprintJSONArray.get(i);
-			assertEquals(sprintlist.get(i).id, sprintJSONObject.get("id"));
-			assertEquals(sprintlist.get(i).sprintGoal, sprintJSONObject.get("sprintGoal"));
-			assertEquals(sprintlist.get(i).startDate, sprintJSONObject.get("startDate"));
-			assertEquals(sprintlist.get(i).demoDate, sprintJSONObject.get("demoDate"));
-			assertEquals(sprintlist.get(i).interval, sprintJSONObject.get("interval"));
-			assertEquals(sprintlist.get(i).focusFactor, sprintJSONObject.get("focusFactor"));
-			assertEquals(sprintlist.get(i).members, sprintJSONObject.get("members"));
-			assertEquals(sprintlist.get(i).hoursCanCommit, sprintJSONObject.get("hoursCanCommit"));
-			assertEquals(sprintlist.get(i).demoPlace, sprintJSONObject.get("demoPlace"));
+			assertEquals(sprints.get(i).getId(), sprintJSONObject.get("id"));
+			assertEquals(sprints.get(i).getSprintGoal(), sprintJSONObject.get("sprintGoal"));
+			assertEquals(sprints.get(i).getStartDate(), sprintJSONObject.get("startDate"));
+			assertEquals(sprints.get(i).getDemoDate(), sprintJSONObject.get("demoDate"));
+			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get("interval"));
+			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get("focusFactor"));
+			assertEquals(sprints.get(i).getMembersNumber(), sprintJSONObject.get("members"));
+			assertEquals(sprints.get(i).getHoursCanCommit(), sprintJSONObject.get("hoursCanCommit"));
+			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get("demoPlace"));
 		}
 
 	}
