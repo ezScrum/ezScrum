@@ -1,16 +1,3 @@
-var myCheckboxGroup = new Ext.form.CheckboxGroup({
-    id:'myGroup',
-    xtype: 'checkboxgroup',
-    fieldLabel: 'Existing Project List',
-    itemCls: 'x-check-group-alt',
-    // Put all controls in a single column with width 100%
-    columns: 1,
-    items: [
-            {boxLabel: 'Project1', name: 'cb-col-1'},
-            {boxLabel: 'Project2', name: 'cb-col-1', checked: true}
-        ]
-});
-
 var Project = Ext.data.Record.create(['ID', 'Name', 'Comment', 'ProjectManager', 'CreateDate', 'DemoDate']);
 
 var ProjectReader = new Ext.data.XmlReader({
@@ -46,13 +33,20 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var config = {
 			url			: 'viewProjectList.do',
 			export_url	: 'saveConfiguration.do',	
-			items		: myCheckboxGroup,
+			items		: [{
+				xtype:'fileuploadfield',
+				emptyText: 'Select a file',
+	            fieldLabel: 'Update File',
+	            name: 'file',
+	            vtype: 'checkUploadFileName',
+	            allowBlank: false
+		}],
 	        buttons : [{
 	        	formBind : true,
 	        	scope    : this,
-	        	text     : 'Export',
+	        	text     : 'Import',
 	        	disabled : true,
-	        	handler  : this.doExport
+	        	handler  : this.doImport
 	        }]
 		}
 		
@@ -74,7 +68,6 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url: obj.url,
 			success : function(response) {
 				ProjectStore.loadData(response.responseXML);
-				console.log(ProjectStore.data);
 				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
 				loadmask.hide();
 			},
@@ -94,7 +87,7 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 			DBName		: record.get('DBName')
 		});
     },
-    doExport: function() {
+    doImport: function() {
 		var obj = this;
     	var form = this.getForm();
     	this.showMask('loading info...');
