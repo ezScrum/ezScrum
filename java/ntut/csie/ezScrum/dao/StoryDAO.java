@@ -3,11 +3,11 @@ package ntut.csie.ezScrum.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
 
 public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
@@ -43,8 +43,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
-		serialNumber.setId(SerialNumberEnum.STORY,
-		        storyId);
+		serialNumber.setStoryId(storyId);
 		serialNumber.save();
 		return id;
 	}

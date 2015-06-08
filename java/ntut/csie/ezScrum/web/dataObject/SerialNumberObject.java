@@ -1,13 +1,12 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
@@ -17,19 +16,24 @@ import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 public class SerialNumberObject {
 	private long mId = -1;
 	private long mProjectId = -1;
-	private HashMap<String, Long> mIdMap = new HashMap<String, Long>();
+	private long mReleaseId = -1;
+	private long mSprintId = -1;
+	private long mStoryId = -1;
+	private long mTaskId = -1;
+	private long mUnplannedId = -1;
+	private long mRetrospectiveId = -1;
 	
 	public SerialNumberObject() {}
 	
 	public SerialNumberObject(long projectId, long releaseId, long sprintId,
 			long storyId, long taskId, long unplannedId, long retrospectiveId) {
-		setProjectId(projectId);
-		mIdMap.put(SerialNumberEnum.RELEASE, releaseId);
-		mIdMap.put(SerialNumberEnum.SPRINT, sprintId);
-		mIdMap.put(SerialNumberEnum.STORY, storyId);
-		mIdMap.put(SerialNumberEnum.TASK, taskId);
-		mIdMap.put(SerialNumberEnum.UNPLANNED, unplannedId);
-		mIdMap.put(SerialNumberEnum.RETROSPECTIVE, retrospectiveId);
+		mProjectId = projectId;
+		mReleaseId = releaseId;
+		mSprintId = sprintId;
+		mStoryId = storyId;
+		mTaskId = taskId;
+		mUnplannedId = unplannedId;
+		mRetrospectiveId = retrospectiveId;
 	}
 	
 	public SerialNumberObject setId(long id) {
@@ -43,37 +47,32 @@ public class SerialNumberObject {
 	}
 	
 	public SerialNumberObject setReleaseId(long releaseId) {
-		setIdMap(SerialNumberEnum.RELEASE, releaseId);
+		mReleaseId = releaseId;
 		return this;
 	}
 	
 	public SerialNumberObject setSprintId(long sprintId) {
-		setIdMap(SerialNumberEnum.SPRINT, sprintId);
+		mSprintId = sprintId;
 		return this;
 	}
 	
 	public SerialNumberObject setStoryId(long storyId) {
-		setIdMap(SerialNumberEnum.STORY, storyId);
+		mStoryId = storyId;
 		return this;
 	}
 	
 	public SerialNumberObject setTaskId(long taskId) {
-		setIdMap(SerialNumberEnum.TASK, taskId);
+		mTaskId = taskId;
 		return this;
 	}
 	
 	public SerialNumberObject setUnplannedId(long unplannedId) {
-		setIdMap(SerialNumberEnum.UNPLANNED, unplannedId);
+		mUnplannedId = unplannedId;
 		return this;
 	}
 	
 	public SerialNumberObject setRetrospectiveId(long retrospectiveId) {
-		setIdMap(SerialNumberEnum.RETROSPECTIVE, retrospectiveId);
-		return this;
-	}
-	
-	public SerialNumberObject setId(String key, long id) {
-		setIdMap(key, id);
+		mRetrospectiveId = retrospectiveId;
 		return this;
 	}
 	
@@ -86,52 +85,44 @@ public class SerialNumberObject {
 	}
 	
 	public long getReleaseId() {
-		return mIdMap.get(SerialNumberEnum.RELEASE);
+		return mReleaseId;
 	}
 	
 	public long getSprintId() {
-		return mIdMap.get(SerialNumberEnum.SPRINT);
+		return mSprintId;
 	}
 	
 	public long getStoryId() {
-		return mIdMap.get(SerialNumberEnum.STORY);
+		return mStoryId;
 	}
 	
 	public long getTaskId() {
-		return mIdMap.get(SerialNumberEnum.TASK);
+		return mTaskId;
 	}
 	
 	public long getUnplannedId() {
-		return mIdMap.get(SerialNumberEnum.UNPLANNED);
+		return mUnplannedId;
 	}
 	
 	public long getRetrospectiveId() {
-		return mIdMap.get(SerialNumberEnum.RETROSPECTIVE);
-	}
-	
-	public long getId(String type) {
-		return mIdMap.get(type);
-	}
-	
-	private void setIdMap(String type, long id) {
-		mIdMap.put(type, id);
+		return mRetrospectiveId;
 	}
 	
 	public JSONObject toJSON() throws JSONException {
 		JSONObject object = new JSONObject();
 		object
 			.put(SerialNumberEnum.PROJECT_ID, mProjectId)
-			.put(SerialNumberEnum.RELEASE, getId(SerialNumberEnum.RELEASE))
-			.put(SerialNumberEnum.SPRINT, getId(SerialNumberEnum.SPRINT))
-			.put(SerialNumberEnum.STORY, getId(SerialNumberEnum.STORY))
-			.put(SerialNumberEnum.TASK, getId(SerialNumberEnum.TASK))
-			.put(SerialNumberEnum.UNPLANNED, getId(SerialNumberEnum.UNPLANNED))
-			.put(SerialNumberEnum.RETROSPECTIVE, getId(SerialNumberEnum.RETROSPECTIVE));
+			.put(SerialNumberEnum.RELEASE, mReleaseId)
+			.put(SerialNumberEnum.SPRINT, mSprintId)
+			.put(SerialNumberEnum.STORY, mStoryId)
+			.put(SerialNumberEnum.TASK, mTaskId)
+			.put(SerialNumberEnum.UNPLANNED, mUnplannedId)
+			.put(SerialNumberEnum.RETROSPECTIVE, mRetrospectiveId);
 		return object;
 	}
 	
 	public void save() {
-		if (recordExists()) {
+		if (exists()) {
 			SerialNumberDAO.getInstance().update(this);
 		} else {
 			mId = SerialNumberDAO.getInstance().create(this);
@@ -148,7 +139,7 @@ public class SerialNumberObject {
 	}
 	
 	public void reload() throws Exception {
-		if (recordExists()) {
+		if (exists()) {
 			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
 			resetData(serialNumber);
 		} else {
@@ -164,17 +155,18 @@ public class SerialNumberObject {
 		return success;
 	}
 	
-	private boolean recordExists() {
-		return mId > 0;
+	private boolean exists() {
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mId);
+		return serialNumber != null;
 	}
 	
 	private void resetData(SerialNumberObject serialNumber) {
-		setProjectId(serialNumber.getProjectId());
-		setIdMap(SerialNumberEnum.RELEASE, serialNumber.getReleaseId());
-		setIdMap(SerialNumberEnum.SPRINT, serialNumber.getSprintId());
-		setIdMap(SerialNumberEnum.STORY, serialNumber.getStoryId());
-		setIdMap(SerialNumberEnum.TASK, serialNumber.getTaskId());
-		setIdMap(SerialNumberEnum.UNPLANNED, serialNumber.getReleaseId());
-		setIdMap(SerialNumberEnum.RETROSPECTIVE, serialNumber.getReleaseId());
+		mId = serialNumber.getId();
+		mProjectId = serialNumber.getProjectId();
+		mReleaseId = serialNumber.getReleaseId();
+		mStoryId = serialNumber.getStoryId();
+		mTaskId = serialNumber.getTaskId();
+		mUnplannedId = serialNumber.getUnplannedId();
+		mRetrospectiveId = serialNumber.getRetrospectiveId();
 	}
 }

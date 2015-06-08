@@ -87,17 +87,6 @@ public class SerialNumberDAO extends
 		return mControl.executeUpdate(query);
 	}
 
-	public boolean updateByColumn(String updateColumn,
-			SerialNumberObject serialnumber) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
-		valueSet.addInsertValue(updateColumn, serialnumber.getId(updateColumn));
-		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID,
-				Long.toString(serialnumber.getProjectId()));
-		String query = valueSet.getUpdateQuery();
-		return mControl.executeUpdate(query);
-	}
-
 	@Override
 	public boolean delete(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();

@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
@@ -19,7 +17,6 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.LogonException;
 
 import com.google.gson.Gson;
@@ -67,7 +64,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 			List<SprintObject> sprints = releaseObject.getSprintPlan();
 			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
 			for (SprintObject sprint : sprints) {
-				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(sprint.mId));
+				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(String.valueOf(sprint.getId())));
 			}
 			releaseObject.setSprintPlan(sprintsWithAllItem);
 			releases.add(releaseObject);
@@ -96,14 +93,14 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * 將  StoryObject, TaskObject 輸出成 ReleaseDocxObject
 	 * @throws SQLException 
 	 */
-	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintObject> sprintPlanList, HashMap<String, List<StoryObject>> stories,
+	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintObject> sprints, HashMap<String, List<StoryObject>> stories,
 	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Double> totalStoryPoints) throws SQLException {
 		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
 		releaseObject.setReleasePlanDesc(releasePlan);
-		releaseObject.setSprintDescList(sprintPlanList);
-		if (sprintPlanList != null) {
-			for (SprintObject desc : sprintPlanList) {	// set story, task, story points to release object
-				long sprintId = Long.parseLong(desc.mId);
+		releaseObject.setSprintDescList(sprints);
+		if (sprints != null) {
+			for (SprintObject sprint : sprints) {	// set story, task, story points to release object
+				long sprintId = sprint.getId();
 				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
 				ArrayList<StoryObject> storyList = sprintBacklogLogic.getStoriesByImp();
 				double total = sprintBacklogLogic.getTotalStoryPoints();	// the sum of story points

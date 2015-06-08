@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;

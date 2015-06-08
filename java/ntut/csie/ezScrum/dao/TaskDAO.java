@@ -10,7 +10,6 @@ import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
 
 public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
@@ -53,7 +52,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setId(SerialNumberEnum.TASK, taskId);
+		serialNumber.setTaskId(taskId);
 		serialNumber.save();
 
 		return id;

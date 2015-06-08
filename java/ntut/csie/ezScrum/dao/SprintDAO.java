@@ -9,7 +9,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -56,7 +55,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setId(SerialNumberEnum.SPRINT, sprintId);
+		serialNumber.setSprintId(sprintId);
 		serialNumber.save();
 
 		return id;
