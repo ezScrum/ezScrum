@@ -255,7 +255,7 @@ public class SprintObject implements IBaseObject{
 		JSONObject sprint = new JSONObject();
 		JSONArray stories = new JSONArray();
 
-		for (StoryObject story : getStorie()) {
+		for (StoryObject story : getStories()) {
 			stories.put(story.getId());
 		}
 
