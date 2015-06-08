@@ -4,10 +4,5 @@ var ImportProjectPage = new Ext.Panel({
 	autoScroll	: true,
 	items : [
 	    { ref: 'ImportProjectForm_ID', xtype : 'ImportProjectForm' }
-	],
-	listeners : {
-		'show' : function() {
-			this.ImportProjectForm_ID.loadDataModel();
-		}
-	}
+	]
 });

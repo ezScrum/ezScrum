@@ -1,28 +1,7 @@
-var Project = Ext.data.Record.create(['ID', 'Name', 'Comment', 'ProjectManager', 'CreateDate', 'DemoDate']);
-
-var ProjectReader = new Ext.data.XmlReader({
-	   record: 'Project',
-	   idPath : 'ID',
-	   successProperty: 'Result'
-}, Project);
-
-var ProjectStore = new Ext.data.Store({
-	fields:[
-		{name : 'ID'},
-		{name : 'Name'},
-		{name : 'Comment'},
-		{name : 'ProjectManager'},
-		{name : 'CreateDate'},
-		{name : 'DemoDate'}
-	],
-	reader : ProjectReader
-});
-
 ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	id 				: 'ImportProject_Form',
 	border			: false,
 	frame			: true,
-	store			: ProjectStore,
 	title			: 'Import Project',
 	bodyStyle		: 'padding:0px',
 	labelAlign		: 'right',
@@ -31,8 +10,7 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	monitorValid	: true,
 	initComponent	: function() {
 		var config = {
-			url			: 'viewProjectList.do',
-			import_url	: 'importProject.do',	
+			url			: 'importProject.do',
 			items		: [{
 				xtype:'fileuploadfield',
 				emptyText: 'Select a file',
@@ -40,7 +18,7 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	            name: 'file',
 	            vtype: 'checkUploadFileName',
 	            allowBlank: false
-		}],
+			}],
 	        buttons : [{
 	        	formBind : true,
 	        	scope    : this,
@@ -60,51 +38,44 @@ ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
 	closeMask : function() {
 		this.loadmask.hide();
 	},
-	loadDataModel: function() {
-		var obj = this;
-		var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
-		loadmask.show();
-		Ext.Ajax.request({
-			url: obj.url,
-			success : function(response) {
-				ProjectStore.loadData(response.responseXML);
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
-				loadmask.hide();
-			},
-			failure : function(){
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
-    			loadmask.hide();
-				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-			}
-		});
-	},
-    setDataModel: function(record) {
-    	this.getForm().reset();
-    	this.getForm().setValues({
-			ServerUrl	: record.get('ServerUrl'),
-			DBAccount	: record.get('DBAccount'),
-			DBType		: record.get('DBType'),
-			DBName		: record.get('DBName')
-		});
-    },
     doImport: function() {
 		var obj = this;
-		if(this.getForm().isValid()){
-			var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
-			myMask.show();
-			var obj = this;
-			// var readUrl = this.url + "?issueID=" + this.issueId;
-			var form = this.getForm().submit({
-				url:this.import_url,
+		var form = this.getForm();
+		if(form.isValid()) {
+			console.log('form.isValid()');
+			console.log(form);
+			form.submit({
+				url:this.url,
 				success: function(form, action) {
-			       obj.onSuccess(action);
+//			       obj.onSuccess(action);
+			       console.log('success');
 			    },
 			    failure:function(form, action) {
-			    	
+			    	console.log('failure');
 			    }
 			});
 		}
 	},
+//	doImport: function() {
+//		var obj = this;
+//		Ext.Ajax.request({
+//			url: obj.url,
+//			success: function(response) {
+//				console.log('success');
+//				var result = Ext.decode(response.responseText);
+//				if (result.isDatabaseVersionValid) {
+//					obj.exportProjects();
+//				} else {
+//					
+//				}
+//			},
+//			failure: function(response) {
+//				console.log('failure');
+//				obj.closeMask();
+//				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
+//			}
+//		});
+//	},
 });
 
 Ext.reg('ImportProjectForm', ImportProjectFormLayout);
