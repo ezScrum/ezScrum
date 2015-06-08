@@ -75,6 +75,22 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
 					leaf:true
 	    	    }]
 	    	// DBConfig Management Side
+	    },{
+	    	// Import Management Side
+	    	text: 'Import Management',
+	    	id	: 'ImportMgt',
+	    	expanded: true,
+	    	iconCls: 'None',
+	    	cls: 'treepanel-parent',
+	    	children: [
+	    	    {
+	    	    	id:'ImportProjectUrl',
+			    	cls:'treepanel-leaf',
+                	iconCls:'leaf-icon',
+					text : '<u>Import Project</u>', 
+					leaf:true
+	    	    }]
+	    	// Import Management Side
 	    }]
 	    
 
