@@ -28,8 +28,6 @@ public class ImportProjectAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
-		json.put("isSuccess", true);
-		json.put("message", "success");
 		UploadForm fileForm = (UploadForm) form;
 
 		FormFile formFile = fileForm.getFile();
@@ -40,9 +38,11 @@ public class ImportProjectAction extends Action {
 			ezScrumImporter.doImport();
 			int file_size = (int) file.length();
 			if (file_size < 0) {
-				json.put("isSuccess", false);
+				json.put("success", false);
 				json.put("message", "File error");
 			} else {
+				json.put("success", true);
+				json.put("message", "Success");
 				try {
 					FileUtil.delete(file.getAbsolutePath());
 				} catch (IOException e) {
@@ -56,11 +56,8 @@ public class ImportProjectAction extends Action {
 		}
 
 		try {
-//			response.setContentType("text/html; charset=utf-8");
-//			response.getWriter().write(json.toJSONString());
-			StringBuilder result = new StringBuilder("{\"isSuccess\":false, \"message\":\"File error\"}");
 			response.setContentType("text/html; charset=utf-8");
-			response.getWriter().write(result.toString());
+			response.getWriter().write(json.toJSONString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();

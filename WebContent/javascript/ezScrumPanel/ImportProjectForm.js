@@ -51,28 +51,28 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 			this.getForm().submit({
 				url:this.url,
 				success: function(form, action) {
-					console.log('success function');
 			        obj.onSuccess(action.response);
 			    },
 			    failure:function(form, action){
-			    	console.log('failure function');
 			    	obj.onFailure(action.response);
 			    }
 			});
 		}
-
 	},
 	onSuccess:function(response) 
 	{
 		var result = Ext.decode(response.responseText);
-		console.log('onSuccess');
-        alert("Status: " + result.message);
+		console.log(result);
+		if(result.success) {
+			Ext.example.msg('Import Success', 'Import Project Success');
+		} else {
+			this.onFailure(onFailure);
+		}
 	},
 	onFailure:function(response) 
 	{
     	var result = Ext.decode(response.responseText);
-    	console.log('onFailure');
-        alert("Status: " + result.message);
+    	Ext.example.msg('Import Failure', result.message);
 	},
 	reset:function(){
 		this.getForm().reset();
