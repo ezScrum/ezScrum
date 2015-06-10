@@ -241,7 +241,7 @@
 		<action path="/AjaxCreateProject"					type="ntut.csie.ezScrum.web.action.SaveProjectAction" />
 		<action path="/AjaxGetServerInfoAction"				type="ntut.csie.ezScrum.web.action.AjaxGetServerInfoAction" />
 		<action path="/GetTaskBoardStagesAction"			type="ntut.csie.ezScrum.web.action.GetTaskBoardStagesAction" />
-		
+		<action path="/importProject" name="uploadForm" type="ntut.csie.ezScrum.web.importer.ImportProjectAction" />
 		<action path="/importStories" name="uploadForm"		type="ntut.csie.ezScrum.web.action.ImportStoriesAction">
 			<forward name="success" path="/showProductBacklog.do"/>
 			<forward name="error" path="error.show" />
