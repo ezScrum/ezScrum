@@ -13,9 +13,9 @@ import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
-	
+
 	private static SprintDAO sInstance = null;
-	
+
 	public static SprintDAO getInstance() {
 		if (sInstance == null) {
 			sInstance = new SprintDAO();
@@ -24,9 +24,9 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	}
 
 	@Override
-    public long create(SprintObject sprint) {
+	public long create(SprintObject sprint) {
 		long currentTime = System.currentTimeMillis();
-		
+
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(sprint.getProjectId());
 
@@ -51,7 +51,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 			valueSet.addInsertValue(SprintEnum.CREATE_TIME, currentTime);
 			valueSet.addInsertValue(SprintEnum.UPDATE_TIME, currentTime);
 		}
-		
+
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
@@ -59,14 +59,14 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		serialNumber.save();
 
 		return id;
-    }
+	}
 
 	@Override
 	public SprintObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SprintEnum.ID, id);
-		
+
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 
@@ -84,7 +84,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	}
 
 	@Override
-    public boolean update(SprintObject sprint) {
+	public boolean update(SprintObject sprint) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
@@ -101,17 +101,30 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		String query = valueSet.getUpdateQuery();
 
 		return mControl.executeUpdate(query);
-    }
+	}
+
+	/**
+	 * Update SerialId for SprintObject
+	 */
+	public boolean updateSerialId(long sprintId, long newSerialNumber) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SprintEnum.TABLE_NAME);
+		valueSet.addInsertValue(SprintEnum.SERIAL_ID, newSerialNumber);
+		valueSet.addEqualCondition(SprintEnum.ID, sprintId);
+		String query = valueSet.getUpdateQuery();
+
+		return mControl.executeUpdate(query);
+	}
 
 	@Override
-    public boolean delete(long id) {
+	public boolean delete(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SprintEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
-    }
-	
+	}
+
 	public ArrayList<SprintObject> getSprintsByProjectId(long projectId) {
 		ArrayList<SprintObject> sprints = new ArrayList<SprintObject>();
 
@@ -133,7 +146,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		}
 		return sprints;
 	}
-	
+
 	public static SprintObject convert(ResultSet result) throws SQLException {
 		SprintObject sprint = new SprintObject(result.getLong(SprintEnum.ID),
 		        result.getLong(SprintEnum.SERIAL_ID),
