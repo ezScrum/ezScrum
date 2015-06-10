@@ -222,8 +222,9 @@ public class ProjectObject implements IBaseObject {
     }
 	
 	private boolean exists() {
-		ProjectObject project = ProjectDAO.getInstance().get(mId);
-		return project != null;
+		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
+		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
+		return projectById != null || projectByName != null;
 	}
 	
 	private void resetData(ProjectObject project) {

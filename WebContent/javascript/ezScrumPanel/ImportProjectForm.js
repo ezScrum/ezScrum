@@ -1,81 +1,82 @@
-ImportProjectFormLayout = Ext.extend(Ext.form.FormPanel, {
-	id 				: 'ImportProject_Form',
-	border			: false,
-	frame			: true,
-	title			: 'Import Project',
-	bodyStyle		: 'padding:0px',
-	labelAlign		: 'right',
-	labelWidth		: 150,
-	buttonAlign		: 'left',
-	monitorValid	: true,
-	initComponent	: function() {
+Ext.ns('ezScrum');
+Ext.ns('ezScrum.window');
+
+ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
+	id: 'ImportProject_Form',
+	bodyStyle: 'padding:15px',
+	border : false,
+	defaultType: 'textfield',
+	labelAlign : 'right',
+	labelWidth : 100,
+	defaults: {
+        width: 500,
+        msgTarget: 'side'
+    },
+    monitorValid:true,
+	initComponent:function() {
 		var config = {
-			url			: 'importProject.do',
-			items		: [{
-				xtype:'fileuploadfield',
-				emptyText: 'Select a file',
-	            fieldLabel: 'Update File',
-	            name: 'file',
-	            vtype: 'checkUploadFileName',
-	            allowBlank: false
+			url : 'importProject.do',
+			fileUpload : true,
+			items: [{
+					xtype:'fileuploadfield',
+					emptyText: 'Select a file',
+		            fieldLabel: 'Update File',
+		            name: 'file',
+		            vtype: 'checkUploadFileName',
+		            allowBlank: false
 			}],
-	        buttons : [{
-	        	formBind : true,
-	        	scope    : this,
-	        	text     : 'Import',
-	        	disabled : true,
-	        	handler  : this.doImport
-	        }]
-		}
-		
+		    buttons: 
+		    [{
+		    	formBind:true,
+		    	id: 'SubmitBtn',
+	    		text: 'Import',
+	    		scope:this,
+	    		handler: this.import,
+	    		disabled:true
+	    	}]
+        }
+        
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
-		ImportProjectFormLayout.superclass.initComponent.apply(this, arguments);
+		
+		ezScrum.ImportProjectForm.superclass.initComponent.apply(this, arguments);
 	},
-	showMask : function(msg) {
-		this.loadmask = new Ext.LoadMask(this.getEl(), {msg: msg});
-		this.loadmask.show();
+	onRender:function() {
+		ezScrum.ImportProjectForm.superclass.onRender.apply(this, arguments);
+		this.getForm().waitMsgTarget = this.getEl();
 	},
-	closeMask : function() {
-		this.loadmask.hide();
-	},
-    doImport: function() {
-		var obj = this;
-		var form = this.getForm();
-		if(form.isValid()) {
-			console.log('form.isValid()');
-			console.log(form);
-			form.submit({
+	import: function()
+	{
+		if(this.getForm().isValid()) {
+			var obj = this;
+			this.getForm().submit({
 				url:this.url,
 				success: function(form, action) {
-//			       obj.onSuccess(action);
-			       console.log('success');
+					console.log('success function');
+			        obj.onSuccess(action.response);
 			    },
-			    failure:function(form, action) {
-			    	console.log('failure');
+			    failure:function(form, action){
+			    	console.log('failure function');
+			    	obj.onFailure(action.response);
 			    }
 			});
 		}
+
 	},
-//	doImport: function() {
-//		var obj = this;
-//		Ext.Ajax.request({
-//			url: obj.url,
-//			success: function(response) {
-//				console.log('success');
-//				var result = Ext.decode(response.responseText);
-//				if (result.isDatabaseVersionValid) {
-//					obj.exportProjects();
-//				} else {
-//					
-//				}
-//			},
-//			failure: function(response) {
-//				console.log('failure');
-//				obj.closeMask();
-//				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-//			}
-//		});
-//	},
+	onSuccess:function(response) 
+	{
+		var result = Ext.decode(response.responseText);
+		console.log('onSuccess');
+        alert("Status: " + result.message);
+	},
+	onFailure:function(response) 
+	{
+    	var result = Ext.decode(response.responseText);
+    	console.log('onFailure');
+        alert("Status: " + result.message);
+	},
+	reset:function(){
+		this.getForm().reset();
+	}
 });
 
-Ext.reg('ImportProjectForm', ImportProjectFormLayout);
+Ext.reg('ImportProjectForm', ezScrum.ImportProjectForm);

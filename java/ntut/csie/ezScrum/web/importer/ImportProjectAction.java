@@ -37,10 +37,7 @@ public class ImportProjectAction extends Action {
 		try {
 			file = convertToFile(formFile);
 			EzScrumImporter ezScrumImporter = new EzScrumImporter(file);
-			ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getAllProjects();
 			ezScrumImporter.doImport();
-			projects = ProjectDAO.getInstance().getAllProjects();
-			String fileName = file.getName();
 			int file_size = (int) file.length();
 			if (file_size < 0) {
 				json.put("isSuccess", false);
@@ -59,8 +56,11 @@ public class ImportProjectAction extends Action {
 		}
 
 		try {
-			response.setContentType("text/json; charset=utf-8");
-			response.getWriter().write(json.toJSONString());
+//			response.setContentType("text/html; charset=utf-8");
+//			response.getWriter().write(json.toJSONString());
+			StringBuilder result = new StringBuilder("{\"isSuccess\":false, \"message\":\"File error\"}");
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().write(result.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();
