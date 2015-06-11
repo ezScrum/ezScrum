@@ -36,12 +36,12 @@ public class ImportProjectAction extends Action {
 				json.put("message", "File is empty !!!");
 			} else {
 				EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(file);
+				json.put("success", ezScrumFileChecker.isValid());
+				json.put("message", ezScrumFileChecker.getReport());
 				if (ezScrumFileChecker.isValid()) {
 					EzScrumImporter ezScrumImporter = new EzScrumImporter(file);
 					ezScrumImporter.doImport();
 				}
-				json.put("success", ezScrumFileChecker.isValid());
-				json.put("message", ezScrumFileChecker.getReport());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

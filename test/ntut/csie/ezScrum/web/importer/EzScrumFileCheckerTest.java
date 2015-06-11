@@ -1,5 +1,9 @@
 package ntut.csie.ezScrum.web.importer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,13 +11,13 @@ import java.io.IOException;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class EzScrumFileCheckerTest {
 	private static String FILE_VALID = "test/ntut/csie/ezScrum/web/importer/ezScrum_backup_valid.json";
@@ -177,7 +181,7 @@ public class EzScrumFileCheckerTest {
 	public void testGetReport_valid() {
 		EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(
 				new File(FILE_VALID));
-		assertEquals(EzScrumFileChecker.MSG_IMPORT_SUCCESS, ezScrumFileChecker.getReport());
+		assertEquals("Import Project1, Project2 successfully !!!", ezScrumFileChecker.getReport());
 	}
 
 	@Test
@@ -238,5 +242,27 @@ public class EzScrumFileCheckerTest {
 		EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(
 				new File(FILE_INVALID_FILE_FORMAT));
 		assertEquals(EzScrumFileChecker.MSG_INVALID_FORMAT, ezScrumFileChecker.getReport());
+	}
+	
+	@Test
+	public void testIsValid_invalidProjectsExisting() {
+		ProjectObject project1 = new ProjectObject("Project1");
+		ProjectObject project2 = new ProjectObject("Project2");
+		project1.save();
+		project2.save();
+		EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(
+				new File(FILE_VALID));
+		assertFalse(ezScrumFileChecker.isValid());
+	}
+	
+	@Test
+	public void testGetReport_invalidProjectsExisting() throws IOException {
+		ProjectObject project1 = new ProjectObject("Project1");
+		ProjectObject project2 = new ProjectObject("Project2");
+		project1.save();
+		project2.save();
+		EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(
+				new File(FILE_VALID));
+		assertEquals("Existing projects: Project1, Project2", ezScrumFileChecker.getReport());
 	}
 }

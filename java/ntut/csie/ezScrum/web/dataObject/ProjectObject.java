@@ -22,13 +22,14 @@ import org.codehaus.jettison.json.JSONObject;
  * 
  */
 public class ProjectObject implements IBaseObject {
+	private final static long DEFAULT_ATTACH_FILE_SIZE = 2L;
 	private final static int DEFAULT_VALUE = -1;
 	private long mId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mDisplayName = "";
 	private String mComment = "";
 	private String mManager = "";
-	private long mAttachFileSize = DEFAULT_VALUE;
+	private long mAttachFileSize = DEFAULT_ATTACH_FILE_SIZE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
 	

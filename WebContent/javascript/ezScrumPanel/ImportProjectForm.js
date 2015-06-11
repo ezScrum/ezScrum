@@ -99,7 +99,7 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 	{
 		var result = Ext.decode(response.responseText);
 		if(result.success) {
-			Ext.example.msg('Import Success', 'Import Project Success');
+			Ext.Msg.alert('Import Success', result.message);
 		} else {
 			this.onFailure(onFailure);
 		}

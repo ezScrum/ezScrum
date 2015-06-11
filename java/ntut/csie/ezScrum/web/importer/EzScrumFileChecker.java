@@ -5,13 +5,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 public class EzScrumFileChecker {
 	public static String EXTENSION = ".json";
-	public static String MSG_IMPORT_SUCCESS = "Import success";
 	public static String MSG_INVALID_EXTENSION = "File extension invalid !!!";
 	public static String MSG_INVALID_FORMAT = "File format invalid !!!";
 	public static String KEY_CREATE_TIME = "createTime";
@@ -25,6 +27,8 @@ public class EzScrumFileChecker {
 	private ArrayList<String> mInvalidKeys = new ArrayList<>();
 	private ArrayList<String> mOriginKeys = new ArrayList<>();
 	private ArrayList<String> mInvalidValueType = new ArrayList<>();
+	private ArrayList<String> mInvalidProjectNames = new ArrayList<>();
+	private ArrayList<String> mProjectNames = new ArrayList<>();
 	
 	public EzScrumFileChecker(File file) {
 		mEzScrumFile = file;
@@ -46,11 +50,14 @@ public class EzScrumFileChecker {
 		if (isValid) {
 			isValid &= isValueTypeValid();
 		}
+		if (isValid) {
+			isValid &= !isProjectsExisting();
+		}
 		return isValid;
 	}
 	
 	public String getReport() {
-		String report = MSG_IMPORT_SUCCESS;
+		String report = "";
 		if (!isExtensionValid()) {
 			report = MSG_INVALID_EXTENSION;
 		} else if (!isJsonFormatValid()) {
@@ -59,11 +66,47 @@ public class EzScrumFileChecker {
 			report = getKeysetReport();
 		} else if (!isValueTypeValid()) {
 			report = getValueTypeReport();
+		} else if (isProjectsExisting()) {
+			report = getProjectsExistingReport();
+		} else {
+			report = getImportSuccessReport();
 		}
 		return report;
 	}
 	
-	public String getKeysetReport() {
+	private String getImportSuccessReport() {
+		String report = "Import ";
+		if (!mProjectNames.isEmpty()) {
+			for (int i = 0; i < mProjectNames.size(); i++) {
+				String key = mProjectNames.get(i);
+				if (i == mProjectNames.size() - 1) {
+					report += key;
+				} else {
+					report += key + ", ";
+				}
+			}
+		}
+		report += " successfully !!!";
+		return report;
+	}
+	
+	private String getProjectsExistingReport() {
+		String report = "";
+		if (!mInvalidProjectNames.isEmpty()) {
+			report += "Existing projects: ";
+			for (int i = 0; i < mInvalidProjectNames.size(); i++) {
+				String key = mInvalidProjectNames.get(i);
+				if (i == mInvalidProjectNames.size() - 1) {
+					report += key;
+				} else {
+					report += key + ", ";
+				}
+			}
+		}
+		return report;
+	}
+	
+	private String getKeysetReport() {
 		String report = "";
 		if (!mMissingKeys.isEmpty()) {
 			report += "Missing key: ";
@@ -93,7 +136,7 @@ public class EzScrumFileChecker {
 		return report;
 	}
 	
-	public String getValueTypeReport() {
+	private String getValueTypeReport() {
 		String report = "";
 		if (!mInvalidValueType.isEmpty()) {
 			report += "Invalid type of key: ";
@@ -239,5 +282,52 @@ public class EzScrumFileChecker {
 			isProjectJsonValid = false;
 		}
 		return isProjectJsonValid;
+	}
+	
+	private boolean isProjectsExisting() {
+		String KEY_OF_PROJECTS = "projects";
+		boolean isProjectsExisting = false;
+		JSONParser parser = new JSONParser();
+		FileReader fileReader = null;
+		try {
+        	fileReader = new FileReader(mEzScrumFile);
+            JSONObject wholeJson = (JSONObject) parser.parse(fileReader);
+            fileReader.close();
+            JSONArray projectJsonArray = (JSONArray) wholeJson.get(KEY_OF_PROJECTS);
+            // clear invalid value type keys
+            mInvalidValueType.clear();
+        	ArrayList<ProjectObject> existingProjects = ProjectDAO.getInstance().getAllProjects();
+        	ArrayList<ProjectObject> projects = JsonParser.parseProjects(projectJsonArray);
+        	ArrayList<String> existingProjectNames = getProjectNames(existingProjects);
+        	ArrayList<String> projectNames = getProjectNames(projects);
+        	// clear project names
+        	mProjectNames.clear();
+        	// clear invalid project names
+        	mInvalidProjectNames.clear();
+        	mProjectNames.addAll(projectNames);
+        	for (String projectName : projectNames) {
+        		if (existingProjectNames.contains(projectName)) {
+        			mInvalidProjectNames.add(projectName);
+        			isProjectsExisting = true;
+        		}
+        	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+    		try {
+				fileReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+		return isProjectsExisting;
+	}
+	
+	private ArrayList<String> getProjectNames(ArrayList<ProjectObject> projects) {
+		ArrayList<String> projectNames = new ArrayList<>();
+		for (ProjectObject project : projects) {
+			projectNames.add(project.getName());
+		}
+		return projectNames;
 	}
 }
