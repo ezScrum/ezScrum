@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.importer;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -21,9 +22,11 @@ public class EzScrumImporter {
 	public boolean doImport() {
 		boolean isSuccess = false;
 		JSONParser parser = new JSONParser();
+		FileReader fileReader = null;
         try {
-        	String filePath = mEzScrumFile.getAbsolutePath();
-            JSONObject wholeJson = (JSONObject) parser.parse(new FileReader(filePath));;
+        	fileReader = new FileReader(mEzScrumFile);
+            JSONObject wholeJson = (JSONObject) parser.parse(fileReader);
+            fileReader.close();
             JSONArray projectJsonArray = (JSONArray) wholeJson.get(KEY_OF_PROJECTS);
             ArrayList<ProjectObject> projects = JsonParser.parseProjects(projectJsonArray);
             for (ProjectObject project : projects) {
@@ -32,6 +35,12 @@ public class EzScrumImporter {
             isSuccess = true;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+    		try {
+				fileReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
 		return isSuccess;
 	}

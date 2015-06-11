@@ -6,15 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
-import ntut.csie.jcis.core.util.FileUtil;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -31,7 +27,7 @@ public class ImportProjectAction extends Action {
 		UploadForm fileForm = (UploadForm) form;
 
 		FormFile formFile = fileForm.getFile();
-		File file;
+		File file = null;
 		try {
 			file = convertToFile(formFile);
 			EzScrumImporter ezScrumImporter = new EzScrumImporter(file);
@@ -43,18 +39,16 @@ public class ImportProjectAction extends Action {
 			} else {
 				json.put("success", true);
 				json.put("message", "Success");
-				try {
-					FileUtil.delete(file.getAbsolutePath());
-				} catch (IOException e) {
-					System.out.println(e);
-				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 			e.printStackTrace();
+		} finally {
+			if (file != null & file.exists()) {
+				file.delete();
+			}
 		}
-
 		try {
 			response.setContentType("text/html; charset=utf-8");
 			response.getWriter().write(json.toJSONString());
@@ -62,7 +56,6 @@ public class ImportProjectAction extends Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -80,7 +73,7 @@ public class ImportProjectAction extends Action {
 		while ((count = is.read(buffer)) > -1) {
 			os.write(buffer, 0, count);
 		}
-
+		os.flush();
 		os.close();
 		is.close();
 		return file;
