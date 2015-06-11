@@ -76,7 +76,7 @@ public class EzScrumFileChecker {
 				}
 			}
 			if (!mInvalidKeys.isEmpty()) {
-				report += "</br>";
+				report += ";";
 			}
 		}
 		if (!mInvalidKeys.isEmpty()) {
@@ -95,16 +95,15 @@ public class EzScrumFileChecker {
 	
 	public String getValueTypeReport() {
 		String report = "";
-		if (mInvalidValueType.isEmpty()) {
-			return report;
-		}
-		report += "Invalid type of key: ";
-		for (int i = 0; i < mInvalidValueType.size(); i++) {
-			String key = mInvalidValueType.get(i);
-			if (i == mInvalidValueType.size() - 1) {
-				report += key;
-			} else {
-				report += key + ", ";
+		if (!mInvalidValueType.isEmpty()) {
+			report += "Invalid type of key: ";
+			for (int i = 0; i < mInvalidValueType.size(); i++) {
+				String key = mInvalidValueType.get(i);
+				if (i == mInvalidValueType.size() - 1) {
+					report += key;
+				} else {
+					report += key + ", ";
+				}
 			}
 		}
 		return report;
@@ -148,10 +147,15 @@ public class EzScrumFileChecker {
             JSONObject wholeJson = (JSONObject) parser.parse(fileReader);
             fileReader.close();
             JSONArray projectJsonArray = (JSONArray) wholeJson.get(KEY_OF_PROJECTS);
+            // clear missing keys
+        	mMissingKeys.clear();
+        	// clear invalid keys
+        	mInvalidKeys.clear();
             for (int i = 0; i < projectJsonArray.size(); i++) {
             	JSONObject projectJson = (JSONObject) projectJsonArray.get(i);
             	ArrayList<String> keys = new ArrayList<>(projectJson.keySet());
             	isKeysetValid &= keys.size() == keysetSize;
+            	
             	// check is any missing key
             	for (String key : mOriginKeys) {
             		if (!keys.contains(key) && !mMissingKeys.contains(key)) {
@@ -159,6 +163,7 @@ public class EzScrumFileChecker {
             			isKeysetValid = false;
             		}
             	}
+            	
             	// check is any invalid key
             	for (String key : keys) {
             		if (!mOriginKeys.contains(key) && !mInvalidKeys.contains(key)) {
@@ -189,6 +194,8 @@ public class EzScrumFileChecker {
             JSONObject wholeJson = (JSONObject) parser.parse(fileReader);
             fileReader.close();
             JSONArray projectJsonArray = (JSONArray) wholeJson.get(KEY_OF_PROJECTS);
+            // clear invalid value type keys
+            mInvalidValueType.clear();
             for (int i = 0; i < projectJsonArray.size(); i++) {
             	JSONObject projectJson = (JSONObject) projectJsonArray.get(i);
             	isValueTypeValid &= isProjectJsonValueValid(projectJson);
@@ -207,27 +214,27 @@ public class EzScrumFileChecker {
 	
 	private boolean isProjectJsonValueValid(JSONObject projectJson) {
 		boolean isProjectJsonValid = true;
-		if (!(projectJson.get(KEY_CREATE_TIME) instanceof Long)) {
+		if (!(projectJson.get(KEY_CREATE_TIME) instanceof Long) && !mInvalidValueType.contains(KEY_CREATE_TIME)) {
 			mInvalidValueType.add(KEY_CREATE_TIME);
 			isProjectJsonValid = false;
 		}
-		if (!(projectJson.get(KEY_ATTACH_MAX_SIZE) instanceof Long)) {
+		if (!(projectJson.get(KEY_ATTACH_MAX_SIZE) instanceof Long) && !mInvalidValueType.contains(KEY_ATTACH_MAX_SIZE)) {
 			mInvalidValueType.add(KEY_ATTACH_MAX_SIZE);
 			isProjectJsonValid = false;
 		}
-		if (!(projectJson.get(KEY_PRODUCT_OWNER) instanceof String)) {
+		if (!(projectJson.get(KEY_PRODUCT_OWNER) instanceof String) && !mInvalidValueType.contains(KEY_PRODUCT_OWNER)) {
 			mInvalidValueType.add(KEY_PRODUCT_OWNER);
 			isProjectJsonValid = false;
 		}
-		if (!(projectJson.get(KEY_NAME) instanceof String)) {
+		if (!(projectJson.get(KEY_NAME) instanceof String) && !mInvalidValueType.contains(KEY_NAME)) {
 			mInvalidValueType.add(KEY_NAME);
 			isProjectJsonValid = false;
 		}
-		if (!(projectJson.get(KEY_COMMENT) instanceof String)) {
+		if (!(projectJson.get(KEY_COMMENT) instanceof String) && !mInvalidValueType.contains(KEY_COMMENT)) {
 			mInvalidValueType.add(KEY_COMMENT);
 			isProjectJsonValid = false;
 		}
-		if (!(projectJson.get(KEY_DISPLAY_NAME) instanceof String)) {
+		if (!(projectJson.get(KEY_DISPLAY_NAME) instanceof String) && !mInvalidValueType.contains(KEY_DISPLAY_NAME)) {
 			mInvalidValueType.add(KEY_DISPLAY_NAME);
 			isProjectJsonValid = false;
 		}

@@ -110,7 +110,7 @@ public class EzScrumFileCheckerTest {
 			file2.write(wholeJson2.toJSONString());
 			file3.write(wholeJson3.toJSONString());
 			file4.write("hi");
-			file5.write("");
+			file5.write(wholeJson1.toJSONString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -192,7 +192,7 @@ public class EzScrumFileCheckerTest {
 		EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(
 				new File(FILE_INVALID_KEY));
 		assertEquals(
-				"Missing key: createTime, attachMaxSize, productOwner, name, comment, displayName</br>Invalid key: invalidKey3, invalidKey1, invalidKey2",
+				"Missing key: createTime, attachMaxSize, productOwner, name, comment, displayName;Invalid key: invalidKey3, invalidKey1, invalidKey2",
 				ezScrumFileChecker.getReport());
 	}
 

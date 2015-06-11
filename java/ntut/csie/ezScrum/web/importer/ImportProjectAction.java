@@ -30,15 +30,18 @@ public class ImportProjectAction extends Action {
 		File file = null;
 		try {
 			file = convertToFile(formFile);
-			EzScrumImporter ezScrumImporter = new EzScrumImporter(file);
-			ezScrumImporter.doImport();
 			int file_size = (int) file.length();
-			if (file_size < 0) {
+			if (file_size <= 0) {
 				json.put("success", false);
-				json.put("message", "File error");
+				json.put("message", "File is empty !!!");
 			} else {
-				json.put("success", true);
-				json.put("message", "Success");
+				EzScrumFileChecker ezScrumFileChecker = new EzScrumFileChecker(file);
+				if (ezScrumFileChecker.isValid()) {
+					EzScrumImporter ezScrumImporter = new EzScrumImporter(file);
+					ezScrumImporter.doImport();
+				}
+				json.put("success", ezScrumFileChecker.isValid());
+				json.put("message", ezScrumFileChecker.getReport());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

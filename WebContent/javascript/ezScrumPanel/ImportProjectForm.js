@@ -15,6 +15,7 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
     monitorValid:true,
 	initComponent:function() {
 		var config = {
+			verify_import_url: 'verifyImportProject.do',
 			url : 'importProject.do',
 			fileUpload : true,
 			items: [{
@@ -31,7 +32,7 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 		    	id: 'SubmitBtn',
 	    		text: 'Import',
 	    		scope:this,
-	    		handler: this.import,
+	    		handler: this.verify,
 	    		disabled:true
 	    	}]
         }
@@ -43,6 +44,41 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 	onRender:function() {
 		ezScrum.ImportProjectForm.superclass.onRender.apply(this, arguments);
 		this.getForm().waitMsgTarget = this.getEl();
+	},
+	verify: function()
+	{
+		var obj = this;
+		Ext.Ajax.request({
+			url: obj.verify_import_url,
+			success: function(response) {
+				var result = Ext.decode(response.responseText);
+				if (result.isDatabaseVersionValid) {
+					obj.import();
+				} else {
+					Ext.Msg.show({
+						   title:'View Report?',
+						   msg: 'Import project fail due to database version, do you want to view report?',
+						   buttons: Ext.Msg.YESNO,
+						   fn: function(button) {
+							   if (button == 'yes') {
+								   Ext.Msg.show({
+									   title:'Database Version Error',
+									   msg: result.report,
+									   buttons: Ext.Msg.OK,
+									   animEl: 'elId',
+									   icon: Ext.MessageBox.ERROR
+									});
+							   } 
+						   },
+						   animEl: 'elId',
+						   icon: Ext.MessageBox.QUESTION
+						});
+				}
+			},
+			failure: function(response) {
+				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
+			}
+		});
 	},
 	import: function()
 	{
@@ -62,7 +98,6 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 	onSuccess:function(response) 
 	{
 		var result = Ext.decode(response.responseText);
-		console.log(result);
 		if(result.success) {
 			Ext.example.msg('Import Success', 'Import Project Success');
 		} else {
@@ -72,7 +107,14 @@ ezScrum.ImportProjectForm = Ext.extend(Ext.form.FormPanel, {
 	onFailure:function(response) 
 	{
     	var result = Ext.decode(response.responseText);
-    	Ext.example.msg('Import Failure', result.message);
+    	var newMessage = result.message.replace(";", "</br>");
+    	Ext.Msg.show({
+			   title:'Import Failure',
+			   msg: newMessage,
+			   buttons: Ext.Msg.OK,
+			   animEl: 'elId',
+			   icon: Ext.MessageBox.ERROR
+			});
 	},
 	reset:function(){
 		this.getForm().reset();
