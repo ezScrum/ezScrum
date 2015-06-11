@@ -40,7 +40,12 @@ public class EzScrumFileChecker {
 		boolean isValid = true;
 		isValid &= isExtensionValid();
 		isValid &= isJsonFormatValid();
-		isValid &= isKeysetValid();
+		if (isValid) {
+			isValid &= isKeysetValid();
+		}
+		if (isValid) {
+			isValid &= isValueTypeValid();
+		}
 		return isValid;
 	}
 	
@@ -52,6 +57,8 @@ public class EzScrumFileChecker {
 			report = MSG_INVALID_FORMAT;
 		} else if (!isKeysetValid()) {
 			report = getKeysetReport();
+		} else if (!isValueTypeValid()) {
+			report = getValueTypeReport();
 		}
 		return report;
 	}
@@ -86,6 +93,23 @@ public class EzScrumFileChecker {
 		return report;
 	}
 	
+	public String getValueTypeReport() {
+		String report = "";
+		if (mInvalidValueType.isEmpty()) {
+			return report;
+		}
+		report += "Invalid type of key: ";
+		for (int i = 0; i < mInvalidValueType.size(); i++) {
+			String key = mInvalidValueType.get(i);
+			if (i == mInvalidValueType.size() - 1) {
+				report += key;
+			} else {
+				report += key + ", ";
+			}
+		}
+		return report;
+	}
+	
 	private boolean isExtensionValid() {
 		String extension = getFileExtension();
 		return extension.equals(EXTENSION);
@@ -109,7 +133,6 @@ public class EzScrumFileChecker {
 			        mEzScrumFile));
 		} catch (Exception e) {
 			isJsonFormat = false;
-			e.printStackTrace();
 		} 
 		return isJsonFormat;
 	}
@@ -184,28 +207,28 @@ public class EzScrumFileChecker {
 	
 	private boolean isProjectJsonValueValid(JSONObject projectJson) {
 		boolean isProjectJsonValid = true;
-		if ((projectJson.get(KEY_ATTACH_MAX_SIZE) instanceof Long)) {
-			mInvalidValueType.add(KEY_ATTACH_MAX_SIZE);
-			isProjectJsonValid = false;
-		}
-		if ((projectJson.get(KEY_COMMENT) instanceof String)) {
-			mInvalidValueType.add(KEY_COMMENT);
-			isProjectJsonValid = false;
-		}
-		if ((projectJson.get(KEY_CREATE_TIME) instanceof Long)) {
+		if (!(projectJson.get(KEY_CREATE_TIME) instanceof Long)) {
 			mInvalidValueType.add(KEY_CREATE_TIME);
 			isProjectJsonValid = false;
 		}
-		if ((projectJson.get(KEY_DISPLAY_NAME) instanceof String)) {
-			mInvalidValueType.add(KEY_DISPLAY_NAME);
+		if (!(projectJson.get(KEY_ATTACH_MAX_SIZE) instanceof Long)) {
+			mInvalidValueType.add(KEY_ATTACH_MAX_SIZE);
 			isProjectJsonValid = false;
 		}
-		if ((projectJson.get(KEY_NAME) instanceof String)) {
+		if (!(projectJson.get(KEY_PRODUCT_OWNER) instanceof String)) {
+			mInvalidValueType.add(KEY_PRODUCT_OWNER);
+			isProjectJsonValid = false;
+		}
+		if (!(projectJson.get(KEY_NAME) instanceof String)) {
 			mInvalidValueType.add(KEY_NAME);
 			isProjectJsonValid = false;
 		}
-		if ((projectJson.get(KEY_PRODUCT_OWNER) instanceof String)) {
-			mInvalidValueType.add(KEY_PRODUCT_OWNER);
+		if (!(projectJson.get(KEY_COMMENT) instanceof String)) {
+			mInvalidValueType.add(KEY_COMMENT);
+			isProjectJsonValid = false;
+		}
+		if (!(projectJson.get(KEY_DISPLAY_NAME) instanceof String)) {
+			mInvalidValueType.add(KEY_DISPLAY_NAME);
 			isProjectJsonValid = false;
 		}
 		return isProjectJsonValid;
