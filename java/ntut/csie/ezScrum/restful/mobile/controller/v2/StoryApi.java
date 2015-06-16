@@ -5,8 +5,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONObject;
@@ -56,5 +58,24 @@ public class StoryApi extends BaseAuthApi {
 		ProductBacklogWebService service = new ProductBacklogWebService(getUser(), projectName);
 		service.deleteStory(resourceId);
 		return response(200, service.getRESTFulResponseString());
+	}
+
+	@Override
+	protected boolean permissionCheck(AccountObject user, UriInfo uriInfo) {
+		try {
+			MultivaluedMap<String, String> queries = uriInfo.getQueryParameters();
+			String projectName = queries.get("project_name").get(0);
+			ScrumRole scrumRole = user.getProjectRoleMap().get(projectName).getScrumRole();
+			boolean productBacklog = scrumRole.getAccessProductBacklog();
+			boolean sprintBacklog = scrumRole.getAccessSprintBacklog();
+			return productBacklog || sprintBacklog;			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	protected boolean ownerCheck(AccountObject user, UriInfo uriInfo) {
+		return true;
 	}
 }

@@ -22,7 +22,7 @@ public abstract class BaseAuthApi {
 
 	private final static int METHOD_GET = 0, METHOD_GET_LIST = 1,
 			METHOD_POST = 2, METHOD_PUT = 3, METHOD_DELETE = 4;
-	private final static boolean IGNORE = true;
+	private final static boolean IGNORE_VERIFY = true; // set true for testing easily
 
 	private AccountObject mUser;
 
@@ -97,26 +97,34 @@ public abstract class BaseAuthApi {
 	}
 
 	protected abstract Response get(long resourceId, UriInfo uriInfo) throws Exception;
-
 	protected abstract Response getList(UriInfo uriInfo) throws Exception;
-
 	protected abstract Response post(String entity) throws Exception;
-
 	protected abstract Response put(long resourceId, String entity)
 			throws Exception;
-
 	protected abstract Response delete(long resourceId, UriInfo uriInfo) throws Exception;
+	protected abstract boolean permissionCheck(AccountObject user, UriInfo uriInfo);
+	protected abstract boolean ownerCheck(AccountObject user, UriInfo uriInfo);
 
 	private Response doMethod(int method, Long resourceId, long userId,
 			String publicToken, String disposableToken, long timestamp,
 			String entity, UriInfo uriInfo) {
+
 		try {
-			Response response = response(404, new JSONObject().put("msg", "YO")
-					.toString());
-			if (IGNORE
+			Response response = response(404, "{\"msg\":\"Not Found\"}");
+			
+			if (IGNORE_VERIFY
 					|| TokenValidator.verify(userId, publicToken,
 							disposableToken, timestamp)) {
 				mUser = AccountObject.get(userId);
+				
+				if (!permissionCheck(mUser, uriInfo)) {
+					return response(401, "{\"msg\":\"Unauthorized\"}");
+				}
+				
+				if (!ownerCheck(mUser, uriInfo)) {
+					return response(403, "{\"msg\":\"Forbidden\"}");
+				}
+				
 				switch (method) {
 				case METHOD_GET:
 					response = get(resourceId, uriInfo);
@@ -135,8 +143,8 @@ public abstract class BaseAuthApi {
 					break;
 				}
 			} else {
-				response = response(401,
-						new JSONObject().put("msg", "Unauthorized").toString());
+				response = response(406,
+						new JSONObject().put("msg", "Not Acceptable").toString());
 			}
 			return response;
 		} catch (Exception e) {
