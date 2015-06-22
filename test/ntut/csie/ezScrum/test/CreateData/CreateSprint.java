@@ -77,7 +77,7 @@ public class CreateSprint {
 			for (int j = 0; j < mSprintCount; j++) {
 				ISprintPlanDesc desc = createDesc(j);
 				SprintPlanMapper spMapper = new SprintPlanMapper(project);
-				spMapper.addSprintPlan(desc);
+				spMapper.addSprint(desc);
 				mSprintsId.add((long) (j + 1));
 			}
 

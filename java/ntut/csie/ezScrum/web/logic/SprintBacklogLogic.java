@@ -138,7 +138,7 @@ public class SprintBacklogLogic {
 		int availableDays = 0;
 		if (backlog.getSprintId() > 0) {
 			ISprintPlanDesc sprint = (new SprintPlanMapper(mProject))
-					.getSprintPlan(Long.toString(backlog.getSprintId()));
+					.getSprint(Long.toString(backlog.getSprintId()));
 			availableDays = Integer.parseInt(sprint.getInterval()) * 5; // 一個禮拜五天
 		}
 		return availableDays;

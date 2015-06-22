@@ -219,6 +219,11 @@ public class SprintObject implements IBaseObject{
 		SprintDAO.getInstance().update(this);
 	}
 	
+	public void updateSerialId(long newSerialId) {
+		mSerialId = newSerialId;
+		SprintDAO.getInstance().updateSerialId(mId, newSerialId);
+	}
+	
 	private void resetData(SprintObject sprint) {
 		mId = sprint.getId();
 		mProjectId = sprint.getProjectId();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
@@ -171,6 +172,10 @@ public class ProjectObject implements IBaseObject {
 	public ArrayList<TaskObject> getTasksWithNoParent() {
 		return TaskDAO.getInstance().getTasksWithNoParent(mId);
 	}
+
+	public ArrayList<SprintObject> getSprints() {
+		return SprintDAO.getInstance().getSprintsByProjectId(mId);
+	}
 	
 	public ScrumRole getScrumRole(RoleEnum role) {
 		return ProjectDAO.getInstance().getScrumRole(mId, mName, role);
@@ -222,8 +227,9 @@ public class ProjectObject implements IBaseObject {
     }
 	
 	private boolean exists() {
-		ProjectObject project = ProjectDAO.getInstance().get(mId);
-		return project != null;
+		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
+		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
+		return projectById != null || projectByName != null;
 	}
 	
 	private void resetData(ProjectObject project) {

@@ -51,7 +51,7 @@ public class SprintPlanLogic {
 	//load the last plan, so perhaps the return is not the current plan.
 	public ISprintPlanDesc loadCurrentPlan(){
 		if (!String.valueOf(this.getCurrentSprintID()).equals("-1"))
-			return this.sprintPlanMapper.getSprintPlan(String.valueOf(this.getCurrentSprintID()));
+			return this.sprintPlanMapper.getSprint(String.valueOf(this.getCurrentSprintID()));
 		else {
 			List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById();
 			if (descs.size() == 0)

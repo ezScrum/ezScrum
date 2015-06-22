@@ -50,7 +50,7 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(ProjectObject project, long sprintId) {
 		mProject = project;
 		SprintPlanMapper mapper = new SprintPlanMapper(project);
-		mIterPlanDesc = mapper.getSprintPlan(Long.toString(sprintId));
+		mIterPlanDesc = mapper.getSprint(Long.toString(sprintId));
 		mSprintId = Integer.parseInt(mIterPlanDesc.getID());
 		if (mSprintId == -1) {
 			throw new RuntimeException("Sprint#-1 is not existed.");

@@ -63,7 +63,7 @@ public class SprintPlanHelper {
 			return null;
 		if (!String.valueOf(getCurrentSprintID()).equals("-1")) {
 			ISprintPlanDesc sprintPlanDesc = mSprintPlanMapper
-					.getSprintPlan(String.valueOf(getCurrentSprintID()));
+					.getSprint(String.valueOf(getCurrentSprintID()));
 			if (sprintPlanDesc.getDemoDate().equals(""))
 				return null;
 			else
@@ -102,7 +102,7 @@ public class SprintPlanHelper {
 		desc.setDemoDate(form.getDemoDate());
 		desc.setNotes(form.getNotes());
 		desc.setDemoPlace(form.getDemoPlace());
-		mSprintPlanMapper.updateSprintPlan(desc);
+		mSprintPlanMapper.updateSprint(desc);
 	}
 
 	public void saveIterationPlanForm(IterationPlanForm form) {
@@ -117,7 +117,7 @@ public class SprintPlanHelper {
 		desc.setDemoDate(form.getDemoDate());
 		desc.setNotes(form.getNotes());
 		desc.setDemoPlace(form.getDemoPlace());
-		mSprintPlanMapper.addSprintPlan(desc);
+		mSprintPlanMapper.addSprint(desc);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class SprintPlanHelper {
 	}
 
 	public ISprintPlanDesc loadPlan(String ID) {
-		return mSprintPlanMapper.getSprintPlan(ID);
+		return mSprintPlanMapper.getSprint(ID);
 	}
 
 	/*
@@ -267,11 +267,11 @@ public class SprintPlanHelper {
 	// move the specific sprint to other sprint
 	public void moveSprint(int oldID, int newID) {
 		// 移動iterPlan.xml的資訊
-		mSprintPlanMapper.moveSprintPlan(oldID, newID);
+		mSprintPlanMapper.moveSprint(oldID, newID);
 	}
 
 	public ISprintPlanDesc loadPlan(int iteration) {
-		return mSprintPlanMapper.getSprintPlan(Integer.toString(iteration));
+		return mSprintPlanMapper.getSprint(Integer.toString(iteration));
 	}
 
 	public void editSprintPlanForActualCost(String sprintID, String actualCost) {
@@ -281,16 +281,16 @@ public class SprintPlanHelper {
 	}
 
 	public void createSprint(SprintObject sprint) {
-		mSprintPlanMapper.addSprintPlan(ConvertSprint
+		mSprintPlanMapper.addSprint(ConvertSprint
 				.convertSprintObjectToDesc(sprint));
 	}
 
 	public void deleteSprint(String id) {
-		mSprintPlanMapper.deleteSprintPlan(id);
+		mSprintPlanMapper.deleteSprint(id);
 	}
 
 	public void updateSprint(SprintObject sprintObject) {
-		mSprintPlanMapper.updateSprintPlan(ConvertSprint
+		mSprintPlanMapper.updateSprint(ConvertSprint
 				.convertSprintObjectToDesc(sprintObject));
 	}
 
