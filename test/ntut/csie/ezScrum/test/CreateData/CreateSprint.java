@@ -5,31 +5,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
+import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class CreateSprint {
 	private int mSprintCount = 1;
 	private CreateProject mCP = null;
 	private ArrayList<Long> mSprintsId;
 
-	public String TEST_SPRINT_GOAL = "TEST_SPRINTGOAL_";		// Sprint Goal
-	public String TEST_SPRINT_NOTE = "TEST_SPRINTNOTE_";		// Sprint Notes
-	public final static String SPRINT_INTERVAL = "2";			// 2 weeks
-	public final static String SPRINT_MEMBER = "2";				// 2 members
-	public final static String SPRINT_AVAILABLE_DAY = "10";		// 10 days
-	public final static String SPRINT_FOCUS_FACTOR = "100";		// 100%
-	public final static String SPRINT_DEMOPLACE = "Lab 1321";	// daily scrum place
+	public String TEST_SPRINT_GOAL = "TEST_SPRINTGOAL_";		    // Sprint Goal
+	public String TEST_SPRINT_DAILY_INFO = "TEST_SPRINTDAILYINFO_";	// Sprint Notes
+	public final static int SPRINT_INTERVAL = 2;					// 2 weeks
+	public final static int SPRINT_MEMBER = 4;						// 2 members
+	public final static int SPRINT_HOURS_CAN_COMMIT = 120;			// 120 hours
+	public final static int SPRINT_FOCUS_FACTOR = 80;				// 80%
+	public final static String SPRINT_DEMOPLACE = "Lab1321";		// daily scrum place
 
 	public Date mToday = null;
 
 	// ========================== 為了可以設定 sprint 而新增下列屬性 ===========================
 	private boolean mAutoSetSprint = true;
 	private int mSprintIDIndex = 0;
-	private IProject mProject = null;
+	private ProjectObject mProject = null;
 
 	public CreateSprint(int count, CreateProject CP) {
 		mSprintCount = count;
@@ -39,7 +37,7 @@ public class CreateSprint {
 		mSprintsId = new ArrayList<Long>();
 	}
 
-	public CreateSprint(int sprintCount, int Index, Date today, IProject project) {
+	public CreateSprint(int sprintCount, int Index, Date today, ProjectObject project) {
 		mSprintCount = sprintCount;
 		mSprintsId = new ArrayList<Long>();
 
@@ -75,43 +73,35 @@ public class CreateSprint {
 			ProjectObject project = mCP.getAllProjects().get(i);	// get Project
 
 			for (int j = 0; j < mSprintCount; j++) {
-				ISprintPlanDesc desc = createDesc(j);
-				SprintPlanMapper spMapper = new SprintPlanMapper(project);
-				spMapper.addSprint(desc);
-				mSprintsId.add((long) (j + 1));
+				long id = (j + 1);
+				
+				SprintInfo sprintInfo = new SprintInfo();
+				sprintInfo.id = id;
+				sprintInfo.sprintGoal = TEST_SPRINT_GOAL + id;
+				sprintInfo.startDate = getDate(mToday, j * SPRINT_INTERVAL * 7 + j);
+				sprintInfo.interval = SPRINT_INTERVAL;
+				sprintInfo.members = SPRINT_MEMBER;
+				sprintInfo.focusFactor = SPRINT_FOCUS_FACTOR;
+				sprintInfo.demoDate = getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j);
+				sprintInfo.demoPlace = SPRINT_DEMOPLACE;
+				sprintInfo.dailyInfo = TEST_SPRINT_DAILY_INFO + id;
+				sprintInfo.hoursCanCommit = SPRINT_HOURS_CAN_COMMIT;
+				
+				SprintPlanMapper sprintPlanMapper = new SprintPlanMapper(project);
+				sprintPlanMapper.addSprint(sprintInfo);
+				mSprintsId.add(id);
 			}
-
 			System.out.println("  " + project.getName() + " create " + mSprintCount + " sprint success.");
 		}
 		System.out.println("Create " + mCP.getProjectList().size() + " Sprint(s) Finish!");
 	}
 
-	private ISprintPlanDesc createDesc(int index) {
-		ISprintPlanDesc desc = new SprintPlanDesc();
-
-		String ID = Integer.toString(index + 1);
-		desc.setID(ID);
-		desc.setGoal(TEST_SPRINT_GOAL + ID);
-		desc.setStartDate(getDate(mToday, index * Integer.parseInt(SPRINT_INTERVAL) * 7));
-		desc.setInterval(SPRINT_INTERVAL);
-		desc.setMemberNumber(SPRINT_MEMBER);
-		desc.setAvailableDays(SPRINT_AVAILABLE_DAY);
-		desc.setFocusFactor(SPRINT_FOCUS_FACTOR);
-		desc.setDemoDate(desc.getEndDate());
-		desc.setDemoPlace(SPRINT_DEMOPLACE);
-		desc.setNotes(TEST_SPRINT_NOTE + ID);
-
-		return desc;
-	}
-
 	private String getDate(Date date, int duration) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-		Calendar cal_start = Calendar.getInstance();
-		Calendar cal_end = Calendar.getInstance();
-		cal_start.setTime(date);		// 得到今天的日期
-		cal_end.setTime(date);			// 得到今天的日期
-		cal_end.add(Calendar.DAY_OF_YEAR, duration);
+		Calendar calendarEnd = Calendar.getInstance();
+		calendarEnd.setTime(date);
+		calendarEnd.add(Calendar.DAY_OF_YEAR, duration);
 
-		return format.format(cal_end.getTime());	// get start date
+		return format.format(calendarEnd.getTime());
 	}
 }

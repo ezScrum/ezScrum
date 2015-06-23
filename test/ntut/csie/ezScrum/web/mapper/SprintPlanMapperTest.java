@@ -3,12 +3,16 @@ package ntut.csie.ezScrum.web.mapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -23,14 +27,15 @@ import org.junit.Test;
 public class SprintPlanMapperTest {
 	private static Log mlog = LogFactory.getLog(SprintPlanMapperTest.class);
 	private CreateProject mCP;
+	private CreateSprint mCS;
 	private CreateProductBacklog mCPB;
 
 	private int mProjectCount = 1;
+	private int mSprintCount = 1;
 	private int mStoryCount = 2;
 
 	private SprintPlanMapper mSprintPlanMapper = null;
 	private Configuration mConfig = null;
-	private SprintObject mSprint = null;
 
 	@Before
 	public void setUp() {
@@ -45,6 +50,9 @@ public class SprintPlanMapperTest {
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
+		
+		mCS = new CreateSprint(mSprintCount, mCP);
+		mCS.exe();
 
 		// 新增 Story
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
@@ -53,9 +61,6 @@ public class SprintPlanMapperTest {
 		// 建立  SprintPlanMapper 物件
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mSprintPlanMapper = new SprintPlanMapper(project);
-
-		// 建立 Sprint
-		mSprint = createSprint();
 
 		// ============= release ==============
 		ini = null;
@@ -79,6 +84,7 @@ public class SprintPlanMapperTest {
 		// ============= release ==============
 		ini = null;
 		mCP = null;
+		mCS = null;
 		mCPB = null;
 		mSprintPlanMapper = null;
 		projectManager = null;
@@ -117,17 +123,28 @@ public class SprintPlanMapperTest {
 	@Test
 	public void testGetSprint() {
 		// get Sprint
-		SprintObject sprint = mSprintPlanMapper.getSprint(mSprint.getId());
+		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId().get(0));
 		// assert
 		assertEquals(2, sprint.getInterval());
 		assertEquals(4, sprint.getMembersNumber());
-		assertEquals(100, sprint.getHoursCanCommit());
+		assertEquals(120, sprint.getHoursCanCommit());
 		assertEquals(80, sprint.getFocusFactor());
-		assertEquals("TEST_SPRINT_GOAL", sprint.getSprintGoal());
-		assertEquals("2015/06/10", sprint.getStartDate());
-		assertEquals("2015/06/24", sprint.getDemoDate());
-		assertEquals("Lab1321", sprint.getDemoPlace());
-		assertEquals("11:10@Lab1321", sprint.getDailyInfo());
+		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getSprintGoal());
+		assertEquals(CreateSprint.SPRINT_DEMOPLACE, sprint.getDemoPlace());
+		assertEquals(mCS.TEST_SPRINT_DAILY_INFO + 1, sprint.getDailyInfo());
+		
+		// get startDate
+		Date currentDate = mCS.mToday;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+		Calendar calendarStart = Calendar.getInstance();
+		Calendar calendarEnd = Calendar.getInstance();
+		calendarStart.setTime(currentDate);
+		// get endDate
+		calendarEnd.add(Calendar.DAY_OF_YEAR, CreateSprint.SPRINT_INTERVAL * 7);
+		
+		// assert
+		assertEquals(format.format(calendarStart.getTime()), sprint.getStartDate());
+		assertEquals(format.format(calendarEnd.getTime()), sprint.getDemoDate());
 	}
 
 	@Test
@@ -146,7 +163,7 @@ public class SprintPlanMapperTest {
 	@Test
 	public void testUpdateSprint() {
 		SprintInfo sprintInfo = new SprintInfo();
-		sprintInfo.id = mSprint.getId();
+		sprintInfo.id = mCS.getSprintsId().get(0);
 		sprintInfo.interval = 2;
 		sprintInfo.members = 2;
 		sprintInfo.hoursCanCommit = 120;
@@ -159,26 +176,26 @@ public class SprintPlanMapperTest {
 
 		// call updateSprintPlan
 		mSprintPlanMapper.updateSprint(sprintInfo);
-		mSprint = SprintObject.get(mSprint.getId());
+		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));
 
 		// assert
-		assertEquals(sprintInfo.interval, mSprint.getInterval());
-		assertEquals(sprintInfo.members, mSprint.getMembersNumber());
-		assertEquals(sprintInfo.hoursCanCommit, mSprint.getHoursCanCommit());
-		assertEquals(sprintInfo.focusFactor, mSprint.getFocusFactor());
-		assertEquals(sprintInfo.sprintGoal, mSprint.getSprintGoal());
-		assertEquals(sprintInfo.startDate, mSprint.getStartDate());
-		assertEquals(sprintInfo.demoDate, mSprint.getDemoDate());
-		assertEquals(sprintInfo.demoPlace, mSprint.getDemoPlace());
-		assertEquals(sprintInfo.dailyInfo, mSprint.getDailyInfo());
+		assertEquals(sprintInfo.interval, sprint.getInterval());
+		assertEquals(sprintInfo.members, sprint.getMembersNumber());
+		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
+		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintInfo.startDate, sprint.getStartDate());
+		assertEquals(sprintInfo.demoDate, sprint.getDemoDate());
+		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
+		assertEquals(sprintInfo.dailyInfo, sprint.getDailyInfo());
 	}
 
 	@Test
 	public void testDeleteSprint() {
 		// Delete Sprint
-		mSprintPlanMapper.deleteSprint(mSprint.getId());
+		mSprintPlanMapper.deleteSprint(mCS.getSprintsId().get(0));
 		// Get Sprint
-		SprintObject sprint = SprintObject.get(mSprint.getId());
+		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));
 		// assert
 		assertNull(sprint);
 	}
@@ -197,18 +214,21 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
 		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		
+		// Get first default Sprint
+		SprintObject defaultSprint = SprintObject.get(mCS.getSprintsId().get(0));
 
 		// record serialId
-		long sprintSerialId1 = mSprint.getSerialId();
+		long sprintSerialId1 = defaultSprint.getSerialId();
 		long sprintSerialId2 = sprint.getSerialId();
 
 		// move sprint
-		mSprintPlanMapper.moveSprint(sprint.getId(), mSprint.getId());
-		mSprint.reload();
+		mSprintPlanMapper.moveSprint(sprint.getId(), defaultSprint.getId());
+		defaultSprint.reload();
 		sprint.reload();
 
 		// assert
-		assertEquals(sprintSerialId2, mSprint.getSerialId());
+		assertEquals(sprintSerialId2, defaultSprint.getSerialId());
 		assertEquals(sprintSerialId1, sprint.getSerialId());
 	}
 

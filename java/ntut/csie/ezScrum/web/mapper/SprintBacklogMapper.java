@@ -34,7 +34,7 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(ProjectObject project) {
 		mProject = project;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
-		mIterPlanDesc = sprintPlanLogic.loadCurrentPlan();
+		mIterPlanDesc = sprintPlanLogic.loadCurrentSprint();
 		if (mIterPlanDesc != null) {
 			mSprintId = Integer.parseInt(mIterPlanDesc.getID());
 		}

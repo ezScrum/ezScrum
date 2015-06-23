@@ -247,6 +247,14 @@ public class SprintObject implements IBaseObject{
 		return sprint != null;
 	}
 	
+	public boolean contains(Date date) {
+		if ((date.compareTo(mStartDate) >= 0)
+		        && (date.compareTo(mDemoDate) <= 0)) {
+			return true;
+		}
+		return false;
+	}
+
 	public String toString() {
 		try {
 			return toJSON().toString();
