@@ -43,22 +43,22 @@ public class SprintPlanHelper {
 	}
 
 	public List<ISprintPlanDesc> loadListPlans() {
-		return mSprintPlanLogic.getSprintPlanListAndSortByStartDate();
+		return mSprintPlanLogic.getSprintsSortedByStartDate();
 	}
 
 	public int getCurrentSprintID() {
-		return mSprintPlanLogic.getCurrentSprintID();
+		return mSprintPlanLogic.getCurrentSprint();
 	}
 
 	// load the last plan, so perhaps the return is not the current plan.
 	public ISprintPlanDesc loadCurrentPlan() {
-		return mSprintPlanLogic.loadCurrentPlan();
+		return mSprintPlanLogic.loadCurrentSprint();
 	}
 
 	// get next demoDate
 	public String getNextDemoDate() {
 		List<ISprintPlanDesc> descs = mSprintPlanLogic
-				.getSprintPlanListAndSortById();
+				.getSprintsSortedById();
 		if (descs.size() == 0)
 			return null;
 		if (!String.valueOf(getCurrentSprintID()).equals("-1")) {
@@ -161,7 +161,7 @@ public class SprintPlanHelper {
 
 	public int getLastSprintId() {
 		List<ISprintPlanDesc> descs = mSprintPlanLogic
-				.getSprintPlanListAndSortById();
+				.getSprintsSortedById();
 		if (descs.size() == 0)
 			return -1;
 		else
@@ -171,7 +171,7 @@ public class SprintPlanHelper {
 	public long getSprintIDbyDate(Date date) {
 		long sprintId = -1;
 		List<ISprintPlanDesc> sprints = mSprintPlanLogic
-				.getSprintPlanListAndSortByStartDate();
+				.getSprintsSortedByStartDate();
 
 		for (ISprintPlanDesc sp : sprints) {
 			// 此 sprint 的結束日期在 date 之後

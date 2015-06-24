@@ -1,117 +1,100 @@
 package ntut.csie.ezScrum.web.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintPlanLogic {
-	
-	private SprintPlanMapper sprintPlanMapper;
-	private ProjectObject mProject;
-	private IProject mIProject;
+	private SprintPlanMapper mSprintPlanMapper;
 
 	public SprintPlanLogic(ProjectObject project) {
-		sprintPlanMapper = new SprintPlanMapper(project);
-		mProject = project;
+		mSprintPlanMapper = new SprintPlanMapper(project);
 	}
-	
-	public SprintPlanLogic(IProject project) {
-		sprintPlanMapper = new SprintPlanMapper(project);
-		mIProject = project;
-	}
-	
+
 	/**
 	 * @return sprint array, sort descent by ID
 	 */
-	// ori name: load()
-	public List<ISprintPlanDesc> getSprintPlanListAndSortById() {
-		List<ISprintPlanDesc> list = this.sprintPlanMapper.getSprintPlanList();
-		
-		list = this.sortById(list);
-		return list;
+	public ArrayList<SprintObject> getSprintsSortedById() {
+		ArrayList<SprintObject> sprints = mSprintPlanMapper.getSprints();
+		sprints = sortedById(sprints);
+		return sprints;
 	}
 	
 	/**
 	 * @return sprint list, sort by StartDate
 	 */
-	// ori name: ListLoad()
-	public List<ISprintPlanDesc> getSprintPlanListAndSortByStartDate() {
-		List<ISprintPlanDesc> list = this.sprintPlanMapper.getSprintPlanList();
-		
-		list = this.sortByStartDate(list);
-		return list;
-	}
-	
-	//load the last plan, so perhaps the return is not the current plan.
-	public ISprintPlanDesc loadCurrentPlan(){
-		if (!String.valueOf(this.getCurrentSprintID()).equals("-1"))
-			return this.sprintPlanMapper.getSprint(String.valueOf(this.getCurrentSprintID()));
-		else {
-			List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById();
-			if (descs.size() == 0)
-				return null;
-			Date current = new Date();
-			for (ISprintPlanDesc desc:descs){
-				if (DateUtil.dayFilter(desc.getEndDate()).getTime() > current.getTime())
-					return desc;
-			}
-			return descs.get(descs.size()-1);			
-		}
-	} 
-	
-	public int getCurrentSprintID(){
-		Date current = new Date();
-		List<ISprintPlanDesc> descs = this.getSprintPlanListAndSortById();
-		for (ISprintPlanDesc desc:descs){
-			if (desc.isInSprint(current))
-				return Integer.parseInt(desc.getID());
-		}
-		return -1;
+	public ArrayList<SprintObject> getSprintsSortedByStartDate() {
+		ArrayList<SprintObject> sprints = mSprintPlanMapper.getSprints();
+		sprints = sortedByStartDate(sprints);
+		return sprints;
 	}
 	
 	/**
-	 * sort by StartDate
-	 * @param list
-	 * @return
+	 * Load current plan, when no current sprint exist load the last sprint instead.
 	 */
-	private List<ISprintPlanDesc> sortByStartDate(List<ISprintPlanDesc> list) {
-		List<ISprintPlanDesc> newList = new ArrayList<ISprintPlanDesc>();
-		for (ISprintPlanDesc source : list) {
-			Date addDate = DateUtil.dayFilter(source.getStartDate());		// 要新增的 Date
-			int index = 0;
-			for (ISprintPlanDesc target : newList) {
-				Date cmpDate = DateUtil.dayFilter(target.getStartDate());	// 要被比對的 Date
-				if ( addDate.compareTo(cmpDate) < 0 ) {
-					break;
-				}
-				index++;
+	public SprintObject loadCurrentSprint() {
+		// get current sprint
+		SprintObject sprint = getCurrentSprint();
+		// if no current sprint, get latest sprint instead.
+		if (sprint == null) {
+			sprint = getLatestSprint();
+		}
+		return sprint;
+	}
+	
+	public SprintObject getLatestSprint() {
+		ArrayList<SprintObject> sprints = getSprintsSortedByStartDate();
+		if (sprints.size() == 0) {
+			return null;
+		} else {
+			return sprints.get(0);
+		}
+	}
+	
+	public SprintObject getCurrentSprint() {
+		Date current = new Date();
+		ArrayList<SprintObject> sprints = getSprintsSortedById();
+		for (SprintObject sprint : sprints) {
+			if (sprint.contains(current)) {
+				return sprint;
 			}
-			newList.add(index, source);
-		}		
-		
-		return newList;
+		}
+		return null;
+	}
+	
+	/**
+	 * Sort Sprints by StartDate
+	 * @param list
+	 * @return ArrayList<SprintObject>
+	 */
+	private ArrayList<SprintObject> sortedByStartDate(ArrayList<SprintObject> list) {
+		Collections.sort(list, new Comparator<SprintObject>() {
+			@Override
+			public int compare(SprintObject o1, SprintObject o2) {
+				return DateUtil.dayFilter(o2.getStartDate()).compareTo(DateUtil.dayFilter(o1.getStartDate()));
+			}
+		});
+		return list;
 	}
 
-	// sort descent by ID
-	private List<ISprintPlanDesc> sortById(List<ISprintPlanDesc> list) {
-		List<ISprintPlanDesc> newList = new ArrayList<ISprintPlanDesc>();
-		for (ISprintPlanDesc source : list) {
-			int index = 0;
-			for (ISprintPlanDesc target : newList) {
-				// 遞增排序
-				if (Integer.parseInt(target.getID()) > Integer.parseInt(source.getID()))
-					break;
-				index++;
+	/**
+	 * Sort Sprints by SprintId in descent
+	 * @param list
+	 * @return ArrayList<SprintObject>
+	 */
+	private ArrayList<SprintObject> sortedById(ArrayList<SprintObject> list) {
+		Collections.sort(list, new Comparator<SprintObject>() {
+			@Override
+			public int compare(SprintObject o1, SprintObject o2) {
+				return (int) (o2.getId() - o1.getId());
 			}
-			newList.add(index, source);
-		}
-		
-		return newList;
+		});
+		return list;
 	}
 }
