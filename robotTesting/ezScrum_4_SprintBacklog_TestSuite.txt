@@ -18,6 +18,7 @@ Library           keywords/lib/Selenium2Improved.py
 
 *** Test Cases ***
 Test Sprint Backlog - Edit Story
+    [Documentation]    \#7102
     [Setup]    Test Sprint Backlog - Edit Story Setup
     # story information
     ${oriStoryName}=    Set Variable    add story for test edit story
@@ -36,6 +37,7 @@ Test Sprint Backlog - Edit Story
     [Teardown]    Test Sprint Backlog - Edit Story Teardown
 
 Test Sprint Backlog - Add Story
+    [Documentation]    \#7102
     [Setup]    Test Sprint Backlog - Add Story Setup
     # story information
     ${storyName}=    Set Variable    add story for test add story
@@ -53,6 +55,7 @@ Test Sprint Backlog - Add Story
     [Teardown]    Test Sprint Backlog - Add Story Teardown
 
 Test Sprint Backlog - Drop Story
+    [Documentation]    \#7102
     [Setup]    Test Sprint Backlog - Drop Story Setup
     # story information
     ${oriStoryName}=    Set Variable    add story for test drop story
@@ -73,6 +76,7 @@ Test Sprint Backlog - Drop Story
     [Teardown]    Test Sprint Backlog - Drop Story Teardown
 
 Test Sprint Backlog - Add Existing Story
+    [Documentation]    \#7102
     [Setup]    Test Sprint Backlog - Add Existing Story Setup
     # story information for add
     ${storyName}=    Set Variable    add story for test add existing story
@@ -113,6 +117,7 @@ Test Sprint Backlog - Edit Sprint
     [Teardown]    Test Sprint Backlog - Edit Sprint Teardown
 
 Test Sprint Backlog - Add Task
+    [Documentation]    \#7103
     [Setup]    Test Sprint Backlog - Add Task Setup
     # task information
     ${taskName}=    Set Variable    task 1 for add task
@@ -128,6 +133,7 @@ Test Sprint Backlog - Add Task
     [Teardown]    Test Sprint Backlog - Add Task Teardown
 
 Test Sprint Backlog - Edit Task
+    [Documentation]    \#7103
     [Setup]    Test Sprint Backlog - Edit Task Setup
     # task information
     ${oriTaskName}=    Set Variable    task 1 for edit task
@@ -151,6 +157,7 @@ Test Sprint Backlog - Edit Task
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task
+    [Documentation]    \#7103
     [Setup]    Test Sprint Backlog - Drop Task Setup
     # task information
     ${taskName}=    Set Variable    task 1 for drop task
@@ -171,6 +178,7 @@ Test Sprint Backlog - Drop Task
     [Teardown]    Test Sprint Backlog - Drop Task Teardown
 
 Test Sprint Backlog - Add Existing Task
+    [Documentation]    \#7103
     [Setup]    Test Sprint Backlog - Add Existing Task Setup
     ${taskCount}=    Set Variable    4
     ${taskEstimate}=    Set Variable    3
@@ -203,6 +211,7 @@ Test Sprint Backlog - Add Existing Task
     [Teardown]    Test Sprint Backlog - Add Existing Task Teardown
 
 Test Sprint Backlog - Show Task History
+    [Documentation]    \#7103
     [Setup]    Test Sprint Backlog - Show Task History Setup
     ${taskName}=    Set Variable    task for show task history
     ${taskEstimate}=    Set Variable    3
