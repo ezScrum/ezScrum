@@ -34,6 +34,7 @@ Test Project - Permission Denied
     # 透過網址列直接修改PID進入專案
     Go To    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B
     # Permission Denied
+    Alert Should Be Present    Permission Denied.
     Xpath Should Match X Times    //span[text()="Permission Denied"]    1
     Close Browser
     [Teardown]    Test Project - Test Permission Denied Teardown
