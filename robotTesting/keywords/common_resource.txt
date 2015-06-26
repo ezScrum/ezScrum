@@ -96,6 +96,7 @@ SwitchToItemLink
     ...    預設是ProjectList頁面
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'True'    span    u
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'False'    u    span
+    Wait Until Element Is Visible    xpath=//li//${_tagName}[.="${itemName}"]
     Click Element    xpath=//li//${_tagName}[.="${itemName}"]
     # 加入同步機制比較妥當
 
