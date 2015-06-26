@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -38,11 +39,13 @@ public class UpdateAccountAction extends Action {
 		}
 		
 		AccountHelper accountHelper = new AccountHelper(session);
+		AccountMapper accountMapper = new AccountMapper();
+		AccountObject oldAccount = accountMapper.getAccount(accountInfo.id);
 		AccountObject newAccount = accountHelper.updateAccount(accountInfo);
 
 		//	no password, use the default password
 		if ((accountInfo.password == null) || (accountInfo.password.length() == 0) || accountInfo.password.equals("")) {
-			accountInfo.password = newAccount.getPassword();
+			accountInfo.password = oldAccount.getPassword();
 		}
 
 		//	如果更新的是登入者的密碼則更新 session 中屬於插件使用的密碼
