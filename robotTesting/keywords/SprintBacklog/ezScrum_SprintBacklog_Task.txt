@@ -31,8 +31,9 @@ Add Existing Task With Arguments
 Edit Task With Arguments
     [Arguments]    ${taskID}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskRemains}    ${taskActual}
     ...    ${taskNotes}
-    Click Element    xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..
+    Click Element    xpath=//div[@class="x-treegrid-text" and text()="${taskName}"]/../..
     Click Element    xpath=//button[text()="Edit Task"]
+    Wait Until Page Contains    Edit Task #${taskID}
     Focus AND Input Text    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]    ${taskName}
     Focus AND Input Text    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]    ${taskHandler}
     Focus AND Input Text    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]    ${taskPartners}
