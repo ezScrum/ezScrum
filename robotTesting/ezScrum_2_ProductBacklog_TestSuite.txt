@@ -27,7 +27,7 @@ ${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
 
 *** Test Cases ***
 Test ProductBacklog - Create Story Identify Invalid Value
-    [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)
+    [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)    #7102
     Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
     Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Add New Story
@@ -46,7 +46,7 @@ Test ProductBacklog - Create Story Identify Invalid Value
     Click Element    xpath=${xpathCreateStoryCancel}
 
 Test ProductBacklog - Edit Story Identify Invalid Value
-    [Documentation]    Edit Story(長度限制),Edit Story (測試限制數字欄位),Edit Story (測試特殊字元)
+    [Documentation]    Edit Story(長度限制),Edit Story (測試限制數字欄位),Edit Story (測試特殊字元)    #7102
     [Setup]    Test Edit Story Identify Invalid Value Setup
     Wait Until Page Contains Element    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
@@ -69,7 +69,7 @@ Test ProductBacklog - Edit Story Identify Invalid Value
     [Teardown]    Test Edit Story Identify Invalid Value Teardown
 
 Test ProductBacklog - Create Story
-    [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。
+    [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。    #7102
     [Setup]    Test Create Story Setup
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
@@ -77,6 +77,7 @@ Test ProductBacklog - Create Story
     [Teardown]    Test Create Story Teardown
 
 Test ProductBacklog - Create Story With Invalid Value
+    [Documentation]    \#7102
     [Setup]    Test Create Story With Invalid Value Setup
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
@@ -84,16 +85,16 @@ Test ProductBacklog - Create Story With Invalid Value
     [Teardown]    Test Create Story With Invalid Value Teardown    ${storyID}
 
 Test ProductBacklog - Edit Story
-    [Documentation]    Add Story(正常資料)。點選Story，點選按鈕Edit Story，修改各個欄位資料，Tag欄位勾選/取消勾選Tag後送出。
+    [Documentation]    Add Story(正常資料)。點選Story，點選按鈕Edit Story，修改各個欄位資料，Tag欄位勾選/取消勾選Tag後送出。    #7102
     [Setup]    Test Edit Story Setup
-    Edit Story With Arguments    oriStory    testTagName
+    Edit Story With Arguments    oldStory    testTagName
     ${storyID}=    Get Story ID
-    Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    3    5    8    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
-    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Verify Story Information With Arguments    ${storyID}    newStory    3    5    8    new Notes
+    ...    new HowToDemo    ${EMPTY}
     [Teardown]    Test Edit Story Teardown    ${storyID}
 
 Test ProductBacklog - Story History
-    [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
+    [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。    #7102
     [Setup]    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
     ...    "Note: newStoryNote"    "HowToDemo: newStoryHowToDemo"
     Set Test Variable    ${storyName}    newStory
@@ -179,7 +180,7 @@ Test ProductBacklog - Remove Story Tag
     [Teardown]    Test Remove Story Tag Teardown
 
 Test ProductBacklog - Mark And UnMark Story Tag
-    [Documentation]    Mark And UnMark Tag
+    [Documentation]    Mark And UnMark Tag    #7106    #7102
     [Setup]    Test Mark And UnMark Story Tag Setup
     # Mark
     Mark And UnMark Tag With Arguments    Mark    newStory    markAndUnMarkTag
@@ -194,7 +195,7 @@ Test ProductBacklog - Mark And UnMark Story Tag
     [Teardown]    Test Mark And UnMark Story Tag Teardown
 
 Test ProductBacklog - Create Tag
-    [Documentation]    測試兩種Tag: 正常字串 & 特殊字元
+    [Documentation]    測試兩種Tag: 正常字串 & 特殊字元    #7106
     ...
     ...
     ...    test Tag 'C'RD
@@ -207,7 +208,7 @@ Test ProductBacklog - Create Tag
     [Teardown]    Test Create Tag Teardown
 
 Test ProductBacklog - Duplicate Tag
-    [Documentation]    測試輸入已存在的Tag Name(特殊字元)
+    [Documentation]    測試輸入已存在的Tag Name(特殊字元)    #7106
     ...
     ...    test Tag C'R'D
     [Tags]    tag
@@ -237,7 +238,7 @@ Test ProductBacklog - Duplicate Tag
     [Teardown]    Delete Tag With Arguments    ${tsTagX}
 
 Test ProductBacklog - Delete Tag
-    [Documentation]    test Tag CR'D'
+    [Documentation]    test Tag CR'D'    #7106
     [Tags]    tag
     [Setup]    Test Delete Tag Setup    3
     ${testTagCount}    Set Variable    3
@@ -261,7 +262,7 @@ Test ProductBacklog - Delete Tag
     [Teardown]    Test Delete Tag Teardown
 
 Test ProductBacklog - Session - New Story
-    [Documentation]    測試在兩個不同的視窗(專案也不同)分別建立Product Backlog的Story,彼此去檢驗對方的Story內容是否正確
+    [Documentation]    測試在兩個不同的視窗(專案也不同)分別建立Product Backlog的Story,彼此去檢驗對方的Story內容是否正確    #7102
     [Tags]    session
     [Setup]    Test ProductBacklog Session - New Story Setup
     ${_rawIndex} =    Set Variable    1
@@ -298,7 +299,7 @@ Test ProductBacklog - Session - New Story
     [Teardown]    Test ProductBacklog Session - New Story Teardown
 
 Test ProductBacklog - Session - Read Story With Tag
-    [Documentation]    測試在兩個不同的視窗(專案也不同)所建立Product Backlog的Story,
+    [Documentation]    測試在兩個不同的視窗(專案也不同)所建立Product Backlog的Story,    #7106    #7102
     ...    彼此去檢驗對方的Story內容(包含Tag)是否正確
     [Tags]    session
     [Setup]    Test ProductBacklog Session - Read Story With Tag Setup
@@ -340,25 +341,25 @@ Test ProductBacklog - Session - Read Story With Tag
     [Teardown]    Test ProductBacklog Session - Read Story With Tag Teardown
 
 Test ProductBacklog - Filter - Backlogged
-    [Documentation]    確認Backlogged Filter正常運作
+    [Documentation]    確認Backlogged Filter正常運作    #7102
     [Setup]    Test Product Backlog Filter Setup
     Test Product Backlog Filter Backlogged
     [Teardown]    Test Product Backlog Filter Teardown
 
 Test ProductBacklog - Filter - Detailed
-    [Documentation]    確認Detailed Filter正常運作
+    [Documentation]    確認Detailed Filter正常運作    #7102
     [Setup]    Test Product Backlog Filter Setup
     Test Product Backlog Filter Detailed
     [Teardown]    Test Product Backlog Filter Teardown
 
 Test ProductBacklog - Filter - Default
-    [Documentation]    確認Detailed Filter正常運作
+    [Documentation]    確認Detailed Filter正常運作    #7102
     [Setup]    Test Product Backlog Filter Setup
     Test Product Backlog Filter Default
     [Teardown]    Test Product Backlog Filter Teardown
 
 Test ProductBacklog - Filter - Done
-    [Documentation]    確認Done Filter正常運作
+    [Documentation]    確認Done Filter正常運作    #7102
     [Tags]    FilterDone
     [Setup]    Test Product Backlog Filter Setup
     Test Product Backlog Filter Done

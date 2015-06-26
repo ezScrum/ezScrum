@@ -60,8 +60,8 @@ Test Create Story With Invalid Value Teardown
 
 Test Edit Story Setup
     Create Tag With Arguments    testTagName
-    Create Story With Arguments    oriStory    5    3    1    testTagName    Note: newStory
-    ...    HowToDemo: newStory
+    Create Story With Arguments    oldStory    5    3    1    testTagName    Note: oldStory
+    ...    HowToDemo: oldStory
 
 Test Edit Story Teardown
     [Arguments]    ${storyID}

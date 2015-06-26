@@ -114,12 +114,12 @@ Edit Story With Arguments
     Click Element    xpath=//button[text()="Edit Story"]
     Click Image    xpath=//label[text()="Tags:"]/.././/img
     Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
-    Focus AND Input Text    //textarea[@name="Name"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Focus AND Input Text    //textarea[@name="Name"]    newStory
     Focus AND Input Text    //input[@name="Value"]    3
     Focus AND Input Text    //input[@name="Estimate"]    5
     Focus AND Input Text    //input[@name="Importance"]    8
-    Focus AND Input Text    //textarea[@name="Notes"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
-    Focus AND Input Text    //textarea[@name="HowToDemo"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Focus AND Input Text    //textarea[@name="Notes"]    new Notes
+    Focus AND Input Text    //textarea[@name="HowToDemo"]    new HowToDemo
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     ${xpathEditStory}=    Find Current Window Element    Edit Story #${storyID}    Submit
     Element Enable And Submit    ${xpathEditStory}
@@ -141,8 +141,8 @@ Verify Invalid Value Textarea
     Focus AND Input Text    //textarea[@name="${element}"]    ${value}
     Focus    xpath=//textarea[@name="${element}"]
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
+    Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //button[text()="Submit"]/../../../../../../table[contains(@class, \ x-item-disabled) and contains(@class, \ x-btn-noicon) and contains(@class, \ x-btn)]    1
+    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //button[text()="Submit"]/../../../../../../table[contains(@class, \ x-item-disabled) and contains(@class, \ x-btn-noicon) and contains(@class, \ x-btn)]    1
 
 Clean All Story
     # get Story count
