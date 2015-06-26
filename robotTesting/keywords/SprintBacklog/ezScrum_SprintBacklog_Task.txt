@@ -42,16 +42,15 @@ Edit Task With Arguments
     Wait Until Page Contains    Edit Task Success.
 
 Drop Task With Arguments
-    [Arguments]    ${taskID}
-    Click Element    xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..
+    [Arguments]    ${taskName}
+    Click Element    xpath=//div[text()="${taskName}"]
     Click Element    xpath=//button[text()="Drop Task"]
-    ${xpathDropTask}=    Find Current Window Element    Drop Task    Drop
-    Element Enable And Submit    ${xpathDropTask}
+    Click Element    xpath=//button[text()="Drop"]
     Wait Until Page Contains    Drop Task Success.
 
 Show Task History With Arguments
     [Arguments]    ${taskID}    ${taskName}
-    Click Element    xpath=//td[@class="x-treegrid-col"]/a/span[text()="${taskID}"]/../../..
+    Click Element    xpath=//div[text()="${taskName}"]
     Click Element    xpath=//button[text()="Task History"]
     Wait Until Page Contains    Issue History List
     Xpath Should Match X Times    //span[@class="x-panel-header-text" ]/font[text()="＜Task＞ #${taskID} ${taskName}"]    1

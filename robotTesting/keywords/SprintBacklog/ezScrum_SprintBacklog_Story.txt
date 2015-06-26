@@ -26,8 +26,7 @@ Verify Story Information With Arguments In Sprint Backlog
     [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
     # 比對 edit story widget content
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
-    Click Element    xpath=//button[text()="Edit Story"]
+    Double Click Element    xpath=//div[text()="${storyName}"]
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -35,9 +34,7 @@ Verify Story Information With Arguments In Sprint Backlog
     Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    //input[@name="Tags"]    ${tagName}
     Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
-    Element Enable And Submit    ${xpathEditStoryCancel}
+    Click Element    //button[text()="Cancel"]
 
 Get Story ID In Sprint Backlog
     [Arguments]    ${stroyName}

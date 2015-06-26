@@ -42,7 +42,8 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="${nodeName}"]
+    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]
+    Click Element    xpath=//span[text()="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}
