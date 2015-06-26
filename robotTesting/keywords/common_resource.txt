@@ -42,7 +42,8 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="${nodeName}"]
+    Wait Until Element Is Visible    xpath=//li//span[.="${nodeName}"]
+    Click Element    xpath=//li//span[.="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}
@@ -88,7 +89,8 @@ SwitchToPage
     ...
     ...    ProjectList
     ...    Management
-    Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
+    Wait Until Element Is Visible    xpath=//li//span[.="${pageName}"]
+    Click Element    xpath=//li//span[.="${pageName}"]
 
 SwitchToItemLink
     [Arguments]    ${isProjectPage}    ${itemName}
