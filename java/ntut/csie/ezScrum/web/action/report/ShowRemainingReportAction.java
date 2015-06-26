@@ -43,7 +43,7 @@ public class ShowRemainingReportAction extends Action {
 		}
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> plans = spHelper.loadListPlans();
+		List<ISprintPlanDesc> plans = spHelper.loadSprints();
 		Collections.reverse(plans);  // 資料反轉、倒序
 		request.setAttribute("SprintPlans", plans);  // set sprint combo
 
@@ -85,11 +85,11 @@ public class ShowRemainingReportAction extends Action {
 					currentDate = Today;		// default set today to show report
 				}
 
-				currentId = spHelper.getSprintIDbyDate(currentDate);
+				currentId = spHelper.getSprintByDate(currentDate);
 
 				// 若 user 選擇的日期不在任何 sprint 內，且目前沒有進行中的 sprint
 				if (currentId == -1) {
-					currentId = Integer.parseInt(spHelper.loadCurrentPlan().getID());
+					currentId = Integer.parseInt(spHelper.loadCurrentSprint().getID());
 				}
 
 				report = new RemainingWorkReport(project, session, category, currentId, currentDate);
@@ -99,7 +99,7 @@ public class ShowRemainingReportAction extends Action {
 			} else {
 				// generate by sprint
 				if (sprintId == null) {
-					currentId = Integer.parseInt(spHelper.loadCurrentPlan().getID());
+					currentId = Integer.parseInt(spHelper.loadCurrentSprint().getID());
 				} else {
 					currentId = Integer.parseInt(sprintId);
 				}

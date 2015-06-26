@@ -42,7 +42,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
     	
     	// check sprintID
      	SprintPlanHelper spHelper = new SprintPlanHelper(project);    	
-    	int currentSprintID = spHelper.getCurrentSprintID();
+    	int currentSprintID = spHelper.getCurrentSprint();
     	
     	//如果沒有指定sprint的ID，則以目前的sprintID為準，如果也沒有的話則以最後一個sprint id為準
     	if (sprintID==null || sprintID.isEmpty()) {

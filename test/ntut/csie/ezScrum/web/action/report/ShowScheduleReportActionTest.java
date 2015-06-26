@@ -130,7 +130,7 @@ public class ShowScheduleReportActionTest extends MockStrutsTestCase {
 		assertEquals(ExpectedDuration, ActualReport.getDuration()); // 驗證Sprint的Duration時間範圍
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = sprintPlanHelper.loadListPlans();
+		List<ISprintPlanDesc> ExpectedPlans = sprintPlanHelper.loadSprints();
 		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) request.getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());

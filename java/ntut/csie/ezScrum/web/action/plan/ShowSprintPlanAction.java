@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
@@ -62,12 +63,12 @@ public class ShowSprintPlanAction extends Action {
 		HashMap<String, Boolean> hm = new HashMap<String, Boolean>(); // 用於判斷此 sprint是否有 story
 		Map<String, Boolean> permissionMap = new HashMap<String, Boolean>(); // 用來判斷sprint是不是out of sprint
 
-		int currentSprint = SPhelper.getCurrentSprintID();
+		SprintObject currentSprint = SPhelper.getCurrentSprint();
 
-		if (SPhelper.loadListPlans() != null) {
-			if (SPhelper.loadListPlans().size() > 0) {
+		if (SPhelper.loadSprints() != null) {
+			if (SPhelper.loadSprints().size() > 0) {
 
-				descs = SPhelper.loadListPlans();
+				descs = SPhelper.loadSprints();
 
 				Map<String, String> pointMap = new HashMap<String, String>();
 

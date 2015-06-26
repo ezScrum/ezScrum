@@ -32,7 +32,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 		IProject project = (IProject) request.getSession().getAttribute("Project");	
 
     	SprintPlanHelper spHelper = new SprintPlanHelper(project);
-    	List<ISprintPlanDesc> plans = spHelper.loadListPlans();
+    	List<ISprintPlanDesc> plans = spHelper.loadSprints();
 
 		StringBuilder sb = new StringBuilder();
 		TranslateSpecialChar tsc = new TranslateSpecialChar();

@@ -51,7 +51,7 @@ public class ShowEditSprintInfoAction extends PermissionAction {
 		List<ISprintPlanDesc> descs = null;
 		List<String> totalSprintID = new ArrayList<String>();
 	
-		descs = SPhelper.loadListPlans();
+		descs = SPhelper.loadSprints();
 		
 		/*-----------------------------------------------------------
 		 *	將Sprint 封裝成 XML回傳至前端

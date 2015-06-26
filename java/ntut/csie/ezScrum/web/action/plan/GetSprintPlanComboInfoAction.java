@@ -48,12 +48,12 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 		String currentSprintID = request.getParameter("SprintID");
 		
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> plans = sprintPlanHelper.loadListPlans();
+		List<ISprintPlanDesc> plans = sprintPlanHelper.loadSprints();
 		
 		ISprintPlanDesc currentPlan = null;
 		
 		if (currentSprintID == null) {
-			currentPlan = sprintPlanHelper.loadCurrentPlan();
+			currentPlan = sprintPlanHelper.loadCurrentSprint();
 		} else {
 			currentPlan = sprintPlanHelper.loadPlan(currentSprintID);
 		}
