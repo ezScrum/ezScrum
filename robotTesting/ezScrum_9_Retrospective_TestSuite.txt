@@ -1,69 +1,68 @@
 *** Settings ***
-Documentation     測試Retrospective的CRUD
-...               1.Property of Retrospective Item: 0 ID, 1 Name, 2 Sprint ID, 3 Type, 4 Status, 5 Description
-...               2.與Sprint有關,在測試之前會先做 New Sprint 的動作
-Suite Setup       Test Retrospective Suite Setup
-Suite Teardown    Test Retrospective Suite Teardown
-Force Tags        Retrospective
-Resource          keywords/Retrospective/ezScrum_Retrospective_SetupTeardown.txt
-Resource          keywords/Retrospective/ezScrum_Retrospective.txt
+Documentation   測試Retrospective的CRUD\n1.Property of Retrospective Item: 0 ID, 1 Name, 2 Sprint ID, 3 Type, 4 Status, 5 Description\n2.與Sprint有關,在測試之前會先做 New Sprint 的動作
+Suite Setup     Test Retrospective Suite Setup
+Suite Teardown  Test Retrospective Suite Teardown
+Force Tags      Retrospective
+Resource        keywords/Retrospective/ezScrum_Retrospective_SetupTeardown.txt
+Resource        keywords/Retrospective/ezScrum_Retrospective.txt
 
 *** Variables ***
-@{tsRetrospectiveList}    ?    Good Retrospective    ?    Good    new    Retrospective Description    # 0 ID, 1 Name, 2 Sprint ID, 3 Type, 4 Status, 5 Description
-@{tsSprintInfo}    ?    test sprint Goal    2    5    150    100    # 0 ID, 1 Goal, 2 Interval, 3 Members, 4 AvaliableDays, 5 FocusFactor
+@{tsRetrospectiveList}  ?  Good Retrospective  ?  Good  new  Retrospective Description  # 0 ID, 1 Name, 2 Sprint ID, 3 Type, 4 Status, 5 Description
+@{tsSprintInfo}  ?  test sprint Goal  2  5  150  100  # 0 ID, 1 Goal, 2 Interval, 3 Members, 4 AvaliableDays, 5 FocusFactor
 
 *** Test Cases ***
 Test Retrospective - Add Retrospective
-    [Documentation]    測試新增一個 Retrospective (Good type)
-    [Setup]    Test Retrospective Add Setup
-    Add Retrospective    @{tsRetrospectiveList}
+    [Documentation]  測試新增一個 Retrospective (Good type)
+    [Setup]  Test Retrospective Add Setup
+    Add Retrospective  @{tsRetrospectiveList}
     # get data
-    ${tcItems} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']    # include Good & Improvement
-    ${tcTypes} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']    # =0 empty, =1 G or I, =2 both have G & I
-    ${_actual_sprintID} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
-    ${_actual_name} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
-    ${_actual_type} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
-    ${_actual_description} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
+    ${tcItems} =  Get Matching Xpath Count  //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']  # include Good & Improvement
+    ${tcTypes} =  Get Matching Xpath Count  //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']  # =0 empty, =1 G or I, =2 both have G & I
+    ${_actual_sprintID} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
+    ${_actual_name} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
+    ${_actual_type} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
+    ${_actual_description} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
     # assert
-    Should Be Equal    ${tsRetrospectiveList[2]}    ${_actual_sprintID}
-    Should Be Equal    ${tsRetrospectiveList[1]}    ${_actual_name}
-    #    Should Be Equal    ${tsRetrospectiveList[3]}    ${_actual_type}
-    Should Be Equal    ${tsRetrospectiveList[5]}    ${_actual_description}
-    [Teardown]    Test Retrospective Add Teardown
+    Should Be Equal  ${tsRetrospectiveList[2]}  ${_actual_sprintID}
+    Should Be Equal  ${tsRetrospectiveList[1]}  ${_actual_name}
+    Should Be Equal  ${tsRetrospectiveList[3]}  ${_actual_type}
+    Should Be Equal  ${tsRetrospectiveList[5]}  ${_actual_description}
+    [Teardown]  Test Retrospective Add Teardown
 
 Test Retrospective - Edit Retrospective
-    [Documentation]    測試編輯一個已存在的 Retrospective (Good type)
-    [Setup]    Test Retrospective Edit Setup
-    Select Retrospective Item    2    ${tsRetrospectiveList[1]}
+    [Documentation]  測試編輯一個已存在的 Retrospective (Good type)
+    [Setup]  Test Retrospective Edit Setup
+    Select Retrospective Item  2  ${tsRetrospectiveList[1]}
     # initial variable
-    Set List Value    ${tsRetrospectiveList}    1    ${tsRetrospectiveList[1]}_Edit
-    Set List Value    ${tsRetrospectiveList}    5    ${tsRetrospectiveList[5]}_Edit
-    Edit Retrospective    @{tsRetrospectiveList}
+    Set List Value  ${tsRetrospectiveList}  1  ${tsRetrospectiveList[1]}_Edit
+    Set List Value  ${tsRetrospectiveList}  5  ${tsRetrospectiveList[5]}_Edit
+    Edit Retrospective  @{tsRetrospectiveList}
     # get data
-    ${_actual_ID} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']
-    ${_actual_sprintID} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
-    ${_actual_name} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
-    ${_actual_type} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
-    ${_actual_description} =    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
+    ${_actual_ID} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']
+    ${_actual_sprintID} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
+    ${_actual_name} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
+    ${_actual_type} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
+    ${_actual_description} =  Get Text  xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
     # assert
-    Should Be Equal    ${tsRetrospectiveList[0]}    ${_actual_ID}
-    Should Be Equal    ${tsRetrospectiveList[2]}    ${_actual_sprintID}
-    Should Be Equal    ${tsRetrospectiveList[1]}    ${_actual_name}
-    #    Should Be Equal    ${tsRetrospectiveList[3]}    ${_actual_type}
-    Should Be Equal    ${tsRetrospectiveList[5]}    ${_actual_description}
-    [Teardown]    Test Retrospective Edit Teardown
+    Should Be Equal  ${tsRetrospectiveList[0]}  ${_actual_ID}
+    Should Be Equal  ${tsRetrospectiveList[2]}  ${_actual_sprintID}
+    Should Be Equal  ${tsRetrospectiveList[1]}  ${_actual_name}
+    Should Be Equal  ${tsRetrospectiveList[3]}  ${_actual_type}
+    Should Be Equal  ${tsRetrospectiveList[5]}  ${_actual_description}
+    [Teardown]  Test Retrospective Edit Teardown
 
 Test Retrospective - Delete Retrospective
-    [Documentation]    測試刪除一個 Retrospective (Good type)
-    [Setup]    Test Retrospective Delete Setup
+    [Documentation]  測試刪除一個 Retrospective (Good type)
+    [Setup]  Test Retrospective Delete Setup
     # get info
-    ${tcItems} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']    # include Good & Improvement
-    ${tcTypes} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']    # =0 empty, =1 G or I, =2 both have G & I
+    ${tcItems} =  Get Matching Xpath Count  //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']  # include Good & Improvement
+    ${tcTypes} =  Get Matching Xpath Count  //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']  # =0 empty, =1 G or I, =2 both have G & I
     # select & delete
-    Select Retrospective Item    2    ${tsRetrospectiveList[1]}
-    Delete Retrospective With Argument    @{tsRetrospectiveList}
+    Select Retrospective Item  2  ${tsRetrospectiveList[1]}
+    Delete Retrospective With Argument  @{tsRetrospectiveList}
     # assert
-    Page Should Not Contain    Type: Good
-    Page Should Not Contain    Type: Improvement
-    Page Should Not Contain Element    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']
-    [Teardown]    Test Retrospective Delete Teardown
+    Page Should Not Contain  Type: Good
+    Page Should Not Contain  Type: Improvement
+    Page Should Not Contain Element  //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']
+    [Teardown]  Test Retrospective Delete Teardown
+

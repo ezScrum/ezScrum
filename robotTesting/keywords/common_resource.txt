@@ -42,8 +42,7 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Wait Until Element Is Visible    xpath=//li//span[.="${nodeName}"]
-    Click Element    xpath=//li//span[.="${nodeName}"]
+    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}
@@ -89,8 +88,7 @@ SwitchToPage
     ...
     ...    ProjectList
     ...    Management
-    Wait Until Element Is Visible    xpath=//li//span[.="${pageName}"]
-    Click Element    xpath=//li//span[.="${pageName}"]
+    Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
 
 SwitchToItemLink
     [Arguments]    ${isProjectPage}    ${itemName}
@@ -98,7 +96,6 @@ SwitchToItemLink
     ...    預設是ProjectList頁面
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'True'    span    u
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'False'    u    span
-    Wait Until Element Is Visible    xpath=//li//${_tagName}[.="${itemName}"]
     Click Element    xpath=//li//${_tagName}[.="${itemName}"]
     # 加入同步機制比較妥當
 

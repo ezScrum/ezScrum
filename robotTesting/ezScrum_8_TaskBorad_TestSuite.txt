@@ -139,8 +139,6 @@ Test TaskBoard - Task ReChecked Out
 
 Test TaskBoard - Story Done
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Done 後，資料是否正確
-    ...
-    ...    #7102
     [Setup]    Test TaskBoard - Story Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -158,8 +156,6 @@ Test TaskBoard - Story Done
 
 Test TaskBoard - Story ReOpen
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Done 拖拉至 Not Checked Out 後，資料是否正確
-    ...
-    ...    #7102
     [Setup]    Test TaskBoard - Story ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -179,8 +175,6 @@ Test TaskBoard - Story ReOpen
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
     ...    但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
-    ...
-    ...    #7102
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
@@ -204,8 +198,6 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
     ...    但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
-    ...
-    ...    #7102
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard

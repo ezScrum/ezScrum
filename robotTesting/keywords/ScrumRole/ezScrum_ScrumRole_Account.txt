@@ -7,7 +7,7 @@ Add Account
     Click Element    xpath=//button[text()="Add Account"]
     Wait Until Page Contains    Add New Account
     # fill Account Info
-    Focus AND Input Text    //input[@name="id"]    ${tsAccountID}    # User ID
+    Focus AND Input Text    //input[@name="account"]    ${tsAccountID}    # User ID
     Focus AND Input Text    //input[@name="name"]    ${tsAccountID}Name    # User Name
     Focus AND Input Text    //input[@name="passwd"]    ${tsAccountID}    # Password
     Focus AND Input Text    //input[@name="reenter"]    ${tsAccountID}    # Re-enter
@@ -22,8 +22,10 @@ Delete Account
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
     # click "Delete" Button
+    Wait Until Element Is Visible    xpath=//button[text()="Delete Account"]
     Click Element    xpath=//button[text()="Delete Account"]
     # confirm, click "Yes" Button
+    Wait Until Element Is Visible    xpath=//button[text()="Yes"]
     Click Element    xpath=//button[text()="Yes"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]    0
