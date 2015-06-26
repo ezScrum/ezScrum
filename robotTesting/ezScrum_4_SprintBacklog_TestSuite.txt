@@ -149,11 +149,11 @@ Test Sprint Backlog - Edit Task
     ${updateTaskActual}=    Set Variable    5
     ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
     ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
-    Edit Task With Arguments    ${taskID}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskRemains}    ${updateTaskActual}
-    ...    ${updateTaskNotes}
+    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskRemains}
+    ...    ${updateTaskActual}    ${updateTaskNotes}
     # verify task information in Sprint Backlog
     Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${updateTaskRemains}
-    ...    ${updateTaskActual}    ${updateTaskNotes}
+    ...    ${updateTaskActual}    ${oriTaskNotes}
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task
