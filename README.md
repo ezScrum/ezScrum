@@ -11,7 +11,7 @@ ezScrum is a process management tool for Scrum.
 
 Version
 ------------
-1.8.0 Alpha
+1.8.0 Alpha2
 
 
 License
