@@ -3,11 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,18 +30,32 @@ public class AddExistedTaskAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		
-		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		log.info("Add wild tasks in AddExistedTaskAction");
 		
 		// get parameter info
-		String[] selectedTaskIDs = request.getParameterValues("selected");
-		String sprintID = request.getParameter("sprintID");
-		String storyID = request.getParameter("issueID");
+		ProjectObject project = SessionManager.getProjectObject(request);
+		String[] selectedTaskIds = request.getParameterValues("selected");
+		long sprintId, storyId;
+		
+		try {
+			sprintId = Long.parseLong(request.getParameter("sprintID"));
+		} catch (NumberFormatException e) {
+			sprintId = -1;
+		}
+		
+		try {
+			storyId = Long.parseLong(request.getParameter("issueID"));
+		} catch (NumberFormatException e) {
+			storyId = -1;
+		}
 
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, session, sprintID);
-		sprintBacklogHelper.addExistedTask(storyID, selectedTaskIDs);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
+		try {
+			sprintBacklogHelper.addExistingTasksToStory(selectedTaskIds, storyId);
+		} catch (Exception e) {
+			return new StringBuilder(e.getMessage());
+		}
+		
 		return new StringBuilder("");
 	}
 }

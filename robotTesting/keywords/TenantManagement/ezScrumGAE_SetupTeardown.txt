@@ -1,5 +1,5 @@
 *** Settings ***
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Library           Collections
 Resource          ../../ServerConfig.txt
 Resource          ../../Global Define.txt

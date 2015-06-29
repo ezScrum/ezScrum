@@ -10,18 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class NotYetEndSprintForMoveStory extends PermissionAction {
-	private static Log log = LogFactory.getLog(ShowReleasePlan2Action.class);
-	
 	@Override
 	public boolean isValidAction() {
 		//因為move story一個給release plan頁面使用另外一個給sprint backlog使用所以要有兩個其中之一個權限才能使用
@@ -40,7 +36,7 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
 		StringBuilder result = new StringBuilder(setSprintToJSon(SPhelper));
 		return result;

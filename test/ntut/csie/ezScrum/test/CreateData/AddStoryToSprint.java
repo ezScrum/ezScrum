@@ -1,121 +1,90 @@
 package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
 
 public class AddStoryToSprint {
-	private static Log log = LogFactory.getLog(AddStoryToSprint.class);
+	private static Log mlog = LogFactory.getLog(AddStoryToSprint.class);
+	private int mStoryCount;
+	private int mSprintCount;
+	private int mProjectCount;
+	private CreateProject mCP;
+	private ArrayList<StoryObject> mStories = new ArrayList<StoryObject>();
 
-	private int EachCount = 1;
-	private int SprintCount = 1;
-	private int ProjectCount = 1;
-	private CreateProject CP;
-	private List<IIssue> IssueList = new LinkedList<IIssue>();
-	private Configuration configuration = new Configuration();
-
-	public AddStoryToSprint(int count, int EstValue, CreateSprint cs, CreateProject cp, String type) throws Exception {
-		this.EachCount = count;
-		this.ProjectCount = cp.getProjectList().size();
-		this.SprintCount = cs.getSprintCount();
-		this.CP = cp;
-
-		CreateStories(EstValue, type);
+	/**
+	 * Add story to sprint construct
+	 * 
+	 * @param storyCount
+	 * @param columnValue Set estimate or importance's value
+	 * @param CS
+	 * @param CP
+	 * @param columnBeSet Chose estimate or importance to set value, e.g. "EST" or "IMP"
+	 * @throws Exception
+	 */
+	public AddStoryToSprint(int storyCount, int columnValue, CreateSprint CS,
+			CreateProject CP, String columnBeSet) {
+		mStoryCount = storyCount;
+		mProjectCount = CP.getProjectList().size();
+		mSprintCount = CS.getSprintCount();
+		mCP = CP;
+		createStories(columnValue, columnBeSet);
 	}
 
-	public AddStoryToSprint(int storyCount, int EstValue, int SprintNumber, CreateProject cp, String type) throws Exception {
-		EachCount = storyCount;
-		ProjectCount = cp.getProjectList().size();
-		SprintCount = SprintNumber;
-		CP = cp;
-
-		CreateStories(EstValue, type);
+	/**
+	 * Add story to sprint construct
+	 * 
+	 * @param storyCount
+	 * @param columnValue Set estimate or importance's value
+	 * @param sprintCount
+	 * @param CP
+	 * @param columnBeSet Chose estimate or importance to set value, e.g. "EST" or "IMP"
+	 * @throws Exception
+	 */
+	public AddStoryToSprint(int storyCount, int columnValue, int sprintCount,
+			CreateProject CP, String columnBeSet) {
+		mStoryCount = storyCount;
+		mProjectCount = CP.getAllProjects().size();
+		mSprintCount = sprintCount;
+		mCP = CP;
+		createStories(columnValue, columnBeSet);
 	}
 
 	public int getSprintCount() {
-		return this.SprintCount;
+		return mSprintCount;
 	}
 
-	public List<IIssue> getIssueList() {
-		return this.IssueList;
+	public ArrayList<StoryObject> getStories() {
+		return mStories;
 	}
 
 	public void exe() throws Exception {
-		// IUserSession userSession = this.config.getUserSession();
-
-		for (int i = 0; i < this.ProjectCount; i++) {
-			IProject project = this.CP.getProjectList().get(i);
-			// 此路徑為開發端的 TestData/MyWorkspace/
-
-			// IssueList 為所有 project 所屬的所有 issues
-			// sublist 為單一個 project 所屬的所有 issues
-			ArrayList<Long> subList = new ArrayList<Long>();
-			// =========== 將所有的 list 資料切割出每個 Project 所包含的 issue 個數 ==========
-			for (int j = 0; j < (this.EachCount * this.SprintCount); j++) {
-				subList.add(this.IssueList.get(i * (this.EachCount * this.SprintCount) + j).getIssueID());
-			}
-
-			// 將 sublist 依據 sprint 個數以及每個 sprint 想要加入的 story 個數建立關聯
-			for (int k = 0; k < this.SprintCount; k++) {
-				ArrayList<Long> subList_each = new ArrayList<Long>();
-				for (int l = 0; l < this.EachCount; l++) {
-					subList_each.add(subList.get((k * this.EachCount) + l));
+		for (int i = 0; i < mProjectCount; i++) {
+			ProjectObject project = mCP.getAllProjects().get(i);
+			// 對每個 sprint 加入 mStoryCount 個 stories
+			for (int sprintIndex = 0; sprintIndex < mSprintCount; sprintIndex++) {
+				for (int storyIndex = 0; storyIndex < mStoryCount; storyIndex++) {
+					int storyPositionInStories = storyIndex + mStoryCount * sprintIndex;
+					long sprintId = sprintIndex + 1;
+					StoryObject story = mStories.get(storyPositionInStories);
+					story.setSprintId(sprintId).save();
 				}
-				addStoryToSprint(project, subList_each, Integer.toString(k + 1));
-				log.info("專案 " + project.getName() + ", 第 " + (k + 1) + " 個 sprint 加入 " + this.EachCount + " 個 stories 成功");
+				mlog.info("專案 " + project.getName() + ", 第 " + (sprintIndex + 1)
+						+ " 個 sprint 加入 " + mStoryCount + " 個 stories 成功");
 			}
 		}
 	}
 
 	// create new story list
-	private void CreateStories(int EstValue, String type) throws Exception {
-		int TotalStory = this.EachCount * this.SprintCount;
-		CreateProductBacklog createStory = new CreateProductBacklog(TotalStory, EstValue, this.CP, type);
+	private void createStories(int columnValue, String columnBeSet) {
+		int totalStory = mStoryCount * mSprintCount;
+		CreateProductBacklog createStory = new CreateProductBacklog(totalStory,
+				columnValue, mCP, columnBeSet);
 		createStory.exe();
-		this.IssueList.addAll(createStory.getIssueList());
-	}
-
-	private void addStoryToSprint(IProject p, ArrayList<Long> list, String sprintID) {
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(p, configuration.getUserSession());
-		
-		for (long issueID : list) {
-			// IIssue issue = pb.getIssue(issueID);
-			IIssue issue = productBacklogMapper.getIssue(issueID);
-			String oldSprintID = issue.getSprintID();
-			if (sprintID != null && !sprintID.equals("") && Integer.parseInt(sprintID) >= 0) {
-
-				// history node
-				Element history = new Element(ScrumEnum.HISTORY_TAG);
-
-				Date current = new Date();
-				String dateTime = DateUtil.format(current, DateUtil._16DIGIT_DATE_TIME_2);
-				history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, dateTime);
-
-				// iteration node
-				Element iteration = new Element(ScrumEnum.SPRINT_ID);
-				iteration.setText(sprintID);
-				history.addContent(iteration);
-				issue.addTagValue(history);
-
-				// 最後將修改的結果更新至DB
-				productBacklogMapper.updateIssueValue(issue);
-				productBacklogMapper.addHistory(issue.getIssueID(), ScrumEnum.SPRINT_TAG, oldSprintID, sprintID);
-				// 將Stroy與Srpint對應的關係增加到StoryRelationTable
-				productBacklogMapper.updateStoryRelation(Long.toString(issueID), issue.getReleaseID(), sprintID, null, null, current);
-				
-			}
-		}
+		mStories = createStory.getStories();
 	}
 }

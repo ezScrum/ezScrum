@@ -2,8 +2,8 @@ package ntut.csie.ezScrum.web.databasEnum;
 
 public interface AccountEnum {
     public static final String TABLE_NAME = "account";
-    public static final String ID = "ID";
-    public static final String ACCOUNT = "account";
+    public static final String ID = "id";
+    public static final String USERNAME = "username";
     public static final String NICK_NAME = "nick_name";
     public static final String PASSWORD = "password";
     public static final String EMAIL = "email";

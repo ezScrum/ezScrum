@@ -1,13 +1,16 @@
 package ntut.csie.ezScrum.issue.core;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.issue.internal.IssueRelationship;
 import ntut.csie.ezScrum.issue.internal.IssueTypeField;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 import org.jdom.Element;
@@ -35,6 +38,7 @@ import org.jdom.Element;
 public interface IIssue extends Serializable{	
 	public String getCategory();
 	public void setCategory(String category);
+	public int getIssueType();
 	
 	public String getReproducibility();
 	public void setReproducibility(String reproducibility);
@@ -60,11 +64,17 @@ public interface IIssue extends Serializable{
 	public String getAssignto();
 	public void setAssignto(String assignto);
 	
+	/**
+	 * PID
+	 */
 	public String getProjectID();
+	/**
+	 * PID
+	 */
 	public void setProjectID(String projectID);
 	
 		
-	public String getIntegrationID();
+	public String getIntegrationId();
 	public void setIntegrationID(String integrationID);
 	
 	public String getBuilderID();
@@ -82,7 +92,7 @@ public interface IIssue extends Serializable{
 	public String getIssueLink();
 	public void setIssueLink(String issueLink);
 	
-	public void setIssue(IIssue issue);
+	public void setIssue(IIssue issue) throws SQLException;
 	public String getReporter();
 	
 	public void setReporter(String m_reporter);
@@ -95,14 +105,12 @@ public interface IIssue extends Serializable{
 	public void setWorkingUpdated(long workingDate);
 	public int getStatusValue();
 	
-	@Deprecated
-	public List<IIssueHistory> getIssueHistories();
-	public void addIssueHistory(IIssueHistory history);
+	// temp function for ezScrum v1.8
+	public void addHistory(HistoryObject history);
+	public ArrayList<HistoryObject> getHistories() throws SQLException;
+	public void setHistories(ArrayList<HistoryObject> histories);
 	
-	public List<IIssueHistory> getHistory();
-	public void setHistory(List<IIssueHistory> history);
-	
-	public List<IssueRelationship> getRelationships();
+//	public List<IssueRelationship> getRelationships();
 	
 	public List<IIssueNote> getIssueNotes();
 	public void setIssueNotes(List<IIssueNote> notes);
@@ -120,14 +128,22 @@ public interface IIssue extends Serializable{
 	public String getNotes();
 	@Deprecated
 	public String getPartners();
-	@Deprecated
-	public List<Long> getChildrenID();
-	@Deprecated
-	public List<Long> getChildrenID(Date date);
-	@Deprecated
-	public List<Long> getParentsID();
-	@Deprecated
-	public List<Long> getParentsID(Date date);
+//	@Deprecated
+//	public List<Long> getChildrenID();
+//	@Deprecated
+//	public List<Long> getChildrenID(Date date);
+	
+	
+	public void setChildrenId(ArrayList<Long> childrenId);
+	public ArrayList<Long> getChildrenId();
+	
+	public void setParentId(long parentID);
+	public long getParentId();
+	
+	// parentId 好像沒人用它，目前暫時註解待查證
+//	public void setParentsId(ArrayList<Long> parentsId);
+//	public ArrayList<Long> getParentsId();
+	
 	public String getActualHour();
 
 	//支援scrum但需要修改的操作
@@ -140,16 +156,16 @@ public interface IIssue extends Serializable{
 	@Deprecated
 	public String getTagValue(String name);
 	public Map<Date, String> getTagValueList(String name);
-	public int DateStatus(Date date);
-//	public void setColor(String Color);
-//	public String getColor();
-	public long getCloseDate();
-	public long getAssignedDate();
+	public int getDateStatus(Date date);
+	public long getDoneDate();
+	public long getCheckOutDate();
 	public String getCreateBy();
+	public long getAssignedDate();
+	public long getCloseDate();
 	
-	public List<IssueAttachFile> getAttachFile();
-	public void setAttachFile(List<IssueAttachFile> fileList);
-	public void addAttachFile(IssueAttachFile attach);
+	public ArrayList<AttachFileObject> getAttachFiles();
+	public void setAttachFiles(ArrayList<AttachFileObject> fileList);
+	public void addAttachFile(AttachFileObject attach);
 	
 	// 對Story的自訂分類標籤
 	public List<TagObject> getTags();

@@ -1,5 +1,5 @@
 *** Settings ***
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 Resource          ../Project/ezScrum_Project.txt

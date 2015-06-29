@@ -2,39 +2,35 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class AddUserToRole {
-	private CreateProject CP;
-	private CreateAccount CA;
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private AccountObject mAccount = null;
+	private IProject mProject = null;
+	private ProjectObject mProjectObject = null;
+	private Configuration mConfig = new Configuration();
 
-	private UserObject theAccount = null;
-	private IProject theProject = null;
-	private ProjectObject projectObject = null;
-
-	private Configuration configuration = new Configuration();
-
-	public AddUserToRole(CreateProject cp, CreateAccount ca) {
-		this.CP = cp;
-		this.CA = ca;
-
-		this.theAccount = this.CA.getAccountList().get(0);
-		this.theProject = this.CP.getProjectList().get(0);
-		this.projectObject = this.CP.getProjectObjectList().get(0);
+	public AddUserToRole(CreateProject CP, CreateAccount CA) {
+		mCP = CP;
+		mCA = CA;
+		mAccount = mCA.getAccountList().get(0);
+		mProject = mCP.getProjectList().get(0);
+		mProjectObject = mCP.getAllProjects().get(0);
 	}
 
 	/**
 	 * 指定目前要新增的專案 Index
 	 */
 	public void setProjectIndex(int index) {
-		if (index < this.CP.getProjectList().size()) {
-			this.theProject = this.CP.getProjectList().get(index);
+		if (index < mCP.getProjectList().size()) {
+			mProject = mCP.getProjectList().get(index);
 		}
 	}
 
@@ -42,8 +38,8 @@ public class AddUserToRole {
 	 * 指定目前要新增的Account Index
 	 */
 	public void setAccountIndex(int index) {
-		if (index < this.CA.getAccountCount()) {
-			this.theAccount = this.CA.getAccountList().get(index);
+		if (index < mCA.getAccountCount()) {
+			mAccount = mCA.getAccountList().get(index);
 		}
 	}
 
@@ -51,21 +47,21 @@ public class AddUserToRole {
 	 * 取得目前指定的 Project
 	 */
 	public IProject getNowProject() {
-		return this.theProject;
+		return mProject;
 	}
 	
 	/**
 	 * 取得目前指定的 Project
 	 */
 	public ProjectObject getNowProjectObject() {
-		return this.projectObject;
+		return mProjectObject;
 	}
 
 	/**
 	 * 取得目前指定的 Account
 	 */
-	public UserObject getNowAccount() {
-		return this.theAccount;
+	public AccountObject getNowAccount() {
+		return mAccount;
 	}
 
 //	/**
@@ -81,55 +77,47 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Product Owner 角色
 	 */
 	public void exe_PO() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
-		updateAccount(res, op);
+		long projectId = mProjectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Scrum Team 角色
 	 */
 	public void exe_ST() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_SCRUMTEAM;
-		updateAccount(res, op);
+		long projectId = mProjectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMTEAM);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Scrum Master 角色
 	 */
 	public void exe_SM() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_SCRUMMASTER;
-		updateAccount(res, op);
+		long projectId = mProjectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMMASTER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Stakeholder 角色
 	 */
 	public void exe_Sh() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_STAKEHOLDER;
-		updateAccount(res, op);
+		long projectId = mProjectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_STAKEHOLDER);
 	}
 
 	/**
 	 * 將目前指定的 Account 加入 Guest 角色
 	 */
 	public void exe_Guest() {
-		String res = this.projectObject.getId();
-		String op = ScrumEnum.SCRUMROLE_GUEST;
-		updateAccount(res, op);
+		long projectId = mProjectObject.getId();
+		updateAccount(projectId, ScrumEnum.SCRUMROLE_GUEST);
 	}
 
 	/**
 	 * 將目前 Account 指定為系統管理員
 	 */
 	public void setNowAccountIsSystem() {
-//		IAccountManager am = AccountFactory.getManager();
-//		UserObject account = am.getAccount(ScrumEnum.SCRUMROLE_ADMIN);
-		
-		this.theAccount = new AccountMapper().getAccount("admin");;
+		mAccount = new AccountMapper().getAccount("admin");;
 	}
 
 	/**
@@ -137,20 +125,23 @@ public class AddUserToRole {
 	 */
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
-		UserObject account = CA.getAccountList().get(index);
-		AccountHelper helper = new AccountHelper(configuration.getUserSession());
-		UserInformation user = new UserInformation(account.getId(), account.getAccount(), account.getName(), account.getPassword(), account.getEmail(), isEnable.toString());
+		AccountObject account = CA.getAccountList().get(index);
+		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
+		AccountInfo user = new AccountInfo();
+		user.id = account.getId();
+		user.username = account.getUsername();
+		user.nickName = account.getNickName();
+		user.password = account.getPassword();
+		user.email = account.getEmail();
+		user.enable = isEnable;
 		helper.updateAccount(user);
 	}
 
-	private void updateAccount(String res, String role) {
+	private void updateAccount(long projectId, String role) {
 		// ezScrum v1.8
-		AccountHelper helper = new AccountHelper(configuration.getUserSession());
+		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
 		try {
-			helper.assignRole_add(theAccount.getId(), res, role);
-		} catch (LogonException e) {
-			e.printStackTrace();
-			System.out.println("class: AddUserToRole, method: updateAccount, Logon_exception: " + e.toString());
+			helper.addAssignedRole(mAccount.getId(), projectId, role);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("class: AddUserToRole, method: updateAccount, exception: " + e.toString());

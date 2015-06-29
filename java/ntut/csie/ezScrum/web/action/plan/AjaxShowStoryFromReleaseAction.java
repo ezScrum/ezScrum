@@ -1,14 +1,17 @@
 package ntut.csie.ezScrum.web.action.plan;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -34,123 +37,22 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		log.info(" Show Story From Release. ");
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-	
+		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
+		
 		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
-		ProductBacklogHelper productHelper = new ProductBacklogHelper(project, session);
+		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		
 		// get parameter info
-		String R_ID = request.getParameter("Rid");
+		String releaseId = request.getParameter("Rid");
 		
-		//取得ReleasePlan
-		IReleasePlanDesc plan = planHelper.getReleasePlan(R_ID);
+		// 取得 ReleasePlan
+		IReleasePlanDesc plan = planHelper.getReleasePlan(releaseId);
 		
-		IStory[] storyList = productHelper.getStoriesByRelease(plan);
-		return planHelper.showStoryFromReleae(project, R_ID, storyList);
-		
-//		ReleaseBacklog releaseBacklog;
-//		try {
-//			releaseBacklog = new ReleaseBacklog(project, plan, 
-//					productHelper.getStoriesByRelease(plan));
-//		}
-//		catch (Exception e) {
-//			// TODO: handle exception
-//			releaseBacklog = null;
-//		}	
-				
-//		if (R_ID != null) {			
-//			IIssue[] stories = releaseBacklog.getStory();
-//			stories = sortStory(stories);
-//			
-//			// write stories to XML format
-//			StringBuilder sb = new StringBuilder();
-//			sb.append("<ExistingStories>");			
-//			for(int i = 0; i < stories.length; i++)
-//			{
-//				String releaseId = stories[i].getReleaseID();
-//				if(releaseId.equals("") || releaseId.equals("0") || releaseId.equals("-1"))
-//					releaseId = "None";
-//				
-//				String sprintId = stories[i].getSprintID();
-//				if(sprintId.equals("") || sprintId.equals("0") || sprintId.equals("-1"))
-//					sprintId = "None";
-//				sb.append("<Story>");
-//				sb.append("<Id>" + stories[i].getIssueID() + "</Id>");
-//				sb.append("<Link>" + replaceStr(stories[i].getIssueLink()) + "</Link>");
-//				sb.append("<Name>" + replaceStr(stories[i].getSummary())+ "</Name>");
-//				sb.append("<Value>" + stories[i].getValue()+"</Value>");
-//				sb.append("<Importance>" + stories[i].getImportance() + "</Importance>");
-//				sb.append("<Estimation>" + stories[i].getEstimated() + "</Estimation>");
-//				sb.append("<Status>" + stories[i].getStatus() + "</Status>");
-//				sb.append("<Notes>" + replaceStr(stories[i].getNotes()) + "</Notes>");
-//				sb.append("<HowToDemo>" + replaceStr(stories[i].getHowToDemo()) + "</HowToDemo>");
-//				sb.append("<Release>" + releaseId + "</Release>");
-//				sb.append("<Sprint>" + sprintId + "</Sprint>");
-//				sb.append("<Tag>" + replaceStr(Join(stories[i].getTag(), ",")) + "</Tag>");
-//				sb.append("</Story>");
-//			}
-//			sb.append("</ExistingStories>");
-//			
-//			return sb;
-//		} else {
-//			return null;
-//		}
-		
+		ArrayList<StoryObject> storyList = PBHelper.getStoriesByRelease(plan);
+		return planHelper.showStoryFromRelease(iProject, releaseId, storyList);
 	}
-	
-//	// sort story information by importance
-//	private IIssue[] sortStory(IIssue[] issues) {
-//		List<IIssue> list = new ArrayList();
-//	
-//		for (IIssue issue : issues) {
-//			int index = 0;
-//			for (index=0 ; index<list.size() ; index++) {
-//				if ( Integer.parseInt(issue.getImportance()) > Integer.parseInt(list.get(index).getImportance()) ) {
-//					break;
-//				}
-//			}
-//			list.add(index, issue);
-//		}
-//	
-//		return list.toArray(new IIssue[list.size()]);
-//	}
-//	public String Join(List<IIssueTag> tags, String delimiter)
-//	{
-//	    if (tags.isEmpty())
-//		return "";
-//	 
-//	    StringBuilder sb = new StringBuilder();
-//	 
-//	    for (IIssueTag x : tags)
-//	    	sb.append(x.getTagName() + delimiter);
-//	 
-//	    sb.delete(sb.length()-delimiter.length(), sb.length());
-//	 
-//	    return sb.toString();
-//	}
-//
-//	private String replaceStr(String str) {
-//		if (str != null) {
-//			if (str.contains("&")) {
-//				str = str.replaceAll("&", "&amp;");
-//			}
-//			
-//			if (str.contains("\"")) {
-//				str = str.replaceAll("\"", "&quot;");
-//			}
-//			
-//			if (str.contains("<")) {
-//				str = str.replaceAll("<", "&lt;");
-//			}
-//			
-//			if (str.contains(">")) {
-//				str = str.replaceAll(">", "&gt;");
-//			}
-//		}
-//		
-//		return str;
-//	}
 }

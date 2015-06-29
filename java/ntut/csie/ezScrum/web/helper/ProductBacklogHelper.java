@@ -1,253 +1,159 @@
 package ntut.csie.ezScrum.web.helper;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.StoryInformation;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
-
-import org.jdom.Element;
 
 public class ProductBacklogHelper {
-	private ProductBacklogMapper productBacklogMapper;
-	private ProductBacklogLogic productBacklogLogic;
-	private IProject project;
+	private ProductBacklogMapper mProductBacklogMapper;
+	private ProductBacklogLogic mProductBacklogLogic;
+	private ProjectObject mProject;
 
-	public ProductBacklogHelper(IUserSession userSession, IProject project) {
-		this.productBacklogMapper = new ProductBacklogMapper( project, userSession);
-		this.productBacklogLogic = new ProductBacklogLogic(userSession, project);
-		this.project = project;
+	public ProductBacklogHelper(ProjectObject project) {
+		mProductBacklogMapper = new ProductBacklogMapper(project);
+		mProductBacklogLogic = new ProductBacklogLogic(project);
+		mProject = project;
 	}
-	
+
 	/**
-	 * Filter Type : 
-	 * 1. null
-	 * 2. BACKLOG
-	 * 3. DETAIL
-	 * 4. DONE
-	 * @param filterType 
-	 * @return 
-	 * @return
+	 * Filter Type : 1. null 2. BACKLOG 3. DETAIL 4. DONE
+	 * 
+	 * @param filterType
+	 * @return StringBuilder
 	 */
-	public StringBuilder getShowProductBacklogResponseText(String filterType){
-		IStory[] stories = this.productBacklogLogic.getStoriesByFilterType(filterType);
-		
+	public StringBuilder getShowProductBacklogResponseText(String filterType) {
+		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByFilterType(filterType);
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStoryToJson(stories));
-		
+		result.append(Translation.translateStoriesToJson(stories));
 		return result;
 	}
-	
+
 	/**
-	 * 新增Story
-	 * 步驟：
-	 * 1.	新增story
-	 * 2.	新增Tag至Story上面
-	 * 3.	新增story to sprint
-	 * 4.	如果這個SprintID有Release資訊，那麼也將此Story加入Release
-	 * @param storyInformation 
-	 * @return 
+	 * 新增 Story
+	 * 
+	 * @param storyInfo
+	 * @return StoryObject
 	 */
-	public IIssue addNewStory(StoryInformation storyInformation){
-		String name = storyInformation.getName();
-		String importance = storyInformation.getImportance();
-		String estimate = storyInformation.getEstimation();
-		String value = storyInformation.getValue();
-		String howToDemo = storyInformation.getHowToDemo();
-		String notes = storyInformation.getNotes();
-		String sprintID = storyInformation.getSprintID();
-		String tagIDs = storyInformation.getTagIDs();
-		
-		
-		//	1. 新增story
-		IIssue story = this.productBacklogMapper.addStory(storyInformation);
-		long issueID = story.getIssueID();
-		this.editStory(issueID, name, value, importance, estimate, howToDemo, notes);;
-		
-		//	2. 新增Tag至Story上面
-		this.addTagToStory(tagIDs, issueID);
-		
-		if (sprintID != null || sprintID.length() != 0){
-			//	3. 新增story to sprint
-			ArrayList<Long> list = this.addStoryToSprint(sprintID, issueID);
-			
-			//	4. 如果這個SprintID有Release資訊，那麼也將此Story加入Release
-			this.addStoryToRelease(sprintID, list);
-		}
-		
-		IIssue issue = this.productBacklogMapper.getIssue(issueID);
-		
-		return issue;
+	public long addStory(long projectId, StoryInfo storyInfo) {
+		StoryObject newStory = mProductBacklogMapper.addStory(projectId, storyInfo);
+		return newStory.getId();
+	}
+
+	// 秀出此 release 加入的 stories，以及此 release 的 sprint 包含的 stories
+	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc desc) {
+		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(desc);
+		return stories;
 	}
 	
-	public IIssue editStory(StoryInformation storyInformation) {
-		long issueID = Long.parseLong(storyInformation.getStroyID());
-		String name = storyInformation.getName();
-		String importance = storyInformation.getImportance();
-		String estimate = storyInformation.getEstimation();
-		String value = storyInformation.getValue();
-		String howToDemo = storyInformation.getHowToDemo();
-		String notes = storyInformation.getNotes();
-		String sprintID = storyInformation.getSprintID();
-		if (sprintID != null | sprintID.length() != 0){
-			//	新增story to sprint
-			ArrayList<Long> list = this.addStoryToSprint(sprintID, issueID);
-			//	如果這個SprintID有Release資訊，那麼也將此Story加入Release
-			this.addStoryToRelease(sprintID, list);
-		}
-		return editStory(issueID, name, value, importance, estimate, howToDemo, notes);
+	public ArrayList<StoryObject> getAddableStories() {
+		return mProductBacklogLogic.getAddableStories();
 	}
 	
+	public ArrayList<StoryObject> getStoriesByFilterType(String filterType) {
+		return mProductBacklogLogic.getStoriesByFilterType(filterType);
+	}
+	
+	public ArrayList<StoryObject> getStories() {
+		return mProductBacklogLogic.getStories();
+	}
+
 	/**
-	 * 更新Story資訊
-	 * @param issueID
-	 * @param name
-	 * @param value
-	 * @param importance
-	 * @param estimate
-	 * @param howToDemo
-	 * @param note
-	 * @return
+	 * 更新 Story 資訊
+	 * 
+	 * @param storyInfo
+	 * @return StoryObject
 	 */
-	public IIssue editStory(long issueID, String name, String value, String importance, String estimate, String howToDemo, String note) {
-		this.productBacklogMapper.modifyName(issueID, name, null);
-//		Element history = this.productBacklogLogic.translateIssueToXML(value, importance, estimation, howToDemo, note);
-		Element history = this.translateIssueToXML(value, importance, estimate, howToDemo, note);
-		if (history.getChildren().size() > 0) {
-			IIssue issue = this.productBacklogMapper.getIssue(issueID);
-			issue.addTagValue(history);
-			
-			issue.setSummary(name);
-			this.productBacklogMapper.updateIssueValue(issue);
-
-			return this.productBacklogMapper.getIssue(issueID);
-		}else{
-			return null;
-		}
+	public StoryObject updateStory(long id, StoryInfo storyInfo) {
+		mProductBacklogMapper.updateStory(storyInfo);
+		return mProductBacklogMapper.getStory(id);
 	}
-	
-	private Element translateIssueToXML(String value, String importance, String estimate, String howToDemo, String note) {
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(new Date(), DateUtil._16DIGIT_DATE_TIME_2));
 
-		if (importance != null && !importance.equals("")) {
-			Element importanceElem = new Element(ScrumEnum.IMPORTANCE);
-			int temp = (int) Float.parseFloat(importance);
-			importanceElem.setText(temp + "");
-			history.addContent(importanceElem);
-		}
-
-		if (estimate != null && !estimate.equals("")) {
-			Element storyPoint = new Element(ScrumEnum.ESTIMATION);
-			storyPoint.setText(estimate);
-			history.addContent(storyPoint);
-		}
-		
-		if(value != null && !value.equals(""))
-		{
-			Element customValue = new Element(ScrumEnum.VALUE);
-			customValue.setText(value);
-			history.addContent(customValue);
-		}
-		Element howToDemoElem = new Element(ScrumEnum.HOWTODEMO);
-		howToDemoElem.setText(howToDemo);
-		history.addContent(howToDemoElem);
-
-		Element notesElem = new Element(ScrumEnum.NOTES);
-		notesElem.setText(note);
-		history.addContent(notesElem);
-		return history;
-	}
-	
-	/**
-	 * 更新Story並轉換成XML format
-	 * @param issueID
-	 * @return
-	 */
-	public StringBuilder getEditStoryInformationResponseText(long issueID){
-		IIssue issue = this.productBacklogMapper.getIssue(issueID);
-		
-		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStory(issue));
-		return result;
-	}
-	
 	/**
 	 * delete story and get json text
-	 * @param ID
-	 * @return
+	 * 
+	 * @param storyId
+	 * @return StringBuilder
 	 */
-	public StringBuilder deleteStory(String ID) {
-	//		removeTask(ID);
-	//		m_backlog.deleteStory(ID);
-		this.removeTask(ID);
-		this.productBacklogMapper.deleteStory(ID);
-		
+	public StringBuilder deleteStory(long storyId) {
+		StoryObject story = getStory(storyId);
 		StringBuilder result = new StringBuilder("");
-		result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":"+ID+"}]}");
+
+		if (story != null) {
+			removeTask(storyId);
+			mProductBacklogMapper.deleteStory(storyId);
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+		} else {
+			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
+		}
 		return result;
 	}
-	
+
 	/**
-	 * 取得專案所有的Tag並轉以XML格式輸出。
-	 * @return
+	 * 取得專案所有的 Tag 並轉以 XML 格式輸出。
+	 * 
+	 * @return StringBuilder
 	 */
-	public StringBuilder getTagListResponseText(){
+	public StringBuilder getTagListResponseText() {
 		StringBuilder sb = new StringBuilder();
-		try{
-			ArrayList<TagObject> tags = this.getTagList();
-	
+		try {
+			ArrayList<TagObject> tags = getTagList();
+
 			sb.append("<TagList><Result>success</Result>");
-			for(int i = 0; i < tags.size(); i++){
+			for (int i = 0; i < tags.size(); i++) {
 				sb.append("<IssueTag>");
 				sb.append("<Id>" + tags.get(i).getId() + "</Id>");
 				sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tags.get(i).getName()) + "</Name>");
 				sb.append("</IssueTag>");
 			}
 			sb.append("</TagList>");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			sb.append("<TagList><Result>false</Result></TagList>");
 		}
 		return sb;
 	}
-	
+
 	/**
 	 * 新增Tag並轉換成Response所需要的XML format
+	 * 
 	 * @param newTagName
-	 * @return
+	 * @return StringBuilder
 	 */
-	public StringBuilder getAddNewTagResponsetext(String newTagName){
+	public StringBuilder getAddNewTagResponsetext(String newTagName) {
 		String original_tagname = newTagName;
-		
+
 		newTagName = new TranslateSpecialChar().TranslateDBChar(newTagName);
-		
+
 		StringBuilder sb = new StringBuilder("");
-		//先將"\","'"轉換, 判斷DB裡是否存在
-		if(newTagName.contains(",")) {
+		// 先將"\","'"轉換, 判斷DB裡是否存在
+		if (newTagName.contains(",")) {
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>TagName: \",\" is not allowed</Message></Tags>");
-		} else if(this.isTagExist(newTagName)) {
-			//轉換"&", "<", ">", """, 通過XML語法
-			//因為"\","'"對xml沒影響, 所以使用original(未轉換)
-			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname); 
+		} else if (isTagExist(newTagName)) {
+			// 轉換"&", "<", ">", """, 通過XML語法
+			// 因為"\","'"對xml沒影響, 所以使用original(未轉換)
+			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname);
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>Tag Name : " + newTagName + " already exist</Message></Tags>");
 		} else {
-			long id = this.addNewTag(newTagName);
-			
+			addNewTag(newTagName);
 			TagObject tag = getTagByName(newTagName);
-			
+
 			sb.append("<Tags><Result>true</Result>");
 			sb.append("<IssueTag>");
 			sb.append("<Id>" + tag.getId() + "</Id>");
@@ -257,9 +163,9 @@ public class ProductBacklogHelper {
 		}
 		return sb;
 	}
-	
-	public StringBuilder getDeleteTagReponseText(long tagId){
-    	this.productBacklogMapper.deleteTag(tagId);
+
+	public StringBuilder getDeleteTagReponseText(long tagId) {
+		mProductBacklogMapper.deleteTag(tagId);
 
 		StringBuilder result = new StringBuilder("");
 		result.append("<TagList><Result>success</Result>");
@@ -270,187 +176,236 @@ public class ProductBacklogHelper {
 
 		return result;
 	}
-	
+
 	/**
-	 * 新增Tag至Story上，並回傳加上Tag之後的Story資訊(json format)
+	 * 新增 Tag 至 Story 上，並回傳加上 Tag 之後的 Story 資訊(json format)
+	 * 
 	 * @param storyId
 	 * @param tagId
-	 * @return
+	 * @return StringBuilder
 	 */
-	public StringBuilder getAddStoryTagResponseText(String storyId, long tagId){
-		this.addStoryTag(storyId, tagId);
-		
-		IIssue issue = this.productBacklogMapper.getIssue(Long.parseLong(storyId));
-		
+	public StringBuilder getAddStoryTagResponseText(long storyId, long tagId) {
+		addStoryTag(storyId, tagId);
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		StringBuilder result = new StringBuilder("");
-		result.append(this.translateStoryToJson(issue));
+		result.append(translateStoryToJson(story));
 		return result;
 	}
-	
+
 	/**
-	 * 移除Story上的Tag，並回傳移除Tag之後的Story資訊(json format)
+	 * 移除 Story 上的 Tag，並回傳移除 Tag 之後的 Story 資訊(json format)
+	 * 
 	 * @param storyId
 	 * @param tagId
-	 * @return
+	 * @return StringBuilder
 	 */
-	public StringBuilder getRemoveStoryTagResponseText(String storyId, long tagId){
-		
-		this.removeStoryTag(storyId,tagId);
-		IIssue issue = this.productBacklogMapper.getIssue(Long.parseLong(storyId));
-		
+	public StringBuilder getRemoveStoryTagResponseText(long storyId, long tagId) {
+		removeStoryTag(storyId, tagId);
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		StringBuilder result = new StringBuilder("");
-		result.append(this.translateStoryToJson(issue));
+		result.append(translateStoryToJson(story));
+		return result;
+	}
 
+	/**
+	 * 將 story 資訊轉換成 JSon format
+	 * 
+	 * @param story
+	 * @return StringBuilder
+	 */
+	public StringBuilder translateStoryToJson(StoryObject story) {
+		StringBuilder result = new StringBuilder("");
+		result.append(Translation.translateStoryToJson(story));
 		return result;
 	}
 	
 	/**
-	 * 將story資訊轉換成JSon format
-	 * @param issue
-	 * @return
+	 * 將 story 資訊轉換成 JSon format
+	 * 
+	 * @param story
+	 * @return StringBuilder
 	 */
-	public StringBuilder translateStoryToJson(IIssue issue){
+	public StringBuilder translateStoryToXML(StoryObject story) {
 		StringBuilder result = new StringBuilder("");
-		result.append(new Translation().translateStoryToJson(issue));
-		
+		result.append(Translation.translateStoryToXML(story));
 		return result;
 	}
-	
-	private void addStoryToRelease(String sprintID, ArrayList<Long> list) {
-		ReleasePlanHelper releaseHelper = new ReleasePlanHelper(this.project);
-		String releaseID = releaseHelper.getReleaseID(sprintID);
-		if (!(releaseID.equals("0")))
-			this.productBacklogLogic.addReleaseTagToIssue(list, releaseID);
-	}
 
-	private ArrayList<Long> addStoryToSprint(String sprintID, long issueID) {
-		ArrayList<Long> list = new ArrayList<Long>();
-		list.add(issueID);
-		this.productBacklogLogic.addIssueToSprint(list, sprintID);
-		return list;
-	}
-
-	private void addTagToStory(String tagIDs, long issueID) {
-		String[] IDs = tagIDs.split(",");
-		if ( ! (tagIDs.isEmpty()) && IDs.length > 0) {
-			for (String tagId : IDs) {
-				this.productBacklogMapper.addStoryTag(Long.toString(issueID), Long.parseLong(tagId));
+	// 透過 map 得到所有 sprint 的 stories
+	public Map<Long, ArrayList<StoryObject>> getSprintHashMap() {
+		ArrayList<StoryObject> stories;
+		Map<Long, ArrayList<StoryObject>> map = new HashMap<Long, ArrayList<StoryObject>>();
+		try {
+			stories = mProductBacklogLogic.getStories();
+			for (StoryObject story : stories) {
+				long iteration = story.getSprintId();
+				if (map.get(iteration) == null) {
+					ArrayList<StoryObject> list = new ArrayList<StoryObject>();
+					list.add(story);
+					map.put(iteration, list);
+				} else {
+					ArrayList<StoryObject> list = map.get(iteration);
+					list.add(story);
+				}
 			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 	
+	public ArrayList<TaskObject> getTasksWithNoParent() {
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		tasks = mProject.getTasksWithNoParent();
+		return tasks;
+	}
+
 	/**
-	 * remove task跟story之間的關係
-	 * @param id
+	 * remove task 跟 story 之間的關係
+	 * 
+	 * @param storyId
 	 */
-	private void removeTask(String id) {
-		IIssue issue = this.productBacklogMapper.getIssue(Long.parseLong(id));
-		// 取得issue的的task列表
-		List<Long> tasksList = issue.getChildrenID();
+	private void removeTask(long storyId) {
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
+		// 取得story的的task列表
+		ArrayList<TaskObject> tasks = story.getTasks();
 		// drop Tasks
-		if (tasksList != null) {
-			for (Long taskID : tasksList)
-				this.productBacklogMapper.removeTask(taskID, Long.parseLong(id));
+		if (tasks.size() > 0) {
+			for (TaskObject task : tasks)
+				mProductBacklogMapper.removeTask(task.getId(), storyId);
 		}
 	}
-	
+
 	/**
 	 * 確認分類標籤是否存在
+	 * 
 	 * @param name
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isTagExist(String name) {
-		return this.productBacklogMapper.isTagExist(name);
+		return mProductBacklogMapper.isTagExisting(name);
 	}
-	
+
 	/**
 	 * 取得自訂分類標籤列表
-	 * @return
+	 * 
+	 * @return ArrayList
 	 */
 	public ArrayList<TagObject> getTagList() {
-		return this.productBacklogMapper.getTagList();
+		return mProductBacklogMapper.getTags();
 	}
 
 	/**
 	 * 取得 story 或 task
-	 * @param id
-	 * @return
+	 * 
+	 * @param storyId
+	 * @return StoryObject
 	 */
-	public IIssue getIssue(long id) {
-		return this.productBacklogMapper.getIssue(id);
+	public StoryObject getStory(long storyId) {
+		return mProductBacklogMapper.getStory(storyId);
 	}
-	
+
 	/**
 	 * 新增自訂分類標籤
+	 * 
 	 * @param name
 	 */
 	public long addNewTag(String name) {
-		return this.productBacklogMapper.addNewTag(name);
+		return mProductBacklogMapper.addNewTag(name);
 	}
-	
+
 	/**
 	 * 刪除自訂分類標籤
+	 * 
 	 * @param id
 	 */
 	public void deleteTag(long id) {
-		this.productBacklogMapper.deleteTag(id);
+		mProductBacklogMapper.deleteTag(id);
 	}
-	
+
 	/**
-	 * 根據Tag name取得tag
+	 * 根據 Tag name 取得 tag
+	 * 
 	 * @param name
 	 * @return
 	 */
-	public TagObject getTagByName(String name){
-		return this.productBacklogMapper.getTagByName(name);
-	}
-	
-	/**
-	 * 對Story設定自訂分類標籤
-	 * @param storyID
-	 * @param tagID
-	 */
-	public void addStoryTag(String storyID, long tagID) {
-		this.productBacklogMapper.addStoryTag(storyID, tagID);
-	}
-	
-	/**
-	 * 移除Story的自訂分類標籤
-	 * @param storyID
-	 * @param tagID
-	 */
-	public void removeStoryTag(String storyID, long tagID) {
-		this.productBacklogMapper.removeStoryTag(storyID, tagID);
+	public TagObject getTagByName(String name) {
+		return mProductBacklogMapper.getTagByName(name);
 	}
 
-	public void moveStory(long issueID, String moveID, String type) {
-		ArrayList<Long> issueList = new ArrayList<Long>();
-		issueList.add(new Long(issueID));
-		
-		/**
-		 * 1. 移動到某個Release內
-		 * 2. 移動到某個Sprint中
-		 */
-		if (type.equals("release")) {
-			// 因為移動到Release內，所以他不屬於任何一個Sprint
-			productBacklogLogic.removeStoryFromSprint(issueID);
-			// 移動到Release內
-			productBacklogLogic.addReleaseTagToIssue(issueList, moveID);
-		} else {	
-			// 將此Story加入其他Sprint
-			productBacklogLogic.addIssueToSprint(issueList, moveID);
-			// 檢查Sprint是否有存在於某個Release中
-			ReleasePlanHelper releasePlan = new ReleasePlanHelper(project);
-			String sprintReleaseID = releasePlan.getReleaseID(moveID);
-			/**
-			 * 1. 如果有的話，將所有Story加入Release
-			 * 2. 沒有的話，將此Story的Release設為0
-			 */
-			if (!(sprintReleaseID.equals("0"))) {
-				productBacklogLogic.addReleaseTagToIssue(issueList, sprintReleaseID);
-			} else {
-				productBacklogLogic.addReleaseTagToIssue(issueList, "0");
+	/**
+	 * 對 Story 設定自訂分類標籤
+	 * 
+	 * @param storyId
+	 * @param tagId
+	 */
+	public void addStoryTag(long storyId, long tagId) {
+		mProductBacklogMapper.addTagToStory(storyId, tagId);
+	}
+
+	/**
+	 * 移除 Story 的自訂分類標籤
+	 * 
+	 * @param storyId
+	 * @param tagId
+	 */
+	public void removeStoryTag(long storyId, long tagId) {
+		mProductBacklogMapper.removeTagFromStory(storyId, tagId);
+	}
+
+	public void moveStory(long storyId, long targetSprintId) {
+		ArrayList<Long> stories = new ArrayList<Long>();
+		stories.add(new Long(storyId));
+		// 將此Story加入其他Sprint
+		mProductBacklogLogic.addStoriesToSprint(stories, targetSprintId);
+	}
+
+	public void dropStoryFromSprint(long storyId) {
+		mProductBacklogLogic.dropStoryFromSprint(storyId);
+	}
+
+	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
+		// create folder to put file
+		String folderPath = System.getProperty("ntut.csie.jcis.resource.WorkspaceRoot") + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		new File(folderPath).mkdirs();
+
+		attachFileInfo.path = folderPath + File.separator + System.currentTimeMillis() + "_" + attachFileInfo.name;
+		File targetFile = new File(attachFileInfo.path);
+
+		// move file from tmp folder to "AttachFile" folder
+		copyFile(file, targetFile);
+
+		return mProductBacklogMapper.addAttachFile(attachFileInfo);
+	}
+
+	public void deleteAttachFile(long fileId) {
+		AttachFileObject attachFile = getAttachFile(fileId);
+
+		File file = new File(attachFile.getPath());
+		file.delete();
+
+		mProductBacklogMapper.deleteAttachFile(fileId);
+	}
+
+	// for ezScrum v1.8
+	public AttachFileObject getAttachFile(long fileId) {
+		return mProductBacklogMapper.getAttachfile(fileId);
+	}
+
+	private void copyFile(File srcFile, File destFile) throws IOException {
+		Files.copy(srcFile.toPath(), destFile.toPath());
+	}
+	
+	public boolean checkAccountInProject(List<AccountObject> memberList, AccountObject userObject) {
+		if (userObject.getUsername().equals("admin")) {
+			return true;
+		}
+		for (AccountObject member : memberList) {
+			if (member.getId() == userObject.getId()) {
+				return true;
 			}
 		}
+		return false;
 	}
 }

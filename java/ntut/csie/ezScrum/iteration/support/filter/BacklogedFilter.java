@@ -1,42 +1,35 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class BacklogedFilter extends AProductBacklogFilter {
 
-	public BacklogedFilter(IStory[] stories) {
+	public BacklogedFilter(ArrayList<StoryObject> stories) {
 		super(stories);
+		mStories = FilterStories();
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
-		IStory[] Stories = super.Stories;
-		
-		List<IStory> filerStories = new ArrayList<IStory>();
-		
-		for (IStory story : Stories) {
+	protected ArrayList<StoryObject> FilterStories() {
+		ArrayList<StoryObject> stories = mStories;
+		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
+		for (StoryObject story : stories) {
 			// business value 不存在, 或 estimate 不存在, 或 importance 不存在
-			if ( ! (( (story.getValue()!=null) && (! story.getValue().equals("0")) ) && 
-					( (story.getEstimated()!=null) && (! story.getEstimated().equals("0")) ) &&
-					( (story.getImportance()!=null) && (! story.getImportance().equals("0")) ) ) ) {
-				
+			if (story.getValue() == 0 || story.getEstimate() == 0 || story.getImportance() == 0) {
 				// status 為 new
-				if (story.getStatus().equals(ITSEnum.S_NEW_STATUS)) {
-					filerStories.add(story);
+				if (story.getStatus() == StoryObject.STATUS_UNCHECK) {
+					fileredStories.add(story);
 				}
 			}
 		}
-			
-		return filerStories.toArray(new IStory[filerStories.size()]);
+		return fileredStories;
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
+	protected ArrayList<TaskObject> FilterTasks() {
 		// empty function
 		return null;
 	}

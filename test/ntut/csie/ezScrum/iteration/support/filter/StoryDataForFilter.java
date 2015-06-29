@@ -1,295 +1,171 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
-import java.util.Date;
+import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.iteration.iternal.Story;
-import ntut.csie.ezScrum.iteration.iternal.Task;
-import ntut.csie.jcis.core.util.DateUtil;
-
-import org.jdom.Element;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class StoryDataForFilter {
 	// for filter Backlog、Detail、Done
-	private IStory[] stories = null;
-	
-	// for filter name、description、handler
-	private IStory[] storie_info = null;
-	private ITask[] tasks_info = null;
+	private long mProjectId = 1;
+	private ArrayList<StoryObject> mStories = null;
+	private ArrayList<StoryObject> mStoriesInfo = null;
+	private ArrayList<TaskObject> mTasksInfo = null;
 	
 	public StoryDataForFilter() {
-		this.stories = new IStory[10];
+		mStories = new ArrayList<StoryObject>();
 
-		for (int i=0 ; i<10 ; i++) {
-			this.stories[i] = new Story();
+		for (int i = 0; i < 10; i++) {
+			StoryObject story = new StoryObject(mProjectId);
+			story.save();
+			mStories.add(story);
 		}
-		
 		init();
 	}
 	
 	public StoryDataForFilter(String info) {
-		this.storie_info = new IStory[10];
-		this.tasks_info = new ITask[10];
+		mStoriesInfo = new ArrayList<StoryObject>();
+		mTasksInfo = new ArrayList<TaskObject>();
 
-		for (int i=0 ; i<10 ; i++) {
-			this.storie_info[i] = new Story();
-			this.tasks_info[i] = new Task();
+		for (int i = 0; i < 10; i++) {
+			// add story
+			StoryObject story = new StoryObject(mProjectId);
+			story.save();
+			mStoriesInfo.add(story);
+			// add task
+			TaskObject task = new TaskObject(mProjectId);
+			task.save();
+			mTasksInfo.add(task);
 		}
-		
-		init_Story(info);
-		init_Task(info);
+		initStory(info);
+		initTask(info);
 	}
 	
-	public IStory[] getStorirs() {
-		return this.stories;
+	public ArrayList<StoryObject> getStorirs() {
+		return mStories;
 	}
 	
-	public IStory[] getStorirs_byInfo() {
-		return this.storie_info;
+	public ArrayList<StoryObject> getStorirsByInfo() {
+		return mStoriesInfo;
 	}
 	
-	public ITask[] getTasks_byInfo() {
-		return this.tasks_info;
-	
+	public ArrayList<TaskObject> getTasksByInfo() {
+		return mTasksInfo;
 	}
 	private void init() {
 		// for backlogged, total = 5
-		this.stories[0].getTagContentRoot().addContent(getBacklog_element1());
-		this.stories[0].setStatus(ITSEnum.S_NEW_STATUS);
-		
-		this.stories[1].getTagContentRoot().addContent(getBacklog_element1());
-		this.stories[1].setStatus(ITSEnum.S_NEW_STATUS);
-		
-		this.stories[2].getTagContentRoot().addContent(getBacklog_element2());
-		this.stories[2].setStatus(ITSEnum.S_NEW_STATUS);
-		
-		this.stories[3].getTagContentRoot().addContent(getBacklog_element3());
-		this.stories[3].setStatus(ITSEnum.S_NEW_STATUS);
-		
-		this.stories[4].getTagContentRoot().addContent(getBacklog_element4());
-		this.stories[4].setStatus(ITSEnum.S_NEW_STATUS);
+		for (int i = 0; i < 5; i++) {
+			mStories.get(i).setEstimate(0)
+			        .setImportance(0)
+			        .setValue(0)
+			        .setStatus(StoryObject.STATUS_UNCHECK)
+			        .save();
+		}
 		
 		// for detailed, total = 2
-		this.stories[5].getTagContentRoot().addContent(getDetail_element1());
-		this.stories[5].setStatus(ITSEnum.S_NEW_STATUS);
-		
-		this.stories[6].getTagContentRoot().addContent(getDetail_element2());
-		this.stories[6].setStatus(ITSEnum.S_NEW_STATUS);
+		for (int i = 5; i < 7; i++) {
+			mStories.get(i).setEstimate(10)
+			        .setImportance(10)
+			        .setValue(10)
+			        .setStatus(StoryObject.STATUS_UNCHECK)
+			        .save();
+		}
 		
 		// for done, total = 3
-		this.stories[7].getTagContentRoot().addContent(getDone_element());
-		this.stories[7].setStatus(ITSEnum.S_CLOSED_STATUS);
-		
-		this.stories[8].getTagContentRoot().addContent(getDone_element());
-		this.stories[8].setStatus(ITSEnum.S_CLOSED_STATUS);
-		
-		this.stories[9].getTagContentRoot().addContent(getDone_element());
-		this.stories[9].setStatus(ITSEnum.S_CLOSED_STATUS);
+		for (int i = 7; i < 10; i++) {
+			mStories.get(i).setEstimate(5)
+			        .setImportance(100)
+			        .setValue(100)
+			        .setStatus(StoryObject.STATUS_DONE)
+			        .save();
+		}
 	}
 	
-	private void init_Story(String info) {
-		// set ID 
-		this.storie_info[0].setIssueID(1);
-		this.storie_info[1].setIssueID(2);
-		this.storie_info[2].setIssueID(3);
-		this.storie_info[3].setIssueID(4);
-		this.storie_info[4].setIssueID(5);
-		this.storie_info[5].setIssueID(6);
-		this.storie_info[6].setIssueID(7);
-		this.storie_info[7].setIssueID(8);
-		this.storie_info[8].setIssueID(9);
-		this.storie_info[9].setIssueID(10);
-		
-		
+	private void initStory(String info) {
 		// summary contains info
-		this.storie_info[0].setSummary(info);
-		this.storie_info[1].setSummary(info + "_Story_Test");
-		this.storie_info[2].setSummary("Story_Test_" + info + "_Story_Test");
-		this.storie_info[3].setSummary("Story_Test_" + info);
-		this.storie_info[4].setSummary(info + info + info);
+		mStoriesInfo.get(0).setName(info).save();
+		mStoriesInfo.get(1).setName(info + "_Story_Test").save();
+		mStoriesInfo.get(2).setName("Story_Test_" + info + "_Story_Test").save();
+		mStoriesInfo.get(3).setName("Story_Test_" + info).save();
+		mStoriesInfo.get(4).setName(info + info + info).save();
 		
-		this.storie_info[5].setSummary("");
-		this.storie_info[6].setSummary("");
-		this.storie_info[7].setSummary("");		
-		this.storie_info[8].setSummary("");
-		this.storie_info[9].setSummary("");
-
+		mStoriesInfo.get(5).setName("").save();
+		mStoriesInfo.get(6).setName("").save();
+		mStoriesInfo.get(7).setName("").save();
+		mStoriesInfo.get(8).setName("").save();
+		mStoriesInfo.get(9).setName("").save();
 		
 		// description contains info
-		this.storie_info[0].setDescription("");
-		this.storie_info[1].setDescription("");
-		this.storie_info[2].setDescription("");
-		this.storie_info[3].setDescription("");
-		this.storie_info[4].setDescription("");
+		mStoriesInfo.get(0).setNotes("").save();
+		mStoriesInfo.get(1).setNotes("").save();
+		mStoriesInfo.get(2).setNotes("").save();
+		mStoriesInfo.get(3).setNotes("").save();
+		mStoriesInfo.get(4).setNotes("").save();
 		
-		this.storie_info[5].setDescription(info);
-		this.storie_info[6].setDescription(info + info + info);
-		this.storie_info[7].setDescription(info + "_Story_Test");
-		this.storie_info[8].setDescription("Story_Test_" + info + "_Story_Test");
-		this.storie_info[9].setDescription("Story_Test_" + info);
-		
+		mStoriesInfo.get(5).setNotes(info).save();
+		mStoriesInfo.get(6).setNotes(info + info + info).save();
+		mStoriesInfo.get(7).setNotes(info + "_Story_Test").save();
+		mStoriesInfo.get(8).setNotes("Story_Test_" + info + "_Story_Test").save();
+		mStoriesInfo.get(9).setNotes("Story_Test_" + info).save();
 	}
 	
-	private void init_Task(String info) {
-		// set ID 
-		this.tasks_info[0].setIssueID(1);
-		this.tasks_info[1].setIssueID(2);
-		this.tasks_info[2].setIssueID(3);
-		this.tasks_info[3].setIssueID(4);
-		this.tasks_info[4].setIssueID(5);
-		this.tasks_info[5].setIssueID(6);
-		this.tasks_info[6].setIssueID(7);
-		this.tasks_info[7].setIssueID(8);
-		this.tasks_info[8].setIssueID(9);
-		this.tasks_info[9].setIssueID(10);
-		
-		
+	private void initTask(String info) {	
 		// summary contains info
-		this.tasks_info[0].setSummary(info);
-		this.tasks_info[1].setSummary(info + "_Story_Test");
-		this.tasks_info[2].setSummary("Story_Test_" + info + "_Story_Test");
-		this.tasks_info[3].setSummary("Story_Test_" + info);
-		this.tasks_info[4].setSummary(info + info + info);
+		mTasksInfo.get(0).setName(info).save();
+		mTasksInfo.get(1).setName(info + "_Story_Test").save();
+		mTasksInfo.get(2).setName("Story_Test_" + info + "_Story_Test").save();
+		mTasksInfo.get(3).setName("Story_Test_" + info).save();
+		mTasksInfo.get(4).setName(info + info + info).save();
 		
-		this.tasks_info[5].setSummary("");
-		this.tasks_info[6].setSummary("");
-		this.tasks_info[7].setSummary("");		
-		this.tasks_info[8].setSummary("");
-		this.tasks_info[9].setSummary("");
+		mTasksInfo.get(5).setName("").save();
+		mTasksInfo.get(6).setName("").save();
+		mTasksInfo.get(7).setName("").save();
+		mTasksInfo.get(8).setName("").save();
+		mTasksInfo.get(9).setName("").save();
 
-	
 		// description contains info
-		this.tasks_info[0].setDescription("");
-		this.tasks_info[1].setDescription("");
-		this.tasks_info[2].setDescription("");
-		this.tasks_info[3].setDescription("");
-		this.tasks_info[4].setDescription("");
+		mTasksInfo.get(0).setNotes("").save();
+		mTasksInfo.get(1).setNotes("").save();
+		mTasksInfo.get(2).setNotes("").save();
+		mTasksInfo.get(3).setNotes("").save();
+		mTasksInfo.get(4).setNotes("").save();
 		
-		this.tasks_info[5].setDescription(info);
-		this.tasks_info[6].setDescription(info + info + info);
-		this.tasks_info[7].setDescription(info + "_Story_Test");
-		this.tasks_info[8].setDescription("Story_Test_" + info + "_Story_Test");
-		this.tasks_info[9].setDescription("Story_Test_" + info);
+		mTasksInfo.get(5).setNotes(info).save();
+		mTasksInfo.get(6).setNotes(info + info + info).save();
+		mTasksInfo.get(7).setNotes(info + "_Story_Test").save();
+		mTasksInfo.get(8).setNotes("Story_Test_" + info + "_Story_Test").save();
+		mTasksInfo.get(9).setNotes("Story_Test_" + info).save();
 		
-		
+		// create accounts
+		AccountObject account = new AccountObject("Yoman");
+		account.save();
+
+		AccountObject account2 = new AccountObject("Waterman");
+		account2.save();
+
+		AccountObject account3 = new AccountObject("Ironman");
+		account3.save();
+
+		AccountObject account4 = new AccountObject(info);
+		account4.save();
+
+		AccountObject account5 = new AccountObject("superman");
+		account5.save();
+
+		AccountObject account6 = new AccountObject("noman");
+		account6.save();
+
 		// handlers contains info
-		this.tasks_info[0].setAssignto("Yoman");
-		this.tasks_info[1].setAssignto("Waterman");
-		this.tasks_info[2].setAssignto("Ironman");
-		this.tasks_info[3].setAssignto(info);
-		this.tasks_info[4].setAssignto(info);
-		this.tasks_info[5].setAssignto(info);
-		this.tasks_info[6].setAssignto(info);
-		this.tasks_info[7].setAssignto(info);
-		this.tasks_info[8].setAssignto("superman");
-		this.tasks_info[9].setAssignto("noman");
-	}
-	
-	private Element getBacklog_element1() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("0"));	// add value 0
-		history.addContent(getImp_element("0"));	// add Imp. 0
-		history.addContent(getEst_element("0"));	// add Est. 0
-		
-		return history;
-	}
-	
-	private Element getBacklog_element2() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("0"));	// add value 0
-		history.addContent(getImp_element("0"));	// add Imp. 0
-		history.addContent(getEst_element("10"));	// add Est. 10
-		
-		return history;
-	}
-	
-	private Element getBacklog_element3() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("10"));// add value 10
-		history.addContent(getImp_element("0"));	// add Imp. 0
-		history.addContent(getEst_element("10"));	// add Est. 10
-		
-		return history;
-	}
-	
-	private Element getBacklog_element4() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("10"));// add value 10
-		history.addContent(getImp_element("10"));	// add Imp. 10
-		history.addContent(getEst_element("0"));	// add Est. 0
-		
-		return history;
-	}
-	
-	private Element getDetail_element1() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("10"));// add value 10
-		history.addContent(getImp_element("10"));	// add Imp. 10
-		history.addContent(getEst_element("10"));	// add Est. 10
-		
-		return history;
-	}
-	
-	private Element getDetail_element2() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));
-		history.addContent(getValue_element("100"));// add value 10
-		history.addContent(getImp_element("100"));	// add Imp. 10
-		history.addContent(getEst_element("10"));	// add Est. 0
-		
-		return history;
-	}
-	
-	private Element getDone_element() {
-		Date d = new Date();
-		d.setTime(d.getTime() - 100000);
-		Element history = new Element(ScrumEnum.HISTORY_TAG);
-		history.setAttribute(ScrumEnum.ID_HISTORY_ATTR, DateUtil.format(d, DateUtil._16DIGIT_DATE_TIME_2));	
-		history.addContent(getValue_element("100"));// add value 100
-		history.addContent(getImp_element("100"));	// add Imp. 100
-		history.addContent(getEst_element("5"));	// add Est. 5
-		
-		return history;
-	}
-	
-	private Element getValue_element(String v) {
-		Element e = new Element(ScrumEnum.VALUE);
-		e.setText(v);
-		
-		return e;
-	}
-	
-	private Element getImp_element(String v) {
-		Element e = new Element(ScrumEnum.IMPORTANCE);
-		e.setText(v);
-		
-		return e;
-	}
-	
-	private Element getEst_element(String v) {
-		Element e = new Element(ScrumEnum.ESTIMATION);
-		e.setText(v);
-		
-		return e;
+		mTasksInfo.get(0).setHandlerId(account.getId()).save();
+		mTasksInfo.get(1).setHandlerId(account2.getId()).save();
+		mTasksInfo.get(2).setHandlerId(account3.getId()).save();
+		mTasksInfo.get(3).setHandlerId(account4.getId()).save();
+		mTasksInfo.get(4).setHandlerId(account4.getId()).save();
+		mTasksInfo.get(5).setHandlerId(account4.getId()).save();
+		mTasksInfo.get(6).setHandlerId(account4.getId()).save();
+		mTasksInfo.get(7).setHandlerId(account4.getId()).save();
+		mTasksInfo.get(8).setHandlerId(account5.getId()).save();
+		mTasksInfo.get(8).setHandlerId(account6.getId()).save();
 	}
 }

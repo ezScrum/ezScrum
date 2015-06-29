@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 import org.apache.struts.action.Action;
@@ -19,14 +19,14 @@ public class ShowAccountInfoAction extends Action {
 			throws Exception {
 		// 取得要取得帳號資訊的id
 		String id = request.getParameter("id");
-		UserObject account = new AccountMapper().getAccount(id);
+		AccountObject account = new AccountMapper().getAccount(id);
 		
 		// write account to XML format
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Accounts>");
 		sb.append("<Account>");
 		sb.append("<ID>").append(id).append("</ID>");				
-		sb.append("<Name>").append(account.getName()).append("</Name>");				
+		sb.append("<Name>").append(account.getNickName()).append("</Name>");				
 		sb.append("<Mail>").append(account.getEmail()).append("</Mail>");
 		sb.append("<Enable>").append(account.getEnable()).append("</Enable>");
 		sb.append("</Account>");

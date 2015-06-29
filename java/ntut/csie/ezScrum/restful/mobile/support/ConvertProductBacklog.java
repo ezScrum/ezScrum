@@ -3,225 +3,184 @@ package ntut.csie.ezScrum.restful.mobile.support;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
-import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.google.gson.Gson;
-
 public class ConvertProductBacklog {
-	public ConvertProductBacklog(){
+	public ConvertProductBacklog() {
 	}
-	
+
 	/****
-	 * 讀取 Product Backlog 中指定的 story
-	 * @param story
-	 * @return
+	 * 確認 Story 是否被新增成功，回傳成敗的 json string
+	 * 
+	 * @param storyId
+	 * @return createStoryResponse
 	 */
-	public String readStory(IStory iStory) {
-		Gson gson = new Gson();
-		StoryObject story = new StoryObject(iStory);
-		return gson.toJson(story);
-	}
-	
-	/****
-	 * 讀取Product Backlog 所有的 story
-	 * @param iStoryList
-	 * @return
-	 */
-	public String readStoryList(IStory[] iStoryList) {
-		Gson gson = new Gson();
-		List<StoryObject> storyList = new ArrayList<StoryObject>();
-		for (IStory iStory : iStoryList)
-			storyList.add(new StoryObject(iStory));
-		return gson.toJson(storyList);
-	}
-	
-	/****
-	 * 確認 Story 是否被新增成功，回傳成敗的 json string 
-	 * @param issueID
-	 * @return
-	 * @throws JSONException
-	 */
-	public String createStory( Long issueID ) throws JSONException{
+	public String createStory(Long storyId) {
 		JSONObject createStoryResponse = new JSONObject();
-		if( issueID == null ){
-			createStoryResponse.put( "status", "FAILED" );
-			createStoryResponse.put( "issueID", "NULL" );
-		}else{
-			createStoryResponse.put( "status", "SUCCESS" );
-			createStoryResponse.put( "issueID", String.valueOf(issueID) );
+		try {
+			if (storyId == null) {
+				createStoryResponse.put("status", "FAILED");
+				createStoryResponse.put("storyId", "NULL");
+			} else {
+				createStoryResponse.put("status", "SUCCESS");
+				createStoryResponse.put("storyId", String.valueOf(storyId));
+			}
+		} catch (JSONException e) {
+			return "{\"status\": \"FAILED\", \"storyId\":\"JSONException\"}";
 		}
 		return createStoryResponse.toString();
 	}
 
-	
 	/****
-	 * 刪除 story 
-	 * @param storyID
+	 * 讀取 Product Backlog 中指定的 story
+	 * 
+	 * @param story
 	 * @return
-	 * @throws JSONException
 	 */
-	public String deleteStory(IStory[] iStories, String storyID ) throws JSONException{
-		JSONObject deleteStoryResponse = new JSONObject();
-		boolean isExist = false;
-		for( IStory s:iStories ){
-			if(String.valueOf(s.getIssueID()).compareTo(storyID) == 0)
-			{
-				isExist = true;
-			}
-		}		
-		if( isExist ){
-			deleteStoryResponse.put( "status", "FAILED" );
-			deleteStoryResponse.put( "issueID", String.valueOf(storyID) );
-		}else{
-			deleteStoryResponse.put( "status", "SUCCESS" );
-			deleteStoryResponse.put( "issueID", String.valueOf(storyID) );
+	public String getStory(StoryObject story) {
+		if (story != null) {
+			return story.toString();
 		}
-		return deleteStoryResponse.toString();
+		return "{}";
+	}
+
+	/****
+	 * 讀取Product Backlog 所有的 story
+	 * 
+	 * @param stories
+	 * @return resultString
+	 */
+	public String readStoryList(ArrayList<StoryObject> stories) {
+		JSONArray jsonStories = new JSONArray();
+		String resultString = "";
+		JSONObject result = new JSONObject();
+		try {
+			for (StoryObject story : stories) {
+				jsonStories.put(story.toJSON());
+			}
+			result.put("stories", jsonStories);
+			resultString = result.toString();
+		} catch (JSONException e) {
+			resultString = "{\"stories\":[]}";
+		}
+		return resultString;
 	}
 
 	/****
 	 * 更新story 至 Product Backlog
-	 * @param String.vissueID
-	 * @return
-	 * @throws JSONException
+	 * 
+	 * @param boolean success
+	 * @return updateStoryResponse
 	 */
-	public String updateStory(IStory targetStory ,Long issueID, String storyName, String value, String importance, 
-			String estimation, String howToDemo, String notes, List<TagObject> issueTagList) throws JSONException{
+	public String updateStory(boolean success) {
 		JSONObject updateStoryResponse = new JSONObject();
 
-		boolean isCorrect = true;
-
-		if(targetStory.getIssueID() != issueID){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getName()).compareTo(storyName) != 0){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getValue()).compareTo(value) != 0){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getImportance()).compareTo(importance) != 0){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getEstimated()).compareTo(estimation) != 0){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getHowToDemo()).compareTo(howToDemo) != 0){
-			isCorrect = false;
-		}
-		if(String.valueOf(targetStory.getNotes()).compareTo(notes) != 0){
-			isCorrect = false;
-		}
-		for (TagObject issueTag : targetStory.getTags()) {
-			for (TagObject tag : issueTagList) {
-				if (issueTag.getName().equals(tag.getName())) {
-					isCorrect = true;
-					break;
-				} else {
-					isCorrect = false;
-				}
+		try {
+			if (success) {
+				updateStoryResponse.put("status", "SUCCESS");
+			} else {
+				updateStoryResponse.put("status", "FAILED");
 			}
+		} catch (JSONException e) {
+			return "{\"status\": \"FAILED\"}";
 		}
-		if( isCorrect ){
-			updateStoryResponse.put( "status", "SUCCESS" );
-		}else{
-			updateStoryResponse.put( "status", "FAILED" );
-		}
+
 		return updateStoryResponse.toString();
 	}
-	/***
-	 * 取得 taglist 的json string
-	 * @param tagList
-	 * @return
-	 * @throws JSONException
+
+	/****
+	 * 刪除 story
+	 * 
+	 * @param storyId
+	 * @return deleteStoryResponse
 	 */
-	public String getTagList( IIssueTag[] tagList ) throws JSONException{
-		JSONObject tagJsonObject = new JSONObject();
-		JSONArray tagListJsonArray = new JSONArray();
-		for( IIssueTag tag:tagList ){
-			String tagName = tag.getTagName();
-			tagListJsonArray.put(tagName);
-		}
-		tagJsonObject.put("tagList", tagListJsonArray);
-		return tagJsonObject.toString();
-	}
-	
-	/***
-	 * 取得story history list 的json string
-	 * @param storyHistoryList
-	 * @return
-	 * @throws JSONException
-	 */
-	public String getStoryHistory (List<IIssueHistory> issueHistories) throws JSONException
-	{
-		JSONObject storyHistoryJsonObject = new JSONObject();
-		JSONArray storyHistoryJsonArray = new JSONArray();
-		for(IIssueHistory istoryHistory :issueHistories)
-		{
-			String modifyDate =parseDate(istoryHistory.getModifyDate());
-			HistoryItemInfo historyItemInfo = new HistoryItemInfo( istoryHistory.getDescription() );
-			
-			JSONObject storyHistory = new JSONObject();
-			storyHistory.put( SprintBacklogUtil.TAG_MODIFYDATE, modifyDate  );	// ModifyDate
-			storyHistory.put( SprintBacklogUtil.TAG_HISTORYTYPE, historyItemInfo.getType() );			// Type
-			storyHistory.put( SprintBacklogUtil.TAG_DESCRIPTION, historyItemInfo.getDescription() );	// Description
-			storyHistoryJsonArray.put(storyHistory);	
-		}
-		storyHistoryJsonObject.put(SprintBacklogUtil.TAG_STORYHISTORYLIST, storyHistoryJsonArray);
-		return storyHistoryJsonObject.toString();		
-		
-	}
-	/**
-	 * 轉換story history輸出格式
-	 * @author SPARK
-	 */
-	private class HistoryItemInfo{
-		private String description;
-		private String type;
-		public HistoryItemInfo( String desc ){
-			this.parse( desc );
+	public String deleteStory(StoryObject story) {
+		JSONObject deleteStoryResponse = new JSONObject();
+		boolean isExist = false;
+		if (story != null) {
+			isExist = true;
 		}
 
-		private void parse(String desc) {
-			String [] token = desc.split(":");
-			if ( token.length == 2 ) {
-				this.setType( token[0].trim() );
-				this.setDescription( token[1].trim() );
+		try {
+			if (isExist) {
+				deleteStoryResponse.put("status", "FAILED");
+				deleteStoryResponse.put("storyId", story.getId());
 			} else {
-				this.setType("");
-				this.setDescription(desc.trim());
+				deleteStoryResponse.put("status", "SUCCESS");
 			}
+		} catch (JSONException e) {
+			return "{\"status\":\"FAILED\",\"storyId\":\"" + story.getId()
+					+ "\"}";
 		}
-		private void setDescription(String description) {
-			this.description = description;
-		}
-		private void setType(String type) {
-			this.type = type;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public String getType() {
-			return type;
-		}
+		return deleteStoryResponse.toString();
 	}
 	
-	private String parseDate(long date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
-		Date d = new Date(date);
-		
-		return  sdf.format(d);
+	/**
+	 * 取得 tasks 的 json string
+	 * 
+	 * @param tags
+	 * @return JSON String
+	 */
+	public String getTasks(ArrayList<TaskObject> tasks) {
+		JSONObject taskJson = new JSONObject();
+		JSONArray tasksJson = new JSONArray();
+		try {
+			for (TaskObject task : tasks) {
+				tasksJson.put(task.toJSON());
+			}
+			taskJson.put("tasks", tasksJson);
+		} catch (JSONException e) {
+			return "{\"tasks\":[]}";
+		}
+		return taskJson.toString();
 	}
-	
+
+	/***
+	 * 取得 taglist 的json string
+	 * 
+	 * @param tags
+	 * @return JSON String
+	 */
+	public String getTagList(ArrayList<TagObject> tags) {
+		JSONObject tagJsonObject = new JSONObject();
+		JSONArray tagListJsonArray = new JSONArray();
+		try {
+			for (TagObject tag : tags) {
+				tagListJsonArray.put(tag.toJSON());
+			}
+			tagJsonObject.put("tags", tagListJsonArray);
+		} catch (JSONException e) {
+			return "{\"tags\": []}";
+		}
+		return tagJsonObject.toString();
+	}
+
+	/***
+	 * 取得 story history list 的 json string
+	 * 
+	 * @param histories
+	 * @return String
+	 */
+	public String getStoryHistory(ArrayList<HistoryObject> histories) {
+		JSONObject historyJson = new JSONObject();
+		JSONArray historiesJson = new JSONArray();
+		try {
+			for (HistoryObject history : histories) {
+				historiesJson.put(history.toJSON());
+			}
+			historyJson.put("histories", historiesJson);
+		} catch (JSONException e) {
+			return "{\"hsitories\":[]}";
+		}
+		return historyJson.toString();
+	}
 }

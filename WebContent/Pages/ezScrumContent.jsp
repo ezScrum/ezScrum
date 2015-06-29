@@ -102,12 +102,6 @@
 <script type="text/javascript" src="javascript/ezScrumDataModel/ReleasePlanDataModel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumDataModel/SprintBacklog.js"></script>
 
-<script type="text/javascript" src="javascript/ezTrackDataModel/ScrumIssue.js"></script>
-<script type="text/javascript" src="javascript/ezTrackDataModel/CustomIssue.js"></script>
-<script type="text/javascript" src="javascript/ezTrackDataModel/CustomIssueType.js"></script>
-
-
-
 
 <!-- Widget -->
 <script type="text/javascript" src="javascript/ezScrumWidget/DeleteStoryWidget.js"></script>
@@ -158,7 +152,6 @@
 <!-- release plan widget -->
 <script type="text/javascript" src="javascript/ezScrumWidget/CreateReleaseWidget.js"></script>
 <script type="text/javascript" src="javascript/ezScrumWidget/DeleteReleaseWidget.js"></script>
-<script type="text/javascript" src="javascript/ezScrumWidget/DropSprintFromReleaseWidget.js"></script>
 <script type="text/javascript" src="javascript/ezScrumWidget/DropStoryFromReleaseWidget.js"></script>
 
 
@@ -189,17 +182,11 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/ProductBacklogFunctionSupport.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/IssueGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ProductBacklogPanel.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPanel/CPI_SPI_ReportPanel.js"></script>
 
 <script type="text/javascript" src="javascript/ezScrumPanel/ReleaseBacklogGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumWidget/ShowReleaseBacklogWindow.js"></script><!-- Widget after "ReleaseBacklogGridPanel.js", "ReleaseBurndownChartFormPanel.js"-->
 <script type="text/javascript" src="javascript/ezScrumPanel/ReleasePlanTreePanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ReleasePlanPanel.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPanel/ScrumIssuePanel.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPanel/CustomIssuePanel.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPanel/ManageIssueTypeGridPanel.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPanel/ManageIssueTypePanel.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPanel/ezTrackReportPanel.js"></script>
 
 
 <!-- Page -->
@@ -219,11 +206,6 @@
 <script type="text/javascript" src="javascript/ezScrumPage/ProductBacklog.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ValidateUserEvent.js"></script>
 
-<script type="text/javascript" src="javascript/ezTrackPage/ViewIssues.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPage/ManageIssueType.js"></script>
-<script type="text/javascript" src="javascript/ezTrackPage/ezTrackReport.js"></script>
-
-
 <!-- Content Panel -->
 <script type="text/javascript" src="javascript/ezScrumLayout/ProjectLeftTreePanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumLayout/ProjectLeftTreePanelBtnEvent.js"></script>
@@ -231,8 +213,6 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/LeftSide_Panel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/Content_Panel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/Footer_Panel.js"></script>
-
-
 
 <!-- Base layout -->
 <script type="text/javascript" src="javascript/ezScrumLayout/ezScrumProjectUI.js"></script>

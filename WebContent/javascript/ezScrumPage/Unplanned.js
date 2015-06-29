@@ -128,9 +128,10 @@ UnplannedPageLayout = Ext.extend(Ext.Panel, {
 	},
 	doShowUnplannedItemHistory: function() {
 		var obj = Ext.getCmp('UnplannedItem_Page_Layout');
-		var IssueID = obj.UnplannedGrid_ID.getSelectionModel().getSelected().data['Id'];
+		var issueId = obj.UnplannedGrid_ID.getSelectionModel().getSelected().data['Id'];
+		var issueType = obj.UnplannedGrid_ID.getSelectionModel().getSelected().data['Type'];
 
-		IssueHistory_Window.showTheWindow(IssueID);
+		IssueHistory_Window.showTheWindow(issueId, issueType);
 	},
 	checkToolBarPermission: function(defaultState) {
 		if (defaultState) {

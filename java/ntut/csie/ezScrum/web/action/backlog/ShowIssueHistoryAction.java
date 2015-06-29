@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -9,12 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,23 +42,38 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
+		log.info(" Show Issue History. ");
 
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
+		ProjectObject project = SessionManager.getProjectObject(request);
 		// get parameter info
-		String issueID = request.getParameter("issueID");
-		Long id = -1L;
-		if ((issueID != null) && (!issueID.equals("-1"))) {
-			id = Long.parseLong(issueID);
-		}
+		long issueId = Long.parseLong(request.getParameter("issueID"));
+		String issueType = request.getParameter("issueType");
 
 		// 用Gson轉換issue為json格式傳出
-		ProductBacklogHelper helper = new ProductBacklogHelper(project, session);
-		IIssue issue = helper.getIssue(id);
-		IssueHistoryUI ihui = new IssueHistoryUI(issue);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
+
+		IssueHistoryUI ihui = null;
+		if (issueType.equals("Task")) {
+			TaskObject task = TaskObject.get(issueId);
+			if (task != null) {
+				ihui = new IssueHistoryUI(task);
+			}
+		} else if (issueType.equals("Story")){
+			StoryObject story = productBacklogHelper.getStory(issueId);
+			try {
+				ihui = new IssueHistoryUI(story);
+			} catch (SQLException e) {
+			}
+		} else { // for unplanned
+			ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project);
+			IIssue issue = productBacklogMapper.getIssue(issueId);
+			try {
+				ihui = new IssueHistoryUI(issue);
+			} catch (SQLException e) {
+			}
+		}
 		Gson gson = new Gson();
 		return new StringBuilder(gson.toJson(ihui));
 	}
@@ -67,21 +85,49 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		private String IssueType = "";
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
-
-		public IssueHistoryUI(IIssue issue) {
+		
+		public IssueHistoryUI(IIssue issue) throws SQLException {
 			if (issue != null) {
-				this.Id = issue.getIssueID();
-				this.Link = issue.getIssueLink();
-				this.Name = issue.getSummary();
-				this.IssueType = issue.getCategory();
+				Id = issue.getIssueID();
+				Link = issue.getIssueLink();
+				Name = issue.getSummary();
+				IssueType = issue.getCategory();
 
-				if (issue.getHistory().size() > 0) {
-					for (IIssueHistory history : issue.getIssueHistories()) {
+				if (issue.getHistories().size() > 0) {
+					for (HistoryObject history : issue.getHistories()) {
 						if (history.getDescription().length() > 0) {
-							this.IssueHistories.add(new IssueHistoryList(history));
+							IssueHistories.add(new IssueHistoryList(history));
 						}
 					}
 				}
+			}
+		}
+
+		public IssueHistoryUI(StoryObject story) throws SQLException {
+			if (story != null) {
+				Id = story.getId();
+				Link = "";
+				Name = story.getName();
+				IssueType = "Story";
+
+				if (story.getHistories().size() > 0) {
+					for (HistoryObject history : story.getHistories()) {
+						if (history.getDescription().length() > 0) {
+							IssueHistories.add(new IssueHistoryList(history));
+						}
+					}
+				}
+			}
+		}
+
+		public IssueHistoryUI(TaskObject task) {
+			Id = task.getId();
+			Link = "";
+			Name = task.getName();
+			IssueType = "Task";
+
+			for (HistoryObject history : task.getHistories()) {
+				IssueHistories.add(new IssueHistoryList(history));
 			}
 		}
 	}
@@ -91,26 +137,16 @@ public class ShowIssueHistoryAction extends PermissionAction {
 		private String HistoryType = "";
 		private String ModifiedDate = "";
 
-		public IssueHistoryList(IIssueHistory history) {
-			parseDate(history.getModifyDate());
-			parseType_Desc(history.getDescription());
-		}
-
-		private void parseType_Desc(String desc) {
-			String[] token = desc.split(":");
-			if (token.length == 2) {
-				this.HistoryType = token[0];
-				this.Description = token[1];
-			} else {
-				this.HistoryType = "";
-				this.Description = desc;
-			}
+		public IssueHistoryList(HistoryObject history) {
+			parseDate(history.getCreateTime());
+			Description = history.getDescription();
+			HistoryType = history.getHistoryTypeString();
 		}
 
 		private void parseDate(long date) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
 			Date d = new Date(date);
-			this.ModifiedDate = sdf.format(d);
+			ModifiedDate = sdf.format(d);
 		}
 	}
 }

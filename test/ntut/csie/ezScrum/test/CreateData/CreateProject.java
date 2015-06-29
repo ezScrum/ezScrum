@@ -8,13 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
+import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.account.core.AccountFactory;
@@ -28,54 +27,50 @@ import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.IWorkspace;
 import ntut.csie.jcis.resource.core.ResourceFacade;
 import ntut.csie.jcis.resource.core.internal.Workspace;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class CreateProject {
-	private static Log log = LogFactory.getLog(CreateProject.class);
-	private Configuration configuration = new Configuration();
+	private static Log mlog = LogFactory.getLog(CreateProject.class);
+	private Configuration mConfig = new Configuration();
+	private int mProjectCount = 1;
+	private ArrayList<IProject> mProjects;
+	public String mProjectName = "TEST_PROJECT_";			// TEST_PROJECT_X
+	public String mProjectDisplayName = "TEST_DISPLAYNAME_";// TEST_DISPLAYNAME_X
+	public String mProjectMaNager = "Project_Manager_";		// Project_Manager_X
+	public String mProjectCommon = "This is Test Project - ";// This is Test Project - X
+	private long mFileSize = 2;								// attach file size
 
-	private int ProjectCount = 1;
-	private List<IProject> ProjectList;
-	private List<ProjectObject> projectObjectList;
-	public String PJ_NAME = "TEST_PROJECT_";				// TEST_PROJECT_X
-	public String PM_NAME = "Project_Manager_";				// Project_Manager_X
-	public String COMMENT_NAME = "This is Test Project - ";	// This is Test Project - X
-	private String FILESIZE = "2";							// attach file size
+	private String[] mOperation = {"ProductOwner", "ScrumMaster", "ScrumTeam", "Stakeholder", "Guest"};
 
-	private String[] operation = {"ProductOwner", "ScrumMaster", "ScrumTeam", "Stakeholder", "Guest"};
-
+	private ProjectMapper mProjectMapper;
+	
 	public CreateProject(int count) {
-		this.ProjectCount = count;
-		this.ProjectList = new LinkedList<IProject>();
-		this.projectObjectList = new LinkedList<ProjectObject>();
+		mProjectCount = count;
+		mProjects = new ArrayList<IProject>();
+		mProjectMapper = new ProjectMapper();
 	}
 
-	public List<IProject> getProjectList() {
-		return this.ProjectList;
+	public ArrayList<IProject> getProjectList() {
+		return mProjects;
 	}
 	
 	// ezScrum v1.8
-	public List<ProjectObject> getProjectObjectList() {
-		return this.projectObjectList;
+	public ArrayList<ProjectObject> getAllProjects() {
+		return mProjectMapper.getAllProjects();
 	}
 
 	// ezScrum v1.8
 	public void exeCreateForDb() {
-		String projectName = "";
-		String comment = "";
-		String projectManager = "";
 		ProjectMapper projectMapper = new ProjectMapper();
-		ProjectObject project;
-		for (int i = 0; i < this.ProjectCount; i++) {
-			projectName = this.PJ_NAME + Integer.toString((i + 1));	// TEST_PROJECT_X
-			comment = this.COMMENT_NAME + Integer.toString((i + 1));	// This is Test Project - X
-			projectManager = this.PM_NAME + Integer.toString((i + 1));		// Project_Manager_X
-			project = new ProjectObject(projectName, projectName, comment, projectManager, "");
-			project = projectMapper.createProjectForDb(project);
-			projectObjectList.add(project);
-			projectMapper.createScrumRole(project.getId());
+		ProjectInfo projectInfo = new ProjectInfo();
+		for (int i = 0; i < mProjectCount; i++) {
+			projectInfo.name = mProjectName + (i + 1);				// TEST_PROJECT_X
+			projectInfo.displayName = mProjectDisplayName + (i + 1);// TEST_DISPLAYNAME_X
+			projectInfo.common = mProjectCommon + (i + 1);			// This is Test Project - X
+			projectInfo.manager = mProjectMaNager + (i + 1);		// Project_Manager_X
+			
+			projectMapper.createProject(projectInfo.name, projectInfo);
 		}
 	}
 	
@@ -90,16 +85,13 @@ public class CreateProject {
 		ResourceFacade.setWorkSpace(ws);
 
 		// 自動產生輸入的專案個數
-		for (int i = 0; i < this.ProjectCount; i++) {
-			projectName = this.PJ_NAME + Integer.toString((i + 1));	// TEST_PROJECT_X
-			comment = this.COMMENT_NAME + Integer.toString((i + 1));	// This is Test Project - X
-			pmName = this.PM_NAME + Integer.toString((i + 1));		// Project_Manager_X
+		for (int i = 0; i < mProjectCount; i++) {
+			projectName = mProjectName + Integer.toString((i + 1));	// TEST_PROJECT_X
+			comment = mProjectCommon + Integer.toString((i + 1));	// This is Test Project - X
+			pmName = mProjectMaNager + Integer.toString((i + 1));		// Project_Manager_X
 
-			// save project info to test worksapce
-			IProject project = saveWorkSpace(projectName, comment, pmName, this.FILESIZE);
-
-			// save project info to ITS_config.xml
-			saveITS_config(project);
+			// save project info to test workspace
+			IProject project = saveWorkSpace(projectName, comment, pmName, mFileSize);
 
 			// save in the permission
 			createPermission(projectName);
@@ -107,7 +99,6 @@ public class CreateProject {
 			// save in the Role
 			createRole(projectName);
 
-			// copy scrum role
 			copyScrumRoleSetting(project.getFullPath().getPathString());
 
 			// save in DB
@@ -115,7 +106,7 @@ public class CreateProject {
 				saveDB(project);
 
 				// add to list
-				this.ProjectList.add(project);
+				mProjects.add(project);
 
 				success = true;
 			} catch (Exception e) {
@@ -123,19 +114,19 @@ public class CreateProject {
 			}
 		}
 
-		if (success || this.ProjectCount == 0) {
-			System.out.println("Create " + this.ProjectCount + " test projects success.");
-			this.log.info("Create " + this.ProjectCount + " test projects success.");
+		if (success || mProjectCount == 0) {
+			System.out.println("Create " + mProjectCount + " test projects success.");
+			mlog.info("Create " + mProjectCount + " test projects success.");
 		} else {
-			this.log.info("Create project fail.");
+			mlog.info("Create project fail.");
 			System.out.println("新增專案失敗了辣！！！");
 			System.out.println("怎麼辦～怎麼辦～怎麼辦～是誰寫的出來面對！！！");
 		}
 	}
 
 	// save project to workspace and session
-	private IProject saveWorkSpace(String PJ_Name, String Comment, String PJ_Manager, String FileSize) {
-		IProject project = (new ProjectMapper()).getProjectByID(PJ_Name);
+	private IProject saveWorkSpace(String PJ_Name, String Comment, String PJ_Manager, long FileSize) {
+		IProject project = mProjectMapper.getProjectByID(PJ_Name);
 		IProjectDescription desc = project.getProjectDesc();
 
 		// ================ JCIS Project mockup data ===============
@@ -160,11 +151,11 @@ public class CreateProject {
 		desc.setDisplayName(PJ_Name);
 		desc.setComment(Comment);
 		desc.setProjectManager(PJ_Manager);
-		desc.setAttachFileSize(FileSize);
+		desc.setAttachFileSize(String.valueOf(FileSize));
 
 		// project 不存在，建立專案資訊後再存入
 		if (project.exists()) {
-			project.save();
+//			project.save();
 		} else {
 			project.create();
 		}
@@ -172,22 +163,10 @@ public class CreateProject {
 		return project;
 	}
 
-	// save project info to ITS_config
-	private void saveITS_config(IProject project) {
-		Configuration configuration = new Configuration();
-		configuration.setServerUrl(configuration.getServerUrl());
-		configuration.setWebServicePath(configuration.getWebServicePath());
-		configuration.setDBAccount(configuration.getDBAccount());
-		configuration.setDBPassword(configuration.getDBPassword());
-		configuration.setDBType(configuration.getDBType());
-		configuration.setDBName(configuration.getDBName());
-		configuration.store();
-	}
-
 	// 儲存 account permission 資訊
 	private void createPermission(String resource) {
 		IAccountManager am = AccountFactory.getManager();
-		for (String oper : this.operation) {
+		for (String oper : mOperation) {
 			String name = resource + "_" + oper;
 			IPermission perm = AccountFactory.createPermission(name, resource, oper);
 			am.addPermission(perm);
@@ -202,7 +181,7 @@ public class CreateProject {
 	// 儲存 account role 資訊
 	private void createRole(String resource) {
 		IAccountManager am = AccountFactory.getManager();
-		for (String oper : this.operation) {
+		for (String oper : mOperation) {
 			String name = resource + "_" + oper;
 			IRole role = AccountFactory.createRole(name, name);
 			am.addRole(role);
@@ -218,7 +197,7 @@ public class CreateProject {
 
 	// 儲存專案資訊於資料庫
 	private void saveDB(IProject project) {
-		Configuration config = new Configuration(configuration.getUserSession());
+		Configuration config = new Configuration(mConfig.getUserSession());
 		MantisService M_service = new MantisService(config);
 		try {
 			M_service.testConnect();		// 測試連線
@@ -227,20 +206,20 @@ public class CreateProject {
 				if (e.getType().equals(TestConnectException.TABLE_ERROR)) {
 					// 資料庫尚未建立的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					this.log.info("Create a new DataBase : " + configuration.getDBName());
+					mlog.info("Create a new DataBase : " + mConfig.getDBName());
 					M_service.initiateDB();
-					this.log.info("Initialize the database from sql file.");
+					mlog.info("Initialize the database from sql file.");
 				} else if (e.getType().equals(TestConnectException.DATABASE_ERROR)) {
 					// 資料表不正確的錯誤，重新建立並且匯入乾淨的資料表
 					M_service.createDB();
-					this.log.info("Create a new DataBase : " + configuration.getDBName());
+					mlog.info("Create a new DataBase : " + mConfig.getDBName());
 					M_service.initiateDB();
-					this.log.info("Initialize the database from sql file.");
+					mlog.info("Initialize the database from sql file.");
 				} else {
-					this.log.info("class: CreateProject, method: saveDB, something error");
+					mlog.info("class: CreateProject, method: saveDB, something error");
 				}
 			} catch (SQLException sqle) {
-				this.log.info("class: CreateProject, method: saveDB, SQL exception.");
+				mlog.info("class: CreateProject, method: saveDB, SQL exception.");
 			}
 
 			// 如果project Create失敗，就把目前產生到一半的Project檔案刪除
@@ -248,7 +227,7 @@ public class CreateProject {
 				project.delete();
 				return;
 			} catch (IOException e1) {
-				this.log.info("class: CreateProject, method: project.delete(), exception: " + e1.toString());
+				mlog.info("class: CreateProject, method: project.delete(), exception: " + e1.toString());
 				e1.printStackTrace();
 			}
 		} catch (Exception e) {
@@ -265,7 +244,7 @@ public class CreateProject {
 
 	// 複製 ScrumRole 檔案
 	private void copyScrumRoleSetting(String ectpprojectpathath) {
-		File srcScrumRolePath = new File(configuration.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
+		File srcScrumRolePath = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "ScrumRole.xml");
 		File destScrumRolePath = new File(ectpprojectpathath + File.separator + "_metadata" + File.separator + "ScrumRole.xml");
 
 		try {
@@ -280,7 +259,7 @@ public class CreateProject {
 			in.close();
 			out.close();
 		} catch (Exception e) {
-			this.log.debug("copyScrumRoleSetting error" + e.toString());
+			mlog.debug("copyScrumRoleSetting error" + e.toString());
 		}
 	}
 }

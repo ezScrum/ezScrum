@@ -2,83 +2,66 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
-import ntut.csie.ezScrum.issue.internal.IssueTag;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class CreateTag {
-	private static Log log = LogFactory.getLog(CreateTag.class);
-
-	private CreateProject CP = null;
-	private CreateProductBacklog CPB = null;
-	private int TagCount = 1;
+	private static Log mlog = LogFactory.getLog(CreateTag.class);
+	private CreateProject mCP = null;
+	private CreateProductBacklog mCPB = null;
+	private int mTagCount = 1;
 	public String TEST_TAG_NAME = "TEST_TAG_"; // Tag Name
 
-	private IProject m_project;
-	private IUserSession m_userSession;
-	private Configuration configuration = new Configuration();
+	private ProjectObject mProject;
 
-	private ArrayList<TagObject> TagList = new ArrayList<TagObject>();
-	// private ProductBacklog m_backlog = null;
-	private ProductBacklogMapper productBacklogMapper = null;
+	private ArrayList<TagObject> mTags = new ArrayList<TagObject>();
+	private ProductBacklogMapper mProductBacklogMapper = null;
 
-	public CreateTag(int tagcount, CreateProject cp) {
-		this.TagCount = tagcount;
-		this.CP = cp;
+	public CreateTag(int tagCount, CreateProject CP) {
+		mTagCount = tagCount;
+		mCP = CP;
 	}
 
 	// create tag in project
 	public void exe() {
-		m_userSession = configuration.getUserSession();
-		for (int projectIndex = 0; projectIndex < this.CP.getProjectList()
+		for (int projectIndex = 0; projectIndex < mCP.getProjectList()
 				.size(); projectIndex++) {
-			m_project = this.CP.getProjectList().get(projectIndex); // TEST_PROJECT_X
-			// m_backlog = new ProductBacklog(m_project, m_userSession);
-			this.productBacklogMapper = new ProductBacklogMapper(m_project,
-					m_userSession);
-			for (int tagIndex = 0; tagIndex < this.TagCount; tagIndex++) {
-				// m_backlog.addNewTag(TEST_TAG_NAME +
-				// Integer.toString(tagIndex+1)); //TEST_TAG_Y
-				this.productBacklogMapper.addNewTag(TEST_TAG_NAME
-						+ Integer.toString(tagIndex + 1)); // TEST_TAG_Y
-
-				TagObject tag = new TagObject();
-				tag.setId(tagIndex + 1);
-				tag.setName(TEST_TAG_NAME + Integer.toString(tagIndex + 1));
-				TagList.add(tag);
+			mProject = mCP.getAllProjects().get(projectIndex); // TEST_PROJECT_X
+			mProductBacklogMapper = new ProductBacklogMapper(mProject);
+			long projectId = ProjectDAO.getInstance().get(mProject.getName()).getId();
+			for (int tagIndex = 0; tagIndex < mTagCount; tagIndex++) {
+				TagObject tag = new TagObject(TEST_TAG_NAME + Integer.toString(tagIndex + 1), projectId);
+				tag.save();
+				mTags.add(tag);
 			}
 			System.out.println("Project "
-					+ this.CP.getProjectList().get(projectIndex).getName()
-					+ " create " + this.TagCount + " Tags success.");
+					+ mCP.getProjectList().get(projectIndex).getName()
+					+ " create " + mTagCount + " Tags success.");
 		}
 	}
 
 	// attach tag to issue
 	public void attachTagToStory(CreateProductBacklog cpb) {
-		this.CPB = cpb;
+		mCPB = cpb;
 		long storyId;
-		for (int projectIndex = 0; projectIndex < this.CP.getProjectList()
+		for (int projectIndex = 0; projectIndex < mCP.getProjectList()
 				.size(); projectIndex++) {
-			m_project = this.CP.getProjectList().get(projectIndex); // TEST_PROJECT_X
+			mProject = mCP.getAllProjects().get(projectIndex); // TEST_PROJECT_X
 			// m_backlog = new ProductBacklog(m_project, m_userSession);
-			this.productBacklogMapper = new ProductBacklogMapper(m_project,
-					m_userSession);
-			for (int pbIndex = 0; pbIndex < this.CPB.getIssueList().size(); pbIndex++) {
-				for (int tagIndex = 0; tagIndex < this.TagCount; tagIndex++) {
-					storyId = this.CPB.getIssueList().get(pbIndex).getIssueID();
+			mProductBacklogMapper = new ProductBacklogMapper(mProject);
+			for (int pbIndex = 0; pbIndex < mCPB.getStories().size(); pbIndex++) {
+				for (int tagIndex = 0; tagIndex < mTagCount; tagIndex++) {
+					storyId = mCPB.getStories().get(pbIndex).getId();
 					// m_backlog.addStoryTag(String.valueOf(storyId),
 					// String.valueOf(tagIndex+1));
-					this.productBacklogMapper.addStoryTag(
-							String.valueOf(storyId), tagIndex + 1);
-					log.info("Project "
-							+ this.CP.getProjectList().get(projectIndex)
+					mProductBacklogMapper.addTagToStory(storyId, tagIndex + 1);
+					mlog.info("Project "
+							+ mCP.getProjectList().get(projectIndex)
 									.getName() + " TEST_STORY_"
 							+ String.valueOf(storyId) + " attach "
 							+ " TEST_TAG_" + String.valueOf(tagIndex + 1)
@@ -89,6 +72,6 @@ public class CreateTag {
 	}
 
 	public ArrayList<TagObject> getTagList() {
-		return this.TagList;
+		return mTags;
 	}
 }

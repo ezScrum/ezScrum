@@ -1,6 +1,6 @@
 *** Settings ***
 Force Tags        Project
-Library           Selenium2Library
+Library           keywords/lib/Selenium2Improved.py
 Resource          ServerConfig.txt
 Resource          Global Define.txt
 Resource          keywords/ezScrum_Login.txt

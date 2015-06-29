@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,12 +31,11 @@ public class ShowReleasePlanAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-//		IProject project = (IProject) request.getSession().getAttribute("Project");
-		IProject project = SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get Account, ScrumRole
-		UserObject account = session.getAccount();
+		AccountObject account = session.getAccount();
 //		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 //		MantisAccountMapper accountHelper = new MantisAccountMapper(project, session);

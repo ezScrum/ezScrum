@@ -5,40 +5,40 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateRelease CR;
-	private Configuration configuration;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private Configuration mConfig;
 	
 	public RemoveReleasePlanActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();								// 新增一測試專案
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();								// 新增一測試專案
     	
-    	this.CR = new CreateRelease(1, this.CP);
-    	this.CR.exe();										// 新增一筆Release Plan
+    	mCR = new CreateRelease(1, mCP);
+    	mCR.exe();										// 新增一筆Release Plan
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo("/removeReleasePlan");
     	
@@ -48,40 +48,39 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     }
 	
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
     	
-    	configuration.setTestMode(false);
-		configuration.store();
+    	mConfig.setTestMode(false);
+		mConfig.save();
     	
     	super.tearDown();
     	
     	
     	// ============= release ==============
     	ini = null;
-    	copyProject = null;
-    	this.CP = null;
-    	this.CR = null;
-    	configuration = null;
+    	mCP = null;
+    	mCR = null;
+    	mConfig = null;
     }
     
     // 正常執行
-    public void testexecute() throws Exception {
+    public void testExecute() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = this.CP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	// ================ set initial data =======================
     	
     	
     	// ================== set parameter info ====================
-    	addRequestParameter("releaseID", Integer.toString(this.CR.getReleaseCount()));		// 刪除第一筆
+    	addRequestParameter("releaseID", Integer.toString(mCR.getReleaseCount()));		// 刪除第一筆
     	// ================== set parameter info ====================
     	
     	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", configuration.getUserSession());    	
+    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
@@ -93,24 +92,22 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyForward(null);
     	verifyNoActionErrors();
     	
-    	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper helper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
-    	IReleasePlanDesc ReleasePlan = helper.getReleasePlan(Integer.toString(this.CR.getReleaseCount()));
-    	assertNull(ReleasePlan);
+		// 驗證 ReleasePlan 資料
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
+		IReleasePlanDesc relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+		assertNull(relasePlan);
     	
     	
     	// ============= release ==============
     	project = null;
-    	helper = null;
-    	ReleasePlan = null;
+    	releasePlanHelper = null;
+    	relasePlan = null;
     }
 
-/*
-     * 待修正: RemoveReleasePlanAction.java #50 沒有對錯誤的releaseID作妥善處理    
     // 代入錯誤的 ReleaseID 參數
-    public void testexecuteWrongParameter() throws Exception {
+    public void testExecuteWrongParameter() throws Exception {
     	// ================ set initial data =======================
-    	IProject project = this.CP.getProjectList().get(0);
+    	ProjectObject project = mCP.getAllProjects().get(0);
     	// ================ set initial data =======================
     	
     	
@@ -120,12 +117,12 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", config.getUserSession());    	
+    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
 		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
     	
-    	actionPerform();		// 執行 action
+		actionPerform();		// 執行 action
     	
     	// 驗證回傳 path
     	verifyForwardPath(null);
@@ -133,24 +130,13 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
     	
     	// 驗證 ReleasePlan 資料
-    	ReleasePlanHelper helper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
-    	IReleasePlanDesc ReleasePlan = helper.getReleasePlan(Integer.toString(this.CR.getReleaseCount()));
-    	assertNotNull(ReleasePlan);		// 沒有刪除掉第一筆 Release Plan
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
+    	IReleasePlanDesc relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	assertNotNull(relasePlan);		// 沒有刪除掉第一筆 Release Plan
     	
     	// ============= release ==============
     	project = null;
-    	helper = null;
-    	ReleasePlan = null;
+    	releasePlanHelper = null;
+    	relasePlan = null;
     }
-*/
-    
-	// get user session -> 統一由 ezScrumInfoConfig.getUserSession()建立
-//	private IUserSession CreateUserSession() throws LogonException {
-//		IAccount theAccount = null;
-//		theAccount = new Account(config.USER_ID);
-//		IUserSession theUserSession = new UserSession(theAccount);
-//		
-//		return theUserSession;
-//	}
-    
 }

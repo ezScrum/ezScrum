@@ -1,9 +1,8 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -12,155 +11,183 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/ajaxRemoveSprintTask";
-	private IProject project;
 	
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private ProjectObject mProject;
+	private final String mActionPath = "/ajaxRemoveSprintTask";
+
 	public AjaxRemoveSprintTaskTest(String testName) {
 		super(testName);
 	}
-	
+
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+
 		// 刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();// 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
-		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
-		
+
+		// create project
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+
+		// create sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		mProject = mCP.getAllProjects().get(0);
+
 		super.setUp();
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
-		
+		setRequestPathInfo(mActionPath);
+
 		ini = null;
 	}
-	
+
 	protected void tearDown() throws Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
-		
-		configuration.setTestMode(false);
-		configuration.store();
-		
+
+		mConfig.setTestMode(false);
+		mConfig.save();
+
 		super.tearDown();
-		
+
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
-	
+
 	public void testRemoveSprintTask_1() throws Exception {
-		List<String> idList = this.CS.getSprintIDList();
-		int sprintID = Integer.parseInt(idList.get(0));
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
+
+		int sprintCount = 1;
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
-		
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
+				sprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		ASS.exe();
+
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
-		addTaskToStory.exe();
-		
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));		
-		String parentID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
+		AddTaskToStory ATS = new AddTaskToStory(taskCount, taskEst, ASS, mCP);
+		ATS.exe();
+
+		String issueId = String.valueOf(ATS.getTasksId().get(0));
+		String parentId = String.valueOf(ASS.getStories().get(0).getId());
+
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", idList.get(0));
-		addRequestParameter("issueID", issueID);
-		addRequestParameter("parentID", parentID);
+		addRequestParameter("sprintID", String.valueOf(sprintIdList.get(0)));
+		addRequestParameter("issueID", issueId);
+		addRequestParameter("parentID", parentId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================  執行 action ==============================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ 執行 action ==============================
 		actionPerform();
-		// ================    assert    =============================
+
+		// ================ assert =============================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
-		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("<DropTask><Result>true</Result><Task><Id>");
-		expectedResponseTest.append(issueID + "</Id></Task></DropTask>");
+
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText
+			.append("<DropTask>")
+				.append("<Result>true</Result>")
+				.append("<Task>")
+					.append("<Id>").append(issueId).append("</Id>")
+				.append("</Task>")
+			.append("</DropTask>");
 				
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseTest.toString(), actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 	
 	public void testRemoveSprintTask_2() throws Exception {
-		List<String> idList = this.CS.getSprintIDList();
-		int sprintID = Integer.parseInt(idList.get(0));
+		ArrayList<Long> sprintIdList = mCS.getSprintsId();
+		long sprintId = sprintIdList.get(0);
 		int storyCount = 1;
 		int storyEst = 2;
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintID, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
-		
+		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst, (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		ASS.exe();
+
 		int taskCount = 1;
 		int taskEst = 2;
-		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst, addStoryToSprint, this.CP);
-		addTaskToStory.exe();
-		IIssue task = addTaskToStory.getTaskList().get(0);
-		
-		String expectedSprintID = idList.get(0);
-		String issueID = String.valueOf(addTaskToStory.getTaskIDList().get(0));		
-		String expectedStoryID = String.valueOf(addStoryToSprint.getIssueList().get(0).getIssueID());
+		AddTaskToStory ATS = new AddTaskToStory(taskCount, taskEst, ASS, mCP);
+		ATS.exe();
+
+		TaskObject task = ATS.getTasks().get(0);
+
+		long expectedSprintId = sprintIdList.get(0);
+		String issueId = String.valueOf(ATS.getTasksId().get(0));
+		String expectedStoryId = String.valueOf(ASS.getStories().get(0).getId());
+
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("sprintID", expectedSprintID);
-		addRequestParameter("issueID", issueID);
-		addRequestParameter("parentID", expectedStoryID);
+		addRequestParameter("sprintID", String.valueOf(expectedSprintId));
+		addRequestParameter("issueID", issueId);
+		addRequestParameter("parentID", expectedStoryId);
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================  執行 action ==============================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ 執行 action ==============================
 		actionPerform();
-		// ================    assert    =============================
+
+		// ================ assert =============================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
-		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("<DropTask><Result>true</Result><Task><Id>");
-		expectedResponseTest.append(issueID + "</Id></Task></DropTask>");
+
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText
+			.append("<DropTask>")
+				.append("<Result>true</Result>")
+				.append("<Task>")
+					.append("<Id>").append(issueId).append("</Id>")
+				.append("</Task>")
+			.append("</DropTask>");
 				
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseTest.toString(), actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 		
-		this.vaildateShowExistedTasks(expectedSprintID, expectedStoryID, task);
+		vaildateShowExistedTasks(String.valueOf(expectedSprintId), expectedStoryId, task);
 	}
 	
-	private void vaildateShowExistedTasks(String expectedSprintID, String expectedStoryID, IIssue task){
+	private void vaildateShowExistedTasks(String expectedSprintId, String expectedStoryId, TaskObject task){
 		// clear response information and request parameter
-		this.response.reset();
+		response.reset();
 		clearRequestParameters();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定Session資訊
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		request.getSession().setAttribute("Project", project);	
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", mProject);	
 		
-		addRequestParameter("sprintID", expectedSprintID);
-		addRequestParameter("issueID", expectedStoryID);
+		addRequestParameter("sprintID", expectedSprintId);
+		addRequestParameter("issueID", expectedStoryId);
 
 		// ================ 執行 action ======================
 		setRequestPathInfo( "/showAddExistedTask2" );
@@ -170,16 +197,20 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		StringBuilder expectedResponseText = new StringBuilder();
-		expectedResponseText.append("<Tasks><Task><Id>").append(task.getIssueID()).append("</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getIssueID()).append("</Link>")
-							.append("<Name>").append(task.getSummary()).append("</Name>")
-							.append("<Status>").append("new").append("</Status>")
-							.append("<Estimate>").append(task.getEstimated()).append("</Estimate>")
-							.append("<Actual>").append(task.getActualHour()).append("</Actual>")
-							.append("<Handler></Handler>")
-							.append("<Partners></Partners>")
-							.append("<Notes>").append(task.getNotes()).append("</Notes>")
-							.append("</Task></Tasks>");
+		expectedResponseText
+			.append("<Tasks>")
+				.append("<Task>")
+					.append("<Id>").append(task.getId()).append("</Id>")
+					.append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getId()).append("</Link>")
+					.append("<Name>").append(task.getName()).append("</Name>")
+					.append("<Status>").append("new").append("</Status>")
+					.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
+					.append("<Actual>").append(task.getActual()).append("</Actual>")
+					.append("<Handler></Handler>")
+					.append("<Partners></Partners>")
+					.append("<Notes>").append(task.getNotes()).append("</Notes>")
+				.append("</Task>")
+			.append("</Tasks>");
 		
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

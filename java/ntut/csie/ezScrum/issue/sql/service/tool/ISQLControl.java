@@ -10,9 +10,9 @@ public interface ISQLControl {
 
 	public Connection getconnection();
 
-	public void connection();
+	public void connect();
 
-	public void connectionToServer();
+	public void connectToServer();
 
 	public ResultSet executeQuery(String query);
 

@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -28,9 +29,16 @@ public class SprintPlanMapper {
 	private IProject m_project;
 	private String m_projectId;
 	
+	public SprintPlanMapper(ProjectObject project) {
+		m_project = new ProjectMapper().getProjectByID(project.getName());
+		m_projectId = m_project.getName();
+		loaderLoadElement();
+	}
+	
 	public SprintPlanMapper(IProject project) {
 		m_project = project;
 		m_projectId = m_project.getName();
+		loaderLoadElement();
 	}
 	
 	// ori name: save()
@@ -64,12 +72,8 @@ public class SprintPlanMapper {
 			if (sprint.getAttribute(ScrumEnum.ID_ATTR).getValue().equals(sprintId)) {	
 				// 此 sprint Id 為將要秀出來的
 				return getDescription(sprint);
-			}				
-
+			}
 		}
-		System.out.println("sprints count = " + sprints.size());
-		System.out.println("sprints getAttribute = " + sprints.get(0).getAttribute(ScrumEnum.ID_ATTR).getValue());
-		// ?
 		return new SprintPlanDesc();
 	}	
 
@@ -314,7 +318,7 @@ public class SprintPlanMapper {
 		return taskBoardStagesMap;
 	}
 	
-	private Element loaderLoadElement() {
+	public Element loaderLoadElement() {
 		String prefsPath = getUsrMetadataPath() + File.separator + ITER_PLAN_FILE;
 		if (!new File(prefsPath).exists()) {
 			prefsPath = getSysMetadataPath() + File.separator + ITER_PLAN_FILE;
@@ -414,8 +418,9 @@ public class SprintPlanMapper {
 
 	private Document loadElement() {
 		String prefsPath = getUsrMetadataPath() + File.separator + ITER_PLAN_FILE;
+		File file = new File(prefsPath);
 		
-		if ( ! new File(prefsPath).exists()) {
+		if (!file.exists()) {
 			return null;
 		}
 		

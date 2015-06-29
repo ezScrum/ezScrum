@@ -1,14 +1,16 @@
 package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.Scanner;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 
+/*
+ * For create data manually
+ */
 public class MainProgram {
 	public static void main(String[] args) throws Exception {
 		Configuration configuration = new Configuration();
 		configuration.setTestMode(true);
-		configuration.store();
+		configuration.save();
 		
 		InitialSQL ini = new InitialSQL(configuration);
 		ini.exe();			// 連結到遠端 MySQL 的初始化方法，帳號密碼為擁有 Access SQL 權限的使用者

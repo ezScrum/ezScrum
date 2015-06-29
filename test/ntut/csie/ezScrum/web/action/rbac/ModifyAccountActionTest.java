@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -9,30 +8,31 @@ import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
-// 系統管理員更新資料
 public class ModifyAccountActionTest extends MockStrutsTestCase {
 
-	private CreateProject CP;
-	private CreateAccount CA;
-	private int ProjectCount = 1;
-	private int AccountCount = 1;
-	private final String ActionPath_ModifyAccount = "/modifyAccount";	// defined in "struts-config.xml"
-
-	private Configuration configuration;
-	private AccountMapper accountMapper;
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private int mProjectCount = 1;
+	private int mAccountCount = 1;
+	private final String mActionPath = "/modifyAccount";
+	private Configuration mConfig;
+	private AccountMapper mAccountMapper;
 
 	public ModifyAccountActionTest(String testMethod) {
 		super(testMethod);
 	}
 
+	/**
+	 * 設定讀取的 struts-config 檔案路徑
+	 * ModifyAccountAction
+	 */
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -42,22 +42,23 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 	 */
 	private void cleanActionInformation() {
 		clearRequestParameters();
-		this.response.reset();
+		response.reset();
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		// 新增 Project
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
-		this.accountMapper = new AccountMapper();
+		mAccountMapper = new AccountMapper();
 
 		super.setUp();
 
@@ -65,389 +66,382 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		super.tearDown();
 
 		// ============= release ==============
-		// AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CA = null;
-		this.config = null;
-		this.accountMapper = null;
-		configuration = null;
+		mCP = null;
+		mCA = null;
+		mAccountMapper = null;
+		mConfig = null;
 	}
 
 	/**
-	 * admin 新增帳號
-	 * 
-	 * @throws LogonException
+	 * test create account
 	 */
-	public void testModifyAccountAction_create() throws LogonException {
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
+	public void testModifyAccountAction_create() {
+		setRequestPathInformation(mActionPath);
 
 		// ================ set initial data =======================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		// User Information
-		String userAccount = "TEST_ACCOUNT_ID";		// 取得第一筆 Account ID
-		String userPw = "TEST_ACCOUNT_PW";
-		String userMail = "TEST_ACCOUNT_MAIL";
-		String userName = "TEST_ACCOUNT_REALNAME";
-		String userEnable = "true";	// default is true
-		String userIsEdit = "false";	// false 代表是新增帳號
-		// ================ set initial data =======================
+		String projectName = mCP.getProjectList().get(0).getName();
+		String username = "TEST_ACCOUNT_ID";
+		String password = "TEST_ACCOUNT_PW";
+		String email = "TEST_ACCOUNT_MAIL";
+		String nickName = "TEST_ACCOUNT_REALNAME";
+		boolean enable = true;			// default is true
+		boolean isEdit = false;			// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("account", userAccount);
-		addRequestParameter("passwd", userPw);
-		addRequestParameter("mail", userMail);
-		addRequestParameter("name", userName);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
-		// ================== set parameter info ====================
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("mail", email);
+		addRequestParameter("name", nickName);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-
-		actionPerform();		// 執行 action
-
-		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
-
-		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
-		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
-		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
-		assertEquals(userEnable, account.getEnable());
-	}
-
-	public void testModifyAccountAction_update() throws LogonException {
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
-
-		// ================ set initial data =======================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		// User Information
-		String postfix = "_update";
-		UserObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
-		String userPw = user.getPassword() + postfix;
-		String userMail = "modify@test.com";
-		String userName = user.getName() + postfix;
-		String userEnable = "false";			// default is true
-		String userIsEdit = "true";	// false 代表是新增帳號
-
-		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("account", userAccount);
-		addRequestParameter("passwd", userPw);
-		addRequestParameter("mail", userMail);
-		addRequestParameter("name", userName);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-
-		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
 		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
+		AccountObject account = mAccountMapper.getAccount(username);
 
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
-		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
-		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
-		assertEquals(userEnable, account.getEnable());
+		assertEquals(username, account.getUsername());
+		assertEquals((new TestTool()).getMd5(password), account.getPassword());
+		assertEquals(email, account.getEmail());
+		assertEquals(nickName, account.getNickName());
+		assertEquals(enable, account.getEnable());
 	}
 
 	/**
-	 * admin更新使用者資訊
+	 * test update account
+	 */
+	public void testModifyAccountAction_update() {
+		setRequestPathInformation(mActionPath);
+		// create account
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
+
+		// ================ set initial data =======================
+		String projectName = mCP.getProjectList().get(0).getName();
+		// User Information
+		String postfix = "_update";
+		AccountObject account = mCA.getAccountList().get(0);
+		long userId = account.getId();
+		String username = account.getUsername();
+		String password = mCA.getAccount_PWD(1) + postfix;
+		String email = "modify@test.com";
+		String nickName = account.getNickName() + postfix;
+		boolean enable = false;			// default is true
+		boolean isEdit = true;			// false 代表是新增帳號
+
+		// ================== set parameter info ====================
+		addRequestParameter("id", String.valueOf(userId));
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("mail", email);
+		addRequestParameter("name", nickName);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ set URL parameter ========================
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
+
+		// 執行 action
+		actionPerform();
+
+		// ================ assert ========================
+		AccountObject newAccount = mAccountMapper.getAccount(username);
+
+		assertNotNull(newAccount);
+		assertEquals(userId, newAccount.getId());
+		assertEquals(username, newAccount.getUsername());
+		assertEquals((new TestTool()).getMd5(password), newAccount.getPassword());
+		assertEquals(nickName, newAccount.getNickName());
+		assertEquals(email, newAccount.getEmail());
+		assertEquals(enable, newAccount.getEnable());
+	}
+
+	/**
+	 * update User Information
 	 */
 	public void testModifyAccountAction_updateUserInformation() {
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+		setRequestPathInformation(mActionPath);
+		// create account
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		// User Information
+		String projectName = mCP.getProjectList().get(0).getName();
 		String postfix = "_update";
-
-		UserObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
-		String userMail = "modify@test.com";
-		String userName = user.getName() + postfix;
-		String userEnable = "false";	// default is true
-		String userIsEdit = "true";		// false 代表是新增帳號
+		AccountObject account = mCA.getAccountList().get(0);
+		long userId = account.getId();
+		String username = account.getUsername();
+		String password = mCA.getAccount_PWD(1) + postfix;
+		String email = "modify@test.com";
+		String nickName = account.getNickName() + postfix;
+		boolean enable = false;			// default is true
+		boolean isEdit = true;			// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("account", userAccount);
-		addRequestParameter("mail", userMail);
-		addRequestParameter("name", userName);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
+		addRequestParameter("id", String.valueOf(userId));
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("mail", email);
+		addRequestParameter("name", nickName);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
-		// assert response text
-		//		String userScrumRole = "user";
-		String expectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + userId + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + userName + "</Name>" +
-		        "<Mail>" + userMail + "</Mail>" +
-		        //		        "<Roles>" + userScrumRole + "</Roles>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + userEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String acutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectResponseText, acutalResponseText);
+		StringBuilder expectResponse = new StringBuilder();
+		expectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(userId).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(nickName).append("</Name>")
+					.append("<Mail>").append(email).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(enable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String acutalResponse = response.getWriterBuffer().toString();
+		assertEquals(expectResponse.toString(), acutalResponse);
 
 		// assert database information
-		UserObject account = this.accountMapper.getAccount(userAccount);
-		String expectUserPassword = this.CA.getAccount_PWD(1);
-
-		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
-		assertEquals((new TestTool()).getMd5(expectUserPassword), account.getPassword());
-		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
-		assertEquals(userEnable, account.getEnable());
+		AccountObject newAccount = mAccountMapper.getAccount(userId);
+		assertNotNull(newAccount);
+		assertEquals(username, newAccount.getUsername());
+		assertEquals((new TestTool()).getMd5(password), newAccount.getPassword());
+		assertEquals(nickName, newAccount.getNickName());
+		assertEquals(email, newAccount.getEmail());
+		assertEquals(enable, newAccount.getEnable());
 	}
 
 	/**
-	 * admin更新使用者密碼
+	 * update Password
 	 */
 	public void testModifyAccountAction_updateUserPassword() {
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
-		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+		setRequestPathInformation(mActionPath);
+		// create account
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		// User Information
+		String projectName = mCP.getProjectList().get(0).getName();
 		String postfix = "_update";
-
-		UserObject user = CA.getAccountList().get(0);
-		String userId = user.getId();			// 取得第一筆 ID
-		String userAccount = user.getAccount();	// 取得第一筆 Account ID
-		String userPw = user.getPassword() + postfix;
-		String userMail = user.getEmail();
-		String userName = user.getName();
-		String userEnable = user.getEnable();	// default is true
-		String userIsEdit = "true";				// false 代表是新增帳號
+		AccountObject account = mCA.getAccountList().get(0);
+		long accountId = account.getId();
+		String username = account.getUsername();
+		String password = mCA.getAccount_PWD(1) + postfix;
+		String email = account.getEmail();
+		String nickName = account.getNickName();
+		boolean enable = account.getEnable();	// default is true
+		boolean isEdit = true;					// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("account", userAccount);
-		addRequestParameter("passwd", userPw);
-		addRequestParameter("mail", userMail);
-		addRequestParameter("name", userName);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("mail", email);
+		addRequestParameter("name", nickName);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
-		// assert response text
-		//		String userScrumRole = "user";
-		String expectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + userId + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + userName + "</Name>" +
-		        "<Mail>" + userMail + "</Mail>" +
-		        //		        "<Roles>" + userScrumRole + "</Roles>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + userEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String acutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectResponseText, acutalResponseText);
+		StringBuilder expectResponse = new StringBuilder();
+		expectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(accountId).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(nickName).append("</Name>")
+					.append("<Mail>").append(email).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(enable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String acutalResponse = response.getWriterBuffer().toString();
+		assertEquals(expectResponse.toString(), acutalResponse);
 
 		// assert database information
-		UserObject account = this.accountMapper.getAccount(userAccount);
-
-		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
-		assertEquals((new TestTool()).getMd5(userPw), account.getPassword());
-		assertEquals(userMail, account.getEmail());
-		assertEquals(userName, account.getName());
-		assertEquals(userEnable, account.getEnable());
+		AccountObject newAccount = mAccountMapper.getAccount(username);
+		assertNotNull(newAccount);
+		assertEquals(username, newAccount.getUsername());
+		assertEquals((new TestTool()).getMd5(password), newAccount.getPassword());
+		assertEquals(nickName, newAccount.getNickName());
+		assertEquals(email, newAccount.getEmail());
+		assertEquals(enable, newAccount.getEnable());
 	}
 
 	/**
 	 * Integration Test
-	 * 更新帳號資訊後，測試使用者是否可以登入ezScrum.
+	 * 更新帳號資訊後，測試使用者是否可以登入 ezScrum.
 	 * Steps:
 	 * 1. admin 新增帳號
 	 * 2. admin 更新所有資訊( name, password, email )
-	 * 3. user登入
+	 * 3. user 登入
 	 */
 	public void testModifyAccountAction_updateAllInformation_IntegrationTest() {
 		/**
 		 * 1. 新增帳號
 		 */
-		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
+		// ================ initial action info ========================
+		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		String userAccount = "tester";
-		String userName = "tester";
-		String userPwd = "tester";
-		String userEmail = "tester@mail.com";
-		String userEnable = "true";	// default is true
-		String userIsEdit = "false";		// false 代表是新增帳號
+		String projectName = mCP.getProjectList().get(0).getName();
+		String username = "tester";
+		String password = "tester";
+		String nickName = "tester";
+		String email = "tester@mail.com";
+		boolean enable = true;		// default is true
+		boolean isEdit = false;		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("account", userAccount);
-		addRequestParameter("name", userName);
-		addRequestParameter("passwd", userPwd);
-		addRequestParameter("mail", userEmail);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
+		addRequestParameter("account", username);
+		addRequestParameter("name", nickName);
+		addRequestParameter("passwd", password);
+		addRequestParameter("mail", email);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 create account action ======================
+		// 執行 create account action
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
-		// assert response text
-		//		String userRole = "user";
-		String expectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + account.getId() + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + userName + "</Name>" +
-		        "<Mail>" + userEmail + "</Mail>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + userEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String acutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectResponseText, acutalResponseText);
+		AccountObject account = mAccountMapper.getAccount(username);
+		StringBuilder expectResponse = new StringBuilder();
+		expectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(account.getId()).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(nickName).append("</Name>")
+					.append("<Mail>").append(email).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(enable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String acutalResponse = response.getWriterBuffer().toString();
+		assertEquals(expectResponse.toString(), acutalResponse);
 
 		// assert database information
-
 		assertNotNull(account);
-		assertEquals(userAccount, account.getAccount());
-		assertEquals((new TestTool()).getMd5(userPwd), account.getPassword());
-		assertEquals(userEmail, account.getEmail());
-		assertEquals(userName, account.getName());
-		assertEquals(userEnable, account.getEnable());
+		assertEquals(username, account.getUsername());
+		assertEquals((new TestTool()).getMd5(password), account.getPassword());
+		assertEquals(nickName, account.getNickName());
+		assertEquals(email, account.getEmail());
+		assertEquals(enable, account.getEnable());
 
 		/**
 		 * 2. 更新帳號資訊(name, email, password)
 		 */
-		// ================ clean previous action info ========================
+		// ================ initial action info ========================
 		cleanActionInformation();
-
-		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
+		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String updateUserName = "uptate_name_tester";
-		String updateUserPwd = "update_pwd_tester";
-		String updateUserEmail = "update_mail_tester@mail.com";
-		String updateUserEnable = "true";	// default is true
-		String updateUserIsEdit = "true";		// false 代表是新增帳號
+		String updatePassword = "update_pwd_tester";
+		String updateNickName = "uptate_nickName_tester";
+		String updateEmail = "update_mail_tester@mail.com";
+		boolean updateEnable = true;		// default is true
+		boolean updateIsEdit = true;		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", account.getId());
-		addRequestParameter("account", account.getAccount());
-		addRequestParameter("name", updateUserName);
-		addRequestParameter("passwd", updateUserPwd);
-		addRequestParameter("mail", updateUserEmail);
-		addRequestParameter("enable", updateUserEnable);
-		addRequestParameter("isEdit", updateUserIsEdit);
+		addRequestParameter("id", String.valueOf(account.getId()));
+		addRequestParameter("account", account.getUsername());
+		addRequestParameter("passwd", updatePassword);
+		addRequestParameter("name", updateNickName);
+		addRequestParameter("mail", updateEmail);
+		addRequestParameter("enable", String.valueOf(updateEnable));
+		addRequestParameter("isEdit", String.valueOf(updateIsEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 update account action ======================
+		// 執行 update account action
 		actionPerform();
 
 		// ================ assert ========================
-		// assert response text
-		String updateExpectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + account.getId() + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + updateUserName + "</Name>" +
-		        "<Mail>" + updateUserEmail + "</Mail>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + updateUserEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String updateAcutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(updateExpectResponseText, updateAcutalResponseText);
-
+		StringBuilder updateExpectResponse = new StringBuilder();
+		updateExpectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(account.getId()).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(updateNickName).append("</Name>")
+					.append("<Mail>").append(updateEmail).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(updateEnable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String updateAcutalResponse = response.getWriterBuffer().toString();
+		assertEquals(updateExpectResponse.toString(), updateAcutalResponse);
+		
 		// assert database information
-		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
-
+		AccountObject updateAccount = mAccountMapper.getAccount(username);
 		assertNotNull(updateAccount);
-		assertEquals(userAccount, updateAccount.getAccount());
-		assertEquals(updateUserName, updateAccount.getName());
-		assertEquals((new TestTool()).getMd5(updateUserPwd), updateAccount.getPassword());
-		assertEquals(updateUserEmail, updateAccount.getEmail());
-		assertEquals(updateUserEnable, updateAccount.getEnable());
+		assertEquals(username, updateAccount.getUsername());
+		assertEquals((new TestTool()).getMd5(updatePassword), updateAccount.getPassword());
+		assertEquals(updateNickName, updateAccount.getNickName());
+		assertEquals(updateEmail, updateAccount.getEmail());
+		assertEquals(updateEnable, updateAccount.getEnable());
 
 		/**
 		 * 3. 登入
@@ -456,18 +450,16 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String ActionPath_LogonSubmit = "/logonSubmit";
-		setRequestPathInformation(ActionPath_LogonSubmit);
+		String actionPath_LogonSubmit = "/logonSubmit";
+		setRequestPathInformation(actionPath_LogonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = userAccount;
-		String loginUserPassword = updateUserPwd;
 		LogonForm logonForm = new LogonForm();
-		logonForm.setUserId(loginUserID);
-		logonForm.setPassword(loginUserPassword);
+		logonForm.setUserId(username);
+		logonForm.setPassword(updatePassword);
 		setActionForm(logonForm);
 
-		// ================ 執行 login action ======================
+		// 執行 login action
 		actionPerform();
 
 		// ================ assert ======================
@@ -476,10 +468,10 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 	/**
 	 * Integration Test
-	 * 更新帳號資訊(enable:true->false)，測試使用者無法登入ezScrum.
+	 * 更新帳號資訊(enable:true -> false)，測試使用者無法登入 ezScrum.
 	 * Steps
 	 * 1. admin 新增帳號
-	 * 2. admin 更新所有資訊( enable:true->false)
+	 * 2. admin 更新所有資訊( enable: true -> false)
 	 * 3. user登入
 	 */
 	public void testModifyAccountAction_updateEnableInformation_IntegrationTest() {
@@ -487,59 +479,59 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		 * 1. 新增帳號
 		 */
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
+		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String projectId = this.CP.getProjectList().get(0).getName();
-		String userAccount = "tester";
-		String userName = "tester";
-		String userPwd = "tester";
-		String userEmail = "tester@mail.com";
-		String userEnable = "true";			// default is true
-		String userIsEdit = "false";		// false 代表是新增帳號
+		String projectName = mCP.getProjectList().get(0).getName();
+		String username = "tester";
+		String password = "tester";
+		String nickName = "tester";
+		String email = "tester@mail.com";
+		boolean enable = true;		// default is true
+		boolean isEdit = false;		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("account", userAccount);
-		addRequestParameter("name", userName);
-		addRequestParameter("passwd", userPwd);
-		addRequestParameter("mail", userEmail);
-		addRequestParameter("enable", userEnable);
-		addRequestParameter("isEdit", userIsEdit);
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("name", nickName);
+		addRequestParameter("mail", email);
+		addRequestParameter("enable", String.valueOf(enable));
+		addRequestParameter("isEdit", String.valueOf(isEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 create account action ======================
+		// 執行 create account action
 		actionPerform();
 
 		// ================ assert ========================
-		UserObject account = this.accountMapper.getAccount(userAccount);
-		// assert response text
-//		String userRole = "user";
-		String expectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + account.getId() + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + userName + "</Name>" +
-		        "<Mail>" + userEmail + "</Mail>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + userEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String acutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectResponseText, acutalResponseText);
-
+		AccountObject account = mAccountMapper.getAccount(username);
+		StringBuilder expectResponse = new StringBuilder();
+		expectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(account.getId()).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(nickName).append("</Name>")
+					.append("<Mail>").append(email).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(enable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String acutalResponse = response.getWriterBuffer().toString();
+		assertEquals(expectResponse.toString(), acutalResponse);
+		
 		// assert database information
-
 		assertNotNull(account);
-		assertEquals(account.getAccount(), userAccount);
-		assertEquals(account.getName(), userName);
-		assertEquals(account.getPassword(), (new TestTool()).getMd5(userPwd));
-		assertEquals(account.getEmail(), userEmail);
-		assertEquals(account.getEnable(), userEnable);
+		assertEquals(account.getUsername(), username);
+		assertEquals(account.getPassword(), (new TestTool()).getMd5(password));
+		assertEquals(account.getNickName(), nickName);
+		assertEquals(account.getEmail(), email);
+		assertEquals(account.getEnable(), enable);
 
 		/**
 		 * 2. 更新帳號資訊(name, email, password)
@@ -548,54 +540,55 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		setRequestPathInformation(this.ActionPath_ModifyAccount);
+		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String updateUserEnable = "false";		// default is true
-		String updateUserIsEdit = "true";		// false 代表是新增帳號
+		boolean updateEnable = false;		// default is true
+		boolean updateIsEdit = true;		// false 代表是新增帳號
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", account.getId());
-		addRequestParameter("account", userAccount);
-		addRequestParameter("name", userName);
-		addRequestParameter("passwd", userPwd);
-		addRequestParameter("mail", userEmail);
-		addRequestParameter("enable", updateUserEnable);
-		addRequestParameter("isEdit", updateUserIsEdit);
+		addRequestParameter("id", String.valueOf(account.getId()));
+		addRequestParameter("account", username);
+		addRequestParameter("passwd", password);
+		addRequestParameter("name", nickName);
+		addRequestParameter("mail", email);
+		addRequestParameter("enable", String.valueOf(updateEnable));
+		addRequestParameter("isEdit", String.valueOf(updateIsEdit));
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectId);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + projectName);
 
-		// ================ 執行 update account action ======================
+		// 執行 update account action
 		actionPerform();
 
 		// ================ assert ========================
-		// assert response text
-		String updateExpectResponseText = "<Accounts>" +
-		        "<AccountInfo>" +
-		        "<ID>" + account.getId() + "</ID>" +
-		        "<Account>" + userAccount + "</Account>" +
-		        "<Name>" + userName + "</Name>" +
-		        "<Mail>" + userEmail + "</Mail>" +
-		        "<Roles></Roles>" +
-		        "<Enable>" + updateUserEnable + "</Enable>" +
-		        "</AccountInfo>" +
-		        "</Accounts>";
-		String updateAcutalResponseText = response.getWriterBuffer().toString();
-		assertEquals(updateExpectResponseText, updateAcutalResponseText);
-
+		StringBuilder updateExpectResponse = new StringBuilder();
+		updateExpectResponse
+			.append("<Accounts>")
+				.append("<AccountInfo>")
+					.append("<ID>").append(account.getId()).append("</ID>")
+					.append("<Account>").append(username).append("</Account>")
+					.append("<Name>").append(nickName).append("</Name>")
+					.append("<Mail>").append(email).append("</Mail>")
+					.append("<Roles></Roles>")
+					.append("<Enable>").append(updateEnable).append("</Enable>")
+				.append("</AccountInfo>")
+			.append("</Accounts>");
+		String updateAcutalResponse = response.getWriterBuffer().toString();
+		assertEquals(updateExpectResponse.toString(), updateAcutalResponse);
+		
 		// assert database information
-		UserObject updateAccount = this.accountMapper.getAccount(userAccount);
-
+		AccountObject updateAccount = mAccountMapper.getAccount(username);
 		assertNotNull(updateAccount);
-		assertEquals(userAccount, updateAccount.getAccount());
-		assertEquals((new TestTool()).getMd5(userPwd), updateAccount.getPassword());
-		assertEquals(userEmail, updateAccount.getEmail());
-		assertEquals(userName, updateAccount.getName());
-		assertEquals(updateUserEnable, updateAccount.getEnable());
+		assertEquals(username, updateAccount.getUsername());
+		assertEquals((new TestTool()).getMd5(password), updateAccount.getPassword());
+		assertEquals(nickName, updateAccount.getNickName());
+		assertEquals(email, updateAccount.getEmail());
+		assertEquals(updateEnable, updateAccount.getEnable());
 
 		/**
 		 * 3. 登入
@@ -604,15 +597,13 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		cleanActionInformation();
 
 		// ================ set action info ========================
-		String ActionPath_LogonSubmit = "/logonSubmit";
-		setRequestPathInformation(ActionPath_LogonSubmit);
+		String actionPath_LogonSubmit = "/logonSubmit";
+		setRequestPathInformation(actionPath_LogonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = userAccount;
-		String loginUserPassword = userPwd;
 		LogonForm logonForm = new LogonForm();
-		logonForm.setUserId(loginUserID);
-		logonForm.setPassword(loginUserPassword);
+		logonForm.setUserId(username);
+		logonForm.setPassword(password);
 		setActionForm(logonForm);
 
 		// ================ 執行 login action ======================

@@ -14,7 +14,7 @@ import java.util.Properties;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 public class Configuration {
@@ -33,7 +33,7 @@ public class Configuration {
 	private final String TEST = "test";
 	
 	private String dataPath;	     // 預設的 TestData
-	private String workspacePath;	 // 預設的 worksapce
+	private String workspacePath;	 // 預設的 workspace
 	private String initialSQLPath;	 // 預設的初始SQL檔案位置
 	
 	private ProjectObject mProject;
@@ -77,7 +77,7 @@ public class Configuration {
 	/**
 	 * save changes to ini file
 	 */
-	public void store() {
+	public void save() {
 		List<String> list = new ArrayList<String>();
 		BufferedReader bufferedReader = null;
 		BufferedWriter bufferedWriter = null;
@@ -161,7 +161,7 @@ public class Configuration {
 	public String getAccount() {
 		if (m_userSession == null)
 			return getDBAccount();
-		return m_userSession.getAccount().getAccount();
+		return m_userSession.getAccount().getUsername();
 	}
 
 	public String getDBAccount() {
@@ -216,7 +216,7 @@ public class Configuration {
 	 * return mock up IUserSession
 	 */
 	public IUserSession getUserSession() {
-		UserObject theAccount = new AccountMapper().getAccount(USER_ID);
+		AccountObject theAccount = new AccountMapper().getAccount(USER_ID);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}

@@ -15,34 +15,34 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveSprintPlanActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/saveSprintPlan";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private final String mActionPath = "/saveSprintPlan";
+	private IProject mProject;
 	
 	public SaveSprintPlanActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	新增一個測試專案
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();
-    	this.project = this.CP.getProjectList().get(0);
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();
+    	mProject = mCP.getProjectList().get(0);
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( this.ACTION_PATH );
+    	setRequestPathInfo( mActionPath );
     	
     	// ============= release ==============
     	ini = null;
@@ -50,21 +50,20 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	this.CP = null;
-    	configuration = null;
+    	mCP = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
@@ -88,7 +87,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintDemoDate = testTool.calcaulateDueDate(sprintInterval, today);
     	String sprintDemoPlace = "Lab 1321";
     	
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("isCreate", "True");
 		addRequestParameter("Id", sprintID);
@@ -103,7 +102,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		addRequestParameter("DemoPlace", sprintDemoPlace);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -117,7 +116,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 		
 		//	assert sprint information
-		this.checkSprintInformation(projectName, sprintID, sprintGoal, sprintStartDate, sprintInterval, sprintMembers, sprintAvaliableDays, sprintFocusFactor, sprintDailyScrum, sprintDemoDate, sprintDemoPlace);
+		checkSprintInformation(projectName, sprintID, sprintGoal, sprintStartDate, sprintInterval, sprintMembers, sprintAvaliableDays, sprintFocusFactor, sprintDailyScrum, sprintDemoDate, sprintDemoPlace);
     }
     
     
@@ -126,8 +125,8 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
      */
     public void testSaveSprint_2(){
     	int count = 1;
-    	CreateSprint createSprint = new CreateSprint(count, this.CP);
-    	createSprint.exe();
+    	CreateSprint CS = new CreateSprint(count, mCP);
+    	CS.exe();
     	
 		// ================ set request info ========================
     	TestTool testTool = new TestTool();
@@ -146,7 +145,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintDemoDate = testTool.calcaulateDueDate(sprintInterval, date);
     	String sprintDemoPlace = "Lab 1321 Demo Place";
     	
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("isCreate", "false");
 		addRequestParameter("Id", sprintID);
@@ -161,7 +160,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		addRequestParameter("DemoPlace", sprintDemoPlace);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -175,27 +174,27 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 		
 		//	assert sprint information
-		this.checkSprintInformation(projectName, sprintID, sprintGoal, sprintStartDate, sprintInterval, sprintMembers, sprintAvaliableDays, sprintFocusFactor, sprintDailyScrum, sprintDemoDate, sprintDemoPlace);
+		checkSprintInformation(projectName, sprintID, sprintGoal, sprintStartDate, sprintInterval, sprintMembers, sprintAvaliableDays, sprintFocusFactor, sprintDailyScrum, sprintDemoDate, sprintDemoPlace);
     }
     
     private void checkSprintInformation(String projectName, String sprintID, String sprintGoal, String sprintStartDate, String sprintInterval, String sprintMembers, String sprintAvaliableDays, String sprintFocusFactor, String sprintDailyScrum, String sprintDemoDate, String sprintDemoPlace){
 		//	clear request and response
 		clearRequestParameters();
-		this.response.reset();
+		response.reset();
 		
 		//	set get sprint information action path
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
     	setRequestPathInfo( "/GetSprintPlan" );
 		
 		// ================ set request info ========================
-		projectName = this.project.getName();
+		projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("lastsprint", sprintID);
 		addRequestParameter("SprintID", sprintID);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

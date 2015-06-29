@@ -1,8 +1,8 @@
 *** Settings ***
-Library           Selenium2Library
 Library           BuiltIn
 Library           HttpLibrary.HTTP
 Library           lib/DatabaseHandler.py
+Library           lib/Selenium2Improved.py
 
 *** Keywords ***
 ezScrum Suite Setup
@@ -28,9 +28,8 @@ New Tab With Alias
     [Arguments]    ${loginUrl}    ${alias}
     [Documentation]    1. 透過 selenium api 的 openWindow 來完成開分頁的功能
     ...    2. 使用此keyword的限制 : open browser的url domain name必須與欲新增的分頁domain name一致
-    #    Open Browser    ${loginUrl}
-    #    Call Selenium Api    openWindow    ${loginUrl}    ${alias}
-    Select Window    ${alias}
+    Open Tab    ${loginUrl}    ${alias}
+    Select Window    ezScrum, SSLab NTUT
 
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}

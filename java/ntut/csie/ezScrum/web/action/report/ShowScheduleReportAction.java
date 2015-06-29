@@ -10,11 +10,11 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -25,7 +25,7 @@ public class ShowScheduleReportAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		String iter = request.getParameter("sprintID");
@@ -57,7 +57,7 @@ public class ShowScheduleReportAction extends Action {
 		Collections.reverse(plans);  // 資料反轉、倒序
 		request.setAttribute("SprintPlans", plans);  // set sprint combo
 
-		UserObject account = session.getAccount();
+		AccountObject account = session.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr.getReadReport()) {
 			return mapping.findForward("success");

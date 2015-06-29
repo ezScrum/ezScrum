@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
@@ -55,8 +54,7 @@ public class MantisIssueService extends AbstractMantisService {
 		 */
 		valueSet.addTableName("mantis_bug_text_table");
 		valueSet.addInsertValue("description", issue.getDescription());
-		valueSet
-				.addInsertValue("additional_information", issue.getAdditional());
+		valueSet.addInsertValue("additional_information", issue.getAdditional());
 		valueSet.addInsertValue("steps_to_reproduce", "");
 		String query = valueSet.getInsertQuery();
 		getControl().execute(query, true);
@@ -68,8 +66,7 @@ public class MantisIssueService extends AbstractMantisService {
 		/********** 建立Issue本體 *******************************************/
 		valueSet.clear();
 		valueSet.addTableName("mantis_bug_table");
-		valueSet.addInsertValue("project_id", Integer.toString(this
-				.getProjectID(issue.getProjectID())));
+		valueSet.addInsertValue("project_id", Integer.toString(getProjectID(issue.getProjectID())));
 		valueSet.addInsertValue("reporter_id", Integer
 				.toString(getUserID(getConfig().getAccount())));
 		valueSet.addInsertValue("category", issue.getCategory());
@@ -159,7 +156,7 @@ public class MantisIssueService extends AbstractMantisService {
 						.getTime());
 				String project_id = result.getString("project_id");
 				if(project_id!=null && !project_id.equals("")){
-					issue.setProjectID(project_id);
+					issue.setProjectID(getProjectName(Integer.parseInt(project_id)));
 					issue.setProjectName(getProjectName(Integer.parseInt(project_id)));
 				}
 
@@ -323,9 +320,6 @@ public class MantisIssueService extends AbstractMantisService {
 
 		String query = valueSet.getSelectQuery();
 		resultIssues = setIssue(projectName, query);
-//		m_issues = resultIssues;
-//		m_currentProjectName = projectName;
-//		return m_issues;
 		return resultIssues;
 	}
 
@@ -434,8 +428,8 @@ public class MantisIssueService extends AbstractMantisService {
 		getControl().execute(query);
 	}
 
-	public List<IStory> getStorys(String projectName) {
-		int projectID = getProjectID(projectName);
+	public ArrayList<IStory> getStorys(String projectName) {
+		int projectId = getProjectID(projectName);
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		// 訂定查詢table名稱
 		valueSet.addTableName("mantis_bug_table");
@@ -443,13 +437,13 @@ public class MantisIssueService extends AbstractMantisService {
 
 		// 訂定查詢的條件
 		valueSet.addFieldEqualCondition("mantis_bug_table.bug_text_id",	"mantis_bug_text_table.id");
-		valueSet.addEqualCondition("project_id", Integer.toString(projectID));
+		valueSet.addEqualCondition("project_id", Integer.toString(projectId));
 		valueSet.addEqualCondition("category", "'" + ScrumEnum.STORY_ISSUE_TYPE	+ "'");
 
 		// 產生查詢的query
 		String query = valueSet.getSelectQuery();
 		log.info("[SQL] " + query);
-		List<IStory> issues = new ArrayList<IStory>();
+		ArrayList<IStory> issues = new ArrayList<IStory>();
 		try {
 			ResultSet result = getControl().executeQuery(query);
 			while (result.next()) {
@@ -459,6 +453,7 @@ public class MantisIssueService extends AbstractMantisService {
 				issue.setIssueID(result.getLong("id"));
 				issue.setIssueLink(MANTIS_VIEW_LINK + ATTRIBURE_ISSUEID + issue.getIssueID());
 				issue.setStatus(ITSEnum.getStatus(result.getInt("status")));
+				issue.setCategory(ScrumEnum.STORY_ISSUE_TYPE);
 				issue.setProjectID(projectName);
 				issue.setProjectName(projectName);
 				// 加入列表

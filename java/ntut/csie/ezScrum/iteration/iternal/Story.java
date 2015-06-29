@@ -1,11 +1,10 @@
 package ntut.csie.ezScrum.iteration.iternal;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 
@@ -25,7 +24,10 @@ public class Story extends ScrumIssue implements IStory {
 	public Story(){}
 	
 	public Story(IIssue issue){
-		this.setIssue(issue);
+		try {
+			this.setIssue(issue);
+		} catch (SQLException e) {
+		}
 	}		
 	
 	public String getValue(){
@@ -84,30 +86,6 @@ public class Story extends ScrumIssue implements IStory {
 	}
 	
 	@Override
-	public List<Long> getChildrenID() {
-		// return m_children;
-		return this.getChildrenID(new Date());
-	}
-	
-	@Override
-	public List<Long> getChildrenID(Date date) {
-		ArrayList<Long> list = new ArrayList<Long>();
-		for (IIssueHistory history : getHistory()) {
-			if (history.getModifyDate() > date.getTime())
-				continue;
-			if (history.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.PARENT_OLD_VALUE))
-				list.add(Long.parseLong(history.getNewValue()));
-			else if (history.getType() == IIssueHistory.RELEATIONSHIP_DELETE_TYPE
-					&& history.getOldValue().equals(
-							IIssueHistory.PARENT_OLD_VALUE))
-				list.remove(Long.parseLong(history.getNewValue()));
-		}
-		return list;
-	}
-	
-	@Override
 	public String getValueByType(String type){
 		if (type.equals(ScrumEnum.ID_ATTR))
 			return Long.toString(this.getIssueID());
@@ -134,7 +112,7 @@ public class Story extends ScrumIssue implements IStory {
 	}
 	
 	public void setTagContent(Element history) {
-		m_tagRoot = history;
+		mTagRoot = history;
 		generateTagReleationHistory();
 	}
 	
@@ -160,7 +138,7 @@ public class Story extends ScrumIssue implements IStory {
 		Long v = 0l;
 		
 		@SuppressWarnings("unchecked")
-		List<Element> tags = m_tagRoot.getChildren();
+		List<Element> tags = mTagRoot.getChildren();
 		for (Element tag : tags) {
 			@SuppressWarnings("unchecked")
 			List<Element> childTags = tag.getChildren();

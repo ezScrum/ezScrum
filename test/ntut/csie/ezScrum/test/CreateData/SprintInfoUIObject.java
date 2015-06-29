@@ -9,7 +9,6 @@ public class SprintInfoUIObject {
 	public boolean isCurrentSprint = false;
 	
 	public SprintInfoUIObject() {
-		
 	}
 	
 	public SprintInfoUIObject(int ID, String goal, double sp, double tp, String rid, boolean current) {

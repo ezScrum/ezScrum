@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.pic.internal;
 import java.util.Date;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 
 /**
@@ -12,19 +12,19 @@ import ntut.csie.ezScrum.web.dataObject.UserObject;
  */
 public class UserSession implements IUserSession {
     private static final long serialVersionUID = -3450844229523749074L;
-    private UserObject _account = null;
+    private AccountObject _account = null;
     private Date _loginTime = null;
     private String _IP = "";
 
     /**
      *
      */
-    public UserSession(UserObject account) {
+    public UserSession(AccountObject account) {
         _account = account;
         _loginTime = new Date();
     }
 
-    public UserSession(UserObject account, String ip) {
+    public UserSession(AccountObject account, String ip) {
         this(account);
         _IP = ip;
     }
@@ -32,7 +32,7 @@ public class UserSession implements IUserSession {
     /* (non-Javadoc)
      * @see ntut.csie.jcis.pic.core.IUserSession#getAccount()
      */
-    public UserObject getAccount() {
+    public AccountObject getAccount() {
         return _account;
     }
 

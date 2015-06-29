@@ -4,6 +4,7 @@ Ext.ns('ezScrum.window');
 /* Attach File Form */
 ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 	issueId:'-1',
+	issueType: '',
 	projectName:undefined,
 	bodyStyle: 'padding:15px',
 	border : false,
@@ -60,7 +61,7 @@ ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 			var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
 			myMask.show();
 			var obj = this;
-			var readUrl = this.url + "?issueID=" + this.issueId;
+			var readUrl = this.url + "?issueID=" + this.issueId + '&issueType=' + this.issueType;
 			
 			this.getForm().submit({
 				url:readUrl,
@@ -97,6 +98,7 @@ ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 		success = rs.success;
 		if(rs.success && rs.totalRecords > 0) {
 			var record = rs.records[0];
+			record.issueType = this.issueType;
 			if(record) {
 				this.notifyPanel.notify_AttachFile(success, record, null);
 			}
@@ -138,9 +140,10 @@ ezScrum.window.AttachFileWindow = Ext.extend(Ext.Window, {
 		
 		this.attachForm = this.items.get(0); 
 	},
-	attachFile:function(panel, id){
+	attachFile:function(panel, id, issueType){
 		this.attachForm.reset();
 		this.attachForm.issueId = id;
+		this.attachForm.issueType = issueType;
 		// initial form info
         this.attachForm.notifyPanel = panel;
         // initial window info 

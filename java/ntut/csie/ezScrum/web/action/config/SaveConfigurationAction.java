@@ -38,7 +38,7 @@ public class SaveConfigurationAction extends PermissionAction{
 		config.setDBPassword(Password);
 		config.setDBType(DatabaseType);
 		config.setDBName(DatabaseName);
-		config.store();
+		config.save();
 		
 		return new StringBuilder("success");
     }

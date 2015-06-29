@@ -15,40 +15,45 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateRelease CR;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/AjaxShowStoryfromSprint";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mActionPath = "/AjaxShowStoryfromSprint";
+	private IProject mProject;
 	
 	public AjaxShowStoryFromSprintActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 		
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();								// 新增一測試專案
-    	this.project = this.CP.getProjectList().get(0);
+		// 新增一測試專案
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();
+    	mProject = mCP.getProjectList().get(0);
     	
-    	this.CR = new CreateRelease(1, this.CP);
-    	this.CR.exe();										// 新增一筆Release Plan
+		// 新增一筆Release Plan
+    	mCR = new CreateRelease(1, mCP);
+    	mCR.exe();
     	
-    	this.CS = new CreateSprint(2, this.CP);
-    	this.CS.exe();										// 新增二筆Sprint Plan
+		// 新增二筆Sprint Plan
+    	mCS = new CreateSprint(2, mCP);
+    	mCS.exe();
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( this.ACTION_PATH );
+    	setRequestPathInfo( mActionPath );
     	
     	// ============= release ==============
     	ini = null;
@@ -56,23 +61,22 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	this.CP = null;
-    	this.CR = null;
-    	this.CS = null;
-    	configuration = null;
+    	mCP = null;
+    	mCR = null;
+    	mCS = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
@@ -82,12 +86,12 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryFromSprint_1(){
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", this.CS.getSprintIDList().get(0));
+		addRequestParameter("Sid", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -104,16 +108,16 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 	public void testShowStoryFromSprint_2() throws Exception{
 		int storycount = 2;
 		
-		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storycount, 2, this.CS, this.CP, CreateProductBacklog.TYPE_ESTIMATION);
-		addStoryToSprint.exe();
+		AddStoryToSprint ASTS = new AddStoryToSprint(storycount, 2, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		ASTS.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("Sid", this.CS.getSprintIDList().get(0));
+		addRequestParameter("Sid", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -127,7 +131,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 					.append("<ExistingStories>")
 						.append("<Story>")
 							.append("<Id>1</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
+							.append("<Link></Link>")
 							.append("<Name>TEST_STORY_1</Name>")
 							.append("<Value>50</Value>")
 							.append("<Importance>100</Importance>")
@@ -135,13 +139,13 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 							.append("<Status>new</Status>")
 							.append("<Notes>TEST_STORY_NOTE_1</Notes>")
 							.append("<HowToDemo>TEST_STORY_DEMO_1</HowToDemo>")
-							.append("<Release>None</Release>")
+							.append("<Release></Release>")
 							.append("<Sprint>1</Sprint>")
 							.append("<Tag></Tag>")
 						.append("</Story>")
 						.append("<Story>")
 							.append("<Id>2</Id>")
-							.append("<Link>/ezScrum/showIssueInformation.do?issueID=2</Link>")
+							.append("<Link></Link>")
 							.append("<Name>TEST_STORY_2</Name>")
 							.append("<Value>50</Value>")
 							.append("<Importance>100</Importance>")
@@ -149,7 +153,7 @@ public class AjaxShowStoryFromSprintActionTest extends MockStrutsTestCase {
 							.append("<Status>new</Status>")
 							.append("<Notes>TEST_STORY_NOTE_2</Notes>")
 							.append("<HowToDemo>TEST_STORY_DEMO_2</HowToDemo>")
-							.append("<Release>None</Release>")
+							.append("<Release></Release>")
 							.append("<Sprint>1</Sprint>")
 							.append("<Tag></Tag>")
 						.append("</Story>")

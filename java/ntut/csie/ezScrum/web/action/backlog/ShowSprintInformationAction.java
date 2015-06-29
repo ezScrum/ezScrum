@@ -1,18 +1,16 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
-import java.text.NumberFormat;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
@@ -34,8 +32,8 @@ public class ShowSprintInformationAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
+		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*
@@ -46,30 +44,29 @@ public class ShowSprintInformationAction extends Action {
 		 * 3. displayName對應 IProjectPreference(class) 的 getDisplayName(method)
 		 * 目的:解決開不同分頁瀏覽不同專案時，在Sprint backlog點選Sprint Information顯示正確的sprint information.
 		 */
-		request.setAttribute(IProjectSummaryEnum.PROJECT, project);
+		request.setAttribute(IProjectSummaryEnum.PROJECT, iProject);
 
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, userSession, sprintID);
-		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, userSession);
-		if (backlog == null) {
+		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
+		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
+		if (sprintBacklogMapper == null) {
 			return mapping.findForward("error");
 		}
+		sprintId = sprintBacklogMapper.getSprintId();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
-		List<IIssue> issues = sprintBacklogHelper.getStoriesByImportance();
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
 		
-		request.setAttribute("SprintID", backlog.getSprintPlanId());
-		request.setAttribute("Stories", issues);
+		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
+		request.setAttribute("Stories", stories);
 
-		NumberFormat nf = NumberFormat.getInstance();
-		request.setAttribute("StoryPoint", nf.format(sprintBacklogLogic.getCurrentPoint(ScrumEnum.STORY_ISSUE_TYPE)));
+		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc plan = spHelper.loadPlan(backlog.getSprintPlanId());
+		ISprintPlanDesc plan = spHelper.loadPlan(String.valueOf(sprintBacklogMapper.getSprintId()));
 		request.setAttribute("SprintPlan", plan);
-//		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(userSession, project));
-		request.setAttribute("Actors", (new ProjectMapper()).getProjectScrumWorkerList(projectObject.getId()));
+		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
 		        + " to "
@@ -77,7 +74,7 @@ public class ShowSprintInformationAction extends Action {
 
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
-		UserObject account = userSession.getAccount();
+		AccountObject account = userSession.getAccount();
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (sr != null && sr.getAccessSprintBacklog()) {
 			return mapping.findForward("success");

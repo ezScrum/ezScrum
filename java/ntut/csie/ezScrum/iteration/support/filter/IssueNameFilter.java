@@ -1,61 +1,52 @@
 package ntut.csie.ezScrum.iteration.support.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.iteration.core.ITask;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class IssueNameFilter extends AProductBacklogFilter {
-	public IssueNameFilter(IStory[] stories, String info) {
-		super(stories, info);
-	}
-	
-	public IssueNameFilter(ITask[] tasks, String info) {
-		super(tasks, info);
+	public <E> IssueNameFilter(ArrayList<E> issues, String info) {
+		super(issues, info);
 	}
 
 	@Override
-	protected IStory[] FilterStories() {
-		IStory[] Stories = super.Stories;
-		
-		List<IStory> filerStories = new ArrayList<IStory>();
-		
-		for (IStory story : Stories) {
+	protected ArrayList<StoryObject> FilterStories() {
+		ArrayList<StoryObject> stories = super.getStories();
+		ArrayList<StoryObject> fileredStories = new ArrayList<StoryObject>();
+		for (StoryObject story : stories) {
 			// story name contains info
 			String name = story.getName();
 			if ( compareName(name) ) {
-				filerStories.add(story);
+				fileredStories.add(story);
 			}
 		}
-			
-		return filerStories.toArray(new IStory[filerStories.size()]);
+		return fileredStories;
 	}
 
 	@Override
-	protected ITask[] FilterTasks() {
-		ITask[] Tasks = super.Tasks;
-		
-		List<ITask> filerStories = new ArrayList<ITask>();
-		
-		for (ITask task : Tasks) {
+	protected ArrayList<TaskObject> FilterTasks() {
+		ArrayList<TaskObject> Tasks = super.getTasks();
+
+		ArrayList<TaskObject> filerStories = new ArrayList<TaskObject>();
+
+		for (TaskObject task : Tasks) {
 			// task name contains info
 			String name = task.getName();
-			if ( compareName(name) ) {
+			if (compareName(name)) {
 				filerStories.add(task);
 			}
 		}
-			
-		return filerStories.toArray(new ITask[filerStories.size()]);
+
+		return filerStories;
 	}
-	
+
 	private boolean compareName(String name) {
-		if ( (name != null) && (name.length() > 0) ) { 
-			if (name.contains(this.compareInfo)) {
+		if ((name != null) && (name.length() > 0)) {
+			if (name.contains(this.mCompareInfo)) {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 }

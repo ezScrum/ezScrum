@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.rbac;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -10,34 +9,37 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
 public class RemoveUserActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateAccount CA;
-	private int ProjectCount = 1;
-	private int AccountCount = 2;
-	private String ActionPath_RemoveUser = "/removeUser";	// defined in "struts-config.xml"
-	private AddUserToRole AUTR;
-
-	private Configuration configuration;
-	private AccountMapper accountMapper;
+	private CreateProject mCP;
+	private CreateAccount mCA;
+	private int mProjectCount = 1;
+	private int mAccountCount = 2;
+	private String mActionPath = "/removeUser";
+	private AddUserToRole mAUTR;
+	private Configuration mConfig;
+	private AccountMapper mAccountMapper;
 
 	public RemoveUserActionTest(String testMethod) {
 		super(testMethod);
 	}
 
+	/**
+	 * 設定讀取的 struts-config 檔案路徑
+	 * RemoveUserAction
+	 */
 	private void setRequestPathInformation(String actionPath) {
-		setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
@@ -47,29 +49,30 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	 */
 	private void cleanActionInformation() {
 		clearRequestParameters();
-		this.response.reset();
+		response.reset();
 	}
 
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
-		// 新增Project
-		this.CP = new CreateProject(this.ProjectCount);
-		this.CP.exeCreate();
+		// 新增 Project
+		mCP = new CreateProject(mProjectCount);
+		mCP.exeCreate();
 
 		// 新增使用者
-		this.CA = new CreateAccount(this.AccountCount);
-		this.CA.exe();
+		mCA = new CreateAccount(mAccountCount);
+		mCA.exe();
 
-		// 用來指派Scrum角色
-		this.AUTR = new AddUserToRole(this.CP, this.CA);
+		// 指派 Scrum 角色
+		mAUTR = new AddUserToRole(mCP, mCA);
 
-		this.accountMapper = new AccountMapper();
+		mAccountMapper = new AccountMapper();
 
 		super.setUp();
 
@@ -77,91 +80,73 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
-		ini.exe();											// 初始化 SQL
+	protected void tearDown() throws Exception {
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
 
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 
 		// ============= release ==============
-		//    	AccountFactory.releaseManager();
-		this.accountMapper.releaseManager();
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		this.CA = null;
-		this.config = null;
-		this.accountMapper = null;
-		configuration = null;
+		mCP = null;
+		mCA = null;
+		mAccountMapper = null;
+		mConfig = null;
 	}
 
 	// 測試正常執行
-	public void testexecute() throws LogonException {
-		setRequestPathInformation(this.ActionPath_RemoveUser);
+	public void testExecute() {
+		setRequestPathInformation(mActionPath);
 
-		// 先加入 PO 角色
-		this.AUTR.exe_PO();
+		// 加入 PO 角色
+		mAUTR.exe_PO();
 
-		UserObject acc = this.AUTR.getNowAccount();
-		UserObject account = this.accountMapper.getAccount(acc.getAccount());
+		AccountObject account = mCA.getAccountList().get(0);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		assertEquals(1, roleMap.size());
 
 		// ================ set initial data =======================
-		String id = acc.getId();
-		String res = this.AUTR.getNowProjectObject().getId();
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
-		// ================ set initial data =======================
-
-		// 測試是否正確加入此 PO 角色
-		//		assertEquals(roles[0].getRoleId(), getRole(res, op));
+		long accountId = account.getId();
+		long projectId = mAUTR.getNowProjectObject().getId();
+		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		boolean isExisted = false;
 		for (Entry<String, ProjectRole> role : roleMap.entrySet()) {
-			if (op.equals(role.getValue().getScrumRole().getRoleName())) {
+			if (scrumRole.equals(role.getValue().getScrumRole().getRoleName())) {
 				isExisted = true;
 				break;
 			}
 		}
 		assertTrue(isExisted);
-//		String expectUserRole = getRole(res, op);
-//		boolean isExisted = false;
-//		for (IRole role : roles) {
-//			if (expectUserRole.equals(role.getRoleId())) {
-//				isExisted = true;
-//				break;
-//			}
-//		}
-//		assertEquals(true, isExisted);
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
-		addRequestParameter("operation", op);
-		// ================== set parameter info ====================
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
+		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
-		account = this.accountMapper.getAccountById(id);
+		account = mAccountMapper.getAccount(accountId);
 		assertNotNull(account);
-		assertEquals(this.CA.getAccount_ID(1), account.getAccount());
-		assertEquals(this.CA.getAccount_RealName(1), account.getName());
-		assertEquals("true", account.getEnable());
-		assertEquals("5e6698ee13f3ef999374751897721cb6", account.getPassword());		// 密碼要經過 MD5 編碼
-		assertEquals(this.CA.getAccount_Mail(1), account.getEmail());
+		assertEquals(mCA.getAccount_ID(1), account.getUsername());
+		assertEquals(new TestTool().getMd5(mCA.getAccount_PWD(1)), account.getPassword());
+		assertEquals(mCA.getAccount_RealName(1), account.getNickName());
+		assertEquals(true, account.getEnable());
+		assertEquals(mCA.getAccount_Mail(1), account.getEmail());
 
 		// 測試 Role 是否正確被移除
 		roleMap = account.getRoles();
@@ -169,129 +154,99 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	}
 
 	// 測試 Admin 正常移除 System 權限 
-	public void testexecuteAdmin_Remove1() throws LogonException {
-		setRequestPathInformation(this.ActionPath_RemoveUser);
+	public void testExecuteAdmin_Remove1() {
+		setRequestPathInformation(mActionPath);
 
 		// ================ set initial data =======================
-		String id = "1";
-		String accountId = "admin";
-		String res = ScrumEnum.SYSTEM;
-		String op = ScrumEnum.SCRUMROLE_ADMIN;
-		// ================ set initial data =======================    	
+		long accountId = 1;
+		String projectName = ScrumEnum.SYSTEM;
+		String scrumRole = ScrumEnum.SCRUMROLE_ADMIN;
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
-		addRequestParameter("operation", op);
-		// ================== set parameter info ====================
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", projectName);
+		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
-		UserObject account = this.accountMapper.getAccount(accountId);
+		AccountObject account = mAccountMapper.getAccount(accountId);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
 		assertEquals(0, roleMap.size());
-//		assertEquals(roleMap.length, 1);
-//		assertEquals(roleMap[0].getRoleId(), "user");
 	}
 
 	// 測試將 Admin 指派到某個專案的角色，再移除此專案的角色
-	public void testexecuteAdmin_Remove2() throws LogonException {
-		setRequestPathInformation(this.ActionPath_RemoveUser);
+	public void testExecuteAdmin_Remove2() {
+		setRequestPathInformation(mActionPath);
 
 		// 將 Admin 加入測試專案一的 PO
-		this.AUTR.setNowAccountIsSystem();
-		this.AUTR.exe_PO();
+		mAUTR.setNowAccountIsSystem();
+		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
-		String id = "1"; 			// admin
-		String accountId = "admin"; // admin
-		String res = this.AUTR.getNowProjectObject().getId();
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
-		// ================ set initial data =======================    	
+		long id = 1;	 			// admin
+		String username = "admin"; 	// admin
+		long projectId = mAUTR.getNowProjectObject().getId();
+		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
-		addRequestParameter("operation", op);
-		// ================== set parameter info ====================
+		addRequestParameter("id", String.valueOf(id));
+		addRequestParameter("resource", String.valueOf(projectId));
+		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = mAccountMapper.getAccount(id);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
 		assertEquals(1, roleMap.size());
 		// 測試專案的 Role 是否正確加入，並且沒有移除 admin 權限
-		assertEquals(accountId, roleMap.get("system").getScrumRole().getRoleName());
-		
-//		String[] Role_ID = new String[roleMap.length];
-//		for (int i = 0; i < roleMap.length; i++) {
-//			Role_ID[i] = roleMap[i].getRoleId();
-//		}
-//		// 利用 Rold ID 抽出來後排序，再做比對
-//		Arrays.sort(Role_ID);
-//
-//		assertEquals(Role_ID[0], "admin");
-//		assertEquals(Role_ID[1], "user");
+		assertEquals(username, roleMap.get("system").getScrumRole().getRoleName());
 	}
 
 	// 測試將 Admin 指派到某個專案的角色，再移除 Admin 權限，該專案的角色不會移除
-	public void testexecuteAdmin_Remove3() throws LogonException {
-		setRequestPathInformation(this.ActionPath_RemoveUser);
+	public void testExecuteAdmin_Remove3() {
+		setRequestPathInformation(mActionPath);
 
 		// 將 Admin 加入測試專案一的 PO
-		this.AUTR.setNowAccountIsSystem();
-		this.AUTR.exe_PO();
+		mAUTR.setNowAccountIsSystem();
+		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
-		String id = "1"; 			// admin
-		String res = this.AUTR.getNowProjectObject().getId();
-		String pid = this.AUTR.getNowProjectObject().getName();
-		String op = ScrumEnum.SCRUMROLE_ADMIN;
-		// ================ set initial data =======================    	
+		long accountId = 1;
+		long projectId = mAUTR.getNowProjectObject().getId();
+		String projectName = mAUTR.getNowProjectObject().getName();
+		String scrumRole = ScrumEnum.SCRUMROLE_ADMIN;
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", id);
-		addRequestParameter("resource", res);
-		addRequestParameter("operation", op);
-		// ================== set parameter info ====================
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
+		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
-		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject account = this.accountMapper.getAccountById(id);
+		AccountObject account = mAccountMapper.getAccount(accountId);
 		HashMap<String, ProjectRole> roleMap = account.getRoles();
 
 		// 測試是否正確移除 System 角色
 		assertEquals(1, roleMap.size());
-		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(pid).getScrumRole().getRoleName());
-//		assertEquals(roleMap.length, 2);
-//		// 測試專案的 Role 是否正確加入，並且沒有移除 admin 權限
-//		String[] Role_ID = new String[roleMap.length];
-//		for (int i = 0; i < roleMap.length; i++) {
-//			Role_ID[i] = roleMap[i].getRoleId();
-//		}
-//		// 利用 Rold ID 抽出來後排序，再做比對
-//		Arrays.sort(Role_ID);
-//
-//		assertEquals(Role_ID[0], getRole(this.AUTR.getNowProject().getName(), ScrumEnum.SCRUMROLE_PRODUCTOWNER));
-//		assertEquals(Role_ID[1], "user");
+		assertEquals(ScrumEnum.SCRUMROLE_PRODUCTOWNER, roleMap.get(projectName).getScrumRole().getRoleName());
 	}
 
 	/**
@@ -301,55 +256,45 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 	 * 4. admin 移除 user 在專案中的角色
 	 * 5. user 登入ezScrum
 	 * 6. 測試user不會看到專案資訊
-	 * @throws LogonException
 	 */
-	public void testexecuteAdmin_Remove_IntegrationTest() throws LogonException {
+	public void testExecuteAdmin_Remove_IntegrationTest() {
 		//	=============== common data ============================
-		UserObject account = this.CA.getAccountList().get(0);
+		AccountObject account = mCA.getAccountList().get(0);
 		IUserSession userSession = getUserSession(account);
-		String userId = account.getId();			// 取得第一筆  ID
-		String userAccount = account.getAccount();	// 取得第一筆 Account ID
-		String projectID = this.CP.getProjectObjectList().get(0).getId();
+		long accountId = account.getId();
+		String username = account.getUsername();
+		long projectId = mCP.getAllProjects().get(0).getId();
 
 		/**
 		 * 3. admin 指定 user 到專案中擔任 PO (將 user 加入測試專案一的 PO)
 		 */
-		this.AUTR.setAccountIndex(0);
-		this.AUTR.exe_PO();
+		mAUTR.setAccountIndex(0);
+		mAUTR.exe_PO();
 
 		/**
 		 * 4. admin 移除 user 在專案中的角色
 		 */
 		// ================ set initial data =======================
-		setRequestPathInformation(this.ActionPath_RemoveUser);
-		String res = projectID;
-		String op = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
+		setRequestPathInformation(mActionPath);
+		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		// ================== set parameter info ====================
-		addRequestParameter("id", userId);
-		addRequestParameter("resource", res);
-		addRequestParameter("operation", op);
+		addRequestParameter("id", String.valueOf(accountId));
+		addRequestParameter("resource", String.valueOf(projectId));
+		addRequestParameter("operation", scrumRole);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		actionPerform();		// 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 測試是否正確移除此角色，但是沒有移除掉 Admin 權限
-		UserObject actualAccount = this.accountMapper.getAccount(userAccount);
+		AccountObject actualAccount = mAccountMapper.getAccount(username);
 		HashMap<String, ProjectRole> roleMap = actualAccount.getRoles();
 
 		// 測試是否正確移除 System 角色
 		assertEquals(0, roleMap.size());
-//		// 測試專案的 Role 是否正確加入，並且沒有移除 admin 權限
-//		String[] Role_ID = new String[roles.length];
-//		for (int i = 0; i < roles.length; i++) {
-//			Role_ID[i] = roles[i].getRoleId();
-//		}
-//		// 利用 Rold ID 抽出來後排序，再做比對
-//		Arrays.sort(Role_ID);
-//
-//		assertEquals(Role_ID[0], "user");
 
 		/**
 		 * 5. user 登入 ezScrum
@@ -362,22 +307,19 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(actionPath_logonSubmit);
 
 		// ================== set parameter info ====================
-		String loginUserID = userAccount;
-		String loginUserPassword = this.CA.getAccount_PWD(1);
-		;
 		LogonForm logonForm = new LogonForm();
-		logonForm.setUserId(loginUserID);
-		logonForm.setPassword(loginUserPassword);
+		logonForm.setUserId(username);
+		logonForm.setPassword(mCA.getAccount_PWD(1));
 		setActionForm(logonForm);
 
-		// ================ 執行 login action ======================
+		// 執行 login action
 		actionPerform();
 
 		// ================ assert ======================
 		verifyForward("success");
 
 		/**
-		 * 6. view project list (測試user不會看到專案資訊)
+		 * 6. view project list (測試 user 不會看到專案資訊)
 		 */
 		// ================ clean previous action info ========================
 		cleanActionInformation();
@@ -389,22 +331,17 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", userSession);
 
-		// ================ 執行 view project list action ======================
+		// 執行 view project list action
 		actionPerform();
 
 		// ================ assert ========================
 		//	assert response text
-		String viewProjectListExpectedResponseText = "<Projects></Projects>";
-		String viewProjectListActualResponseText = this.response.getWriterBuffer().toString();
-		assertEquals(viewProjectListExpectedResponseText, viewProjectListActualResponseText);
-
+		String viewProjectListExpected = "<Projects></Projects>";
+		String viewProjectListActual = response.getWriterBuffer().toString();
+		assertEquals(viewProjectListExpected, viewProjectListActual);
 	}
 
-	private String getRole(String res, String op) {
-		return res + "_" + op;
-	}
-
-	private IUserSession getUserSession(UserObject account) {
+	private IUserSession getUserSession(AccountObject account) {
 		IUserSession userSession = new UserSession(account);
 		return userSession;
 	}

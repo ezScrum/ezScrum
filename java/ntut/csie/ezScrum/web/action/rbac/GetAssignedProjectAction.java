@@ -13,14 +13,17 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class GetAssignedProjectAction extends Action {
-	/**
-	 * 利用Ajax將資料傳給View
-	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
 
-		String id = request.getParameter("accountID");
+		long id;
+		try {
+			id = Long.parseLong(request.getParameter("accountID"));
+		} catch (NumberFormatException e) {
+			id = 0;
+		}
+		
 		try {
 			response.setContentType("text/xml; charset=utf-8");
 			response.getWriter().write(new AccountHelper().getAssignedProject(id));

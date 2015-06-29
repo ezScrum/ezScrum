@@ -13,40 +13,39 @@ import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
-
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/GetSprintPlan";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mActionPath = "/GetSprintPlan";
+	private IProject mProject;
 	
 	public GetOneSprintPlanActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// 初始化 SQL
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	新增一個測試專案
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();
-    	this.project = this.CP.getProjectList().get(0);
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();
+    	mProject = mCP.getProjectList().get(0);
     	
     	// 	新增兩個Sprint
-    	this.CS = new CreateSprint(2, this.CP);
-    	this.CS.exe();
+    	mCS = new CreateSprint(2, mCP);
+    	mCS.exe();
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-    	setRequestPathInfo( this.ACTION_PATH );
+    	setRequestPathInfo( mActionPath );
     	
     	// ============= release ==============
     	ini = null;
@@ -54,35 +53,34 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
     	
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	this.CP = null;
-    	this.CS = null;
-    	configuration = null;
+    	mCP = null;
+    	mCS = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
     
     public void testShowSprint_1(){
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("lastsprint", this.CS.getSprintIDList().get(0));
-		addRequestParameter("SprintID", this.CS.getSprintIDList().get(0));
+		addRequestParameter("lastsprint", String.valueOf(mCS.getSprintsId().get(0)));
+		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -94,17 +92,17 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		TestTool testTool = new TestTool();
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"Sprints\":[{");
-		expectedResponseText.append("\"Id\":\"" + this.CS.getSprintIDList().get(0) + "\",");
-		expectedResponseText.append("\"Goal\":\"" + this.CS.TEST_SPRINT_GOAL + 1 + "\",");
-		expectedResponseText.append("\"StartDate\":\"" + testTool.transformDate(this.CS.Today) + "\",");
+		expectedResponseText.append("\"Id\":\"" + mCS.getSprintsId().get(0) + "\",");
+		expectedResponseText.append("\"Goal\":\"" + mCS.TEST_SPRINT_GOAL + 1 + "\",");
+		expectedResponseText.append("\"StartDate\":\"" + testTool.transformDate(mCS.mToday) + "\",");
 		expectedResponseText.append("\"Interval\":\"" + CreateSprint.SPRINT_INTERVAL + "\",");
 		expectedResponseText.append("\"Members\":\"" + CreateSprint.SPRINT_MEMBER + "\",");
 		expectedResponseText.append("\"AvaliableDays\":\"" + CreateSprint.SPRINT_AVAILABLE_DAY + " hours\",");
 		expectedResponseText.append("\"FocusFactor\":\"" + CreateSprint.SPRINT_FOCUS_FACTOR + "\",");
-		expectedResponseText.append("\"DailyScrum\":\"" + this.CS.TEST_SPRINT_NOTE + 1 + "\",");
-		expectedResponseText.append("\"DemoDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.Today) + "\",");
+		expectedResponseText.append("\"DailyScrum\":\"" + mCS.TEST_SPRINT_NOTE + 1 + "\",");
+		expectedResponseText.append("\"DemoDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, mCS.mToday) + "\",");
 		expectedResponseText.append("\"DemoPlace\":\"" + CreateSprint.SPRINT_DEMOPLACE + "\",");
-		expectedResponseText.append("\"DueDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, this.CS.Today) + "\"");
+		expectedResponseText.append("\"DueDate\":\"" + testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL, mCS.mToday) + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
@@ -112,13 +110,13 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
     
     public void testShowSprint_2(){
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("lastsprint", "-1");
 		addRequestParameter("SprintID", "-1");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();

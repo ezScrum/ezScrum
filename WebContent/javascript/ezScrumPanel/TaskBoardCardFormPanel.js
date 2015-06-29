@@ -64,16 +64,16 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     	});
 	},
 	initialTaskBoard: function() {
-		// remove all items (for選擇其它sprint時以AJAX的形式更新，取代切換頁面的形式) 
+		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
 		this.TaskBoardCardPanel.init_StatusPanel();
 		
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
-			// Issue的三種狀態 'new', 'assigned', 'closed';
+			// Issue 的三種狀態 'new', 'assigned', 'closed';
 			var story = TaskBoard_StoriesStore.getAt(i);
 			
 
-			// 建立StatusPanel，GroupID則是依照StoryID，並且每個Panel再設置其所代表的Status
-			// createStoryStatusPanel function 在 ezScrumWidget/TaskBoard/StatusPanel.js
+			// 建立 StatusPanel，GroupID 則是依照 StoryID，並且每個 Panel 再設置其所代表的 Status
+			// createStoryStatusPanel function 在  ezScrumWidget/TaskBoard/StatusPanel.js
 			var statusPanel = createStoryStatusPanel(story.id);
 			this.TaskBoardCardPanel.add(statusPanel);
 
@@ -82,7 +82,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 
 			statusPanel.get(story.id + '_' + story.get('Status')).add(storyCard);
 			
-			// 相同Story的Task會放在同一個Panel裡面
+			// 相同 Story 的 Task 會放在同一個 Panel 裡面
 			var tasks = story.get('Tasks');
 			for ( var k = tasks.length-1 ; k >= 0; k--) {
 				var task = tasks[k];
@@ -92,7 +92,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 				statusPanel.get(story.id + '_' + task.Status).add(taskCard);
 			}
 			
-			// 讓taskboard重新進行Layout以便可以計算Stroy或Task的高度，再去重設其他沒有放Story或Task的Panel
+			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
 			this.TaskBoardCardPanel.doLayout();
 			statusPanel.resetCellHeight();
 		}
@@ -131,7 +131,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			var storyId = record.data['Id'];
 			var storyName = record.data['Name'];
 			var storyEstimate = record.data['Estimate'];
-			Ext.getCmp(storyId).updateData_Edit(storyName, storyEstimate);
+			Ext.getCmp('Story:' + storyId).updateData_Edit(storyName, storyEstimate);
 
 			// update Sprint Desc. and Burndown Chart
 			var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -152,7 +152,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var taskHandler = record.data['Handler'];
 		var taskPartners = record.data['Partners'];
 		var taskRemainHours = record.data['Remains'];
-		Ext.getCmp(taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
+		Ext.getCmp('Task:' + taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
 		
 		// update Sprint Desc. and Burndown Chart
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
@@ -169,8 +169,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			
 			// update Task Card Info
 			var issueId = record.data['Id'];
+			var issueType = record.issueType;
 			var issueAttachFileList = record.data['AttachFileList'];
-			Ext.getCmp(issueId).updateData_AttachFile(issueAttachFileList);			
+			Ext.getCmp(issueType + ':' + issueId).updateData_AttachFile(issueAttachFileList);			
 		}else{
 			Ext.example.msg(title, msg);
 		}
@@ -353,35 +354,40 @@ function showReCheckOutTask(id, card) {
 	RE_CheckOutTaskWindow.showWidget(id);
 }
 
-// show done task
+// show done issue
 function showDoneIssue(id, card) {
 	DoneIssueWindow.setCard(card);
-	DoneIssueWindow.showWidget(id);
+	DoneIssueWindow.showWidget(id, card.issueType);
 }
 
 // show reopen issue
 function showReOpenIssue(id, card) {
 	RE_OpenIssueWindow.setCard(card);
-	RE_OpenIssueWindow.showWidget(id);
+	RE_OpenIssueWindow.showWidget(id, card.issueType);
 }
 
-// attach file
-function attachFile(issueID) {
-	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID);
+// attach file for task
+function taskAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Task');
+}
+
+// attach file for story
+function storyAttachFile(issueID) {
+	AttachFile_Window.attachFile(Ext.getCmp('TaskBoard_Card_Panel'), issueID, 'Story');
 }
 
 // show issue history
-function showHistory(issueID) {
-	IssueHistory_Window.showTheWindow(issueID);
+function showHistory(issueId, issueType) {
+	IssueHistory_Window.showTheWindow(issueId, issueType);
 }
 
-// delete file
-function deleteAttachFile(file_Id, issue_Id) {
+// delete file for story
+function deleteStoryAttachFile(file_Id, issue_Id) {
 	Ext.MessageBox.confirm('Confirm', 'Are you sure you want to delete this attached file?', function(btn){
 		if(btn === 'yes') {
 			Ext.Ajax.request({
 				url : 'ajaxDeleteFile.do',
-				params : {fileId:file_Id, issueId:issue_Id},
+				params : {fileId:file_Id, issueId:issue_Id, issueType: 'Story'},
 				success : function(response) {
 					Ext.example.msg('Delete File', 'Success.');
 					
@@ -393,7 +399,37 @@ function deleteAttachFile(file_Id, issue_Id) {
 							// update card content
 							var issueId = record.data['Id'];
 							var issueAttachFileList = record.data['AttachFileList'];
-							Ext.getCmp(issueId).updateData_AttachFile(issueAttachFileList);
+							Ext.getCmp('Story:' + issueId).updateData_AttachFile(issueAttachFileList);
+						}
+					}
+				},
+				failure : function(response) {
+					Ext.example.msg('Delete File', 'Failure.');
+				}
+			});
+		}
+	});
+}
+
+//delete file for task
+function deleteTaskAttachFile(file_Id, issue_Id) {
+	Ext.MessageBox.confirm('Confirm', 'Are you sure you want to delete this attached file?', function(btn){
+		if(btn === 'yes') {
+			Ext.Ajax.request({
+				url : 'ajaxDeleteFile.do',
+				params : {fileId:file_Id, issueId:issue_Id, issueType: 'Task'},
+				success : function(response) {
+					Ext.example.msg('Delete File', 'Success.');
+					
+					var records = jsonStoryReader.read(response);
+					
+					if(records.success && records.totalRecords > 0) {
+						var record = records.records[0];
+						if(record) {
+							// update card content
+							var issueId = record.data['Id'];
+							var issueAttachFileList = record.data['AttachFileList'];
+							Ext.getCmp('Task:' + issueId).updateData_AttachFile(issueAttachFileList);
 						}
 					}
 				},

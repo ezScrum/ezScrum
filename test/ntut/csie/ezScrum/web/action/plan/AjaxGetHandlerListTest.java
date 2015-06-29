@@ -4,67 +4,66 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetHandlerListTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/AjaxGetHandlerList";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private final String mActionPath = "/AjaxGetHandlerList";
+	private ProjectObject mProject;
 	
 	public AjaxGetHandlerListTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();								// 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();								// 新增一測試專案
+		mProject = mCP.getAllProjects().get(0);
     	
-    	this.CS = new CreateSprint(2, this.CP);
-    	this.CS.exe();										// 新增二筆Sprint Plan
+    	mCS = new CreateSprint(2, mCP);
+    	mCS.exe();										// 新增二筆Sprint Plan
     	
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.ACTION_PATH);
+		setRequestPathInfo(mActionPath);
     	
     	// ============= release ==============
     	ini = null;
     }
 	
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
     	
-    	configuration.setTestMode(false);
-		configuration.store();
+    	mConfig.setTestMode(false);
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	copyProject = null;
-    	this.CP = null;
-    	this.CS = null;
-    	configuration = null;
+    	mCP = null;
+    	mCS = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
@@ -75,11 +74,11 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
      */
     public void testAjaxGetHandlerList_1() {
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -100,14 +99,14 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
     public void testAjaxGetHandlerList_2() {
     	CreateAccount CA = new CreateAccount(1);
     	CA.exe();
-		AddUserToRole addUserToRole = new AddUserToRole(CP, CA);
-		addUserToRole.exe_ST();
+		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
+		AUTR.exe_ST();
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -118,7 +117,7 @@ public class AjaxGetHandlerListTest extends MockStrutsTestCase {
 		//	assert response text
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("<Handlers><Result>success</Result><Handler><Name>")
-							.append(CA.getAccountList().get(0).getName())
+							.append(CA.getAccountList().get(0).getUsername())
 							.append("</Name></Handler></Handlers>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

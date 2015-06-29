@@ -1,14 +1,16 @@
 package ntut.csie.ezScrum.web.action.retrospective;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.RetrospectiveHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -32,7 +34,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// ger parameter info
@@ -51,6 +53,10 @@ public class ShowRetrospectiveAction extends PermissionAction {
     		}
     	}   	
 		
-		return (new RetrospectiveHelper(project,session)).getListXML(sprintID);
+		try {
+			return (new RetrospectiveHelper(project, session)).getListXML(sprintID);
+		} catch (SQLException e) {
+			return new StringBuilder("error");
+		}
 	}
 }

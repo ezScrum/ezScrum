@@ -6,10 +6,11 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -20,54 +21,53 @@ import org.codehaus.jettison.json.JSONObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
-	private CreateProject CP;
-	private CreateRelease CR;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/ajaxGetReleasePlan";
-	private IProject project;
+	private CreateProject mCP;
+	private CreateRelease mCR;
+	private Configuration mConfig;
+	private final String mActionPath = "/ajaxGetReleasePlan";
+	private IProject mProject;
 	
 	public AjaxGetReleasePlanActionTest(String testMethod) {
         super(testMethod);
     }
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	this.CP = new CreateProject(1);
-    	this.CP.exeCreate();								// 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+    	mCP = new CreateProject(1);
+    	mCP.exeCreate();								// 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
     	super.setUp();
     	
-    	setContextDirectory(new File(configuration.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
+    	setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));		// 設定讀取的 struts-config 檔案路徑
     	setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo(this.ACTION_PATH);
+		setRequestPathInfo(mActionPath);
     	
     	// ============= release ==============
     	ini = null;
     }
 	
     protected void tearDown() throws IOException, Exception {
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();											// 初始化 SQL
 		
-    	CopyProject copyProject = new CopyProject(this.CP);
-    	copyProject.exeDelete_Project();					// 刪除測試檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
     	
-    	configuration.setTestMode(false);
-		configuration.store();
+    	mConfig.setTestMode(false);
+		mConfig.save();
     	
     	// ============= release ==============
     	ini = null;
-    	copyProject = null;
-    	this.CP = null;
-    	this.CR = null;
-    	configuration = null;
+    	mCP = null;
+    	mCR = null;
+    	mConfig = null;
     	
     	super.tearDown();
     }
@@ -77,11 +77,11 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
 	 */
 	public void testAjaxGetReleasePlanAction_1() {
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
 		// ================ 執行 action ===============================
 		actionPerform();
@@ -106,12 +106,12 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
 	 */
 	public void testAjaxGetReleasePlanAction_2() {
 		// ================ set initial data =======================
-		this.CR = new CreateRelease(1, this.CP);
-		this.CR.exe();										// 新增一個release plan
-		IProject project = this.CP.getProjectList().get(0);
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe();										// 新增一個release plan
+		ProjectObject project = mCP.getAllProjects().get(0);
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		request.setHeader("Referer", "?PID=" + project.getName());
 
@@ -153,13 +153,13 @@ public class AjaxGetReleasePlanActionTest extends MockStrutsTestCase{
      */
     public void testAjaxGetReleasePlanAction_3() throws InterruptedException {
     	// ================ set initial data =======================
-    	this.CR = new CreateRelease(5, this.CP);
-    	this.CR.exe();										// 新增5個release plan
-		IProject project = this.CP.getProjectList().get(0);
-//		Thread.sleep(5000);
+    	mCR = new CreateRelease(5, mCP);
+    	mCR.exe();										// 新增5個release plan
+    	ProjectObject project = mCP.getAllProjects().get(0);
+		Thread.sleep(1000);
     	
     	// ================ set session info ========================
-    	request.getSession().setAttribute("UserSession", configuration.getUserSession());
+    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());
     	request.getSession().setAttribute("Project", project);
     	request.setHeader("Referer", "?PID=" + project.getName());
     	

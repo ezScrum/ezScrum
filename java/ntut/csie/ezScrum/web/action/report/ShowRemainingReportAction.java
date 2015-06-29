@@ -13,30 +13,28 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.RemainingWorkReport;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowRemainingReportAction extends Action {
-	private static Log log = LogFactory.getLog(ShowRemainingReportAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
+		
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
-		String sprintID = request.getParameter("sprintID");
+		String sprintId = request.getParameter("sprintID");
 		String category = request.getParameter("type");
 		String date = request.getParameter("Date");
 
@@ -76,7 +74,7 @@ public class ShowRemainingReportAction extends Action {
 		// 因此如果有時間就完全依照時間去產生報表
 		try {
 			RemainingWorkReport report = null;
-			int currentID = -1;
+			long currentId = -1;
 			if (currentDate != null) {
 				// generate by date
 
@@ -87,40 +85,40 @@ public class ShowRemainingReportAction extends Action {
 					currentDate = Today;		// default set today to show report
 				}
 
-				currentID = spHelper.getSprintIDbyDate(currentDate);
+				currentId = spHelper.getSprintIDbyDate(currentDate);
 
 				// 若 user 選擇的日期不在任何 sprint 內，且目前沒有進行中的 sprint
-				if (currentID == -1) {
-					currentID = Integer.parseInt(spHelper.loadCurrentPlan().getID());
+				if (currentId == -1) {
+					currentId = Integer.parseInt(spHelper.loadCurrentPlan().getID());
 				}
 
-				report = new RemainingWorkReport(project, session, category, currentID, currentDate);
+				report = new RemainingWorkReport(project, session, category, currentId, currentDate);
 
 				SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd-HH:mm");
 				request.setAttribute("setDate", format.format(currentDate));
 			} else {
 				// generate by sprint
-				if (sprintID == null) {
-					currentID = Integer.parseInt(spHelper.loadCurrentPlan().getID());
+				if (sprintId == null) {
+					currentId = Integer.parseInt(spHelper.loadCurrentPlan().getID());
 				} else {
-					currentID = Integer.parseInt(sprintID);
+					currentId = Integer.parseInt(sprintId);
 				}
 
-				report = new RemainingWorkReport(project, session, category, currentID);
+				report = new RemainingWorkReport(project, session, category, currentId);
 
 				request.setAttribute("setDate", "");
 			}
 
-			request.setAttribute("iteration", currentID);
+			request.setAttribute("iteration", currentId);
 			request.setAttribute("RemainingWorkReport", report);
 
-			UserObject account = session.getAccount();
+			AccountObject account = session.getAccount();
 			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 			if (sr.getReadReport()) {
 				return mapping.findForward("success");
 			}
 		} catch (Exception e) {
-			this.log.debug(e.toString());
+			e.printStackTrace();
 		}
 
 		String message = "System failure!";// "目前無法產生任何圖表"

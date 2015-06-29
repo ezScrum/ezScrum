@@ -24,21 +24,18 @@
 // XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_3.9.210/xslt/JavaClass.xsl
 package ntut.csie.ezScrum.web.action;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.Person;
 import ntut.csie.ezScrum.web.dataObject.User;
-import ntut.csie.ezScrum.web.dataObject.UserObject;
 import ntut.csie.ezScrum.web.dataObject.ezScrumAdmin;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.AccessPermissionManager;
-import ntut.csie.jcis.account.core.IAccount;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,12 +65,10 @@ public class LogonSubmitAction extends Action {
 		String password = logonForm.getPassword();
 
 		log.debug("LogonForm.UserID=" + userId);
-		// log.debug("LogonForm.Password=" + password);
 
 		// 建立User Session
 		IUserSession userSession = ProjectInfoCenter.getInstance().login(userId, password);
 
-		String encodedUsername = new String(Base64.encode(userId.getBytes()));
 		String encodedPassword = new String(Base64.encode(password.getBytes()));
 
 		// 設定權限資訊
@@ -90,16 +85,10 @@ public class LogonSubmitAction extends Action {
 
 		Person person = this.getPerson(userSession.getAccount());
 		
-		// for web service
-		response.addCookie(new Cookie("username", encodedUsername));
-		response.addCookie(new Cookie("userpwd", encodedPassword));
-		 
 		return mapping.findForward(person.getForwardName());
 	}
 
-	private Person getPerson(UserObject account) {
-		AccountMapper accountMapper = new AccountMapper();
-//		if (account.checkPermission(accountMapper.getPermission("system_admin"))) {
+	private Person getPerson(AccountObject account) {
 		if (account.getRoles().get("system") != null) {
 			return new ezScrumAdmin();
 		} else {

@@ -9,64 +9,61 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.project.core.IProjectDescription;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectListActionTest extends MockStrutsTestCase{
-	private Configuration configuration;
+	private Configuration mConfig;
+	CreateProject mCP;
 	
 	public ViewProjectListActionTest(String testMethod){
 		super(testMethod);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		CreateProject CP = new CreateProject(2);
-		CP.exeCreate(); // 新增一測試專案
+		// 新增一測試專案
+		mCP = new CreateProject(2);
+		mCP.exeCreate();
 		
 		super.setUp();
-
-		ini = null;
-		CP = null;
 	}
 	
 	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
-		ini = null;
-		projectManager = null;
-		configuration = null;
+		// release
+		mConfig = null;
+		mCP = null;
 	}
 	
 	public void testViewProjectList(){
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath() + "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath() + "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/viewProjectList");
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -74,27 +71,26 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// ================ assert ========================
 		//	assert response text
 		ProjectMapper projectMapper = new ProjectMapper();
-		IProject projectOne = projectMapper.getProjectByID("TEST_PROJECT_1");
-		IProject projectTwo = projectMapper.getProjectByID("TEST_PROJECT_2");
-		IProjectDescription projectOneDesc = projectOne.getProjectDesc();
-		IProjectDescription projectTwoDesc = projectTwo.getProjectDesc();
+		ProjectObject projectOne = projectMapper.getProject("TEST_PROJECT_1");
+		ProjectObject projectTwo = projectMapper.getProject("TEST_PROJECT_2");
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String expectResponseText = 
 			"<Projects>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_1</ID>" +
-					"<Name>TEST_PROJECT_1</Name>" +
+					"<ID>" + projectOne.getName() + "</ID>" +
+					"<Name>" + projectOne.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 1</Comment>" +
 					"<ProjectManager>Project_Manager_1</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format( projectOneDesc.getCreateDate() ) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectOne.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 				"<Project>" +
-					"<ID>TEST_PROJECT_2</ID>" +
-					"<Name>TEST_PROJECT_2</Name>" +
+					"<ID>" + projectTwo.getName() + "</ID>" +
+					"<Name>" + projectTwo.getDisplayName() + "</Name>" +
 					"<Comment>This is Test Project - 2</Comment>" +
 					"<ProjectManager>Project_Manager_2</ProjectManager>" +
-					"<CreateDate>" + dateFormat.format( projectTwoDesc.getCreateDate() ) + "</CreateDate>" +
+					"<CreateDate>" + dateFormat.format(projectTwo.getCreateTime()) + "</CreateDate>" +
 					"<DemoDate>No Plan!</DemoDate>" +
 				"</Project>" +
 			"</Projects>";

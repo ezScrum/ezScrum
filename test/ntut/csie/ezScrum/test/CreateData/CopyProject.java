@@ -17,14 +17,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class CopyProject {
-	private static Log log = LogFactory.getLog(CopyProject.class);
-	
-	private List<IProject> project_list = null;
-	private Configuration configuration = new Configuration();
-	private ProjectMapper projectMapper = new ProjectMapper();
+	private static Log mlog = LogFactory.getLog(CopyProject.class);
+	private List<IProject> mProjects = null;
+	private Configuration mConfig = new Configuration();
+	private ProjectMapper mProjectMapper = new ProjectMapper();
 	
 	public CopyProject(CreateProject CP) {
-		this.project_list = CP.getProjectList();
+		mProjects = CP.getProjectList();
 	}
 	
 	/**
@@ -33,12 +32,12 @@ public class CopyProject {
 	public void exeCopy_Delete_Project() throws IOException, Exception {
 		String projectName = "";
 
-		for (IProject p : this.project_list) {
+		for (IProject p : mProjects) {
 			projectName = p.getName();	// TEST_PROJECT_X
 			
 			// ..\TestData\MyWorkspace
 //			String srcPath = ResourceFacade.getWorkspace().getRoot().getProject(projectName).getFullPath().getPathString();
-			IProject project = this.projectMapper.getProjectByID(projectName);
+			IProject project = mProjectMapper.getProjectByID(projectName);
 			String srcPath = project.getFullPath().getPathString();
 			File srcFile = new File(srcPath);
 			
@@ -53,11 +52,11 @@ public class CopyProject {
 			
 			// copy from workspace
 			copyDirectory(srcFile, destFile);
-			this.log.info("測試專案已成功複製到 " + destPath);
+			mlog.info("測試專案已成功複製到 " + destPath);
 			
 			// delete from workspace
 			deleteDirectory(srcFile);
-			this.log.info("測試專案已成功從 " + srcPath + " 刪除");
+			mlog.info("測試專案已成功從 " + srcPath + " 刪除");
 		}
 		
 		// 備份以及還原  RoleBase.xml
@@ -70,12 +69,12 @@ public class CopyProject {
 	public void exeCopy_Project() throws IOException, Exception {
 		String projectName = "";
 
-		for (IProject p : this.project_list) {
+		for (IProject p : mProjects) {
 			projectName = p.getName();	// TEST_PROJECT_X
 			
 			// ..\TestData\MyWorkspace
 //			String srcPath = ResourceFacade.getWorkspace().getRoot().getProject(projectName).getFullPath().getPathString();
-			IProject project = this.projectMapper.getProjectByID(projectName);
+			IProject project = mProjectMapper.getProjectByID(projectName);
 			String srcPath = project.getFullPath().getPathString();
 			File srcFile = new File(srcPath);
 			
@@ -90,7 +89,7 @@ public class CopyProject {
 			
 			// copy from workspace
 			copyDirectory(srcFile, destFile);
-			this.log.info("測試專案已成功複製到 " + destPath);
+			mlog.info("測試專案已成功複製到 " + destPath);
 		}
 		
 		// 備份以及還原  RoleBase.xml
@@ -103,18 +102,18 @@ public class CopyProject {
 	public void exeDelete_Project() {
 		String projectName = "";
 
-		for (IProject p : this.project_list) {
+		for (IProject p : mProjects) {
 			projectName = p.getName();	// TEST_PROJECT_X
 			
 			// ..\TestData\MyWorkspace
 //			String srcPath = ResourceFacade.getWorkspace().getRoot().getProject(projectName).getFullPath().getPathString();
-			IProject project = this.projectMapper.getProjectByID(projectName);
+			IProject project = mProjectMapper.getProjectByID(projectName);
 			String srcPath = project.getFullPath().getPathString();
 			File srcFile = new File(srcPath);
 			
 			// delete from workspace
 			deleteDirectory(srcFile);
-			this.log.info("Delete test project from " + srcPath + " success.");
+			mlog.info("Delete test project from " + srcPath + " success.");
 		}
 		
 		// 刪除專案時不用複製到桌面，所以直接初始化
@@ -137,7 +136,7 @@ public class CopyProject {
 		    }
 		} else {
 			if(!srcPath.exists()) {
-				this.log.info("File is not exist.");
+				mlog.info("File is not exist.");
 			} else {
 				InputStream in = new FileInputStream(srcPath);
 				OutputStream out = new FileOutputStream(dstPath);
@@ -180,7 +179,7 @@ public class CopyProject {
 		File destRoleBase = new File(destPath);
 		
 		copyDirectory(srcRoleBase, destRoleBase);
-		this.log.info(srcRoleBase.getAbsolutePath() + " 已成功複製到 " + destRoleBase.getAbsolutePath());
+		mlog.info(srcRoleBase.getAbsolutePath() + " 已成功複製到 " + destRoleBase.getAbsolutePath());
 		
 		// 初始化 RoleBase.xml 為最初的檔案，因為執行過後會對此檔案做修改，避免影響到下次的執行
 		init_RoleBase();
@@ -191,14 +190,14 @@ public class CopyProject {
 	*/
 	private void init_RoleBase() {
 		// 初始化 RoleBase.xml 為最初的檔案，因為執行過後會對此檔案做修改，這樣會影響到下次的執行
-		File srcRoleBase = new File(configuration.getDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
+		File srcRoleBase = new File(mConfig.getDataPath() + File.separator + "InitialData" + File.separator + "RoleBase.xml");
 		File destRoleBase = new File(System.getProperty("ntut.csie.jcis.accountManager.path"));
 		try {
 			copyDirectory(srcRoleBase, destRoleBase);
 		} catch (IOException e) {
-			this.log.debug("class: CopyProject, method: init_RoleBase, IO Exception: " + e.toString());
+			mlog.debug("class: CopyProject, method: init_RoleBase, IO Exception: " + e.toString());
 			e.printStackTrace();
 		}
-		this.log.info("Initialize BoleBase.xml");		
+		mlog.info("Initialize BoleBase.xml");		
 	}
 }

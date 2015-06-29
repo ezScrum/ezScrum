@@ -27,17 +27,18 @@ var IssueHistoryListStore = new Ext.data.Store({
 });
 
 ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
-	url: 'showIssueHistory.do',
-	issueID: '-1',
-	store: IssueHistoryListStore,
-	colModel: IssueHistoryListColumnModel,
-	title: ' ',
-	height: 500,
-	stripeRows: false,
-	frame: false,
-	viewConfig: {
-		forceFit: true,
-		getRowClass: function(record, index, rowParams, store) {
+	url			: 'showIssueHistory.do',
+	issueID		: '-1',
+	issueType	: '',
+	store		: IssueHistoryListStore,
+	colModel	: IssueHistoryListColumnModel,
+	title		: ' ',
+	height		: 500,
+	stripeRows	: false,
+	frame		: false,
+	viewConfig	: {
+		forceFit	: true,
+		getRowClass	: function(record, index, rowParams, store) {
 			var key_Css = ['Importance', 'Estimate', 'Sprint', 'Status', 'Add', 'Drop', 'Append', 'Remove', 'ActualHour'];
 
 			for ( var i = 0; i < key_Css.length; i++) {
@@ -53,7 +54,8 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		Ext.Ajax.request({
 			url: obj.url,
 			params: {
-				issueID: obj.issueID
+				issueID		: obj.issueID,
+				issueType	: obj.issueType
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
@@ -71,6 +73,9 @@ ezScrum.IssueHistoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	},
 	setIssueID: function(id) {
 		this.issueID = id;
+	},
+	setIssueType: function(type) {
+		this.issueType = type;
 	},
 	notifyTitle: function(record) {
 		var title_info = '＜' + record.get('IssueType') + '＞ ' + '#' + record.get('Id') + ' ' + record.get('Name');
@@ -104,18 +109,17 @@ ezScrum.window.IssueHistoryWindow = Ext.extend(ezScrum.layout.Window, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.window.IssueHistoryWindow.superclass.initComponent.apply(this, arguments);
 	},
-	showTheWindow: function(issueID) {
-		this.items.get(0).setIssueID(issueID);
+	showTheWindow: function(issueId, issueType) {
+		this.items.get(0).setIssueID(issueId);
+		this.items.get(0).setIssueType(issueType);
 		this.items.get(0).loadDataModel();
 
 		this.show();
 	}
 });
 
-/*
+/**
  * call method 1. showTheWindow: function(issueID)
- * 
- * 
  * shared with: 1. ProductBacklog 2. SprintBacklog 3. Unplanned 4. TaskBoard
  */
 var IssueHistory_Window = new ezScrum.window.IssueHistoryWindow();

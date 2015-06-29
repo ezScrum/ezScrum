@@ -32,6 +32,6 @@ public class AccessPermissionUI {
 	}
 	
 	public void parseJsonObjString(String JsonInfo) {
-		System.out.println(" J = = " + JsonInfo.toString());
+//		System.out.println(" J = = " + JsonInfo.toString());
 	}
 }

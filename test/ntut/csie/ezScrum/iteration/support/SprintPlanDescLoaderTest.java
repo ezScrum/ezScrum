@@ -1,15 +1,16 @@
 package ntut.csie.ezScrum.iteration.support;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
@@ -17,70 +18,69 @@ import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class SprintPlanDescLoaderTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class SprintPlanDescLoaderTest {
 	
-	private Configuration configuration = null;
-	private CreateProject CP = null;
-	private IProject project = null;
-	private SprintPlanMapper loader = null;
+	private Configuration mConfig = null;
+	private CreateProject mCP = null;
+	private IProject mProject = null;
+	private SprintPlanMapper mSprintPlanMapper = null;
 	
-	public SprintPlanDescLoaderTest(String method) {
-		super(method);
-	}
-	
-	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 		
 		// create project
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate();
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+		mProject = mCP.getProjectList().get(0);
 		
 		// initial loader
-		this.loader = new SprintPlanMapper(this.project);
+		mSprintPlanMapper = new SprintPlanMapper(mProject);
 		
 		// release
 		init = null;
 	}
 	
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// initial SQL
-		InitialSQL init = new InitialSQL(configuration);
+		InitialSQL init = new InitialSQL(mConfig);
 		init.exe();
 		
 		// copy and delete test project
-		CopyProject cp = new CopyProject(this.CP);
-		cp.exeDelete_Project();
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 		
 		// release
 		init = null;
-		cp = null;
-		this.CP = null;
-		this.project = null;
-		configuration = null;
-		
-		super.tearDown();
+		mCP = null;
+		mProject = null;
+		mConfig = null;
 	}
 
+	@Test
 	public void testload() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 		
-		List<ISprintPlanDesc> descs = this.loader.getSprintPlanList();
+		List<ISprintPlanDesc> descs = mSprintPlanMapper.getSprintPlanList();
 		assertEquals(descs.size(), 5);
 		
 		ISprintPlanDesc ExpectedDesc = null;
@@ -102,7 +102,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		
 		// 修改 ID，測試是否 sort by ID
 		// ID 1 與 ID 5 交換，由於 saver 不能對 ID 作 edit，所以只好先砍掉再加回去
-		SprintPlanMapper saver = new SprintPlanMapper(project);
+		SprintPlanMapper saver = new SprintPlanMapper(mProject);
 		ExpectedDesc = descs.get(0);
 		ExpectedDesc.setID("5");
 		saver.deleteSprintPlan("5");
@@ -113,8 +113,8 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		saver.deleteSprintPlan("1");
 		saver.addSprintPlan(ExpectedDesc);
 		
-		descs = this.loader.getSprintPlanList();	// sort by Id
-		descs = this.sortById(descs);
+		descs = mSprintPlanMapper.getSprintPlanList();	// sort by Id
+		descs = sortById(descs);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
 		assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + "5");
@@ -142,16 +142,17 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 	
+	@Test
 	public void testListload() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 		
-		List<ISprintPlanDesc> descs = this.loader.getSprintPlanList();	// sort by StartDate
-		descs = this.sortByStartDate(descs);				
+		List<ISprintPlanDesc> descs = mSprintPlanMapper.getSprintPlanList();	// sort by StartDate
+		descs = sortByStartDate(descs);				
 		assertEquals(descs.size(), 5);
 		
 		ISprintPlanDesc ExpectedDesc = null;
@@ -173,7 +174,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		
 		// 修改 ID，測試是否 sort by ID
 		// ID 1 與 ID 5 交換，由於 saver 不能對 ID 作 edit，所以只好先砍掉再加回去
-		SprintPlanMapper saver = new SprintPlanMapper(project);
+		SprintPlanMapper saver = new SprintPlanMapper(mProject);
 		ExpectedDesc = descs.get(0);
 		ExpectedDesc.setID("5");
 		saver.deleteSprintPlan("5");
@@ -184,8 +185,8 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		saver.deleteSprintPlan("1");
 		saver.addSprintPlan(ExpectedDesc);
 		
-		descs = this.loader.getSprintPlanList();	// sort by StartDate
-		descs = this.sortByStartDate(descs);
+		descs = mSprintPlanMapper.getSprintPlanList();	// sort by StartDate
+		descs = sortByStartDate(descs);
 		// 只有換 ID 不對會 listsort 影響
 		for (int i=1 ; i<descs.size()-1 ; i++) {
 			String ID = Integer.toString(i+1);
@@ -230,21 +231,22 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 	}
 	
+	@Test
 	public void testloadbyID_1() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		List<ISprintPlanDesc> descs = this.loader.getSprintPlanList();	// sort by StartDate
+		List<ISprintPlanDesc> descs = mSprintPlanMapper.getSprintPlanList();	// sort by StartDate
 		assertEquals(descs.size(), 5);
 		
 		ISprintPlanDesc ExpectedDesc = null;
 		for (int i=0 ; i<descs.size() ; i++) {
 			String ID = Integer.toString(i+1);
-			ExpectedDesc = this.loader.getSprintPlan(ID);
+			ExpectedDesc = mSprintPlanMapper.getSprintPlan(ID);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
 			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
@@ -258,7 +260,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
-		ExpectedDesc = this.loader.getSprintPlan("6");
+		ExpectedDesc = mSprintPlanMapper.getSprintPlan("6");
 		assertEquals(ExpectedDesc.getID(), "-1");
 		assertEquals(ExpectedDesc.getMemberNumber(), "0");
 		assertEquals(ExpectedDesc.getFocusFactor(), "0");
@@ -271,7 +273,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getEndDate(), "");
 		assertEquals(ExpectedDesc.getDemoPlace(), "");
 		
-		ExpectedDesc = this.loader.getSprintPlan("-1");
+		ExpectedDesc = mSprintPlanMapper.getSprintPlan("-1");
 		assertEquals(ExpectedDesc.getID(), "-1");
 		assertEquals(ExpectedDesc.getMemberNumber(), "0");
 		assertEquals(ExpectedDesc.getFocusFactor(), "0");
@@ -285,21 +287,22 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getDemoPlace(), "");
 	}
 	
+	@Test
 	public void testloadbyID_2() {
 		// 設定時間
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		
-		CreateSprint cs = new CreateSprint(5, this.CP);
+		CreateSprint cs = new CreateSprint(5, mCP);
 		cs.exe();
 
-		List<ISprintPlanDesc> descs = this.loader.getSprintPlanList();	// sort by StartDate
+		List<ISprintPlanDesc> descs = mSprintPlanMapper.getSprintPlanList();	// sort by StartDate
 		assertEquals(descs.size(), 5);
 		
 		ISprintPlanDesc ExpectedDesc = null;
 		for (int i=0 ; i<descs.size() ; i++) {
 			String ID = Integer.toString(i+1);
-			ExpectedDesc = this.loader.getSprintPlan(ID);
+			ExpectedDesc = mSprintPlanMapper.getSprintPlan(ID);
 			assertEquals(ExpectedDesc.getID(), ID);
 			assertEquals(ExpectedDesc.getGoal(), cs.TEST_SPRINT_GOAL + ID);
 			assertEquals(ExpectedDesc.getInterval(), CreateSprint.SPRINT_INTERVAL);
@@ -313,7 +316,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 			assertEquals(ExpectedDesc.getDemoPlace(), CreateSprint.SPRINT_DEMOPLACE);
 		}
 		
-		ExpectedDesc = this.loader.getSprintPlan("6");
+		ExpectedDesc = mSprintPlanMapper.getSprintPlan("6");
 		assertEquals(ExpectedDesc.getID(), "-1");
 		assertEquals(ExpectedDesc.getMemberNumber(), "0");
 		assertEquals(ExpectedDesc.getFocusFactor(), "0");
@@ -326,7 +329,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getEndDate(), "");
 		assertEquals(ExpectedDesc.getDemoPlace(), "");
 		
-		ExpectedDesc = this.loader.getSprintPlan("-1");
+		ExpectedDesc = mSprintPlanMapper.getSprintPlan("-1");
 		assertEquals(ExpectedDesc.getID(), "-1");
 		assertEquals(ExpectedDesc.getMemberNumber(), "0");
 		assertEquals(ExpectedDesc.getFocusFactor(), "0");
@@ -339,7 +342,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getEndDate(), "");
 		assertEquals(ExpectedDesc.getDemoPlace(), "");
 		
-		ExpectedDesc = this.loader.getSprintPlan("aaa");
+		ExpectedDesc = mSprintPlanMapper.getSprintPlan("aaa");
 		assertEquals(ExpectedDesc.getID(), "-1");
 		assertEquals(ExpectedDesc.getMemberNumber(), "0");
 		assertEquals(ExpectedDesc.getFocusFactor(), "0");
@@ -352,67 +355,7 @@ public class SprintPlanDescLoaderTest extends TestCase {
 		assertEquals(ExpectedDesc.getEndDate(), "");
 		assertEquals(ExpectedDesc.getDemoPlace(), "");
 	}
-	
-	/*
-	 * 此部分要移到 SprintPlanHelperTest 去測試
-	 */
-//	public void testgetSprintIDbyDate() {
-//		// 設定時間
-//		Calendar cal = Calendar.getInstance();
-//		
-//		CreateSprint cs = new CreateSprint(5, this.CP);
-//		cs.exe();
-//
-//		List<ISprintPlanDesc> descs = this.loader.getSprintPlanList();
-//		assertEquals(descs.size(), 5);
-//		
-//		int ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 1);
-//		
-//		cal.add(Calendar.DAY_OF_YEAR, 0*2*7);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 1);
-//		cal.add(Calendar.DAY_OF_YEAR, 1*2*7-1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 1);
-//		
-//		cal.add(Calendar.DAY_OF_YEAR, 1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 2);
-//		cal.add(Calendar.DAY_OF_YEAR, 1*2*7-1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 2);
-//		
-//		cal.add(Calendar.DAY_OF_YEAR, 1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 3);
-//		cal.add(Calendar.DAY_OF_YEAR, 1*2*7-1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 3);
-//		
-//		cal.add(Calendar.DAY_OF_YEAR, 1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 4);
-//		cal.add(Calendar.DAY_OF_YEAR, 1*2*7-1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 4);
-//		
-//		cal.add(Calendar.DAY_OF_YEAR, 1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 5);
-//		cal.add(Calendar.DAY_OF_YEAR, 1*2*7-1);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, 5);
-//		
-//		
-//		// out of bound
-//		cal.add(Calendar.DAY_OF_YEAR, -5*2*7);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, -1);
-//		cal.add(Calendar.DAY_OF_YEAR, 6*2*7);
-//		ID = this.loader.getSprintIDbyDate(cal.getTime());
-//		assertEquals(ID, -1);
-//	}
+
 
 	private String getDate(Date date, int duration) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");

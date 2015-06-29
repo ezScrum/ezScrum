@@ -1,7 +1,6 @@
 *** Settings ***
-Documentation     test ezScrumn release plan page
+Documentation     test ezScrumn release plan page    # Speed = 0.05 failed -> 待加入同步機制
 ...
-...               # Speed = 0.05 failed -> 待加入同步機制
 Suite Setup       Test Release Plan - PreCondition
 Suite Teardown    Test Release Plan - PostCondition
 Force Tags        ReleasePlan
@@ -15,7 +14,7 @@ Resource          keywords/Project/ezScrum_Project.txt
 Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
-Library           Selenium2Library
+Library           keywords/lib/Selenium2Improved.py
 Library           Collections
 
 *** Test Cases ***
@@ -27,8 +26,7 @@ Test Release Plan - Add Release
     [Teardown]    Test Release Plan - Add Release Teardown
 
 Test Release Plan - Edit Release
-    [Documentation]    \# 待重構 (assert 應該在 Test Case 內而非 keyword)
-    ...    # Speed = 0.05 failed -> 待加入同步機制
+    [Documentation]    \# 待重構 (assert 應該在 Test Case 內而非 keyword)    # Speed = 0.05 failed -> 待加入同步機制
     [Setup]    Test Release Plan - Edit Release Setup
     EditReleasePlan    @{tsReleasePlan}
     # assert

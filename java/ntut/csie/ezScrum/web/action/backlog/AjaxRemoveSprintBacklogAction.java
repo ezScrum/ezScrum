@@ -3,13 +3,10 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,30 +30,21 @@ public class AjaxRemoveSprintBacklogAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		
+		log.info(" Remove Sprint Backlog. ");
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-
+		ProjectObject project = SessionManager.getProjectObject(request);
+		
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("issueID"));
-		String sprintID = request.getParameter("sprintID");
-
+		long issueId = Long.parseLong(request.getParameter("issueID"));
 		String result = "";
+		
 		try{
-			ProductBacklogHelper helper = new ProductBacklogHelper(project, session);
-			ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(session, project);
+			ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 			
-			//將Story自Sprint移除, 
-			productBacklogLogic.removeStoryFromSprint(issueID);
+			// 將 Story 自 Sprint 移除
+			PBHelper.dropStoryFromSprint(issueId);
 			
-			//移除Sprint下的Story與Release的關係
-			if(!(helper.getIssue(issueID).getReleaseID().equals(ScrumEnum.DIGITAL_BLANK_VALUE) ||
-				 helper.getIssue(issueID).getReleaseID().equals("-1"))){
-				productBacklogLogic.removeReleaseTagFromIssue(Long.toString(issueID));
-			}
-			
-			result = "<DropStory><Result>true</Result><Story><Id>" + issueID + "</Id></Story></DropStory>";
+			result = "<DropStory><Result>true</Result><Story><Id>" + issueId + "</Id></Story></DropStory>";
 		}catch (Exception e) {
 			result = "<DropStory><Result>false</Result></DropStory>";
 		}

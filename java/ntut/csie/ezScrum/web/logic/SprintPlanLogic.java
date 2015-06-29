@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
@@ -12,11 +13,17 @@ import ntut.csie.jcis.resource.core.IProject;
 public class SprintPlanLogic {
 	
 	private SprintPlanMapper sprintPlanMapper;
-	private IProject mProject;
+	private ProjectObject mProject;
+	private IProject mIProject;
 
+	public SprintPlanLogic(ProjectObject project) {
+		sprintPlanMapper = new SprintPlanMapper(project);
+		mProject = project;
+	}
+	
 	public SprintPlanLogic(IProject project) {
-		this.sprintPlanMapper = new SprintPlanMapper(project);
-		this.mProject = project;
+		sprintPlanMapper = new SprintPlanMapper(project);
+		mIProject = project;
 	}
 	
 	/**

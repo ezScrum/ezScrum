@@ -1,26 +1,25 @@
 package ntut.csie.ezScrum.web.action;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.form.ProjectInfoForm;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.form.UploadForm;
-import ntut.csie.ezScrum.web.helper.ProjectHelper;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.account.core.internal.Account;
 import ntut.csie.jcis.core.util.FileUtil;
-import ntut.csie.jcis.resource.core.IPath;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,47 +37,66 @@ public class AjaxAttachFileAction extends Action {
 		log.info(" Attach File. ");
 
 		// get project from session or DB
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 
 		StringBuilder result = new StringBuilder("");
 		if (project == null) {
 			result.append("{\"success\":false}");
 		} else {
-			ProjectHelper projectHelper = new ProjectHelper();
-			ProjectInfoForm projectInfo = projectHelper.getProjectInfoForm(project);
-
-			int fileMaxSize_int = Integer.parseInt(projectInfo.getAttachFileSize());
+			long fileMaxSize_int = project.getAttachFileSize();
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
-
-			String issueID_string = request.getParameter("issueID");
-			long issueID = Long.parseLong(issueID_string);
-
-			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project, session);
+			
+			long issueId = Long.parseLong(request.getParameter("issueID"));
+			String issueTypeStr = request.getParameter("issueType");
+			
+			int issueType = 0;
+			if (issueTypeStr.equals("Story")) {
+				issueType = IssueTypeEnum.TYPE_STORY;
+			} else if (issueTypeStr.equals("Task")) {
+				issueType = IssueTypeEnum.TYPE_TASK;
+			}
+			
+			ProductBacklogHelper pbHelper = new ProductBacklogHelper(project);
 			UploadForm fileForm = (UploadForm) form;
 
-			FormFile file = fileForm.getFile();
-			String fileName = file.getFileName();
-			int file_size = file.getFileSize();
-
-			if (file_size > fileMaxSize_int) {
-				result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + projectInfo.getAttachFileSize() + "Mb\"}");
-			} else if (file_size < 0) {
-				result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
-			} else {
-				IPath fullPath = project.getFullPath();
-				String targetPath = fullPath.getPathString() + File.separator + fileName;
-				copy(file, targetPath);
-				pbHelper.addAttachFile(issueID, targetPath);
+			FormFile formFile = fileForm.getFile();
+			File file;
+			try {
+				file = convertToFile(formFile);
+				String fileName = file.getName();
+				int file_size = (int) file.length();
 				
-				IIssue issue = pbHelper.getIssue(issueID);
-				result = new StringBuilder(new Translation().translateStoryToJson(issue));
-
-				try {
-					FileUtil.delete(targetPath);
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (file_size > fileMaxSize_int) {
+					result = new StringBuilder("{\"success\":false, \"msg\":\"Maximum file size is " + project.getAttachFileSize() + "Mb\"}");
+				} else if (file_size < 0) {
+					result = new StringBuilder("{\"success\":false, \"msg\":\"File error\"}");
+				} else {
+					AttachFileInfo attachFileInfo = new AttachFileInfo();
+		            attachFileInfo.issueId = issueId;
+		            attachFileInfo.issueType = issueType;
+		            attachFileInfo.name = fileName;
+		            attachFileInfo.contentType = formFile.getContentType();
+		            attachFileInfo.projectName = project.getName();
+		            
+					try {
+						pbHelper.addAttachFile(attachFileInfo, file);
+						FileUtil.delete(file.getAbsolutePath());
+					} catch (IOException e) {
+						System.out.println(e);
+					}
+					
+					if (issueTypeStr.equals("Story")) {
+						StoryObject story = pbHelper.getStory(issueId);
+						result = new StringBuilder(Translation.translateStoryToJson(story));
+					} else if (issueTypeStr.equals("Task")) {
+						TaskObject task = TaskObject.get(issueId);
+						result = new StringBuilder(Translation.translateTaskToJson(task));
+					}
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -92,21 +110,23 @@ public class AjaxAttachFileAction extends Action {
 
 		return null;
 	}
-
-	/**
-	 * 進行檔案複製
-	 */
-	private void copy(FormFile file, String targetPath) {
-		FileOutputStream fileOutput = null;
-		try {
-			fileOutput = new FileOutputStream(targetPath);
-			fileOutput.write(file.getFileData());
-			fileOutput.flush();
-			fileOutput.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			file.destroy();
+	
+	private File convertToFile(FormFile formFile) throws IOException {
+		String tempUploadFolder = "upload_tmp";
+		
+		File folder = new File(tempUploadFolder);
+		folder.mkdirs();
+		File file = new File(tempUploadFolder + File.separator + formFile.getFileName());
+		OutputStream os = new FileOutputStream(file);
+		InputStream is = new BufferedInputStream(formFile.getInputStream());
+		int count;
+		byte[] buffer = new byte[4096];
+		while ((count = is.read(buffer)) > -1) {
+			os.write(buffer, 0, count);
 		}
+		
+		os.close();
+		is.close();
+		return file;
 	}
 }

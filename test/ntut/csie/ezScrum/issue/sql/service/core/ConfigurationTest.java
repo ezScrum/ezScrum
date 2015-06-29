@@ -1,42 +1,36 @@
 package ntut.csie.ezScrum.issue.sql.service.core;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class ConfigurationTest extends TestCase{
-	
-	private Configuration configuration = null;
-	
-	public ConfigurationTest(String testMethod) {
-		super(testMethod);
-	}
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-	@Override
-    protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		super.setUp();
+public class ConfigurationTest {
+	private Configuration mConfig = null;
+	
+	@Before
+	public void setUp() throws Exception {
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
     }
 
-	@Override
-    protected void tearDown() throws Exception {
-	    super.tearDown();
-	    
-	    configuration.setTestMode(false);
-		configuration.store();
-		
-		// ============= release ==============
-		configuration = null;
+	@After
+	public void tearDown() throws Exception {
+	    mConfig.setTestMode(false);
+		mConfig.save();
+		// release resource
+		mConfig = null;
     }
 
-	
+	@Test
 	public void testStore(){
 		// save original value
-		String originalServerUrl = configuration.getServerUrl();
-		String originalDBAccount = configuration.getDBAccount();
-		String originalDBType = configuration.getDBType();
-		String originalDBName = configuration.getDBName();
+		String originalServerUrl = mConfig.getServerUrl();
+		String originalDBAccount = mConfig.getDBAccount();
+		String originalDBType = mConfig.getDBType();
+		String originalDBName = mConfig.getDBName();
 		
 		// expected value
 		String expectServerUrl = "192.168.0.1";
@@ -44,23 +38,23 @@ public class ConfigurationTest extends TestCase{
 		String expectDBType= "Normal";
 		String expectDBName = "ezscrum_test01";
 		
-		configuration.setServerUrl(expectServerUrl);
-		configuration.setDBAccount(expectDBAccount);
-		configuration.setDBType(expectDBType);
-		configuration.setDBName(expectDBName);
-		configuration.store();
+		mConfig.setServerUrl(expectServerUrl);
+		mConfig.setDBAccount(expectDBAccount);
+		mConfig.setDBType(expectDBType);
+		mConfig.setDBName(expectDBName);
+		mConfig.save();
 		
 		// assertions
-		assertEquals(expectServerUrl, configuration.getServerUrl());
-		assertEquals(expectDBAccount, configuration.getDBAccount());
-		assertEquals(expectDBType, configuration.getDBType());
-		assertEquals(expectDBName, configuration.getDBName());
+		assertEquals(expectServerUrl, mConfig.getServerUrl());
+		assertEquals(expectDBAccount, mConfig.getDBAccount());
+		assertEquals(expectDBType, mConfig.getDBType());
+		assertEquals(expectDBName, mConfig.getDBName());
 		
 		// restore original value
-		configuration.setServerUrl(originalServerUrl);
-		configuration.setDBAccount(originalDBAccount);
-		configuration.setDBType(originalDBType);
-		configuration.setDBName(originalDBName);
-		configuration.store();
+		mConfig.setServerUrl(originalServerUrl);
+		mConfig.setDBAccount(originalDBAccount);
+		mConfig.setDBType(originalDBType);
+		mConfig.setDBName(originalDBName);
+		mConfig.save();
 	}
 }

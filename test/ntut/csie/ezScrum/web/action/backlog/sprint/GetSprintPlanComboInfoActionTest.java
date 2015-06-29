@@ -1,8 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -10,106 +9,106 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.jcis.resource.core.IProject;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private CreateSprint CS;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/GetSprintsComboInfo";
-	private IProject project;
-	
+
+	private CreateProject mCP;
+	private CreateSprint mCS;
+	private Configuration mConfig;
+	private IProject mIProject;
+	private final String mActionPath = "/GetSprintsComboInfo";
+
 	public GetSprintPlanComboInfoActionTest(String testName) {
 		super(testName);
 	}
-	
+
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
-		
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
+
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
-		
-		this.CS = new CreateSprint(2, this.CP);
-		this.CS.exe();
-		
+
+		// create project
+		mCP = new CreateProject(1);
+		mCP.exeCreate();
+
+		// create sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		mIProject = mCP.getProjectList().get(0);
 		super.setUp();
-		
+
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
-		
+		setRequestPathInfo(mActionPath);
+
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+	protected void tearDown() throws Exception {
+		// 刪除資料庫
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		//	刪除外部檔案
+
+		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
-		
-		configuration.setTestMode(false);
-		configuration.store();
+
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
-		
+
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mCS = null;
+		mConfig = null;
+		mIProject = null;
 	}
-	
-	public void testGetSprintPlanComboInfo(){
-		List<String> idList = this.CS.getSprintIDList();
+
+	public void testGetSprintPlanComboInfo() throws JSONException{
+		ArrayList<Long> idList = mCS.getSprintsId();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("SprintID", idList.get(0));
+		addRequestParameter("SprintID", String.valueOf(idList.get(0)));
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
 		
 		// ================ assert ========================
-		String expectedSprintInfo_1 = "Sprint #" + idList.get(0);
-		String expectedSprintInfo_2 = "Sprint #" + idList.get(1);
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		//	assert response text
-		String expectedResponseText = 
-			"{" +
-					"\"Sprints\":[{" +
-					"\"Id\":\"" + idList.get(0) + "\"," +
-					"\"Info\":\"" + expectedSprintInfo_1 + "\"," +
-					"\"Edit\":\"true\"" +
-					"}," +
-					"{" +
-					"\"Id\":\"" + idList.get(1) + "\"," +
-					"\"Info\":\"" + expectedSprintInfo_2 + "\"," +
-					"\"Edit\":\"true\"" +
-					"}]," +
-					"\"CurrentSprint\":{" +
-					"\"Id\":\"" + idList.get(0) + "\"," +
-					"\"Info\":\"" + expectedSprintInfo_1 + "\"," +
-					"\"Edit\":\"true\"" +
-					"}" +
-			"}";
+
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText, actualResponseText);
+		JSONObject actualResponse = new JSONObject(actualResponseText);
+		JSONArray sprints = actualResponse.getJSONArray("Sprints");
+		for (int i = 0; i < 2; i++) {
+			JSONObject sprint = sprints.getJSONObject(i);
+			assertEquals(String.valueOf(idList.get(i)), sprint.getString("Id"));
+			assertEquals("Sprint #" + idList.get(i), sprint.getString("Info"));
+			assertEquals("true", sprint.getString("Edit"));
+		}
 		
+		JSONObject currentSprint = actualResponse.getJSONObject("CurrentSprint");
+		assertEquals(String.valueOf(idList.get(0)), currentSprint.getString("Id"));
+		assertEquals("Sprint #" + idList.get(0), currentSprint.getString("Info"));
+		assertEquals("true", currentSprint.getString("Edit"));
 	}
 }

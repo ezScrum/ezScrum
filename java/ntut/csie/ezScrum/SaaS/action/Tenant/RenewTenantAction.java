@@ -22,7 +22,7 @@ public class RenewTenantAction extends Action {
 
 		// get parameter info
 		String name = request.getParameter("id");
-		System.out.println("name: "+name);
+//		System.out.println("name: "+name);
 		
 		TenantManager tenant = new TenantManager();
 		tenant.renewTenant(name);

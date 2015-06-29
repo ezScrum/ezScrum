@@ -2,82 +2,86 @@ package ntut.csie.ezScrum.web.action.backlog.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
-	private CreateProject CP;
-	private Configuration configuration;
-	private final String ACTION_PATH = "/ajaxDeleteStory";
-	private IProject project;
+	private CreateProject mCP;
+	private Configuration mConfig;
+	private IProject mProject;
+	private final String mAction = "/ajaxDeleteStory";
 	
 	public AjaxDeleteStoryActionTest(String testName) {
 		super(testName);
 	}
 	
 	protected void setUp() throws Exception {
-		configuration = new Configuration();
-		configuration.setTestMode(true);
-		configuration.store();
+		mConfig = new Configuration();
+		mConfig.setTestMode(true);
+		mConfig.save();
 		
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		this.CP = new CreateProject(1);
-		this.CP.exeCreate(); // 新增一測試專案
-		this.project = this.CP.getProjectList().get(0);
+		mCP = new CreateProject(1);
+		mCP.exeCreate(); // 新增一測試專案
+		mProject = mCP.getProjectList().get(0);
 		
 		super.setUp();
 		
 		// ================ set action info ========================
-		setContextDirectory( new File(configuration.getBaseDirPath()+ "/WebContent") );
+		setContextDirectory( new File(mConfig.getBaseDirPath()+ "/WebContent") );
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo( this.ACTION_PATH );
+		setRequestPathInfo( mAction );
 		
 		ini = null;
 	}
 
 	protected void tearDown() throws IOException, Exception {
 		//	刪除資料庫
-		InitialSQL ini = new InitialSQL(configuration);
+		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(configuration.getDataPath());
 		
-		configuration.setTestMode(false);
-		configuration.store();
+		mConfig.setTestMode(false);
+		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
 		projectManager = null;
-		this.CP = null;
-		configuration = null;
+		mCP = null;
+		mConfig = null;
 	}
 	
-	public void testDeleteStory(){
+	public void testDeleteStory() throws SQLException{
 		int storyCount = 2;
-		CreateProductBacklog createProductBacklog = new CreateProductBacklog(storyCount, this.CP);
-		createProductBacklog.exe();
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
+		CPB.exe();
 		
 		// ================ set request info ========================
-		String projectName = this.project.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		String issueID = String.valueOf(createProductBacklog.getIssueIDList().get(1));
+		String issueID = String.valueOf(CPB.getStoryIds().get(1));
 		addRequestParameter("issueID", issueID);
 		
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", configuration.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -90,5 +94,11 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 			"{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":"+ issueID +"}]}";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
+		
+		// assert history should be delete also
+		HistoryDAO historyDAO = HistoryDAO.getInstance();
+		ArrayList<HistoryObject> historyList_1 = new ArrayList<HistoryObject>();
+		historyList_1 = historyDAO.getHistoriesByIssue(CPB.getStoryIds().get(1), IssueTypeEnum.TYPE_STORY);
+		assertTrue(historyList_1.size() == 0);
 	}
 }

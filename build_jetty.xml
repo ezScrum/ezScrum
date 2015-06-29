@@ -3,11 +3,10 @@
 	<!-- 變數設定 -->
 
 	<property name="Local.Test.Workspace" location="TestData/MyWorkspace" />
-
 	<property name="Local.Library.Dir" location="lib" />
+	
 	<property name="WEB_INF" location="WebContent/WEB-INF" />
 	<property name="WEB_PLUGINWORKSPACE" location="WebContent/pluginWorkspace" />
-
 	<property name="Web.Library.Dir" location="${WEB_INF}/lib" />
 	<property name="Web.Class.Dir" location="${WEB_INF}/classes" />
 
@@ -25,7 +24,7 @@
 
 	<property name="build.classes" location="./build/classes" />
 	<property name="All.report" location="./dist" />
-
+	
 	<!-- 
 	     由於CI建置ezScrum的VM是在 ubuntu 上，
 	     當java compile時會缺少rt.jar導致error，因此將jre6 rt.jar 放置 ftp 上去下載完成建置過程。
@@ -79,6 +78,11 @@
 			<filename name="**/*.jar" />
 		</fileset>
 	</path>
+	
+	<target name="print-version"> 
+		<echo>Java/JVM version: ${ant.java.version}</echo>
+		<echo>Java/JVM detail version: ${java.version}</echo> 
+	</target>
 
 
 	<!-- ================================= 
@@ -110,24 +114,12 @@
 
 	</target>
 
-	<!-- ****************************
-			download jre6 runtime library file
-	********************************** -->
-	<target name="downloadJRE6RT" description="下載jre6 rt.jar">
-		<echo message="Download jre 6 rt.jar" />
-		<ftp server="${ezScrum.FTP.site.ip}" userid="${ezScrum.FTP.site.username}" password="${ezScrum.FTP.site.password}" action="get" verbose="yes" depends="yes" remotedir="${ezScrum.FTP.site.jreDir}">
-			<fileset dir="${java.runtime.localDir.jre6}">
-				<include name="**/*.jar"/>
-			</fileset>
-		</ftp>
-	</target>
-
 	<!-- ================================= 
           target: CompileALLSrc              
          ================================= -->
 	<target name="CompileALLSrc" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir}/WebContent/WEB-INF/classes" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -135,7 +127,7 @@
 		</javac>
 
 		<!-- ======= for linux ======= -->
-		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac target="1.7" srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -148,7 +140,7 @@
 	     ================================= -->
 	<target name="CompileForTest" depends="MakeDir" description="編譯所有Java檔">
 		<echo message="Compile All Java File：${Source.Java.Dir}" />
-		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${build.classes}" source="1.6" target="1.6" bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="on" debug="on" encoding="UTF8">
+		<javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" destdir="${build.classes}" includeantruntime="false" deprecation="on" debug="on" encoding="UTF8">
 			<classpath refid="jetty.server.classpath" />
 			<classpath refid="web.library.classpath" />
 			<!-- 移除雲端版本的部分 -->			
@@ -166,9 +158,6 @@
 		<!-- ======= for linux ======= -->
 		<echo message="Delete OutputDir：${Output.Dir.Linux.Ubuntu}" />
 		<delete dir="${Output.Dir.Linux.Ubuntu}" />
-
-		<echo message="Delete jre6 runtime rt.jar" />
-		<delete dir="${java.runtime.localDir}" />
 	</target>
 
 	<!-- ================================= 
@@ -185,7 +174,8 @@
 		<!-- ======= for linux ======= -->
 		<copydir dest="${Output.Dir.Linux.Ubuntu}/lib/" src="${Local.Library.Dir}" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/JettyServer.xml" src="JettyServer.xml" />
-		<copyfile dest="${Output.Dir.Linux.Ubuntu}/ezScrum_default.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/ezScrum.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/README.md" src="README.md" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/launch" src="launch.sh" />
 		<copydir dest="${Output.Dir.Linux.Ubuntu}" src="${Service.Wrapper.Linux.Ubuntu}" />
 	</target>
@@ -397,7 +387,7 @@
 	
 	<target name="default" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
 	<target name="build" depends="cleanProduction,MakeDir,CompileALLSrc,GenTestReport,ZipGenTestReport,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
-	<target name="quickbuild" depends="cleanProduction,MakeDir,CompileALLSrc,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
+	<target name="quickbuild" depends="print-version,cleanProduction,MakeDir,CompileALLSrc,CopyDir,create.manifest,BuildJar,BuildUpdaterJar,Zip,GZIP,Clean" />
 	<target name="deployPlugin" depends="cleanPlugins, downloadPlugin, unZip, movePlugin, cleanTempFolder" />
 	<target name="release" description="Release ezScrum and upload to FTP" depends="deployPlugin, cleanProduction, MakeDir, CompileALLSrc, CopyDir, create.manifest, BuildJar, BuildUpdaterJar, Zip, GZIP, Clean, ZipSourceCode, uploadArtifactToFtp"/>
 </project>

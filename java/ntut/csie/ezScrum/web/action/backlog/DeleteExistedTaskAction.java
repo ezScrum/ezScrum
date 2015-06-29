@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -32,22 +33,18 @@ public class DeleteExistedTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) SessionManager.getProject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		String sprintID = request.getParameter("sprintID");
-		String[] issueIDs = request.getParameterValues("selected");
-		long[] taskIDs = new long[issueIDs.length];
-		for( int i = 0; i < issueIDs.length; i++ ){
-			taskIDs[i] = Long.parseLong(issueIDs[i]);
+		long sprintID = Long.parseLong(request.getParameter("sprintID"));
+		String[] selectedId = request.getParameterValues("selected");
+		long[] tasksId = new long[selectedId.length];
+		for( int i = 0; i < selectedId.length; i++ ){
+			tasksId[i] = Long.parseLong(selectedId[i]);
 		}
-//		int i = 0;
-//		for(String id : issueIDs)
-//			taskIDs[i++] = Long.parseLong(id);
 		
-		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, session, sprintID)).getSprintBacklogMapper();
-		backlog.deleteExistedTask(taskIDs);
+		SprintBacklogMapper backlog = (new SprintBacklogLogic(project, sprintID)).getSprintBacklogMapper();
+		backlog.deleteExistingTask(tasksId);
 		return new StringBuilder("");
 	}
 }

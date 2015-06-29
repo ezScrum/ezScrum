@@ -1,14 +1,16 @@
 package ntut.csie.ezScrum.issue.sql.service.core;
 
-import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueNote;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.iteration.core.IStory;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
+import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public interface IITSService {
@@ -33,7 +35,7 @@ public interface IITSService {
 	 * @return IIssue(JCIS與ITS溝通的格式)
 	 */
 	public IIssue[] getIssues(String projectName);
-	public IIssue[] getIssues(String projectName,String category);
+	public IIssue[] getIssues(String projectName,String category) throws SQLException;
 	public IIssue[] getIssues(String projectName,String category,String releaseID,String sprintID,Date startDate,Date endDate);
 	public IIssue[] getIssues(String projectName,String category,String releaseID,String sprintID,Date date);
 	/**
@@ -73,7 +75,6 @@ public interface IITSService {
 	public void reopenStatusToAssigned(long issueID,String name, String bugNote, Date closeDate);
 	public void resetStatusToNew(long issueID,String name, String bugNote, Date closeDate);
 	public void insertBugNote(long issueID, String note);
-	public void updateHistoryModifiedDate(long issueID, long historyID, Date date);
 	public void updateIssueContent(IIssue modifiedIssue);
 	public void removeIssue(String ID);
 	public void updateName(IIssue task, String name, Date modifyDate);
@@ -100,9 +101,11 @@ public interface IITSService {
 	//是否存在這個使用者
 	public boolean existUser(String userID);
 	//上傳attach file
-	public void addAttachFile(long issueID, File attachFile);
+	public long addAttachFile(AttachFileInfo attachFileInfo);
 	//刪除attach file
 	public void deleteAttachFile(long fileId);
+	//取得attach file
+	public AttachFileObject getAttachFile(long fileId);
 	//新增自訂分類標籤
 	public long addNewTag(String name, String projectName);
 	// 刪除自訂分類標籤
@@ -119,14 +122,8 @@ public interface IITSService {
 	public List<IStory> getStorys(String name);
 	
 	// 建立Story與Sprint Story與Project之間的關聯關係
-	public void updateStoryRelationTable(String storyID,String projectID,String releaseID,String sprintID,String estimation,String importance,Date date);
+	public void updateStoryRelationTable(long storyId, String projectId, String releaseID,String sprintID,String estimation,String importance,Date date);
 	public void updateTag(long tagId, String tagName, String projectName);
 	public boolean isTagExist(String name, String projectName);
 	public TagObject getTagByName(String name,String projectName);
-	
-	// 直接取得資料庫的檔案，不透過 mantis, 2010/04/25
-	public File getAttachFile(String fileID);
-	public File getAttachFileByName(String fileName);
-	//將修改過的資訊加入至DB的歷史訊息
-	public void addHistory(long issueID, String typeName, String oldValue, String newValue);
 }

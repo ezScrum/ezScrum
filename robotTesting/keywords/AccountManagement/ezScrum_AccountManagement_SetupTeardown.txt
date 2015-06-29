@@ -1,5 +1,5 @@
 *** Settings ***
-Library           Selenium2Library
+Library           ../lib/Selenium2Improved.py
 Resource          ../common_resource.txt
 Resource          ezScrum_AccountManagement_Management.txt
 Resource          ../ezScrum_Login.txt
