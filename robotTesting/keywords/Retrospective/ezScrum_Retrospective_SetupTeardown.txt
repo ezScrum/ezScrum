@@ -23,10 +23,12 @@ _Logout
     Title Should Be    ezScrum Logon!
 
 Test Retrospective Suite Setup
+    Close All Browsers
     Open Browser    ${LOGIN_URL}    ${BROWSER}
 
 Test Retrospective Suite Teardown
     Close Browser
+    Close All Browsers
 
 Test Retrospective Add Setup
     _Login
@@ -36,12 +38,14 @@ Test Retrospective Add Setup
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 新增 Sprint
-    SwitchToItemLink    True    Sprint Plan
+    Select Node Product    Sprint Plan
+    #    SwitchToItemLink    True    Sprint Plan
     ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
-    SwitchToItemLink    True    Retrospective
+    #    SwitchToItemLink    True    Retrospective
+    Select Node Product    Retrospective
 
 Test Retrospective Add Teardown
     Clean All Retrospective
