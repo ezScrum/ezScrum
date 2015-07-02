@@ -81,6 +81,7 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
+				jsonStory.put("Type", "Story");
 				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
