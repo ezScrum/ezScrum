@@ -72,6 +72,7 @@ Exit ezScrum System
     Click Image    images/logout.gif
     Title Should Be    ezScrum Logon!
     Close Browser
+    Close All Browsers
 
 Logon ezScrum System
     Click Image    images/logout.gif
