@@ -4,6 +4,8 @@ var ProductBacklogStore = new Ext.data.Store({
 		name: 'Id',
 		type: 'int'
 	}, {
+		name: 'Type'
+	}, {
 		name: 'Link'
 	}, {
 		name: 'Name'
