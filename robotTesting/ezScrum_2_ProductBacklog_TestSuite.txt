@@ -81,7 +81,7 @@ Test ProductBacklog - Create Story With Invalid Value
     [Setup]    Test Create Story With Invalid Value Setup
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
-    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    testTagName
     [Teardown]    Test Create Story With Invalid Value Teardown    ${storyID}
 
 Test ProductBacklog - Edit Story
@@ -260,85 +260,6 @@ Test ProductBacklog - Delete Tag
     ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
     Should Be Equal    0    ${tagCount}    # string compare
     [Teardown]    Test Delete Tag Teardown
-
-Test ProductBacklog - Session - New Story
-    [Documentation]    測試在兩個不同的視窗(專案也不同)分別建立Product Backlog的Story,彼此去檢驗對方的Story內容是否正確    #7102
-    [Tags]    session
-    [Setup]    Test ProductBacklog Session - New Story Setup
-    ${_rawIndex} =    Set Variable    1
-    # assert B project in Window A
-    # Notes, Tags, How To Demo 未顯示不做比對
-    Select Window    ${tcBrowserAlias_A}
-    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B    # Window A, Project B
-    Select Node Product    Product Backlog
-    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
-    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
-    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
-    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
-    Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
-    Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
-    Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimate}
-    Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
-    # assert A project in Window B
-    # Notes, Tags, How To Demo 未顯示不做比對
-    Select Window    ${tcBrowserAlias_B}
-    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_A    # Window B, Project A
-    Select Node Product    Product Backlog
-    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
-    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
-    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
-    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
-    Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
-    Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
-    Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimate}
-    Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
-    [Teardown]    Test ProductBacklog Session - New Story Teardown
-
-Test ProductBacklog - Session - Read Story With Tag
-    [Documentation]    測試在兩個不同的視窗(專案也不同)所建立Product Backlog的Story,    #7106    #7102
-    ...    彼此去檢驗對方的Story內容(包含Tag)是否正確
-    [Tags]    session
-    [Setup]    Test ProductBacklog Session - Read Story With Tag Setup
-    ${_rawIndex} =    Set Variable    1
-    # assert B project in Window A
-    # Notes, How To Demo 未顯示不做比對
-    Select Window    ${tcBrowserAlias_A}
-    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B    # Window A, Project B
-    Select Node Product    Product Backlog
-    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
-    ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
-    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
-    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
-    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
-    Should Be Equal    ${tsStoryB[0]}    ${_actualStoryID}
-    Should Be Equal    ${tsStoryB[1]}    ${_actualStoryName}
-    Should Be Equal    ${tsStoryB[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryB[3]}    ${_actualStoryEstimate}
-    Should Be Equal    ${tsStoryB[4]}    ${_actualStoryImportance}
-    Should Be Equal    ${tsStoryB[6]}    ${_actualTagName}
-    # assert A project in Window B
-    # Notes, How To Demo 未顯示不做比對
-    Select Window    ${tcBrowserAlias_B}
-    GO TO    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_A    # Window B, Project A
-    Select Node Product    Product Backlog
-    ${_actualStoryID} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[2]/div
-    ${_actualTagName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[3]/div
-    ${_actualStoryName} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[4]/div
-    ${_actualStoryValue} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[7]/div
-    ${_actualStoryEstimate} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[8]/div
-    ${_actualStoryImportance} =    Get Text    xpath=//span[.="Product Backlog"]/../..//div[@class="x-grid3-body"]/div[${_rawIndex}]/table/tbody/tr/td[9]/div
-    Should Be Equal    ${tsStoryA[0]}    ${_actualStoryID}
-    Should Be Equal    ${tsStoryA[1]}    ${_actualStoryName}
-    Should Be Equal    ${tsStoryA[2]}    ${_actualStoryValue}
-    Should Be Equal    ${tsStoryA[3]}    ${_actualStoryEstimate}
-    Should Be Equal    ${tsStoryA[4]}    ${_actualStoryImportance}
-    Should Be Equal    ${tsStoryA[6]}    ${_actualTagName}
-    [Teardown]    Test ProductBacklog Session - Read Story With Tag Teardown
 
 Test ProductBacklog - Filter - Backlogged
     [Documentation]    確認Backlogged Filter正常運作    #7102

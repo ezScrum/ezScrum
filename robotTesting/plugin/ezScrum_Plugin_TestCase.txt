@@ -1,6 +1,6 @@
 *** Setting ***
-Library           RequestsLibaray
 Library           lib/UploadPlugin.py
+Library           RequestsLibrary
 
 *** Test Case ***
 Redmine Plugin Operation

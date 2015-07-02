@@ -61,12 +61,13 @@ Test Retrospective Edit Setup
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 新增 Sprint
-    SwitchToItemLink    True    Sprint Plan
+    ${_IsProjectIDExisted}
+    Select Node Product    Sprint Plan
     ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
-    SwitchToItemLink    True    Retrospective
+    Select Node Product    Retrospective
     Add Retrospective    @{tsRetrospectiveList}
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
@@ -86,12 +87,12 @@ Test Retrospective Delete Setup
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 新增 Sprint
-    SwitchToItemLink    True    Sprint Plan
+    Select Node Product    Sprint Plan
     ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
-    SwitchToItemLink    True    Retrospective
+    Select Node Product    Retrospective
     Add Retrospective    @{tsRetrospectiveList}
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
