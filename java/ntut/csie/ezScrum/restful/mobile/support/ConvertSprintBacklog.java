@@ -7,13 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -27,64 +26,51 @@ import org.codehaus.jettison.json.JSONObject;
 import com.google.gson.Gson;
 
 public class ConvertSprintBacklog {
+	
 	public ConvertSprintBacklog() {
-
 	}
 
-	public String readSprintInformationList(ISprintPlanDesc iSprintPlanDescList)
-			throws JSONException {
+	public String readSprintInformationList(SprintObject sprint) throws JSONException {
 		JSONObject sprintPlan = new JSONObject();
 		JSONObject sprintProperties = new JSONObject();
-		sprintProperties
-				.put(SprintPlanUtil.TAG_ID, iSprintPlanDescList.getID()); // id
-		sprintProperties.put(SprintPlanUtil.TAG_SPRINTGOAL,
-				iSprintPlanDescList.getGoal()); // sprint goal
-		sprintProperties.put(SprintPlanUtil.TAG_STARTDATE,
-				iSprintPlanDescList.getStartDate()); // start date
-		sprintProperties.put(SprintPlanUtil.TAG_DEMODATE,
-				iSprintPlanDescList.getDemoDate()); // demo date
-		sprintProperties.put(SprintPlanUtil.TAG_INTERVAL,
-				iSprintPlanDescList.getInterval()); // interval
-		sprintProperties.put(SprintPlanUtil.TAG_MEMBERS,
-				iSprintPlanDescList.getMemberNumber()); // members count
-		sprintProperties.put(SprintPlanUtil.TAG_HOURSCANCOMMIT,
-				iSprintPlanDescList.getAvailableDays()); // == hours can submit
-		sprintProperties.put(SprintPlanUtil.TAG_DAILYMEETING,
-				iSprintPlanDescList.getNotes());
-		sprintProperties.put(SprintPlanUtil.TAG_DEMOPLACE,
-				iSprintPlanDescList.getDemoPlace());
-		sprintPlan.put(SprintPlanUtil.TAG_CURRENTSPRINT, sprintProperties);
+		sprintProperties.put(SprintPlanUtil.TAG_ID, sprint.getId()); // id
+		sprintProperties.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal()); // sprint goal
+		sprintProperties.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString()); // start date
+		sprintProperties.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString()); // demo date
+		sprintProperties.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval()); // interval
+		sprintProperties.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber()); // members count
+		sprintProperties.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit()); // hours can submit
+		sprintProperties.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo()); // Daily Info
+		sprintProperties.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace()); // Demo Place
+		
+		JSONArray storiesArray = new JSONArray();
+		for(StoryObject story : sprint.getStories()){
+			storiesArray.put(story.toJSON());
+		}
+		
+		sprintProperties.put("stories", storiesArray);
+		sprintPlan.put(SprintPlanUtil.TAG_CURRENT_SPRINT, sprintProperties);
 		return sprintPlan.toString();
 	}
 
-	public String readSprintInformationList(
-			List<ISprintPlanDesc> iSprintPlanDescList, int currentSprintID)
-			throws JSONException {
+	public String readSprintInformationList(ArrayList<SprintObject> sprints, long currentSprintId) throws JSONException {
 		JSONObject sprintPlanList = new JSONObject();
 		JSONArray sprintPlanArray = new JSONArray();
-		sprintPlanList.put(SprintPlanUtil.TAG_CURRENTSPRINTID, currentSprintID);
-		sprintPlanList.put(SprintPlanUtil.TAG_SPRINTPLANLIST, sprintPlanArray);
-		for (ISprintPlanDesc item : iSprintPlanDescList) {
+		sprintPlanList.put(SprintPlanUtil.TAG_CURRENT_SPRINT_ID, currentSprintId);
+		sprintPlanList.put(SprintPlanUtil.TAG_SPRINTS, sprintPlanArray);
+		for (SprintObject sprint : sprints) {
 			JSONObject sprintPlan = new JSONObject();
 			JSONObject sprintProperties = new JSONObject();
-			sprintProperties.put(SprintPlanUtil.TAG_ID, item.getID()); // id
-			sprintProperties.put(SprintPlanUtil.TAG_SPRINTGOAL, item.getGoal()); // sprint
-																					// goal
-			sprintProperties.put(SprintPlanUtil.TAG_STARTDATE,
-					item.getStartDate()); // start date
-			sprintProperties.put(SprintPlanUtil.TAG_DEMODATE,
-					item.getDemoDate()); // demo date
-			sprintProperties.put(SprintPlanUtil.TAG_INTERVAL,
-					item.getInterval()); // interval
-			sprintProperties.put(SprintPlanUtil.TAG_MEMBERS,
-					item.getMemberNumber()); // members count
-			sprintProperties.put(SprintPlanUtil.TAG_HOURSCANCOMMIT,
-					item.getAvailableDays()); // == hours can submit
-			sprintProperties.put(SprintPlanUtil.TAG_DAILYMEETING,
-					item.getNotes());
-			sprintProperties.put(SprintPlanUtil.TAG_DEMOPLACE,
-					item.getDemoPlace());
-			sprintPlan.put(SprintPlanUtil.TAG_SPRINTPLAN, sprintProperties);
+			sprintProperties.put(SprintPlanUtil.TAG_ID, sprint.getId()); // id
+			sprintProperties.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal()); // sprint goal
+			sprintProperties.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString()); // start date
+			sprintProperties.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString()); // demo date
+			sprintProperties.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval()); // interval
+			sprintProperties.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber()); // members count
+			sprintProperties.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit()); // hours can submit
+			sprintProperties.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo()); // Daily Info
+			sprintProperties.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace()); // Demo Place
+			sprintPlan.put(SprintPlanUtil.TAG_SPRINT, sprintProperties);
 			sprintPlanArray.put(sprintPlan);
 		}
 		return sprintPlanList.toString();
@@ -102,7 +88,7 @@ public class ConvertSprintBacklog {
 			stroyJson.put("status", story.getStatusString());
 			storyArray.put(story);
 		}
-		storyIds.put(SprintPlanUtil.TAG_STORYLIST, storyArray);
+		storyIds.put(SprintPlanUtil.TAG_STORYS, storyArray);
 		return storyIds.toString();
 	}
 

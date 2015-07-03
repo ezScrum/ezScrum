@@ -40,14 +40,14 @@ public class SprintPlanHelper {
 		}
 		if (getCurrentSprint() != null) {
 			SprintObject sprint = getCurrentSprint();
-			return sprint.getDemoDate();
+			return sprint.getDemoDateString();
 		}
 		Date currentDate = new Date();
 		
 		// 取得下一個Sprint的 Demo Date
 		String demoDate = null;
 		for (SprintObject sprint : sprints) {
-			String sprintDemoDate = sprint.getDemoDate();
+			String sprintDemoDate = sprint.getDemoDateString();
 			if (DateUtil.dayFilter(sprintDemoDate).getTime() > currentDate.getTime()) {
 				if (demoDate == null) {
 					demoDate = sprintDemoDate;
@@ -76,14 +76,14 @@ public class SprintPlanHelper {
 
 	public Date getProjectStartDate() {
 		ArrayList<SprintObject> sprints = loadSprints();
-		return DateUtil.dayFilter(sprints.get(sprints.size() - 1).getStartDate());
+		return DateUtil.dayFilter(sprints.get(sprints.size() - 1).getStartDateString());
 	}
 
 	public Date getProjectEndDate() {
 		ArrayList<SprintObject> sprints = loadSprints();
 
 		if (sprints.size() > 0) {
-			return DateUtil.dayFilter(sprints.get(0).getDemoDate());
+			return DateUtil.dayFilter(sprints.get(0).getDemoDateString());
 		} else {
 			return null;
 		}
@@ -97,8 +97,8 @@ public class SprintPlanHelper {
 		ArrayList<SprintObject> sprints = mSprintPlanLogic.getSprintsSortedByStartDate();
 
 		for (SprintObject sprint : sprints) {
-			if (DateUtil.dayFilter(sprint.getStartDate()).compareTo(date) <= 0
-			        && DateUtil.dayFilter(sprint.getDemoDate()).compareTo(date) >= 0) {
+			if (DateUtil.dayFilter(sprint.getStartDateString()).compareTo(date) <= 0
+			        && DateUtil.dayFilter(sprint.getDemoDateString()).compareTo(date) >= 0) {
 				return sprint;
 			}
 		}

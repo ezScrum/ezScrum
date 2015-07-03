@@ -144,8 +144,8 @@ public class SprintPlanLogicTest {
 		assertEquals(sprint3.getHoursCanCommit(), latestSprint.getHoursCanCommit());
 		assertEquals(sprint3.getInterval(), latestSprint.getInterval());
 		assertEquals(sprint3.getSprintGoal(), latestSprint.getSprintGoal());
-		assertEquals(sprint3.getStartDate(), latestSprint.getStartDate());
-		assertEquals(sprint3.getDemoDate(), latestSprint.getDemoDate());
+		assertEquals(sprint3.getStartDateString(), latestSprint.getStartDateString());
+		assertEquals(sprint3.getDemoDateString(), latestSprint.getDemoDateString());
 		assertEquals(sprint3.getDemoPlace(), latestSprint.getDemoPlace());
 	}
 	
@@ -187,8 +187,8 @@ public class SprintPlanLogicTest {
 		assertEquals(sprint1.getHoursCanCommit(), currentSprint.getHoursCanCommit());
 		assertEquals(sprint1.getInterval(), currentSprint.getInterval());
 		assertEquals(sprint1.getSprintGoal(), currentSprint.getSprintGoal());
-		assertEquals(sprint1.getStartDate(), currentSprint.getStartDate());
-		assertEquals(sprint1.getDemoDate(), currentSprint.getDemoDate());
+		assertEquals(sprint1.getStartDateString(), currentSprint.getStartDateString());
+		assertEquals(sprint1.getDemoDateString(), currentSprint.getDemoDateString());
 		assertEquals(sprint1.getDemoPlace(), currentSprint.getDemoPlace());
 		
 	}
@@ -221,8 +221,8 @@ public class SprintPlanLogicTest {
 		assertEquals(sprint3.getHoursCanCommit(), currentSprint.getHoursCanCommit());
 		assertEquals(sprint3.getInterval(), currentSprint.getInterval());
 		assertEquals(sprint3.getSprintGoal(), currentSprint.getSprintGoal());
-		assertEquals(sprint3.getStartDate(), currentSprint.getStartDate());
-		assertEquals(sprint3.getDemoDate(), currentSprint.getDemoDate());
+		assertEquals(sprint3.getStartDateString(), currentSprint.getStartDateString());
+		assertEquals(sprint3.getDemoDateString(), currentSprint.getDemoDateString());
 		assertEquals(sprint3.getDemoPlace(), currentSprint.getDemoPlace());
 	}
 	
