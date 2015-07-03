@@ -45,7 +45,7 @@ public class ShowExistedSprintAction extends Action {
 		
 		//取出所有的Sprint
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> descs = SPhelper.loadListPlans();	
+		List<ISprintPlanDesc> descs = SPhelper.loadSprints();	
 		
 		//Sprint 封裝成 XML 給 Ext 使用
 		StringBuilder sb = new StringBuilder();

@@ -58,7 +58,7 @@ public class ShowAllSprintForSprintPlanAction extends PermissionAction {
 				descs.add(new SprintPlanDesc());	// empty
 			}
 		} else {
-			descs = SPhelper.loadListPlans();
+			descs = SPhelper.loadSprints();
 		}
 		
 		SprintPlanUI spui = new SprintPlanUI(descs);

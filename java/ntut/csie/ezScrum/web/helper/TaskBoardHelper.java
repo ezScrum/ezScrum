@@ -48,7 +48,7 @@ public class TaskBoardHelper {
 	 */
 	public String getSprintBurndownChartDataResponseText(String type) {
 		String responseText = "";
-		int sprintCount = (new SprintPlanHelper(mProject).loadListPlans()).size();
+		int sprintCount = (new SprintPlanHelper(mProject).loadSprints()).size();
 		// backlog = null 代表沒有Sprint資訊
 		if (sprintCount != 0) {
 			// Get TaskBoard Data

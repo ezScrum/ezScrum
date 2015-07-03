@@ -32,7 +32,7 @@ public class AjaxGetSprintPlanListAction extends Action {
 		{
 	    	// Get sprint plan list
 	    	SprintPlanHelper spHelper=new SprintPlanHelper(project);
-	    	List<ISprintPlanDesc> plans = spHelper.loadListPlans();
+	    	List<ISprintPlanDesc> plans = spHelper.loadSprints();
 
 	    	// write sprint plan to XML format
 			StringBuilder sb = new StringBuilder();

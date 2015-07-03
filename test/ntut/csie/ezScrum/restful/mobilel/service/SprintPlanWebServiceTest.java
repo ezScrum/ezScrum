@@ -120,7 +120,7 @@ public class SprintPlanWebServiceTest {
 
 		mSprintPlanWebService = new SprintPlanWebService(account, projectID);
 
-		List<SprintObject> sprints = mSprintPlanHelper.getAllSprint();
+		List<SprintObject> sprints = mSprintPlanHelper.getAllSprints();
 		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprint()); // 從WebService取得Json
 
 		for (int i = 0; i < mSprintCount; i++) {

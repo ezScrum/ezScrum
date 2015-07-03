@@ -152,7 +152,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadListPlans();
+		List<ISprintPlanDesc> ExpectedPlans = helper.loadSprints();
 		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());
@@ -295,7 +295,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadListPlans();
+		List<ISprintPlanDesc> ExpectedPlans = helper.loadSprints();
 		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i)

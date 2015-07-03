@@ -49,14 +49,14 @@ public class SprintPlanWebService extends ProjectWebService{
 	 * 取得 Project 內所有 Sprint 以及當前 Sprint ID
 	 **/
 	public String getAllSprint() throws JSONException{
-		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
+		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprints();
 		return ConvertSprint.convertSprintListToJsonString(sprintList);
 	}
 
 	public String getCurrentSprint() throws JSONException{
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 		// 以當前日期找進行中的Sprint，若無進行中的Sprint，則往後找未過期的Sprint.
-		ISprintPlanDesc currentSprint = mSprintPlanHelper.loadCurrentPlan();
+		ISprintPlanDesc currentSprint = mSprintPlanHelper.loadCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
 		if (currentSprint != null)
 			return csb.readSprintInformationList(currentSprint);
@@ -83,7 +83,7 @@ public class SprintPlanWebService extends ProjectWebService{
 	 */
 	public String getSprintWithAllItem() throws SQLException {
 		Gson gson = new Gson();
-		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprint();
+		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprints();
 		List<SprintObject> result = new ArrayList<SprintObject>();
 		for (SprintObject sprint : sprintList) {
 			result.add(mSprintPlanHelper.getSprint(String.valueOf(sprint.getId())));
@@ -95,12 +95,12 @@ public class SprintPlanWebService extends ProjectWebService{
 	 * 取得所有Sprint information. 以及當前Sprint ID.
 	 */
 	public String getRESTFulResponseString() throws JSONException {
-		List<ISprintPlanDesc> iSprintPlanDescList = mSprintPlanHelper.loadListPlans();
+		List<ISprintPlanDesc> iSprintPlanDescList = mSprintPlanHelper.loadSprints();
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 
 		// 以當前日期找進行中的Sprint ID，若無進行中的Sprint，則往後找未過期的Sprint ID.
-		int currentSprintID = mSprintPlanHelper.getCurrentSprintID();
+		SprintObject currentSprint = mSprintPlanHelper.getCurrentSprint();
 		
-		return csb.readSprintInformationList(iSprintPlanDescList, currentSprintID);
+		return csb.readSprintInformationList(iSprintPlanDescList, currentSprint.getId());
 	}
 }

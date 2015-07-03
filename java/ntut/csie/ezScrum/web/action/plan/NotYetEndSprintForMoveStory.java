@@ -47,7 +47,7 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 		Date today = new Date();
 		StringBuilder sprintTree = new StringBuilder("");
 		
-		List<ISprintPlanDesc> descs = SPhelper.loadListPlans(); 
+		List<ISprintPlanDesc> descs = SPhelper.loadSprints(); 
 		if (descs != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			sprintTree.append("[");
 			// 將資訊設定成 JSon 輸出格式 sprint已經開始的無法被移動
