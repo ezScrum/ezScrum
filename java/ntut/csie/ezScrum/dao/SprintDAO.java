@@ -38,8 +38,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersNumber());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
-		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDate());
-		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDate());
+		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
+		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
 		valueSet.addInsertValue(SprintEnum.PROJECT_ID, sprint.getProjectId());
@@ -92,8 +92,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersNumber());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
-		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDate());
-		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDate());
+		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
+		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
 		valueSet.addInsertValue(SprintEnum.UPDATE_TIME, sprint.getUpdateTime());

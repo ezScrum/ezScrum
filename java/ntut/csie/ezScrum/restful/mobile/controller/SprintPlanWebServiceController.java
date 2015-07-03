@@ -177,7 +177,7 @@ public class SprintPlanWebServiceController {
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectName());
-			jsonString = mSprintPlanWebService.getAllSprint();
+			jsonString = mSprintPlanWebService.getAllSprints();
 		} catch (LogonException e) {
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: getAllSprint, " + "exception: " + e.toString());
@@ -219,7 +219,7 @@ public class SprintPlanWebServiceController {
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject,
 					decoder.getDecodeProjectName());
-			sprintJson = mSprintPlanWebService.getSprintWithAllItem(sprintId);
+			sprintJson = mSprintPlanWebService.getSprintWithStories(sprintId);
 		} catch (IOException e) {
 			System.out
 					.println("class: SprintWebServiceController, "

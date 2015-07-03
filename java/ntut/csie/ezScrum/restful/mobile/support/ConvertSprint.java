@@ -1,30 +1,37 @@
 package ntut.csie.ezScrum.restful.mobile.support;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.google.gson.Gson;
-
 public class ConvertSprint {
 
-	public static String getAllSprint(List<SprintObject> sprintObject, int currentSprintID) throws JSONException {
-		Gson gson = new Gson();
+	public static String getAllSprint(ArrayList<SprintObject> sprints, long currentSprintID) throws JSONException {
 		JSONObject sprintList = new JSONObject();
 		JSONArray sprintArray = new JSONArray();
-		sprintList.put(SprintUtil.TAG_CURRENTSPRINTID, currentSprintID);
-		sprintList.put(SprintUtil.TAG_SPRINTLIST, sprintArray);
-		for(SprintObject sprint : sprintObject){
+		sprintList.put(SprintUtil.TAG_CURRENT_SPRINTID, currentSprintID);
+		sprintList.put(SprintUtil.TAG_SPRINTS, sprintArray);
+		for(SprintObject sprint : sprints){
 			JSONObject sprintPlan = new JSONObject();
-			JSONObject sprintProperties = new JSONObject(gson.toJson(sprint));
+			JSONObject sprintProperties = new JSONObject();
+			sprintProperties.put(SprintUtil.TAG_ID, sprint.getId())
+			        .put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
+			        .put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
+			        .put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
+			        .put(SprintUtil.TAG_MEMBERS, sprint.getMembersNumber())
+			        .put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
+			        .put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
+			        .put(SprintUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit())
+			        .put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
+			        .put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
+			        .put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
+			        .put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 			sprintPlan.put(SprintUtil.TAG_SPRINT, sprintProperties);
 			sprintArray.put(sprintPlan);
 		}
@@ -32,31 +39,49 @@ public class ConvertSprint {
 		return sprintList.toString();
 	}
 	
-	// 將 sprint list 轉成 json 字串
-	public static String convertSprintListToJsonString(List<SprintObject> sprintList) {
-		Gson gson = new Gson();
-		return gson.toJson(sprintList);
+	public static String convertSprintToJsonString(SprintObject sprint) throws JSONException {
+		JSONObject sprintJson = new JSONObject();
+		sprintJson.put(SprintUtil.TAG_ID, sprint.getId())
+		        .put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
+		        .put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
+		        .put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
+		        .put(SprintUtil.TAG_MEMBERS, sprint.getMembersNumber())
+		        .put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
+		        .put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
+		        .put(SprintUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit())
+		        .put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
+		        .put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
+		        .put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
+		        .put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
+		
+		JSONArray storiesArray = new JSONArray();
+		for(StoryObject story : sprint.getStories()){
+			storiesArray.put(story.toJSON());
+		}
+		
+		sprintJson.put(SprintUtil.TAG_STORIES, storiesArray);
+		return sprintJson.toString();
 	}
 	
-	// 將 sprint object 轉成 sprint plan desc
-	public static ISprintPlanDesc convertSprintObjectToDesc(SprintObject object) {
-		ISprintPlanDesc sprint = new SprintPlanDesc();
-		sprint.setID(String.valueOf(object.getId()));
-		sprint.setStartDate(object.getStartDate());
-		sprint.setInterval(String.valueOf(object.getInterval()));
-		sprint.setMemberNumber(String.valueOf(object.getMembersNumber()));
-		sprint.setFocusFactor(String.valueOf(object.getFocusFactor()));
-		sprint.setGoal(object.getSprintGoal());
-		sprint.setAvailableDays(String.valueOf(object.getHoursCanCommit()));
-		sprint.setDemoDate(object.getDemoDate());
-		sprint.setDemoPlace(object.getDemoPlace());
-		return sprint;
-	}
-
-	public static List<SprintObject> convertSprintDescToObject(List<ISprintPlanDesc> decsList) {
-		List<SprintObject> objectList = new ArrayList<SprintObject>();
-		for (ISprintPlanDesc decs : decsList)
-			objectList.add(new SprintObject(decs));
-		return objectList;
+	// 將 sprint list 轉成 json 字串
+	public static String convertSprintsToJsonString(ArrayList<SprintObject> sprints) throws JSONException {
+		JSONArray jsonSprints = new JSONArray();
+		for (SprintObject sprint : sprints) {
+			JSONObject jsonSprint = new JSONObject();
+			jsonSprint.put(SprintUtil.TAG_ID, sprint.getId())
+			        .put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
+			        .put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
+			        .put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
+			        .put(SprintUtil.TAG_MEMBERS, sprint.getMembersNumber())
+			        .put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
+			        .put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
+			        .put(SprintUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit())
+			        .put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
+			        .put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
+			        .put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
+			        .put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
+			jsonSprints.put(jsonSprint);
+		}
+		return jsonSprints.toString();
 	}
 }

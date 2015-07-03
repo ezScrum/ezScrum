@@ -114,8 +114,8 @@ public class SprintPlanMapperTest {
 		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
-		assertEquals(sprintInfo.startDate, sprint.getStartDate());
-		assertEquals(sprintInfo.demoDate, sprint.getDemoDate());
+		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
+		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
 		assertEquals(sprintInfo.dailyInfo, sprint.getDailyInfo());
 	}
@@ -143,8 +143,8 @@ public class SprintPlanMapperTest {
 		calendarEnd.add(Calendar.DAY_OF_YEAR, CreateSprint.SPRINT_INTERVAL * 7);
 		
 		// assert
-		assertEquals(format.format(calendarStart.getTime()), sprint.getStartDate());
-		assertEquals(format.format(calendarEnd.getTime()), sprint.getDemoDate());
+		assertEquals(format.format(calendarStart.getTime()), sprint.getStartDateString());
+		assertEquals(format.format(calendarEnd.getTime()), sprint.getDemoDateString());
 	}
 
 	@Test
@@ -184,8 +184,8 @@ public class SprintPlanMapperTest {
 		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
-		assertEquals(sprintInfo.startDate, sprint.getStartDate());
-		assertEquals(sprintInfo.demoDate, sprint.getDemoDate());
+		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
+		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
 		assertEquals(sprintInfo.dailyInfo, sprint.getDailyInfo());
 	}

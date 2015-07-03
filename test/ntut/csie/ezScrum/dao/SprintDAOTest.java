@@ -124,8 +124,8 @@ public class SprintDAOTest {
 		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
-		assertEquals(sprintStartDate, sprintFromDB.getStartDate());
-		assertEquals(sprintDemoDate, sprintFromDB.getDemoDate());
+		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
+		assertEquals(sprintDemoDate, sprintFromDB.getDemoDateString());
 	}
 
 	@Test
@@ -141,8 +141,8 @@ public class SprintDAOTest {
 		assertEquals("TEST_SPRINT_GOAL", sprint.getSprintGoal());
 		assertEquals("TEST_SPRINT_DAILY_INFO", sprint.getDailyInfo());
 		assertEquals("TEST_SPRINT_DEMO_PLACE", sprint.getDemoPlace());
-		assertEquals("2015/05/28", sprint.getStartDate());
-		assertEquals("2015/06/11", sprint.getDemoDate());
+		assertEquals("2015/05/28", sprint.getStartDateString());
+		assertEquals("2015/06/11", sprint.getDemoDateString());
 	}
 
 	@Test
@@ -196,8 +196,8 @@ public class SprintDAOTest {
 		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
-		assertEquals(sprintStartDate, sprintFromDB.getStartDate());
-		assertEquals(sprintDemoDate, sprintFromDB.getDemoDate());
+		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
+		assertEquals(sprintDemoDate, sprintFromDB.getDemoDateString());
 	}
 
 	@Test
