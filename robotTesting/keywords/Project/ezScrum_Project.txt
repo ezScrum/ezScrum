@@ -103,7 +103,6 @@ Check ProjectID Is Existed
     Click Element    createProjectBtn
     Set Selenium Speed    0.5    # modify later...
     Focus AND Input Text    //input[@name="Name"]    ${_ProjectID}
-    #    Call Selenium Api    keyUp    xpath=//input[@name="Name"]    b
     # 判斷是否有錯誤訊息的icon才能進行mouse over
     ${_XpathiIconCount}=    Get Matching Xpath Count    //input[@name="Name"]/../div[@class="x-form-invalid-icon"]
     Run Keyword If    ${_XpathiIconCount}==1    Mouse Over    xpath=//input[@name="Name"]/../div[@class="x-form-invalid-icon"]

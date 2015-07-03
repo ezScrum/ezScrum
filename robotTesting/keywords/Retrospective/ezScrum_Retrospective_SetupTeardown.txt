@@ -61,7 +61,6 @@ Test Retrospective Edit Setup
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 新增 Sprint
-    ${_IsProjectIDExisted}
     Select Node Product    Sprint Plan
     ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
