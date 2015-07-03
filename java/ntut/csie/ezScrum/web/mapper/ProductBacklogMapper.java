@@ -96,6 +96,7 @@ public class ProductBacklogMapper {
 		     .setValue(storyInfo.value)
 		     .setTags(tagsId)
 		     .save();
+		System.out.println(story);
 		return getStory(story.getId());
 	}
 

@@ -5,15 +5,14 @@ Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
 Resource          ../TaskBoard/ezScrum_TaskBoard.txt
+Resource          ../SprintPlan/ezScrum_SprintPlan_Sprint.txt
 
 *** Keywords ***
 Test Product Backlog Filter Backlogged
     [Documentation]    點選按鈕Filter點選Backlogged。
     Click Element    xpath=//button[text()="Filter"]
     Click Element    xpath=//ul/li/a/span[text()="Backlogged"]
-    ${temp}    Get Element Attribute    //div[(text()="newStoryNormal")]/../../../../../@class
-    Should Contain    ${temp}    BACKLOG
-    ${temp}    Get Element Attribute    //div[(text()="newStoryBacklogged")]/../../../../../@class
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div@class
     Should Contain    ${temp}    BACKLOG
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    1
@@ -26,9 +25,7 @@ Test Product Backlog Filter Detailed
     [Documentation]    點選按鈕Filter點選Detailed。
     Click Element    xpath=//button[text()="Filter"]
     Click Element    xpath=//ul/li/a/span[text()="Detailed"]
-    ${temp}    Get Element Attribute    //div[(text()="newStoryDetailed")]/../../../../../@class
-    Should Contain    ${temp}    DETAIL
-    ${temp}    Get Element Attribute    //div[(text()="newStoryDone")]/../../../../../@class
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div@class
     Should Contain    ${temp}    DETAIL
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    0
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    0
@@ -44,6 +41,8 @@ Test Product Backlog Filter Done
     Select Node Product    Sprint Backlog
     Add Existing Story    newStoryDone
     # 將Story拉到Done
+    Select Node Product    TaskBoard
+    Select Node Product    Product Backlog
     Select Node Product    TaskBoard
     Set Test Variable    ${tcStoryName}    newStoryDone
     ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
@@ -63,14 +62,14 @@ Test Product Backlog Filter Done
 
 Test Product Backlog Filter Default
     [Documentation]    點選按鈕Filter點選Default。
-    ${temp}    Get Element Attribute    //div[(text()="newStoryNormal")]/../../../../../@class
-    Should Contain    ${temp}    BACKLOG
-    ${temp}    Get Element Attribute    //div[(text()="newStoryBacklogged")]/../../../../../@class
-    Should Contain    ${temp}    BACKLOG
-    ${temp}    Get Element Attribute    //div[(text()="newStoryDetailed")]/../../../../../@class
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div[1]@class
     Should Contain    ${temp}    DETAIL
-    ${temp}    Get Element Attribute    //div[(text()="newStoryDone")]/../../../../../@class
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div[2]@class
     Should Contain    ${temp}    DETAIL
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div[3]@class
+    Should Contain    ${temp}    BACKLOG
+    ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div[4]@class
+    Should Contain    ${temp}    BACKLOG
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryBacklogged")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    1
