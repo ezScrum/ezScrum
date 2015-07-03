@@ -7,6 +7,7 @@ import java.util.List;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
+import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -19,44 +20,46 @@ import com.google.gson.Gson;
 public class SprintPlanWebService extends ProjectWebService{
 	SprintPlanHelper mSprintPlanHelper;
 	
-	public SprintPlanWebService(AccountObject user, String projectID) throws LogonException {
-		super(user, projectID);
+	public SprintPlanWebService(AccountObject user, String projectName) throws LogonException {
+		super(user, projectName);
 		mSprintPlanHelper = new SprintPlanHelper(getAllProjects().get(0));
 	}
 
 	/**
 	 * 新增 sprint
 	 */
-	public void createSprint(SprintObject sprint) {
-		mSprintPlanHelper.createSprint(sprint);
+	public void createSprint(String sprintJson) throws JSONException {
+		SprintInfo sprintInfo = new SprintInfo(sprintJson);
+		mSprintPlanHelper.createSprint(sprintInfo);
 	}
 
 	/**
 	 * 刪除 sprint
 	 */
-	public void deleteSprint(String id) {
+	public void deleteSprint(long id) {
 		mSprintPlanHelper.deleteSprint(id);
 	}
 	
 	/**
 	 * 更新修改後的 sprint 資料
 	 */
-	public void updateSprint(SprintObject sprint) {
+	public void updateSprint(String sprintJson) {
 		mSprintPlanHelper.updateSprint(sprint);
 	}
 
 	/**
 	 * 取得 Project 內所有 Sprint 以及當前 Sprint ID
 	 **/
-	public String getAllSprint() throws JSONException{
-		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprints();
+	public String getAllSprints() throws JSONException{
+		ArrayList<SprintObject> sprintList = mSprintPlanHelper.getAllSprints();
 		return ConvertSprint.convertSprintListToJsonString(sprintList);
 	}
 
+	// TODO
 	public String getCurrentSprint() throws JSONException{
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 		// 以當前日期找進行中的Sprint，若無進行中的Sprint，則往後找未過期的Sprint.
-		ISprintPlanDesc currentSprint = mSprintPlanHelper.loadCurrentSprint();
+		SprintObject currentSprint = mSprintPlanHelper.loadCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
 		if (currentSprint != null)
 			return csb.readSprintInformationList(currentSprint);

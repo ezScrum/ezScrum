@@ -111,7 +111,7 @@ public class SprintPlanWebServiceTest {
 
 		// 沒有Sprint的時候
 		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, projectID);
-		assertEquals(mSprintPlanWebService.getAllSprint(), "[]");
+		assertEquals(mSprintPlanWebService.getAllSprints(), "[]");
 
 		// 有Sprint的時候
 		// create sprint
@@ -121,7 +121,7 @@ public class SprintPlanWebServiceTest {
 		mSprintPlanWebService = new SprintPlanWebService(account, projectID);
 
 		List<SprintObject> sprints = mSprintPlanHelper.getAllSprints();
-		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprint()); // 從WebService取得Json
+		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprints()); // 從WebService取得Json
 
 		for (int i = 0; i < mSprintCount; i++) {
 			JSONObject sprintJSONObject = (JSONObject) sprintJSONArray.get(i);
