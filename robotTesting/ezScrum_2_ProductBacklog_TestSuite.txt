@@ -286,7 +286,7 @@ Test ProductBacklog - Filter - Done
     [Teardown]    Test Product Backlog Done Filter Teardown
 
 Test ProductBacklog - Search
-    [Tags]    Unstable
+    [Tags]
     [Setup]    Test Product Backlog Search Setup
     # search前先重新整理
     Reload Page

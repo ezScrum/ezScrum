@@ -90,6 +90,7 @@ SwitchToPage
     ...
     ...    ProjectList
     ...    Management
+    Wait Until Element Is Visible    xpath=//tbody/tr/td[text()="${pageName}"]
     Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
 
 SwitchToItemLink

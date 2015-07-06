@@ -29,7 +29,7 @@ Test Account Management - PostCondition
 
 _ClickManagmentElement
     [Arguments]    ${userName}
-    Click element    xpath=//td[text()="Management"]
+    SwitchToPage    Management
     Run Keyword if    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Run Keyword Unless    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div[.//span="User Information"]
     Run Keyword if    "${userName}"=="admin"    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="${userName}"]

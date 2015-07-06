@@ -104,7 +104,7 @@ Test Account Management - Click Add Account Can Display Correct Information
     [Tags]    Bug
     [Setup]    Test Account Management - Click Add Account Can Display Correct Information Setup
     # 選擇一個已存在的帳號並click edit button
-    Click element    xpath=//td[text()="Management"]
+    SwitchToPage    Management
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
