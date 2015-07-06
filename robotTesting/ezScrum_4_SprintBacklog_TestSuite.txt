@@ -84,6 +84,7 @@ Test Sprint Backlog - Add Existing Story
     # click show add existing story window
     Add Existing Story    ${storyName}
     # verify story
+    Sleep    3s
     Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
     ...    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Existing Story Teardown
@@ -101,7 +102,7 @@ Test Sprint Backlog - Edit Sprint
     Wait Until Page Contains    Success.
     # verify sprint information in Sprint Backlog
     ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
-    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0.0 ; Task Hours : 0.0 ; Total Hours to Commit : 58.0
+    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
     # verify sprint information in Sprint Plan
     Select Node Product    Sprint Plan
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="1")]    1

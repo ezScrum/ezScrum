@@ -26,7 +26,7 @@ Verify Story Information With Arguments In Sprint Backlog
     [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
     # 比對 edit story widget content
-    Double Click Element    xpath=//div[text()="${storyName}"]
+    Double Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
