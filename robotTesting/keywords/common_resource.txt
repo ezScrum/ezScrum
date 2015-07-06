@@ -90,7 +90,7 @@ SwitchToPage
     ...
     ...    ProjectList
     ...    Management
-    Sleep    3s
+    Sleep    5s
     Wait Until Element Is Visible    xpath=//tbody/tr/td[text()="${pageName}"]
     Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
 
