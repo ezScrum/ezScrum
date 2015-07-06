@@ -59,6 +59,7 @@ Mark And UnMark Tag With Arguments
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
     Click Element    xpath=//button[text()="Tag"]
+    Wait Until Element Is Visible    xpath=(//span[@class="x-menu-item-text" and text()="${tagName}"])
     Click Element    xpath=(//span[@class="x-menu-item-text" and text()="${tagName}"])
     Run Keyword if    "${eventName}"=="Mark"    Set Test Variable    ${correctTagText}    ${tagName}
     Run Keyword if    "${eventName}"=="UnMark"    Set Test Variable    ${correctTagText}    ${EMPTY}
