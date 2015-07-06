@@ -34,7 +34,8 @@ Verify Story Information With Arguments In Sprint Backlog
     Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    //input[@name="Tags"]    ${tagName}
     Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
-    Click Element    //button[text()="Cancel"]
+    ${xpathAddNewSprint}=    Find Current Window Element    Edit Story #1    Cancel
+    Element Enable And Submit    ${xpathAddNewSprint}
 
 Get Story ID In Sprint Backlog
     [Arguments]    ${stroyName}
