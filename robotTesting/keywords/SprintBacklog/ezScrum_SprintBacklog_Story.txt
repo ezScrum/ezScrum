@@ -39,7 +39,8 @@ Verify Story Information With Arguments In Sprint Backlog
 
 Get Story ID In Sprint Backlog
     [Arguments]    ${stroyName}
-    Wait Until Page Contains Element    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span    3
+    Sleep    5s
+    Wait Until Page Contains Element    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span
     ${storyID}=    Get Text    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span
     [Return]    ${storyID}
 

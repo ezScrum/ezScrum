@@ -45,7 +45,7 @@ Test Product Backlog Filter Done
     Select Node Product    Product Backlog
     Select Node Product    TaskBoard
     Set Test Variable    ${tcStoryName}    newStoryDone
-    ${tcStoryID}=    Set Variable    4
+    ${tcStoryID}=    Set Variable    16
     #    ${tcStoryID}=    Get Story ID In Sprint Backlog    newStoryDone
     Story Done With Arguments    ${tcStoryID}
     # 確認是否有被選到

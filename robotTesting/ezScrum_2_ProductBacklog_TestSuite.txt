@@ -260,6 +260,31 @@ Test ProductBacklog - Delete Tag
     Should Be Equal    0    ${tagCount}    # string compare
     [Teardown]    Test Delete Tag Teardown
 
+Test ProductBacklog - Filter - Backlogged
+    [Documentation]    確認Backlogged Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Backlogged
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Detailed
+    [Documentation]    確認Detailed Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Detailed
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Default
+    [Documentation]    確認Detailed Filter正常運作
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Default
+    [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Filter - Done
+    [Documentation]    確認Done Filter正常運作
+    [Tags]    FilterDone
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Done
+    [Teardown]    Test Product Backlog Done Filter Teardown
+
 Test ProductBacklog - Search
     [Tags]
     [Setup]    Test Product Backlog Search Setup
@@ -313,28 +338,3 @@ Test ProductBacklog - Search
     #    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
     #    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
     [Teardown]    Test Product Backlog Search Teardown
-
-Test ProductBacklog - Filter - Backlogged
-    [Documentation]    確認Backlogged Filter正常運作
-    [Setup]    Test Product Backlog Filter Setup
-    Test Product Backlog Filter Backlogged
-    [Teardown]    Test Product Backlog Filter Teardown
-
-Test ProductBacklog - Filter - Detailed
-    [Documentation]    確認Detailed Filter正常運作
-    [Setup]    Test Product Backlog Filter Setup
-    Test Product Backlog Filter Detailed
-    [Teardown]    Test Product Backlog Filter Teardown
-
-Test ProductBacklog - Filter - Default
-    [Documentation]    確認Detailed Filter正常運作
-    [Setup]    Test Product Backlog Filter Setup
-    Test Product Backlog Filter Default
-    [Teardown]    Test Product Backlog Filter Teardown
-
-Test ProductBacklog - Filter - Done
-    [Documentation]    確認Done Filter正常運作
-    [Tags]    FilterDone
-    [Setup]    Test Product Backlog Filter Setup
-    Test Product Backlog Filter Done
-    [Teardown]    Test Product Backlog Done Filter Teardown
