@@ -48,7 +48,7 @@ public class TokenValidator {
 			String privateToken, long timestamp) throws Exception {
 		String plainCode = publicToken + privateToken + timestamp;
 		byte[] bytesOfMessage = plainCode.getBytes("UTF-8");
-		MessageDigest md = MessageDigest.getInstance("MD5");
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
 		byte[] digest = md.digest(bytesOfMessage);
 		return new String(digest);
 	}
