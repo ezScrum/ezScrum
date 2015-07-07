@@ -104,7 +104,7 @@ Test Account Management - Click Add Account Can Display Correct Information
     [Tags]    Bug
     [Setup]    Test Account Management - Click Add Account Can Display Correct Information Setup
     # 選擇一個已存在的帳號並click edit button
-    Click element    xpath=//td[text()="Management"]
+    SwitchToPage    Management
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
@@ -114,11 +114,11 @@ Test Account Management - Click Add Account Can Display Correct Information
     # click add button
     Click Element    xpath=//button[text()="Add Account"]
     # verify Account Info
-    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="id"]    ${EMPTY}    # User ID
-    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="name"]    ${EMPTY}    # User Name
-    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="passwd"]    ${EMPTY}    # Password
-    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="reenter"]    ${EMPTY}    # Re-enter
-    Compare Field Content    xpath=//span[text()="Add New Account"]/../../../../..//input[@name="mail"]    ${EMPTY}    # E-mail Address
+    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="account"]    ${EMPTY}    # User ID
+    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="name"]    ${EMPTY}    # User Name
+    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="passwd"]    ${EMPTY}    # Password
+    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="reenter"]    ${EMPTY}    # Re-enter
+    Compare Field Content    //span[text()="Add New Account"]/../../../../..//input[@name="mail"]    ${EMPTY}    # E-mail Address
     Xpath Should Match X Times    //span[text()="Add New Account"]/../../../../..//input[@type="checkbox" and @name="enable"]    1    # enabel check box
     ${xpathCancelButtonInAddAccount}=    Find Current Window Element    Add New Account    Cancel
     Element Enable And Submit    ${xpathCancelButtonInAddAccount}
@@ -167,7 +167,8 @@ Test Account Management - Change Password
     Submit Form    logonForm
     Title Should Be    ezScrum, SSLab NTUT
     # change password
-    SwitchToPage    Management
+    Wait Until Page Contains Element    xpath=//td[text()="Management"]
+    Click element    xpath=//td[text()="Management"]
     ${newPassword}=    Set Variable    01234567890123456789
     Change Account Password    ${tsAccountId}    ${newPassword}
     # logout
@@ -213,12 +214,14 @@ Test Account Management - User Edit Information
     # 第一次更新個人資料
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited1    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited1@scrum.tw    # E-mail Address
+    Wait Until Page Contains Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited1)"]    1
     # 第二次更新個人資料
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited2    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited2@scrum.tw    # E-mail Address
+    Wait Until Page Contains Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited2)"]    1

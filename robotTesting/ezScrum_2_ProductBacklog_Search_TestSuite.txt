@@ -1,0 +1,81 @@
+*** Settings ***
+Documentation     test ezScrumn page
+Suite Setup       Test Product Backlog Suite Setup
+Suite Teardown    Test Product Backlog Suite Teardown
+Force Tags        ProductBacklog
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Filter.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Search.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_SetupTeardown.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           keywords/lib/Selenium2Improved.py
+
+*** Variables ***
+${tsTag}          testTagName    # 測試正常字元
+${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
+@{tsStoryA}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+@{tsStoryB}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+
+*** Test Cases ***
+Test ProductBacklog - Search
+    [Tags]
+    [Setup]    Test Product Backlog Search Setup
+    # search前先重新整理
+    Reload Page
+    Title Should Be    ezScrum, SSLab NTUT
+    Select Node Product    Product Backlog
+    Wait Until Page Contains Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
+    # 設定搜尋條件    搜尋StoryName
+    Set Product Backlog Search Condition    Story Name    First
+    # 驗證搜尋結果
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋StoryNote
+    Set Product Backlog Search Condition    Notes    Second
+    # 驗證搜尋結果
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋Story How To Demo
+    Set Product Backlog Search Condition    How To Demo    Third
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋SprintID
+    Set Product Backlog Search Condition    Sprint ID    1
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋SprintID
+    Set Product Backlog Search Condition    Sprint ID    2
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    # 設定搜尋條件    搜尋Release
+    #    Set Product Backlog Search Condition    Release    1
+    #    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
+    #    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
+    #    Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
+    #    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
+    #    Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
+    [Teardown]    Test Product Backlog Search Teardown

@@ -42,7 +42,8 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="${nodeName}"]
+    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]
+    Click Element    xpath=//span[text()="${nodeName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}
@@ -71,6 +72,7 @@ Exit ezScrum System
     Click Image    images/logout.gif
     Title Should Be    ezScrum Logon!
     Close Browser
+    Close All Browsers
 
 Logon ezScrum System
     Click Image    images/logout.gif
@@ -88,6 +90,8 @@ SwitchToPage
     ...
     ...    ProjectList
     ...    Management
+    Sleep    5s
+    Wait Until Element Is Visible    xpath=//tbody/tr/td[text()="${pageName}"]
     Click Element    xpath=//tbody/tr/td[text()="${pageName}"]
 
 SwitchToItemLink
@@ -113,6 +117,7 @@ TableGrid3_SelectItem
     # //div[@class= "x-grid3-cell-inner x-grid3-col-0" and text()="lab1321a"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and text()="${itemName}"]
+    Click Element    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
 
 TableGrid3_GetItemCount
     [Arguments]    ${TableName}

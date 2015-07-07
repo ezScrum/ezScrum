@@ -7,12 +7,17 @@ Resource          ../common_resource.txt
 Resource          ../ezScrum_Login.txt
 Resource          ezScrum_ScrumRole_Account.txt
 Resource          ezScrum_ScrumRole_Management.txt
+Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Test ScrumRole Setup
     Login Page    ${LOGIN_URL}
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    #    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     SwitchToPage    Management
     SwitchToItemLink    False    Scrum Role Management
 
@@ -94,6 +99,7 @@ Test ScrumRole Teardown for Guest Default
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     SwitchToPage    Management
     SwitchToItemLink    False    Scrum Role Management
+    SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
     Delete Account
     Exit ezScrum System

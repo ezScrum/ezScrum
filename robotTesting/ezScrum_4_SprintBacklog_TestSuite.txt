@@ -84,6 +84,7 @@ Test Sprint Backlog - Add Existing Story
     # click show add existing story window
     Add Existing Story    ${storyName}
     # verify story
+    Sleep    3s
     Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
     ...    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Existing Story Teardown
@@ -101,7 +102,7 @@ Test Sprint Backlog - Edit Sprint
     Wait Until Page Contains    Success.
     # verify sprint information in Sprint Backlog
     ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
-    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0.0 ; Task Hours : 0.0 ; Total Hours to Commit : 58.0
+    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
     # verify sprint information in Sprint Plan
     Select Node Product    Sprint Plan
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="1")]    1
@@ -143,11 +144,11 @@ Test Sprint Backlog - Edit Task
     ${updateTaskActual}=    Set Variable    5
     ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
     ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
-    Edit Task With Arguments    ${taskID}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskRemains}    ${updateTaskActual}
-    ...    ${updateTaskNotes}
+    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskRemains}
+    ...    ${updateTaskActual}    ${updateTaskNotes}
     # verify task information in Sprint Backlog
     Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${updateTaskRemains}
-    ...    ${updateTaskActual}    ${updateTaskNotes}
+    ...    ${updateTaskActual}    ${oriTaskNotes}
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task
@@ -161,13 +162,10 @@ Test Sprint Backlog - Drop Task
     Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
     # drop task
     ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
-    Drop Task With Arguments    ${taskID}
+    Drop Task With Arguments    ${taskName}
     # verify task information in Sprint Backlog
     ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]    0
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[3]/div[text()="${taskName}"]    0
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[6]/div[text()="${taskEstimate}"]    0
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${taskID}"]/../../../td[8]/div[text()="new"]    0
+    Xpath Should Match X Times    //div[text()="${taskName}"]    0
     [Teardown]    Test Sprint Backlog - Drop Task Teardown
 
 Test Sprint Backlog - Add Existing Task
@@ -186,7 +184,7 @@ Test Sprint Backlog - Add Existing Task
     \    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
     \    Append To List    ${taskIDList}    ${taskID}
     # drop task
-    : FOR    ${id}    IN    @{taskIDList}
+    : FOR    ${id}    IN    @{taskNameList}
     \    Drop Task With Arguments    ${id}
     # show add existing tasks window
     Add Existing Task With Arguments    ${storyName}    @{taskIDList}
@@ -196,10 +194,7 @@ Test Sprint Backlog - Add Existing Task
     : FOR    ${index}    IN RANGE    ${idCount}
     \    ${correctTaskID}=    Get From List    ${taskIDList}    ${index}
     \    ${correctTaskName}=    Get From List    ${taskNameList}    ${index}
-    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]    1
-    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[3]/div[text()="${correctTaskName}"]    1
-    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[6]/div[text()="${taskEstimate}"]    1
-    \    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../..//a/span[text()="${correctTaskID}"]/../../../td[8]/div[text()="new"]    1
+    \    Xpath Should Match X Times    //table[@class="x-treegrid-root-table"]//div[text()="${correctTaskName}"]    1
     [Teardown]    Test Sprint Backlog - Add Existing Task Teardown
 
 Test Sprint Backlog - Show Task History

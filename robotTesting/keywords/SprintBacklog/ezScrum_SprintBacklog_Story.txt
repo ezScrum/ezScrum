@@ -8,6 +8,7 @@ Edit Story With Arguments In Sprint Backlog
     [Arguments]    ${oriTargetStoryName}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
     ...    ${storyHowToDemo}
     Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${oriTargetStoryName}")]/../..
+    Wait Until Element Is Visible    xpath=//button[text()="Edit Story"]
     Click Element    xpath=//button[text()="Edit Story"]
     Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
     Focus AND Input Text    //input[@name="Value"]    ${storyValue}
@@ -25,22 +26,21 @@ Verify Story Information With Arguments In Sprint Backlog
     [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
     # 比對 edit story widget content
-    Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
-    Click Element    xpath=//button[text()="Edit Story"]
-    Compare Field Content    xpath=//textarea[@name="Name"]    ${storyName}
-    Compare Field Content    xpath=//input[@name="Value"]    ${storyValue}
-    Compare Field Content    xpath=//input[@name="Estimate"]    ${storyEstimate}
-    Compare Field Content    xpath=//input[@name="Importance"]    ${storyImportance}
-    Compare Field Content    xpath=//textarea[@name="Notes"]    ${storyNotes}
-    Compare Field Content    xpath=//input[@name="Tags"]    ${tagName}
-    Compare Field Content    xpath=//textarea[@name="HowToDemo"]    ${storyHowToDemo}
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
-    Element Enable And Submit    ${xpathEditStoryCancel}
+    Double Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
+    Compare Field Content    //textarea[@name="Name"]    ${storyName}
+    Compare Field Content    //input[@name="Value"]    ${storyValue}
+    Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
+    Compare Field Content    //input[@name="Importance"]    ${storyImportance}
+    Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
+    Compare Field Content    //input[@name="Tags"]    ${tagName}
+    Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    ${xpathAddNewSprint}=    Find Current Window Element    Edit Story #1    Cancel
+    Element Enable And Submit    ${xpathAddNewSprint}
 
 Get Story ID In Sprint Backlog
     [Arguments]    ${stroyName}
-    Wait Until Page Contains Element    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span    3
+    Sleep    5s
+    Wait Until Page Contains Element    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span
     ${storyID}=    Get Text    xpath=//div[@class="x-treegrid-text" and (text()="${stroyName}")]/../../td[1]/a/span
     [Return]    ${storyID}
 

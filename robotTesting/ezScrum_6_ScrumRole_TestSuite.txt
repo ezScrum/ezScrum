@@ -1,297 +1,294 @@
 *** Settings ***
-Documentation   目前設定的權限如下:\nPO: 除了 TaskBoard 以外,其餘皆可操作\nMaster: 除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作\nTeam: 同 Master\nStakeholder: 僅能操作 ReleasePlan / Unplanned / Report\nGuest: 只能看 Scrum Report (仿照 Jenkins)\n(注意!若無任何權限開啟,仍然可以看到目前Sprint Info Report與Task Board)
-Suite Setup   
+Documentation     目前設定的權限如下:
+...               PO: 除了 TaskBoard 以外,其餘皆可操作
+...               Master: 除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
+...               Team: 同 Master
+...               Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+...               Guest: 只能看 Scrum Report (仿照 Jenkins)
+...               (注意!若無任何權限開啟,仍然可以看到目前Sprint Info Report與Task Board)
+Suite Setup
 Suite Teardown
-Force Tags      ScrumRole
-Resource        keywords/ScrumRole/ezScrum_ScrumRole_SetupTeardown.txt
-Resource        keywords/ScrumRole/ezScrum_ScrumRole_Management.txt
-Resource        keywords/ezScrum_Login.txt
-Resource        keywords/common_resource.txt
-Resource        ServerConfig.txt
-Resource        Global Define.txt
+Force Tags        ScrumRole
+Resource          keywords/ScrumRole/ezScrum_ScrumRole_SetupTeardown.txt
+Resource          keywords/ScrumRole/ezScrum_ScrumRole_Management.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/common_resource.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
 
 *** Variables ***
-@{tsPermission_PO}  1  1  1  1  0  1  1
-...  1  1  # 9 type: ProductBacklog ReleasePlan SprintPlan SprintBacklog Taskboard(x) Restrospective Unplanned Report EditProject
-@{tsPermission_Master}  0  0  1  1  1  1  1
-...  1  0
-@{tsPermission_Team}  0  0  1  1  1  1  1
-...  1  0
-@{tsPermission_Stakeholder}  0  1  0  0  0  0  1
-...  1  0
-@{tsPermission_Guest}  0  0  0  0  0  0  0
-...  1  0  # only can view report
-@{tsAssignRole_Items}  ProductOwner  ScrumMaster  ScrumTeam  Stakeholder  Guest  # for Assign Role
-@{tsScrumRoleList}  Product Owner  Scrum Master  Scrum Team  Stakeholder  Guest  # for Scrum Role Management
-@{tsPermissionCheckList}  AccessProductBacklog  AccessReleasePlan  AccessSprintPlan  AccessSprintBacklog  AccessTaskboard  AccessRetrospective  AccessUnplanned
-...  AccessReport  AccessEditProject  # for Scrum Role Management
-${tsAccountID}  testAccount
-${tsAccountEmail}  lab1321.com.tw  # @之後的位址
-@{tsProjectConfiguration_Items}  Project Configuration  Summary  Members  Modify Config
-@{tsProjectManagement_Items}  Project Management  Product Backlog  Release Plan  Sprint Plan  Sprint Backlog  TaskBoard  Retrospective
-...  Unplanned  Scrum Report
-@{tsITSConfiguration_Items}  ITS configuration  ITS configuration
-@{tsPluginConfiguration_Items}  Plugin Configuration  Plugin configuration
+@{tsPermission_PO}    1    1    1    1    0    1    1
+...               1    1    # 9 type: ProductBacklog ReleasePlan SprintPlan SprintBacklog Taskboard(x) Restrospective Unplanned Report EditProject
+@{tsPermission_Master}    0    0    1    1    1    1    1
+...               1    0
+@{tsPermission_Team}    0    0    1    1    1    1    1
+...               1    0
+@{tsPermission_Stakeholder}    0    1    0    0    0    0    1
+...               1    0
+@{tsPermission_Guest}    0    0    0    0    0    0    0
+...               1    0    # only can view report
+@{tsAssignRole_Items}    ProductOwner    ScrumMaster    ScrumTeam    Stakeholder    Guest    # for Assign Role
+@{tsScrumRoleList}    Product Owner    Scrum Master    Scrum Team    Stakeholder    Guest    # for Scrum Role Management
+@{tsPermissionCheckList}    AccessProductBacklog    AccessReleasePlan    AccessSprintPlan    AccessSprintBacklog    AccessTaskboard    AccessRetrospective    AccessUnplanned
+...               AccessReport    AccessEditProject    # for Scrum Role Management
+${tsAccountID}    testAccount
+${tsAccountEmail}    lab1321.com.tw    # @之後的位址
+@{tsProjectConfiguration_Items}    Project Configuration    Summary    Members    Modify Config
+@{tsProjectManagement_Items}    Project Management    Product Backlog    Release Plan    Sprint Plan    Sprint Backlog    TaskBoard    Retrospective
+...               Unplanned    Scrum Report
+@{tsITSConfiguration_Items}    ITS configuration    ITS configuration
+@{tsPluginConfiguration_Items}    Plugin Configuration    Plugin configuration
 
 *** Test Cases ***
 Test Scrum Role - Save Permission
-    [Documentation]  測試各個Role的Permission是否有正確的儲存
-    [Setup]  Test ScrumRole Setup
-    Select ProjectList  ${PROJECT_NAME}
-    Verify ScrumRole  ${tsScrumRoleList[0]}  # PO
-    Verify ScrumRole  ${tsScrumRoleList[1]}  # Scrum Master
-    Verify ScrumRole  ${tsScrumRoleList[2]}  # Scrum Team
-    Verify ScrumRole  ${tsScrumRoleList[3]}  # Stakeholder
-    Verify ScrumRole  ${tsScrumRoleList[4]}  # Guest
-    [Teardown]  Test ScrumRole Teardown
+    [Documentation]    測試各個Role的Permission是否有正確的儲存
+    [Setup]    Test ScrumRole Setup
+    Select ProjectList    ${PROJECT_NAME}
+    Verify ScrumRole    ${tsScrumRoleList[0]}    # PO
+    Verify ScrumRole    ${tsScrumRoleList[1]}    # Scrum Master
+    Verify ScrumRole    ${tsScrumRoleList[2]}    # Scrum Team
+    Verify ScrumRole    ${tsScrumRoleList[3]}    # Stakeholder
+    Verify ScrumRole    ${tsScrumRoleList[4]}    # Guest
+    [Teardown]    Test ScrumRole Teardown
 
 Test Scrum Role - Check Permission
-    [Documentation]  測試之前儲存的Permission,在下次登入後是否讀取正確
-    [Setup]  Test ScrumRole Setup
-    Select ProjectList  ${PROJECT_NAME}
-    Check ScrumRole  ${tsScrumRoleList[0]}  # PO
-    Check ScrumRole  ${tsScrumRoleList[1]}  # Scrum Master
-    Check ScrumRole  ${tsScrumRoleList[2]}  # Scrum Team
-    Check ScrumRole  ${tsScrumRoleList[3]}  # Stakeholder
-    Check ScrumRole  ${tsScrumRoleList[4]}  # Guest
-    [Teardown]  Test ScrumRole Teardown
+    [Documentation]    測試之前儲存的Permission,在下次登入後是否讀取正確
+    [Setup]    Test ScrumRole Setup
+    Select ProjectList    ${PROJECT_NAME}
+    Check ScrumRole    ${tsScrumRoleList[0]}    # PO
+    Check ScrumRole    ${tsScrumRoleList[1]}    # Scrum Master
+    Check ScrumRole    ${tsScrumRoleList[2]}    # Scrum Team
+    Check ScrumRole    ${tsScrumRoleList[3]}    # Stakeholder
+    Check ScrumRole    ${tsScrumRoleList[4]}    # Guest
+    [Teardown]    Test ScrumRole Teardown
 
 Test Scrum Role - No Permission
-    [Documentation]  測試一般的 Account (非系統管理員 / admin) 是否可設定 Scrum Role\n-> 不會出現 Scrum Role Management 選項
-    [Setup]  Test ScrumRole Setup with Account
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    SwitchToPage  Management
+    [Documentation]    測試一般的 Account (非系統管理員 / admin) 是否可設定 Scrum Role
+    ...    -> 不會出現 Scrum Role Management 選項
+    [Setup]    Test ScrumRole Setup with Account
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    SwitchToPage    Management
     # assert
-    Page Should Not Contain  Scrum Role Management
+    Page Should Not Contain    Scrum Role Management
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown with Account
+    [Teardown]    Test ScrumRole Teardown with Account
 
 Test Scrum Role - No Assign Role
-    [Documentation]  測試建立一個帳號後,該帳號未指派任何專案,是否看的到任何專案
-    [Setup]  Test ScrumRole Setup with Account
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
+    [Documentation]    測試建立一個帳號後,該帳號未指派任何專案,是否看的到任何專案
+    [Setup]    Test ScrumRole Setup with Account
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
     # assert
-    ${projectCount}=  TableGrid3_GetItemCount  Project List
-    Should Be Equal  ${projectCount}  0
+    ${projectCount}=    TableGrid3_GetItemCount    Project List
+    Should Be Equal    ${projectCount}    0
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown with Account
+    [Teardown]    Test ScrumRole Teardown with Account
 
 Test Scrum Role - Guest
-    [Documentation]  Guest: 只能看 Scrum Report (仿照 Jenkins) \n-> 實際只能看 Sprint Info Report & Task Board ??\n
-    [Setup]  Test ScrumRole Setup for Guest
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    Guest: 只能看 Scrum Report (仿照 Jenkins)
+    ...    -> 實際只能看 Sprint Info Report & Task Board ??
+    [Setup]    Test ScrumRole Setup for Guest
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
     # Guest 所沒有的權限
     # [Project Configuration]
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
+    Page Should Not Contain    ${tsITSConfiguration_Items[0]}
+    Page Should Not Contain Element    xpath=//span[.='${tsITSConfiguration_Items[0]}']
     # [Plugin Configuration]
-    Page Should Not Contain  ${tsPluginConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsPluginConfiguration_Items[0]}']
+    Page Should Not Contain    ${tsPluginConfiguration_Items[0]}
+    Page Should Not Contain Element    xpath=//span[.='${tsPluginConfiguration_Items[0]}']
     # Guest 擁有的權限 #只能看到Sprint與TaskBoard
-    Page Should Contain  Sprint Info Report
-    Page Should Contain  Task Board
+    Page Should Contain    Sprint Info Report
+    Page Should Contain    Task Board
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for Guest
+    [Teardown]    Test ScrumRole Teardown for Guest
 
 Test Scrum Role - Guest Default
-    [Documentation]  Guest 無任何權限 -> 仍然可以看到目前Sprint Info Report與Task Board\nDefault Permission: (R: Retrospective, r: report)\n \ \ \ \ \ \ PB RP SP SB TB R U r EP\nPO \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 1\nSM \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 0\nST \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 0\nSH \ \ 0 \ \ 0 \ \ 0 \ 0 \ \ 0 \ 0 0 1 0\nGT \ \ 0 \ \ 0 \ \ 0 \ 0 \ \ 0 \ 0 0 0 0
-    [Setup]  Test ScrumRole Setup for Guest Default
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    Guest 無任何權限 -> 仍然可以看到目前Sprint Info Report與Task Board
+    ...    Default Permission: (R: Retrospective, r: report)
+    ...    \ \ \ \ \ \ PB RP SP SB TB R U r EP
+    ...    PO \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 1
+    ...    SM \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 0
+    ...    ST \ \ 1 \ \ 1 \ \ 1 \ 1 \ \ 1 \ 1 1 1 0
+    ...    SH \ \ 0 \ \ 0 \ \ 0 \ 0 \ \ 0 \ 0 0 1 0
+    ...    GT \ \ 0 \ \ 0 \ \ 0 \ 0 \ \ 0 \ 0 0 0 0
+    [Setup]    Test ScrumRole Setup for Guest Default
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
     # Guest 所沒有的權限
     # [Project Configuration]
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
+    Page Should Not Contain    ${tsITSConfiguration_Items[0]}
+    Page Should Not Contain Element    xpath=//span[.='${tsITSConfiguration_Items[0]}']
     # [Plugin Configuration]
-    Page Should Not Contain  ${tsPluginConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsPluginConfiguration_Items[0]}']
+    Page Should Not Contain    ${tsPluginConfiguration_Items[0]}
+    Page Should Not Contain Element    xpath=//span[.='${tsPluginConfiguration_Items[0]}']
     # Guest 擁有的權限 #只能看到Sprint與TaskBoard
-    Page Should Contain  Sprint Info Report
-    Page Should Contain  Task Board
+    Page Should Contain    Sprint Info Report
+    Page Should Contain    Task Board
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for Guest Default
+    [Teardown]    Test ScrumRole Teardown for Guest Default
 
 Test Scrum Role - Stakeholder
-    [Documentation]  Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report\n?? 有包含 Plugin Configuration?
-    [Setup]  Test ScrumRole Setup for Stakeholder
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+    ...    ?? 有包含 Plugin Configuration?
+    [Setup]    Test ScrumRole Setup for Stakeholder
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
     # [Project Configuration]
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Wait Until Element Is Visible    xpath=//span[.='${tsProjectConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
-    # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [Plugin Configuration] # Issue ??
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for Stakeholder
+    [Teardown]    Test ScrumRole Teardown for Stakeholder
 
 Test Scrum Role - Stakeholder Default
-    [Documentation]  Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report\n?? 有包含 Plugin Configuration?
-    [Setup]  Test ScrumRole Setup for Stakeholder Default
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+    ...    ?? 有包含 Plugin Configuration?
+    [Setup]    Test ScrumRole Setup for Stakeholder Default
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
     # [Project Configuration]
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Wait Until Element Is Visible    xpath=//span[.='${tsProjectConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
-    # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [Plugin Configuration] # Issue ??
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for Stakeholder Default
+    [Teardown]    Test ScrumRole Teardown for Stakeholder Default
 
 Test Scrum Role - Scrum Team
-    [Documentation]  除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
-    [Setup]  Test ScrumRole Setup for ScrumTeam
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
+    [Setup]    Test ScrumRole Setup for ScrumTeam
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Wait Until Element Is Visible    xpath=//span[.='${tsProjectConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
-    # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
-    # [Plugin Configuration]
-    Page Should Contain  ${tsPluginConfiguration_Items[0]}
-    Page Should Contain Element  xpath=//span[.='${tsPluginConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for ScrumTeam
+    [Teardown]    Test ScrumRole Teardown for ScrumTeam
 
 Test Scrum Role - Scrum Master
-    [Documentation]  除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
-    [Setup]  Test ScrumRole Setup for ScrumMaster
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
+    [Setup]    Test ScrumRole Setup for ScrumMaster
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Wait Until Element Is Visible    xpath=//span[.='${tsProjectConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
-    # [ITS Configuration ]
-    Page Should Not Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Not Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
-    # [Plugin Configuration]
-    Page Should Contain  ${tsPluginConfiguration_Items[0]}
-    Page Should Contain Element  xpath=//span[.='${tsPluginConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for ScrumMaster
+    [Teardown]    Test ScrumRole Teardown for ScrumMaster
 
 Test Scrum Role - Product Owner
-    [Documentation]  除了 TaskBoard 以外,其餘皆可操作
-    [Setup]  Test ScrumRole Setup for ProductOwner
-    Login Page With Account  ${LOGIN_URL}  ${tsAccountID}  ${tsAccountID}
-    Wait Until Page Contains  ${PROJECT_NAME}DisplayName
-    Select Project  ${PROJECT_NAME}DisplayName
+    [Documentation]    除了 TaskBoard 以外,其餘皆可操作
+    [Setup]    Test ScrumRole Setup for ProductOwner
+    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Select Project    ${PROJECT_NAME}DisplayName
     # assert
     # [Project Configuration]
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[0]}']  # Project Configuration
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[1]}']  # Summary
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[2]}']  # Members
-    Page Should Contain Element  xpath=//span[.='${tsProjectConfiguration_Items[3]}']  # Modify Config
+    Wait Until Element Is Visible    xpath=//span[.='${tsProjectConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[0]}']    # Project Configuration
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[1]}']    # Summary
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[2]}']    # Members
+    Page Should Contain Element    xpath=//span[.='${tsProjectConfiguration_Items[3]}']    # Modify Config
     # [Project Management]
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[0]}']  # Project Management
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[1]}']  # Product Backlog
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[2]}']  # Release Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[3]}']  # Sprint Plan
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[4]}']  # Sprint Backlog
-    Page Should Not Contain Element  xpath=//span[.='${tsProjectManagement_Items[5]}']  # Task Board
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[6]}']  # Retrospective
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[7]}']  # Unplanned
-    Page Should Contain Element  xpath=//span[.='${tsProjectManagement_Items[8]}']  # Scrum Report
-    # [ITS Configuration ]
-    Page Should Contain  ${tsITSConfiguration_Items[0]}
-    Page Should Contain Element  xpath=//span[.='${tsITSConfiguration_Items[0]}']
-    # [Plugin Configuration]
-    Page Should Contain  ${tsPluginConfiguration_Items[0]}
-    Page Should Contain Element  xpath=//span[.='${tsPluginConfiguration_Items[0]}']
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[0]}']    # Project Management
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[1]}']    # Product Backlog
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[2]}']    # Release Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[3]}']    # Sprint Plan
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
-    [Teardown]  Test ScrumRole Teardown for ProductOwner
-
+    [Teardown]    Test ScrumRole Teardown for ProductOwner

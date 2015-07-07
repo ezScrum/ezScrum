@@ -1,0 +1,49 @@
+*** Settings ***
+Documentation     test ezScrumn page
+Suite Setup       Test Product Backlog Suite Setup
+Suite Teardown    Test Product Backlog Suite Teardown
+Force Tags        ProductBacklog
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Filter.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Search.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_SetupTeardown.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/ReleasePlan/ezScrum_ReleasePlan_Management.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           keywords/lib/Selenium2Improved.py
+
+*** Variables ***
+${tsTag}          testTagName    # 測試正常字元
+${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
+@{tsStoryA}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+@{tsStoryB}       ID    Name    Value    Estimate    Importance    Notes    Tags
+...               How To Demo
+
+*** Test Cases ***
+Test ProductBacklog - Mark And UnMark Story Tag
+    [Documentation]    Mark And UnMark Tag
+    [Setup]    Test Mark And UnMark Story Tag Setup
+    # Mark
+    Mark And UnMark Tag With Arguments    Mark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    # UnMark
+    Mark And UnMark Tag With Arguments    UnMark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
+    [Teardown]    Test Mark And UnMark Story Tag Teardown
+
+Test ProductBacklog - Filter - Done
+    [Documentation]    確認Done Filter正常運作
+    [Tags]    FilterDone
+    [Setup]    Test Product Backlog Filter Setup
+    Test Product Backlog Filter Done
+    [Teardown]    Test Product Backlog Done Filter Teardown
