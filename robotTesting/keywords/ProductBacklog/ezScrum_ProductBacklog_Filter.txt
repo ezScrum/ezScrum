@@ -40,13 +40,12 @@ Test Product Backlog Filter Done
     Create Sprint    sprint1 sprint goal    2    4    100    100
     Select Node Product    Sprint Backlog
     Add Existing Story    newStoryDone
+    Set Test Variable    ${tcStoryName}    newStoryDone
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    newStoryDone
     # 將Story拉到Done
     Select Node Product    TaskBoard
     Select Node Product    Product Backlog
     Select Node Product    TaskBoard
-    Set Test Variable    ${tcStoryName}    newStoryDone
-    ${tcStoryID}=    Set Variable    5
-    #    ${tcStoryID}=    Get Story ID In Sprint Backlog    newStoryDone
     Story Done With Arguments    ${tcStoryID}
     # 確認是否有被選到
     Select Node Product    Product Backlog
