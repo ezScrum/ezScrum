@@ -46,6 +46,7 @@ public class StoryApiTest extends ApiTest {
 	private static HttpServer mServer;
 	private HttpClient mClient;
 	private long mAccountId;
+	private String mPlatformType;
 
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
@@ -65,7 +66,6 @@ public class StoryApiTest extends ApiTest {
 		mServer.start();
 
 		mClient = HttpClientBuilder.create().build();
-		;
 
 		// change to test mode
 		mConfig = new Configuration();
@@ -90,6 +90,7 @@ public class StoryApiTest extends ApiTest {
 		mCA = new CreateAccount(1);
 		mCA.exe();
 		mAccountId = mCA.getAccountList().get(0).getId();
+		mPlatformType = "windows";
 
 		// create story
 		mASTS = new AddStoryToSprint(mStoryCount, 1, mCS, mCP,
@@ -157,7 +158,7 @@ public class StoryApiTest extends ApiTest {
 	 entity.setContentEncoding("utf-8");
 	 HttpPost httpPost = new HttpPost(API_URL);
 	 httpPost.setEntity(entity);
-	 setHeaders(httpPost, mAccountId);
+	 setHeaders(httpPost, mAccountId, mPlatformType);
 	 String result = EntityUtils.toString(mClient.execute(httpPost)
 	 .getEntity());
 	 System.out.println(result);
@@ -190,7 +191,7 @@ public class StoryApiTest extends ApiTest {
 	 entity.setContentEncoding("utf-8");
 	 HttpPut httpPut = new HttpPut(API_URL + "/" + story.getId());
 	 httpPut.setEntity(entity);
-	 setHeaders(httpPut, mAccountId);
+	 setHeaders(httpPut, mAccountId, mPlatformType);
 	 String result = EntityUtils.toString(mClient.execute(httpPut)
 	 .getEntity(), HTTP.UTF_8);
 	 JSONObject response = new JSONObject(result);
@@ -218,7 +219,7 @@ public class StoryApiTest extends ApiTest {
 
 		HttpGet httpGet = new HttpGet(API_URL + "/" + story.getId()
 				+ "?project_name=abcd");
-		setHeaders(httpGet, mAccountId);
+		setHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(),
 				"utf-8");
@@ -240,7 +241,7 @@ public class StoryApiTest extends ApiTest {
 			IOException, JSONException {
 		HttpGet httpGet = new HttpGet(API_URL + "?project_name="
 				+ mProject.getName());
-		setHeaders(httpGet, mAccountId);
+		setHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(),
 				HTTP.UTF_8);
@@ -271,7 +272,7 @@ public class StoryApiTest extends ApiTest {
 		StoryObject story = mCPB.getStories().get(0);
 		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + story.getId()
 				+ "?project_name=" + mProject.getName());
-		setHeaders(httpDelete, mAccountId);
+		setHeaders(httpDelete, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpDelete);
 		String response = EntityUtils.toString(httpResponse.getEntity(),
 				"utf-8");

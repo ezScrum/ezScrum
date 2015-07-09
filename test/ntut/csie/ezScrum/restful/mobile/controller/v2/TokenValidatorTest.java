@@ -18,6 +18,7 @@ public class TokenValidatorTest {
 	private Configuration mConfig = null;
 	private CreateAccount mCA;
 	private long mAccountId;
+	private String mPlatform;
 	private TokenObject mToken;
 	
 	@Before
@@ -33,8 +34,9 @@ public class TokenValidatorTest {
 		mCA.exe();
 		
 		mAccountId = mCA.getAccountList().get(0).getId();
+		mPlatform = "andorid";
 		
-		mToken = new TokenObject(mAccountId);
+		mToken = new TokenObject(mAccountId, mPlatform);
 		mToken.save();
 	}
 

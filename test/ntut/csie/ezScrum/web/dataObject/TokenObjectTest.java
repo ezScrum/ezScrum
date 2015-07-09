@@ -1,11 +1,13 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import ntut.csie.ezScrum.dao.TokenDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 
 import org.junit.After;
@@ -16,6 +18,7 @@ public class TokenObjectTest {
 	private Configuration mConfig = null;
 	private CreateAccount mCA;
 	private long mAccountId;
+	private String mPlatformType;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -30,6 +33,7 @@ public class TokenObjectTest {
 		mCA.exe();
 		
 		mAccountId = mCA.getAccountList().get(0).getId();
+		mPlatformType = "windows";
 	}
 
 	@After
@@ -54,7 +58,7 @@ public class TokenObjectTest {
 		TokenObject token = TokenDAO.getInstance().get(1);
 		assertNull(token);
 		
-		token = new TokenObject(mAccountId);
+		token = new TokenObject(mAccountId, mPlatformType);
 		token.save();
 		
 		TokenObject newToken = TokenDAO.getInstance().get(1);
@@ -69,7 +73,7 @@ public class TokenObjectTest {
 		TokenObject token = TokenDAO.getInstance().get(1);
 		assertNull(token);
 		
-		token = new TokenObject(mAccountId);
+		token = new TokenObject(mAccountId, mPlatformType);
 		token.save();
 		
 		TokenObject newToken = TokenDAO.getInstance().get(1);
@@ -91,7 +95,7 @@ public class TokenObjectTest {
 		TokenObject token = TokenDAO.getInstance().get(1);
 		assertNull(token);
 		
-		token = new TokenObject(mAccountId);
+		token = new TokenObject(mAccountId, mPlatformType);
 		String oldPublicToken = token.getPublicToken();
 		String oldPrivateToken = token.getPrivateToken();
 		

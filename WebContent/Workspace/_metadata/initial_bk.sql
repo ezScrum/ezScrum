@@ -1350,6 +1350,7 @@ CREATE TABLE `token` (
   `account_id` BIGINT UNSIGNED NOT NULL,
   `public_token` TEXT NOT NULL,
   `private_token` TEXT NOT NULL,
+  `platform_type` TEXT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

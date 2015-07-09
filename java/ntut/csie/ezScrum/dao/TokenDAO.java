@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -26,15 +27,37 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, token.getAccountId());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
+		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		return id;
 	}
 	
-	public TokenObject getByAccountId(long accountId) {
-		IQueryValueSet valueSet = new MySQLQuerySet(); 
+	public ArrayList<TokenObject> getByAccountId(long accountId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TokenEnum.ACCOUNT_ID, accountId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<TokenObject> tokens = new ArrayList<TokenObject>();
+		try {
+			if (result.next()) {
+				TokenObject token = convert(result);
+				tokens.add(token);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return tokens;
+	}
+
+	public TokenObject get(long accountId, String platformType) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(TokenEnum.TABLE_NAME);
+		valueSet.addEqualCondition(TokenEnum.ACCOUNT_ID, accountId);
+		valueSet.addTextFieldEqualCondition(TokenEnum.PLATFORM_TYPE, platformType);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		TokenObject token = null;
@@ -74,7 +97,8 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 	public boolean update(TokenObject token) {
 		IQueryValueSet valueSet = new MySQLQuerySet(); 
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
-		valueSet.addEqualCondition(TokenEnum.ID, token.getId());
+		valueSet.addEqualCondition(TokenEnum.ACCOUNT_ID, token.getAccountId());
+		valueSet.addTextFieldEqualCondition(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
 		String query = valueSet.getUpdateQuery();
@@ -97,7 +121,8 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 				result.getLong(TokenEnum.ID), 
 				result.getLong(TokenEnum.ACCOUNT_ID),
 				result.getString(TokenEnum.PUBLIC_TOKEN),
-				result.getString(TokenEnum.PRIVATE_TOKEN));
+				result.getString(TokenEnum.PRIVATE_TOKEN),
+				result.getString(TokenEnum.PLATFORM_TYPE));
 		return token;
 	}
 }

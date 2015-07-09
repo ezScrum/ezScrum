@@ -12,12 +12,11 @@ public class TokenValidator {
 	private final static int EXPIRED_TIME = 60;
 
 	public static boolean verify(long accountId, String clientPublicToken,
-			String clientDisposableToken, long timestamp) {
-		TokenObject token = TokenObject.getByAccountId(accountId);
+	        String clientDisposableToken, long timestamp) {
+		TokenObject token = TokenObject.get(accountId, clientPublicToken);
 		String disposableToken;
 		try {
-			disposableToken = genDisposable(token.getPublicToken(),
-					token.getPrivateToken(), timestamp);
+			disposableToken = genDisposable(token.getPublicToken(), token.getPrivateToken(), timestamp);
 		} catch (Exception e) {
 			return false;
 		}

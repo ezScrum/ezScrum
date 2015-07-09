@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Random;
 
 import ntut.csie.ezScrum.dao.TokenDAO;
@@ -15,26 +16,45 @@ public class TokenObject implements IBaseObject {
 	private long mId = -1;
 	private String mPublicToken = "";
 	private String mPrivateToken = "";
+	private String mPlatformType = "";
 	private long mAccountId = -1;
+	private long mCreateTime = -1;
+	private long mUpdateTime = -1;
 	
 	public static TokenObject get(long id) {
 		return TokenDAO.getInstance().get(id);
 	}
 	
-	public static TokenObject getByAccountId(long accountId) {
+	public static ArrayList<TokenObject> getByAccountId(long accountId) {
 		return TokenDAO.getInstance().getByAccountId(accountId);
+	}
+	
+	public static TokenObject get(long accountId, String publicToken) {
+		ArrayList<TokenObject> tokens = TokenDAO.getInstance().getByAccountId(accountId);
+		for (TokenObject token : tokens) {
+			if (token.getPublicToken().equals(publicToken)) {
+				return token;
+			}
+		}
+		return null;
+	}
+	
+	public static TokenObject getByPlatform(long accountId, String platformType) {
+		return TokenDAO.getInstance().get(accountId, platformType);
 	}
 
 	public TokenObject(long id, long accountId, String publicToken,
-			String privateToken) {
+			String privateToken, String platformType) {
 		mId = id;
 		mAccountId = accountId;
 		mPublicToken = publicToken;
 		mPrivateToken = privateToken;
+		mPlatformType = platformType;
 	}
 
-	public TokenObject(long accountId) {
+	public TokenObject(long accountId, String platformType) {
 		mAccountId = accountId;
+		mPlatformType = platformType;
 		rehash();
 	}
 
@@ -54,6 +74,18 @@ public class TokenObject implements IBaseObject {
 		return mPrivateToken;
 	}
 	
+	public String getPlatformType() {
+		return mPlatformType;
+	}
+	
+	public long getCreateTime() {
+		return mCreateTime;
+	}
+	
+	public long getUpdateTime() {
+		return mUpdateTime;
+	}
+
 	public String getDisposableToken(long timestamp) {
 		try {
 			return genDisposable(mPublicToken, mPrivateToken, timestamp);
@@ -65,12 +97,14 @@ public class TokenObject implements IBaseObject {
 	public void rehash() {
 		mPublicToken = randomString(TOKEN_LENGTH);
 		mPrivateToken = randomString(TOKEN_LENGTH);
-		save();
+		if(exist()){
+			save();
+		}
 	}
 
 	@Override
 	public void save() {
-		if (!exist()) {
+		if (!samePlatformExist()) {
 			doCreate();
 		} else {
 			doUpdate();
@@ -97,6 +131,7 @@ public class TokenObject implements IBaseObject {
 		object.put(TokenEnum.ACCOUNT_ID, mAccountId);
 		object.put(TokenEnum.PUBLIC_TOKEN, mPublicToken);
 		object.put(TokenEnum.PRIVATE_TOKEN, mPrivateToken);
+		object.put(TokenEnum.PLATFORM_TYPE, mPlatformType);
 		return object;
 	}
 
@@ -113,6 +148,7 @@ public class TokenObject implements IBaseObject {
 		mAccountId = token.getAccountId();
 		mPublicToken = token.getPublicToken();
 		mPrivateToken = token.getPrivateToken();
+		mPlatformType = token.getPlatformType();
 	}
 
 	private void doCreate() {
@@ -126,6 +162,11 @@ public class TokenObject implements IBaseObject {
 
 	private boolean exist() {
 		TokenObject token = TokenDAO.getInstance().get(mId);
+		return token != null;
+	}
+	
+	private boolean samePlatformExist() {
+		TokenObject token = TokenDAO.getInstance().get(mAccountId, mPlatformType);
 		return token != null;
 	}
 

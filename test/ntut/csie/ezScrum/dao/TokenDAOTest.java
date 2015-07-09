@@ -1,9 +1,14 @@
 package ntut.csie.ezScrum.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -24,6 +29,7 @@ public class TokenDAOTest {
 	private Configuration mConfig;
 	private CreateAccount mCA;
 	private long mAccountId;
+	private String mPlatformType;
 	
 	@Before
 	public void setUp() {
@@ -38,6 +44,7 @@ public class TokenDAOTest {
 		mCA.exe();
 		
 		mAccountId = mCA.getAccountList().get(0).getId();
+		mPlatformType = "andorid";
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connect();
@@ -65,8 +72,7 @@ public class TokenDAOTest {
 	
 	@Test
 	public void testCreate() throws SQLException {
-		TokenObject token = new TokenObject(mAccountId);
-		token.rehash();
+		TokenObject token = new TokenObject(mAccountId, mPlatformType);
 		
 		long id = TokenDAO.getInstance().create(token);
 		
@@ -86,11 +92,12 @@ public class TokenDAOTest {
 	
 	@Test
 	public void testGet() {
-		IQueryValueSet valueSet = new MySQLQuerySet(); 
+		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, mAccountId);
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, "PUBLIC_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, "PRIVATE_TOKEN");
+		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, "PLATFORM_TYPE");
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
@@ -100,6 +107,7 @@ public class TokenDAOTest {
 		assertEquals(mAccountId, token.getAccountId());
 		assertEquals("PUBLIC_TOKEN", token.getPublicToken());
 		assertEquals("PRIVATE_TOKEN", token.getPrivateToken());
+		assertEquals("PLATFORM_TYPE", token.getPlatformType());
 	}
 	
 	@Test
@@ -109,32 +117,36 @@ public class TokenDAOTest {
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, mAccountId);
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, "PUBLIC_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, "PRIVATE_TOKEN");
+		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, "PLATFORM_TYPE");
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
-		TokenObject token = TokenDAO.getInstance().getByAccountId(mAccountId);
+		ArrayList<TokenObject> tokens = TokenDAO.getInstance().getByAccountId(mAccountId);
 		
-		assertNotNull(token);
-		assertEquals(id, token.getId());
-		assertEquals(mAccountId, token.getAccountId());
-		assertEquals("PUBLIC_TOKEN", token.getPublicToken());
-		assertEquals("PRIVATE_TOKEN", token.getPrivateToken());
+		assertEquals(1, tokens.size());
+		assertEquals(id, tokens.get(0).getId());
+		assertEquals(mAccountId, tokens.get(0).getAccountId());
+		assertEquals("PUBLIC_TOKEN", tokens.get(0).getPublicToken());
+		assertEquals("PRIVATE_TOKEN", tokens.get(0).getPrivateToken());
+		assertEquals("PLATFORM_TYPE", tokens.get(0).getPlatformType());
 	}
 	
 	@Test
 	public void testUpdate() {
 		String PUBLIC_TOKEN = "PUBLIC_TOKEN";
 		String PRIVATE_TOKEN = "PRIVATE_TOKEN";
+		String PLATFORM_TYPE = "PLATFORM_TYPE";
 		
-		IQueryValueSet valueSet = new MySQLQuerySet(); 
+		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, mAccountId);
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, PUBLIC_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, PRIVATE_TOKEN);
+		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, PLATFORM_TYPE);
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
-		TokenObject token = new TokenObject(id, mAccountId, PUBLIC_TOKEN, PRIVATE_TOKEN);
+		TokenObject token = new TokenObject(id, mAccountId, PUBLIC_TOKEN, PRIVATE_TOKEN, PLATFORM_TYPE);
 		token.rehash();
 		
 		boolean success = TokenDAO.getInstance().update(token);
@@ -143,6 +155,7 @@ public class TokenDAOTest {
 		assertEquals(mAccountId, token.getAccountId());
 		assertNotSame("PUBLIC_TOKEN", token.getPublicToken());
 		assertNotSame("PRIVATE_TOKEN", token.getPrivateToken());
+		assertEquals("PLATFORM_TYPE", token.getPlatformType());
 		assertEquals(60, token.getPublicToken().length());
 		assertEquals(60, token.getPrivateToken().length());
 	}
@@ -151,12 +164,14 @@ public class TokenDAOTest {
 	public void testDelete() {
 		String PUBLIC_TOKEN = "PUBLIC_TOKEN";
 		String PRIVATE_TOKEN = "PRIVATE_TOKEN";
+		String PLATFORM_TYPE = "PLATFORM_TYPE";
 		
 		IQueryValueSet valueSet = new MySQLQuerySet(); 
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, mAccountId);
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, PUBLIC_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, PRIVATE_TOKEN);
+		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, PLATFORM_TYPE);
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
