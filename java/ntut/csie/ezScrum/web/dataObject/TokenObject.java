@@ -182,10 +182,19 @@ public class TokenObject implements IBaseObject {
 	
 	private static String genDisposable(String publicToken,
 			String privateToken, long timestamp) throws Exception {
-		String plainCode = publicToken + privateToken + timestamp;
+		String plainCode = new StringBuilder().append(publicToken).append(privateToken).append(timestamp).toString();
 		byte[] bytesOfMessage = plainCode.getBytes("UTF-8");
-		MessageDigest md = MessageDigest.getInstance("MD5");
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
 		byte[] digest = md.digest(bytesOfMessage);
-		return new String(digest);
+		return byteArrayToHexString(digest);
+	}
+	
+	private static String byteArrayToHexString(byte[] b) {
+	  String result = "";
+	  for (int i=0; i < b.length; i++) {
+	    result +=
+	          Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+	  }
+	  return result;
 	}
 }

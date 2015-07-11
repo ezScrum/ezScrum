@@ -33,9 +33,9 @@ public abstract class BaseAuthApi {
 			@HeaderParam("user_id") long userId,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
-			@HeaderParam("timestamp") long timestamp, @Context UriInfo uriInfo) {
+			@HeaderParam("adjusted_time") long adjuestedTime, @Context UriInfo uriInfo) {
 		return doMethod(METHOD_GET, resourceId, userId, publicToken,
-				disposableToken, timestamp, null, uriInfo);
+				disposableToken, adjuestedTime, null, uriInfo);
 	}
 
 	@GET
@@ -43,9 +43,9 @@ public abstract class BaseAuthApi {
 	public Response responseOfGetList(@HeaderParam("user_id") long userId,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
-			@HeaderParam("timestamp") long timestamp, @Context UriInfo uriInfo) {
+			@HeaderParam("adjusted_time") long adjuestedTime, @Context UriInfo uriInfo) {
 		return doMethod(METHOD_GET_LIST, null, userId, publicToken,
-				disposableToken, timestamp, null, uriInfo);
+				disposableToken, adjuestedTime, null, uriInfo);
 	}
 
 	@POST
@@ -53,9 +53,9 @@ public abstract class BaseAuthApi {
 	public Response responseOfPost(@HeaderParam("user_id") long userId,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
-			@HeaderParam("timestamp") long timestamp, String entity) {
+			@HeaderParam("adjusted_time") long adjuestedTime, String entity) {
 		return doMethod(METHOD_POST, null, userId, publicToken,
-				disposableToken, timestamp, entity, null);
+				disposableToken, adjuestedTime, entity, null);
 	}
 
 	@PUT
@@ -65,9 +65,9 @@ public abstract class BaseAuthApi {
 			@HeaderParam("user_id") long userId,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
-			@HeaderParam("timestamp") long timestamp, String entity) {
+			@HeaderParam("adjusted_time") long adjuestedTime, String entity) {
 		return doMethod(METHOD_PUT, resourceId, userId, publicToken,
-				disposableToken, timestamp, entity, null);
+				disposableToken, adjuestedTime, entity, null);
 	}
 
 	@DELETE
@@ -77,9 +77,9 @@ public abstract class BaseAuthApi {
 			@HeaderParam("user_id") long userId,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
-			@HeaderParam("timestamp") long timestamp, @Context UriInfo uriInfo) {
+			@HeaderParam("adjusted_time") long adjuestedTime, @Context UriInfo uriInfo) {
 		return doMethod(METHOD_DELETE, resourceId, userId, publicToken,
-				disposableToken, timestamp, null, uriInfo);
+				disposableToken, adjuestedTime, null, uriInfo);
 	}
 
 	protected Response response(int statusCode, String entity) {
@@ -106,7 +106,7 @@ public abstract class BaseAuthApi {
 	protected abstract boolean ownerCheck(AccountObject user, UriInfo uriInfo);
 
 	private Response doMethod(int method, Long resourceId, long userId,
-			String publicToken, String disposableToken, long timestamp,
+			String publicToken, String disposableToken, long adjustedTime,
 			String entity, UriInfo uriInfo) {
 
 		try {
@@ -114,15 +114,18 @@ public abstract class BaseAuthApi {
 			
 			if (IGNORE_VERIFY
 					|| TokenValidator.verify(userId, publicToken,
-							disposableToken, timestamp)) {
+							disposableToken, adjustedTime)) {
 				mUser = AccountObject.get(userId);
 				
-				if (!permissionCheck(mUser, uriInfo)) {
-					return response(401, "{\"msg\":\"Unauthorized\"}");
-				}
-				
-				if (!ownerCheck(mUser, uriInfo)) {
-					return response(403, "{\"msg\":\"Forbidden\"}");
+				// 不是 admi，要做 Project 權限及所有權的檢查
+				if (!mUser.getSystemRole().getScrumRole().isAdmin()) {
+					if (!permissionCheck(mUser, uriInfo)) {
+						return response(401, "{\"msg\":\"Unauthorized\"}");
+					}
+					
+					if (!ownerCheck(mUser, uriInfo)) {
+						return response(403, "{\"msg\":\"Forbidden\"}");
+					}
 				}
 				
 				switch (method) {
@@ -144,7 +147,7 @@ public abstract class BaseAuthApi {
 				}
 			} else {
 				response = response(406,
-						new JSONObject().put("msg", "Not Acceptable").toString());
+						new JSONObject().put("msg", "Token is no acceptable").toString());
 			}
 			return response;
 		} catch (Exception e) {

@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONObject;
