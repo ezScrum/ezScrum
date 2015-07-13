@@ -43,17 +43,15 @@ public class AddUserAction extends Action {
 		}
 		
 
-		if ((id > 0) && (projectId > 0) && (scrumRole != null) && (session != null)) {
+		if ((projectId == 0) && scrumRole.equals("admin") || (id > 0) && (projectId > 0) && (scrumRole != null) && (session != null)) {
 			try {
 				AccountHelper accountHelper = new AccountHelper(session);
 				AccountObject account = accountHelper.addAssignedRole(id, projectId, scrumRole);
-
-				// 刪除 Session 中關於該使用者的所有專案權限。
 				writer.write(accountHelper.getAccountXML(account));
 			} catch (IllegalArgumentException e) {
 				response.setContentType("application/json; charset=utf-8");
 				writer.write("{\"msg\": \"The role not exist\"}");
-			} finally {				
+			} finally {
 				writer.close();
 			}
 		}
