@@ -98,6 +98,8 @@ public class TokenDAOTest {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, "PUBLIC_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, "PRIVATE_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, "PLATFORM_TYPE");
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
@@ -118,6 +120,8 @@ public class TokenDAOTest {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, "PUBLIC_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, "PRIVATE_TOKEN");
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, "PLATFORM_TYPE");
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
@@ -177,6 +181,8 @@ public class TokenDAOTest {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, PUBLIC_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, PRIVATE_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, PLATFORM_TYPE);
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		

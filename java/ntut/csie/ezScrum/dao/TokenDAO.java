@@ -100,6 +100,7 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet(); 
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TokenEnum.ACCOUNT_ID, token.getAccountId());
+		valueSet.addTextFieldEqualCondition(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
 		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
