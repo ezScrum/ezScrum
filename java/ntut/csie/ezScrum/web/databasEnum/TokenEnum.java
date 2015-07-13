@@ -10,4 +10,6 @@ public class TokenEnum {
     public static final String PRIVATE_TOKEN = "private_token";
     public static final String PLATFORM_TYPE = "platform_type";
 	public static final String SERVER_TIME = "server_time";
+	public static final String CREATE_TIME = "create_time";
+	public static final String UPDATE_TIME = "update_time";
 }

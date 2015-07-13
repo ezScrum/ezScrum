@@ -28,6 +28,8 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		return id;
@@ -98,9 +100,9 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet(); 
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TokenEnum.ACCOUNT_ID, token.getAccountId());
-		valueSet.addTextFieldEqualCondition(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getUpdateQuery();
 		boolean success = mControl.executeUpdate(query);
 		return success;
@@ -122,7 +124,9 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 				result.getLong(TokenEnum.ACCOUNT_ID),
 				result.getString(TokenEnum.PUBLIC_TOKEN),
 				result.getString(TokenEnum.PRIVATE_TOKEN),
-				result.getString(TokenEnum.PLATFORM_TYPE));
+				result.getString(TokenEnum.PLATFORM_TYPE),
+				result.getLong(TokenEnum.CREATE_TIME),
+				result.getLong(TokenEnum.UPDATE_TIME));
 		return token;
 	}
 }

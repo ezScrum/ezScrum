@@ -44,12 +44,14 @@ public class TokenObject implements IBaseObject {
 	}
 
 	public TokenObject(long id, long accountId, String publicToken,
-			String privateToken, String platformType) {
+			String privateToken, String platformType, long createTime, long updateTime) {
 		mId = id;
 		mAccountId = accountId;
 		mPublicToken = publicToken;
 		mPrivateToken = privateToken;
 		mPlatformType = platformType;
+		mCreateTime = createTime;
+		mUpdateTime = updateTime;
 	}
 
 	public TokenObject(long accountId, String platformType) {
@@ -132,6 +134,8 @@ public class TokenObject implements IBaseObject {
 		object.put(TokenEnum.PUBLIC_TOKEN, mPublicToken);
 		object.put(TokenEnum.PRIVATE_TOKEN, mPrivateToken);
 		object.put(TokenEnum.PLATFORM_TYPE, mPlatformType);
+		object.put(TokenEnum.CREATE_TIME, mCreateTime);
+		object.put(TokenEnum.UPDATE_TIME, mUpdateTime);
 		return object;
 	}
 
@@ -149,6 +153,8 @@ public class TokenObject implements IBaseObject {
 		mPublicToken = token.getPublicToken();
 		mPrivateToken = token.getPrivateToken();
 		mPlatformType = token.getPlatformType();
+		mCreateTime = token.getCreateTime();
+		mUpdateTime = token.getUpdateTime();
 	}
 
 	private void doCreate() {

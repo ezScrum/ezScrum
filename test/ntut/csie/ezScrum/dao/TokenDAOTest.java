@@ -136,6 +136,8 @@ public class TokenDAOTest {
 		String PUBLIC_TOKEN = "PUBLIC_TOKEN";
 		String PRIVATE_TOKEN = "PRIVATE_TOKEN";
 		String PLATFORM_TYPE = "PLATFORM_TYPE";
+		long CREATE_TIME = System.currentTimeMillis();
+		long UPDATE_TIME = System.currentTimeMillis();
 		
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
@@ -143,10 +145,13 @@ public class TokenDAOTest {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, PUBLIC_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, PRIVATE_TOKEN);
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, PLATFORM_TYPE);
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(CREATE_TIME));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(UPDATE_TIME));
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		
-		TokenObject token = new TokenObject(id, mAccountId, PUBLIC_TOKEN, PRIVATE_TOKEN, PLATFORM_TYPE);
+		TokenObject token = new TokenObject(id, mAccountId, PUBLIC_TOKEN, PRIVATE_TOKEN,
+		        PLATFORM_TYPE, CREATE_TIME, UPDATE_TIME);
 		token.rehash();
 		
 		boolean success = TokenDAO.getInstance().update(token);
