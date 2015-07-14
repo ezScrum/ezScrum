@@ -9,18 +9,16 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class SprintPlanMapper {
 	private ProjectObject mProject;
-	private long mProjectId;
 	
 	public SprintPlanMapper(ProjectObject project) {
-		mProject = new ProjectMapper().getProject(project.getName());
-		mProjectId = mProject.getId();
+		mProject = project;
 	}
 
 	/**
 	 * Add New SprintPlan
 	 */
 	public SprintObject addSprint(SprintInfo sprintInfo) {
-		SprintObject sprint = new SprintObject(mProjectId);
+		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.setInterval(sprintInfo.interval)
 		        .setMembers(sprintInfo.members)
 		        .setHoursCanCommit(sprintInfo.hoursCanCommit)

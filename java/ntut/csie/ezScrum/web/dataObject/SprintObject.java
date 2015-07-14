@@ -24,8 +24,8 @@ public class SprintObject implements IBaseObject{
 	private int mHoursCanCommit = 0;
 	private int mFocusFactor = 0;
 	private String mSprintGoal = "";
-	private Date mStartDate = null;
-	private Date mDemoDate = null;
+	private Date mStartDate = new Date();
+	private Date mDemoDate = new Date();
 	private String mDemoPlace = "";
 	private String mDailyInfo = "";
 
