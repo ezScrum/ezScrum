@@ -39,6 +39,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDate());
+		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDate());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDate());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
@@ -93,6 +94,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDate());
+		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDate());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDate());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
@@ -157,6 +159,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		        .setHoursCanCommit(result.getInt(SprintEnum.AVAILABLE_HOURS))
 		        .setFocusFactor(result.getInt(SprintEnum.FOCUS_FACTOR))
 		        .setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.START_DATE)))
+		        .setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DUE_DATE)))
 		        .setDemoDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DEMO_DATE)))
 		        .setDemoPlace(result.getString(SprintEnum.DEMO_PLACE))
 		        .setDailyInfo(result.getString(SprintEnum.DAILY_INFO))

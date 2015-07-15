@@ -26,6 +26,7 @@ public class SprintObject implements IBaseObject{
 	private String mSprintGoal = "";
 	private Date mStartDate = new Date();
 	private Date mDemoDate = new Date();
+	private Date mDueDate = new Date();
 	private String mDemoPlace = "";
 	private String mDailyInfo = "";
 
@@ -69,6 +70,11 @@ public class SprintObject implements IBaseObject{
 
 	public SprintObject setStartDate(String startDate) {
 		mStartDate = DateUtil.dayFilter(startDate);
+		return this;
+	}
+	
+	public SprintObject setDueDate(String dueDate) {
+		mDueDate = DateUtil.dayFilter(dueDate);
 		return this;
 	}
 
@@ -131,6 +137,10 @@ public class SprintObject implements IBaseObject{
 
 	public String getStartDate() {
 		return DateUtil.formatBySlashForm(mStartDate);
+	}
+	
+	public String getDueDate() {
+		return DateUtil.formatBySlashForm(mDueDate);
 	}
 
 	public String getDemoDate() {
@@ -207,7 +217,6 @@ public class SprintObject implements IBaseObject{
 	private void doCreate() {
 		mId = SprintDAO.getInstance().create(this);
 		reload();
-		
 	}
 
 	private void doUpdate() {
@@ -249,7 +258,7 @@ public class SprintObject implements IBaseObject{
 	
 	public boolean contains(Date date) {
 		if ((date.compareTo(mStartDate) >= 0)
-		        && (date.compareTo(mDemoDate) <= 0)) {
+		        && (date.compareTo(mDueDate) <= 0)) {
 			return true;
 		}
 		return false;
@@ -264,7 +273,7 @@ public class SprintObject implements IBaseObject{
 	}
 
 	@Override
-    public JSONObject toJSON() throws JSONException {
+	public JSONObject toJSON() throws JSONException {
 		JSONObject sprint = new JSONObject();
 		JSONArray stories = new JSONArray();
 
@@ -274,13 +283,15 @@ public class SprintObject implements IBaseObject{
 
 		sprint.put(SprintEnum.ID, mId)
 		        .put(SprintEnum.PROJECT_ID, mProjectId)
+		        .put(SprintEnum.START_DATE, getStartDate())
+		        .put(SprintEnum.DUE_DATE, getDueDate())
 		        .put(SprintEnum.INTERVAL, mInterval)
 		        .put(SprintEnum.MEMBERS, mMembers)
 		        .put(SprintEnum.SERIAL_ID, mSerialId)
 		        .put(SprintEnum.GOAL, mSprintGoal)
 		        .put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)
 		        .put(SprintEnum.FOCUS_FACTOR, mFocusFactor)
-		        .put(SprintEnum.DEMO_DATE, mDemoDate)
+		        .put(SprintEnum.DEMO_DATE, getDemoDate())
 		        .put(SprintEnum.DEMO_PLACE, mDemoPlace)
 		        .put(SprintEnum.DAILY_INFO, mDailyInfo)
 		        .put(SprintEnum.CREATE_TIME, mCreateTime)
@@ -288,5 +299,4 @@ public class SprintObject implements IBaseObject{
 		        .put("stories", stories);
 		return sprint;
     }
-
 }

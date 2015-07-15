@@ -102,7 +102,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 			for (SprintObject sprint : sprints) {	// set story, task, story points to release object
 				long sprintId = sprint.getId();
 				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-				ArrayList<StoryObject> storyList = sprintBacklogLogic.getStoriesByImp();
+				ArrayList<StoryObject> storyList = sprintBacklogLogic.getStoriesByImpInSprint();
 				double total = sprintBacklogLogic.getTotalStoryPoints();	// the sum of story points
 				stories.put(String.valueOf(sprintId), storyList);
 				totalStoryPoints.put(String.valueOf(sprintId), total);

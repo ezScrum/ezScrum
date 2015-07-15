@@ -65,9 +65,9 @@ public class TaskBoard {
 
 	private void init() {
 		// 取得目前最新的Story與Task狀態
-		mStories = mSprintBacklogLogic.getStoriesByImp();
+		mStories = mSprintBacklogLogic.getStoriesByImpInSprint();
 		// 取得從經被drop掉的Story與其底下的Task
-		mDroppedStories = mSprintBacklogMapper.getDroppedStories();
+		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
 			Date iter_Start_Work_Date = mSprintBacklogLogic.getSprintStartWorkDate();
@@ -236,7 +236,7 @@ public class TaskBoard {
 	public String getTaskPoint() {
 		return mSprintBacklogLogic.getTaskRemainsPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTaskEstimatePoints();
+		        + mSprintBacklogLogic.getTotalTaskPoints();
 	}
 
 	public String getInitialStoryPoint() {

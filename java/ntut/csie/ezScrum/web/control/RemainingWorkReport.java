@@ -122,7 +122,7 @@ public class RemainingWorkReport {
 
 	private void createTaskDataBySprint() {
 		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(mProject, mSprintId)).getSprintBacklogMapper();
-		ArrayList<TaskObject> tasks = sprintBacklogMapper.getAllTasks();
+		ArrayList<TaskObject> tasks = sprintBacklogMapper.getTasksInSprint();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間
@@ -176,7 +176,7 @@ public class RemainingWorkReport {
 	
 	private void createStoryDataBySprint() {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
-		List<StoryObject> stories = sprintBacklogLogic.getStories();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間

@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
 
 public class SprintBacklogMapper {
@@ -16,14 +15,13 @@ public class SprintBacklogMapper {
 	private SprintObject mSprint;
 
 	/**
-	 * 若沒有指定的話,自動取得目前的 sprint#
+	 * 若沒有指定 sprint id 的話,自動取得最近的 sprint
 	 * 
 	 * @param project
 	 */
 	public SprintBacklogMapper(ProjectObject project) {
 		mProject = project;
-		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
-		mSprint = sprintPlanLogic.loadCurrentSprint();
+		mSprint = mProject.getCurrentSprint();
 	}
 
 	/**
@@ -34,43 +32,42 @@ public class SprintBacklogMapper {
 	 */
 	public SprintBacklogMapper(ProjectObject project, long sprintId) {
 		mProject = project;
-		SprintPlanMapper sprintPlanMapper = new SprintPlanMapper(project);
-		mSprint = sprintPlanMapper.getSprint(sprintId);
+		mSprint = SprintObject.get(sprintId);
 		if (mSprint == null) {
-			throw new RuntimeException("Sprint#-1 is not existed.");
+			throw new RuntimeException("Sprint#" + sprintId + " is not existed.");
 		}
 	}
 
 	/*************************************************************
 	 * ===================== Sprint Backlog 的操作 =================
 	 *************************************************************/
+	
+	public SprintObject getSprint() {
+		return mSprint;
+	}
 
 	public StoryObject getStory(long storyId) {
 		StoryObject story = StoryObject.get(storyId);
 		return story;
 	}
 
-	public ArrayList<StoryObject> getAllStories() {
-		if (mSprint == null) {
-			return new ArrayList<StoryObject>();
-		}
-		return mSprint.getStories();
-	}
-	
 	/**
 	 * 取得這個 Sprint 內 stories
 	 * 
 	 * @param sprintId
-	 * @return StoryObject list
+	 * @return ArrayList<StoryObject>
 	 */
-	public ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
-		return StoryObject.getStoriesBySprintId(sprintId);
+	public ArrayList<StoryObject> getStoriesInSprint() {
+		if (mSprint != null) {
+			return mSprint.getStories();
+		}
+		return new ArrayList<StoryObject>();
 	}
 
 	/**
 	 * 取得被 Drop 掉的 Story
 	 */
-	public ArrayList<StoryObject> getDroppedStories() {
+	public ArrayList<StoryObject> getStoriesWithNoParent() {
 		return mProject.getStoriesWithNoParent();
 	}
 
@@ -97,7 +94,7 @@ public class SprintBacklogMapper {
 	 * 
 	 * @return
 	 */
-	public ArrayList<TaskObject> getAllTasks() {
+	public ArrayList<TaskObject> getTasksInSprint() {
 		ArrayList<TaskObject> tasks = new ArrayList<>();
 		if (mSprint == null) {
 			return tasks;
@@ -193,16 +190,23 @@ public class SprintBacklogMapper {
 
 	public Date getSprintStartDate() {
 		if (mSprint == null) {
-			return new Date();
+			return null;
 		}
 		return DateUtil.dayFilter(mSprint.getStartDate());
 	}
 
-	public Date getSprintEndDate() {
+	public Date getSprintDemoDate() {
 		if (mSprint == null) {
-			return new Date();
+			return null;
 		}
 		return DateUtil.dayFilter(mSprint.getDemoDate());
+	}
+	
+	public Date getSprintEndDate() {
+		if (mSprint == null) {
+			return null;
+		}
+		return DateUtil.dayFilter(mSprint.getDueDate());
 	}
 
 	public double getLimitedPoint() {

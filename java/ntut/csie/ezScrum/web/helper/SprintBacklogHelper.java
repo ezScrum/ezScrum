@@ -60,7 +60,7 @@ public class SprintBacklogHelper {
 	}
 
 	public ArrayList<StoryObject> getStoriesByImportance() {
-		return mSprintBacklogLogic.getStoriesByImp();
+		return mSprintBacklogLogic.getStoriesByImpInSprint();
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class SprintBacklogHelper {
 				ArrayList<StoryObject> stories = getStoriesByImportance();
 				// 取得 Sprint 日期的 Column
 				if (mSprintBacklogLogic.getCurrentDateColumns() == null)
-					mSprintBacklogLogic.calculateSprintBacklogDateList(
+					mSprintBacklogLogic.getSprintBacklogDates(
 							mSprintBacklogMapper.getSprintStartDate(),
 							availableDays);
 				else
@@ -252,7 +252,7 @@ public class SprintBacklogHelper {
 			currentSprintId = mSprintBacklogMapper.getSprintId();
 			totalStoryPoints = mSprintBacklogLogic.getTotalStoryPoints();
 			limitedPoint = mSprintBacklogMapper.getLimitedPoint();
-			totalTaskPoints = mSprintBacklogLogic.getTaskEstimatePoints();
+			totalTaskPoints = mSprintBacklogLogic.getTotalTaskPoints();
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 			releaseId = Integer.parseInt(releasePlanHelper.getReleaseID(currentSprintId));
@@ -284,7 +284,7 @@ public class SprintBacklogHelper {
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic.getSprintAvailableDays(mSprintId);
 
-			List<SprintBacklogDateColumn> cols = mSprintBacklogLogic.calculateSprintBacklogDateList(StartDate, availableDays);
+			List<SprintBacklogDateColumn> cols = mSprintBacklogLogic.getSprintBacklogDates(StartDate, availableDays);
 
 			result = (new Gson()).toJson(cols);
 			result = "{\"Dates\":" + result + "}";

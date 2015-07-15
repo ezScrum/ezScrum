@@ -99,4 +99,12 @@ public class SprintPlanMapper {
 		oldSprint.updateSerialId(newId);
 		newSprint.updateSerialId(oldId);
 	}
+	
+	public SprintObject getCurrentSprint() {
+		return mProject.getCurrentSprint();
+	}
+	
+	public SprintObject getLatestSprint() {
+		return mProject.getLatestSprint();
+	}
 }

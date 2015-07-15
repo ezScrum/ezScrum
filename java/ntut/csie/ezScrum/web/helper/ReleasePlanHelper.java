@@ -585,7 +585,7 @@ public class ReleasePlanHelper {
 				}
 				if (deleteOrAdd == true) {//Finding sprint not existing in list2.
 					sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
-					ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+					ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
 					for (StoryObject story : stories) {
 						storyList.add(story.getId());
 					}
@@ -595,7 +595,7 @@ public class ReleasePlanHelper {
 		} else { // For creating a new sprint
 			for (ISprintPlanDesc list1 : sprintList1) {
 				sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
-				ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+				ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
 				for (StoryObject story : stories) {
 					storyList.add(story.getId());
 				}

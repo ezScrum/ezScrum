@@ -43,7 +43,7 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		String sprintId = request.getParameter("sprintID");
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
-		ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 		for (StoryObject story : stories) {
 			productBacklogLogic.dropStoryFromSprint(story.getId());

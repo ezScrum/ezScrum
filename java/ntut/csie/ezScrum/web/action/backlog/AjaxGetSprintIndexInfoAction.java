@@ -53,7 +53,7 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 			currentSprintId = sprintBacklogMapper.getSprintId();
 			initialPoint = sprintBacklogLogic.getTotalStoryPoints();
 			currentPoint = sprintBacklogLogic.getStoryUnclosedPoints();
-			initialHours = sprintBacklogLogic.getTaskEstimatePoints();
+			initialHours = sprintBacklogLogic.getTotalTaskPoints();
 			currentHours = sprintBacklogLogic.getTaskRemainsPoints();
 			
 			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
