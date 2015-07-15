@@ -3,31 +3,25 @@ package ntut.csie.ezScrum.restful.mobilel.service;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
-import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -38,18 +32,13 @@ public class SprintPlanWebServiceTest {
 	private int mReleaseCount = 1;
 	private int mSprintCount = 3;
 	private int mStoryCount = 3;
-	private int mTaskCount = 3;
 	private int mStoryEstimation = 2;
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private CreateSprint mCS;
-	private CreateTask mCT;
 	private AddStoryToSprint mASTS;
-	private IProject mIProject;
 	private ProjectObject mProject;
-	private IReleasePlanDesc mIReleasePlanDesc;
 	private SprintPlanHelper mSprintPlanHelper;
-	private SprintBacklogHelper mSprintBacklogHelper;
 	private Configuration mConfig;
 
 	@Before
@@ -68,11 +57,8 @@ public class SprintPlanWebServiceTest {
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
 
-		mIReleasePlanDesc = mCR.getReleaseList().get(0);
 		mProject = mCP.getAllProjects().get(0);
-		mIProject = mCP.getProjectList().get(0);
-		mSprintPlanHelper = new SprintPlanHelper(mIProject);
-		mSprintBacklogHelper = new SprintBacklogHelper(mProject);
+		mSprintPlanHelper = new SprintPlanHelper(mProject);
 	}
 
 	@After
@@ -92,90 +78,91 @@ public class SprintPlanWebServiceTest {
 		mCP = null;
 		mCR = null;
 		mCS = null;
-		mCT = null;
 		mASTS = null;
-		mIProject = null;
-		mIReleasePlanDesc = null;
 		mSprintPlanHelper = null;
-		mSprintBacklogHelper = null;
 		mConfig = null;
 	}
 
 	@Test
-	public void testgetAllSprint() throws Exception {
+	public void testGetAllSprint() throws Exception {
 		AccountObject account = new AccountObject("TEST_ACCOUNT");
 		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
 		account.save();
 		
-		String projectID = mIProject.getName();
+		String projectName = mProject.getName();
 
 		// 沒有Sprint的時候
-		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, projectID);
+		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, projectName);
 		assertEquals(mSprintPlanWebService.getAllSprints(), "[]");
 
 		// 有Sprint的時候
 		// create sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
-		mCS.exe();	    // 新增 Sprint
+		mCS.exe();
 
-		mSprintPlanWebService = new SprintPlanWebService(account, projectID);
+		mSprintPlanWebService = new SprintPlanWebService(account, projectName);
 
-		List<SprintObject> sprints = mSprintPlanHelper.getAllSprints();
+		ArrayList<SprintObject> sprints = mSprintPlanHelper.getAllSprints();
 		JSONArray sprintJSONArray = new JSONArray(mSprintPlanWebService.getAllSprints()); // 從WebService取得Json
 
 		for (int i = 0; i < mSprintCount; i++) {
 			JSONObject sprintJSONObject = (JSONObject) sprintJSONArray.get(i);
-			assertEquals(sprints.get(i).getId(), sprintJSONObject.get("id"));
-			assertEquals(sprints.get(i).getSprintGoal(), sprintJSONObject.get("sprintGoal"));
-			assertEquals(sprints.get(i).getStartDate(), sprintJSONObject.get("startDate"));
-			assertEquals(sprints.get(i).getDemoDate(), sprintJSONObject.get("demoDate"));
-			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get("interval"));
-			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get("focusFactor"));
-			assertEquals(sprints.get(i).getMembersNumber(), sprintJSONObject.get("members"));
-			assertEquals(sprints.get(i).getHoursCanCommit(), sprintJSONObject.get("hoursCanCommit"));
-			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get("demoPlace"));
+			assertEquals(sprints.get(i).getId(), sprintJSONObject.get(SprintEnum.ID));
+			assertEquals(sprints.get(i).getSprintGoal(), sprintJSONObject.get(SprintEnum.GOAL));
+			assertEquals(sprints.get(i).getStartDate(), sprintJSONObject.get(SprintEnum.START_DATE));
+			assertEquals(sprints.get(i).getDemoDate(), sprintJSONObject.get(SprintEnum.DEMO_DATE));
+			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get(SprintEnum.INTERVAL));
+			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get(SprintEnum.FOCUS_FACTOR));
+			assertEquals(sprints.get(i).getMembersNumber(), sprintJSONObject.get(SprintEnum.MEMBERS));
+			assertEquals(sprints.get(i).getHoursCanCommit(), sprintJSONObject.get(SprintEnum.AVAILABLE_HOURS));
+			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get(SprintEnum.DEMO_PLACE));
 		}
 
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Test
-    public void testgetSprintWithAllItem() throws Exception {
-		// User Object
+	public void testGetCurrentSprint_noSprint() throws LogonException, JSONException {
 		AccountObject account = new AccountObject("TEST_ACCOUNT");
-		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
-		account.save();
-
-		String projectID = mIProject.getName();
-
+		account.setPassword("TEST_ACCOUNT")
+		       .setEmail("ezscrum@gmail.com")
+		       .setEnable(true)
+		       .setNickName("TEST_NICK_NAME")
+		       .save();
+		
+		// 沒有Sprint的時候
+		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, mProject.getName());
+		assertEquals(mSprintPlanWebService.getCurrentSprint(), "");
+	}
+	
+	@Test
+	public void testGetCurrentSprint() throws LogonException, JSONException {
+		AccountObject account = new AccountObject("TEST_ACCOUNT");
+		account.setPassword("TEST_ACCOUNT")
+		       .setEmail("ezscrum@gmail.com")
+		       .setEnable(true)
+		       .setNickName("TEST_NICK_NAME")
+		       .save();
+		
 		// create sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
-		mCS.exe();	    // 新增 Sprint
-
-		mASTS = new AddStoryToSprint(mStoryCount, mStoryEstimation, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST); // 新增 Story
-		mASTS.exe();
-
-		mCT = new CreateTask(mTaskCount, mCP);
-		mCT.exe(); 
-
-		StoryWebService mStoryWebService = new StoryWebService(account, projectID);
-
-		ArrayList<StoryObject> storyList = mSprintBacklogHelper.getExistingStories();
-
-		for (int i = 0; i < storyList.size(); i++) {
-			JSONArray taskJSONArray = new JSONArray(mStoryWebService.getTasksInStory(storyList.get(i).getId())); // 從WebService取得Json
-			ArrayList<TaskObject> tasksList = mCT.getTaskList();
-			
-			for (int j = 0; j < taskJSONArray.length(); j++) {
-				JSONObject storyJSONObject = (JSONObject) taskJSONArray.get(j);
-				assertEquals(String.valueOf(tasksList.get(j).getId()), storyJSONObject.get("id"));
-				assertEquals(tasksList.get(j).getEstimate(), storyJSONObject.get("estimation"));
-				assertEquals(tasksList.get(j).getStatus(), storyJSONObject.get("status"));
-				assertEquals(tasksList.get(j).getPartners(), storyJSONObject.get("partners"));
-				assertEquals(tasksList.get(j).getRemains(), storyJSONObject.get("remains"));
-				assertEquals(tasksList.get(j).getActual(), storyJSONObject.get("actual"));
-				assertEquals(tasksList.get(j).getNotes(), storyJSONObject.get("notes"));
-			}
-		}
+		mCS.exe();
+		
+		// create SprintPlanWebService
+		SprintPlanWebService mSprintPlanWebService = new SprintPlanWebService(account, mProject.getName());
+		// getCurrentSprint JSON String
+		String currentSprintJSONString = mSprintPlanWebService.getCurrentSprint();
+		// create CurrentSprint JSON Object
+		JSONObject sprintJSONObject = new JSONObject(currentSprintJSONString);
+		
+		// assert
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getId(), sprintJSONObject.get(SprintEnum.ID));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getSprintGoal(), sprintJSONObject.get(SprintEnum.GOAL));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getStartDate(), sprintJSONObject.get(SprintEnum.START_DATE));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoDate(), sprintJSONObject.get(SprintEnum.DEMO_DATE));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getInterval(), sprintJSONObject.get(SprintEnum.INTERVAL));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getFocusFactor(), sprintJSONObject.get(SprintEnum.FOCUS_FACTOR));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getMembersNumber(), sprintJSONObject.get(SprintEnum.MEMBERS));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getHoursCanCommit(), sprintJSONObject.get(SprintEnum.AVAILABLE_HOURS));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoPlace(), sprintJSONObject.get(SprintEnum.DEMO_PLACE));
 	}
 }

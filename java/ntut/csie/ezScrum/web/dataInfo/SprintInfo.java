@@ -15,6 +15,8 @@ public class SprintInfo {
 	public String demoPlace = "";
 	public String dailyInfo = "";
 	
+	public SprintInfo() {}
+	
 	public SprintInfo(String jsonString) throws JSONException {
 		loadJSON(jsonString);
 	}

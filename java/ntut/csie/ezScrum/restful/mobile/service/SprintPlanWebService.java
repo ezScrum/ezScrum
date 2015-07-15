@@ -2,22 +2,18 @@ package ntut.csie.ezScrum.restful.mobile.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
 
-import com.google.gson.Gson;
-
-public class SprintPlanWebService extends ProjectWebService{
+public class SprintPlanWebService extends ProjectWebService {
 	SprintPlanHelper mSprintPlanHelper;
 	
 	public SprintPlanWebService(AccountObject user, String projectName) throws LogonException {
@@ -42,9 +38,11 @@ public class SprintPlanWebService extends ProjectWebService{
 	
 	/**
 	 * 更新修改後的 sprint 資料
+	 * @throws JSONException 
 	 */
-	public void updateSprint(String sprintJson) {
-		mSprintPlanHelper.updateSprint(sprint);
+	public void updateSprint(String sprintJson) throws JSONException {
+		SprintInfo sprintInfo = new SprintInfo(sprintJson);
+		mSprintPlanHelper.updateSprint(sprintInfo.id, sprintInfo);
 	}
 
 	/**
@@ -55,55 +53,34 @@ public class SprintPlanWebService extends ProjectWebService{
 		return ConvertSprint.convertSprintListToJsonString(sprintList);
 	}
 
-	// TODO
 	public String getCurrentSprint() throws JSONException{
-		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 		// 以當前日期找進行中的Sprint，若無進行中的Sprint，則往後找未過期的Sprint.
 		SprintObject currentSprint = mSprintPlanHelper.loadCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
-		if (currentSprint != null)
-			return csb.readSprintInformationList(currentSprint);
-		else 
-			return "";
+		if (currentSprint != null) {
+			return currentSprint.toString();
+		}
+		return "";
 	}
 
 	/**
-	 * 取得某個 sprint 包含 story 和 task
-	 * @param sprintID
-	 * @return
-	 * @throws SQLException 
+	 * 取得  Sprint 包含 story
 	 */
-	public String getSprintWithAllItem(String sprintID) throws SQLException {
-		Gson gson = new Gson();
-		return gson.toJson(mSprintPlanHelper.getSprint(sprintID));
-	}
-	
-	/**
-	 * 取得某個 sprint 包含 story 和 task
-	 * @param sprintID
-	 * @return
-	 * @throws SQLException 
-	 */
-	public String getSprintWithAllItem() throws SQLException {
-		Gson gson = new Gson();
-		List<SprintObject> sprintList = mSprintPlanHelper.getAllSprints();
-		List<SprintObject> result = new ArrayList<SprintObject>();
-		for (SprintObject sprint : sprintList) {
-			result.add(mSprintPlanHelper.getSprint(String.valueOf(sprint.getId())));
-		}
-		return gson.toJson(result);
+	public String getSprintWithStories(long sprintId) throws SQLException {
+		SprintObject sprint = mSprintPlanHelper.getSprint(sprintId);
+		return sprint.toString();
 	}
 	
 	/****
 	 * 取得所有Sprint information. 以及當前Sprint ID.
 	 */
 	public String getRESTFulResponseString() throws JSONException {
-		List<ISprintPlanDesc> iSprintPlanDescList = mSprintPlanHelper.loadSprints();
+		ArrayList<SprintObject> sprints = mSprintPlanHelper.loadSprints();
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 
 		// 以當前日期找進行中的Sprint ID，若無進行中的Sprint，則往後找未過期的Sprint ID.
 		SprintObject currentSprint = mSprintPlanHelper.getCurrentSprint();
-		
-		return csb.readSprintInformationList(iSprintPlanDescList, currentSprint.getId());
+
+		return csb.readSprintInformationList(sprints, currentSprint.getId());
 	}
 }
