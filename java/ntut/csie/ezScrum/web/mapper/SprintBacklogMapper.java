@@ -3,28 +3,17 @@ package ntut.csie.ezScrum.web.mapper;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintPlanLogic;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintBacklogMapper {
-	private long mSprintId = 0;
 	private ProjectObject mProject;
-	private ISprintPlanDesc mIterPlanDesc;
-	private Date mStartDate;
-	private Date mEndDate;
-	private double mLimitedPoint = 0;
-
-	private ArrayList<StoryObject> mStories = null;
-	private ArrayList<TaskObject> mTasks = null;
-
-	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-	private boolean mUpdateFlag = true;
+	private SprintObject mSprint;
 
 	/**
 	 * 若沒有指定的話,自動取得目前的 sprint#
@@ -34,11 +23,7 @@ public class SprintBacklogMapper {
 	public SprintBacklogMapper(ProjectObject project) {
 		mProject = project;
 		SprintPlanLogic sprintPlanLogic = new SprintPlanLogic(project);
-		mIterPlanDesc = sprintPlanLogic.loadCurrentSprint();
-		if (mIterPlanDesc != null) {
-			mSprintId = Integer.parseInt(mIterPlanDesc.getID());
-		}
-		initSprintInformation();
+		mSprint = sprintPlanLogic.loadCurrentSprint();
 	}
 
 	/**
@@ -49,36 +34,11 @@ public class SprintBacklogMapper {
 	 */
 	public SprintBacklogMapper(ProjectObject project, long sprintId) {
 		mProject = project;
-		SprintPlanMapper mapper = new SprintPlanMapper(project);
-		mIterPlanDesc = mapper.getSprint(Long.toString(sprintId));
-		mSprintId = Integer.parseInt(mIterPlanDesc.getID());
-		if (mSprintId == -1) {
+		SprintPlanMapper sprintPlanMapper = new SprintPlanMapper(project);
+		mSprint = sprintPlanMapper.getSprint(sprintId);
+		if (mSprint == null) {
 			throw new RuntimeException("Sprint#-1 is not existed.");
 		}
-		initSprintInformation();
-	}
-
-	/**
-	 * 初始化 Sprint 的資訊
-	 */
-	private void initSprintInformation() {
-		mStartDate = DateUtil.dayFilter(mIterPlanDesc.getStartDate());
-		mEndDate = DateUtil.dayFilter(mIterPlanDesc.getEndDate());
-		String aDays = mIterPlanDesc.getAvailableDays();
-		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
-		// 的機制移除改為只計算 aDay:hours can commit * focus factor
-		if (aDays != null && !aDays.equals("")) {
-			mLimitedPoint = Integer.parseInt(aDays)
-					* Integer.parseInt(mIterPlanDesc.getFocusFactor()) / 100;
-		}
-	}
-
-	/**
-	 * 測試用
-	 */
-	public void forceRefresh() {
-		synchronizeDataInSprintInDB();
-		mUpdateFlag = false;
 	}
 
 	/*************************************************************
@@ -91,9 +51,10 @@ public class SprintBacklogMapper {
 	}
 
 	public ArrayList<StoryObject> getAllStories() {
-		mUpdateFlag = true;
-		refresh();
-		return mStories;
+		if (mSprint == null) {
+			return new ArrayList<StoryObject>();
+		}
+		return mSprint.getStories();
 	}
 	
 	/**
@@ -124,17 +85,11 @@ public class SprintBacklogMapper {
 		for (long partnerId : taskInfo.partnersId) {
 			task.addPartner(partnerId);
 		}
-
-		mUpdateFlag = true;
 		return task.getId();
 	}
 	
 	public TaskObject getTask(long taskId) {
-		TaskObject task = TaskObject.get(taskId);
-		if (task != null) {
-			return task;
-		}
-		return null;
+		return TaskObject.get(taskId);
 	}
 	
 	/**
@@ -143,9 +98,15 @@ public class SprintBacklogMapper {
 	 * @return
 	 */
 	public ArrayList<TaskObject> getAllTasks() {
-		mUpdateFlag = true;
-		refresh();
-		return mTasks;
+		ArrayList<TaskObject> tasks = new ArrayList<>();
+		if (mSprint == null) {
+			return tasks;
+		}
+		ArrayList<StoryObject> stories = mSprint.getStories();
+		for (StoryObject story : stories) {
+			tasks.addAll((ArrayList<TaskObject>)story.getTasks());
+		}
+		return tasks;
 	}
 	
 	/**
@@ -157,10 +118,11 @@ public class SprintBacklogMapper {
 	 */
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		StoryObject story = StoryObject.get(storyId);
+		ArrayList<TaskObject> tasks = new ArrayList<>();
 		if (story != null) {
-			return story.getTasks();
+			tasks = story.getTasks();
 		}
-		return new ArrayList<TaskObject>();		
+		return tasks;		
 	}
 	
 	// for ezScrum 1.8
@@ -195,8 +157,6 @@ public class SprintBacklogMapper {
 				throw new RuntimeException("Task#" + taskId + " is not existed.");
 			}
 		}
-		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-		mUpdateFlag = true;
 	}
 
 	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
@@ -204,14 +164,13 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void deleteExistingTask(long[] taskIds) {
+	public void deleteExistingTasks(long[] taskIds) {
 		for (long taskId : taskIds) {
 			TaskObject task = TaskObject.get(taskId);
 			if (task != null) {
 				task.delete();
 			}
 		}
-		mUpdateFlag = true;
 	}
 
 	public void dropTask(long taskId) {
@@ -219,32 +178,48 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setStoryId(TaskObject.NO_PARENT).save();
 		}
-		mUpdateFlag = true;
 	}
 
 	public long getSprintId() {
-		return mSprintId;
+		if (mSprint == null) {
+			return -1;
+		}
+		return mSprint.getId();
 	}
 
-	public IProject getProject() {
-		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
-		return iProject;
+	public ProjectObject getProject() {
+		return mProject;
 	}
 
 	public Date getSprintStartDate() {
-		return mStartDate;
+		if (mSprint == null) {
+			return new Date();
+		}
+		return DateUtil.dayFilter(mSprint.getStartDate());
 	}
 
 	public Date getSprintEndDate() {
-		return mEndDate;
+		if (mSprint == null) {
+			return new Date();
+		}
+		return DateUtil.dayFilter(mSprint.getDemoDate());
 	}
 
 	public double getLimitedPoint() {
-		return mLimitedPoint;
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除改為只計算 aDay:hours can commit * focus factor
+		double limitedPoint = 0;
+		if (mSprint != null) {
+			limitedPoint = mSprint.getHoursCanCommit() * mSprint.getFocusFactor() * 0.01;
+		}
+		return limitedPoint;
 	}
 
 	public String getSprintGoal() {
-		return mIterPlanDesc.getGoal();
+		if (mSprint == null) {
+			return "";
+		}
+		return mSprint.getSprintGoal();
 	}
 
 	/*************************************************************
@@ -260,7 +235,6 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
-		mUpdateFlag = true;
 	}
 
 	public void reopenStory(long id, String name, String notes,
@@ -272,14 +246,34 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
-		mUpdateFlag = true;
 	}
 
 	/*************************************************************
 	 * ================== TaskBoard 中有關於 task 操作 ================
 	 *************************************************************/
+	
 	/**
 	 * From Not Checked Out to Checked Out
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerId
+	 * @param partners
+	 * @param notes
+	 * @param specificDate
+	 */
+	public void checkOutTask(long id, String name, long handlerId,
+			ArrayList<Long> partners, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(id);
+		if (task != null) {
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
+					.save(specificDate.getTime());
+		}
+	}
+	
+	/**
+	 * From Checked Out to Done
 	 * 
 	 * @param id
 	 * @param name
@@ -297,7 +291,6 @@ public class SprintBacklogMapper {
 					.setUpdateTime(specificDate.getTime())
 					.save(specificDate.getTime());
 		}
-		mUpdateFlag = true;
 	}
 
 	/**
@@ -334,65 +327,5 @@ public class SprintBacklogMapper {
 					.setStatus(TaskObject.STATUS_UNCHECK)
 					.save(specificDate.getTime());
 		}
-	}
-
-	/**
-	 * From Not Checked Out to Checked Out
-	 * 
-	 * @param id
-	 * @param name
-	 * @param handlerId
-	 * @param partners
-	 * @param notes
-	 * @param specificDate
-	 */
-	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
-		TaskObject task = TaskObject.get(id);
-		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
-					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
-					.save(specificDate.getTime());
-		}
-	}
-
-	/************************************************************
-	 * private methods
-	 *************************************************************/
-
-	/**
-	 * Refresh 動作
-	 */
-	private void refresh() {
-		if (mStories == null || mTasks == null || mUpdateFlag) {
-			synchronizeDataInSprintInDB();
-			mUpdateFlag = false;
-		}
-	}
-
-	/**
-	 * 取得目前所有在此 Sprint 的 Story 與 Task
-	 */
-	private void synchronizeDataInSprintInDB() {
-		if (mStories == null || mTasks == null) {
-			mStories = new ArrayList<StoryObject>();
-			mTasks = new ArrayList<TaskObject>();
-		}
-		
-		mStories = getStoriesBySprintId(mSprintId);
-		mTasks.clear();
-		for (StoryObject story : mStories) {
-			mTasks.addAll((ArrayList<TaskObject>)story.getTasks());
-		}
-		mUpdateFlag = false;
-	}
-	
-	public Date parseToDate(String dateString) {
-		Date closeDate = new Date();
-		if (dateString != null && !dateString.equals("")) {
-			closeDate = DateUtil.dayFillter(dateString,
-					DateUtil._16DIGIT_DATE_TIME);
-		}
-		return closeDate;
 	}
 }
