@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
+import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
@@ -84,7 +85,7 @@ public class SprintPlanWebServiceTest {
 	}
 
 	@Test
-	public void testGetAllSprint() throws Exception {
+	public void testGetAllSprints() throws Exception {
 		AccountObject account = new AccountObject("TEST_ACCOUNT");
 		account.setPassword("TEST_ACCOUNT").setEmail("ezscrum@gmail.com").setEnable(true).setNickName("FUCKING_NICKNAME");
 		account.save();
@@ -107,15 +108,15 @@ public class SprintPlanWebServiceTest {
 
 		for (int i = 0; i < mSprintCount; i++) {
 			JSONObject sprintJSONObject = (JSONObject) sprintJSONArray.get(i);
-			assertEquals(sprints.get(i).getId(), sprintJSONObject.get(SprintEnum.ID));
-			assertEquals(sprints.get(i).getSprintGoal(), sprintJSONObject.get(SprintEnum.GOAL));
-			assertEquals(sprints.get(i).getStartDate(), sprintJSONObject.get(SprintEnum.START_DATE));
-			assertEquals(sprints.get(i).getDemoDate(), sprintJSONObject.get(SprintEnum.DEMO_DATE));
-			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get(SprintEnum.INTERVAL));
-			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get(SprintEnum.FOCUS_FACTOR));
-			assertEquals(sprints.get(i).getMembersNumber(), sprintJSONObject.get(SprintEnum.MEMBERS));
-			assertEquals(sprints.get(i).getHoursCanCommit(), sprintJSONObject.get(SprintEnum.AVAILABLE_HOURS));
-			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get(SprintEnum.DEMO_PLACE));
+			assertEquals(sprints.get(i).getId(), sprintJSONObject.get(SprintUtil.TAG_ID));
+			assertEquals(sprints.get(i).getSprintGoal(), sprintJSONObject.get(SprintUtil.TAG_SPRINTGOAL));
+			assertEquals(sprints.get(i).getStartDate(), sprintJSONObject.get(SprintUtil.TAG_STARTDATE));
+			assertEquals(sprints.get(i).getDemoDate(), sprintJSONObject.get(SprintUtil.TAG_DEMODATE));
+			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get(SprintUtil.TAG_INTERVAL));
+			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get(SprintUtil.TAG_FOCUSFACTOR));
+			assertEquals(sprints.get(i).getMembersNumber(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
+			assertEquals(sprints.get(i).getHoursCanCommit(), sprintJSONObject.get(SprintUtil.TAG_HOURSCANCOMMIT));
+			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get(SprintUtil.TAG_DEMOPLACE));
 		}
 
 	}
@@ -155,14 +156,14 @@ public class SprintPlanWebServiceTest {
 		JSONObject sprintJSONObject = new JSONObject(currentSprintJSONString);
 		
 		// assert
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getId(), sprintJSONObject.get(SprintEnum.ID));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getSprintGoal(), sprintJSONObject.get(SprintEnum.GOAL));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getStartDate(), sprintJSONObject.get(SprintEnum.START_DATE));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoDate(), sprintJSONObject.get(SprintEnum.DEMO_DATE));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getInterval(), sprintJSONObject.get(SprintEnum.INTERVAL));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getFocusFactor(), sprintJSONObject.get(SprintEnum.FOCUS_FACTOR));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getMembersNumber(), sprintJSONObject.get(SprintEnum.MEMBERS));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getHoursCanCommit(), sprintJSONObject.get(SprintEnum.AVAILABLE_HOURS));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoPlace(), sprintJSONObject.get(SprintEnum.DEMO_PLACE));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getId(), sprintJSONObject.get(SprintUtil.TAG_ID));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getSprintGoal(), sprintJSONObject.get(SprintUtil.TAG_SPRINTGOAL));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getStartDate(), sprintJSONObject.get(SprintUtil.TAG_STARTDATE));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoDate(), sprintJSONObject.get(SprintUtil.TAG_DEMODATE));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getInterval(), sprintJSONObject.get(SprintUtil.TAG_INTERVAL));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getFocusFactor(), sprintJSONObject.get(SprintUtil.TAG_FOCUSFACTOR));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getMembersNumber(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getHoursCanCommit(), sprintJSONObject.get(SprintUtil.TAG_HOURSCANCOMMIT));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoPlace(), sprintJSONObject.get(SprintUtil.TAG_DEMOPLACE));
 	}
 }

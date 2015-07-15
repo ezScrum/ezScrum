@@ -58,17 +58,18 @@ public class SprintPlanWebService extends ProjectWebService {
 		SprintObject currentSprint = mSprintPlanHelper.loadCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
 		if (currentSprint != null) {
-			return currentSprint.toString();
+			return ConvertSprint.convertSprintToJsonString(currentSprint);
 		}
 		return "";
 	}
 
 	/**
 	 * 取得  Sprint 包含 story
+	 * @throws JSONException 
 	 */
-	public String getSprintWithStories(long sprintId) throws SQLException {
+	public String getSprintWithStories(long sprintId) throws SQLException, JSONException {
 		SprintObject sprint = mSprintPlanHelper.getSprint(sprintId);
-		return sprint.toString();
+		return ConvertSprint.convertSprintToJsonString(sprint);
 	}
 	
 	/****

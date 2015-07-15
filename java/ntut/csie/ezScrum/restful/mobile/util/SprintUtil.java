@@ -5,6 +5,8 @@ public interface SprintUtil {
 	public final static String TAG_SPRINT     		= "sprint";
 	public final static String TAG_SPRINTGOAL		= "sprintGoal";
 	public final static String TAG_ID         		= "id";
+	public final static String TAG_PROJECT_ID       = "projectID";
+	public final static String TAG_SERIAL_ID        = "serialID";
 	public final static String TAG_STARTDATE  		= "startDate";
 	public final static String TAG_INTERVAL   		= "interval";
 	public final static String TAG_MEMBERS    		= "members";
