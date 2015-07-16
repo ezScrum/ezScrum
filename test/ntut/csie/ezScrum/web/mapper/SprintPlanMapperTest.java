@@ -50,7 +50,7 @@ public class SprintPlanMapperTest {
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
-		
+
 		mCS = new CreateSprint(mSprintCount, mCP);
 		mCS.exe();
 
@@ -58,7 +58,7 @@ public class SprintPlanMapperTest {
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
 		mCPB.exe();
 
-		// 建立  SprintPlanMapper 物件
+		// 建立 SprintPlanMapper 物件
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mSprintPlanMapper = new SprintPlanMapper(project);
 
@@ -77,7 +77,7 @@ public class SprintPlanMapperTest {
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 
-		// 讓 config 回到  Production 模式
+		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -123,7 +123,8 @@ public class SprintPlanMapperTest {
 	@Test
 	public void testGetSprint() {
 		// get Sprint
-		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId().get(0));
+		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId()
+				.get(0));
 		// assert
 		assertEquals(2, sprint.getInterval());
 		assertEquals(4, sprint.getMembersNumber());
@@ -132,7 +133,7 @@ public class SprintPlanMapperTest {
 		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getSprintGoal());
 		assertEquals(CreateSprint.SPRINT_DEMOPLACE, sprint.getDemoPlace());
 		assertEquals(mCS.TEST_SPRINT_DAILY_INFO + 1, sprint.getDailyInfo());
-		
+
 		// get startDate
 		Date currentDate = mCS.mToday;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
@@ -141,9 +142,10 @@ public class SprintPlanMapperTest {
 		calendarStart.setTime(currentDate);
 		// get endDate
 		calendarEnd.add(Calendar.DAY_OF_YEAR, CreateSprint.SPRINT_INTERVAL * 7);
-		
+
 		// assert
-		assertEquals(format.format(calendarStart.getTime()), sprint.getStartDate());
+		assertEquals(format.format(calendarStart.getTime()),
+				sprint.getStartDate());
 		assertEquals(format.format(calendarEnd.getTime()), sprint.getDemoDate());
 	}
 
@@ -214,9 +216,10 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
 		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
-		
+
 		// Get first default Sprint
-		SprintObject defaultSprint = SprintObject.get(mCS.getSprintsId().get(0));
+		SprintObject defaultSprint = SprintObject
+				.get(mCS.getSprintsId().get(0));
 
 		// record serialId
 		long sprintSerialId1 = defaultSprint.getSerialId();
