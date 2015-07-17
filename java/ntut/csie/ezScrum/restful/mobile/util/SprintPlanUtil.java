@@ -7,6 +7,7 @@ public interface SprintPlanUtil {
 	public final static String TAG_SPRINT_GOAL    	= "sprintGoal" ;
 	public final static String TAG_START_DATE      	= "startDate" ;
 	public final static String TAG_DEMO_DATE       	= "demoDate" ;
+	public final static String TAG_DUE_DATE       	= "dueDate" ;
 	public final static String TAG_INTERVAL       	= "interval" ;
 	public final static String TAG_MEMBERS    	  	= "members" ;
 	public final static String TAG_AVAILABLE_DAYS  	= "availableDays" ;
@@ -14,7 +15,7 @@ public interface SprintPlanUtil {
 	public final static String TAG_DAILY_MEETING   	= "dailyMeeting" ;
 	public final static String TAG_DEMO_PLACE      	= "demoPlace" ;
 	public final static String TAG_HOURS_CAN_COMMIT = "hoursCanCommit";
-	public final static String TAG_STORYS 	  		= "storys";
+	public final static String TAG_STORIES 	  		= "stories";
 	
 	public final static String TAG_CURRENT_SPRINT 	  = "currentSprint";
 	public final static String TAG_CURRENT_SPRINT_ID  = "currentSprintId";

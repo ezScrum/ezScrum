@@ -184,7 +184,7 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName(), iteration);
 			}
-			jsonString = mSprintBacklogWebService.getRESTFulResponseString();
+			jsonString = mSprintBacklogWebService.getStoriesIdJsonStringInSprint();
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
 					+ "method: decode, " + "exception: " + e.toString());
@@ -226,7 +226,7 @@ public class SprintBacklogWebServiceController {
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
 			taskIDListJsonString = mSprintBacklogWebService
-					.getTaskIDList(storyId);
+					.getTasksIdJsonStringInStory(storyId);
 		} catch (IOException e) {
 			System.out
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:IOException, "
@@ -276,7 +276,7 @@ public class SprintBacklogWebServiceController {
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
 			taskHistoryJsonString = mSprintBacklogWebService
-					.getTaskHsitoryList(taskId);
+					.getTaskHsitoryJsonString(taskId);
 		} catch (IOException e) {
 			System.out
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:IOException, "
@@ -329,7 +329,7 @@ public class SprintBacklogWebServiceController {
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName());
-			jsonString = mSprintBacklogWebService.getTaskInformation(taskId);
+			jsonString = mSprintBacklogWebService.getTasksJsonString(taskId);
 		} catch (IOException e) {
 			System.out
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskInformation, exception:IOException, "

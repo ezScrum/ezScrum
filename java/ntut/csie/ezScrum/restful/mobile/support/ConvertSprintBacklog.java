@@ -15,8 +15,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.Translation;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -30,67 +28,63 @@ public class ConvertSprintBacklog {
 	public ConvertSprintBacklog() {
 	}
 
-	public String readSprintInformationList(SprintObject sprint) throws JSONException {
-		JSONObject sprintPlan = new JSONObject();
-		JSONObject sprintProperties = new JSONObject();
-		sprintProperties.put(SprintPlanUtil.TAG_ID, sprint.getId()); // id
-		sprintProperties.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal()); // sprint goal
-		sprintProperties.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString()); // start date
-		sprintProperties.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString()); // demo date
-		sprintProperties.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval()); // interval
-		sprintProperties.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber()); // members count
-		sprintProperties.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit()); // hours can submit
-		sprintProperties.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo()); // Daily Info
-		sprintProperties.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace()); // Demo Place
+	public String getSprintJSONString(SprintObject sprint) throws JSONException {
+		JSONObject sprintJson = new JSONObject();
+		sprintJson.put(SprintPlanUtil.TAG_ID, sprint.getId());
+		sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal());
+		sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
+		sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
+		sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
+		sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
+		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber());
+		sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit());
+		sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
+		sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());
 		
-		JSONArray storiesArray = new JSONArray();
+		JSONArray storiesJsonArray = new JSONArray();
 		for(StoryObject story : sprint.getStories()){
-			storiesArray.put(story.toJSON());
+			storiesJsonArray.put(story.toJSON());
 		}
 		
-		sprintProperties.put("stories", storiesArray);
-		sprintPlan.put(SprintPlanUtil.TAG_CURRENT_SPRINT, sprintProperties);
-		return sprintPlan.toString();
+		sprintJson.put("stories", storiesJsonArray);
+		return sprintJson.toString();
 	}
 
-	public String readSprintInformationList(ArrayList<SprintObject> sprints, long currentSprintId) throws JSONException {
-		JSONObject sprintPlanList = new JSONObject();
-		JSONArray sprintPlanArray = new JSONArray();
-		sprintPlanList.put(SprintPlanUtil.TAG_CURRENT_SPRINT_ID, currentSprintId);
-		sprintPlanList.put(SprintPlanUtil.TAG_SPRINTS, sprintPlanArray);
+	public String getSprintsJSONString(ArrayList<SprintObject> sprints, long currentSprintId) throws JSONException {
+		JSONObject sprintsJson = new JSONObject();
+		JSONArray sprintsJsonArray = new JSONArray();
+		sprintsJson.put(SprintPlanUtil.TAG_CURRENT_SPRINT_ID, currentSprintId);
+		sprintsJson.put(SprintPlanUtil.TAG_SPRINTS, sprintsJsonArray);
 		for (SprintObject sprint : sprints) {
-			JSONObject sprintPlan = new JSONObject();
-			JSONObject sprintProperties = new JSONObject();
-			sprintProperties.put(SprintPlanUtil.TAG_ID, sprint.getId()); // id
-			sprintProperties.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal()); // sprint goal
-			sprintProperties.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString()); // start date
-			sprintProperties.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString()); // demo date
-			sprintProperties.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval()); // interval
-			sprintProperties.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber()); // members count
-			sprintProperties.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit()); // hours can submit
-			sprintProperties.put(SprintPlanUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor()); // Focus factor
-			sprintProperties.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo()); // Daily Info
-			sprintProperties.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace()); // Demo Place
-			sprintPlan.put(SprintPlanUtil.TAG_SPRINT, sprintProperties);
-			sprintPlanArray.put(sprintPlan);
+			JSONObject sprintJson = new JSONObject();
+			sprintJson.put(SprintPlanUtil.TAG_ID, sprint.getId());
+			sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal());
+			sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
+			sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
+			sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
+			sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
+			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber());
+			sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit());
+			sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
+			sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());
+			sprintsJsonArray.put(sprintJson);
 		}
-		return sprintPlanList.toString();
+		return sprintsJson.toString();
 	}
 
-	public String readStoryIDList(SprintBacklogLogic sprintBacklogLogic)
+	public String getStoriesIdJsonStringInSprint(ArrayList<StoryObject> stories)
 			throws JSONException {
-		JSONObject storyIds = new JSONObject();
+		JSONObject storiesIdJsonString = new JSONObject();
 		JSONArray storyArray = new JSONArray();
-		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 		for (StoryObject story : stories) {
 			JSONObject stroyJson = new JSONObject();
 			stroyJson.put("id", story.getId());
 			stroyJson.put("point", story.getEstimate());
 			stroyJson.put("status", story.getStatusString());
-			storyArray.put(story);
+			storyArray.put(stroyJson);
 		}
-		storyIds.put(SprintPlanUtil.TAG_STORYS, storyArray);
-		return storyIds.toString();
+		storiesIdJsonString.put(SprintPlanUtil.TAG_STORIES, storyArray);
+		return storiesIdJsonString.toString();
 	}
 
 	/**
@@ -101,7 +95,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String convertTaskIdList(long storyId, ArrayList<TaskObject> tasks)
+	public String getTasksIdJsonStringInStory(long storyId, ArrayList<TaskObject> tasks)
 			throws JSONException {
 		JSONObject story = new JSONObject();
 		JSONObject storyProperties = new JSONObject();
@@ -110,7 +104,7 @@ public class ConvertSprintBacklog {
 			tasksId.put(task.getId());
 		}
 		storyProperties.put(SprintBacklogUtil.TAG_ID, storyId);
-		storyProperties.put(SprintBacklogUtil.TAG_TASKIDLIST, tasksId);
+		storyProperties.put(SprintBacklogUtil.TAG_TASKSIDL, tasksId);
 
 		story.put(SprintBacklogUtil.TAG_STORY, storyProperties);
 		return story.toString();
@@ -119,63 +113,29 @@ public class ConvertSprintBacklog {
 	/**
 	 * 轉換 task history 的 json string
 	 * 
-	 * @param taskHistoryList
+	 * @param taskHistories
 	 * @param remainingHourList
 	 * @return
 	 * @throws JSONException
 	 */
-	public String convertTaskHistory(List<HistoryObject> taskHistoryList,
-			List<String> remainingHourList) throws JSONException {
-		JSONObject taskHistory = new JSONObject();
-		JSONArray historyItemArray = new JSONArray();
-		for (int i = 0; i < taskHistoryList.size(); i++) {
-			HistoryObject history = taskHistoryList.get(i);
-			String reaminHour = remainingHourList.get(i);
-			int historyType = history.getHistoryType();
-			if (historyType == HistoryObject.TYPE_HANDLER) {
-				String modifyDate = parseDate(history.getCreateTime());
-				HistoryItemInfo historyItemInfo = new HistoryItemInfo(
-						history.getDescription(), history.getHistoryTypeString());
-
-				JSONObject historyItem = new JSONObject();
-				historyItem.put(SprintBacklogUtil.TAG_MODIFYDATE, modifyDate);
-				historyItem.put(SprintBacklogUtil.TAG_HISTORYTYPE,
-						historyItemInfo.getType());
-				historyItem.put(SprintBacklogUtil.TAG_DESCRIPTION,
-						historyItemInfo.getDescription());
-				historyItem.put(SprintBacklogUtil.TAG_REMAINHOUR, reaminHour);
-				historyItemArray.put(historyItem);
-			}
+	public String getTaskHistoryJsonString(ArrayList<HistoryObject> taskHistories)
+			throws JSONException {
+		JSONObject taskHistoryJson = new JSONObject();
+		JSONArray historyJsonArray = new JSONArray();
+		for (int i = 0; i < taskHistories.size(); i++) {
+			HistoryObject history = taskHistories.get(i);
+			JSONObject historyItem = new JSONObject();
+			String modifyDate = parseDate(history.getCreateTime());
+			historyItem.put(SprintBacklogUtil.TAG_MODIFYDATE, modifyDate);
+			historyItem.put(SprintBacklogUtil.TAG_HISTORYTYPE,
+					history.getHistoryType());
+			historyItem.put(SprintBacklogUtil.TAG_DESCRIPTION,
+					history.getDescription());
+			historyJsonArray.put(historyItem);
 		}
-		taskHistory
-				.put(SprintBacklogUtil.TAG_TASKHISTORYLIST, historyItemArray);
-		return taskHistory.toString();
-	}
-
-	private class HistoryItemInfo {
-		private String description;
-		private String type;
-
-		public HistoryItemInfo(String desc, String type) {
-			description = desc;
-			type = type;
-		}
-
-		private void setDescription(String description) {
-			description = description;
-		}
-
-		private void setType(String type) {
-			type = type;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getType() {
-			return type;
-		}
+		taskHistoryJson
+				.put(SprintBacklogUtil.TAG_TASKHISTORIES, historyJsonArray);
+		return taskHistoryJson.toString();
 	}
 
 	/**
@@ -195,35 +155,35 @@ public class ConvertSprintBacklog {
 	/**
 	 * 轉換 task information 的 json string
 	 * 
-	 * @param taskinformationList
+	 * @param task
 	 * @return
 	 * @throws JSONException
 	 */
-	public String readTaskInformationList(TaskObject task)
+	public String getTaskJsonString(TaskObject task)
 			throws JSONException {
-		JSONObject taskInformation = new JSONObject();
-		JSONObject taskInformations = new JSONObject();
+		JSONObject taskJsonString = new JSONObject();
+		JSONObject taskPropertities = new JSONObject();
 		JSONArray partnersArray = new JSONArray();
-		taskInformations.put(SprintBacklogUtil.TAG_ID,
+		taskPropertities.put(SprintBacklogUtil.TAG_ID,
 				"" + task.getId());// 加上""使輸出格式從ID變為"ID"
-		taskInformations.put(SprintBacklogUtil.TAG_NAME,
+		taskPropertities.put(SprintBacklogUtil.TAG_NAME,
 				task.getName());// getName
-		taskInformations.put(SprintBacklogUtil.TAG_HANDLER,
-				task.getHandler() != null ? task.getHandler().getUsername() : "");// getHandler
+		taskPropertities.put(SprintBacklogUtil.TAG_HANDLER,
+				task.getHandler() != null ? task.getHandler().getUsername() : "");
 		partnersArray.put(task.getPartners());
-		taskInformations.put(SprintBacklogUtil.TAG_PARTERNERS, partnersArray);
-		taskInformations.put(SprintBacklogUtil.TAG_ESTIMATION,
+		taskPropertities.put(SprintBacklogUtil.TAG_PARTNERS, partnersArray);
+		taskPropertities.put(SprintBacklogUtil.TAG_ESTIMATE,
 				task.getEstimate());
-		taskInformations.put(SprintBacklogUtil.TAG_REMAINHOUR,
+		taskPropertities.put(SprintBacklogUtil.TAG_REMAINS,
 				task.getRemains());
-		taskInformations.put(SprintBacklogUtil.TAG_ACTUALHOUR,
+		taskPropertities.put(SprintBacklogUtil.TAG_ACTUAL,
 				task.getActual());
-		taskInformations.put(SprintBacklogUtil.TAG_NOTES,
+		taskPropertities.put(SprintBacklogUtil.TAG_NOTES,
 				task.getNotes());
 
-		taskInformation.put(SprintBacklogUtil.TAG_TASKINFORMATION,
-				taskInformations);
-		return taskInformation.toString();
+		taskJsonString.put(SprintBacklogUtil.TAG_TASK,
+				taskPropertities);
+		return taskJsonString.toString();
 	}
 
 	/**
@@ -233,85 +193,73 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String readTasksInformationList(ArrayList<TaskObject> tasks) throws JSONException {
-		JSONObject taskList = new JSONObject();
-		JSONArray taskArray = new JSONArray();
+	public String getTasksJsonString(ArrayList<TaskObject> tasks)
+			throws JSONException {
+		JSONObject tasksJsonString = new JSONObject();
+		JSONArray tasksJsonArray = new JSONArray();
 		if (tasks == null)
 			return "";
 		for (TaskObject task : tasks) {
-			taskArray.put(readTaskInformationList(task));
+			JSONObject taskJson = new JSONObject(getTaskJsonString(task));
+			tasksJsonArray.put(taskJson);
 		}
-		taskList.put(SprintBacklogUtil.TAG_TASKLIST, taskArray);
-		return taskList.toString();
+		tasksJsonString.put(SprintBacklogUtil.TAG_TASKS, tasksJsonArray);
+		return tasksJsonString.toString();
 	}
 
 	/**
-	 * 轉換 Sprint Backlog中的Story及Task成 json string
+	 * 轉換 Sprint Backlog 中的 Story 及 Task 成 JSON string
 	 * 
-	 * @param sprintBacklogLogic
-	 * @param taskinformationList
+	 * @param SprintObject
 	 * @return
 	 * @throws JSONException
 	 */
-	public String convertStoryTaskInformationList(
-			SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sb,
-			String handler) throws JSONException {
-		int storyLength = 0;
-		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
-
-		if ((sb != null) && (sb.getSprintId() > 0)) {
-			ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
+	public String getSprintBacklogJsonString(SprintObject sprint)
+			throws JSONException {
+		if (sprint == null) {
+			return "";
+		}
+		
+		ArrayList<StoryObject> stories = sprint.getStories();
+		JSONObject sprintBacklogJson = new JSONObject();
+		sprintBacklogJson.put("success", "true");
+		sprintBacklogJson.put("sprintId", sprint.getId());
+		sprintBacklogJson.put("Total", stories.size());
+		JSONArray storiesJsonArray = new JSONArray();
+		for (StoryObject story : stories) {
+			JSONObject storyJson = story.toJSON();
+			JSONArray tasksJsonArray = new JSONArray();
+			for (TaskObject task : story.getTasks()) {
+				JSONObject taskJson = task.toJSON();
+				tasksJsonArray.put(taskJson);
+			}
+			storyJson.put("tasks", tasksJsonArray);
+			storiesJsonArray.put(storyJson);
+		}
+		sprintBacklogJson.put("Stories", storiesJsonArray);
+		return sprintBacklogJson.toString();
+	}
+	
+	public String getTaskboardJsonString(SprintObject sprint) {
+		ArrayList<TaskBoard_Story> taskboardStories = new ArrayList<TaskBoard_Story>();
+		ArrayList<StoryObject> stories = null;
+		if (sprint != null) {
+			stories = sprint.getStories();
 			Map<Long, ArrayList<TaskObject>> taskMap = getStoryToTasksMap(stories);
-			stories = filterStory(stories, taskMap, handler);
-
 			for (StoryObject story : stories) {
-				storyList.add(createTaskBoardStory(story,
+				taskboardStories.add(createTaskBoardStory(story,
 						taskMap.get(story.getId())));
 			}
-			storyLength = stories.size();
-		} else { // no sprint exist
-			storyLength = 0;
 		}
 
 		Gson gson = new Gson();
 
 		HashMap<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("success", "true");
-		jsonMap.put("Total", storyLength);
-		jsonMap.put("Stories", storyList);
+		jsonMap.put("Total", stories.size());
+		jsonMap.put("Stories", taskboardStories);
 
 		return gson.toJson(jsonMap);
-	}
-
-	// filter story and task by handler name
-	private ArrayList<StoryObject> filterStory(ArrayList<StoryObject> stories, Map<Long, ArrayList<TaskObject>> storyToTasksMap, String filtername) {
-		ArrayList<StoryObject> filterStories = new ArrayList<StoryObject>();
-		// All member, return all story
-		if (filtername.equals("ALL") || filtername.length() == 0) {
-			return stories;
-		} else {
-			// filter member name by handler, return the story and task map relation
-			for (StoryObject story : stories) {
-				ArrayList<TaskObject> tasks = storyToTasksMap.get(story.getId());
-				if (tasks != null) {
-					ArrayList<TaskObject> filteredTasks = new ArrayList<TaskObject>();
-
-					for (TaskObject task : tasks) {
-						String handlerUserName = task.getHandler() != null ? task.getHandler().getUsername() : "";
-						if (checkParent(filtername, task.getPartnersUsername(), handlerUserName)) {
-							filteredTasks.add(task);
-						}
-					}
-
-					if (filteredTasks.size() > 0) {
-						// cover new filter map
-						storyToTasksMap.put(story.getId(), filteredTasks);
-						filterStories.add(story);
-					}
-				}
-			}
-			return filterStories;
-		}
 	}
 	
 	private HashMap<Long, ArrayList<TaskObject>> getStoryToTasksMap(ArrayList<StoryObject> stories) {
@@ -321,26 +269,10 @@ public class ConvertSprintBacklog {
 		}
 		return storyToTasks;
 	}
-
-	// if partner of assignto is equals usename, return it
-	private boolean checkParent(String name, String partners, String assignto) {
-		String[] parents = partners.split(";");
-		for (String p : parents) {
-			if (name.compareTo(p) == 0)
-				return true;
-		}
-
-		if (name.compareTo(assignto) == 0)
-			return true;
-
-		return false;
-	}
-
-	// 將 tasks 塞到 story裡方便用Gson轉成Json string
+	
+	// 將 tasks 塞到 story 裡方便用 GSON 轉成 JSON string
 	private TaskBoard_Story createTaskBoardStory(StoryObject story, ArrayList<TaskObject> tasks) {
-
 		TaskBoard_Story TB_Story = new TaskBoard_Story(story);
-
 		if (tasks != null) {
 			for (TaskObject task : tasks) {
 				TB_Story.Tasks.add(new TaskBoard_Task(task));
@@ -349,7 +281,7 @@ public class ConvertSprintBacklog {
 		return TB_Story;
 	}
 
-	// 欲打包成json格式的 story 物件
+	// 打包 story 物件 for taskboard
 	private class TaskBoard_Story {
 		String Id;
 		String Name;
@@ -369,14 +301,14 @@ public class ConvertSprintBacklog {
 
 		public TaskBoard_Story(StoryObject story) {
 			Id = Long.toString(story.getId());
-			Name = HandleSpecialChar(story.getName());
+			Name = story.getName();
 			Value = String.valueOf(story.getValue());
 			Estimate = String.valueOf(story.getEstimate());
 			Importance = String.valueOf(story.getImportance());
 			Tag = Translation.Join(story.getTags(), ",");
 			Status = story.getStatusString();
-			Notes = HandleSpecialChar(story.getNotes());
-			HowToDemo = HandleSpecialChar(story.getHowToDemo());
+			Notes = story.getNotes();
+			HowToDemo = story.getHowToDemo();
 			Release = "";
 			Sprint = String.valueOf(story.getSprintId());
 
@@ -392,7 +324,7 @@ public class ConvertSprintBacklog {
 		}
 	}
 
-	// 欲打包成json格式的 task 物件
+	// 打包 task 物件 for taskboard
 	private class TaskBoard_Task {
 		String Id;
 		String Name;
@@ -409,14 +341,14 @@ public class ConvertSprintBacklog {
 
 		public TaskBoard_Task(TaskObject task) {
 			Id = String.valueOf(task.getId());
-			Name = HandleSpecialChar(task.getName());
+			Name = task.getName();
 			Estimate = String.valueOf(task.getEstimate());
 			RemainHours = String.valueOf(task.getRemains());
 			Actual = String.valueOf(task.getActual());
-			Handler = task.getHandler().getUsername();
+			Handler = (task.getHandler() == null ? "" : task.getHandler().getUsername());
 			Partners = task.getPartnersUsername();
 			Status = task.getStatusString();
-			Notes = HandleSpecialChar(task.getNotes());
+			Notes = task.getNotes();
 			Link = "";
 			AttachFileList = getAttachFilePath(task, task.getAttachFiles());
 			if (!AttachFileList.isEmpty())
@@ -426,7 +358,7 @@ public class ConvertSprintBacklog {
 		}
 	}
 
-	// 供Story/Task記錄attach file的物件
+	// 供 Story/Task 記錄 attach file 的物件
 	private class TaskBoard_AttachFile {
 		long FileId;
 		String FileName;
@@ -445,7 +377,7 @@ public class ConvertSprintBacklog {
 		}
 	}
 
-	// 將 attach file的資訊組成有效的連結
+	// 將 attach file 的資訊組成有效的連結
 	private ArrayList<TaskBoard_AttachFile> getAttachFilePath(StoryObject story,
 			ArrayList<AttachFileObject> list) {
 
@@ -472,12 +404,5 @@ public class ConvertSprintBacklog {
 							+ file.getName(), new Date(file.getCreateTime())));
 		}
 		return array;
-	}
-
-	private String HandleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
 	}
 }
