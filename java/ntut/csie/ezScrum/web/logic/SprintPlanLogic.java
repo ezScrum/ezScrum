@@ -43,7 +43,7 @@ public class SprintPlanLogic {
 		Collections.sort(sprints, new Comparator<SprintObject>() {
 			@Override
 			public int compare(SprintObject o1, SprintObject o2) {
-				return DateUtil.dayFilter(o2.getStartDate()).compareTo(DateUtil.dayFilter(o1.getStartDate()));
+				return DateUtil.dayFilter(o2.getStartDateString()).compareTo(DateUtil.dayFilter(o1.getStartDateString()));
 			}
 		});
 		return sprints;

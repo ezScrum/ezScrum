@@ -73,7 +73,7 @@ public class SprintPlanHelperTest {
 		// Call GetNextDemoDate
 		String actualNextDamoDate = mSprintPlanHelper.getNextDemoDate();
 		// Assert
-		assertEquals(firstSprint.getDemoDate(), actualNextDamoDate);
+		assertEquals(firstSprint.getDemoDateString(), actualNextDamoDate);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class SprintPlanHelperTest {
 		// Get second sprint
 		SprintObject secondSprint = SprintObject.get(mCS.getSprintsId().get(1));
 		// Assert
-		assertEquals(secondSprint.getDemoDate(), actualNextDamoDate);
+		assertEquals(secondSprint.getDemoDateString(), actualNextDamoDate);
 	}
 
 	@Test
@@ -126,8 +126,8 @@ public class SprintPlanHelperTest {
 		assertEquals(thirdSprint.getFocusFactor(), lastSprint.getFocusFactor());
 		assertEquals(thirdSprint.getHoursCanCommit(),
 				lastSprint.getHoursCanCommit());
-		assertEquals(thirdSprint.getStartDate(), lastSprint.getStartDate());
-		assertEquals(thirdSprint.getDemoDate(), lastSprint.getDemoDate());
+		assertEquals(thirdSprint.getStartDateString(), lastSprint.getStartDateString());
+		assertEquals(thirdSprint.getDemoDateString(), lastSprint.getDemoDateString());
 		assertEquals(thirdSprint.getSprintGoal(), lastSprint.getSprintGoal());
 		assertEquals(thirdSprint.getDailyInfo(), lastSprint.getDailyInfo());
 		assertEquals(thirdSprint.getStories().size(), lastSprint.getStories()
@@ -149,8 +149,8 @@ public class SprintPlanHelperTest {
 		assertEquals(firstSprint.getFocusFactor(), sprint.getFocusFactor());
 		assertEquals(firstSprint.getHoursCanCommit(),
 				sprint.getHoursCanCommit());
-		assertEquals(firstSprint.getStartDate(), sprint.getStartDate());
-		assertEquals(firstSprint.getDemoDate(), sprint.getDemoDate());
+		assertEquals(firstSprint.getStartDateString(), sprint.getStartDateString());
+		assertEquals(firstSprint.getDemoDateString(), sprint.getDemoDateString());
 		assertEquals(firstSprint.getSprintGoal(), sprint.getSprintGoal());
 		assertEquals(firstSprint.getDailyInfo(), sprint.getDailyInfo());
 		assertEquals(firstSprint.getStories().size(), sprint.getStories()
@@ -164,8 +164,7 @@ public class SprintPlanHelperTest {
 		// Get ProjectStartDate
 		Date projectStartDate = mSprintPlanHelper.getProjectStartDate();
 		// First Sprint start date
-		Date firstSprintStartDate = DateUtil.dayFilter(firstSprint
-				.getStartDate());
+		Date firstSprintStartDate = DateUtil.dayFilter(firstSprint.getStartDateString());
 		// assert
 		assertEquals(firstSprintStartDate.getTime(), projectStartDate.getTime());
 	}
@@ -178,7 +177,7 @@ public class SprintPlanHelperTest {
 		// Get ProjectEndDate
 		Date projectEndDate = mSprintPlanHelper.getProjectEndDate();
 		// Last Sprint end date
-		Date lastSprintEndDate = DateUtil.dayFilter(lastSprint.getDemoDate());
+		Date lastSprintEndDate = DateUtil.dayFilter(lastSprint.getDemoDateString());
 		// assert
 		assertEquals(lastSprintEndDate.getTime(), projectEndDate.getTime());
 	}
