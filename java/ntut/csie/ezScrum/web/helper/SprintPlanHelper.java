@@ -24,36 +24,28 @@ public class SprintPlanHelper {
 	}
 
 	public SprintObject getCurrentSprint() {
-		return mSprintPlanLogic.getCurrentSprint();
+		return mSprintPlanMapper.getCurrentSprint();
 	}
 
-	// load the last plan, so perhaps the return is not the current plan.
-	public SprintObject loadCurrentSprint() {
-		return mSprintPlanLogic.loadCurrentSprint();
+	public SprintObject getLastestSprint() {
+		return mSprintPlanMapper.getLatestSprint();
 	}
 
 	// get next demoDate
 	public String getNextDemoDate() {
 		ArrayList<SprintObject> sprints = mSprintPlanLogic.getSprintsSortedById();
-		if (sprints.size() == 0){
+		if (sprints.isEmpty()){
 			return null;
-		}
-		if (getCurrentSprint() != null) {
-			SprintObject sprint = getCurrentSprint();
-			return sprint.getDemoDateString();
-		}
-		Date currentDate = new Date();
+		}		Date currentDate = new Date();
+		long now = currentDate.getTime();
 		
 		// 取得下一個Sprint的 Demo Date
 		String demoDate = null;
 		for (SprintObject sprint : sprints) {
 			String sprintDemoDate = sprint.getDemoDateString();
-			if (DateUtil.dayFilter(sprintDemoDate).getTime() > currentDate.getTime()) {
-				if (demoDate == null) {
-					demoDate = sprintDemoDate;
-				} else if (DateUtil.dayFilter(demoDate).getTime() > DateUtil.dayFilter(sprintDemoDate).getTime()) {
-					demoDate = sprintDemoDate;
-				}
+			long timeOfSprintDemoDate = DateUtil.dayFilter(sprintDemoDate).getTime();
+			if (timeOfSprintDemoDate > now) {
+				demoDate = sprintDemoDate;
 			}
 		}
 		return demoDate;
@@ -82,17 +74,13 @@ public class SprintPlanHelper {
 	public Date getProjectEndDate() {
 		ArrayList<SprintObject> sprints = loadSprints();
 
-		if (sprints.size() > 0) {
+		if (!sprints.isEmpty()) {
 			return DateUtil.dayFilter(sprints.get(0).getDemoDateString());
 		} else {
 			return null;
 		}
 	}
-
-	public SprintObject getLastestSprint() {
-		return mSprintPlanLogic.getLatestSprint();
-	}
-
+	
 	public SprintObject getSprintByDate(Date date) {
 		ArrayList<SprintObject> sprints = mSprintPlanLogic.getSprintsSortedByStartDate();
 

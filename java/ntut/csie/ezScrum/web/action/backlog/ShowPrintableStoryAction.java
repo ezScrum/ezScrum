@@ -44,7 +44,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesByImp();
+		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesByImpInSprint();
 
 		request.setAttribute("SprintID", backlog.getSprintId());
 		request.setAttribute("Stories", issues);

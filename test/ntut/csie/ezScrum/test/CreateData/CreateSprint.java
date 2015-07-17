@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class CreateSprint {
 	private int mSprintCount = 1;
 	private CreateProject mCP = null;
 	private ArrayList<Long> mSprintsId;
+	private ArrayList<SprintObject> mSprints;
+	private ArrayList<ProjectObject> mProjects;
 
 	public String TEST_SPRINT_GOAL = "TEST_SPRINTGOAL_";		    // Sprint Goal
 	public String TEST_SPRINT_DAILY_INFO = "TEST_SPRINTDAILYINFO_";	// Sprint Notes
@@ -24,37 +25,30 @@ public class CreateSprint {
 
 	public Date mToday = null;
 
-	// ========================== 為了可以設定 sprint 而新增下列屬性 ===========================
-	private boolean mAutoSetSprint = true;
-	private int mSprintIDIndex = 0;
-	private ProjectObject mProject = null;
-
 	public CreateSprint(int count, CreateProject CP) {
 		mSprintCount = count;
 		mCP = CP;
-
-		mAutoSetSprint = false;
 		mSprintsId = new ArrayList<Long>();
+		mSprints = new ArrayList<SprintObject>();
+		mProjects = mCP.getAllProjects();
 	}
 
-	public CreateSprint(int sprintCount, int Index, Date today, ProjectObject project) {
+	public CreateSprint(int sprintCount, Date today, ProjectObject project) {
 		mSprintCount = sprintCount;
 		mSprintsId = new ArrayList<Long>();
-
+		mSprints = new ArrayList<SprintObject>();
 		mToday = today;
-		mAutoSetSprint = false;
-		mSprintIDIndex = Index * sprintCount;
-		mProject = project;
+		mProjects = new ArrayList<ProjectObject>();
+		mProjects.add(project);
 	}
 
 	public CreateSprint(int SPcount, int Index, Date today, CreateProject cp) {
 		mSprintCount = SPcount;
 		mSprintsId = new ArrayList<Long>();
-
+		mSprints = new ArrayList<SprintObject>();
 		mToday = today;
-		mAutoSetSprint = false;
-		mSprintIDIndex = Index * SPcount;
 		mCP = cp;
+		mProjects = mCP.getAllProjects();
 	}
 
 	public int getSprintCount() {
@@ -64,36 +58,40 @@ public class CreateSprint {
 	public ArrayList<Long> getSprintsId() {
 		return mSprintsId;	// not implemented yet
 	}
+	
+	public ArrayList<SprintObject> getSprints() {
+		return mSprints;
+	}
 
 	public void exe() {
 		Calendar cal = Calendar.getInstance();
 
-		for (int i = 0; i < mCP.getProjectList().size(); i++) {
-			mToday = cal.getTime();									// get Today
-			ProjectObject project = mCP.getAllProjects().get(i);	// get Project
+		for (int i = 0; i < mProjects.size(); i++) {
+			mToday = cal.getTime();						// get Today
+			ProjectObject project = mProjects.get(i);	// get Project
 
 			for (int j = 0; j < mSprintCount; j++) {
-				long id = (j + 1);
+				long index = (j + 1);
+				SprintObject sprint = new SprintObject(project.getId());
+				sprint.setSprintGoal(TEST_SPRINT_GOAL + index)
+				.setStartDate(getDate(mToday, j * SPRINT_INTERVAL * 7 + j))
+				.setInterval(SPRINT_INTERVAL)
+				.setMembers(SPRINT_MEMBER)
+				.setFocusFactor(SPRINT_FOCUS_FACTOR)
+				.setDemoDate(getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j))
+				.setDueDate(getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j))
+				.setDemoPlace(SPRINT_DEMOPLACE)
+				.setDailyInfo(TEST_SPRINT_DAILY_INFO + index)
+				.setHoursCanCommit(SPRINT_HOURS_CAN_COMMIT)
+				.save();
 				
-				SprintInfo sprintInfo = new SprintInfo();
-				sprintInfo.id = id;
-				sprintInfo.sprintGoal = TEST_SPRINT_GOAL + id;
-				sprintInfo.startDate = getDate(mToday, j * SPRINT_INTERVAL * 7 + j);
-				sprintInfo.interval = SPRINT_INTERVAL;
-				sprintInfo.members = SPRINT_MEMBER;
-				sprintInfo.focusFactor = SPRINT_FOCUS_FACTOR;
-				sprintInfo.demoDate = getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j);
-				sprintInfo.demoPlace = SPRINT_DEMOPLACE;
-				sprintInfo.dailyInfo = TEST_SPRINT_DAILY_INFO + id;
-				sprintInfo.hoursCanCommit = SPRINT_HOURS_CAN_COMMIT;
-				
-				SprintPlanMapper sprintPlanMapper = new SprintPlanMapper(project);
-				sprintPlanMapper.addSprint(sprintInfo);
-				mSprintsId.add(id);
+				long sprintId = sprint.getId();
+				mSprintsId.add(sprintId);
+				mSprints.add(sprint);
 			}
 			System.out.println("  " + project.getName() + " create " + mSprintCount + " sprint success.");
 		}
-		System.out.println("Create " + mCP.getProjectList().size() + " Sprint(s) Finish!");
+		System.out.println("Create " + mProjects.size() + " Sprint(s) Finish!");
 	}
 
 	private String getDate(Date date, int duration) {

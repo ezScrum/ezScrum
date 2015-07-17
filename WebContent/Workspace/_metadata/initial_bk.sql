@@ -1181,6 +1181,7 @@ CREATE TABLE `sprint` (
   `available_hours` INT NOT NULL,
   `focus_factor` INT NOT NULL DEFAULT 100,
   `start_date` DATETIME NOT NULL,
+  `due_date` DATETIME NOT NULL,
   `demo_date` DATETIME NOT NULL,
   `demo_place` TEXT NULL,
   `daily_info` TEXT NULL,

@@ -155,7 +155,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// 初始 Task Point String = 120 / 120
 		String actualTaskPointString = mTaskBoard.getTaskPoint();
 		String expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
-		                               + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                               + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 一個Task Done
@@ -165,7 +165,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 兩個 Task Done
@@ -174,7 +174,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 全部Task Done
@@ -184,7 +184,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 	}
 }

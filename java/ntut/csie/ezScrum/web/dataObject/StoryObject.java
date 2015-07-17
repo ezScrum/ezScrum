@@ -47,10 +47,6 @@ public class StoryObject implements IBaseObject {
 		return StoryDAO.getInstance().get(id);
 	}
 	
-	public static ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
-		return StoryDAO.getInstance().getStoriesBySprintId(sprintId);
-	}
-	
 	public StoryObject(long projectId) {
 		mProjectId = projectId;
 	}
