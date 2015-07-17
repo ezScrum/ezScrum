@@ -50,7 +50,7 @@ public class SprintBacklogLogicTest {
 
 		// create test data
 		int PROJECT_COUNT = 1;
-		int SPRINT_COUNT = 1;
+		int SPRINT_COUNT = 3;
 		int STORY_COUNT = 3;
 		int STORY_ESTIMATE = 5;
 		int TASK_COUNT = 3;
@@ -420,8 +420,8 @@ public class SprintBacklogLogicTest {
 	}
 
 	@Test
-	public void testGetStoriesInSprint() {
-		ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesInSprint();
+	public void testGetStoriesSortedByIdInSprint() {
+		ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesSortedByIdInSprint();
 		StoryObject story1 = stories.get(0);
 		StoryObject story2 = stories.get(1);
 		StoryObject story3 = stories.get(2);
@@ -430,7 +430,7 @@ public class SprintBacklogLogicTest {
 	}
 
 	@Test
-	public void testGetStoriesByImpInSprint() {
+	public void testGetStoriesSortedByImpInSprint() {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		for (int i = 0; i < 5; i++) {
 			StoryObject story = new StoryObject(project.getId());
@@ -439,7 +439,7 @@ public class SprintBacklogLogicTest {
 					.setImportance(i * 2 + 5).save();
 		}
 
-		ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesByImpInSprint();
+		ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		for (int i = 0; i < stories.size() - 1; i++) {
 			int importance1 = stories.get(i).getImportance();
 			int importance2 = stories.get(i + 1).getImportance();
@@ -447,12 +447,67 @@ public class SprintBacklogLogicTest {
 		}
 	}
 	
+	@Test
+	public void testAddStoriesToSprint() {
+		assertEquals(3, SprintObject.get(1).getStories().size());
+		assertEquals(3, SprintObject.get(2).getStories().size());
+		assertEquals(1, mASTS.getStories().get(0).getId());
+		assertEquals(1, mASTS.getStories().get(0).getSprintId());
+		assertEquals(2, mASTS.getStories().get(1).getId());
+		assertEquals(1, mASTS.getStories().get(1).getSprintId());
+		assertEquals(3, mASTS.getStories().get(2).getId());
+		assertEquals(1, mASTS.getStories().get(2).getSprintId());
+		assertEquals(4, mASTS.getStories().get(3).getId());
+		assertEquals(2, mASTS.getStories().get(3).getSprintId());
+		assertEquals(5, mASTS.getStories().get(4).getId());
+		assertEquals(2, mASTS.getStories().get(4).getSprintId());
+		assertEquals(6, mASTS.getStories().get(5).getId());
+		assertEquals(2, mASTS.getStories().get(5).getSprintId());
+		ArrayList<Long> storiesId = new ArrayList<Long>();
+		storiesId.add(1l);
+		storiesId.add(2l);
+		storiesId.add(3l);
+		mSprintBacklogLogic.addStoriesToSprint(storiesId, mCS.getSprintsId().get(1));
+		assertEquals(0, SprintObject.get(1).getStories().size());
+		assertEquals(6, SprintObject.get(2).getStories().size());
+		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getSprintId());
+		assertEquals(3, StoryObject.get(mASTS.getStories().get(2).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(2).getId()).getSprintId());
+		assertEquals(4, StoryObject.get(mASTS.getStories().get(3).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(3).getId()).getSprintId());
+		assertEquals(5, StoryObject.get(mASTS.getStories().get(4).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(4).getId()).getSprintId());
+		assertEquals(6, StoryObject.get(mASTS.getStories().get(5).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(5).getId()).getSprintId());
+		ArrayList<Long> storiesId2 = new ArrayList<Long>();
+		storiesId2.add(4l);
+		storiesId2.add(5l);
+		storiesId2.add(6l);
+		mSprintBacklogLogic.addStoriesToSprint(storiesId2, mCS.getSprintsId().get(0));
+		assertEquals(3, SprintObject.get(1).getStories().size());
+		assertEquals(3, SprintObject.get(2).getStories().size());
+		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getSprintId());
+		assertEquals(3, StoryObject.get(mASTS.getStories().get(2).getId()).getId());
+		assertEquals(2, StoryObject.get(mASTS.getStories().get(2).getId()).getSprintId());
+		assertEquals(4, StoryObject.get(mASTS.getStories().get(3).getId()).getId());
+		assertEquals(1, StoryObject.get(mASTS.getStories().get(3).getId()).getSprintId());
+		assertEquals(5, StoryObject.get(mASTS.getStories().get(4).getId()).getId());
+		assertEquals(1, StoryObject.get(mASTS.getStories().get(4).getId()).getSprintId());
+		assertEquals(6, StoryObject.get(mASTS.getStories().get(5).getId()).getId());
+		assertEquals(1, StoryObject.get(mASTS.getStories().get(5).getId()).getSprintId());
+	}
+	
 	private String getDate(Date date, int duration) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		Calendar calendarEnd = Calendar.getInstance();
 		calendarEnd.setTime(date);
 		calendarEnd.add(Calendar.DAY_OF_YEAR, duration);
-
 		return format.format(calendarEnd.getTime());
 	}
 }

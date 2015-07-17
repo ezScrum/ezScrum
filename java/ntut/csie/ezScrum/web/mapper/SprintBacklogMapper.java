@@ -225,6 +225,14 @@ public class SprintBacklogMapper {
 		}
 		return mSprint.getSprintGoal();
 	}
+	
+	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
+		StoryObject story = StoryObject.get(storyId);
+		story.setSprintId(sprintId)
+		     .setEstimate(estimate)
+		     .setImportance(importance)
+		     .save(date.getTime());
+	}
 
 	/*************************************************************
 	 * ================ TaskBoard 中有關於 story 操作 =================

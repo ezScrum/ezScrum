@@ -56,7 +56,7 @@ public class ShowSprintInformationAction extends Action {
 		sprintId = sprintBacklogMapper.getSprintId();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
-		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 		
 		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
 		request.setAttribute("Stories", stories);

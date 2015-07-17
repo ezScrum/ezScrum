@@ -323,12 +323,12 @@ public class SprintBacklogLogic {
 		return point;
 	}
 
-	public ArrayList<StoryObject> getStoriesInSprint() {
+	public ArrayList<StoryObject> getStoriesSortedByIdInSprint() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		return sort(stories, "");
 	}
 
-	public ArrayList<StoryObject> getStoriesByImpInSprint() {
+	public ArrayList<StoryObject> getStoriesSortedByImpInSprint() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		return sort(stories, "IMP");
 	}
@@ -403,6 +403,16 @@ public class SprintBacklogLogic {
 				return story1.getValue() - story2.getValue();
 			} else {
 				return (int)(story1.getId() - story2.getId());
+			}
+		}
+	}
+	
+	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
+		for (long storyId : storiesId) {
+			StoryObject story = mSprintBacklogMapper.getStory(storyId);
+			if (sprintId > 0 && story != null) {
+				// 更新 Story 與 Sprint 對應的關係
+				mSprintBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}

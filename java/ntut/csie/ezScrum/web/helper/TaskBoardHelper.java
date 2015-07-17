@@ -101,7 +101,7 @@ public class TaskBoardHelper {
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
-			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesByImpInSprint();		// 根據Sprint的importance來取Story
+			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();		// 根據Sprint的importance來取Story
 			HashMap<Long, ArrayList<TaskObject>> storyToTasks = getStoryToTasksMap(stories);
 			stories = filterStory(stories, storyToTasks, filterName);					// filter story
 

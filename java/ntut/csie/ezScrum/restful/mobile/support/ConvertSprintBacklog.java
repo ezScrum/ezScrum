@@ -80,7 +80,7 @@ public class ConvertSprintBacklog {
 			throws JSONException {
 		JSONObject storyIds = new JSONObject();
 		JSONArray storyArray = new JSONArray();
-		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 		for (StoryObject story : stories) {
 			JSONObject stroyJson = new JSONObject();
 			stroyJson.put("id", story.getId());
@@ -259,7 +259,7 @@ public class ConvertSprintBacklog {
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
 		if ((sb != null) && (sb.getSprintId() > 0)) {
-			ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesByImpInSprint();
+			ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 			Map<Long, ArrayList<TaskObject>> taskMap = getStoryToTasksMap(stories);
 			stories = filterStory(stories, taskMap, handler);
 

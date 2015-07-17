@@ -38,7 +38,7 @@ public class PerformanceIndexDataMaker {
 		for (SprintBacklogLogic sprintBacklogLogic : mSprintBacklogList) {  //sprintBacklog不能包含目前的正在執行的sprint
 			// int sprintID = sprintBacklog.getSprintPlanId();
 			long sprintId = sprintBacklogLogic.getSprintBacklogMapper().getSprintId();
-			ArrayList<StoryObject> storyArray = sprintBacklogLogic.getStoriesInSprint();
+			ArrayList<StoryObject> storyArray = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 			for (StoryObject story : storyArray) {
 				// completed story
 				if (story.getStatus() == StoryObject.STATUS_DONE) {

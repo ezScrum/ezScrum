@@ -838,4 +838,22 @@ public class SprintBacklogMapperTest {
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
 		assertEquals("", sprintBacklogMapper.getSprintGoal());
 	}
+	
+	@Test
+	public void testUpdateStoryRelation() {
+		StoryObject story = mASTS.getStories().get(0);
+		
+		assertEquals("TEST_STORY_1", story.getName());
+		assertEquals(1, story.getSprintId());
+		assertEquals(100, story.getImportance());
+		assertEquals(5, story.getEstimate());
+		
+		mSprintBacklogMapper.updateStoryRelation(story.getId(), 1, 5, 10, new Date());
+		
+		story.reload();
+		assertEquals("TEST_STORY_1", story.getName());
+		assertEquals(1, story.getSprintId());
+		assertEquals(10, story.getImportance());
+		assertEquals(5, story.getEstimate());
+	}
 }

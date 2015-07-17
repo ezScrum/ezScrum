@@ -31,7 +31,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		List<StoryObject> stories = sprintBacklogLogic.getStoriesByImpInSprint();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 

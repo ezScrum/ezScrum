@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.iteration.core;
 
-import java.util.List;
+import java.util.ArrayList;
+
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public interface IReleasePlanDesc {
 	public void setID(String id);
@@ -14,6 +16,6 @@ public interface IReleasePlanDesc {
 	public void setDescription(String Description);
 	public String getDescription();
 	
-	public void setSprintDescList(List<ISprintPlanDesc> SprintList);
-	public List<ISprintPlanDesc> getSprintDescList();
+	public void setSprintDescList(ArrayList<SprintObject> SprintList);
+	public ArrayList<SprintObject> getSprintDescList();
 }

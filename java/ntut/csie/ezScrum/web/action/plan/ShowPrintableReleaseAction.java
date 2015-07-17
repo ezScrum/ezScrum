@@ -64,7 +64,7 @@ public class ShowPrintableReleaseAction extends Action {
 	    		for (ISprintPlanDesc desc : sprinDescList) {
 	    			String sprintID = desc.getID();
 		    		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintID));
-		    		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesByImpInSprint();
+		    		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 		    		stories.put(sprintID, issues);
 	    		
 		    		//the sum of story points
