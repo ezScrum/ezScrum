@@ -261,9 +261,9 @@ public class ProjectObjectTest {
 		assertFalse(sprint2.contains(today));
 		assertFalse(sprint3.contains(today));
 		SprintObject sprint = project.getCurrentSprint();
-		assertEquals(getDate(today, -1), sprint.getStartDate());
-		assertEquals(getDate(today, 12), sprint.getDueDate());
-		assertEquals(getDate(today, 12), sprint.getDemoDate());
+		assertEquals(getDate(today, -1), sprint.getStartDateString());
+		assertEquals(getDate(today, 12), sprint.getDueDateString());
+		assertEquals(getDate(today, 12), sprint.getDemoDateString());
 		assertTrue(sprint.contains(today));
 	}
 
@@ -315,9 +315,9 @@ public class ProjectObjectTest {
 		assertFalse(sprint2.contains(today));
 		assertFalse(sprint3.contains(today));
 		SprintObject sprint = project.getCurrentSprint();
-		assertEquals(getDate(today, 29), sprint.getStartDate());
-		assertEquals(getDate(today, 42), sprint.getDueDate());
-		assertEquals(getDate(today, 42), sprint.getDemoDate());
+		assertEquals(getDate(today, 29), sprint.getStartDateString());
+		assertEquals(getDate(today, 42), sprint.getDueDateString());
+		assertEquals(getDate(today, 42), sprint.getDemoDateString());
 	}
 
 	@Test
@@ -377,9 +377,9 @@ public class ProjectObjectTest {
 				.save();
 		// 取得目前時間所在的 sprint
 		SprintObject sprint = project.getLatestSprint();
-		assertEquals(sprint3.getStartDate(), sprint.getStartDate());
-		assertEquals(sprint3.getDueDate(), sprint.getDueDate());
-		assertEquals(sprint3.getDemoDate(), sprint.getDemoDate());
+		assertEquals(sprint3.getStartDateString(), sprint.getStartDateString());
+		assertEquals(sprint3.getDueDateString(), sprint.getDueDateString());
+		assertEquals(sprint3.getDemoDateString(), sprint.getDemoDateString());
 		assertEquals(sprint3.getId(), sprint.getId());
 	}
 

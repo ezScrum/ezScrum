@@ -123,7 +123,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
 		assertEquals(sprintDemoDate, sprintFromDB.getDemoDateString());
-		assertEquals(sprintDueDate, sprintFromDB.getDueDate());
+		assertEquals(sprintDueDate, sprintFromDB.getDueDateString());
 	}
 	
 	@Test
@@ -167,7 +167,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
 		assertEquals(sprintDemoDate, sprint.getDemoDateString());
-		assertEquals(sprintDueDate, sprint.getDueDate());
+		assertEquals(sprintDueDate, sprint.getDueDateString());
 	}
 	
 	@Test
@@ -220,9 +220,9 @@ public class SprintObjectTest {
 		assertEquals(sprintGoal, sprint.getSprintGoal());
 		assertEquals(sprintDailyInfo, sprint.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
-		assertEquals(sprintStartDate, sprint.getStartDate());
-		assertEquals(sprintStartDate, sprint.getStartDate());
-		assertEquals(sprintDueDate, sprint.getDueDate());
+		assertEquals(sprintStartDate, sprint.getStartDateString());
+		assertEquals(sprintStartDate, sprint.getStartDateString());
+		assertEquals(sprintDueDate, sprint.getDueDateString());
 		
 		return sprint;
 	}

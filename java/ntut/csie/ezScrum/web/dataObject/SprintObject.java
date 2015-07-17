@@ -135,15 +135,15 @@ public class SprintObject implements IBaseObject{
 		return mSprintGoal;
 	}
 
-	public String getStartDate() {
+	public String getStartDateString() {
 		return DateUtil.formatBySlashForm(mStartDate);
 	}
 	
-	public String getDueDate() {
+	public String getDueDateString() {
 		return DateUtil.formatBySlashForm(mDueDate);
 	}
 
-	public String getDemoDate() {
+	public String getDemoDateString() {
 		return DateUtil.formatBySlashForm(mDemoDate);
 	}
 
@@ -243,8 +243,8 @@ public class SprintObject implements IBaseObject{
 		setHoursCanCommit(sprint.getHoursCanCommit());
 		setFocusFactor(sprint.getFocusFactor());
 		setSprintGoal(sprint.getSprintGoal());
-		setStartDate(sprint.getStartDate());
-		setDemoDate(sprint.getDemoDate());
+		setStartDate(sprint.getStartDateString());
+		setDemoDate(sprint.getDemoDateString());
 		setDemoPlace(sprint.getDemoPlace());
 		setDailyInfo(sprint.getDailyInfo());
 		setCreateTime(sprint.getCreateTime());
@@ -283,15 +283,15 @@ public class SprintObject implements IBaseObject{
 
 		sprint.put(SprintEnum.ID, mId)
 		        .put(SprintEnum.PROJECT_ID, mProjectId)
-		        .put(SprintEnum.START_DATE, getStartDate())
-		        .put(SprintEnum.DUE_DATE, getDueDate())
+		        .put(SprintEnum.START_DATE, getStartDateString())
+		        .put(SprintEnum.DUE_DATE, getDueDateString())
 		        .put(SprintEnum.INTERVAL, mInterval)
 		        .put(SprintEnum.MEMBERS, mMembers)
 		        .put(SprintEnum.SERIAL_ID, mSerialId)
 		        .put(SprintEnum.GOAL, mSprintGoal)
 		        .put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)
 		        .put(SprintEnum.FOCUS_FACTOR, mFocusFactor)
-		        .put(SprintEnum.DEMO_DATE, getDemoDate())
+		        .put(SprintEnum.DEMO_DATE, getDemoDateString())
 		        .put(SprintEnum.DEMO_PLACE, mDemoPlace)
 		        .put(SprintEnum.DAILY_INFO, mDailyInfo)
 		        .put(SprintEnum.CREATE_TIME, mCreateTime)

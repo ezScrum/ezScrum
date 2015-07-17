@@ -192,21 +192,21 @@ public class SprintBacklogMapper {
 		if (mSprint == null) {
 			return null;
 		}
-		return DateUtil.dayFilter(mSprint.getStartDate());
+		return DateUtil.dayFilter(mSprint.getStartDateString());
 	}
 
 	public Date getSprintDemoDate() {
 		if (mSprint == null) {
 			return null;
 		}
-		return DateUtil.dayFilter(mSprint.getDemoDate());
+		return DateUtil.dayFilter(mSprint.getDemoDateString());
 	}
 	
 	public Date getSprintEndDate() {
 		if (mSprint == null) {
 			return null;
 		}
-		return DateUtil.dayFilter(mSprint.getDueDate());
+		return DateUtil.dayFilter(mSprint.getDueDateString());
 	}
 
 	public double getLimitedPoint() {
