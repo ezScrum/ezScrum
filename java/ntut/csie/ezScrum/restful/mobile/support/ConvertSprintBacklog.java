@@ -68,6 +68,7 @@ public class ConvertSprintBacklog {
 			sprintProperties.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval()); // interval
 			sprintProperties.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersNumber()); // members count
 			sprintProperties.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit()); // hours can submit
+			sprintProperties.put(SprintPlanUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor()); // Focus factor
 			sprintProperties.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo()); // Daily Info
 			sprintProperties.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace()); // Demo Place
 			sprintPlan.put(SprintPlanUtil.TAG_SPRINT, sprintProperties);

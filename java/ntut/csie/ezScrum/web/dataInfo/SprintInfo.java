@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.dataInfo;
 
+import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -28,14 +30,14 @@ public class SprintInfo {
 		} catch (JSONException e) {
 			id = -1;
 		}
-		interval = sprint.getInt("interval");
-		members = sprint.getInt("members");
-		hoursCanCommit = sprint.getInt("hours_can_commit");
-		focusFactor = sprint.getInt("focus_factor");
-		sprintGoal = sprint.getString("sprint_goal");
-		startDate = sprint.getString("start_date");
-		demoDate = sprint.getString("demo_date");
-		demoPlace = sprint.getString("demo_place");
-		dailyInfo = sprint.getString("daily_info");
+		interval = sprint.getInt(SprintEnum.INTERVAL);
+		members = sprint.getInt(SprintEnum.MEMBERS);
+		hoursCanCommit = sprint.getInt(SprintEnum.AVAILABLE_HOURS);
+		focusFactor = sprint.getInt(SprintEnum.FOCUS_FACTOR);
+		sprintGoal = sprint.getString(SprintEnum.GOAL);
+		startDate = sprint.getString(SprintEnum.START_DATE);
+		demoDate = sprint.getString(SprintEnum.DEMO_DATE);
+		demoPlace = sprint.getString(SprintEnum.DEMO_PLACE);
+		dailyInfo = sprint.getString(SprintEnum.DAILY_INFO);
 	}
 }

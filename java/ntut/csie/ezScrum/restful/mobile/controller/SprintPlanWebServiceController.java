@@ -15,14 +15,10 @@ import javax.ws.rs.core.MediaType;
 
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import com.google.gson.Gson;
 
 @Path("{projectName}/sprint/")
 public class SprintPlanWebServiceController {
@@ -38,18 +34,16 @@ public class SprintPlanWebServiceController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createSprint(@PathParam("projectName") String projectName,
 			@QueryParam("username") String username,
-			@QueryParam("password") String password, JSONObject sprintJson) {
-		Gson gson = new Gson();
+			@QueryParam("password") String password, String sprintJson) {
 		String responseString = "";
 		try {
-			SprintObject sprintObject = gson.fromJson(sprintJson.toString(), SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(username, password, projectName);
 			// 使用者帳號
 			AccountObject account = new AccountObject(decoder.getDecodeUsername());
 			account.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(account, decoder.getDecodeProjectName());
-			mSprintPlanWebService.createSprint(sprintObject);
+			mSprintPlanWebService.createSprint(sprintJson);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
 			responseString += "JSONException";
@@ -80,7 +74,7 @@ public class SprintPlanWebServiceController {
 	@Path("delete/{sprintId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String deleteSprint(@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String responseString = "";
@@ -89,8 +83,7 @@ public class SprintPlanWebServiceController {
 			decoder.decode(username, password, projectName);
 			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectName());
+			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectName());
 			mSprintPlanWebService.deleteSprint(sprintId);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
@@ -124,17 +117,14 @@ public class SprintPlanWebServiceController {
 	public String updateSprint(@PathParam("projectName") String projectName,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password, String sprintJson) {
-		Gson gson = new Gson();
 		String responseString = "";
 		try {
-			SprintObject sprint = gson.fromJson(sprintJson, SprintObject.class);
 			InformationDecoder decoder = new InformationDecoder();
 			decoder.decode(username, password, projectName);
 			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectName());
-			mSprintPlanWebService.updateSprint(sprint);
+			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectName());
+			mSprintPlanWebService.updateSprint(sprintJson);
 			responseString += mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
 			responseString += "JSONException";
@@ -166,7 +156,7 @@ public class SprintPlanWebServiceController {
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllSprint(@PathParam("projectName") String projectName,
+	public String getAllSprints(@PathParam("projectName") String projectName,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String jsonString = "";
@@ -175,21 +165,20 @@ public class SprintPlanWebServiceController {
 			decoder.decode(username, password, projectName);
 			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectName());
+			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectName());
 			jsonString = mSprintPlanWebService.getAllSprints();
 		} catch (LogonException e) {
 			System.out.println("class: SprintWebServiceController, "
-					+ "method: getAllSprint, " + "exception: " + e.toString());
+					+ "method: getAllSprints, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (JSONException e) {
 			System.out.println("class: SprintWebServiceController, "
-					+ "method: getAllSprint, " + "exception: " + e.toString());
+					+ "method: getAllSprints, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
 			jsonString += "IOException";
 			System.out.println("class: SprintWebServiceController, "
-					+ "method: getAllSprint, " + "api:InformationDecoder, "
+					+ "method: getAllSprints, " + "api:InformationDecoder, "
 					+ "exception: " + e.toString());
 			e.printStackTrace();
 		}
@@ -206,9 +195,9 @@ public class SprintPlanWebServiceController {
 	@GET
 	@Path("{sprintId}/all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSprintWithAllItem(
+	public String getSprintWithStories(
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@QueryParam("username") String username,
 			@QueryParam("password") String password) {
 		String sprintJson = "";
@@ -217,72 +206,30 @@ public class SprintPlanWebServiceController {
 			decoder.decode(username, password, projectName);
 			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
 			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectName());
+			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectName());
 			sprintJson = mSprintPlanWebService.getSprintWithStories(sprintId);
 		} catch (IOException e) {
-			System.out
-					.println("class: SprintWebServiceController, "
-							+ "method: getSprintWithAllItem, "
-							+ "api:InformationDecoder, " + "exception: "
-							+ e.toString());
+			System.out.println("class: SprintWebServiceController, "
+			        + "method: getSprintWithStories, "
+			        + "api:InformationDecoder, " + "exception: "
+			        + e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
 			System.out.println("class: SprintWebServiceController, "
-					+ "method: getSprintWithAllItem, " + "exception: "
+					+ "method: getSprintWithStories, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
 		} catch (SQLException e) {
 			System.out.println("class: SprintWebServiceController, "
-					+ "method: getSprintWithAllItem, " + "exception: "
+					+ "method: getSprintWithStories, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
-		}
+		} catch (JSONException e) {
+			System.out.println("class: SprintWebServiceController, "
+			        + "method: getSprintWithStories, " + "exception: "
+			        + e.toString());
+			e.printStackTrace();
+        }
 		return sprintJson;
 	}
-
-	/****
-	 * 取得 project 中所有的 sprint 包含 story 和 task
-	 * http://IP:8080/ezScrum/web-service/
-	 * {projectName}/sprint/all/all?username={userName}&password={password}
-	 * 
-	 * @return
-	 */
-	@GET
-	@Path("/all/all")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllSprintWithAllItem(
-			@PathParam("projectName") String projectName,
-			@QueryParam("username") String username,
-			@QueryParam("password") String password) {
-		String sprintJson = "";
-		InformationDecoder decoder = new InformationDecoder();
-		try {
-			decoder.decode(username, password, projectName);
-			AccountObject userObject = new AccountObject(decoder.getDecodeUsername());
-			userObject.setPassword(decoder.getDecodePwd());
-			mSprintPlanWebService = new SprintPlanWebService(userObject,
-					decoder.getDecodeProjectName());
-			sprintJson = mSprintPlanWebService.getSprintWithAllItem();
-		} catch (IOException e) {
-			System.out
-					.println("class: SprintWebServiceController, "
-							+ "method: getSprintWithAllItem, "
-							+ "api:InformationDecoder, " + "exception: "
-							+ e.toString());
-			e.printStackTrace();
-		} catch (LogonException e) {
-			System.out.println("class: SprintWebServiceController, "
-					+ "method: getSprintWithAllItem, " + "exception: "
-					+ e.toString());
-			e.printStackTrace();
-		} catch (SQLException e) {
-			System.out.println("class: SprintWebServiceController, "
-					+ "method: getSprintWithAllItem, " + "exception: "
-					+ e.toString());
-			e.printStackTrace();
-		}
-		return sprintJson;
-	}
-
 }
