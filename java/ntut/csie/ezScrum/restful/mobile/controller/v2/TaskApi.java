@@ -64,8 +64,7 @@ public class TaskApi extends BaseAuthApi {
 	@Override
 	protected Response put(long resourceId, String entity) throws Exception {
 		JSONObject jsonEntity = new JSONObject(entity);
-		ProjectObject project = ProjectObject.get(jsonEntity.getString("project_name"));
-		TaskObject task = new TaskObject(project.getId());
+		TaskObject task = TaskObject.get(resourceId);
 		task.setName(jsonEntity.getString(TaskEnum.NAME))
 		        .setNotes(jsonEntity.getString(TaskEnum.NOTES))
 		        .setStoryId(jsonEntity.getInt(TaskEnum.STORY_ID))
