@@ -12,31 +12,32 @@ public class TokenValidator {
 	private final static int EXPIRED_TIME = 60;
 
 	public static boolean verify(long accountId, String clientPublicToken,
-	        String clientDisposableToken, long timestamp) {
+	        String clientDisposableToken, long timestamp) throws Exception {
 		TokenObject token = TokenObject.get(accountId, clientPublicToken);
 		String disposableToken;
 		try {
 			disposableToken = genDisposable(token.getPublicToken(), token.getPrivateToken(), timestamp);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		
 		if (CHECK_TIME) {
 			long currentTime = System.currentTimeMillis();
 			if (currentTime - timestamp > EXPIRED_TIME) {
-				return false;
+				throw new Exception("Request is expired");
 			}
 		}
 		
 		if (CHECK_PUBLIC_TOKEN) {
 			if (!clientPublicToken.equals(token.getPublicToken())) {
-				return false;
+				throw new Exception("Public token error");
 			}
 		}
 		
 		if (CHECK_DISPOSABLE_TOKEN) {
 			if (!clientDisposableToken.equals(disposableToken)) {
-				return false;
+				throw new Exception("Token is not acceptable");
 			}
 		}
 		
