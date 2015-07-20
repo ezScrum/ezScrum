@@ -7,17 +7,13 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
-import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 
-import org.apache.http.HttpResponse;
 import org.codehaus.jettison.json.JSONObject;
 
 @Path("/tasks")
@@ -53,15 +49,15 @@ public class TaskApi extends BaseAuthApi {
 	protected Response post(String entity) throws Exception {
 		JSONObject jsonEntity = new JSONObject(entity);
 		ProjectObject project = ProjectObject.get(jsonEntity.getString("project_name"));
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
-		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.name = jsonEntity.getString(TaskEnum.NAME);
-		taskInfo.notes = jsonEntity.getString(TaskEnum.NOTES);
-		taskInfo.storyId = jsonEntity.getInt(TaskEnum.STORY_ID);
-		taskInfo.handlerId = jsonEntity.getLong(TaskEnum.HANDLER_ID);
-		taskInfo.estimate = jsonEntity.getInt(TaskEnum.ESTIMATE);
-		taskInfo.remains = jsonEntity.getInt(TaskEnum.REMAIN);
-		long newTaskId = sprintBacklogMapper.addTask(project.getId(), taskInfo);
+		TaskObject task = new TaskObject(project.getId());
+		task.setName(jsonEntity.getString(TaskEnum.NAME))
+		        .setNotes(jsonEntity.getString(TaskEnum.NOTES))
+		        .setStoryId(jsonEntity.getInt(TaskEnum.STORY_ID))
+		        .setHandlerId(jsonEntity.getLong(TaskEnum.HANDLER_ID))
+		        .setEstimate(jsonEntity.getInt(TaskEnum.ESTIMATE))
+		        .setRemains(jsonEntity.getInt(TaskEnum.REMAIN))
+		        .save();
+		long newTaskId = task.getId();
 		return response(200, TaskObject.get(newTaskId).toString());
 	}
 
@@ -69,30 +65,22 @@ public class TaskApi extends BaseAuthApi {
 	protected Response put(long resourceId, String entity) throws Exception {
 		JSONObject jsonEntity = new JSONObject(entity);
 		ProjectObject project = ProjectObject.get(jsonEntity.getString("project_name"));
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
-		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.name = jsonEntity.getString(TaskEnum.NAME);
-		taskInfo.notes = jsonEntity.getString(TaskEnum.NOTES);
-		taskInfo.storyId = jsonEntity.getInt(TaskEnum.STORY_ID);
-		taskInfo.handlerId = jsonEntity.getLong(TaskEnum.HANDLER_ID);
-		taskInfo.estimate = jsonEntity.getInt(TaskEnum.ESTIMATE);
-		taskInfo.remains = jsonEntity.getInt(TaskEnum.REMAIN);
-		
-		TaskObject task = TaskObject.get(resourceId);
-		ArrayList<Long> partnersId = new ArrayList<Long>();
-		for (long partnerId : task.getPartnersId()) {
-			partnersId.add(partnerId);
-		}
-		taskInfo.partnersId = partnersId;
-		sprintBacklogMapper.updateTask(resourceId, taskInfo);
-		return response(200, TaskObject.get(resourceId).toString());
+		TaskObject task = new TaskObject(project.getId());
+		task.setName(jsonEntity.getString(TaskEnum.NAME))
+		        .setNotes(jsonEntity.getString(TaskEnum.NOTES))
+		        .setStoryId(jsonEntity.getInt(TaskEnum.STORY_ID))
+		        .setHandlerId(jsonEntity.getLong(TaskEnum.HANDLER_ID))
+		        .setEstimate(jsonEntity.getInt(TaskEnum.ESTIMATE))
+		        .setRemains(jsonEntity.getInt(TaskEnum.REMAIN))
+		        .save();
+		return response(200, TaskObject.get(task.getId()).toString());
 	}
 
 	@Override
 	protected Response delete(long resourceId, UriInfo uriInfo) throws Exception {
 		TaskObject task = TaskObject.get(resourceId);
 		task.delete();
-		return response(200, "{\"status\" : SUCCESS}");
+		return responseOK();
 	}
 
 	@Override

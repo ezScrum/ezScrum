@@ -265,8 +265,9 @@ public class TaskApiTest extends ApiTest {
 		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
 
 		System.out.println(response);
+		
 		JSONObject responseJson = new JSONObject(response);
-		assertEquals("SUCCESS", responseJson.getString("status"));
+		assertEquals("ok", responseJson.getString("msg"));
 
 		task = TaskDAO.getInstance().get(task.getId());
 		assertEquals(null, task);
