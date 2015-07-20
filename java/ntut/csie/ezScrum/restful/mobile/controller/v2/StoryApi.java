@@ -9,7 +9,6 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONObject;
@@ -63,16 +62,17 @@ public class StoryApi extends BaseAuthApi {
 
 	@Override
 	protected boolean permissionCheck(AccountObject user, UriInfo uriInfo) {
-		try {
-			MultivaluedMap<String, String> queries = uriInfo.getQueryParameters();
-			String projectName = queries.get("project_name").get(0);
-			ScrumRole scrumRole = user.getProjectRoleMap().get(projectName).getScrumRole();
-			boolean productBacklog = scrumRole.getAccessProductBacklog();
-			boolean sprintBacklog = scrumRole.getAccessSprintBacklog();
-			return productBacklog || sprintBacklog;			
-		} catch (Exception e) {
-			return false;
-		}
+//		try {
+//			MultivaluedMap<String, String> queries = uriInfo.getQueryParameters();
+//			String projectName = queries.get("project_name").get(0);
+//			ScrumRole scrumRole = user.getProjectRoleMap().get(projectName).getScrumRole();
+//			boolean productBacklog = scrumRole.getAccessProductBacklog();
+//			boolean sprintBacklog = scrumRole.getAccessSprintBacklog();
+//			return productBacklog || sprintBacklog;			
+//		} catch (Exception e) {
+//			return false;
+//		}
+		return true;
 	}
 
 	@Override
