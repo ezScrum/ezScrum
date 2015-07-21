@@ -117,16 +117,16 @@ public abstract class BaseAuthApi {
 							disposableToken, adjustedTime)) {
 				mUser = AccountObject.get(userId);
 				
-				// 不是 admi，要做 Project 權限及所有權的檢查
-				if (!mUser.getSystemRole().getScrumRole().isAdmin()) {
-					if (!permissionCheck(mUser, uriInfo)) {
-						return response(401, "{\"msg\":\"Unauthorized\"}");
-					}
-					
-					if (!ownerCheck(mUser, uriInfo)) {
-						return response(403, "{\"msg\":\"Forbidden\"}");
-					}
-				}
+//				// 不是 admi，要做 Project 權限及所有權的檢查
+//				if (!mUser.getSystemRole().getScrumRole().isAdmin()) {
+//					if (!permissionCheck(mUser, uriInfo)) {
+//						return response(401, "{\"msg\":\"Unauthorized\"}");
+//					}
+//					
+//					if (!ownerCheck(mUser, uriInfo)) {
+//						return response(403, "{\"msg\":\"Forbidden\"}");
+//					}
+//				}
 				
 				switch (method) {
 				case METHOD_GET:
