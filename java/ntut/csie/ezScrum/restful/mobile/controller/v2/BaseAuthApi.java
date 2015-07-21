@@ -87,6 +87,10 @@ public abstract class BaseAuthApi {
 		resBuilder.status(200).entity(entity);
 		return resBuilder.build();
 	}
+	
+	protected Response responseFail(String msg) {
+		return response(417, "{\"msg\":\"" + msg + "\"}");
+	}
 
 	protected Response responseOK() {
 		return response(200, "{\"msg\":\"ok\"}");

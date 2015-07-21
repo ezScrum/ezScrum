@@ -34,6 +34,15 @@ public class AccountObject implements IBaseObject {
 			throw new RuntimeException();
 		}
 	}
+	
+	public boolean isAdmin() {
+		ProjectRole projectRole = getSystemRole();
+		if (projectRole != null && projectRole.getProject().getName()
+				.equals("system")) {
+			return true;
+		}
+		return false;
+	}
 
 	public String toString() {
 		try {
