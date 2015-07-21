@@ -4,7 +4,7 @@ import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
 import org.apache.http.HttpRequest;
 
-public class ApiTest {
+public class TestableApi {
 	
 	protected void setHeaders(HttpRequest request, long accountId, String platformType) {
 		TokenObject token = TokenObject.getByPlatform(accountId, platformType);
