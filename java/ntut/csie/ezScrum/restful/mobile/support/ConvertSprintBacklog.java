@@ -252,7 +252,7 @@ public class ConvertSprintBacklog {
 		if (tasks == null)
 			return "";
 		for (TaskObject task : tasks) {
-			taskArray.put(readTaskInformationList(task));
+			taskArray.put(task.toJSON());
 		}
 		taskList.put(SprintBacklogUtil.TAG_TASKLIST, taskArray);
 		return taskList.toString();
