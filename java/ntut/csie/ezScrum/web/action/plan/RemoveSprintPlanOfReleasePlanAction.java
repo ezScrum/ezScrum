@@ -28,7 +28,7 @@ public class RemoveSprintPlanOfReleasePlanAction extends Action {
 		try {
 			if (releaseId != null && sprintId != null) {
 				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
-				ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
+				ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 				ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 
 				for (StoryObject story : stories) {

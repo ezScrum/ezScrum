@@ -53,7 +53,7 @@ public class GetIssueStatusByIssueIDAction extends PermissionAction {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintIdLong);
 		try {
 			// retrieve stories
-			List<StoryObject> stories = sprintBacklogLogic.getStoriesByImpInSprint();
+			List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 
 			SprintPlanHelper sph = new SprintPlanHelper(project);
 			// get taskBoardStageMap to query status name

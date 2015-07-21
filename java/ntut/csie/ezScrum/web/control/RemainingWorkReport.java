@@ -176,7 +176,7 @@ public class RemainingWorkReport {
 	
 	private void createStoryDataBySprint() {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mSprintId);
-		List<StoryObject> stories = sprintBacklogLogic.getStoriesInSprint();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 		Date timeStamp = new Date(mChartStartDate.getTime());
 		while (timeStamp.getTime() <= mChartEndDate.getTime()) {
 			// timeNode為今天日期則要傳入現在的時間或使用者設定的時間

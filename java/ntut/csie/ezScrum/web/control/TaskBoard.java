@@ -65,7 +65,7 @@ public class TaskBoard {
 
 	private void init() {
 		// 取得目前最新的Story與Task狀態
-		mStories = mSprintBacklogLogic.getStoriesByImpInSprint();
+		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		// 取得從經被drop掉的Story與其底下的Task
 		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
 		if (mSprintBacklogMapper != null) {
