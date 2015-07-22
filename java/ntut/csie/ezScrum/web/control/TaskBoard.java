@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -257,10 +259,10 @@ public class TaskBoard {
 	}
 
 	public String getStoryChartLink() {
-		IProject project = mSprintBacklogMapper.getProject();
+		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
-		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + NAME + File.separator + "Sprint"
+		String chartPath = "./Workspace/" + project.getName() + "/"
+		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
 		        + getSprintId() + File.separator + STORY_CHART_FILE;
 
 		// 繪圖
@@ -274,10 +276,10 @@ public class TaskBoard {
 	}
 
 	public String getTaskChartLink() {
-		IProject project = mSprintBacklogMapper.getProject();
+		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/Sprint1/ChartLink
-		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + NAME + File.separator + "Sprint"
+		String chartPath = "./Workspace/" + project.getName() + "/"
+		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
 		        + getSprintId() + File.separator + TASK_CHART_FILE;
 
 		// 繪圖

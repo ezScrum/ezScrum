@@ -117,7 +117,6 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		stories.get(2).setImportance(30).save();
 		stories.get(3).setImportance(40).save();
 		stories.get(4).setImportance(50).save();
-		mSprintBacklogMapper.forceRefresh();
 
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 		stories = mTaskBoard.getStories();
@@ -139,7 +138,6 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		stories.get(2).setImportance(10).save();
 		stories.get(3).setImportance(30).save();
 		stories.get(4).setImportance(40).save();
-		mSprintBacklogMapper.forceRefresh();
 
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 		stories = mTaskBoard.getStories();
