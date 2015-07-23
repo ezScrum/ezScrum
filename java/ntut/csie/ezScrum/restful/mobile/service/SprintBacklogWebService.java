@@ -33,7 +33,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 
 	public String getStoriesIdJsonStringInSprint() throws JSONException {
 		return new ConvertSprintBacklog().getStoriesIdJsonStringInSprint(
-				mSprintBacklogLogic.getStoriesInSprint());
+				mSprintBacklogLogic.getStoriesSortedByIdInSprint());
 	}
 
 	public String getTasksIdJsonStringInStory(long storyId) throws JSONException {
