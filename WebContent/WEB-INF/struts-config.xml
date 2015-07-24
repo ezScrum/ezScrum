@@ -342,9 +342,7 @@
 		<action path="/showTenantInfo"				type="ntut.csie.ezScrum.SaaS.action.Tenant.ShowTenantInfoAction" />   
     	
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
-    	<action path="/AjaxGetRETPermission"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxGetRetrospectivePermissionAction" />
     	<action path="/getAddNewRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetAddNewRetrospectiveInfoAction" />
-    	<action path="/getPastRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetPastRetrospectiveInfoAction" />
     	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.retrospective.GetAddSprintTaskInfoAction" />
     	<action path="/showRetrospective"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
 			<forward name="success" path="retrospective.show" />
