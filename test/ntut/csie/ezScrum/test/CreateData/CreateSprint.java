@@ -79,7 +79,7 @@ public class CreateSprint {
 				.setMembers(SPRINT_MEMBER)
 				.setFocusFactor(SPRINT_FOCUS_FACTOR)
 				.setDemoDate(getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j))
-				.setDueDate(getDate(mToday, (j + 1) * SPRINT_INTERVAL * 7 + j))
+				.setDueDate(getDate(mToday, ((j + 1) * SPRINT_INTERVAL * 7 + j) - 1))
 				.setDemoPlace(SPRINT_DEMOPLACE)
 				.setDailyInfo(TEST_SPRINT_DAILY_INFO + index)
 				.setHoursCanCommit(SPRINT_HOURS_CAN_COMMIT)

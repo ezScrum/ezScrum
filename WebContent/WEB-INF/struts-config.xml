@@ -184,9 +184,6 @@
 
 
     		<!-- Retrospective -->
-<!-- Sprint Backlog appeared   		
-    		<action path="/GetSprintsComboInfo"	 			type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoAction" />
--->
 	    	<action path="/showRetrospective2"			type="ntut.csie.ezScrum.web.action.retrospective.ShowRetrospectiveAction" />
 	    	<!-- CRUD -->
 	    	<action path="/getEditRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetEditRetrospectiveInfoAction" />
@@ -240,7 +237,6 @@
 		<action path="/showSelectedProject"					type="ntut.csie.ezScrum.web.action.ViewListAction" />
 		<action path="/AjaxCreateProject"					type="ntut.csie.ezScrum.web.action.SaveProjectAction" />
 		<action path="/AjaxGetServerInfoAction"				type="ntut.csie.ezScrum.web.action.AjaxGetServerInfoAction" />
-		<action path="/GetTaskBoardStagesAction"			type="ntut.csie.ezScrum.web.action.GetTaskBoardStagesAction" />
 		
 		<action path="/importStories" name="uploadForm"		type="ntut.csie.ezScrum.web.action.ImportStoriesAction">
 			<forward name="success" path="/showProductBacklog.do"/>
@@ -347,8 +343,6 @@
     		
     		<!-- sprint plan -->    		    		    		
     		<action path="/GetSprintsComboInfoAll"	type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoWithAllAction" />
-    		
-			<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
 			<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
 			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
 			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />
@@ -369,15 +363,6 @@
     		<action path="/showUnplannedItem"		type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="unplannedItem.show" />
 			</action>
-    		
-			<!-- the action remove 2010.10.18
-	        <action path="/rmSprintFromRelease" type="ntut.csie.ezScrum.web.action.plan.RemoveSprintPlanOfReleasePlanAction" />
-	        -->
-	
-			<!-- the action remove 2010.10.18
-	        <action path="/showExistedSprint" forward="addExistedSprint.show" />
-	        <action path="/showExistedSprint2" type="ntut.csie.ezScrum.web.action.plan.ShowExistedSprintAction" />
-	        -->
     	<!-- ntut.csie.ezScrum.web.action.plan -->
 		
 		
