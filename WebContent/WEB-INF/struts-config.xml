@@ -173,18 +173,10 @@
 		<action path="/ModifyProjectDescription"			type="ntut.csie.ezScrum.web.action.AjaxModifyProjectAction" />
 		<action path="/GetTopTitleInfo"						type="ntut.csie.ezScrum.web.action.GetTopTitleInfoAction" />
 		<action path="/GetProjectLeftTreeItem"				type="ntut.csie.ezScrum.web.action.GetProjectLeftTreeItem" />
-		
-		<action path="/feedbackDisplay"						type="ntut.csie.ezScrum.web.action.FeedbackAction" />
-		<action path="/UpdateDownload"						type="ntut.csie.ezScrum.web.action.UpdateDownloadAction" />
 		<action path="/ajaxAttachFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxAttachFileAction" />
 		<action path="/ajaxDeleteFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxDeleteFileAction" />
-		<action path="/AjaxFormCheck"						type="ntut.csie.ezScrum.web.action.AjaxFormCheckAction" />
-		<action path="/checkCreateProject"					type="ntut.csie.ezScrum.web.action.CheckCreateProjectAction" />
-		<action path="/checkExcel"							type="ntut.csie.ezScrum.web.action.CheckExcelAction"/>
-		<action path="/CheckUpdateInfo" 					type="ntut.csie.ezScrum.web.action.CheckezScrumUpdate" />
 		<action path="/logout"								type="ntut.csie.ezScrum.web.action.LogoutAction" />
 		<action path="/restartServer"						type="ntut.csie.ezScrum.web.action.RestartServerAction" />
-		<action path="/showSelectedProject"					type="ntut.csie.ezScrum.web.action.ViewListAction" />
 		<action path="/AjaxCreateProject"					type="ntut.csie.ezScrum.web.action.SaveProjectAction" />
 		<action path="/AjaxGetServerInfoAction"				type="ntut.csie.ezScrum.web.action.AjaxGetServerInfoAction" />
 		
@@ -193,35 +185,10 @@
 			<forward name="error" path="error.show" />
         </action>
         
-        <action path="/fileUpload" scope="request"			type="ntut.csie.ezScrum.web.action.FileUploadAction" validate="false">
-			<forward name="success" path="/Error.jsp" />
-        </action>
-        
-        <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
-        
 		<action path="/logon" type="ntut.csie.ezScrum.web.action.LogonAction">
 			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />
 			<forward name="success" path="main.logon" />
 			<forward name="existedUserSession" path="/viewList.do" redirect="true"/>
-        </action>
-        
-        <action attribute="logonForm" input="main.logon" name="logonForm" path="/logonSubmit" type="ntut.csie.ezScrum.web.action.LogonSubmitAction">
-            <forward name="success"					path="/resetProjectSession.do" />
-            <forward name="Admin_ManagementView"	path="project.Management" />
-            <forward name="Tenant_ManagementView"	path="project.Management.admin" />
-        </action>
-        
-        <action path="/resetProjectSession" type="ntut.csie.ezScrum.web.action.ResetProjectSessionAction">
-            <forward name="success" path="/viewList.do" redirect="true" />
-        </action>
-        
-        <action attribute="projectInfoForm" input="project.Config" name="projectInfoForm" path="/saveProject" scope="request" type="ntut.csie.ezScrum.web.action.SaveProjectAction">
-            <forward name="success" path="/viewProject.do" redirect="true" />
-            <forward name="error" path="project.Config" />
-        </action>
-        
-        <action path="/showProjectInfo"						type="ntut.csie.ezScrum.web.action.ShowProjectInfoFormAction">
-			<forward name="success" path="project.Config" />
         </action>
         
 		<action path="/viewProject"			type="ntut.csie.ezScrum.web.action.ViewProjectSummaryAction">
@@ -229,34 +196,13 @@
 			<forward name="error"			path="/Error.jsp" />
 		</action>
 		
-		<action path="/viewProjectMembers" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="project.Members" />
-        </action>
-		
 		<action path="/getProjectMembers" type="ntut.csie.ezScrum.web.action.GetProjectMembersAction" />
 		<action path="/getRemainingProjectMembers" type="ntut.csie.ezScrum.web.action.GetRemainingProjectMembersAction" />
 		
-		<action path="/showCheckUpdate" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="admin.checkUpdate" />
-        </action>
-        
-		<action path="/showRestartManager" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="admin.restartManager" />
-        </action>
-		
 		<action path="/viewList"					forward="project.Projectlist" />
-
-		<action path="/showProjectInfoForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
-			<forward name="success" path="project.Config" />
-		</action>
 		
 		<action path="/showProjectReference"		forward="project.References" />
-		
-		<action path="/showITSPreferenceForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
-			<forward name="success" path="issue.prefs" />
-		</action>
-		
-		
+
 		<!-- Common Used -->
 		<!-- ntut.csie.ezScrum.web.action -->
     	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />
@@ -291,9 +237,6 @@
     		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.plan.EditUnplannedItemAction" />
     		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.RemoveUnplannedItemAction" />
     		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.plan.ShowEditUnplannedItemAction" />
-    		<action path="/showUnplannedItem"		type="ntut.csie.ezScrum.web.action.FowardAction" >
-				<forward name="success" path="unplannedItem.show" />
-			</action>
     	<!-- ntut.csie.ezScrum.web.action.plan -->
 		
 		
@@ -333,9 +276,6 @@
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	<action path="/getAddNewRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetAddNewRetrospectiveInfoAction" />
     	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.retrospective.GetAddSprintTaskInfoAction" />
-    	<action path="/showRetrospective"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
-			<forward name="success" path="retrospective.show" />
-		</action>
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	
     	
@@ -372,15 +312,6 @@
 
 		<!-- Issue Detail Information page -->
         <action path="/showIssueInformation" forward="project.IssueInformation" />
-
-		
-		
-        <!--    *********************
-                *		ezKanban	*
-                *********************
-             -->
-        <action path="/initialDatabase" type="ntut.csie.ezScrum.web.action.InitDatabaseAction" />
-        <action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
 
         <!--    *********************
                 *		other		*
