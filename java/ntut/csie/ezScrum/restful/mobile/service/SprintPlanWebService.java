@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.restful.mobile.support.ConvertSprint;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -14,11 +15,13 @@ import ntut.csie.jcis.account.core.LogonException;
 import org.codehaus.jettison.json.JSONException;
 
 public class SprintPlanWebService extends ProjectWebService {
+	ProjectObject mProject;
 	SprintPlanHelper mSprintPlanHelper;
 	
 	public SprintPlanWebService(AccountObject user, String projectName) throws LogonException {
 		super(user, projectName);
-		mSprintPlanHelper = new SprintPlanHelper(getAllProjects().get(0));
+		mProject = getAllProjects().get(0);
+		mSprintPlanHelper = new SprintPlanHelper(mProject);
 	}
 
 	/**
@@ -55,7 +58,7 @@ public class SprintPlanWebService extends ProjectWebService {
 
 	public String getCurrentSprint() throws JSONException{
 		// 以當前日期找進行中的Sprint，若無進行中的Sprint，則往後找未過期的Sprint.
-		SprintObject currentSprint = mSprintPlanHelper.loadCurrentSprint();
+		SprintObject currentSprint = mProject.getCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
 		if (currentSprint != null) {
 			return ConvertSprint.convertSprintToJsonString(currentSprint);

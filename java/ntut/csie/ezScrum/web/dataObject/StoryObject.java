@@ -58,17 +58,17 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public StoryObject setName(String name) {
-		mName = name;
+		mName = handleSpecialChar(name);
 		return this;
 	}
 	
 	public StoryObject setNotes(String notes) {
-		mNotes = notes;
+		mNotes = handleSpecialChar(notes);
 		return this;
 	}
 	
 	public StoryObject setHowToDemo(String howToDemo) {
-		mHowToDemo = howToDemo;
+		mHowToDemo = handleSpecialChar(howToDemo);
 		return this;
 	}
 	
@@ -533,5 +533,12 @@ public class StoryObject implements IBaseObject {
 			mCacheTagsId = new ArrayList<Long>();
 			mUpdateTags = false;
 		}
+	}
+	
+	private String handleSpecialChar(String str) {
+		if (str.contains("\n")) {
+			str = str.replaceAll("\n", "<br/>");
+		}
+		return str;
 	}
 }
