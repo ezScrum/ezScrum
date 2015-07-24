@@ -319,9 +319,7 @@
     	
     	<!-- ntut.csie.ezScrum.web.action.plan -->
     		<!-- release plan -->
-    		<action path="/AjaxGetRPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetReleasePlanPermissionAction" />
     		<action path="/moveStorySprint"			type="ntut.csie.ezScrum.web.action.plan.AjaxMoveStorySprint" />
-    		<action path="/AjaxShowSprintfromRelease"		type="ntut.csie.ezScrum.web.action.plan.AjaxShowSprintFromReleaseAction" />
     		<action path="/notYetEndSprintForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndSprintForMoveStory" />
     		<action path="/notYetEndReleaseForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndReleaseForMoveStory" />
     		
@@ -329,34 +327,17 @@
 				<forward name="success" path="printableReleaseInformation.show"/>
 				<forward name="error" path="/Error.jsp" />
 	        </action>
-	        
-	        <action path="/showReleaseBacklog"				type="ntut.csie.ezScrum.web.action.plan.ShowReleaseBacklogAction">
-				<forward name="success" path="releaseBacklog.show"/>
-				<forward name="error" path="/Error.jsp" />
-	        </action>
-			
-			<action path="/showReleasePlan"					type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlanAction">
-	            <forward name="success" path="releasePlan.show"/>
-	            <forward name="error" path="/Error.jsp" />
-	        </action>
     		
     		
     		<!-- sprint plan -->    		    		    		
     		<action path="/GetSprintsComboInfoAll"	type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoWithAllAction" />
-			<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
 			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
-			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />
-
-			<action path="/showSprintPlan"								type="ntut.csie.ezScrum.web.action.plan.ShowSprintPlanAction">
-				<forward name="success" path="sprintPlan.show"/>
-				<forward name="error" path="/Error.jsp" />
-			</action>		
+			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />	
     		
     		<!-- unplanned plan -->
     		<action path="/GetUnplannedItems"		type="ntut.csie.ezScrum.web.action.plan.ShowUnplannedItemAction" />
     		
     		<action path="/addNewUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.AddNewUnplannedItemAction" />
-    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetUnplannedItemPermissionAction" />
     		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.plan.EditUnplannedItemAction" />
     		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.RemoveUnplannedItemAction" />
     		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.plan.ShowEditUnplannedItemAction" />
