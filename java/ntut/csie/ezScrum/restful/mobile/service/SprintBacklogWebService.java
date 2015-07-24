@@ -16,29 +16,29 @@ public class SprintBacklogWebService extends ProjectWebService {
 	SprintBacklogLogic mSprintBacklogLogic;
 
 	public SprintBacklogWebService(String username, String userpwd,
-			String projectId, int sprintId) throws LogonException {
-		super(username, userpwd, projectId);
+			String projectName, int sprintId) throws LogonException {
+		super(username, userpwd, projectName);
 		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
 				.get(0), sprintId);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
 	public SprintBacklogWebService(String username, String userpwd,
-			String projectID) throws LogonException {
-		super(username, userpwd, projectID);
+			String projectName) throws LogonException {
+		super(username, userpwd, projectName);
 		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
 				.get(0), -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
 	public String getStoriesIdJsonStringInSprint() throws JSONException {
-		return new ConvertSprintBacklog().getStoriesIdJsonStringInSprint(
+		return ConvertSprintBacklog.getStoriesIdJsonStringInSprint(
 				mSprintBacklogLogic.getStoriesSortedByIdInSprint());
 	}
 
 	public String getTasksIdJsonStringInStory(long storyId) throws JSONException {
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getStory(storyId).getTasks();
-		return new ConvertSprintBacklog().getTasksIdJsonStringInStory(storyId, tasks);
+		return ConvertSprintBacklog.getTasksIdJsonStringInStory(storyId, tasks);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getTaskHsitoryJsonString(long taskId) throws JSONException {
 		TaskObject task = TaskObject.get(taskId);
-		return new ConvertSprintBacklog().getTaskHistoryJsonString(task.getHistories());
+		return ConvertSprintBacklog.getTaskHistoriesJsonString(task.getHistories());
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getTasksJsonString(long taskId) throws JSONException {
 		TaskObject task = TaskObject.get(taskId);
-		return new ConvertSprintBacklog().getTaskJsonString(task);
+		return ConvertSprintBacklog.getTaskJsonString(task);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getSprintBacklogJsonString() throws JSONException {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		return new ConvertSprintBacklog().getSprintBacklogJsonString(sprint);
+		return ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
 	}
 	
 	/**

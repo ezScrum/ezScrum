@@ -29,7 +29,6 @@ public class ConvertSprintBacklogTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig = null;
-	private ConvertSprintBacklog mConvertSprintBacklog;
 	private ArrayList<SprintObject> mSprints = null;
 	
 	private int mProjectCount = 1;
@@ -54,7 +53,6 @@ public class ConvertSprintBacklogTest {
 		mCS.exe();
 		
 		mSprints = mCS.getSprints();
-		mConvertSprintBacklog = new ConvertSprintBacklog();
 		
 		// ============= release ==============
 		ini = null;
@@ -81,7 +79,6 @@ public class ConvertSprintBacklogTest {
 		projectManager = null;
 		mConfig = null;
 		mSprints = null;
-		mConvertSprintBacklog = null;
 	}
 	
 	@Test
@@ -90,7 +87,7 @@ public class ConvertSprintBacklogTest {
 		ASTS.exe();
 		
 		SprintObject sprint = mSprints.get(0);
-		String response = mConvertSprintBacklog.getSprintJSONString(sprint);
+		String response = ConvertSprintBacklog.getSprintJSONString(sprint);
 		
 		// assert sprint data
 		JSONObject responseJson = new JSONObject(response);
@@ -113,7 +110,7 @@ public class ConvertSprintBacklogTest {
 	@Test
 	public void testGetSprintsJSONString() throws Exception {
 		long currentSprintId = 1;
-		String response = mConvertSprintBacklog.getSprintsJSONString(mSprints, currentSprintId);
+		String response = ConvertSprintBacklog.getSprintsJSONString(mSprints, currentSprintId);
 		
 		// assert data
 		JSONObject responseJson = new JSONObject(response);
@@ -146,7 +143,7 @@ public class ConvertSprintBacklogTest {
 		ArrayList<StoryObject> stories = mCS.getSprints().get(0).getStories();
 
 		// no sprint id case to get current sprint's data
-		String response = mConvertSprintBacklog.getStoriesIdJsonStringInSprint(stories);
+		String response = ConvertSprintBacklog.getStoriesIdJsonStringInSprint(stories);
 		
 		// assert data
 		JSONObject responseJson = new JSONObject(response);
@@ -170,7 +167,7 @@ public class ConvertSprintBacklogTest {
 		ATTS.exe();
 		StoryObject story = ASTS.getStories().get(0);
 		ArrayList<TaskObject> tasks = story.getTasks();
-		String response = mConvertSprintBacklog.getTasksIdJsonStringInStory(story.getId(), tasks);
+		String response = ConvertSprintBacklog.getTasksIdJsonStringInStory(story.getId(), tasks);
 		
 		// assert data
 		JSONObject responseJson = new JSONObject(response);
@@ -183,19 +180,14 @@ public class ConvertSprintBacklogTest {
 		}
 	}
 	
-	/**
-	 * {"taskHistories":[
-	 * {"modifyDate":"2015\/07\/22-11:19:33","historyType":1,"description":"Create Task #1"}]}
-	 * @throws Exception
-	 */
 	@Test
-	public void testGetTaskHistoryJsonString() throws Exception {
+	public void testGetTaskHistoriesJsonString() throws Exception {
 		TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
 		task.setName("TEST_TASK").save();
 		ArrayList<HistoryObject> taskHistories = task.getHistories();
 		
 		// assert data
-		String response = mConvertSprintBacklog.getTaskHistoryJsonString(task.getHistories());
+		String response = ConvertSprintBacklog.getTaskHistoriesJsonString(task.getHistories());
 		JSONObject responseJson = new JSONObject(response);
 		JSONArray historiesJsonArray = responseJson.getJSONArray("taskHistories");
 		assertEquals(taskHistories.size(), historiesJsonArray.length());
@@ -216,17 +208,16 @@ public class ConvertSprintBacklogTest {
 			.setRemains(8).setNotes("TEST_NOTE").save();
 		
 		// assert data
-		String response = mConvertSprintBacklog.getTaskJsonString(task);
+		String response = ConvertSprintBacklog.getTaskJsonString(task);
 		JSONObject responseJson = new JSONObject(response);
-		JSONObject taskJson = responseJson.getJSONObject("task");
-		assertEquals(task.getId(), taskJson.getLong("id"));
-		assertEquals(task.getName(), taskJson.getString("name"));
-		assertEquals("", taskJson.getString("handler"));
-		assertEquals("[[]]", taskJson.getJSONArray("partners").toString());
-		assertEquals(task.getEstimate(), taskJson.getInt("estimate"));
-		assertEquals(task.getRemains(), taskJson.getInt("remains"));
-		assertEquals(task.getActual(), taskJson.getInt("actual"));
-		assertEquals(task.getNotes(), taskJson.getString("notes"));
+		assertEquals(task.getId(), responseJson.getLong("id"));
+		assertEquals(task.getName(), responseJson.getString("name"));
+		assertEquals("", responseJson.getString("handler"));
+		assertEquals("[]", responseJson.getJSONArray("partners").toString());
+		assertEquals(task.getEstimate(), responseJson.getInt("estimate"));
+		assertEquals(task.getRemains(), responseJson.getInt("remains"));
+		assertEquals(task.getActual(), responseJson.getInt("actual"));
+		assertEquals(task.getNotes(), responseJson.getString("notes"));
 	}
 	
 	@Test
@@ -238,20 +229,19 @@ public class ConvertSprintBacklogTest {
 				.setRemains(8*i).setNotes("TEST_NOTE_" + (i+1)).save();
 			tasks.add(task);
 		}
-		String response = mConvertSprintBacklog.getTasksJsonString(tasks);
-		
+		String response = ConvertSprintBacklog.getTasksJsonString(tasks);
 		// assert data
 		JSONObject responseJson = new JSONObject(response);
 		JSONArray tasksJsonArray = responseJson.getJSONArray("tasks");
 		assertEquals(5, tasksJsonArray.length());
 		for (int i = 0; i < tasksJsonArray.length(); i++) {
-			JSONObject taskJson = tasksJsonArray.getJSONObject(i).getJSONObject("task");
+			JSONObject taskJson = tasksJsonArray.getJSONObject(i);
 			TaskObject task = tasks.get(i);
 			
 			assertEquals(task.getId(), taskJson.getLong("id"));
 			assertEquals(task.getName(), taskJson.getString("name"));
 			assertEquals("", taskJson.getString("handler"));
-			assertEquals("[[]]", taskJson.getJSONArray("partners").toString());
+			assertEquals("[]", taskJson.getJSONArray("partners").toString());
 			assertEquals(task.getEstimate(), taskJson.getInt("estimate"));
 			assertEquals(task.getRemains(), taskJson.getInt("remains"));
 			assertEquals(task.getActual(), taskJson.getInt("actual"));
@@ -269,11 +259,11 @@ public class ConvertSprintBacklogTest {
 		SprintObject sprint = SprintObject.get(sprintId);
 		
 		// give incorrect sprint id
-		String response = mConvertSprintBacklog.getSprintBacklogJsonString(null);
+		String response = ConvertSprintBacklog.getSprintBacklogJsonString(null);
 		assertEquals("", response);
 		
 		// give correct sprint id
-		response = mConvertSprintBacklog.getSprintBacklogJsonString(sprint);
+		response = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
 		JSONObject responseJson = new JSONObject(response);
 		assertEquals("true", responseJson.getString("success"));
 		assertEquals(sprintId, responseJson.getLong("sprintId"));
@@ -296,11 +286,11 @@ public class ConvertSprintBacklogTest {
 		SprintObject sprint = SprintObject.get(1);
 		
 		// give incorrect sprint id
-		String response = mConvertSprintBacklog.getSprintBacklogJsonString(null);
+		String response = ConvertSprintBacklog.getSprintBacklogJsonString(null);
 		assertEquals("", response);
 		
 		// give correct sprint id
-		response = mConvertSprintBacklog.getSprintBacklogJsonString(sprint);
+		response = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
 		JSONObject responseJson = new JSONObject(response);
 		assertEquals("true", responseJson.getString("success"));
 		assertEquals(3, responseJson.getInt("Total"));
