@@ -326,11 +326,6 @@
     	<action path="/getResourceList"				type="ntut.csie.ezScrum.web.action.rbac.GetResourceListAction" />
     	<action path="/getScrumRolePermission"		type="ntut.csie.ezScrum.web.action.rbac.GetScrumRolePermissionListAction" />
     	<action path="/showAccountInfo"				type="ntut.csie.ezScrum.web.action.rbac.ShowAccountInfoAction" />
-    	
-        <action path="/scumRoleManage" type="ntut.csie.ezScrum.web.action.rbac.ScrumRoleManageAction">
-            <forward name="success" path="admin.scrumRoleManage" />
-        </action>
-        
             
         <!-- user -->
     	<action path="/getUserData"					type="ntut.csie.ezScrum.web.action.rbac.GetUserDataAction" />
@@ -362,16 +357,12 @@
 		<action path="/GetTaskBoardDescription"			type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardDescriptionAction" />
    		<action path="/GetSprintInfoForTaskBoard"		type="ntut.csie.ezScrum.web.action.report.GetSprintInfoForTaskBoardAction" />
     	<action path="/getTaskBoardStoryTaskList"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskList"/>
-    	<action path="/getTaskBoardStoryTaskList2"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskListByGuest"/>
     	<action path="/checkOutTask" 					type="ntut.csie.ezScrum.web.action.report.CheckOutTaskAction" />
     	<action path="/doneIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.DoneIssueAction" />
     	<action path="/getSprintBurndownChartData"		type="ntut.csie.ezScrum.web.action.report.GetSprintBurndownChartDataAction" />
-    	<action path="/getTasksByStoryID"				type="ntut.csie.ezScrum.web.action.report.GetTasksByStoryIDAction" />
     	<action path="/reopenIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ReopenIssueAction" />
     	<action path="/resetTask"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ResetTaskAction" />
     	<action path="/showCheckOutIssue" 				type="ntut.csie.ezScrum.web.action.report.ShowCheckOutIssueAction" />
-    	<action path="/GetIssueStatusByIssueIDAction"	type="ntut.csie.ezScrum.web.action.report.GetIssueStatusByIssueIDAction" />
-    	
     	<action path="/showRemainingReport"				type="ntut.csie.ezScrum.web.action.report.ShowRemainingReportAction">
             <forward name="success"	path="showRemainingReport.show"/>
             <forward name="error"	path="/Error.jsp" />
@@ -382,11 +373,6 @@
             <forward name="success"	path="ScheduleReport.show"/>
             <forward name="error"	path="/Error.jsp" />
             <forward name="displayMessage"	path="/DisplayMessage.jsp" />
-        </action>
-        
-        <action path="/showScrumReport"					type="ntut.csie.ezScrum.web.action.report.ShowScrumReportAction">
-            <forward name="success"	path="scrumReport.show"/>
-            <forward name="error"	path="/Error.jsp" />
         </action>
         
         <action path="/showTaskBoard"					type="ntut.csie.ezScrum.web.action.report.ShowTaskBoardAction">
