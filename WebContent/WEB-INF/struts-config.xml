@@ -71,9 +71,6 @@
     		<!-- Product Backlog -->
     			<!-- common -->
     		<action path="/showProductBacklog2"		type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogAction" />
-    		<action path="/showProductBacklogV2"	type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogV2Action">
-    			<forward name="success" path="/Pages/ShowProductBacklogV2.jsp"></forward>
-    		</action>
     			<!-- Story CRUD -->
     		<action path="/ajaxAddNewStory"			type="ntut.csie.ezScrum.web.action.backlog.AjaxAddNewStoryAction" />
     		<action path="/getEditStoryInfo"		type="ntut.csie.ezScrum.web.action.backlog.GetEditStoryInfoAction" />
@@ -86,7 +83,6 @@
     		<action path="/AjaxAddStoryTag" 		type="ntut.csie.ezScrum.web.action.backlog.AjaxAddStoryTagAction" />
     		<action path="/AjaxRemoveStoryTag"		type="ntut.csie.ezScrum.web.action.backlog.AjaxRemoveStoryTagAction" />			
 				<!-- not use  -->
-			<action path="/AjaxGetPBPermission"		type="ntut.csie.ezScrum.web.action.backlog.AjaxGetProductBacklogPermissionAction" />
 			<action path="/exportStories"			type="ntut.csie.ezScrum.web.action.backlog.ExportStoriesFromProductBacklogAction" />
 			<action path="/showProductBacklog"		type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="productBacklog.show" />
@@ -142,8 +138,6 @@
 				
 			<action path="/AjaxGetPartnerList"				type="ntut.csie.ezScrum.web.action.report.AjaxGetPartnerListAction"/>
 			<action path="/ajaxEditTask"					type="ntut.csie.ezScrum.web.action.backlog.AjaxEditTaskAction" />
-			<action path="/AjaxGetSPBPermission" 			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintBacklogPermissionAction" />
-			<action path="/showSprintInfobyCombo"			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintIndexInfoAction" />
 			
 			<action path="/ajaxDeleteSprintTask"			type="ntut.csie.ezScrum.web.action.backlog.AjaxDeleteSprintTaskAction" />
 			<action path="/getEditTaskInfo"					type="ntut.csie.ezScrum.web.action.backlog.GetEditTaskInfoAction" />
@@ -172,12 +166,7 @@
     		<action path="/ajaxDeleteRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxDeleteRetrospectiveAction" />
 		
 		<!-- issue action -->
-		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />	
-				
-		<action path="/showEditIssueHistory" name="modifyDateForm" type="ntut.csie.ezScrum.web.action.backlog.ShowEditIssueHistoryAction">
-			<forward name="success" path="editIssueHistory.show"/>
-			<forward name="error" path="/Error.jsp" />
-		</action>		
+		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />		
 		
 		<!-- ntut.csie.ezScrum.web.action -->
 		<action path="/GetProjectDescription"				type="ntut.csie.ezScrum.web.action.AjaxGetProjectDescriptionAction" />
