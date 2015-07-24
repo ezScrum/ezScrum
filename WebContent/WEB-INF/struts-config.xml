@@ -86,8 +86,6 @@
     		<action path="/AjaxAddStoryTag" 		type="ntut.csie.ezScrum.web.action.backlog.AjaxAddStoryTagAction" />
     		<action path="/AjaxRemoveStoryTag"		type="ntut.csie.ezScrum.web.action.backlog.AjaxRemoveStoryTagAction" />			
 				<!-- not use  -->
-			<!-- <action path="/AjaxUpdateTag"			type="ntut.csie.ezScrum.web.action.backlog.AjaxUpdateTagAction" /> -->
-			
 			<action path="/AjaxGetPBPermission"		type="ntut.csie.ezScrum.web.action.backlog.AjaxGetProductBacklogPermissionAction" />
 			<action path="/exportStories"			type="ntut.csie.ezScrum.web.action.backlog.ExportStoriesFromProductBacklogAction" />
 			<action path="/showProductBacklog"		type="ntut.csie.ezScrum.web.action.FowardAction" >
@@ -100,13 +98,7 @@
     		<action path="/AjaxGetNewReleaseID"			type="ntut.csie.ezScrum.web.action.plan.AjaxGetNewReleaseIDAction" />
     		<action path="/checkReleaseDate"			type="ntut.csie.ezScrum.web.action.plan.CheckReleaseDateAction"/>
     		<action path="/saveReleasePlan"				type="ntut.csie.ezScrum.web.action.plan.SaveReleasePlanAction" />
-    		<action path="/removeReleasePlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleasePlanAction" />
-				<!-- Sprint Action: New & Edit  -->			
-<!-- 			Sprint Plan appeared  				
-    		<action path="/GetSprintPlan"				type="ntut.csie.ezScrum.web.action.plan.GetOneSprintPlanAction" />
-			<action path="/saveSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.SaveSprintPlanAction" />    		
--->				
-				<!-- Story Action: Add Existed, Move, Drop  -->						    		
+    		<action path="/removeReleasePlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleasePlanAction" />				    		
 				<!-- common -->
     		<action path="/showReleasePlan2"			type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlan2Action" />
     		<action path="/AjaxShowStoryfromRelease"	type="ntut.csie.ezScrum.web.action.plan.AjaxShowStoryFromReleaseAction"></action>
@@ -122,11 +114,7 @@
     		<action path="/AjaxMoveSprint"				type="ntut.csie.ezScrum.web.action.plan.AjaxMoveSprintAction" />			
 				<!-- common -->
 			<action path="/showAllSprintForSprintPlan"	type="ntut.csie.ezScrum.web.action.plan.ShowAllSprintForSprintPlanAction" />
-<!--     		Release Plan appeared	
-			<action path="/AjaxShowStoryfromSprint" 	type="ntut.csie.ezScrum.web.action.plan.AjaxShowStoryFromSprintAction" />
- -->    	
-    	
-    	
+
     		<!-- Sprint Backlog -->
     			<!-- Show Sprint Backlog -->
     		<action path="/showSprintBacklogTreeListInfo"	type="ntut.csie.ezScrum.web.action.backlog.ShowSprintBacklogListInfoAction" />
@@ -159,14 +147,6 @@
 			
 			<action path="/ajaxDeleteSprintTask"			type="ntut.csie.ezScrum.web.action.backlog.AjaxDeleteSprintTaskAction" />
 			<action path="/getEditTaskInfo"					type="ntut.csie.ezScrum.web.action.backlog.GetEditTaskInfoAction" />
-			<!-- 
-			<action path="/showPrintableStory"	 			type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableStoryAction" />
-			
-			<action path="/showSprintInformation"	type="ntut.csie.ezScrum.web.action.backlog.ShowSprintInformationAction">
-	            <forward name="success" path="sprintInformation.show"/>
-	            <forward name="error" path="/Error.jsp" />
-	        </action>
-			-->
 			<action path="/showSprintBacklog"				type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="sprintBacklog.show" />
 			</action>				
@@ -190,25 +170,6 @@
     		<action path="/ajaxEditRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxEditRetrospectiveAction" />	    		    
   	  		<action path="/ajaxAddNewRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxAddNewRetrospectiveAction" />
     		<action path="/ajaxDeleteRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxDeleteRetrospectiveAction" />
-
-    		<!-- Unplanned -->
-
-    		<!-- Scrum Report -->
-
-			<!-- Export -->
-			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />
-			<action path="/ajaxGetVelocity"				type="ntut.csie.ezScrum.web.action.export.AjaxGetVelocityAction" />
-			<action path="/showVelocityChart" 			type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
-				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
-			</action>
-			<action path="/showStoryCountChart" 		type="ntut.csie.ezScrum.web.action.export.ShowStoryCountChartAction">
-				<forward name="success" path="/Pages/ShowStoryCountChart.jsp"></forward>
-			</action>
-			<action path="/ajaxGetStoryCount"			type="ntut.csie.ezScrum.web.action.export.AjaxGetStoryCountAction" />
-
-		<!-- ========================================= -->
-		<!-- 以下待確認 -->
-		<!-- ========================================= -->
 		
 		<!-- issue action -->
 		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />	
@@ -400,8 +361,6 @@
 		<!-- ntut.csie.ezScrum.web.action.report -->
 		<action path="/GetTaskBoardDescription"			type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardDescriptionAction" />
    		<action path="/GetSprintInfoForTaskBoard"		type="ntut.csie.ezScrum.web.action.report.GetSprintInfoForTaskBoardAction" />
-<!--    <action path="/AjaxGetPartnerList"				type="ntut.csie.ezScrum.web.action.report.AjaxGetPartnerListAction"/>
- -->
     	<action path="/getTaskBoardStoryTaskList"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskList"/>
     	<action path="/getTaskBoardStoryTaskList2"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskListByGuest"/>
     	<action path="/checkOutTask" 					type="ntut.csie.ezScrum.web.action.report.CheckOutTaskAction" />
