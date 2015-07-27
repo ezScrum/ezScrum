@@ -230,11 +230,13 @@
 			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
 			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />	
     		<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
+    		<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
     		
     		<!-- unplanned plan -->
     		<action path="/GetUnplannedItems"		type="ntut.csie.ezScrum.web.action.plan.ShowUnplannedItemAction" />
     		
     		<action path="/addNewUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.AddNewUnplannedItemAction" />
+    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetUnplannedItemPermissionAction" />
     		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.plan.EditUnplannedItemAction" />
     		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.RemoveUnplannedItemAction" />
     		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.plan.ShowEditUnplannedItemAction" />
