@@ -287,6 +287,7 @@
 		<action path="/GetTaskBoardDescription"			type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardDescriptionAction" />
    		<action path="/GetSprintInfoForTaskBoard"		type="ntut.csie.ezScrum.web.action.report.GetSprintInfoForTaskBoardAction" />
     	<action path="/getTaskBoardStoryTaskList"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskList"/>
+    	<action path="/getTaskBoardStoryTaskList2"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskListByGuest"/>
     	<action path="/checkOutTask" 					type="ntut.csie.ezScrum.web.action.report.CheckOutTaskAction" />
     	<action path="/doneIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.DoneIssueAction" />
     	<action path="/getSprintBurndownChartData"		type="ntut.csie.ezScrum.web.action.report.GetSprintBurndownChartDataAction" />
