@@ -278,6 +278,8 @@
     	
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	<action path="/getAddNewRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetAddNewRetrospectiveInfoAction" />
+    	<action path="/AjaxGetRETPermission"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxGetRetrospectivePermissionAction" />
+    	<action path="/getPastRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetPastRetrospectiveInfoAction" />
     	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.retrospective.GetAddSprintTaskInfoAction" />
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	
