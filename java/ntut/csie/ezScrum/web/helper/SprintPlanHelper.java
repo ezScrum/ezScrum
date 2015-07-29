@@ -19,7 +19,7 @@ public class SprintPlanHelper {
 		mSprintPlanLogic = new SprintPlanLogic(project);
 	}
 
-	public ArrayList<SprintObject> loadSprints() {
+	public ArrayList<SprintObject> getSprints() {
 		return mSprintPlanLogic.getSprintsSortedByStartDate();
 	}
 
@@ -27,7 +27,7 @@ public class SprintPlanHelper {
 		return mSprintPlanMapper.getCurrentSprint();
 	}
 
-	public SprintObject getLastestSprint() {
+	public SprintObject getLatestSprint() {
 		return mSprintPlanMapper.getLatestSprint();
 	}
 
@@ -59,7 +59,7 @@ public class SprintPlanHelper {
 	 */
 	public SprintObject getOneSprintInformation(boolean isLatestSprint, long sprintId) {
 		if (isLatestSprint) {
-			return getLastestSprint();
+			return getLatestSprint();
 		} else if (sprintId > 0) {
 			return getSprint(sprintId);
 		}
@@ -67,12 +67,12 @@ public class SprintPlanHelper {
 	}
 
 	public Date getProjectStartDate() {
-		ArrayList<SprintObject> sprints = loadSprints();
+		ArrayList<SprintObject> sprints = getSprints();
 		return DateUtil.dayFilter(sprints.get(sprints.size() - 1).getStartDateString());
 	}
 
 	public Date getProjectEndDate() {
-		ArrayList<SprintObject> sprints = loadSprints();
+		ArrayList<SprintObject> sprints = getSprints();
 
 		if (!sprints.isEmpty()) {
 			return DateUtil.dayFilter(sprints.get(0).getDemoDateString());

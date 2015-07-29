@@ -115,7 +115,7 @@ public class SprintObjectTest {
 
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersNumber());
+		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
 		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
 		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
@@ -159,7 +159,7 @@ public class SprintObjectTest {
 		
 		// assert
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersNumber());
+		assertEquals(membersNumbre, sprint.getMembersAmount());
 		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
 		assertEquals(focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintGoal, sprint.getSprintGoal());
@@ -214,7 +214,7 @@ public class SprintObjectTest {
 
 		assertNotSame(-1, sprint.getId());
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersNumber());
+		assertEquals(membersNumbre, sprint.getMembersAmount());
 		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
 		assertEquals(focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintGoal, sprint.getSprintGoal());

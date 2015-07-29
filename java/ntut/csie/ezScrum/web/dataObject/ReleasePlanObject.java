@@ -22,7 +22,7 @@ public class ReleasePlanObject {
 		setDescription(releasePlanDesc.getDescription());
 		setSprintPlan(new LinkedList<SprintObject>());
 		
-		List<ISprintPlanDesc> sprintDescList = releasePlanDesc.getSprintDescList();
+		List<ISprintPlanDesc> sprintDescList = releasePlanDesc.getSprints();
 		for (ISprintPlanDesc sprintDesc : sprintDescList) {
 			getSprintPlan().add(new SprintObject(sprintDesc));
 		}

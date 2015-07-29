@@ -20,7 +20,7 @@ public class SprintObject implements IBaseObject{
 	private long mProjectId = DEFAULT_VALUE;
 
 	private int mInterval = 0;
-	private int mMembers = 0;
+	private int mMembersAmount = 0;
 	private int mHoursCanCommit = 0;
 	private int mFocusFactor = 0;
 	private String mSprintGoal = "";
@@ -48,8 +48,8 @@ public class SprintObject implements IBaseObject{
 		return this;
 	}
 
-	public SprintObject setMembers(int members) {
-		mMembers = members;
+	public SprintObject setMembers(int membersAmount) {
+		mMembersAmount = membersAmount;
 		return this;
 	}
 
@@ -119,8 +119,8 @@ public class SprintObject implements IBaseObject{
 		return mInterval;
 	}
 
-	public int getMembersNumber() {
-		return mMembers;
+	public int getMembersAmount() {
+		return mMembersAmount;
 	}
 
 	public int getHoursCanCommit() {
@@ -239,7 +239,7 @@ public class SprintObject implements IBaseObject{
 		mSerialId = sprint.getSerialId();
 		
 		setInterval(sprint.getInterval());
-		setMembers(sprint.getMembersNumber());
+		setMembers(sprint.getMembersAmount());
 		setHoursCanCommit(sprint.getHoursCanCommit());
 		setFocusFactor(sprint.getFocusFactor());
 		setSprintGoal(sprint.getSprintGoal());
@@ -286,7 +286,7 @@ public class SprintObject implements IBaseObject{
 		        .put(SprintEnum.START_DATE, getStartDateString())
 		        .put(SprintEnum.DUE_DATE, getDueDateString())
 		        .put(SprintEnum.INTERVAL, mInterval)
-		        .put(SprintEnum.MEMBERS, mMembers)
+		        .put(SprintEnum.MEMBERS, mMembersAmount)
 		        .put(SprintEnum.SERIAL_ID, mSerialId)
 		        .put(SprintEnum.GOAL, mSprintGoal)
 		        .put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)

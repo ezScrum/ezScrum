@@ -53,7 +53,7 @@ public class ShowScheduleReportAction extends Action {
 		request.setAttribute("report", report);
 
 		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> plans = spHelper.loadSprints();
+		List<ISprintPlanDesc> plans = spHelper.getSprints();
 		Collections.reverse(plans);  // 資料反轉、倒序
 		request.setAttribute("SprintPlans", plans);  // set sprint combo
 

@@ -73,7 +73,7 @@ public class ReleasePlanDesc implements IReleasePlanDesc {
 	}
 
 	@Override
-	public ArrayList<SprintObject> getSprintDescList() {
+	public ArrayList<SprintObject> getSprints() {
 		return this.SprintList;
 	}
 

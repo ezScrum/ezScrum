@@ -81,7 +81,7 @@ public class AjaxMoveSprintActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 		verifyNoActionMessages();
 		//	assert response text
-		String expectedResponseText = "<Handlers><Result>success</Result></Handlers>";
+		String expectedResponseText = "true";
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText, actualResponseText);
     }

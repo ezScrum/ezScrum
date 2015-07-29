@@ -77,7 +77,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 		ASTR.exe();
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		int SprintCount = sprintPlanHelper.getLastSprintId();
+		int SprintCount = (int) sprintPlanHelper.getLatestSprint().getId();
 
 		// 3個Sprint，每個Sprint加入個2Story
 		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, SprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);

@@ -152,7 +152,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadSprints();
+		List<ISprintPlanDesc> ExpectedPlans = helper.getSprints();
 		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());
@@ -295,7 +295,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試其餘 request
 		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadSprints();
+		List<ISprintPlanDesc> ExpectedPlans = helper.getSprints();
 		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
 		for (int i = 0; i < ExpectedPlans.size(); i++) {
 			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i)
@@ -937,40 +937,5 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;
-	}
-
-	// 設定 Sprint 資訊
-	private IterationPlanForm setSprintInfo(int id) {
-		Calendar cal = Calendar.getInstance();
-
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-		Date EndDate = cal.getTime();
-		Date StartDate = EndDate;
-
-		int count = 1;
-		while (count < 10) {
-			cal.add(Calendar.DAY_OF_YEAR, -1);
-			count++;
-			StartDate = cal.getTime();
-			while (DateUtil.isHoliday(StartDate)) {
-				cal.add(Calendar.DAY_OF_YEAR, -1);
-				StartDate = cal.getTime();
-			}
-		}
-
-		IterationPlanForm sprintForm = new IterationPlanForm();
-
-		sprintForm.setID(Integer.toString(id));
-		sprintForm.setGoal("TEST_SPRINT_" + Integer.toString(id));
-		sprintForm.setIterStartDate(format.format(StartDate));
-		sprintForm.setIterIterval("2");
-		sprintForm.setIterMemberNumber("2");
-		sprintForm.setAvailableDays("10");
-		sprintForm.setFocusFactor("100");
-		sprintForm.setNotes("LAB 1321");
-		sprintForm.setDemoDate(format.format(EndDate));
-		sprintForm.setDemoPlace("LAB 1321");
-
-		return sprintForm;
 	}
 }

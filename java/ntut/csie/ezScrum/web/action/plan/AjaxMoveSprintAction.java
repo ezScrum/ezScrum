@@ -34,9 +34,17 @@ public class AjaxMoveSprintAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		// get parameter info
-		int oldId = Integer.parseInt(request.getParameter("OldID"));
-		int newId = Integer.parseInt(request.getParameter("NewID"));
+		String oldIdString = request.getParameter("OldID");
+		String newIdString = request.getParameter("NewID");
+		int oldId = -1;
+		int newId = -1;
 
+		if (oldIdString != null) {
+			oldId = Integer.parseInt(oldIdString);
+		}
+		if (newIdString != null) {
+			newId = Integer.parseInt(newIdString);
+		}
 		//移動iterPlan.xml的資訊
 		SprintPlanHelper sprintBacklogHelper = new SprintPlanHelper(project);
 		sprintBacklogHelper.moveSprint(oldId, newId);

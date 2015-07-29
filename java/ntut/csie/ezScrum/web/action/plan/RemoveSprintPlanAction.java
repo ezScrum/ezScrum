@@ -50,8 +50,8 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		}
 		
 		//刪除sprint資訊
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-		SPhelper.deleteSprint(sprintId);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		sprintPlanHelper.deleteSprint(Long.parseLong(sprintId));
 		StringBuilder result = new StringBuilder("{\"success\":true}");
 		return result;
 	}

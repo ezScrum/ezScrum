@@ -58,7 +58,7 @@ public class ShowTaskBoardAction extends Action {
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 
-		List<ISprintPlanDesc> plans = sprintPlanHelper.loadSprints();
+		List<ISprintPlanDesc> plans = sprintPlanHelper.getSprints();
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
 				-1);
