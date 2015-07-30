@@ -449,8 +449,8 @@ public class SprintBacklogLogicTest {
 	
 	@Test
 	public void testAddStoriesToSprint() {
-		assertEquals(3, SprintObject.get(1).getStories().size());
-		assertEquals(3, SprintObject.get(2).getStories().size());
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, mASTS.getStories().get(0).getId());
 		assertEquals(1, mASTS.getStories().get(0).getSprintId());
 		assertEquals(2, mASTS.getStories().get(1).getId());
@@ -468,8 +468,8 @@ public class SprintBacklogLogicTest {
 		storiesId.add(2l);
 		storiesId.add(3l);
 		mSprintBacklogLogic.addStoriesToSprint(storiesId, mCS.getSprintsId().get(1));
-		assertEquals(0, SprintObject.get(1).getStories().size());
-		assertEquals(6, SprintObject.get(2).getStories().size());
+		assertEquals(0, mCS.getSprints().get(0).getStories().size());
+		assertEquals(6, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
@@ -487,8 +487,8 @@ public class SprintBacklogLogicTest {
 		storiesId2.add(5l);
 		storiesId2.add(6l);
 		mSprintBacklogLogic.addStoriesToSprint(storiesId2, mCS.getSprintsId().get(0));
-		assertEquals(3, SprintObject.get(1).getStories().size());
-		assertEquals(3, SprintObject.get(2).getStories().size());
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());

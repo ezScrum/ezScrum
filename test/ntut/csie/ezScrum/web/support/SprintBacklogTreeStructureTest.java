@@ -56,7 +56,7 @@ public class SprintBacklogTreeStructureTest {
 		mTask.setHandlerId(mHandler.getId());
 		mTask.setEstimate(10);
 		mTask.save();
-		mSprintBacklogLogic = new SprintBacklogLogic();
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0));
 	}
 
 	@After

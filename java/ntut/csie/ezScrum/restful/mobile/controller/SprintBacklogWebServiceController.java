@@ -99,7 +99,7 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeProjectName(), iteration);
 			}
 
-			jsonString = mSprintBacklogWebService.getSprintBacklog(handler);
+			jsonString = mSprintBacklogWebService.getSprintBacklogJsonString();
 
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
@@ -266,15 +266,15 @@ public class SprintBacklogWebServiceController {
 	public String getTaskHistory(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
-			@PathParam("taskId") String taskId) {
+			@PathParam("sprintId") long sprintId,
+			@PathParam("taskId") long taskId) {
 		String taskHistoryJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
+					decoder.getDecodeProjectName(), sprintId);
 			taskHistoryJsonString = mSprintBacklogWebService
 					.getTaskHsitoryJsonString(taskId);
 		} catch (IOException e) {
@@ -295,11 +295,6 @@ public class SprintBacklogWebServiceController {
 		} catch (JSONException e) {
 			System.out
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:JSONException, "
-							+ e.toString());
-			e.printStackTrace();
-		} catch (SQLException e) {
-			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:SQLException, "
 							+ e.toString());
 			e.printStackTrace();
 		} finally {

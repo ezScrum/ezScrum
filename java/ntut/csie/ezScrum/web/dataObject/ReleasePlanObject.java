@@ -1,10 +1,10 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 
 public class ReleasePlanObject {
 	private String id;
@@ -22,9 +22,9 @@ public class ReleasePlanObject {
 		setDescription(releasePlanDesc.getDescription());
 		setSprintPlan(new LinkedList<SprintObject>());
 		
-		List<ISprintPlanDesc> sprintDescList = releasePlanDesc.getSprints();
-		for (ISprintPlanDesc sprintDesc : sprintDescList) {
-			getSprintPlan().add(new SprintObject(sprintDesc));
+		ArrayList<SprintObject> sprints = releasePlanDesc.getSprints();
+		for (SprintObject sprint : sprints) {
+			sprintPlan.add(sprint);
 		}
 			
     }

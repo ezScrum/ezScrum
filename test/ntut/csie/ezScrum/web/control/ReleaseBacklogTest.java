@@ -22,6 +22,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
@@ -148,10 +149,10 @@ public class ReleaseBacklogTest {
 		IReleasePlanDesc plan = releasePlanHelper.getReleasePlan(releaseId);
 		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
 
-		SprintPlanMapper spMapper = new SprintPlanMapper(mProject);
-		List<ISprintPlanDesc> descs = spMapper.getSprintPlanList();
+		SprintPlanMapper sprintMapper = new SprintPlanMapper(mProject);
+		ArrayList<SprintObject> sprints = mProject.getSprints();
 		// 用來設定最後一個 story 的 close date
-		String theDate = descs.get(mCS.getSprintCount() - 1).getEndDate();
+		String theDate = sprints.get(mCS.getSprintCount() - 1).getDueDateString();
 
 		ArrayList<StoryObject> stories = productBacklogLogic.getStories();
 		ArrayList<Long> storyIDList = new ArrayList<Long>();

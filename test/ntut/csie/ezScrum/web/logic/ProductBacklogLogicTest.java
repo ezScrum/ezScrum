@@ -15,11 +15,14 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.jcis.resource.core.IProject;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 
 public class ProductBacklogLogicTest {
@@ -98,8 +101,9 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testAddStoriesToSprint() {
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(0)).size());
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(1)).size());
+		
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, mASTS.getStories().get(0).getId());
 		assertEquals(1, mASTS.getStories().get(0).getSprintId());
 		assertEquals(2, mASTS.getStories().get(1).getId());
@@ -117,8 +121,8 @@ public class ProductBacklogLogicTest {
 		storiesId.add(2l);
 		storiesId.add(3l);
 		mProductBacklogLogic.addStoriesToSprint(storiesId, mCS.getSprintsId().get(1));
-		assertEquals(0, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(0)).size());
-		assertEquals(6, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(1)).size());
+		assertEquals(0, mCS.getSprints().get(0).getStories().size());
+		assertEquals(6, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
@@ -136,8 +140,8 @@ public class ProductBacklogLogicTest {
 		storiesId2.add(5l);
 		storiesId2.add(6l);
 		mProductBacklogLogic.addStoriesToSprint(storiesId2, mCS.getSprintsId().get(0));
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(0)).size());
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(1)).size());
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
@@ -154,8 +158,8 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testAddStoriesToSprint_WithInvalidSprintId() {
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(0)).size());
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(1)).size());
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, mASTS.getStories().get(0).getId());
 		assertEquals(1, mASTS.getStories().get(0).getSprintId());
 		assertEquals(2, mASTS.getStories().get(1).getId());
@@ -176,8 +180,8 @@ public class ProductBacklogLogicTest {
 		storiesId.add(5l);
 		storiesId.add(6l);
 		mProductBacklogLogic.addStoriesToSprint(storiesId, -1);
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(0)).size());
-		assertEquals(3, StoryObject.getStoriesBySprintId(mCS.getSprintsId().get(1)).size());
+		assertEquals(3, mCS.getSprints().get(0).getStories().size());
+		assertEquals(3, mCS.getSprints().get(1).getStories().size());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getId());
 		assertEquals(1, StoryObject.get(mASTS.getStories().get(0).getId()).getSprintId());
 		assertEquals(2, StoryObject.get(mASTS.getStories().get(1).getId()).getId());
