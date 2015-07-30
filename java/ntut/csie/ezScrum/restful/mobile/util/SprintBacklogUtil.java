@@ -9,11 +9,11 @@ public interface SprintBacklogUtil {
 	public final static String TAG_TAG = "tag" ;
 	public final static String TAG_IMPORTANCE = "importance" ;
 	public final static String TAG_VALUE = "value" ;
-	public final static String TAG_TASKLIST = "taskList" ;
+	public final static String TAG_TASKS = "tasks" ;
 	public final static String TAG_HANDLER = "handler" ;
-	public final static String TAG_PARTERNERS = "parterners" ;
-	public final static String TAG_REMAINHOUR = "remainHour" ;
-	public final static String TAG_ACTUALHOUR = "actualHour" ;
+	public final static String TAG_PARTNERS = "partners" ;
+	public final static String TAG_REMAINS = "remains" ;
+	public final static String TAG_ACTUAL = "actual" ;
 	public final static String TAG_NOTES = "notes" ;
 	public final static String TAG_TASKINFORMATION = "taskInformation" ;
 	public final static String TAG_SPRINTBACKLOGINFORMATION = "sprintBacklogInformation"  ;
@@ -21,17 +21,17 @@ public interface SprintBacklogUtil {
 	public final static String TAG_LINK = "link" ;
 	public final static String TAG_ID = "id" ;
 	public final static String TAG_NAME = "name" ;
-	public final static String TAG_ESTIMATION = "estimation" ;
+	public final static String TAG_ESTIMATE = "estimate" ;
 	public final static String TAG_STATUS = "status" ;
 	public final static String TAG_ATTACHFILELIST = "attachFileList" ;
 	
-	public static final String TAG_TASKIDLIST = "taskIDList";
+	public static final String TAG_TASKSIDL = "tasksId";
 	
 	//	story history
 	public final static String TAG_STORYHISTORYLIST = "storyHistoryList" ;
 	
 	//	task history
-	public static final String TAG_TASKHISTORYLIST = "taskHistoryList";
+	public static final String TAG_TASKHISTORIES = "taskHistories";
 	
 	//	story 和 task history 共用的變數
 	public static final String TAG_MODIFYDATE = "modifyDate";

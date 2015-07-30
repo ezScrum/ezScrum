@@ -52,7 +52,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setName(String name) {
-		mName = name;
+		mName = handleSpecialChar(name);
 		return this;
 	}
 
@@ -77,7 +77,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setNotes(String notes) {
-		mNotes = notes;
+		mNotes = handleSpecialChar(notes);
 		return this;
 	}
 
@@ -611,5 +611,12 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
 		HistoryDAO.getInstance().create(history);
+	}
+	
+	private String handleSpecialChar(String str) {
+		if (str.contains("\n")) {
+			str = str.replaceAll("\n", "<br/>");
+		}
+		return str;
 	}
 }
