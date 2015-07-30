@@ -152,7 +152,7 @@ public class TestTool {
 	 * @param dueDate
 	 * @return
 	 */
-	public Date getSprintEndDate(String inter, Date startDate) {
+	public Date getSprintEndDate(int inter, Date startDate) {
 		String dueDate = this.calcaulateDueDate(inter, startDate);
 		Date endDate = DateUtil.nearWorkDate(DateUtil.dayFilter(dueDate), DateUtil.FRONT_DIRECTION);
 		return endDate;
@@ -176,14 +176,9 @@ public class TestTool {
 	 * @param dueDate
 	 * @return
 	 */
-	public String calcaulateDueDate(String inter, Date startDate) {
+	public String calcaulateDueDate(int inter, Date startDate) {
 		String dueDateString;
-		int interval;
-		try {
-			interval = Integer.parseInt(inter);
-		} catch (NumberFormatException e) {
-			return "";
-		}
+		int interval = inter;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(startDate);

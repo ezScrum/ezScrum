@@ -99,7 +99,7 @@ public class ReleasePlanWebServiceTest {
 			assertEquals(releaselist.get(i).getName(), releaseJSONObject.get("Name"));
 			assertEquals(releaselist.get(i).getDescription(), releaseJSONObject.get("Description"));
 			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("SprintList").toString());
-			List<ISprintPlanDesc> sprintlist = releaselist.get(i).getSprintDescList();
+			List<ISprintPlanDesc> sprintlist = releaselist.get(i).getSprints();
 			// assert ReleasePlan中的SprintPlan
 			for(int j = 0; j < sprintsJSONArray.length(); j++) {
 				JSONObject sprintJSONObject = (JSONObject) sprintsJSONArray.get(j);

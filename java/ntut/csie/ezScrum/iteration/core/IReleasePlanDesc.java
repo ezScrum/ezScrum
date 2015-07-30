@@ -17,5 +17,5 @@ public interface IReleasePlanDesc {
 	public String getDescription();
 	
 	public void setSprintDescList(ArrayList<SprintObject> SprintList);
-	public ArrayList<SprintObject> getSprintDescList();
+	public ArrayList<SprintObject> getSprints();
 }

@@ -123,7 +123,7 @@ public class ProjectMapper {
 	 * @param projectId
 	 * @return AccountObject list
 	 */
-	public ArrayList<AccountObject> getProjectWorkers(long projectId) {
+	public static ArrayList<AccountObject> getProjectWorkers(long projectId) {
 		return ProjectObject.get(projectId).getProjectWorkers();
 	}
 

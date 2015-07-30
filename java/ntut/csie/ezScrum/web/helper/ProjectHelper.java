@@ -36,21 +36,19 @@ public class ProjectHelper {
 	}
 
 	public String getProjectListXML(AccountObject account) {
-		// get all projects
-		List<IProject> projects = mProjectLogic.getAllProjects();
 		// ezScrum v1.8
-		ArrayList<ProjectObject> projectObjects = mProjectLogic.getProjects();
+		ArrayList<ProjectObject> projects = mProjectLogic.getProjects();
 		
 		// get the user and projects permission mapping
 		Map<String, Boolean> map = mProjectLogic.getProjectPermissionMap(account);
 
 		// get the demo date
-		HashMap<String, String> hm = new HashMap<String, String>();
-		for (IProject project : projects) {
-			SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-			String demoDate = SPhelper.getNextDemoDate();
-			if (demoDate == null) hm.put(project.getName(), "No Plan!");
-			else hm.put(project.getName(), demoDate);
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		for (ProjectObject project : projects) {
+			SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+			String demoDate = sprintPlanHelper.getNextDemoDate();
+			if (demoDate == null) hashMap.put(project.getName(), "No Plan!");
+			else hashMap.put(project.getName(), demoDate);
 		}
 
 		// ezScrum v1.8
@@ -58,7 +56,7 @@ public class ProjectHelper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Projects>");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		for (ProjectObject project : projectObjects) {
+		for (ProjectObject project : projects) {
 			if (map.get(project.getName()) == Boolean.TRUE) {
 				sb.append("<Project>");
 				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getName())).append("</ID>");
@@ -66,23 +64,13 @@ public class ProjectHelper {
 				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getComment())).append("</Comment>");
 				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getManager())).append("</ProjectManager>");
 				sb.append("<CreateDate>").append(dateFormat.format(project.getCreateTime())).append("</CreateDate>");
-				sb.append("<DemoDate>").append(hm.get(project.getName())).append("</DemoDate>");
+				sb.append("<DemoDate>").append(hashMap.get(project.getName())).append("</DemoDate>");
 				sb.append("</Project>");
 			}
 		}
 		sb.append("</Projects>");
 
 		return sb.toString();
-	}
-
-	/**
-	 * 回傳此專案的Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
-	 * 
-	 * @param userSession
-	 * @param project
-	 */
-	public List<String> getProjectScrumWorkerList(IUserSession userSession, IProject project) {
-		return mProjectMapper.getProjectScrumWorkerList(userSession, project);
 	}
 	
 	/**
@@ -93,7 +81,7 @@ public class ProjectHelper {
 	 * @param project
 	 */
 	public List<AccountObject> getProjectScrumWorkersForDb(IUserSession userSession, ProjectObject project) {
-		return mProjectMapper.getProjectWorkers(project.getId());
+		return ProjectMapper.getProjectWorkers(project.getId());
 	}
 
 	public String getCreateProjectXML(HttpServletRequest request,

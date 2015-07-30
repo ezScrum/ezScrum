@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 
@@ -133,12 +134,11 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	 */
 	@Test
 	public void testAddExistedStory2() {
-		long sprintId = mCS.getSprintsId().get(0);
 		String[] storiesId = {"10"};
-
+		SprintObject sprint = mCS.getSprints().get(0);
 		// ================== set parameter info ====================
 		addRequestParameter("releaseID", "");
-		addRequestParameter("sprintID", String.valueOf(sprintId));
+		addRequestParameter("sprintID", String.valueOf(sprint.getId()));
 		addRequestParameter("selects", storiesId);
 
 		// ================ set session info ========================
@@ -160,7 +160,8 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 
 		StoryObject story = StoryObject.get(10);
 		assertNull(story);
-		assertEquals(0, StoryObject.getStoriesBySprintId(sprintId).size());
+		
+		assertEquals(0, sprint.getStories().size());
 	 }
 	
 	/**

@@ -19,6 +19,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import servletunit.struts.MockStrutsTestCase;
@@ -137,7 +138,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		String actualSprintID = String.valueOf(request.getAttribute("SprintID"));
 		String actualStoryPoint = String.valueOf(request.getAttribute("StoryPoint"));
-		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
+		SprintObject actualSprintPlan = (SprintObject) request.getAttribute("SprintPlan");
 		String actualActors = String.valueOf(request.getAttribute("Actors"));
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
@@ -145,14 +146,14 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		assertEquals(expectedSprintID, actualSprintID);		//	verify sprint ID
 		assertEquals("0.0", actualStoryPoint);				//	verify story points
 		assertNotNull(actualSprintPlan);					//	verify sprint plan object
-		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getGoal());	//	verify sprint goal
+		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getSprintGoal());	//	verify sprint goal
 		assertEquals("[]", actualActors);					//	verify 參與此專案的人(因為尚未加入團隊成員因此為空的)
 		assertEquals(expectedSprintPeriod, actualSprintPeriod);		//	verify Sprint週期
 		//	verify story information
@@ -209,7 +210,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		String actualSprintID = String.valueOf(request.getAttribute("SprintID"));
 		String actualStoryPoint = String.valueOf(request.getAttribute("StoryPoint"));
-		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
+		SprintObject actualSprintPlan = (SprintObject) request.getAttribute("SprintPlan");
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
 		ArrayList<StoryObject> actualStories = (ArrayList<StoryObject>) request.getAttribute("Stories");
@@ -218,7 +219,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
@@ -235,7 +236,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		//	verify sprint plan information
 		assertNotNull(actualSprintPlan);
-		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getGoal());
+		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getSprintGoal());
 
 		//	verify Sprint週期
 		assertEquals(expectedSprintPeriod, actualSprintPeriod);

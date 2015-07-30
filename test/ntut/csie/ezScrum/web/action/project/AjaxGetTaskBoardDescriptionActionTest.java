@@ -120,8 +120,8 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		        //{"ID":"0","SprintGoal":"","Current_Story_Undone_Total_Point":"","Current_Task_Undone_Total_Point":""}
 		        "{\"ID\":\"0\"," +
 		                "\"SprintGoal\":\"\"," +
-		                "\"Current_Story_Undone_Total_Point\":\"\"," +
-		                "\"Current_Task_Undone_Total_Point\":\"\"}";
+		                "\"Current_Story_Undone_Total_Point\":\"0.0 / 0.0\"," +
+		                "\"Current_Task_Undone_Total_Point\":\"0.0 / 0.0\"}";
 		assertEquals(expectResponseText, actualResponseText);
 	}
 
@@ -173,8 +173,8 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		String expectResponseText =
 		        "{\"ID\":\"0\"," +
 		                "\"SprintGoal\":\"\"," +
-		                "\"Current_Story_Undone_Total_Point\":\"\"," +
-		                "\"Current_Task_Undone_Total_Point\":\"\"}";
+		                "\"Current_Story_Undone_Total_Point\":\"0.0 / 0.0\"," +
+		                "\"Current_Task_Undone_Total_Point\":\"0.0 / 0.0\"}";
 		assertEquals(expectResponseText, actualResponseText);
 	}
 

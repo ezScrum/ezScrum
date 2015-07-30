@@ -35,7 +35,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.SERIAL_ID, sprintId);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersNumber());
+		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersAmount());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
@@ -90,7 +90,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersNumber());
+		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersAmount());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());

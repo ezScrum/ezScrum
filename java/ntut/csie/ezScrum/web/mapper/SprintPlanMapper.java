@@ -20,7 +20,7 @@ public class SprintPlanMapper {
 	public SprintObject addSprint(SprintInfo sprintInfo) {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.setInterval(sprintInfo.interval)
-		        .setMembers(sprintInfo.members)
+		        .setMembers(sprintInfo.membersAmount)
 		        .setHoursCanCommit(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
 		        .setSprintGoal(sprintInfo.sprintGoal)
@@ -28,6 +28,7 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
+		        .setDueDate(sprintInfo.dueDate)
 		        .save();
 		return getSprint(sprint.getId());
 	}
@@ -67,7 +68,7 @@ public class SprintPlanMapper {
 	public void updateSprint(SprintInfo sprintInfo) {
 		SprintObject sprint = SprintObject.get(sprintInfo.id);
 		sprint.setInterval(sprintInfo.interval)
-		        .setMembers(sprintInfo.members)
+		        .setMembers(sprintInfo.membersAmount)
 		        .setHoursCanCommit(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
 		        .setSprintGoal(sprintInfo.sprintGoal)
@@ -75,6 +76,7 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
+		        .setDueDate(sprintInfo.dueDate)
 		        .save();
 	}
 
@@ -96,6 +98,9 @@ public class SprintPlanMapper {
 		SprintObject oldSprint = SprintObject.get(oldId);
 		SprintObject newSprint = SprintObject.get(newId);
 		// exchange Serial Id
+		if (oldSprint == null || newSprint == null) {
+			return;
+		}
 		oldSprint.updateSerialId(newId);
 		newSprint.updateSerialId(oldId);
 	}

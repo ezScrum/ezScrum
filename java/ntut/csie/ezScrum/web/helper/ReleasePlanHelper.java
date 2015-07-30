@@ -153,8 +153,8 @@ public class ReleasePlanHelper {
 		IReleasePlanDesc[] plans = loadReleasePlans();
 		
 		for (IReleasePlanDesc plan : plans) {
-			if (plan.getSprintDescList() != null) {
-				for (SprintObject sprint : plan.getSprintDescList()) {
+			if (plan.getSprints() != null) {
+				for (SprintObject sprint : plan.getSprints()) {
 					// 找到此 sprint 所被包含的 release ID
 					if (sprint.getId() == sprintId) {
 						return plan.getID();
@@ -211,7 +211,7 @@ public class ReleasePlanHelper {
 			tree+="EndDate:\'"+des.getEndDate()+"\',";
 			tree+="Description:\'"+ tsc.TranslateJSONChar(des.getDescription()) +"\',";
 			
-			if(des.getSprintDescList()!=null&&des.getSprintDescList().size()!=0){
+			if(des.getSprints()!=null&&des.getSprints().size()!=0){
 				tree+= "expanded: true,";
 				tree+="iconCls:\'task-folder\',";
 
@@ -266,7 +266,7 @@ public class ReleasePlanHelper {
 	    	for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		if (release == null)
 	    			break;
-	    		for (SprintObject sprint : release.getSprintDescList()) {
+	    		for (SprintObject sprint : release.getSprints()) {
 	    			JSONObject sprintplan = new JSONObject();
 	    			sprintplan.put("ID", String.valueOf(sprint.getId()));
 	    			sprintplan.put("Name", "Sprint" + String.valueOf(sprint.getId()));
@@ -303,7 +303,7 @@ public class ReleasePlanHelper {
     		for (IReleasePlanDesc release : ListReleaseDescs) {
     			if (release == null)
     				break;
-	    		for (SprintObject sprint : release.getSprintDescList()) {
+	    		for (SprintObject sprint : release.getSprints()) {
 	    			allSprints.add(sprint);
 	    		}
 	    	}
@@ -379,10 +379,10 @@ public class ReleasePlanHelper {
 	private String setSprintToJSon (IReleasePlanDesc IRDesc, SprintPlanHelper SPhelper){
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		String sprintTree="";
-		if (IRDesc.getSprintDescList() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
+		if (IRDesc.getSprints() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			int i=0;
 			// 將資訊設定成 JSon 輸出格式
-			for (SprintObject sprint : IRDesc.getSprintDescList()) {
+			for (SprintObject sprint : IRDesc.getSprints()) {
 				if(i==0)
 					sprintTree+="{";
 				else
@@ -553,7 +553,7 @@ public class ReleasePlanHelper {
 	
 	//加入 Release 日期範圍內 Sprint 底下的 Story
 	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<SprintObject> oldSprintList, IReleasePlanDesc reDesc){
-		List<SprintObject> newSprintList =  reDesc.getSprintDescList();
+		List<SprintObject> newSprintList =  reDesc.getSprints();
 		ArrayList<Long> storyList;
 		
 		//For deleting old sprint. Taking original SprintList to compare with new SprintList.

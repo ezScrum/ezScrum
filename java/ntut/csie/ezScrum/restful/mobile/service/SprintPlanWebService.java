@@ -79,7 +79,7 @@ public class SprintPlanWebService extends ProjectWebService {
 	 * 取得所有Sprint information. 以及當前Sprint ID.
 	 */
 	public String getRESTFulResponseString() throws JSONException {
-		ArrayList<SprintObject> sprints = mSprintPlanHelper.loadSprints();
+		ArrayList<SprintObject> sprints = mSprintPlanHelper.getSprints();
 		ConvertSprintBacklog csb = new ConvertSprintBacklog();
 
 		// 以當前日期找進行中的Sprint ID，若無進行中的Sprint，則往後找未過期的Sprint ID.

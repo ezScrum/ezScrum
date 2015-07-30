@@ -118,7 +118,7 @@ public class SprintDAOTest {
 		
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersNumber());
+		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
 		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
 		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
@@ -135,7 +135,7 @@ public class SprintDAOTest {
 		// assert
 		assertNotNull(sprint);
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembersNumber());
+		assertEquals(4, sprint.getMembersAmount());
 		assertEquals(150, sprint.getHoursCanCommit());
 		assertEquals(80, sprint.getFocusFactor());
 		assertEquals("TEST_SPRINT_GOAL", sprint.getSprintGoal());
@@ -190,7 +190,7 @@ public class SprintDAOTest {
 		closeResultSet(result);
 
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersNumber());
+		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
 		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
 		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());

@@ -76,6 +76,9 @@ public class TaskBoard {
 			Date iter_End_Work_Date = mSprintBacklogLogic.getSprintEndWorkDate();
 			Date iter_End_Date = mSprintBacklogMapper.getSprintEndDate();
 
+			if (iter_Start_Work_Date == null || iter_End_Work_Date == null || iter_End_Date == null) {
+				return;
+			}
 			Calendar indexDate = Calendar.getInstance();
 			indexDate.setTime(iter_Start_Work_Date);
 			long endTime = iter_End_Work_Date.getTime();
@@ -100,8 +103,8 @@ public class TaskBoard {
 				if (!DateUtil.isHoliday(key)) {
 					// 記錄Story與Task理想線的點數
 					// 理想線直線方程式 y = - (起始點數 / 總天數) * 第幾天 + 起始點數
-					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
-					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
+					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / (dayOfSprint - 1)) * num) + initPoint[0]);
+					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / (dayOfSprint - 1)) * num) + initPoint[1]);
 
 					// 記錄Story與Task實際線的點數
 					// 只取出今天以前的資料
