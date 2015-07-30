@@ -28,7 +28,7 @@ public class ConvertSprintBacklog {
 	public ConvertSprintBacklog() {
 	}
 
-	static public String getSprintJSONString(SprintObject sprint) throws JSONException {
+	public static String getSprintJSONString(SprintObject sprint) throws JSONException {
 		JSONObject sprintJson = new JSONObject();
 		sprintJson.put(SprintPlanUtil.TAG_ID, sprint.getId());
 		sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal());
@@ -50,7 +50,7 @@ public class ConvertSprintBacklog {
 		return sprintJson.toString();
 	}
 
-	static public String getSprintsJSONString(ArrayList<SprintObject> sprints, long currentSprintId) throws JSONException {
+	public static String getSprintsJSONString(ArrayList<SprintObject> sprints, long currentSprintId) throws JSONException {
 		JSONObject sprintsJson = new JSONObject();
 		JSONArray sprintsJsonArray = new JSONArray();
 		sprintsJson.put(SprintPlanUtil.TAG_CURRENT_SPRINT_ID, currentSprintId);
@@ -72,8 +72,7 @@ public class ConvertSprintBacklog {
 		return sprintsJson.toString();
 	}
 
-	static public String getStoriesIdJsonStringInSprint(ArrayList<StoryObject> stories)
-			throws JSONException {
+	public static String getStoriesIdJsonStringInSprint(ArrayList<StoryObject> stories) throws JSONException {
 		JSONObject storiesIdJsonString = new JSONObject();
 		JSONArray storyArray = new JSONArray();
 		for (StoryObject story : stories) {
@@ -95,8 +94,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	static public String getTasksIdJsonStringInStory(long storyId, ArrayList<TaskObject> tasks)
-			throws JSONException {
+	public static String getTasksIdJsonStringInStory(long storyId, ArrayList<TaskObject> tasks) throws JSONException {
 		JSONObject story = new JSONObject();
 		JSONObject storyProperties = new JSONObject();
 		JSONArray tasksId = new JSONArray();
@@ -118,8 +116,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	static public String getTaskHistoriesJsonString(ArrayList<HistoryObject> taskHistories)
-			throws JSONException {
+	public static String getTaskHistoriesJsonString(ArrayList<HistoryObject> taskHistories) throws JSONException {
 		JSONObject taskHistoryJson = new JSONObject();
 		JSONArray historyJsonArray = new JSONArray();
 		for (int i = 0; i < taskHistories.size(); i++) {
@@ -133,8 +130,7 @@ public class ConvertSprintBacklog {
 					history.getDescription());
 			historyJsonArray.put(historyItem);
 		}
-		taskHistoryJson
-				.put(SprintBacklogUtil.TAG_TASKHISTORIES, historyJsonArray);
+		taskHistoryJson.put(SprintBacklogUtil.TAG_TASKHISTORIES, historyJsonArray);
 		return taskHistoryJson.toString();
 	}
 
@@ -144,7 +140,7 @@ public class ConvertSprintBacklog {
 	 * @param date
 	 * @return
 	 */
-	static private String parseDate(long date) {
+	private static String parseDate(long date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
 		Date d = new Date(date);
 
@@ -159,14 +155,12 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	static public String getTaskJsonString(TaskObject task)
-			throws JSONException {
+	public static String getTaskJsonString(TaskObject task) throws JSONException {
 		JSONObject taskJsonString = new JSONObject();
 		JSONArray partnersArray = new JSONArray();
 		taskJsonString.put(SprintBacklogUtil.TAG_ID, task.getId());
 		taskJsonString.put(SprintBacklogUtil.TAG_NAME, task.getName());
-		taskJsonString.put(SprintBacklogUtil.TAG_HANDLER,
-				task.getHandler() != null ? task.getHandler().getUsername() : "");
+		taskJsonString.put(SprintBacklogUtil.TAG_HANDLER, task.getHandler() != null ? task.getHandler().getUsername() : "");
 		if (task.getPartners().size() != 0) {
 			partnersArray.put(task.getPartners());
 		}
@@ -185,8 +179,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	static public String getTasksJsonString(ArrayList<TaskObject> tasks)
-			throws JSONException {
+	public static String getTasksJsonString(ArrayList<TaskObject> tasks) throws JSONException {
 		JSONObject tasksJsonString = new JSONObject();
 		JSONArray tasksJsonArray = new JSONArray();
 		if (tasks == null)
@@ -206,8 +199,7 @@ public class ConvertSprintBacklog {
 	 * @return
 	 * @throws JSONException
 	 */
-	static public String getSprintBacklogJsonString(SprintObject sprint)
-			throws JSONException {
+	public static String getSprintBacklogJsonString(SprintObject sprint) throws JSONException {
 		if (sprint == null) {
 			return "";
 		}
@@ -254,7 +246,7 @@ public class ConvertSprintBacklog {
 		return gson.toJson(jsonMap);
 	}
 	
-	static private HashMap<Long, ArrayList<TaskObject>> getStoryToTasksMap(ArrayList<StoryObject> stories) {
+	private static HashMap<Long, ArrayList<TaskObject>> getStoryToTasksMap(ArrayList<StoryObject> stories) {
 		HashMap<Long, ArrayList<TaskObject>> storyToTasks = new HashMap<Long, ArrayList<TaskObject>>();
 		for (StoryObject story : stories) {
 			storyToTasks.put(story.getId(), story.getTasks());

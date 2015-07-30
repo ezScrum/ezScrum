@@ -15,25 +15,20 @@ public class SprintBacklogWebService extends ProjectWebService {
 	SprintBacklogMapper mSprintBacklogMapper;
 	SprintBacklogLogic mSprintBacklogLogic;
 
-	public SprintBacklogWebService(String username, String userpwd,
-			String projectName, int sprintId) throws LogonException {
+	public SprintBacklogWebService(String username, String userpwd, String projectName, long sprintId) throws LogonException {
 		super(username, userpwd, projectName);
-		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
-				.get(0), sprintId);
+		mSprintBacklogLogic = new SprintBacklogLogic(getAllProjects().get(0), sprintId);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
-	public SprintBacklogWebService(String username, String userpwd,
-			String projectName) throws LogonException {
+	public SprintBacklogWebService(String username, String userpwd, String projectName) throws LogonException {
 		super(username, userpwd, projectName);
-		mSprintBacklogLogic = new SprintBacklogLogic(super.getAllProjects()
-				.get(0), -1);
+		mSprintBacklogLogic = new SprintBacklogLogic(getAllProjects().get(0), -1);
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
 	}
 
 	public String getStoriesIdJsonStringInSprint() throws JSONException {
-		return ConvertSprintBacklog.getStoriesIdJsonStringInSprint(
-				mSprintBacklogLogic.getStoriesSortedByIdInSprint());
+		return ConvertSprintBacklog.getStoriesIdJsonStringInSprint(mSprintBacklogLogic.getStoriesSortedByIdInSprint());
 	}
 
 	public String getTasksIdJsonStringInStory(long storyId) throws JSONException {
@@ -60,7 +55,7 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 * @return
 	 * @throws JSONException
 	 */
-	public String getTasksJsonString(long taskId) throws JSONException {
+	public String getTaskJsonString(long taskId) throws JSONException {
 		TaskObject task = TaskObject.get(taskId);
 		return ConvertSprintBacklog.getTaskJsonString(task);
 	}
