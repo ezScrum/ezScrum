@@ -263,6 +263,17 @@ public class SprintObject implements IBaseObject{
 		}
 		return false;
 	}
+	
+	public boolean containsTask(TaskObject task) {
+		boolean isContainsTask = false;
+		ArrayList<StoryObject> stories = getStories();
+		for (StoryObject story : stories) {
+			if (story.containsTask(task)) {
+				isContainsTask = true;
+			}
+		}
+		return isContainsTask;
+	}
 
 	public String toString() {
 		try {

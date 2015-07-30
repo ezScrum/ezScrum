@@ -9,6 +9,7 @@ import java.util.Map;
 
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -161,8 +162,12 @@ public class ConvertSprintBacklog {
 		taskJsonString.put(SprintBacklogUtil.TAG_ID, task.getId());
 		taskJsonString.put(SprintBacklogUtil.TAG_NAME, task.getName());
 		taskJsonString.put(SprintBacklogUtil.TAG_HANDLER, task.getHandler() != null ? task.getHandler().getUsername() : "");
-		if (task.getPartners().size() != 0) {
-			partnersArray.put(task.getPartners());
+		ArrayList<AccountObject> partners = task.getPartners();
+		if (!partners.isEmpty()) {
+			for (AccountObject partner : partners) {
+				JSONObject partnerJson = partner.toJSON();
+				partnersArray.put(partnerJson);
+			}
 		}
 		taskJsonString.put(SprintBacklogUtil.TAG_PARTNERS, partnersArray);
 		taskJsonString.put(SprintBacklogUtil.TAG_ESTIMATE, task.getEstimate());

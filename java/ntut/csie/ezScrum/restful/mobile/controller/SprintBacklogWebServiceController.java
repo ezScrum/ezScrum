@@ -315,7 +315,7 @@ public class SprintBacklogWebServiceController {
 	public String getTaskInformation(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@PathParam("taskId") long taskId) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
@@ -323,7 +323,7 @@ public class SprintBacklogWebServiceController {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName());
+					decoder.getDecodeProjectName(), sprintId);
 			jsonString = mSprintBacklogWebService.getTaskJsonString(taskId);
 		} catch (IOException e) {
 			System.out

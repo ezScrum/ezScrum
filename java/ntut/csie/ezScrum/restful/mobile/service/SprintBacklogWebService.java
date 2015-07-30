@@ -57,7 +57,11 @@ public class SprintBacklogWebService extends ProjectWebService {
 	 */
 	public String getTaskJsonString(long taskId) throws JSONException {
 		TaskObject task = TaskObject.get(taskId);
-		return ConvertSprintBacklog.getTaskJsonString(task);
+		SprintObject sprint = mSprintBacklogMapper.getSprint();
+		if (sprint.containsTask(task)) {
+			return ConvertSprintBacklog.getTaskJsonString(task);
+		}
+		return "";
 	}
 
 	/**

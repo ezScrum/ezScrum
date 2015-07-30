@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -182,6 +183,20 @@ public class SprintObjectTest {
 		
 		sprint = SprintObject.get(mSprintId);
 		assertNull(sprint);
+	}
+	
+	@Test
+	public void testContainsTask() {
+		SprintObject sprint = SprintObject.get(mSprintId);
+		StoryObject story = new StoryObject(mProjectId);
+		story.setSprintId(sprint.getId());
+		story.save();
+		TaskObject task = new TaskObject(mProjectId);
+		task.save();
+		assertFalse(sprint.containsTask(task));
+		task.setStoryId(story.getId());
+		task.save();
+		assertTrue(sprint.containsTask(task));
 	}
 
 	private SprintObject createSprint() {
