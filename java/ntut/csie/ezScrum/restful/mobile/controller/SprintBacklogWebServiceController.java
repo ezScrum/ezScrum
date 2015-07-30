@@ -329,7 +329,7 @@ public class SprintBacklogWebServiceController {
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName());
-			jsonString = mSprintBacklogWebService.getTasksJsonString(taskId);
+			jsonString = mSprintBacklogWebService.getTaskJsonString(taskId);
 		} catch (IOException e) {
 			System.out
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskInformation, exception:IOException, "
