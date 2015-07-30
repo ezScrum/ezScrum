@@ -76,6 +76,9 @@ public class TaskBoard {
 			Date iter_End_Work_Date = mSprintBacklogLogic.getSprintEndWorkDate();
 			Date iter_End_Date = mSprintBacklogMapper.getSprintEndDate();
 
+			if (iter_Start_Work_Date == null || iter_End_Work_Date == null || iter_End_Date == null) {
+				return;
+			}
 			Calendar indexDate = Calendar.getInstance();
 			indexDate.setTime(iter_Start_Work_Date);
 			long endTime = iter_End_Work_Date.getTime();

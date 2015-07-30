@@ -209,6 +209,9 @@ public class SprintBacklogLogic {
 	public Date getSprintStartWorkDate() {
 		Date startDate = mSprintBacklogMapper.getSprintStartDate();
 		Date endDate = mSprintBacklogMapper.getSprintEndDate();
+		if (startDate == null || endDate == null) {
+			return null;
+		}
 		Date workDate = DateUtil.nearWorkDate(startDate,
 				DateUtil.BACK_DIRECTION);
 		if (workDate.getTime() > endDate.getTime())
@@ -224,6 +227,9 @@ public class SprintBacklogLogic {
 	public Date getSprintEndWorkDate() {
 		Date startDate = mSprintBacklogMapper.getSprintStartDate();
 		Date endDate = mSprintBacklogMapper.getSprintEndDate();
+		if (startDate == null || endDate == null) {
+			return null;
+		}
 		Date workDate = DateUtil.nearWorkDate(endDate,
 				DateUtil.FRONT_DIRECTION);
 		if (workDate.getTime() < startDate.getTime())

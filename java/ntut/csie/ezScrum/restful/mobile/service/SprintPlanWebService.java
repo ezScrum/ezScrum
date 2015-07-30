@@ -55,7 +55,7 @@ public class SprintPlanWebService extends ProjectWebService {
 
 	public String getCurrentSprint() throws JSONException{
 		// 以當前日期找進行中的Sprint，若無進行中的Sprint，則往後找未過期的Sprint.
-		SprintObject currentSprint = mSprintPlanHelper.loadCurrentSprint();
+		SprintObject currentSprint = mSprintPlanHelper.getCurrentSprint();
 		// 如果 project 中沒有 sprint 則回傳空字串
 		if (currentSprint != null) {
 			return ConvertSprint.convertSprintToJsonString(currentSprint);

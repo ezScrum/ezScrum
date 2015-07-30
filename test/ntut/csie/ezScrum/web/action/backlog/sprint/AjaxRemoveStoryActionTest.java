@@ -85,8 +85,8 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		AddSprintToRelease ASR = new AddSprintToRelease(5, mCR, mCP);
 		ASR.exe();
 
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(iProject);
-		int SprintCount = sprintPlanHelper.getLastSprintId();
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		int SprintCount = sprintPlanHelper.getSprints().size();
 
 		// 5個 Sprint，每個 Sprint 加入1個 Story
 		AddStoryToSprint ASS = new AddStoryToSprint(1, 1, SprintCount, mCP, CreateProductBacklog.COLUMN_TYPE_EST);

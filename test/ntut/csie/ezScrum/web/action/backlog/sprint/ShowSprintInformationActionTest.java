@@ -220,7 +220,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
 		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
-		Date endDate = testTool.getSprintEndDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
+		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		/**
