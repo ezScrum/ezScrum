@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
