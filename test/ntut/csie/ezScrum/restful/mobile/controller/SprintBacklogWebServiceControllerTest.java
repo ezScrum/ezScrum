@@ -132,12 +132,12 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetStoryIDList() {
+	public void testGetStoriesId() {
 
 	}
 
 	@Test
-	public void testGetTaskIDList() {
+	public void testGetTasksId() {
 
 	}
 

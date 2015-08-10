@@ -165,11 +165,11 @@ public class SprintBacklogWebServiceController {
 	@GET
 	@Path("{sprintId}/storylist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getStoryIDList(@QueryParam("username") String username,
+	public String getStoriesId(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
 			@PathParam("sprintId") String sprintId) {
-		String jsonString = "";
+		String storiesIdJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
@@ -183,13 +183,13 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName(), iteration);
 			}
-			jsonString = mSprintBacklogWebService.getStoriesIdJsonStringInSprint();
+			storiesIdJsonString = mSprintBacklogWebService.getStoriesIdJsonStringInSprint();
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
 					+ "method: decode, " + "exception: " + e.toString());
 		} catch (LogonException e) {
 			System.out.println("class: SprintBacklogWebServiceController, "
-					+ "method: getSprintBacklogList, " + "exception: "
+					+ "method: getStoriesId, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -198,7 +198,7 @@ public class SprintBacklogWebServiceController {
 					+ e.toString());
 			e.printStackTrace();
 		}
-		return jsonString;
+		return storiesIdJsonString;
 	}
 
 	/***
@@ -212,38 +212,38 @@ public class SprintBacklogWebServiceController {
 	@GET
 	@Path("{sprintId}/{storyId}/task-id-list")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTaskIDList(@QueryParam("username") String username,
+	public String getTasksId(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
 			@PathParam("sprintId") String sprintId,
 			@PathParam("storyId") long storyId) {
-		String taskIDListJsonString = "";
+		String tasksIdJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
 					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
-			taskIDListJsonString = mSprintBacklogWebService
+			tasksIdJsonString = mSprintBacklogWebService
 					.getTasksIdJsonStringInStory(storyId);
 		} catch (IOException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:IOException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:IOException, "
 							+ e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:LogonException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:LogonException, "
 							+ e.toString());
 			e.printStackTrace();
 		} catch (JSONException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:JSONException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:JSONException, "
 							+ e.toString());
 			e.printStackTrace();
 		} finally {
 		}
-		return taskIDListJsonString;
+		return tasksIdJsonString;
 	}
 
 	/**
