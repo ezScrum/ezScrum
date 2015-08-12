@@ -145,7 +145,6 @@ public class SprintBacklogWebServiceControllerTest {
 		StoryObject story = new StoryObject(mProject.getId());
 		story.setSprintId(sprint.getId());
 		story.save();
-		ArrayList<Long> tasksId = new ArrayList<>();
 		TaskObject task1 = new TaskObject(mProject.getId());
 		task1.setStoryId(story.getId()).setName("Test_Task_Name1")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
@@ -161,9 +160,6 @@ public class SprintBacklogWebServiceControllerTest {
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
 				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
 		task3.save();
-		tasksId.add(task1.getId());
-		tasksId.add(task2.getId());
-		tasksId.add(task3.getId());
 		String sprintId = String.valueOf(sprint.getId());
 		String storyId = String.valueOf(story.getId());
 		// Assemble URL
