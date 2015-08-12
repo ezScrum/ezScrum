@@ -12,7 +12,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class SprintObject implements IBaseObject{
+public class SprintObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;
@@ -72,7 +72,7 @@ public class SprintObject implements IBaseObject{
 		mStartDate = DateUtil.dayFilter(startDate);
 		return this;
 	}
-	
+
 	public SprintObject setDueDate(String dueDate) {
 		mDueDate = DateUtil.dayFilter(dueDate);
 		return this;
@@ -138,7 +138,7 @@ public class SprintObject implements IBaseObject{
 	public String getStartDateString() {
 		return DateUtil.formatBySlashForm(mStartDate);
 	}
-	
+
 	public String getDueDateString() {
 		return DateUtil.formatBySlashForm(mDueDate);
 	}
@@ -162,11 +162,11 @@ public class SprintObject implements IBaseObject{
 	public long getUpdateTime() {
 		return mUpdateTime;
 	}
-	
+
 	public static SprintObject get(long id) {
 		return SprintDAO.getInstance().get(id);
 	}
-	
+
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
 	}
@@ -213,7 +213,7 @@ public class SprintObject implements IBaseObject{
 		}
 		return success;
 	}
-	
+
 	private void doCreate() {
 		mId = SprintDAO.getInstance().create(this);
 		reload();
@@ -222,22 +222,22 @@ public class SprintObject implements IBaseObject{
 	private void doUpdate() {
 		SprintDAO.getInstance().update(this);
 	}
-	
+
 	private void doUpdate(long specificTime) {
 		mUpdateTime = specificTime;
 		SprintDAO.getInstance().update(this);
 	}
-	
+
 	public void updateSerialId(long newSerialId) {
 		mSerialId = newSerialId;
 		SprintDAO.getInstance().updateSerialId(mId, newSerialId);
 	}
-	
+
 	private void resetData(SprintObject sprint) {
 		mId = sprint.getId();
 		mProjectId = sprint.getProjectId();
 		mSerialId = sprint.getSerialId();
-		
+
 		setInterval(sprint.getInterval());
 		setMembers(sprint.getMembersAmount());
 		setHoursCanCommit(sprint.getHoursCanCommit());
@@ -250,20 +250,31 @@ public class SprintObject implements IBaseObject{
 		setCreateTime(sprint.getCreateTime());
 		setUpdateTime(sprint.getUpdateTime());
 	}
-	
+
 	private boolean exists() {
 		SprintObject sprint = SprintDAO.getInstance().get(mId);
 		return sprint != null;
 	}
-	
+
 	public boolean contains(Date date) {
 		if ((date.compareTo(mStartDate) >= 0)
-		        && (date.compareTo(mDueDate) <= 0)) {
+				&& (date.compareTo(mDueDate) <= 0)) {
 			return true;
 		}
 		return false;
 	}
-	
+
+	public boolean containsStory(StoryObject story) {
+		boolean isContainsStory = false;
+		ArrayList<StoryObject> stories = getStories();
+		for (StoryObject currentStory : stories) {
+			if (currentStory.getId() == story.getId()) {
+				isContainsStory = true;
+			}
+		}
+		return isContainsStory;
+	}
+
 	public boolean containsTask(TaskObject task) {
 		boolean isContainsTask = false;
 		ArrayList<StoryObject> stories = getStories();
@@ -292,22 +303,21 @@ public class SprintObject implements IBaseObject{
 			stories.put(story.getId());
 		}
 
-		sprint.put(SprintEnum.ID, mId)
-		        .put(SprintEnum.PROJECT_ID, mProjectId)
-		        .put(SprintEnum.START_DATE, getStartDateString())
-		        .put(SprintEnum.DUE_DATE, getDueDateString())
-		        .put(SprintEnum.INTERVAL, mInterval)
-		        .put(SprintEnum.MEMBERS, mMembersAmount)
-		        .put(SprintEnum.SERIAL_ID, mSerialId)
-		        .put(SprintEnum.GOAL, mSprintGoal)
-		        .put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)
-		        .put(SprintEnum.FOCUS_FACTOR, mFocusFactor)
-		        .put(SprintEnum.DEMO_DATE, getDemoDateString())
-		        .put(SprintEnum.DEMO_PLACE, mDemoPlace)
-		        .put(SprintEnum.DAILY_INFO, mDailyInfo)
-		        .put(SprintEnum.CREATE_TIME, mCreateTime)
-		        .put(SprintEnum.UPDATE_TIME, mUpdateTime)
-		        .put("stories", stories);
+		sprint.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
+				.put(SprintEnum.START_DATE, getStartDateString())
+				.put(SprintEnum.DUE_DATE, getDueDateString())
+				.put(SprintEnum.INTERVAL, mInterval)
+				.put(SprintEnum.MEMBERS, mMembersAmount)
+				.put(SprintEnum.SERIAL_ID, mSerialId)
+				.put(SprintEnum.GOAL, mSprintGoal)
+				.put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)
+				.put(SprintEnum.FOCUS_FACTOR, mFocusFactor)
+				.put(SprintEnum.DEMO_DATE, getDemoDateString())
+				.put(SprintEnum.DEMO_PLACE, mDemoPlace)
+				.put(SprintEnum.DAILY_INFO, mDailyInfo)
+				.put(SprintEnum.CREATE_TIME, mCreateTime)
+				.put(SprintEnum.UPDATE_TIME, mUpdateTime)
+				.put("stories", stories);
 		return sprint;
-    }
+	}
 }

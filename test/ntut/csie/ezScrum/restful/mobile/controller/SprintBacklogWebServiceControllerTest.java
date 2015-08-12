@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -137,8 +138,94 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetTasksId() {
+	public void testGetTasksId() throws Exception {
+		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/task-id-list?username=%s&password=%s";
+		SprintObject sprint = new SprintObject(mProject.getId());
+		sprint.save();
+		StoryObject story = new StoryObject(mProject.getId());
+		story.setSprintId(sprint.getId());
+		story.save();
+		ArrayList<Long> tasksId = new ArrayList<>();
+		TaskObject task1 = new TaskObject(mProject.getId());
+		task1.setStoryId(story.getId()).setName("Test_Task_Name1")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task1.save();
+		TaskObject task2 = new TaskObject(mProject.getId());
+		task2.setStoryId(story.getId()).setName("Test_Task_Name2")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task2.save();
+		TaskObject task3 = new TaskObject(mProject.getId());
+		task3.setStoryId(story.getId()).setName("Test_Task_Name3")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task3.save();
+		tasksId.add(task1.getId());
+		tasksId.add(task2.getId());
+		tasksId.add(task3.getId());
+		String sprintId = String.valueOf(sprint.getId());
+		String storyId = String.valueOf(story.getId());
+		// Assemble URL
+		String URL = String.format(API_URL, mProjectName, sprintId, storyId,
+				mUsername, mPassword);
 
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
+		JSONObject wholeJson = new JSONObject(result);
+		JSONObject storyJson = wholeJson
+				.getJSONObject(SprintBacklogUtil.TAG_STORY);
+		long storyIdFromResponse = storyJson.getLong(SprintBacklogUtil.TAG_ID);
+		JSONArray taskIdArray = storyJson
+				.getJSONArray(SprintBacklogUtil.TAG_TASKSIDL);
+		assertEquals(story.getId(), storyIdFromResponse);
+		assertEquals(task1.getId(), taskIdArray.get(0));
+		assertEquals(task2.getId(), taskIdArray.get(1));
+		assertEquals(task3.getId(), taskIdArray.get(2));
+	}
+
+	@Test
+	public void testGetTasksId_WithInvalidSprintId() throws Exception {
+		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/task-id-list?username=%s&password=%s";
+		SprintObject sprint = new SprintObject(mProject.getId());
+		sprint.save();
+		StoryObject story = new StoryObject(mProject.getId());
+		story.setSprintId(sprint.getId());
+		story.save();
+		ArrayList<Long> tasksId = new ArrayList<>();
+		TaskObject task1 = new TaskObject(mProject.getId());
+		task1.setStoryId(story.getId()).setName("Test_Task_Name1")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task1.save();
+		TaskObject task2 = new TaskObject(mProject.getId());
+		task2.setStoryId(story.getId()).setName("Test_Task_Name2")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task2.save();
+		TaskObject task3 = new TaskObject(mProject.getId());
+		task3.setStoryId(story.getId()).setName("Test_Task_Name3")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task3.save();
+		tasksId.add(task1.getId());
+		tasksId.add(task2.getId());
+		tasksId.add(task3.getId());
+		String storyId = String.valueOf(story.getId());
+		// create invalid sprint
+		SprintObject invalidSprint = new SprintObject(mProject.getId());
+		// Assemble URL
+		String URL = String.format(API_URL, mProjectName, invalidSprint.getId(), storyId,
+				mUsername, mPassword);
+
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
+		// assert result
+		assertEquals("", result);
 	}
 
 	@Test
@@ -150,36 +237,52 @@ public class SprintBacklogWebServiceControllerTest {
 		story.setSprintId(sprint.getId());
 		story.save();
 		TaskObject task = new TaskObject(mProject.getId());
-		task.setStoryId(story.getId())
-			.setName("Test_Task_Name")
-			.setStatus(TaskObject.STATUS_UNCHECK)
-			.setEstimate(13)
-			.setRemains(8)
-			.setActual(10)
-			.setNotes("Test_Task_Notes");
+		task.setStoryId(story.getId()).setName("Test_Task_Name")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId, mUsername,
-				mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+				mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
 		JSONObject wholeJson = new JSONObject(result);
-		JSONArray historyJsonArray = wholeJson.getJSONArray(SprintBacklogUtil.TAG_TASKHISTORIES);
+		JSONArray historyJsonArray = wholeJson
+				.getJSONArray(SprintBacklogUtil.TAG_TASKHISTORIES);
 		assertEquals(2, historyJsonArray.length());
 		// assert first history
-		assertEquals(task.getHistories().get(0).getHistoryType(), historyJsonArray.getJSONObject(0).getInt(SprintBacklogUtil.TAG_HISTORYTYPE));
-		assertEquals(parseDate(task.getHistories().get(0).getCreateTime()), historyJsonArray.getJSONObject(0).getString(SprintBacklogUtil.TAG_MODIFYDATE));
-		assertEquals(task.getHistories().get(0).getDescription(), historyJsonArray.getJSONObject(0).getString(SprintBacklogUtil.TAG_DESCRIPTION));
+		assertEquals(
+				task.getHistories().get(0).getHistoryType(),
+				historyJsonArray.getJSONObject(0).getInt(
+						SprintBacklogUtil.TAG_HISTORYTYPE));
+		assertEquals(
+				parseDate(task.getHistories().get(0).getCreateTime()),
+				historyJsonArray.getJSONObject(0).getString(
+						SprintBacklogUtil.TAG_MODIFYDATE));
+		assertEquals(
+				task.getHistories().get(0).getDescription(),
+				historyJsonArray.getJSONObject(0).getString(
+						SprintBacklogUtil.TAG_DESCRIPTION));
 		// assert second history
-		assertEquals(task.getHistories().get(1).getHistoryType(), historyJsonArray.getJSONObject(1).getInt(SprintBacklogUtil.TAG_HISTORYTYPE));
-		assertEquals(parseDate(task.getHistories().get(1).getCreateTime()), historyJsonArray.getJSONObject(1).getString(SprintBacklogUtil.TAG_MODIFYDATE));
-		assertEquals(task.getHistories().get(1).getDescription(), historyJsonArray.getJSONObject(1).getString(SprintBacklogUtil.TAG_DESCRIPTION));
+		assertEquals(
+				task.getHistories().get(1).getHistoryType(),
+				historyJsonArray.getJSONObject(1).getInt(
+						SprintBacklogUtil.TAG_HISTORYTYPE));
+		assertEquals(
+				parseDate(task.getHistories().get(1).getCreateTime()),
+				historyJsonArray.getJSONObject(1).getString(
+						SprintBacklogUtil.TAG_MODIFYDATE));
+		assertEquals(
+				task.getHistories().get(1).getDescription(),
+				historyJsonArray.getJSONObject(1).getString(
+						SprintBacklogUtil.TAG_DESCRIPTION));
 	}
-	
+
 	@Test
 	public void testGetTaskHistory_WithInvalidSprint() throws Exception {
 		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/history?username=%s&password=%s";
@@ -189,25 +292,22 @@ public class SprintBacklogWebServiceControllerTest {
 		story.setSprintId(sprint.getId());
 		story.save();
 		TaskObject task = new TaskObject(mProject.getId());
-		task.setStoryId(story.getId())
-			.setName("Test_Task_Name")
-			.setStatus(TaskObject.STATUS_UNCHECK)
-			.setEstimate(13)
-			.setRemains(8)
-			.setActual(10)
-			.setNotes("Test_Task_Notes");
+		task.setStoryId(story.getId()).setName("Test_Task_Name")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
 		task.save();
 		SprintObject invalidSprint = new SprintObject(mProject.getId());
 		invalidSprint.save();
 		String invalidSprintId = String.valueOf(invalidSprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, invalidSprintId, taskId, mUsername,
-				mPassword);
+		String URL = String.format(API_URL, mProjectName, invalidSprintId,
+				taskId, mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
 		// assert result
 		assertEquals("", result);
 	}
@@ -221,34 +321,37 @@ public class SprintBacklogWebServiceControllerTest {
 		story.setSprintId(sprint.getId());
 		story.save();
 		TaskObject task = new TaskObject(mProject.getId());
-		task.setStoryId(story.getId())
-			.setName("Test_Task_Name")
-			.setStatus(TaskObject.STATUS_UNCHECK)
-			.setEstimate(13)
-			.setRemains(8)
-			.setActual(10)
-			.setNotes("Test_Task_Notes");
+		task.setStoryId(story.getId()).setName("Test_Task_Name")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId, mUsername,
-				mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+				mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
 		JSONObject wholeJson = new JSONObject(result);
 		assertEquals(task.getId(), wholeJson.getLong(SprintBacklogUtil.TAG_ID));
-		assertEquals(task.getName(), wholeJson.getString(SprintBacklogUtil.TAG_NAME));
+		assertEquals(task.getName(),
+				wholeJson.getString(SprintBacklogUtil.TAG_NAME));
 		assertEquals("", wholeJson.getString(SprintBacklogUtil.TAG_HANDLER));
-		assertEquals(0, wholeJson.getJSONArray(SprintBacklogUtil.TAG_PARTNERS).length());
-		assertEquals(task.getEstimate(), wholeJson.getLong(SprintBacklogUtil.TAG_ESTIMATE));
-		assertEquals(task.getRemains(), wholeJson.getLong(SprintBacklogUtil.TAG_REMAINS));
-		assertEquals(task.getActual(), wholeJson.getLong(SprintBacklogUtil.TAG_ACTUAL));
-		assertEquals(task.getNotes(), wholeJson.getString(SprintBacklogUtil.TAG_NOTES));
+		assertEquals(0, wholeJson.getJSONArray(SprintBacklogUtil.TAG_PARTNERS)
+				.length());
+		assertEquals(task.getEstimate(),
+				wholeJson.getLong(SprintBacklogUtil.TAG_ESTIMATE));
+		assertEquals(task.getRemains(),
+				wholeJson.getLong(SprintBacklogUtil.TAG_REMAINS));
+		assertEquals(task.getActual(),
+				wholeJson.getLong(SprintBacklogUtil.TAG_ACTUAL));
+		assertEquals(task.getNotes(),
+				wholeJson.getString(SprintBacklogUtil.TAG_NOTES));
 	}
-	
+
 	@Test
 	public void testGetTaskInformation_WithInvalidTask() throws Exception {
 		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s?username=%s&password=%s";
@@ -257,25 +360,23 @@ public class SprintBacklogWebServiceControllerTest {
 		StoryObject story = new StoryObject(mProject.getId());
 		story.save();
 		TaskObject task = new TaskObject(mProject.getId());
-		task.setName("Test_Task_Name")
-			.setStatus(TaskObject.STATUS_UNCHECK)
-			.setEstimate(13)
-			.setRemains(8)
-			.setActual(10)
-			.setNotes("Test_Task_Notes");
+		task.setName("Test_Task_Name").setStatus(TaskObject.STATUS_UNCHECK)
+				.setEstimate(13).setRemains(8).setActual(10)
+				.setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId, mUsername,
-				mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+				mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
 		assertEquals("", result);
 	}
-	
+
 	private static String parseDate(long date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
 		Date d = new Date(date);

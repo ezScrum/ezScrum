@@ -65,8 +65,8 @@ public class SprintBacklogWebServiceController {
 	/****
 	 * 依照sprint id和 handler id 取得sprint backlog(該sprint的story及底下的task資訊)
 	 * http://IP
-	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintID}/{
-	 * handlerID}/sprintbacklog?username={userName}&password={password}
+	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintId}/{
+	 * handlerId}/sprintbacklog?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
@@ -204,8 +204,8 @@ public class SprintBacklogWebServiceController {
 	/***
 	 * 取得單一Story的所有Task id list
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint
-	 * -backlog/{sprintID}/{
-	 * storyID}/task-id-list?username={userName}&password={password}
+	 * -backlog/{sprintId}/{
+	 * storyId}/task-id-list?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
@@ -215,7 +215,7 @@ public class SprintBacklogWebServiceController {
 	public String getTasksId(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@PathParam("storyId") long storyId) {
 		String tasksIdJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
@@ -223,7 +223,7 @@ public class SprintBacklogWebServiceController {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
+					decoder.getDecodeProjectName(), sprintId);
 			tasksIdJsonString = mSprintBacklogWebService
 					.getTasksIdJsonStringInStory(storyId);
 		} catch (IOException e) {
@@ -249,13 +249,13 @@ public class SprintBacklogWebServiceController {
 	/**
 	 * 取得單一Task的History
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint-backlog
-	 * /{sprintID}/{taskID}/history?username={userName}&password={password}
+	 * /{sprintId}/{taskId}/history?username={userName}&password={password}
 	 * 
 	 * @param username
 	 * @param password
 	 * @param projectName
 	 * @param sprintId
-	 * @param storyID
+	 * @param storyId
 	 * @param taskId
 	 * @return
 	 */
@@ -304,7 +304,7 @@ public class SprintBacklogWebServiceController {
 	/****
 	 * 取得單一Task的 information
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint
-	 * -backlog/{sprintID}/{taskID}?username={userName}&password={password}
+	 * -backlog/{sprintId}/{taskId}?username={userName}&password={password}
 	 * 
 	 * @return
 	 */

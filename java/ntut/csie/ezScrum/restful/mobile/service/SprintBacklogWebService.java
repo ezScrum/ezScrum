@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -32,8 +33,13 @@ public class SprintBacklogWebService extends ProjectWebService {
 	}
 
 	public String getTasksIdJsonStringInStory(long storyId) throws JSONException {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getStory(storyId).getTasks();
-		return ConvertSprintBacklog.getTasksIdJsonStringInStory(storyId, tasks);
+		SprintObject sprint = mSprintBacklogMapper.getSprint();
+		StoryObject story = mSprintBacklogMapper.getStory(storyId);
+		if (sprint.containsStory(story)) {
+			ArrayList<TaskObject> tasks = story.getTasks();
+			return ConvertSprintBacklog.getTasksIdJsonStringInStory(storyId, tasks);
+		}
+		return "";
 	}
 
 	/**
