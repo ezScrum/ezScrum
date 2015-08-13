@@ -167,7 +167,7 @@ public class SprintBacklogWebServiceController {
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			if (sprintId.equals("the-latest")) {
+			if (sprintId.equals("current")) {
 				mSprintBacklogWebService = new SprintBacklogWebService(
 						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName());

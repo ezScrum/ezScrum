@@ -12,7 +12,11 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
+<<<<<<< .mine
+import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
+=======
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
+>>>>>>> .theirs
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -251,8 +255,42 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetStoriesId() {
-
+	public void testGetStoriesId() throws Exception {
+		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/storylist?username=%s&password=%s";
+		long sprintId = mCS.getSprintsId().get(1);
+		
+		//Assemble URL
+		String URL = String.format(API_URL, mProjectName, sprintId, mUsername, mPassword);
+		
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(),StandardCharsets.UTF_8);
+		
+		// get Expected JSON String
+		String expectedJSONString = ConvertSprintBacklog.getStoriesIdJsonStringInSprint(SprintObject.get(sprintId).getStories());
+		
+		// Assert
+		assertEquals(expectedJSONString, result);
+	}
+	
+	@Test
+	public void testGetStoriesId_WithCurrentSprint() throws Exception {
+		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/storylist?username=%s&password=%s";
+		String sprintId = "current";
+		
+		//Assemble URL
+		String URL = String.format(API_URL, mProjectName, sprintId, mUsername, mPassword);
+		
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(),StandardCharsets.UTF_8);
+		
+		SprintObject currentSprint = mCS.getSprints().get(0);
+		// get Expected JSON String
+		String expectedJSONString = ConvertSprintBacklog.getStoriesIdJsonStringInSprint(currentSprint.getStories());
+		
+		// Assert
+		assertEquals(expectedJSONString, result);
 	}
 
 	@Test
