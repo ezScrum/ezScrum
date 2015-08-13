@@ -12,11 +12,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
-<<<<<<< .mine
-import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
-=======
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
->>>>>>> .theirs
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
