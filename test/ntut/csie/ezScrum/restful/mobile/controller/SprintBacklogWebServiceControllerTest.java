@@ -159,7 +159,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetCurrentSprintBacklog() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080:8080/ezScrum/web-service/%s/sprint-backlog/current-sprint?username=%s&password=%s";
 		// create test data
 		SprintObject currentSprint = mCS.getSprints().get(0);
 		StoryObject story1 = currentSprint.getStories().get(0);
@@ -175,7 +174,7 @@ public class SprintBacklogWebServiceControllerTest {
 		task2.save();
 		
 		// Send Http Request
-		String URL = String.format(API_URL, mProjectName, mUsername, mPassword);
+		String URL = String.format(API_URL, mProjectName, "current-sprint", mUsername, mPassword);
 		HttpGet httpGet = new HttpGet(URL);
 		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
 				.getEntity(), StandardCharsets.UTF_8);
