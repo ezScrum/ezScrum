@@ -44,19 +44,19 @@ public class SprintPlanWebServiceController {
 			account.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(account, decoder.getDecodeProjectName());
 			mSprintPlanWebService.createSprint(sprintJson);
-			responseString += mSprintPlanWebService.getRESTFulResponseString();
+			responseString = mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
-			responseString += "JSONException";
+			responseString = "JSONException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: createSprint, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
-			responseString += "LogonException";
+			responseString = "LogonException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: createSprint, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
-			responseString += "IOException";
+			responseString = "IOException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: createSprint, " + "api:InformationDecoder, "
 					+ "exception: " + e.toString());
@@ -85,19 +85,19 @@ public class SprintPlanWebServiceController {
 			userObject.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(userObject, decoder.getDecodeProjectName());
 			mSprintPlanWebService.deleteSprint(sprintId);
-			responseString += mSprintPlanWebService.getRESTFulResponseString();
+			responseString = mSprintPlanWebService.getRESTFulResponseString();
 		} catch (JSONException e) {
-			responseString += "JSONException";
+			responseString = "JSONException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: deleteSprint, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
-			responseString += "LogonException";
+			responseString = "LogonException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: deleteSprint, " + "exception: " + e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
-			responseString += "IOException";
+			responseString = "IOException";
 			System.out.println("class: SprintWebServiceController, "
 					+ "method: deleteSprint, " + "api:InformationDecoder, "
 					+ "exception: " + e.toString());

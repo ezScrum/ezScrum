@@ -8,7 +8,7 @@
 	<!-- this is for platform checking -->
 
 	<!-- JAVA relative parameter -->
-	<property name="javac_target_version" value="1.6" />
+	<property name="javac_target_version" value="1.7" />
 	<property name="javac_encoding" value="utf-8" />
 	<property name="javac_deprecation" value="on" />
 	<property name="javac_debug" value="on" />
@@ -188,7 +188,7 @@
 		<echo message="Compile All Java File： ${Source.Java.Dir}" />
 		<javac srcdir="${Source.Java.Dir}" destdir="${Target.Dir}"
 			source="${javac_target_version}" target="${javac_target_version}"
-			bootclasspath="${java.runtime.localDir.jre6}/rt.jar" deprecation="${javac_deprecation}"
+			bootclasspath="${java.runtime.localDir.jre7}/rt.jar" deprecation="${javac_deprecation}"
 			debug="${javac_debug}" encoding="${javac_encoding}">
 			<classpath refid="project.classpath" />
 			<classpath refid="web.library.classpath" />
@@ -198,8 +198,8 @@
 
 		<!-- ======= for linux ======= -->
 		<!-- <javac srcdir="${Source.Java.Dir}:${Source.Test.Dir}:${Source.Tools.Dir}" 
-			destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.6" 
-			target="1.6" bootclasspath="${`}/rt.jar" deprecation="on" debug="on" encoding="UTF8"> 
+			destdir="${Output.Dir.Linux.Ubuntu}/WebContent/WEB-INF/classes" source="1.7" 
+			target="1.7" bootclasspath="${`}/rt.jar" deprecation="on" debug="on" encoding="UTF8"> 
 			<classpath refid="jetty.server.classpath" /> <classpath refid="web.library.classpath" 
 			/> </javac> -->
 	</target>
@@ -255,7 +255,7 @@
 		<!-- java compile -->
 		<javac srcdir="${Source.Test.Dir}" destdir="${UT.TestClassesDir}"
 			source="${javac_target_version}" target="${javac_target_version}"
-			bootclasspath="${java.runtime.localDir.jre6}/rt.jar"
+			bootclasspath="${java.runtime.localDir.jre7}/rt.jar"
 			includeAntRuntime="false" encoding="${javac_encoding}">
 			<classpath>
 				<pathelement location="${UT.TestClassesDir}" />

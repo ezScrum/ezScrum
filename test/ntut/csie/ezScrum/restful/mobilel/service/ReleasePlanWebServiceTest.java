@@ -8,7 +8,6 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -81,7 +80,7 @@ public class ReleasePlanWebServiceTest {
 	}
 
 	@Test
-	public void testgetAllReleasePlan() throws LogonException, JSONException {
+	public void testGetAllReleasePlan() throws LogonException, JSONException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = mProject.getName();
@@ -105,15 +104,14 @@ public class ReleasePlanWebServiceTest {
 			// assert ReleasePlan中的SprintPlan
 			for(int j = 0; j < sprintsJSONArray.length(); j++) {
 				JSONObject sprintJSONObject = (JSONObject) sprintsJSONArray.get(j);
-				assertEquals(sprints.get(j).getId(), sprintJSONObject.get("mId").toString());
+				assertEquals(sprints.get(j).getId(), sprintJSONObject.getLong("mId"));
 				assertEquals(sprints.get(j).getSprintGoal(), sprintJSONObject.get("mSprintGoal"));
-				assertEquals(sprints.get(j).getInterval(), sprintJSONObject.get("m_interval").toString());
-				assertEquals(sprints.get(j).getMembersAmount(), sprintJSONObject.get("m_memberNumber").toString());
-				assertEquals(sprints.get(j).getFocusFactor(), sprintJSONObject.get("m_factor").toString());
-				assertEquals(sprints.get(j).getHoursCanCommit(), sprintJSONObject.get("m_availableDays").toString());
-				assertEquals(sprints.get(j).getDemoPlace(), sprintJSONObject.get("m_demoPlace"));
-				assertEquals(sprints.get(j).getDailyInfo(), sprintJSONObject.get("m_notes"));
-//				assertEquals((int)Double.parseDouble(sprints.get(j).getActualCost()), sprintJSONObject.get("m_actualCost"));
+				assertEquals(sprints.get(j).getInterval(), sprintJSONObject.get("mInterval"));
+				assertEquals(sprints.get(j).getMembersAmount(), sprintJSONObject.get("mMembersAmount"));
+				assertEquals(sprints.get(j).getFocusFactor(), sprintJSONObject.get("mFocusFactor"));
+				assertEquals(sprints.get(j).getHoursCanCommit(), sprintJSONObject.get("mHoursCanCommit"));
+				assertEquals(sprints.get(j).getDemoPlace(), sprintJSONObject.get("mDemoPlace"));
+				assertEquals(sprints.get(j).getDailyInfo(), sprintJSONObject.get("mDailyInfo"));
 			}
 		}
 	}

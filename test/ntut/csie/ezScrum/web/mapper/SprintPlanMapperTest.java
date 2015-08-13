@@ -104,6 +104,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
+		sprintInfo.dueDate = "2015/06/24";
 
 		// call SprintPlanMapper addSprintPlan
 		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
@@ -140,7 +141,7 @@ public class SprintPlanMapperTest {
 		Calendar calendarEnd = Calendar.getInstance();
 		calendarStart.setTime(currentDate);
 		// get endDate
-		calendarEnd.add(Calendar.DAY_OF_YEAR, CreateSprint.SPRINT_INTERVAL * 7);
+		calendarEnd.add(Calendar.DAY_OF_YEAR, CreateSprint.SPRINT_INTERVAL * 7 - 1);
 		
 		// assert
 		assertEquals(format.format(calendarStart.getTime()), sprint.getStartDateString());
@@ -173,6 +174,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/25";
 		sprintInfo.demoPlace = "Lab1321_NEW";
 		sprintInfo.dailyInfo = "12:10@Lab1321";
+		sprintInfo.dueDate = "2015/06/25";
 
 		// call updateSprintPlan
 		mSprintPlanMapper.updateSprint(sprintInfo);
@@ -213,6 +215,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/07/01";
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
+		sprintInfo.dueDate = "2015/07/01";
 		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
 		
 		// Get first default Sprint
@@ -244,6 +247,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
+		sprintInfo.dueDate = "2015/06/24";
 		// addSprint
 		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
 		// echo
