@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.restful.mobile.util.SprintPlanUtil;
+import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -132,6 +132,7 @@ public class SprintPlanWebServiceControllerTest {
 		String sprintGoal = "TEST_SPRINT_GOAL";
 		String startDate = "2015/07/01";
 		String demoDate = "2015/07/15";
+		String dueDate = "2015/07/15";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "TEST_DAILY_INFO";
 		
@@ -145,7 +146,8 @@ public class SprintPlanWebServiceControllerTest {
 		          .put(SprintEnum.START_DATE, startDate)
 		          .put(SprintEnum.DEMO_DATE, demoDate)
 		          .put(SprintEnum.DEMO_PLACE, demoPlace)
-		          .put(SprintEnum.DAILY_INFO, dailyInfo);
+		          .put(SprintEnum.DAILY_INFO, dailyInfo)
+		          .put(SprintEnum.DUE_DATE, dueDate);
 		
 		// Assemble URL
 		String URL = String.format(API_URL, mProjectName, "create", mUsername, mPassword);
@@ -157,26 +159,9 @@ public class SprintPlanWebServiceControllerTest {
 		HttpPost httpPost = new HttpPost(URL);
 		httpPost.setEntity(entity);
 		String result = EntityUtils.toString(mHttpClient.execute(httpPost).getEntity(), StandardCharsets.UTF_8);
-		JSONObject response = new JSONObject(result);
-		
-		// get Sprints
-		sprints = mProject.getSprints();
-		// get added Sprint JSONObject
-		JSONArray sprintsJSONArray = response.getJSONArray(SprintPlanUtil.TAG_SPRINTS);
-		JSONObject sprintJSONObject = sprintsJSONArray.getJSONObject(sprintsJSONArray.length() - 1);
-		JSONObject addedSprintJSONObject = sprintJSONObject.getJSONObject(SprintPlanUtil.TAG_SPRINT);
-		
+		String expectedJsonString = ConvertSprintBacklog.getSprintBacklogJsonString(mProject.getCurrentSprint());
 		// assert
-		assertEquals(mSprintCount + 1, sprints.size());
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_INTERVAL), interval);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_MEMBERS), members);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_HOURS_CAN_COMMIT), availableHours);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_FOCUS_FACTOR), focusFactor);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_SPRINT_GOAL), sprintGoal);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_START_DATE), startDate);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_DEMO_DATE), demoDate);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_DEMO_PLACE), demoPlace);
-		assertEquals(addedSprintJSONObject.get(SprintUtil.TAG_DAILY_MEETING), dailyInfo);
+		assertEquals(expectedJsonString, result);
 	}
 	
 	@Test
@@ -193,23 +178,16 @@ public class SprintPlanWebServiceControllerTest {
 		HttpDelete httpDelete = new HttpDelete(URL);
 		HttpResponse httpResponse = mHttpClient.execute(httpDelete);
 		String result = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-		JSONObject response = new JSONObject(result);
-		
-		// get Sprints
-		sprints = mProject.getSprints();
-		// get first sprint
-		JSONArray sprintsJSONArray = response.getJSONArray(SprintPlanUtil.TAG_SPRINTS);
 		
 		// assert
-		assertEquals(mSprintCount - 1, sprints.size());
-		assertEquals(mSprintCount - 1, sprintsJSONArray.length());
+		assertEquals("", result);
 	}
 	
 	@Test
 	public void testUpdateSprint() throws Exception {
 		// Test Data
-		int interval = 3;
-		int members = 2;
+		int interval = 2;
+		int members = 4;
 		int availableHours = 80;
 		int focusFactor = 90;
 		String sprintGoal = "TEST_SPRINT_GOAL_NEW";
@@ -217,10 +195,12 @@ public class SprintPlanWebServiceControllerTest {
 		String demoDate = "2013/07/22";
 		String demoPlace = "TEST_DEMO_PLACE";
 		String dailyInfo = "TEST_DAILY_INFO_NEW";
+		String dueDate = "2013/07/22";
 
+		SprintObject updateSpint = mCS.getSprints().get(0);
 		// prepare request data
 		JSONObject sprintJson = new JSONObject();
-		sprintJson.put(SprintEnum.ID, mCS.getSprintsId().get(0))
+		sprintJson.put(SprintEnum.ID, updateSpint.getId())
 		        .put(SprintEnum.INTERVAL, interval)
 		        .put(SprintEnum.MEMBERS, members)
 		        .put(SprintEnum.AVAILABLE_HOURS, availableHours)
@@ -229,7 +209,8 @@ public class SprintPlanWebServiceControllerTest {
 		        .put(SprintEnum.START_DATE, startDate)
 		        .put(SprintEnum.DEMO_DATE, demoDate)
 		        .put(SprintEnum.DEMO_PLACE, demoPlace)
-		        .put(SprintEnum.DAILY_INFO, dailyInfo);
+		        .put(SprintEnum.DAILY_INFO, dailyInfo)
+		        .put(SprintEnum.DUE_DATE, dueDate);
 
 		// Assemble URL
 		String URL = String.format(API_URL, mProjectName, "update", mUsername, mPassword);
@@ -243,7 +224,7 @@ public class SprintPlanWebServiceControllerTest {
 		EntityUtils.toString(mHttpClient.execute(httpPut).getEntity(), StandardCharsets.UTF_8);
 
 		// get Sprint
-		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));
+		SprintObject sprint = SprintObject.get(updateSpint.getId());
 
 		// assert
 		assertEquals(interval, sprint.getInterval());

@@ -40,5 +40,6 @@ public class SprintInfo {
 		demoDate = sprint.getString(SprintEnum.DEMO_DATE);
 		demoPlace = sprint.getString(SprintEnum.DEMO_PLACE);
 		dailyInfo = sprint.getString(SprintEnum.DAILY_INFO);
+		dueDate = sprint.getString(SprintEnum.DUE_DATE);
 	}
 }
