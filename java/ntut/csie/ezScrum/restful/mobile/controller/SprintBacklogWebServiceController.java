@@ -126,7 +126,7 @@ public class SprintBacklogWebServiceController {
 			@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName) {
-		String jsonString = "";
+		String currentSprintBacklogJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
@@ -134,14 +134,14 @@ public class SprintBacklogWebServiceController {
 			user.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(user,
 					decoder.getDecodeProjectName());
-			jsonString = mSprintPlanWebService.getCurrentSprint();
+			currentSprintBacklogJsonString = mSprintPlanWebService.getCurrentSprintJsonString();
 		} catch (Exception e) {
 			System.out.println("class: SprintBacklogWebServiceController, "
 					+ "method: getCurrentSprintBacklog, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
 		}
-		return jsonString;
+		return currentSprintBacklogJsonString;
 	}
 
 	/****

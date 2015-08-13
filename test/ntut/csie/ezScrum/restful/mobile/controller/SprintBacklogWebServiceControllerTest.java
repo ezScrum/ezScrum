@@ -12,16 +12,17 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
+import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.ParseException;
@@ -51,13 +52,11 @@ public class SprintBacklogWebServiceControllerTest {
 	private int mProjectCount = 1;
 	private int mStoryCount = 3;
 	private int mSprintCount = 2;
-	private int mTaskCount = 3;
 	private int mEstimate = 90;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private ProjectObject mProject;
-	private CreateTask mCT;
 	private Configuration mConfig;
 	private String mProjectName;
 
@@ -88,9 +87,6 @@ public class SprintBacklogWebServiceControllerTest {
 		mASTS = new AddStoryToSprint(mStoryCount, mEstimate, mCS, mCP,
 				CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
-
-		mCT = new CreateTask(mTaskCount, mCP);
-		mCT.exe();
 
 		mProject = mCP.getAllProjects().get(0);
 
@@ -162,8 +158,97 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetCurrentSprintBacklog() {
-
+	public void testGetCurrentSprintBacklog() throws Exception {
+		final String API_URL = "http://127.0.0.1:8080:8080/ezScrum/web-service/%s/sprint-backlog/current-sprint?username=%s&password=%s";
+		// create test data
+		SprintObject currentSprint = mCS.getSprints().get(0);
+		StoryObject story1 = currentSprint.getStories().get(0);
+		TaskObject task1 = new TaskObject(mProject.getId());
+		task1.setStoryId(story1.getId()).setName("Test_Task_Name1")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task1.save();
+		TaskObject task2 = new TaskObject(mProject.getId());
+		task2.setStoryId(story1.getId()).setName("Test_Task_Name2")
+				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
+				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+		task2.save();
+		
+		// Send Http Request
+		String URL = String.format(API_URL, mProjectName, mUsername, mPassword);
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
+				.getEntity(), StandardCharsets.UTF_8);
+		JSONObject wholeJson = new JSONObject(result);
+		JSONArray storyArray = wholeJson.getJSONArray("stories");
+		// assert basic sprint info
+		assertEquals(currentSprint.getId(), wholeJson.getLong(SprintUtil.TAG_ID));
+		assertEquals(currentSprint.getProjectId(), wholeJson.getLong(SprintUtil.TAG_PROJECT_ID));
+		assertEquals(currentSprint.getStartDateString(), wholeJson.getString(SprintUtil.TAG_START_DATE));
+		assertEquals(currentSprint.getInterval(), wholeJson.getLong(SprintUtil.TAG_INTERVAL));
+		assertEquals(currentSprint.getMembersAmount(), wholeJson.getLong(SprintUtil.TAG_MEMBERS));
+		assertEquals(currentSprint.getSerialId(), wholeJson.getLong(SprintUtil.TAG_SERIAL_ID));
+		assertEquals(currentSprint.getSprintGoal(), wholeJson.getString(SprintUtil.TAG_SPRINT_GOAL));
+		assertEquals(currentSprint.getHoursCanCommit(), wholeJson.getLong(SprintUtil.TAG_HOURS_CAN_COMMIT));
+		assertEquals(currentSprint.getFocusFactor(), wholeJson.getLong(SprintUtil.TAG_FOCUS_FACTOR));
+		assertEquals(currentSprint.getDemoDateString(), wholeJson.getString(SprintUtil.TAG_DEMO_DATE));
+		assertEquals(currentSprint.getDemoPlace(), wholeJson.getString(SprintUtil.TAG_DEMO_PLACE));
+		assertEquals(currentSprint.getDailyInfo(), wholeJson.getString(SprintUtil.TAG_DAILY_MEETING));
+		assertEquals(currentSprint.getDueDateString(), wholeJson.getString(SprintUtil.TAG_DUE_DATE));
+		assertEquals(3, storyArray.length());
+		// assert story1 info
+		JSONObject story1Json = storyArray.getJSONObject(0);
+		assertEquals(story1.getId(), story1Json.getLong(StoryEnum.ID));
+		assertEquals(story1.getName(), story1Json.getString(StoryEnum.NAME));
+		assertEquals(story1.getNotes(), story1Json.getString(StoryEnum.NOTES));
+		assertEquals(story1.getHowToDemo(), story1Json.getString(StoryEnum.HOW_TO_DEMO));
+		assertEquals(story1.getImportance(), story1Json.getInt(StoryEnum.IMPORTANCE));
+		assertEquals(story1.getValue(), story1Json.getInt(StoryEnum.VALUE));
+		assertEquals(story1.getEstimate(), story1Json.getInt(StoryEnum.ESTIMATE));
+		assertEquals(story1.getStatus(), story1Json.getInt(StoryEnum.STATUS));
+		assertEquals(story1.getSprintId(), story1Json.getLong(StoryEnum.SPRINT_ID));
+		JSONArray taskArray1 = story1Json.getJSONArray("tasks");
+		JSONArray historyArray1 = story1Json.getJSONArray("histories");
+		JSONArray tagArray1 = story1Json.getJSONArray("tags");
+		assertEquals(2, taskArray1.length());
+		assertEquals(4, historyArray1.length());
+		assertEquals(0, tagArray1.length());
+		// assert story2 info
+		StoryObject story2 = currentSprint.getStories().get(1);
+		JSONObject story2Json = storyArray.getJSONObject(1);
+		assertEquals(story2.getId(), story2Json.getLong(StoryEnum.ID));
+		assertEquals(story2.getName(), story2Json.getString(StoryEnum.NAME));
+		assertEquals(story2.getNotes(), story2Json.getString(StoryEnum.NOTES));
+		assertEquals(story2.getHowToDemo(), story2Json.getString(StoryEnum.HOW_TO_DEMO));
+		assertEquals(story2.getImportance(), story2Json.getInt(StoryEnum.IMPORTANCE));
+		assertEquals(story2.getValue(), story2Json.getInt(StoryEnum.VALUE));
+		assertEquals(story2.getEstimate(), story2Json.getInt(StoryEnum.ESTIMATE));
+		assertEquals(story2.getStatus(), story2Json.getInt(StoryEnum.STATUS));
+		assertEquals(story2.getSprintId(), story2Json.getLong(StoryEnum.SPRINT_ID));
+		JSONArray taskArray2 = story2Json.getJSONArray("tasks");
+		JSONArray historyArray2 = story2Json.getJSONArray("histories");
+		JSONArray tagArray2 = story2Json.getJSONArray("tags");
+		assertEquals(0, taskArray2.length());
+		assertEquals(2, historyArray2.length());
+		assertEquals(0, tagArray2.length());
+		// assert story3 info
+		StoryObject story3 = currentSprint.getStories().get(1);
+		JSONObject story3Json = storyArray.getJSONObject(1);
+		assertEquals(story3.getId(), story3Json.getLong(StoryEnum.ID));
+		assertEquals(story3.getName(), story3Json.getString(StoryEnum.NAME));
+		assertEquals(story3.getNotes(), story3Json.getString(StoryEnum.NOTES));
+		assertEquals(story3.getHowToDemo(), story3Json.getString(StoryEnum.HOW_TO_DEMO));
+		assertEquals(story3.getImportance(), story3Json.getInt(StoryEnum.IMPORTANCE));
+		assertEquals(story3.getValue(), story3Json.getInt(StoryEnum.VALUE));
+		assertEquals(story3.getEstimate(), story3Json.getInt(StoryEnum.ESTIMATE));
+		assertEquals(story3.getStatus(), story3Json.getInt(StoryEnum.STATUS));
+		assertEquals(story3.getSprintId(), story3Json.getLong(StoryEnum.SPRINT_ID));
+		JSONArray taskArray3 = story3Json.getJSONArray("tasks");
+		JSONArray historyArray3 = story3Json.getJSONArray("histories");
+		JSONArray tagArray3 = story3Json.getJSONArray("tags");
+		assertEquals(0, taskArray3.length());
+		assertEquals(2, historyArray3.length());
+		assertEquals(0, tagArray3.length());
 	}
 
 	@Test

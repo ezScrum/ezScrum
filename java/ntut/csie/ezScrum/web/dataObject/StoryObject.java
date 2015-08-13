@@ -335,7 +335,7 @@ public class StoryObject implements IBaseObject {
 		JSONArray tags = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.getId());
+			tasks.put(task.toJSON());
 		}
 		
 		for (HistoryObject history : getHistories()) {
