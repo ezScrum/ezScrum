@@ -65,24 +65,18 @@ public class SprintBacklogWebServiceController {
 	/****
 	 * 依照sprint id和 handler id 取得sprint backlog(該sprint的story及底下的task資訊)
 	 * http://IP
-	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintId}/{
-	 * handlerId}/sprintbacklog?username={userName}&password={password}
+	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintId}/
+	 * sprintbacklog?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
-	@Path("{sprintId}/{handlerId}/sprintbacklog")
+	@Path("{sprintId}/sprintbacklog")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSprintBacklog(@QueryParam("username") String userName,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
-			@PathParam("handlerId") String handlerId) {
-		String handler = "ALL";
-		if (handlerId != null) {
-			handler = handlerId; // filter name
-		}
-
+			@PathParam("sprintId") String sprintId) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {

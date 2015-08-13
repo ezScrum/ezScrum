@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.mobile.controller;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintBacklogUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -22,11 +24,14 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +42,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class SprintBacklogWebServiceControllerTest {
 	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/web-service";
+	private static String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s?username=%s&password=%s";
 	private static HttpServer mServer;
 	private HttpClient mHttpClient;
 	private String mUsername = "admin";
@@ -118,13 +124,41 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetSprintInfoList() {
+	public void testGetSprintInfoList() throws ParseException, ClientProtocolException, IOException, JSONException {
+		// Get Sprint
+		SprintObject sprint = mProject.getCurrentSprint();
+		// Get JSON
+		String expectedJSONString = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
+		
+		// Assemble URL
+		String URL = String.format(API_URL, mProjectName, "sprintlist", mUsername, mPassword);
 
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		JSONObject response = new JSONObject(result);
+		
+		// Assert
+		assertEquals(expectedJSONString, response.toString());
 	}
 
 	@Test
-	public void testGetSprintBacklog() {
+	public void testGetSprintBacklog() throws ParseException, ClientProtocolException, IOException, JSONException {
+		// Get Sprint
+		SprintObject sprint = mCS.getSprints().get(0);
+		// Get JSON
+		String expectedJSONString = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
+		
+		// Assemble URL
+		String URL = String.format(API_URL, mProjectName, sprint.getId() + "/sprintbacklog", mUsername, mPassword);
 
+		// Send Http Request
+		HttpGet httpGet = new HttpGet(URL);
+		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
+		JSONObject response = new JSONObject(result);
+		
+		// Assert
+		assertEquals(expectedJSONString, response.toString());
 	}
 
 	@Test
@@ -139,7 +173,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTasksId() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/task-id-list?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -163,8 +196,7 @@ public class SprintBacklogWebServiceControllerTest {
 		String sprintId = String.valueOf(sprint.getId());
 		String storyId = String.valueOf(story.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, storyId,
-				mUsername, mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId + "/" + storyId + "/task-id-list", mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
@@ -184,7 +216,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTasksId_WithInvalidSprintId() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/task-id-list?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -213,7 +244,7 @@ public class SprintBacklogWebServiceControllerTest {
 		// create invalid sprint
 		SprintObject invalidSprint = new SprintObject(mProject.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, invalidSprint.getId(), storyId,
+		String URL = String.format(API_URL, mProjectName, invalidSprint.getId() + "/" + storyId + "/task-id-list",
 				mUsername, mPassword);
 
 		// Send Http Request
@@ -226,7 +257,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTaskHistory() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/history?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -240,7 +270,7 @@ public class SprintBacklogWebServiceControllerTest {
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId + "/history",
 				mUsername, mPassword);
 
 		// Send Http Request
@@ -281,7 +311,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTaskHistory_WithInvalidSprint() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s/history?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -297,8 +326,7 @@ public class SprintBacklogWebServiceControllerTest {
 		String invalidSprintId = String.valueOf(invalidSprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, invalidSprintId,
-				taskId, mUsername, mPassword);
+		String URL = String.format(API_URL, mProjectName, invalidSprintId + "/" + taskId + "/history", mUsername, mPassword);
 
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
@@ -310,7 +338,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTaskInformation() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -324,7 +351,7 @@ public class SprintBacklogWebServiceControllerTest {
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId,
 				mUsername, mPassword);
 
 		// Send Http Request
@@ -350,7 +377,6 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetTaskInformation_WithInvalidTask() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/%s?username=%s&password=%s";
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -363,7 +389,7 @@ public class SprintBacklogWebServiceControllerTest {
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
 		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, taskId,
+		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId,
 				mUsername, mPassword);
 
 		// Send Http Request
