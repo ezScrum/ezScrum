@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.mobilel.service;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -15,6 +16,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -90,28 +92,28 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releaselist = mReleasePlanHelper.loadReleasePlansList();
+		List<IReleasePlanDesc> releasePlanDescs = mReleasePlanHelper.loadReleasePlansList();
 		JSONArray releasesJSONArray = new JSONArray(mReleasePlanWebService.getAllReleasePlan());
 		
 		for (int i = 0; i < mReleaseCount; i++) {
 			JSONObject releaseJSONObject = (JSONObject) releasesJSONArray.get(i);
-			assertEquals(releaselist.get(i).getID(), releaseJSONObject.get("ID"));
-			assertEquals(releaselist.get(i).getName(), releaseJSONObject.get("Name"));
-			assertEquals(releaselist.get(i).getDescription(), releaseJSONObject.get("Description"));
+			assertEquals(releasePlanDescs.get(i).getID(), releaseJSONObject.get("ID"));
+			assertEquals(releasePlanDescs.get(i).getName(), releaseJSONObject.get("Name"));
+			assertEquals(releasePlanDescs.get(i).getDescription(), releaseJSONObject.get("Description"));
 			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("SprintList").toString());
-			List<ISprintPlanDesc> sprintlist = releaselist.get(i).getSprints();
+			ArrayList<SprintObject> sprints = releasePlanDescs.get(i).getSprints();
 			// assert ReleasePlan中的SprintPlan
 			for(int j = 0; j < sprintsJSONArray.length(); j++) {
 				JSONObject sprintJSONObject = (JSONObject) sprintsJSONArray.get(j);
-				assertEquals(sprintlist.get(j).getID(), sprintJSONObject.get("m_id").toString());
-				assertEquals(sprintlist.get(j).getGoal(), sprintJSONObject.get("m_goal"));
-				assertEquals(sprintlist.get(j).getInterval(), sprintJSONObject.get("m_interval").toString());
-				assertEquals(sprintlist.get(j).getMemberNumber(), sprintJSONObject.get("m_memberNumber").toString());
-				assertEquals(sprintlist.get(j).getFocusFactor(), sprintJSONObject.get("m_factor").toString());
-				assertEquals(sprintlist.get(j).getAvailableDays(), sprintJSONObject.get("m_availableDays").toString());
-				assertEquals(sprintlist.get(j).getDemoPlace(), sprintJSONObject.get("m_demoPlace"));
-				assertEquals(sprintlist.get(j).getNotes(), sprintJSONObject.get("m_notes"));
-				assertEquals((int)Double.parseDouble(sprintlist.get(j).getActualCost()), sprintJSONObject.get("m_actualCost"));
+				assertEquals(sprints.get(j).getId(), sprintJSONObject.get("mId").toString());
+				assertEquals(sprints.get(j).getSprintGoal(), sprintJSONObject.get("mSprintGoal"));
+				assertEquals(sprints.get(j).getInterval(), sprintJSONObject.get("m_interval").toString());
+				assertEquals(sprints.get(j).getMembersAmount(), sprintJSONObject.get("m_memberNumber").toString());
+				assertEquals(sprints.get(j).getFocusFactor(), sprintJSONObject.get("m_factor").toString());
+				assertEquals(sprints.get(j).getHoursCanCommit(), sprintJSONObject.get("m_availableDays").toString());
+				assertEquals(sprints.get(j).getDemoPlace(), sprintJSONObject.get("m_demoPlace"));
+				assertEquals(sprints.get(j).getDailyInfo(), sprintJSONObject.get("m_notes"));
+//				assertEquals((int)Double.parseDouble(sprints.get(j).getActualCost()), sprintJSONObject.get("m_actualCost"));
 			}
 		}
 	}

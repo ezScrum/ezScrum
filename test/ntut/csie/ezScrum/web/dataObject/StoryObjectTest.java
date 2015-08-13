@@ -1,8 +1,12 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
@@ -11,6 +15,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -368,6 +373,17 @@ public class StoryObjectTest {
 		assertEquals("FILE_1", attachFile.getName());
 		assertEquals("/TEST_PATH", attachFile.getPath());
 		assertEquals(IssueTypeEnum.TYPE_STORY, attachFile.getIssueType());
+	}
+	
+	@Test
+	public void testContainsTask() {
+		StoryObject story = createStory();
+		TaskObject task = new TaskObject(mProjectId);
+		task.save();
+		assertFalse(story.containsTask(task));
+		task.setStoryId(story.getId());
+		task.save();
+		assertTrue(story.containsTask(task));
 	}
 	
 	private StoryObject createStory() {

@@ -134,7 +134,7 @@ public class SprintPlanWebServiceTest {
 		
 		// 沒有Sprint的時候
 		SprintPlanWebService sprintPlanWebService = new SprintPlanWebService(account, mProject.getName());
-		assertEquals(sprintPlanWebService.getCurrentSprint(), "");
+		assertEquals(sprintPlanWebService.getCurrentSprintJsonString(), "");
 	}
 	
 	@Test
@@ -153,7 +153,7 @@ public class SprintPlanWebServiceTest {
 		// create SprintPlanWebService
 		SprintPlanWebService sprintPlanWebService = new SprintPlanWebService(account, mProject.getName());
 		// getCurrentSprint JSON String
-		String currentSprintJSONString = sprintPlanWebService.getCurrentSprint();
+		String currentSprintJSONString = sprintPlanWebService.getCurrentSprintJsonString();
 		// create CurrentSprint JSON Object
 		JSONObject sprintJSONObject = new JSONObject(currentSprintJSONString);
 		

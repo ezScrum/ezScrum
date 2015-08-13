@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.mobile.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -66,24 +65,18 @@ public class SprintBacklogWebServiceController {
 	/****
 	 * 依照sprint id和 handler id 取得sprint backlog(該sprint的story及底下的task資訊)
 	 * http://IP
-	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintID}/{
-	 * handlerID}/sprintbacklog?username={userName}&password={password}
+	 * :8080/ezScrum/web-service/{projectName}/sprint-backlog/{sprintId}/
+	 * sprintbacklog?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
-	@Path("{sprintId}/{handlerId}/sprintbacklog")
+	@Path("{sprintId}/sprintbacklog")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSprintBacklog(@QueryParam("username") String userName,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
-			@PathParam("handlerId") String handlerId) {
-		String handler = "ALL";
-		if (handlerId != null) {
-			handler = handlerId; // filter name
-		}
-
+			@PathParam("sprintId") String sprintId) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
@@ -99,7 +92,7 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeProjectName(), iteration);
 			}
 
-			jsonString = mSprintBacklogWebService.getSprintBacklog(handler);
+			jsonString = mSprintBacklogWebService.getSprintBacklogJsonString();
 
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
@@ -133,7 +126,7 @@ public class SprintBacklogWebServiceController {
 			@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName) {
-		String jsonString = "";
+		String currentSprintBacklogJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
@@ -141,14 +134,14 @@ public class SprintBacklogWebServiceController {
 			user.setPassword(decoder.getDecodePwd());
 			mSprintPlanWebService = new SprintPlanWebService(user,
 					decoder.getDecodeProjectName());
-			jsonString = mSprintPlanWebService.getCurrentSprint();
+			currentSprintBacklogJsonString = mSprintPlanWebService.getCurrentSprintJsonString();
 		} catch (Exception e) {
 			System.out.println("class: SprintBacklogWebServiceController, "
 					+ "method: getCurrentSprintBacklog, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
 		}
-		return jsonString;
+		return currentSprintBacklogJsonString;
 	}
 
 	/****
@@ -166,15 +159,15 @@ public class SprintBacklogWebServiceController {
 	@GET
 	@Path("{sprintId}/storylist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getStoryIDList(@QueryParam("username") String username,
+	public String getStoriesId(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
 			@PathParam("sprintId") String sprintId) {
-		String jsonString = "";
+		String storiesIdJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
-			if (sprintId.equals("the-latest")) {
+			if (sprintId.equals("current")) {
 				mSprintBacklogWebService = new SprintBacklogWebService(
 						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName());
@@ -184,13 +177,13 @@ public class SprintBacklogWebServiceController {
 						decoder.getDecodeUsername(), decoder.getDecodePwd(),
 						decoder.getDecodeProjectName(), iteration);
 			}
-			jsonString = mSprintBacklogWebService.getStoriesIdJsonStringInSprint();
+			storiesIdJsonString = mSprintBacklogWebService.getStoriesIdJsonStringInSprint();
 		} catch (IOException e) {
 			System.out.println("class: InformationDecoder, "
 					+ "method: decode, " + "exception: " + e.toString());
 		} catch (LogonException e) {
 			System.out.println("class: SprintBacklogWebServiceController, "
-					+ "method: getSprintBacklogList, " + "exception: "
+					+ "method: getStoriesId, " + "exception: "
 					+ e.toString());
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -199,64 +192,64 @@ public class SprintBacklogWebServiceController {
 					+ e.toString());
 			e.printStackTrace();
 		}
-		return jsonString;
+		return storiesIdJsonString;
 	}
 
 	/***
 	 * 取得單一Story的所有Task id list
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint
-	 * -backlog/{sprintID}/{
-	 * storyID}/task-id-list?username={userName}&password={password}
+	 * -backlog/{sprintId}/{
+	 * storyId}/task-id-list?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
 	@GET
 	@Path("{sprintId}/{storyId}/task-id-list")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getTaskIDList(@QueryParam("username") String username,
+	public String getTasksId(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@PathParam("storyId") long storyId) {
-		String taskIDListJsonString = "";
+		String tasksIdJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
-			taskIDListJsonString = mSprintBacklogWebService
+					decoder.getDecodeProjectName(), sprintId);
+			tasksIdJsonString = mSprintBacklogWebService
 					.getTasksIdJsonStringInStory(storyId);
 		} catch (IOException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:IOException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:IOException, "
 							+ e.toString());
 			e.printStackTrace();
 		} catch (LogonException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:LogonException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:LogonException, "
 							+ e.toString());
 			e.printStackTrace();
 		} catch (JSONException e) {
 			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskIDList, exception:JSONException, "
+					.println("Class:SprintBacklogWebServiceController.java, method:getTasksId, exception:JSONException, "
 							+ e.toString());
 			e.printStackTrace();
 		} finally {
 		}
-		return taskIDListJsonString;
+		return tasksIdJsonString;
 	}
 
 	/**
 	 * 取得單一Task的History
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint-backlog
-	 * /{sprintID}/{taskID}/history?username={userName}&password={password}
+	 * /{sprintId}/{taskId}/history?username={userName}&password={password}
 	 * 
 	 * @param username
 	 * @param password
 	 * @param projectName
 	 * @param sprintId
-	 * @param storyID
+	 * @param storyId
 	 * @param taskId
 	 * @return
 	 */
@@ -266,15 +259,15 @@ public class SprintBacklogWebServiceController {
 	public String getTaskHistory(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
-			@PathParam("taskId") String taskId) {
+			@PathParam("sprintId") long sprintId,
+			@PathParam("taskId") long taskId) {
 		String taskHistoryJsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
 		try {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName(), Integer.parseInt(sprintId));
+					decoder.getDecodeProjectName(), sprintId);
 			taskHistoryJsonString = mSprintBacklogWebService
 					.getTaskHsitoryJsonString(taskId);
 		} catch (IOException e) {
@@ -297,11 +290,6 @@ public class SprintBacklogWebServiceController {
 					.println("Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:JSONException, "
 							+ e.toString());
 			e.printStackTrace();
-		} catch (SQLException e) {
-			System.out
-					.println("Class:SprintBacklogWebServiceController.java, method:getTaskHistory, exception:SQLException, "
-							+ e.toString());
-			e.printStackTrace();
 		} finally {
 		}
 		return taskHistoryJsonString;
@@ -310,7 +298,7 @@ public class SprintBacklogWebServiceController {
 	/****
 	 * 取得單一Task的 information
 	 * http://IP:8080/ezScrum/web-service/{projectName}/sprint
-	 * -backlog/{sprintID}/{taskID}?username={userName}&password={password}
+	 * -backlog/{sprintId}/{taskId}?username={userName}&password={password}
 	 * 
 	 * @return
 	 */
@@ -320,7 +308,7 @@ public class SprintBacklogWebServiceController {
 	public String getTaskInformation(@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@PathParam("projectName") String projectName,
-			@PathParam("sprintId") String sprintId,
+			@PathParam("sprintId") long sprintId,
 			@PathParam("taskId") long taskId) {
 		String jsonString = "";
 		InformationDecoder decoder = new InformationDecoder();
@@ -328,7 +316,7 @@ public class SprintBacklogWebServiceController {
 			decoder.decode(username, password, projectName);
 			mSprintBacklogWebService = new SprintBacklogWebService(
 					decoder.getDecodeUsername(), decoder.getDecodePwd(),
-					decoder.getDecodeProjectName());
+					decoder.getDecodeProjectName(), sprintId);
 			jsonString = mSprintBacklogWebService.getTaskJsonString(taskId);
 		} catch (IOException e) {
 			System.out

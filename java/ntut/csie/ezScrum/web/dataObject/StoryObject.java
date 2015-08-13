@@ -316,6 +316,17 @@ public class StoryObject implements IBaseObject {
 		}
 	}
 	
+	public boolean containsTask(TaskObject targetTask) {
+		boolean isContainingTask = false;
+		ArrayList<TaskObject> tasks = getTasks();
+		for (TaskObject task : tasks) {
+			if (task.getId() == targetTask.getId()) {
+				isContainingTask = true;
+			}
+		}
+		return isContainingTask;
+	}
+	
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject story = new JSONObject();
@@ -324,7 +335,7 @@ public class StoryObject implements IBaseObject {
 		JSONArray tags = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.getId());
+			tasks.put(task.toJSON());
 		}
 		
 		for (HistoryObject history : getHistories()) {
