@@ -252,11 +252,10 @@ public class SprintBacklogWebServiceControllerTest {
 
 	@Test
 	public void testGetStoriesId() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/storylist?username=%s&password=%s";
 		long sprintId = mCS.getSprintsId().get(1);
 		
 		//Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, mUsername, mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId + "/storylist", mUsername, mPassword);
 		
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);
@@ -271,11 +270,10 @@ public class SprintBacklogWebServiceControllerTest {
 	
 	@Test
 	public void testGetStoriesId_WithCurrentSprint() throws Exception {
-		final String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s/storylist?username=%s&password=%s";
 		String sprintId = "current";
 		
 		//Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId, mUsername, mPassword);
+		String URL = String.format(API_URL, mProjectName, sprintId + "/storylist", mUsername, mPassword);
 		
 		// Send Http Request
 		HttpGet httpGet = new HttpGet(URL);

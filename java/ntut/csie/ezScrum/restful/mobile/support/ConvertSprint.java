@@ -21,20 +21,18 @@ public class ConvertSprint {
 		for (SprintObject sprint : sprints) {
 			JSONObject sprintPlan = new JSONObject();
 			JSONObject sprintProperties = new JSONObject();
-			sprintProperties
-					.put(SprintUtil.TAG_ID, sprint.getId())
-					.put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
-					.put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
-					.put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
-					.put(SprintUtil.TAG_MEMBERS, sprint.getMembersAmount())
-					.put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
-					.put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
-					.put(SprintUtil.TAG_HOURS_CAN_COMMIT,
-							sprint.getHoursCanCommit())
-					.put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
-					.put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
-					.put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
-					.put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
+			sprintProperties.put(SprintUtil.TAG_ID, sprint.getId())
+							.put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
+							.put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
+							.put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
+							.put(SprintUtil.TAG_MEMBERS, sprint.getMembersAmount())
+							.put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
+							.put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
+							.put(SprintUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit())
+							.put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
+							.put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
+							.put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
+							.put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 			sprintPlan.put(SprintUtil.TAG_SPRINT, sprintProperties);
 			sprintArray.put(sprintPlan);
 		}
@@ -74,16 +72,14 @@ public class ConvertSprint {
 		JSONArray jsonSprints = new JSONArray();
 		for (SprintObject sprint : sprints) {
 			JSONObject jsonSprint = new JSONObject();
-			jsonSprint
-					.put(SprintUtil.TAG_ID, sprint.getId())
+			jsonSprint.put(SprintUtil.TAG_ID, sprint.getId())
 					.put(SprintUtil.TAG_PROJECT_ID, sprint.getProjectId())
 					.put(SprintUtil.TAG_START_DATE, sprint.getStartDateString())
 					.put(SprintUtil.TAG_INTERVAL, sprint.getInterval())
 					.put(SprintUtil.TAG_MEMBERS, sprint.getMembersAmount())
 					.put(SprintUtil.TAG_SERIAL_ID, sprint.getSerialId())
 					.put(SprintUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal())
-					.put(SprintUtil.TAG_HOURS_CAN_COMMIT,
-							sprint.getHoursCanCommit())
+					.put(SprintUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit())
 					.put(SprintUtil.TAG_FOCUS_FACTOR, sprint.getFocusFactor())
 					.put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
 					.put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
