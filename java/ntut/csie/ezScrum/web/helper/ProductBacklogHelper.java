@@ -138,9 +138,6 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getAddNewTagResponsetext(String newTagName) {
 		String original_tagname = newTagName;
-
-		newTagName = new TranslateSpecialChar().TranslateDBChar(newTagName);
-
 		StringBuilder sb = new StringBuilder("");
 		// 先將"\","'"轉換, 判斷DB裡是否存在
 		if (newTagName.contains(",")) {

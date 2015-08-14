@@ -178,7 +178,7 @@ Ext.ux.data.MultiSingleSortingPagingMemoryProxy = Ext.extend(Ext.data.MemoryProx
 			} else if (comboBoxValue == "Release") {
 				if (record.get('Release').search(this.SearchText) != -1) return true;
 			} else if (comboBoxValue == "Sprint ID") {
-				if (record.get('Sprint').search(this.SearchText) != -1) return true;
+				if (record.get('Sprint') == this.SearchText) return true;
 			} else return false;
 		} else {
 			return true;

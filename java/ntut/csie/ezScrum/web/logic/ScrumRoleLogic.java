@@ -23,6 +23,7 @@ public class ScrumRoleLogic {
 			if (role != null) {
 				scrumRole = role.getScrumRole();
 			} else {
+				if (roles == null || project == null) return null;
 				role = roles.get(project.getName());
 				if (role == null) return null;
 				scrumRole = role.getScrumRole();

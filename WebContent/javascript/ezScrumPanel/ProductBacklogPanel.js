@@ -499,7 +499,7 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 		var record = Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelected();
 		if (record != null) {
 			var id = record.data['Id'];
-			var type = record.data['Type'];
+			var type = record.json['Type'];
 			IssueHistory_Window.showTheWindow(id, type);
 		}
 	},

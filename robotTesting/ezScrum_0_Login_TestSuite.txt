@@ -17,12 +17,3 @@ Test Login - ezScrum Identify Invalid Value
     Login With Invalid Credentials Should Fail    admin    ${EMPTY}    Password is required
     Login With Invalid Credentials Should Fail    ${EMPTY}    ${EMPTY}    User Name is required\nPassword is required
     Close Browser
-
-Test Login - Duplicate Logon ezScrum
-    [Documentation]    測試身為使用者, 在登入的情況下,開啟ezScrum的分頁時,能夠直接進入ezScrum系統。
-    Login Page With Account    ${LOGIN_URL}    admin    admin
-    ${browserAlias}=    Set Variable    ${PROJECT_NAME}DisplayName
-    New Tab With Alias    ${LOGIN_URL}    ${browserAlias}
-    Wait Until Page Contains Element    createProjectBtn
-    Page Should Contain Element    xpath=//table[@id="createProjectBtn"]
-    Exit ezScrum System
