@@ -285,6 +285,10 @@ public class SprintObject implements IBaseObject {
 		}
 		return isContainsTask;
 	}
+	
+	public static long getNextSprintId() {
+		return SprintDAO.getInstance().getNextSprintId();
+	}
 
 	public String toString() {
 		try {

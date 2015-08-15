@@ -51,13 +51,10 @@ public class GetOneSprintPlanAction extends PermissionAction {
 		if (isLatestSprintString != null) {
 			isLatestSprint = Boolean.parseBoolean(isLatestSprintString);
 		}
-		if (sprintIdString != null) {
+		else if (sprintIdString != null) {
 			sprintId = Long.parseLong(sprintIdString);
 		}
 		SprintObject sprint = sprintPlanHelper.getOneSprintInformation(isLatestSprint, sprintId);
-		if (sprint == null) {
-			sprint = new SprintObject(project.getId());
-		}
 		sprints.add(sprint);
 		SprintPlanUI sprintPlanUI = new SprintPlanUI(sprints);
 

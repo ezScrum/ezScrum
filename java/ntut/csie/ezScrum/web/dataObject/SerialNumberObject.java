@@ -134,7 +134,7 @@ public class SerialNumberObject {
 	 * @param projectId
 	 * @throws SQLException
 	 */
-	public static SerialNumberObject get(long projectId) throws SQLException {
+	public static SerialNumberObject get(long projectId) {
 		return SerialNumberDAO.getInstance().get(projectId);
 	}
 	

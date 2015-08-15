@@ -148,6 +148,22 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		}
 		return sprints;
 	}
+	
+	public long getNextSprintId() {
+		String query = "show table status from ezscrum where Name = 'sprint'";
+		ResultSet result = mControl.executeQuery(query);
+		long nextSprintId = 0;
+		try {
+			if (result.next()) {
+				nextSprintId = result.getLong("Auto_increment");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return nextSprintId;
+	}
 
 	public static SprintObject convert(ResultSet result) throws SQLException {
 		SprintObject sprint = new SprintObject(result.getLong(SprintEnum.ID),
