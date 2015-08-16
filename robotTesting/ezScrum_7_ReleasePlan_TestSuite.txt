@@ -83,6 +83,6 @@ Test Release Plan - Edit Sprint
     Mouse Down    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Mouse Up    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
-    Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200
+    Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200    sprint1 sprint goal
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]    1
     [Teardown]    Test Release Plan - Edit Sprint Teardown

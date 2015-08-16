@@ -51,7 +51,7 @@ public class GetOneSprintPlanAction extends PermissionAction {
 		if (isLatestSprintString != null) {
 			isLatestSprint = Boolean.parseBoolean(isLatestSprintString);
 		}
-		else if (sprintIdString != null) {
+		if (sprintIdString != null) {
 			sprintId = Long.parseLong(sprintIdString);
 		}
 		SprintObject sprint = sprintPlanHelper.getOneSprintInformation(isLatestSprint, sprintId);

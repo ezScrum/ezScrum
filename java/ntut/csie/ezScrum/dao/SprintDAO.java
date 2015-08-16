@@ -150,6 +150,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	}
 	
 	public long getNextSprintId() {
+		// Get next sprint id for action GetOneSprintPlanAction (when project has no sprint)
 		String query = "show table status from ezscrum where Name = 'sprint'";
 		ResultSet result = mControl.executeQuery(query);
 		long nextSprintId = 0;

@@ -184,9 +184,10 @@ Create Sprint In Release Plan
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="${sprintGoal}"]    1
 
 Edit Sprint In Release Plan
-    [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}    ${oldSprintGoal}
+    Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="${oldSprintGoal}"]    1
+    ${sprintID}=    Get Text    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="${oldSprintGoal}"]/../../td[1]/a/span
     Click Element    xpath=//div[@id="sprintAction"]//table[@id="ReleasePlan_editSprintBtn"]//button[text()="Edit Sprint"]
-    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
     Focus AND Input Text    //span[text()="Edit Sprint #${sprintID}"]/../../../../..//textarea[@name="Goal"]    ${sprintGoal}
     Click Image    xpath=//span[text()="Edit Sprint #${sprintID}"]/../../../../..//input[@name="StartDate"]/../img
     Click Element    xpath=//button[text()="Today"]

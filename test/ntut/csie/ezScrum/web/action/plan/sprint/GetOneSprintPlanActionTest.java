@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -80,8 +81,6 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("lastsprint",
-				String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("SprintID",
 				String.valueOf(mCS.getSprintsId().get(0)));
 
@@ -132,8 +131,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
-		addRequestParameter("lastsprint", String.valueOf(false));
-		addRequestParameter("SprintID", "-1");
+		addRequestParameter("lastsprint", String.valueOf(true));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -145,21 +143,21 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
-		String todayString = DateUtil.formatBySlashForm(new Date());
+		SprintObject lastSprint = mCS.getSprints().get(mCS.getSprints().size() - 1);
 		// assert response text
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"Sprints\":[{");
-		expectedResponseText.append("\"Id\":\"" + "-1" + "\",");
-		expectedResponseText.append("\"Goal\":\"\",");
-		expectedResponseText.append("\"StartDate\":\"" + todayString + "\",");
-		expectedResponseText.append("\"Interval\":\"0\",");
-		expectedResponseText.append("\"Members\":\"0\",");
-		expectedResponseText.append("\"AvaliableDays\":\"0 hours\",");
-		expectedResponseText.append("\"FocusFactor\":\"0\",");
-		expectedResponseText.append("\"DailyScrum\":\"\",");
-		expectedResponseText.append("\"DemoDate\":\"" + todayString + "\",");
-		expectedResponseText.append("\"DemoPlace\":\"\",");
-		expectedResponseText.append("\"DueDate\":\"" + todayString + "\"");
+		expectedResponseText.append("\"Id\":\"" + "2" + "\",");
+		expectedResponseText.append("\"Goal\":\"TEST_SPRINTGOAL_2\",");
+		expectedResponseText.append("\"StartDate\":\"" + lastSprint.getStartDateString() + "\",");
+		expectedResponseText.append("\"Interval\":\"2\",");
+		expectedResponseText.append("\"Members\":\"4\",");
+		expectedResponseText.append("\"AvaliableDays\":\"120 hours\",");
+		expectedResponseText.append("\"FocusFactor\":\"80\",");
+		expectedResponseText.append("\"DailyScrum\":\"TEST_SPRINTDAILYINFO_2\",");
+		expectedResponseText.append("\"DemoDate\":\"" + lastSprint.getDemoDateString() + "\",");
+		expectedResponseText.append("\"DemoPlace\":\"Lab1321\",");
+		expectedResponseText.append("\"DueDate\":\"" + lastSprint.getDueDateString() + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

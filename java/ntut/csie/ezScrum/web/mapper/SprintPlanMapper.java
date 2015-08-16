@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -118,7 +119,7 @@ public class SprintPlanMapper {
 			SerialNumberObject serialNumber = SerialNumberObject.get(mProject.getId());
 			long sprintSerialId = serialNumber.getSprintId();
 			sprint = new SprintObject(sprintId, sprintSerialId, mProject.getId());
-			String todayString = DateUtil.getToday();
+			String todayString = DateUtil.format(new Date(), DateUtil._8DIGIT_DATE_1);
 			sprint.setStartDate(todayString).setInterval(2);
 		}
 		return sprint;

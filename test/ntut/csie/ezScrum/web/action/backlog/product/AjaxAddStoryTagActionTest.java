@@ -109,6 +109,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
 							.append("\"Id\":").append(expectedStoryId).append(",")
+							.append("\"Type\":\"Story\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":").append(expectedStoryValue).append(",")			
 							.append("\"Estimate\":").append(expectedStoryEstimate).append(",")
