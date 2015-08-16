@@ -28,7 +28,7 @@ Test Sprint Backlog - Edit Story
     ${notes}=    Set Variable    update story for notes
     ${howToDemo}=    Set Variable    update story for how to demo
     # 編輯story information並回傳story id
-    ${storyID}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
+    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
     ...    ${notes}    ${howToDemo}
     # 驗證story information
     Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
