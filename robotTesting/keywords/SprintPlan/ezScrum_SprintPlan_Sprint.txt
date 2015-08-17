@@ -19,7 +19,7 @@ Create Sprint
     Element Enable And Submit    ${xpathAddNewSprint}
     Wait Until Page Contains    Success.
     Comment    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]    1
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
+    Xpath Should Match X Times    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${sprintGoal}"]    1
 
 Create Sprint With Date
     [Arguments]    ${sprintGoal}    ${sprintStartDate}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
