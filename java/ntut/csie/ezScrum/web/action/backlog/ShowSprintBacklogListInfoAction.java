@@ -34,16 +34,13 @@ public class ShowSprintBacklogListInfoAction extends Action {
 			sprintId = Long.parseLong(sprintIdString);
 		}
 
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				projectObject, sprintId);
-		String reponseText = this.reContructString(sprintBacklogHelper
-				.getSprintBacklogListInfoText());
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(projectObject, sprintId);
+		String reponseText = reContructString(sprintBacklogHelper.getSprintBacklogListInfoText());
 
 		response.setContentType("text/html; charset=utf-8");
 		try {
 			response.getWriter().write(reponseText);
-			LogFactory.getLog(SecurityRequestProcessor.class).debug(
-					"Current Time : " + new Date().toString());
+			LogFactory.getLog(SecurityRequestProcessor.class).debug("Current Time : " + new Date().toString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -7,78 +7,72 @@ public class TranslateSpecialChar{
 	 * replaceAll: String  "regex" to String replacement
 	 */
 	
-	public String TranslateDBChar(String tagname)
-	{
-		if (tagname != null) {
-			if (tagname.contains("\\")) {
-				tagname = tagname.replace("\\", "\\\\");
+	public String TranslateDBChar(String tagName) {
+		if (tagName != null) {
+			if (tagName.contains("\\")) {
+				tagName = tagName.replace("\\", "\\\\");
 			}
 			
-			if (tagname.contains("'")) {
-				tagname = tagname.replaceAll("'", "\\\\'");
+			if (tagName.contains("'")) {
+				tagName = tagName.replaceAll("'", "\\\\\'");
 			}			
 		}
-		
-		return tagname;
+		return tagName;
 	}
 	
-	public String TranslateXMLChar(String tagname)
-	{
-		if (tagname != null) {
-			if (tagname.contains("&")) {
-				tagname = tagname.replaceAll("&", "&amp;");
+	public String TranslateXMLChar(String tagName) {
+		if (tagName != null) {
+			if (tagName.contains("&")) {
+				tagName = tagName.replaceAll("&", "&amp;");
 			}
 			
-			if (tagname.contains("\"")) {
-				tagname = tagname.replaceAll("\"", "&quot;");
+			if (tagName.contains("\"")) {
+				tagName = tagName.replaceAll("\"", "&quot;");
 			}
 			
-			if (tagname.contains("'")) {
-				tagname = tagname.replaceAll("'", "&apos;");
+			if (tagName.contains("'")) {
+				tagName = tagName.replaceAll("'", "&apos;");
 			}
 			
-			if (tagname.contains("<")) {
-				tagname = tagname.replaceAll("<", "&lt;");
+			if (tagName.contains("<")) {
+				tagName = tagName.replaceAll("<", "&lt;");
 			}
 			
-			if (tagname.contains(">")) {
-				tagname = tagname.replaceAll(">", "&gt;");
+			if (tagName.contains(">")) {
+				tagName = tagName.replaceAll(">", "&gt;");
 			}
 		}
-		
-		return tagname;
+		return tagName;
 	}
 	
-	public String TranslateJSONChar(String tagname)
-	{
-		if (tagname != null) {
+	public String TranslateJSONChar(String tagName) {
+		if (tagName != null) {
 
-			if (tagname.contains("\\")) {
-				tagname = tagname.replace("\\", "\\\\");
+			if (tagName.contains("\\")) {
+				tagName = tagName.replace("\\", "\\\\");
 			}
 			
-			if (tagname.contains("\"")) {
-				tagname = tagname.replaceAll("\"", "\\\\\"");
+			if (tagName.contains("\"")) {
+				tagName = tagName.replaceAll("\"", "\\\"");
 			}
 			
-			if (tagname.contains("\r")) {
-				tagname = tagname.replaceAll("\r", "\\\\r");
+			if (tagName.contains("\r")) {
+				tagName = tagName.replaceAll("\r", "\\\\r");
 			}
 			
-			if (tagname.contains("\n")) {
-				tagname = tagname.replaceAll("\n", "\\\\n");
+			if (tagName.contains("\n")) {
+				tagName = tagName.replaceAll("\n", "\\\\n");
 			}
 			
-			if (tagname.contains("<")) {
-				tagname = tagname.replaceAll("<", "&lt;");
+			if (tagName.contains("<")) {
+				tagName = tagName.replaceAll("<", "&lt;");
 			}
 			
-			if (tagname.contains(">")) {
-				tagname = tagname.replaceAll(">", "&gt;");
+			if (tagName.contains(">")) {
+				tagName = tagName.replaceAll(">", "&gt;");
 			}
 		}
-		
-		return tagname;
+		return tagName;
 	}
 	
 	public String HandleNullString(String str) {

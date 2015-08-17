@@ -31,10 +31,10 @@ New Sprint
     Focus AND Input Text    //input[@name="Members"]    ${_sprintMembers}
     Focus AND Input Text    //input[@name="AvaliableDays"]    ${_sprintAvaliableDays}
     Focus AND Input Text    //input[@name="FocusFactor"]    ${_sprintFocusFactor}
-    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
     ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
     Element Enable And Submit    ${xpathAddNewSprint}
     Wait Until Page Contains    Success.
+    ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
     # quick check
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]    1
     [Return]    ${sprintID}
@@ -99,7 +99,7 @@ tempSolution
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    SwitchToItemLink    True    Retrospective
+    Select Node Product    Retrospective
 
 Edit Retrospective
     [Arguments]    @{retrospectiveInfo}

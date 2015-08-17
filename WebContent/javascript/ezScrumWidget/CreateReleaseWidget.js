@@ -25,7 +25,7 @@ var ReleaseStartDate = new Ext.form.DateField({
 	format: 'Y/m/d',
 	altFormats: 'Y/m/d',
 	anchor: '95%',
-	editable: false
+	editable: true
 });
 
 var ReleaseEndDate = new Ext.form.DateField({
@@ -35,7 +35,7 @@ var ReleaseEndDate = new Ext.form.DateField({
 	format: 'Y/m/d',
 	altFormats: 'Y/m/d',
 	anchor: '95%',
-	editable: false
+	editable: true
 });
 
 var Description = new Ext.form.TextArea({

@@ -55,9 +55,6 @@ public class GetOneSprintPlanAction extends PermissionAction {
 			sprintId = Long.parseLong(sprintIdString);
 		}
 		SprintObject sprint = sprintPlanHelper.getOneSprintInformation(isLatestSprint, sprintId);
-		if (sprint == null) {
-			sprint = new SprintObject(project.getId());
-		}
 		sprints.add(sprint);
 		SprintPlanUI sprintPlanUI = new SprintPlanUI(sprints);
 

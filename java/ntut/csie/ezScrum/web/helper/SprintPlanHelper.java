@@ -13,7 +13,7 @@ import ntut.csie.jcis.core.util.DateUtil;
 public class SprintPlanHelper {
 	private SprintPlanMapper mSprintPlanMapper;
 	private SprintPlanLogic mSprintPlanLogic;
-	
+
 	public SprintPlanHelper(ProjectObject project) {
 		mSprintPlanMapper = new SprintPlanMapper(project);
 		mSprintPlanLogic = new SprintPlanLogic(project);
@@ -33,17 +33,20 @@ public class SprintPlanHelper {
 
 	// get next demoDate
 	public String getNextDemoDate() {
-		ArrayList<SprintObject> sprints = mSprintPlanLogic.getSprintsSortedById();
-		if (sprints.isEmpty()){
+		ArrayList<SprintObject> sprints = mSprintPlanLogic
+				.getSprintsSortedById();
+		if (sprints.isEmpty()) {
 			return null;
-		}		Date currentDate = new Date();
+		}
+		Date currentDate = new Date();
 		long now = currentDate.getTime();
-		
+
 		// 取得下一個Sprint的 Demo Date
 		String demoDate = null;
 		for (SprintObject sprint : sprints) {
 			String sprintDemoDate = sprint.getDemoDateString();
-			long timeOfSprintDemoDate = DateUtil.dayFilter(sprintDemoDate).getTime();
+			long timeOfSprintDemoDate = DateUtil.dayFilter(sprintDemoDate)
+					.getTime();
 			if (timeOfSprintDemoDate > now) {
 				demoDate = sprintDemoDate;
 			}
@@ -53,11 +56,13 @@ public class SprintPlanHelper {
 
 	/**
 	 * 只取得一筆 sprint
+	 * 
 	 * @param isLatestSprint
 	 * @param sprintId
 	 * @return
 	 */
-	public SprintObject getOneSprintInformation(boolean isLatestSprint, long sprintId) {
+	public SprintObject getOneSprintInformation(boolean isLatestSprint,
+			long sprintId) {
 		if (isLatestSprint) {
 			return getLatestSprint();
 		} else if (sprintId > 0) {
@@ -68,7 +73,8 @@ public class SprintPlanHelper {
 
 	public Date getProjectStartDate() {
 		ArrayList<SprintObject> sprints = getSprints();
-		return DateUtil.dayFilter(sprints.get(sprints.size() - 1).getStartDateString());
+		return DateUtil.dayFilter(sprints.get(sprints.size() - 1)
+				.getStartDateString());
 	}
 
 	public Date getProjectEndDate() {
@@ -80,13 +86,15 @@ public class SprintPlanHelper {
 			return null;
 		}
 	}
-	
+
 	public SprintObject getSprintByDate(Date date) {
-		ArrayList<SprintObject> sprints = mSprintPlanLogic.getSprintsSortedByStartDate();
+		ArrayList<SprintObject> sprints = mSprintPlanLogic
+				.getSprintsSortedByStartDate();
 
 		for (SprintObject sprint : sprints) {
 			if (DateUtil.dayFilter(sprint.getStartDateString()).compareTo(date) <= 0
-			        && DateUtil.dayFilter(sprint.getDemoDateString()).compareTo(date) >= 0) {
+					&& DateUtil.dayFilter(sprint.getDemoDateString())
+							.compareTo(date) >= 0) {
 				return sprint;
 			}
 		}
@@ -113,9 +121,10 @@ public class SprintPlanHelper {
 	public void deleteSprint(long sprintId) {
 		mSprintPlanMapper.deleteSprint(sprintId);
 	}
-	
+
 	/**
 	 * move the specific sprint to other sprint
+	 * 
 	 * @param oldId
 	 * @param newId
 	 */

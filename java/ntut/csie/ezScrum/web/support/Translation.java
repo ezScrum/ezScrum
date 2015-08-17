@@ -81,6 +81,7 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
+				jsonStory.put("Type", "Story");
 				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
@@ -413,10 +414,16 @@ public class Translation {
 				obj.put("Date", formatter.format(idealPointArray[i]));
 				obj.put("IdealPoint", ideal.get(idealPointArray[i]));
 
-				if (real.get(idealPointArray[i]) != null)
+				
+				if (real.get(idealPointArray[i]) != null) {
 					obj.put("RealPoint", real.get(idealPointArray[i]));
-				else
+				}
+				else {
 					obj.put("RealPoint", "null");
+				}
+				if (i == 0) {
+					obj.put("RealPoint", ideal.get(idealPointArray[0]));
+				}
 
 				array.put(obj);
 			}

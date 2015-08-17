@@ -17,6 +17,8 @@ import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
 
+import org.codehaus.jettison.json.JSONArray;
+
 import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
@@ -192,29 +194,23 @@ public class SprintBacklogHelper {
 		if (mSprintBacklogMapper != null) {
 			long sprintId = mSprintBacklogMapper.getSprintId();
 			// 取得工作天數
-			int availableDays = mSprintBacklogLogic
-					.getSprintAvailableDays(sprintId);
+			int availableDays = mSprintBacklogLogic.getSprintAvailableDays(sprintId);
 
 			if (mSprintBacklogMapper.getSprintId() > 0) {
 				ArrayList<StoryObject> stories = getStoriesSortedByImpInSprint();
 				// 取得 Sprint 日期的 Column
 				if (mSprintBacklogLogic.getCurrentDateColumns() == null)
-					mSprintBacklogLogic.getSprintBacklogDates(
-							mSprintBacklogMapper.getSprintStartDate(),
-							availableDays);
+					mSprintBacklogLogic.getSprintBacklogDates(mSprintBacklogMapper.getSprintStartDate(), availableDays);
 				else
 					mSprintBacklogLogic.getCurrentDateColumns();
 
 				for (StoryObject story : stories) {
-					SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(
-							story, story.getTasks(),
+					SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure(story, story.getTasks(),
 							mSprintBacklogLogic.getCurrentDateList());
 					SBtree.add(tree);
 				}
 			} else {
-				// null sprint backlog
-				SprintBacklogTreeStructure tree = new SprintBacklogTreeStructure();
-				SBtree.add(tree);
+				return new JSONArray().toString();
 			}
 		}
 

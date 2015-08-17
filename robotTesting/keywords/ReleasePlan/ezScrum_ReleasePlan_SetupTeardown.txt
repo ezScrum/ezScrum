@@ -6,6 +6,7 @@ Resource          ezScrum_ReleasePlan_Management.txt
 
 *** Keywords ***
 Test Release Plan - PreCondition
+    Close All Browsers
     Login Page    ${LOGIN_URL}
     Wait Until Page Contains Element    createProjectBtn
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}

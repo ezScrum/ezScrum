@@ -1,6 +1,5 @@
 *** Settings ***
 Documentation     test ezScrumn release plan page    # Speed = 0.05 failed -> 待加入同步機制
-...
 Suite Setup       Test Release Plan - PreCondition
 Suite Teardown    Test Release Plan - PostCondition
 Force Tags        ReleasePlan
@@ -84,36 +83,6 @@ Test Release Plan - Edit Sprint
     Mouse Down    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Mouse Up    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
     Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]
-    Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200
+    Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200    sprint1 sprint goal
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]    1
     [Teardown]    Test Release Plan - Edit Sprint Teardown
-
-Test Release Plan - Session - Contain Sprints
-    [Tags]    session
-    [Setup]    Test Release Plan - Session - Contain Sprints Setup
-    Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Summary
-    Select Node Product    Release Plan
-    # verify release plan
-    Set List Value    ${tsReleasePlan}    0    release Plan 1 name in project A
-    Set List Value    ${tsReleasePlan}    3    release Plan 1 Description in project A
-    ${_foundIndex} =    _findReleasePlanItem    @{tsReleasePlan}
-    @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
-    CompareList    @{tsReleasePlan}    @{_actualDataList}
-    # verify story in sprint
-    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_A}"]
-    ${storyIDInReleasePlanXpath}=    Set Variable    //div[@id="ReleasePlan_StoryGrid"]//div[@class="x-grid3-cell-inner x-grid3-col-0" and text()="${tcStoryID_A}"]
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}    1
-    # Xpath Should Match X Times ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="&nbsp;"] 1 # tag
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-2" and text()="${tcStoryName_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-3" and text()="${tcValue_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-4" and text()="${tcEstimate_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-5" and text()="${tcImportance_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-6" and text()="new"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-7" and text()="${tcReleaseID_A}"]    1
-    Xpath Should Match X Times    ${storyIDInReleasePlanXpath}/../..//div[@class="x-grid3-cell-inner x-grid3-col-8" and text()="${tcSprintID_A}"]    1
-    Select Window    ${tcBrowserAlias_B}
-    Select Node Product    Summary
-    Select Node Product    Release Plan
-    Click Element    xpath=//div[@id="ReleasePlan_ReleaseTree"]//img[@class="x-tree-node-icon task-folder"]/..//span[text()="${tcReleaseID_B}"]
-    [Teardown]    Test Release Plan - Session - Contain Sprints Teardown

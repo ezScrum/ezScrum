@@ -123,6 +123,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		for (int i = 0; i < storyCount; i++) {
 			expectedResponseText
 					.append("{\"Id\":").append(CPB.getStories().get(i).getId()).append(",")
+					.append("\"Type\":\"Story\",")
 					.append("\"Name\":\"").append(CPB.getStories().get(i).getName()).append("\",")
 					.append("\"Value\":").append(CPB.getStories().get(i).getValue()).append(",")
 					.append("\"Estimate\":").append(CPB.getStories().get(i).getEstimate()).append(",")
@@ -180,6 +181,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 			StoryObject story = stories.get(i - 1);
 			expectedResponseText
 					.append("{\"Id\":").append(story.getId()).append(",")
+					.append("\"Type\":\"Story\",")
 					.append("\"Name\":\"").append(story.getName()).append("\",")
 					.append("\"Value\":").append(story.getValue()).append(",")
 					.append("\"Estimate\":").append(story.getEstimate()).append(",")
@@ -256,6 +258,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 				.append("\"Total\":1,").append("\"Stories\":[{")
 				.append("\"Id\":").append(storyId).append(",")
+				.append("\"Type\":\"Story\",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
 				.append("\"Value\":").append(expectedStoryValue)
 				.append(",").append("\"Estimate\":")
@@ -325,6 +328,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 				.append("\"Total\":1,").append("\"Stories\":[{")
 				.append("\"Id\":").append(storyId).append(",")
+				.append("\"Type\":\"Story\",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
 				.append("\"Value\":").append(expectedStoryValue)
 				.append(",").append("\"Estimate\":")
