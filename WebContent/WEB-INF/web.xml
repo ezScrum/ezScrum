@@ -83,6 +83,22 @@
     	<url-pattern>/web-service/*</url-pattern>
   	</servlet-mapping>
   	
+  	<!-- restful web service v2 setting -->
+  	<display-name>RESTful API v2</display-name>
+	<servlet>
+    	<servlet-name>Jersey REST Service v2</servlet-name>
+    	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    	<init-param>
+      		<param-name>com.sun.jersey.config.property.packages</param-name>
+      		<param-value>ntut.csie.ezScrum.restful.mobile.controller.v2</param-value>
+   		</init-param>
+    	<load-on-startup>1</load-on-startup>
+ 	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>Jersey REST Service v2</servlet-name>
+    	<url-pattern>/api/*</url-pattern>
+  	</servlet-mapping>
+  	
   <session-config>
     <session-timeout>480</session-timeout>
   </session-config>  	

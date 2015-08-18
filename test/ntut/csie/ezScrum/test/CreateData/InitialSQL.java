@@ -143,6 +143,7 @@ public class InitialSQL {
 		sqlIns.add("TRUNCATE `unplanned`;");
 		sqlIns.add("TRUNCATE `attach_file`;");
 		sqlIns.add("TRUNCATE `serial_number`;");
+		sqlIns.add("TRUNCATE `token`;");
 		sqlIns.add("TRUNCATE `system`;");
 		// add default user: admin
 		sqlIns.add("INSERT INTO `account` VALUES (1, 'admin', 'admin', 'example@ezScrum.tw', '21232f297a57a5a743894a0e4a801fc3', 1, 1379910191599, 1379910191599);");

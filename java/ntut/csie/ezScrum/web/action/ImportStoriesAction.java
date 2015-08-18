@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.support.ExcelHandler;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.core.util.FileUtil;
 import ntut.csie.jcis.resource.core.IPath;
 import ntut.csie.jcis.resource.core.ResourceFacade;
@@ -61,8 +61,7 @@ public class ImportStoriesAction extends PermissionAction {
 		if (file_size > 0) {
 			// 將檔案從暫存區移動至專案底下的資料夾
 			String fileName = file.getFileName();
-			IPath fullPath = ResourceFacade.createPath(System
-					.getProperty(ISystemPropertyEnum.TEMPWORKSPACE_PATH));
+			IPath fullPath = ResourceFacade.createPath(new Configuration().getWorkspacePath());
 			String targetPath = fullPath.getPathString() + "/" + fileName;
 			copy(file, targetPath);
 			

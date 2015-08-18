@@ -153,6 +153,7 @@ ezScrum.ProductBacklogGrid = Ext.extend(ezScrum.IssueGridPanel, {
 	plugins: [IssueGridPanelFilter, ProductBacklogExpander],
 	updateRecord: function(record) {
 		var id = record.data['Id'];
+		
 		var data = this.getStore().getById(id);
 		var index = this.getStore().indexOf(data);
 		var expand = ProductBacklogExpander.isExpand(index);
@@ -468,7 +469,7 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 			}
 		}
 	},
-	// Delete story action
+	// Delete AttachFile action
 	deleteAttachFile: function(file_Id, issue_Id) {
 		Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', function(btn) {
 			if (btn === 'yes') {
@@ -476,7 +477,8 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 					url: 'ajaxDeleteFile.do',
 					params: {
 						fileId: file_Id,
-						issueId: issue_Id
+						issueId: issue_Id,
+						issueType : 'Story'
 					},
 					success: function(response) {
 						var rs = jsonStoryReader.read(response);
@@ -514,7 +516,8 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 		var record = Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelected();
 		if (record != null) {
 			var id = record.data['Id'];
-			AttachFile_Window.attachFile(this, id);
+			var type = record.json['Type'];
+			AttachFile_Window.attachFile(this, id, type);
 		}
 	},
 	itemClick: function(baseItem, e) {

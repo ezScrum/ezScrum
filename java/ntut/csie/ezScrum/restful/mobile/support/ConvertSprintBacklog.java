@@ -190,8 +190,7 @@ public class ConvertSprintBacklog {
 		if (tasks == null)
 			return "";
 		for (TaskObject task : tasks) {
-			JSONObject taskJson = new JSONObject(getTaskJsonString(task));
-			tasksJsonArray.put(taskJson);
+			taskArray.put(task.toJSON());
 		}
 		tasksJsonString.put(SprintBacklogUtil.TAG_TASKS, tasksJsonArray);
 		return tasksJsonString.toString();
