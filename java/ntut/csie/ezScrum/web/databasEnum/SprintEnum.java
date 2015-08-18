@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.web.databasEnum;
 
 public class SprintEnum {
-	public static final String TABLE_NAME = "Sprint";
+	public static final String TABLE_NAME = "sprint";
 	public static final String ID = "id";
 	public static final String SERIAL_ID = "serial_id";
 	public static final String GOAL = "goal";
