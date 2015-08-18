@@ -45,7 +45,7 @@ import org.junit.Test;
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
-public class TaskApiTest extends ApiTestBaseClass {
+public class TaskApiTest extends TestableApi {
 	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/api";
 	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/tasks";
 	private static HttpServer mServer;

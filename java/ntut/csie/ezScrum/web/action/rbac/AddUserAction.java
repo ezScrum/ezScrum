@@ -21,15 +21,19 @@ public class AddUserAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		long id, projectId;
-		String scrumRole;
+		String scrumRole = "";
 		try {
 			id = Long.parseLong(request.getParameter("id"));
 			projectId = Long.parseLong(request.getParameter("resource"));
 			scrumRole = request.getParameter("operation");
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			id = 0;
 			projectId = 0;
-			scrumRole = null;
+			scrumRole = "";
+		} finally {
+			if (scrumRole == null) {
+				scrumRole = "";
+			}
 		}
 
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
@@ -42,18 +46,18 @@ public class AddUserAction extends Action {
 			return null;
 		}
 		
+		boolean isAdmin = projectId == 0 && scrumRole.equals("admin");
+		boolean hasPermission = id > 0 && projectId > 0 && !scrumRole.equals("") && session != null;
 
-		if ((id > 0) && (projectId > 0) && (scrumRole != null) && (session != null)) {
+		if (isAdmin || hasPermission) {
 			try {
 				AccountHelper accountHelper = new AccountHelper(session);
 				AccountObject account = accountHelper.addAssignedRole(id, projectId, scrumRole);
-
-				// 刪除 Session 中關於該使用者的所有專案權限。
 				writer.write(accountHelper.getAccountXML(account));
 			} catch (IllegalArgumentException e) {
 				response.setContentType("application/json; charset=utf-8");
 				writer.write("{\"msg\": \"The role not exist\"}");
-			} finally {				
+			} finally {
 				writer.close();
 			}
 		}
