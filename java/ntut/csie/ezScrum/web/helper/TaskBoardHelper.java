@@ -48,7 +48,7 @@ public class TaskBoardHelper {
 	 */
 	public String getSprintBurndownChartDataResponseText(String type) {
 		String responseText = "";
-		int sprintCount = (new SprintPlanHelper(mProject).loadListPlans()).size();
+		int sprintCount = (new SprintPlanHelper(mProject).getSprints()).size();
 		// backlog = null 代表沒有Sprint資訊
 		if (sprintCount != 0) {
 			// Get TaskBoard Data
@@ -101,7 +101,7 @@ public class TaskBoardHelper {
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
-			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
+			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();		// 根據Sprint的importance來取Story
 			HashMap<Long, ArrayList<TaskObject>> storyToTasks = getStoryToTasksMap(stories);
 			stories = filterStory(stories, storyToTasks, filterName);					// filter story
 

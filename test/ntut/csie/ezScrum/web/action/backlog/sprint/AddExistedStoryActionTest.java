@@ -163,7 +163,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		// assert response text
 		String expectedStoryEstimation = "2";
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10";
+		String expectedSprintHoursToCommit = "96";
 		for (int i = 0; i < mCS.getSprintCount() - 1; i++) {
 			expectedResponseText.append("{\"success\":true,\"Total\":2,")
 					.append("\"Sprint\":{").append("\"Id\":").append(sprintId)

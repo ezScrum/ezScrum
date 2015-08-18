@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -22,9 +20,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.form.IterationPlanForm;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.account.core.LogonException;
@@ -71,7 +69,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		super.setUp();
 
-		// 設定讀取的  struts-config 檔案路徑
+		// 設定讀取的 struts-config 檔案路徑
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent"));
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo("/showTaskBoard");
@@ -108,12 +106,14 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		ProjectObject project = mCP.getAllProjects().get(0);
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", Integer.toString(mCS.getSprintCount() - 1));
+		addRequestParameter("sprintID",
+				Integer.toString(mCS.getSprintCount() - 1));
 		addRequestParameter("UserID", "ALL");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
 		// ================ set session info ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + project.getName());
@@ -128,38 +128,51 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 測試 TaskBoard 上方資訊列表所有資訊是否正確
 		// 測試 Story/Task Point 計算是否正確
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintsId().get(0));
-		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic, sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
+				mCS.getSprintsId().get(0));
+		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic,
+				sprintBacklogLogic.getSprintBacklogMapper());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
+				"TaskBoard");
+		assertEquals("10.0 / 96.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
-		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
+		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard
+				.getStories().size());
 		for (StoryObject story : exceptedTaskBoard.getStories()) {
 			assertEquals(story.getId(), story.getId());
 		}
-		assertEquals(exceptedTaskBoard.getSprintGoal(), actualTaskBoard.getSprintGoal());
-		assertEquals(mCS.TEST_SPRINT_GOAL + "1", actualTaskBoard.getSprintGoal());
-		assertEquals(exceptedTaskBoard.getSprintId(), actualTaskBoard.getSprintId());
+		assertEquals(exceptedTaskBoard.getSprintGoal(),
+				actualTaskBoard.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + "1",
+				actualTaskBoard.getSprintGoal());
+		assertEquals(exceptedTaskBoard.getSprintId(),
+				actualTaskBoard.getSprintId());
 		assertEquals(1, actualTaskBoard.getSprintId());
-		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard.getStories().size());
+		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard
+				.getStories().size());
 		for (StoryObject story : exceptedTaskBoard.getStories()) {
 			assertEquals(story.getId(), story.getId());
 		}
-		assertEquals(exceptedTaskBoard.getStoryChartLink(), actualTaskBoard.getStoryChartLink());
+		assertEquals(exceptedTaskBoard.getStoryChartLink(),
+				actualTaskBoard.getStoryChartLink());
 		assertEquals("10.0 / 10.0", actualTaskBoard.getStoryPoint());
-		assertEquals(exceptedTaskBoard.getTaskChartLink(), actualTaskBoard.getTaskChartLink());
+		assertEquals(exceptedTaskBoard.getTaskChartLink(),
+				actualTaskBoard.getTaskChartLink());
 		assertEquals("10.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
-		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadListPlans();
-		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
-		for (int i = 0; i < ExpectedPlans.size(); i++) {
-			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ArrayList<SprintObject> expectedSprints = sprintPlanHelper.getSprints();
+		ArrayList<SprintObject> actualSprints = (ArrayList<SprintObject>) getMockRequest()
+				.getAttribute("SprintPlans");
+		for (int i = 0; i < expectedSprints.size(); i++) {
+			assertEquals(expectedSprints.get(i).getId(), actualSprints.get(i)
+					.getId());
 		}
 
 		List<String> ExpectedActorList = new LinkedList<String>();
-		List<String> ActualActorList = (List<String>) getMockRequest().getAttribute("ActorList");
+		List<String> ActualActorList = (List<String>) getMockRequest()
+				.getAttribute("ActorList");
 		ExpectedActorList.add("ALL");
 		for (int i = 0; i < ExpectedActorList.size(); i++) {
 			assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
@@ -171,9 +184,9 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		project = null;
 		exceptedTaskBoard = null;
 		actualTaskBoard = null;
-		helper = null;
-		ExpectedPlans = null;
-		ActualPlans = null;
+		sprintPlanHelper = null;
+		expectedSprints = null;
+		actualSprints = null;
 	}
 
 	// // 待修改: ShowTaskBoardAction.java #86 未處理好產生 null pointer
@@ -269,7 +282,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
 				"TaskBoard");
 		// 因為沒有此使用者，所以回傳跟此使用者有關的Story Point為0
-		assertEquals("0.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("0.0 / 96.0", actualTaskBoard.getInitialStoryPoint());
 
 		assertEquals("0.0 / -", actualTaskBoard.getInitialTaskPoint());
 
@@ -294,12 +307,13 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals("10.0 / 10.0", actualTaskBoard.getTaskPoint());
 
 		// 測試其餘 request
-		SprintPlanHelper helper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = helper.loadListPlans();
-		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) getMockRequest().getAttribute("SprintPlans");
-		for (int i = 0; i < ExpectedPlans.size(); i++) {
-			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i)
-					.getID());
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ArrayList<SprintObject> expectedSprints = sprintPlanHelper.getSprints();
+		ArrayList<SprintObject> actualSprints = (ArrayList<SprintObject>) getMockRequest()
+				.getAttribute("SprintPlans");
+		for (int i = 0; i < expectedSprints.size(); i++) {
+			assertEquals(expectedSprints.get(i).getId(), actualSprints.get(i)
+					.getId());
 		}
 
 		List<String> ExpectedActorList = new LinkedList<String>();
@@ -315,11 +329,11 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		// ============= release ==============
 		project = null;
 		ExpectedActorList = null;
-		ExpectedPlans = null;
+		expectedSprints = null;
 		exceptedTaskBoard = null;
-		helper = null;
+		sprintPlanHelper = null;
 		ActualActorList = null;
-		ActualPlans = null;
+		actualSprints = null;
 		actualTaskBoard = null;
 	}
 
@@ -420,8 +434,9 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 				mCS.getSprintCount() - 1);
 		TaskBoard exceptedTaskBoard = new TaskBoard(sprintBacklogLogic,
 				sprintBacklogLogic.getSprintBacklogMapper());
-		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute("TaskBoard");
-		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
+				"TaskBoard");
+		assertEquals("10.0 / 96.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("10.0 / -", actualTaskBoard.getInitialTaskPoint());
 		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard
 				.getStories().size());
@@ -499,7 +514,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 				sprintBacklogLogic.getSprintBacklogMapper());
 		TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
 				"TaskBoard");
-		assertEquals("10.0 / 10.0", actualTaskBoard.getInitialStoryPoint());
+		assertEquals("10.0 / 96.0", actualTaskBoard.getInitialStoryPoint());
 		assertEquals("8.0 / -", actualTaskBoard.getInitialTaskPoint());
 		assertEquals(exceptedTaskBoard.getStories().size(), actualTaskBoard
 				.getStories().size());
@@ -937,40 +952,5 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		IUserSession theUserSession = new UserSession(null);
 
 		return theUserSession;
-	}
-
-	// 設定 Sprint 資訊
-	private IterationPlanForm setSprintInfo(int id) {
-		Calendar cal = Calendar.getInstance();
-
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-		Date EndDate = cal.getTime();
-		Date StartDate = EndDate;
-
-		int count = 1;
-		while (count < 10) {
-			cal.add(Calendar.DAY_OF_YEAR, -1);
-			count++;
-			StartDate = cal.getTime();
-			while (DateUtil.isHoliday(StartDate)) {
-				cal.add(Calendar.DAY_OF_YEAR, -1);
-				StartDate = cal.getTime();
-			}
-		}
-
-		IterationPlanForm sprintForm = new IterationPlanForm();
-
-		sprintForm.setID(Integer.toString(id));
-		sprintForm.setGoal("TEST_SPRINT_" + Integer.toString(id));
-		sprintForm.setIterStartDate(format.format(StartDate));
-		sprintForm.setIterIterval("2");
-		sprintForm.setIterMemberNumber("2");
-		sprintForm.setAvailableDays("10");
-		sprintForm.setFocusFactor("100");
-		sprintForm.setNotes("LAB 1321");
-		sprintForm.setDemoDate(format.format(EndDate));
-		sprintForm.setDemoPlace("LAB 1321");
-
-		return sprintForm;
 	}
 }

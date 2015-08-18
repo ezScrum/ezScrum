@@ -1,15 +1,13 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.iternal.SprintPlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.SprintPlanUI;
@@ -46,24 +44,24 @@ public class ShowAllSprintForSprintPlanAction extends PermissionAction {
 		// get parameter info
 		String lastsprint = request.getParameter("lastsprint");
 		
-		List<ISprintPlanDesc> descs = new LinkedList<ISprintPlanDesc>();
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
+		ArrayList<SprintObject> sprints = new ArrayList<>();
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		
 		// 只取得最後一筆 sprint
 		if (lastsprint != null && Boolean.parseBoolean(lastsprint)) {
-			int lastID = SPhelper.getLastSprintId();
-			if (lastID > 0) {
-				descs.add(SPhelper.loadPlan(lastID));
+			SprintObject latestSprint = sprintPlanHelper.getLatestSprint();
+			if (latestSprint != null) {
+				sprints.add(latestSprint);
 			} else {
-				descs.add(new SprintPlanDesc());	// empty
+				sprints.add(new SprintObject(project.getId()));	// empty
 			}
 		} else {
-			descs = SPhelper.loadListPlans();
+			sprints = sprintPlanHelper.getSprints();
 		}
 		
-		SprintPlanUI spui = new SprintPlanUI(descs);
+		SprintPlanUI sprintPlanUI = new SprintPlanUI(sprints);
 		
 		Gson gson = new Gson();
-		return new StringBuilder(gson.toJson(spui));
+		return new StringBuilder(gson.toJson(sprintPlanUI));
 	}
 }

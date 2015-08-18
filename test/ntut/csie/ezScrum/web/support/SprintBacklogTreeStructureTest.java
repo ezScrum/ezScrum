@@ -56,7 +56,7 @@ public class SprintBacklogTreeStructureTest {
 		mTask.setHandlerId(mHandler.getId());
 		mTask.setEstimate(10);
 		mTask.save();
-		mSprintBacklogLogic = new SprintBacklogLogic();
+		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0));
 	}
 
 	@After
@@ -105,7 +105,7 @@ public class SprintBacklogTreeStructureTest {
 		// add a change remains history
 		mTask.setRemains(5);
 		mTask.save(DateUtil.dayFillter("2010/07/16", DateUtil._8DIGIT_DATE_1).getTime());
-		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 5);
+		mSprintBacklogLogic.getSprintBacklogDates(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 5);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
@@ -131,7 +131,7 @@ public class SprintBacklogTreeStructureTest {
 		// add a change remains history on 2010/7/14
 		mTask.setRemains(0);
 		mTask.save(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1).getTime());
-		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
+		mSprintBacklogLogic.getSprintBacklogDates(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
@@ -162,7 +162,7 @@ public class SprintBacklogTreeStructureTest {
 		// add a change remains history on 2010/7/20
 		mTask.setRemains(0);
 		mTask.save(DateUtil.dayFillter("2010/07/20", DateUtil._8DIGIT_DATE_1).getTime());
-		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1), 5);
+		mSprintBacklogLogic.getSprintBacklogDates(DateUtil.dayFillter("2010/07/14", DateUtil._8DIGIT_DATE_1), 5);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);
@@ -183,7 +183,7 @@ public class SprintBacklogTreeStructureTest {
 		// check task remains before test
 		Date taskCreateDate = new Date(mTask.getCreateTime());
 		assertEquals(10.0, mTask.getRemains(taskCreateDate));
-		mSprintBacklogLogic.calculateSprintBacklogDateList(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
+		mSprintBacklogLogic.getSprintBacklogDates(DateUtil.dayFillter("2010/07/12", DateUtil._8DIGIT_DATE_1), 3);
 		ArrayList<Date> dates = mSprintBacklogLogic.getCurrentDateList();
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		tasks.add(mTask);

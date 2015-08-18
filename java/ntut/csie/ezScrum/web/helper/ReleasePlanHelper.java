@@ -14,9 +14,9 @@ import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
 import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
@@ -79,26 +79,26 @@ public class ReleasePlanHelper {
 			desc.setDescription(descList.get(i).getDescription());		
 			
 			// 自動尋找此 release date 內的 sprint plan
-			List<ISprintPlanDesc> ReleaseSprintList = new LinkedList<ISprintPlanDesc>();
-			SprintPlanMapper spMapper = new SprintPlanMapper(mProject);
-			List<ISprintPlanDesc> AllSprintList = spMapper.getSprintPlanList();
+			ArrayList<SprintObject> releaseSprints = new ArrayList<>();
+			SprintPlanMapper sprintPlanMapper = new SprintPlanMapper(mProject);
+			ArrayList<SprintObject> allSprints = sprintPlanMapper.getSprints();
 			
 			Date releaseStartDate = DateUtil.dayFilter(desc.getStartDate());	// release start date get from XML
 			Date releaseEndDate = DateUtil.dayFilter(desc.getEndDate());		// release end date get from XML
 			
-			for (ISprintPlanDesc sprintDesc : AllSprintList) {
-				Date sprintStartDate = DateUtil.dayFilter(sprintDesc.getStartDate());
-				Date sprintEndDate = DateUtil.dayFilter(sprintDesc.getEndDate());
+			for (SprintObject sprint : allSprints) {
+				Date sprintStartDate = DateUtil.dayFilter(sprint.getStartDateString());
+				Date sprintDueDate = DateUtil.dayFilter(sprint.getDueDateString());
 				
 				// 判斷 sprint plan 日期是否為 release plan 內的日期
 				if (sprintStartDate.compareTo(releaseStartDate) >= 0) {
-					if (releaseEndDate.compareTo(sprintEndDate) >= 0) {						
-						ReleaseSprintList.add(sprintDesc);			// add to the list
+					if (releaseEndDate.compareTo(sprintDueDate) >= 0) {						
+						releaseSprints.add(sprint);			// add to the list
 					}
 				}
 			}
 			
-			desc.setSprintDescList(ReleaseSprintList);
+			desc.setSprintDescList(releaseSprints);
 			newDescList.add(desc);
 		}
 		return newDescList;
@@ -153,10 +153,10 @@ public class ReleasePlanHelper {
 		IReleasePlanDesc[] plans = loadReleasePlans();
 		
 		for (IReleasePlanDesc plan : plans) {
-			if (plan.getSprintDescList() != null) {
-				for (ISprintPlanDesc s_id : plan.getSprintDescList()) {
+			if (plan.getSprints() != null) {
+				for (SprintObject sprint : plan.getSprints()) {
 					// 找到此 sprint 所被包含的 release ID
-					if (s_id.getID().equals(String.valueOf(sprintId))) {
+					if (sprint.getId() == sprintId) {
 						return plan.getID();
 					}
 				}
@@ -211,7 +211,7 @@ public class ReleasePlanHelper {
 			tree+="EndDate:\'"+des.getEndDate()+"\',";
 			tree+="Description:\'"+ tsc.TranslateJSONChar(des.getDescription()) +"\',";
 			
-			if(des.getSprintDescList()!=null&&des.getSprintDescList().size()!=0){
+			if(des.getSprints()!=null&&des.getSprints().size()!=0){
 				tree+= "expanded: true,";
 				tree+="iconCls:\'task-folder\',";
 
@@ -266,11 +266,11 @@ public class ReleasePlanHelper {
 	    	for (IReleasePlanDesc release : ListReleaseDescs) {
 	    		if (release == null)
 	    			break;
-	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    		for (SprintObject sprint : release.getSprints()) {
 	    			JSONObject sprintplan = new JSONObject();
-	    			sprintplan.put("ID", sprint.getID());
-	    			sprintplan.put("Name", "Sprint" + sprint.getID());
-	    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+	    			sprintplan.put("ID", String.valueOf(sprint.getId()));
+	    			sprintplan.put("Name", "Sprint" + String.valueOf(sprint.getId()));
+	    			storyinfo = getStoryInfo(String.valueOf(sprint.getId()), SBhelper);
 	    			sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
 	    			sprints.put(sprintplan);
 	    			totalvelocity += storyinfo.get("StoryPoint");
@@ -299,11 +299,11 @@ public class ReleasePlanHelper {
     	int totalstorycount = 0;
     	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
-    		ArrayList<ISprintPlanDesc> allSprints = new ArrayList<ISprintPlanDesc>();
+    		ArrayList<SprintObject> allSprints = new ArrayList<SprintObject>();
     		for (IReleasePlanDesc release : ListReleaseDescs) {
     			if (release == null)
     				break;
-	    		for (ISprintPlanDesc sprint : release.getSprintDescList()) {
+	    		for (SprintObject sprint : release.getSprints()) {
 	    			allSprints.add(sprint);
 	    		}
 	    	}
@@ -315,11 +315,11 @@ public class ReleasePlanHelper {
 				}
     		});
     		
-    		for(ISprintPlanDesc sprint : allSprints) {
+    		for(SprintObject sprint : allSprints) {
     			JSONObject sprintplan = new JSONObject();
-    			sprintplan.put("ID", sprint.getID());
-    			sprintplan.put("Name", "Sprint" + sprint.getID());
-    			storyinfo = getStoryInfo(sprint.getID(), SBhelper);
+    			sprintplan.put("ID", String.valueOf(sprint.getId()));
+    			sprintplan.put("Name", "Sprint" + String.valueOf(sprint.getId()));
+    			storyinfo = getStoryInfo(String.valueOf(sprint.getId()), SBhelper);
     			totalstorycount += storyinfo.get("StoryCount");
     			sprintplan.put("StoryDoneCount", storyinfo.get("StoryDoneCount"));
     			sprints.put(sprintplan);
@@ -336,9 +336,9 @@ public class ReleasePlanHelper {
     }
     
     // 取得Sprint的Story資訊
-    private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper SBhelper) {
+    private HashMap<String, Integer> getStoryInfo(String sprintID, SprintBacklogHelper sprintBacklogHelper) {
     	HashMap<String, Integer> storyinfo = new HashMap<String, Integer>(); 
-    	ArrayList<StoryObject> stories = SBhelper.getStoryBySprintId(Long.parseLong(sprintID));
+    	ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByIdInSprint();
     	int storypoint = 0;
     	int storydonecount = 0;
     	for (StoryObject story : stories) {
@@ -379,20 +379,20 @@ public class ReleasePlanHelper {
 	private String setSprintToJSon (IReleasePlanDesc IRDesc, SprintPlanHelper SPhelper){
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		String sprintTree="";
-		if (IRDesc.getSprintDescList() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
+		if (IRDesc.getSprints() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			int i=0;
 			// 將資訊設定成 JSon 輸出格式
-			for (ISprintPlanDesc desc : IRDesc.getSprintDescList()) {
+			for (SprintObject sprint : IRDesc.getSprints()) {
 				if(i==0)
 					sprintTree+="{";
 				else
 					sprintTree+=",{";
 				sprintTree+="Type:\'Sprint\',";
-				sprintTree+="ID:\'"+desc.getID()+"\',";
-				sprintTree+="Name:\'"+tsc.TranslateJSONChar(desc.getGoal())+"\',";
-				sprintTree+="StartDate:\'"+desc.getStartDate()+"\',";
-				sprintTree+="EndDate:\'"+desc.getEndDate()+"\',";
-				sprintTree+="Interval:\'"+desc.getInterval()+"\',";
+				sprintTree+="ID:\'" + String.valueOf(sprint.getId()) + "\',";
+				sprintTree+="Name:\'" + tsc.TranslateJSONChar(sprint.getSprintGoal()) + "\',";
+				sprintTree+="StartDate:\'"+sprint.getStartDateString()+"\',";
+				sprintTree+="EndDate:\'"+sprint.getDueDateString()+"\',";
+				sprintTree+="Interval:\'"+sprint.getInterval()+"\',";
 				sprintTree+="Description:\' \',";
 				sprintTree+="iconCls:\'task\',";
 				sprintTree+="leaf: true";
@@ -552,9 +552,8 @@ public class ReleasePlanHelper {
 	 */	
 	
 	//加入 Release 日期範圍內 Sprint 底下的 Story
-	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<ISprintPlanDesc> oldSprintList, IReleasePlanDesc reDesc){
-		List<ISprintPlanDesc> newSprintList =  reDesc.getSprintDescList();
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
+	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<SprintObject> oldSprintList, IReleasePlanDesc reDesc){
+		List<SprintObject> newSprintList =  reDesc.getSprints();
 		ArrayList<Long> storyList;
 		
 		//For deleting old sprint. Taking original SprintList to compare with new SprintList.
@@ -568,7 +567,7 @@ public class ReleasePlanHelper {
 	}
 	
 	//SprintList，舊日期的list 與 新日期的list做比對
-	private ArrayList<Long> compareReleaseSprint(List<ISprintPlanDesc> sprintList1, List<ISprintPlanDesc> sprintList2,
+	private ArrayList<Long> compareReleaseSprint(List<SprintObject> sprintList1, List<SprintObject> sprintList2,
 											   ProjectObject project, IUserSession session) {
 //		SprintBacklogMapper sprintBacklog;
 		SprintBacklogLogic sprintBacklogLogic;
@@ -576,16 +575,16 @@ public class ReleasePlanHelper {
 		boolean deleteOrAdd = true;
 
 		if (sprintList2 != null) {
-			for (ISprintPlanDesc list1 : sprintList1) {
-				for (ISprintPlanDesc list2 : sprintList2) {
-					if (list1.getID().equals(list2.getID())) {//Sprint still exists.
+			for (SprintObject sprintInList1 : sprintList1) {
+				for (SprintObject sprintInList2 : sprintList2) {
+					if (sprintInList1.getId() == sprintInList2.getId()) {//Sprint still exists.
 						deleteOrAdd = false;
 						break;
 					}
 				}
 				if (deleteOrAdd == true) {//Finding sprint not existing in list2.
-					sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
-					ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+					sprintBacklogLogic = new SprintBacklogLogic(project, sprintInList1.getId());
+					ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 					for (StoryObject story : stories) {
 						storyList.add(story.getId());
 					}
@@ -593,9 +592,9 @@ public class ReleasePlanHelper {
 				deleteOrAdd = true;//For next sprint.
 			}
 		} else { // For creating a new sprint
-			for (ISprintPlanDesc list1 : sprintList1) {
-				sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(list1.getID()));
-				ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+			for (SprintObject sprintInList1 : sprintList1) {
+				sprintBacklogLogic = new SprintBacklogLogic(project, sprintInList1.getId());
+				ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 				for (StoryObject story : stories) {
 					storyList.add(story.getId());
 				}

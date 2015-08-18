@@ -16,15 +16,16 @@ Edit Story With Arguments In Sprint Backlog
     Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
     Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
+    ${storyId}=    Get Text    //div[@id="SprintBacklog_Page_Event"]//tbody//tr//td/div[text()="${oriTargetStoryName}"]/../../td[1]/a/span
     ${xpathEditStory}=    Find Current Window Element    Edit Story #${storyID}    Submit
     Element Enable And Submit    ${xpathEditStory}
     Wait Until Page Contains    Success.
-    [Return]    ${storyID}
+    [Return]    ${storyId}
 
 Verify Story Information With Arguments In Sprint Backlog
     [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tagName}    ${storyNotes}
     ...    ${storyHowToDemo}
+    ${storyId}=    Get Text    //div[@id="SprintBacklog_Page_Event"]//tbody//tr//td/div[text()="${storyName}"]/../../td[1]/a/span
     # 比對 edit story widget content
     Double Click Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyName}")]/../..
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
@@ -34,7 +35,7 @@ Verify Story Information With Arguments In Sprint Backlog
     Compare Field Content    //textarea[@name="Notes"]    ${storyNotes}
     Compare Field Content    //input[@name="Tags"]    ${tagName}
     Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
-    ${xpathAddNewSprint}=    Find Current Window Element    Edit Story #1    Cancel
+    ${xpathAddNewSprint}=    Find Current Window Element    Edit Story #${storyId}    Cancel
     Element Enable And Submit    ${xpathAddNewSprint}
 
 Get Story ID In Sprint Backlog

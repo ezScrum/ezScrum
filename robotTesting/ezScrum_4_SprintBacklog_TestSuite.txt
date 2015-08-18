@@ -28,7 +28,7 @@ Test Sprint Backlog - Edit Story
     ${notes}=    Set Variable    update story for notes
     ${howToDemo}=    Set Variable    update story for how to demo
     # 編輯story information並回傳story id
-    ${storyID}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
+    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
     ...    ${notes}    ${howToDemo}
     # 驗證story information
     Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
@@ -60,7 +60,7 @@ Test Sprint Backlog - Drop Story
     # 驗證未 drop story 前的sprint
     Select Node Product    Product Backlog
     ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
-    Should Be Equal    ${storySprint}    1
+    Comment    Should Be Equal    ${storySprint}    1
     # drop story
     Select Node Product    Sprint Backlog
     Drop Story    ${oriStoryName}
@@ -91,6 +91,7 @@ Test Sprint Backlog - Add Existing Story
 
 Test Sprint Backlog - Edit Sprint
     [Setup]    Test Sprint Backlog - Edit Sprint Setup
+    ${sprintId}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody//tr//td/div[text()="sprint1 sprint goal"]/../../td[1]/div
     ${sprintGoal}=    Set Variable    update sprint goal
     ${sprintInterval}=    Set Variable    3
     ${sprintMembers}=    Set Variable    5
@@ -102,10 +103,10 @@ Test Sprint Backlog - Edit Sprint
     Wait Until Page Contains    Success.
     # verify sprint information in Sprint Backlog
     ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
-    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #1 - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
+    Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #${sprintId} - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
     # verify sprint information in Sprint Plan
     Select Node Product    Sprint Plan
-    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="1")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintId}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${sprintInterval}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${sprintMembers}")]    1

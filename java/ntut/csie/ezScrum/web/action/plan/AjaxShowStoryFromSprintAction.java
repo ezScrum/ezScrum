@@ -40,7 +40,7 @@ public class AjaxShowStoryFromSprintAction extends PermissionAction {
 		String SprintID = request.getParameter("Sid");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, Long.parseLong(SprintID));
-		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 
 		return sprintBacklogHelper.getStoriesInSprintResponseText(stories);
 	}

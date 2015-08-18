@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -65,15 +67,18 @@ public class TaskBoard {
 
 	private void init() {
 		// 取得目前最新的Story與Task狀態
-		mStories = mSprintBacklogLogic.getStoriesByImp();
+		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		// 取得從經被drop掉的Story與其底下的Task
-		mDroppedStories = mSprintBacklogMapper.getDroppedStories();
+		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
 			Date iter_Start_Work_Date = mSprintBacklogLogic.getSprintStartWorkDate();
 			Date iter_End_Work_Date = mSprintBacklogLogic.getSprintEndWorkDate();
 			Date iter_End_Date = mSprintBacklogMapper.getSprintEndDate();
 
+			if (iter_Start_Work_Date == null || iter_End_Work_Date == null || iter_End_Date == null) {
+				return;
+			}
 			Calendar indexDate = Calendar.getInstance();
 			indexDate.setTime(iter_Start_Work_Date);
 			long endTime = iter_End_Work_Date.getTime();
@@ -98,8 +103,8 @@ public class TaskBoard {
 				if (!DateUtil.isHoliday(key)) {
 					// 記錄Story與Task理想線的點數
 					// 理想線直線方程式 y = - (起始點數 / 總天數) * 第幾天 + 起始點數
-					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / dayOfSprint) * num) + initPoint[0]);
-					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / dayOfSprint) * num) + initPoint[1]);
+					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / (dayOfSprint - 1)) * num) + initPoint[0]);
+					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / (dayOfSprint - 1)) * num) + initPoint[1]);
 
 					// 記錄Story與Task實際線的點數
 					// 只取出今天以前的資料
@@ -236,7 +241,7 @@ public class TaskBoard {
 	public String getTaskPoint() {
 		return mSprintBacklogLogic.getTaskRemainsPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTaskEstimatePoints();
+		        + mSprintBacklogLogic.getTotalTaskPoints();
 	}
 
 	public String getInitialStoryPoint() {
@@ -257,10 +262,10 @@ public class TaskBoard {
 	}
 
 	public String getStoryChartLink() {
-		IProject project = mSprintBacklogMapper.getProject();
+		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
-		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + NAME + File.separator + "Sprint"
+		String chartPath = "./Workspace/" + project.getName() + "/"
+		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
 		        + getSprintId() + File.separator + STORY_CHART_FILE;
 
 		// 繪圖
@@ -274,10 +279,10 @@ public class TaskBoard {
 	}
 
 	public String getTaskChartLink() {
-		IProject project = mSprintBacklogMapper.getProject();
+		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/Sprint1/ChartLink
-		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + NAME + File.separator + "Sprint"
+		String chartPath = "./Workspace/" + project.getName() + "/"
+		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
 		        + getSprintId() + File.separator + TASK_CHART_FILE;
 
 		// 繪圖

@@ -117,7 +117,6 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		stories.get(2).setImportance(30).save();
 		stories.get(3).setImportance(40).save();
 		stories.get(4).setImportance(50).save();
-		mSprintBacklogMapper.forceRefresh();
 
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 		stories = mTaskBoard.getStories();
@@ -139,7 +138,6 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		stories.get(2).setImportance(10).save();
 		stories.get(3).setImportance(30).save();
 		stories.get(4).setImportance(40).save();
-		mSprintBacklogMapper.forceRefresh();
 
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 		stories = mTaskBoard.getStories();
@@ -155,7 +153,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// 初始 Task Point String = 120 / 120
 		String actualTaskPointString = mTaskBoard.getTaskPoint();
 		String expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
-		                               + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                               + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 一個Task Done
@@ -165,7 +163,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / " 
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 兩個 Task Done
@@ -174,7 +172,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 		
 		// 全部Task Done
@@ -184,7 +182,7 @@ public class TaskBoardTest extends MockStrutsTestCase {
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(mSprintBacklogLogic.getTaskRemainsPoints()) + " / "
-		                        + String.valueOf(mSprintBacklogLogic.getTaskEstimatePoints());
+		                        + String.valueOf(mSprintBacklogLogic.getTotalTaskPoints());
 		assertEquals(expectedTaskPointString, actualTaskPointString);
 	}
 }

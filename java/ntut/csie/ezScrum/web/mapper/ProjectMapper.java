@@ -52,15 +52,7 @@ public class ProjectMapper {
 			.setManager(projectInfo.manager)
 			.setAttachFileSize(projectInfo.attachFileSize)
 			.save();
-		project.reload();
-		
-		// 新建 project，也把 serial number 建起來
-		long projectId = project.getId();
-		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-		serialnumberDAO.create(new SerialNumberObject(projectId
-				, 0, 0, 0, 0, 0, 0));
-				
-		return projectId;
+		return project.getId();
 	}
 	
 	/**
@@ -131,7 +123,7 @@ public class ProjectMapper {
 	 * @param projectId
 	 * @return AccountObject list
 	 */
-	public ArrayList<AccountObject> getProjectWorkers(long projectId) {
+	public static ArrayList<AccountObject> getProjectWorkers(long projectId) {
 		return ProjectObject.get(projectId).getProjectWorkers();
 	}
 

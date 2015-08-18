@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -45,7 +45,7 @@ public class ShowSprintInformationAction extends Action {
 		 * 目的:解決開不同分頁瀏覽不同專案時，在Sprint backlog點選Sprint Information顯示正確的sprint information.
 		 */
 		request.setAttribute(IProjectSummaryEnum.PROJECT, iProject);
-
+ 
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
@@ -56,15 +56,15 @@ public class ShowSprintInformationAction extends Action {
 		sprintId = sprintBacklogMapper.getSprintId();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
-		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesByImportance();
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 		
 		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
 		request.setAttribute("Stories", stories);
 
 		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
 
-		SprintPlanHelper spHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc plan = spHelper.loadPlan(String.valueOf(sprintBacklogMapper.getSprintId()));
+		SprintObject plan = sprintBacklogMapper.getSprint();
+		System.out.println(plan);
 		request.setAttribute("SprintPlan", plan);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),

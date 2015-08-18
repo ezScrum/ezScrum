@@ -409,8 +409,8 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		expectedResponse.setLength(0);
 		expectedResponse.append("{\"ID\":\"0\",")
 				.append("\"SprintGoal\":\"\",")
-				.append("\"Current_Story_Undone_Total_Point\":\"\",")
-				.append("\"Current_Task_Undone_Total_Point\":\"\"}");
+				.append("\"Current_Story_Undone_Total_Point\":\"0.0 / 0.0\",")
+				.append("\"Current_Task_Undone_Total_Point\":\"0.0 / 0.0\"}");
 
 		actualResponse = response.getWriterBuffer().toString();
 		assertEquals(expectedResponse.toString(), actualResponse);

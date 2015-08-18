@@ -6,43 +6,29 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SprintBacklogLogic {
 	private ProjectObject mProject;
-	private IProject mIProject;
 	private SprintBacklogMapper mSprintBacklogMapper;
 
 	// 儲存目前處理過的 Sprint Date Column
 	private ArrayList<SprintBacklogDateColumn> mCurrentCols = null;
-	private ArrayList<Date> mDateList = null;
+	private ArrayList<Date> mDates = null;
 
-	public SprintBacklogLogic() {
+	public SprintBacklogLogic(ProjectObject project) {
+		mProject = project;
+		mSprintBacklogMapper = createSprintBacklogMapper(-1);
 	}
 
-	/**
-	 * 要換成用 ProjectObject 的建構子
-	 * 
-	 * @param project
-	 * @param sprintId
-	 */
-	@Deprecated
-	public SprintBacklogLogic(IProject project, long sprintId) {
-		mIProject = project;
-		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
-	}
-	
 	public SprintBacklogLogic(ProjectObject project, long sprintId) {
 		mProject = project;
 		mSprintBacklogMapper = createSprintBacklogMapper(sprintId);
@@ -73,7 +59,16 @@ public class SprintBacklogLogic {
 		return sprintBacklogMapper;
 	}
 	
-	public void closeStory(long id, String name, String notes, String changeDate) {
+	/**
+	 * Taskboard story card 的操作
+	 * 
+	 * @param id
+	 * @param name
+	 * @param notes
+	 * @param changeDate
+	 */
+	public void closeStory(long id, String name, String notes,
+			String changeDate) {
 		Date closeDate = parseToDate(changeDate);
 		mSprintBacklogMapper.closeStory(id, name, notes, closeDate);
 	}
@@ -84,6 +79,16 @@ public class SprintBacklogLogic {
 		mSprintBacklogMapper.reopenStory(id, name, notes, reopenDate);
 	}
 
+	/**
+	 * Taskboard task card 的操作
+	 * 
+	 * @param id
+	 * @param name
+	 * @param handlerUsername
+	 * @param partners
+	 * @param notes
+	 * @param changeDate
+	 */
 	public void checkOutTask(long id, String name, String handlerUsername,
 			String partners, String notes, String changeDate) {
 		Date closeDate = new Date();
@@ -136,10 +141,9 @@ public class SprintBacklogLogic {
 	public int getSprintAvailableDays(long sprintId) {
 		SprintBacklogMapper backlog = createSprintBacklogMapper(sprintId);
 		int availableDays = 0;
-		if (backlog.getSprintId() > 0) {
-			ISprintPlanDesc sprint = (new SprintPlanMapper(mProject))
-					.getSprintPlan(Long.toString(backlog.getSprintId()));
-			availableDays = Integer.parseInt(sprint.getInterval()) * 5; // 一個禮拜五天
+		SprintObject sprint = backlog.getSprint();
+		if (sprint != null) {
+			availableDays = sprint.getInterval() * 5; // 一個禮拜五天
 		}
 		return availableDays;
 	}
@@ -151,7 +155,7 @@ public class SprintBacklogLogic {
 	 * @param availableDays
 	 * @return
 	 */
-	public ArrayList<SprintBacklogDateColumn> calculateSprintBacklogDateList(
+	public ArrayList<SprintBacklogDateColumn> getSprintBacklogDates(
 			Date startDate, int availableDays) {
 		if (startDate == null) {
 			return new ArrayList<SprintBacklogDateColumn>();
@@ -174,14 +178,12 @@ public class SprintBacklogLogic {
 			String date = format.format(cal.getTime());
 
 			String dateId = ID_Date + Integer.toString(count++);
-			dateColumns.add(new SprintBacklogDateColumn(dateId, date)); // 將可工作的日期加入
-																		// list
-
+			dateColumns.add(new SprintBacklogDateColumn(dateId, date)); // 將可工作的日期加入 list
 			dates.add(cal.getTime());
 			cal.add(Calendar.DATE, 1); // 加一工作天
 		}
 
-		mDateList = dates;
+		mDates = dates;
 		mCurrentCols = dateColumns;
 
 		return dateColumns;
@@ -192,7 +194,7 @@ public class SprintBacklogLogic {
 	}
 
 	public ArrayList<Date> getCurrentDateList() {
-		return mDateList;
+		return mDates;
 	}
 
 	/*************************************************************
@@ -207,6 +209,9 @@ public class SprintBacklogLogic {
 	public Date getSprintStartWorkDate() {
 		Date startDate = mSprintBacklogMapper.getSprintStartDate();
 		Date endDate = mSprintBacklogMapper.getSprintEndDate();
+		if (startDate == null || endDate == null) {
+			return null;
+		}
 		Date workDate = DateUtil.nearWorkDate(startDate,
 				DateUtil.BACK_DIRECTION);
 		if (workDate.getTime() > endDate.getTime())
@@ -222,8 +227,11 @@ public class SprintBacklogLogic {
 	public Date getSprintEndWorkDate() {
 		Date startDate = mSprintBacklogMapper.getSprintStartDate();
 		Date endDate = mSprintBacklogMapper.getSprintEndDate();
-		Date workDate = DateUtil
-				.nearWorkDate(endDate, DateUtil.FRONT_DIRECTION);
+		if (startDate == null || endDate == null) {
+			return null;
+		}
+		Date workDate = DateUtil.nearWorkDate(endDate,
+				DateUtil.FRONT_DIRECTION);
 		if (workDate.getTime() < startDate.getTime())
 			return endDate;
 		return workDate;
@@ -236,18 +244,18 @@ public class SprintBacklogLogic {
 	 */
 	public int getSprintWorkDays() {
 		// 扣除假日後，Sprint 的總天數
-		int dayOfSprint = -1;
+		int dayOfSprint = 0;
 
-		Calendar indexDate = Calendar.getInstance();
-		indexDate.setTime(getSprintStartWorkDate());
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(getSprintStartWorkDate());
 		long endTime = getSprintEndWorkDate().getTime();
 
-		while (!(indexDate.getTimeInMillis() > endTime)) {
+		while (!(calendar.getTimeInMillis() > endTime)) {
 			// 扣除假日
-			if (!DateUtil.isHoliday(indexDate.getTime())) {
+			if (!DateUtil.isHoliday(calendar.getTime())) {
 				dayOfSprint++;
 			}
-			indexDate.add(Calendar.DATE, 1);
+			calendar.add(Calendar.DATE, 1);
 		}
 		return dayOfSprint;
 	}
@@ -262,10 +270,10 @@ public class SprintBacklogLogic {
 	/**
 	 * Get all tasks estimate point in one sprint
 	 * 
-	 * @return task estimate point
+	 * @return total task estimate point
 	 */
-	public double getTaskEstimatePoints() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getAllTasks();
+	public double getTotalTaskPoints() {
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksInSprint();
 		double point = 0;
 		for (TaskObject task : tasks) {
 			point += task.getEstimate();
@@ -274,12 +282,12 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all stories point in one sprint
+	 * Get all stories estimate point in one sprint
 	 * 
-	 * @return total story point
+	 * @return total story estimate point
 	 */
 	public double getTotalStoryPoints() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		double point = 0;
 		for (StoryObject story : stories) {
 			point += story.getEstimate();
@@ -288,12 +296,12 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all tasks remains point in one sprint
+	 * Get tasks remains point in one sprint
 	 * 
 	 * @return task remains point
 	 */
 	public double getTaskRemainsPoints() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getAllTasks();
+		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksInSprint();
 		double point = 0;
 		for (TaskObject task : tasks) {
 			if (task.getStatus() == TaskObject.STATUS_DONE) {
@@ -305,12 +313,12 @@ public class SprintBacklogLogic {
 	}
 
 	/**
-	 * Get all stories unclosed point in one sprint
+	 * Get stories unclosed point in one sprint
 	 * 
 	 * @return story unclosed point
 	 */
 	public double getStoryUnclosedPoints() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		double point = 0;
 		for (StoryObject story : stories) {
 			if (story.getStatus() == StoryObject.STATUS_DONE) {
@@ -321,13 +329,13 @@ public class SprintBacklogLogic {
 		return point;
 	}
 
-	public ArrayList<StoryObject> getStories() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
+	public ArrayList<StoryObject> getStoriesSortedByIdInSprint() {
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		return sort(stories, "");
 	}
 
-	public ArrayList<StoryObject> getStoriesByImp() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getAllStories();
+	public ArrayList<StoryObject> getStoriesSortedByImpInSprint() {
+		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		return sort(stories, "IMP");
 	}
 
@@ -366,8 +374,8 @@ public class SprintBacklogLogic {
 	}
 
 	public class SprintBacklogDateColumn {
-		private String Id;
-		private String Name;
+		public String Id;
+		public String Name;
 
 		public SprintBacklogDateColumn(String ID, String name) {
 			this.Id = ID;
@@ -401,6 +409,16 @@ public class SprintBacklogLogic {
 				return story1.getValue() - story2.getValue();
 			} else {
 				return (int)(story1.getId() - story2.getId());
+			}
+		}
+	}
+	
+	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
+		for (long storyId : storiesId) {
+			StoryObject story = mSprintBacklogMapper.getStory(storyId);
+			if (sprintId > 0 && story != null) {
+				// 更新 Story 與 Sprint 對應的關係
+				mSprintBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}

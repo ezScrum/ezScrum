@@ -76,7 +76,7 @@ public class ReleaseBacklog {
 	}
 	
 	public int getSprintPlanCounts() {
-		return mPlanDesc.getSprintDescList().size();
+		return mPlanDesc.getSprints().size();
 	}
 	
 	// 取得該日期前已完成的Story數量

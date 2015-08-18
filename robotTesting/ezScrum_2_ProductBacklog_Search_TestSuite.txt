@@ -29,6 +29,11 @@ ${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
 Test ProductBacklog - Search
     [Tags]
     [Setup]    Test Product Backlog Search Setup
+    Reload Page
+    Title Should Be    ezScrum, SSLab NTUT
+    Select Node Product    Sprint Plan
+    ${sprint1Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint1 in A"]/../../td[1]/div
+    ${sprint2Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint2 in A"]/../../td[1]/div
     # search前先重新整理
     Reload Page
     Title Should Be    ezScrum, SSLab NTUT
@@ -58,14 +63,14 @@ Test ProductBacklog - Search
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
     # 設定搜尋條件    搜尋SprintID
-    Set Product Backlog Search Condition    Sprint ID    1
+    Set Product Backlog Search Condition    Sprint ID    ${sprint1Id}
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]
     Page Should Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFourth"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFifth"]
     # 設定搜尋條件    搜尋SprintID
-    Set Product Backlog Search Condition    Sprint ID    2
+    Set Product Backlog Search Condition    Sprint ID    ${sprint2Id}
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryFirst"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStorySecond"]
     Page Should Not Contain Element    xpath=//div[@id="productBacklogGridPanel"]//table/tbody/tr[1]/td[4]/div[text()="newStoryThird"]

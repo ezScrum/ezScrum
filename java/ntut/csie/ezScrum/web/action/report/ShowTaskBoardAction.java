@@ -6,12 +6,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -33,7 +33,8 @@ public class ShowTaskBoardAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		IUserSession userSession = (IUserSession) request.getSession()
+				.getAttribute("UserSession");
 
 		// get Account, ScrumRole
 		AccountObject account = userSession.getAccount();
@@ -58,7 +59,7 @@ public class ShowTaskBoardAction extends Action {
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 
-		List<ISprintPlanDesc> plans = sprintPlanHelper.loadListPlans();
+		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
 				-1);
@@ -67,22 +68,24 @@ public class ShowTaskBoardAction extends Action {
 
 		// backlog = null 代表取得 sprintBackLog 發生問題，所以進入防錯處理，塞入假資料
 		if (backlog != null) {
-			IProject iProject = new ProjectMapper().getProjectByID(project.getName());
-			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, iProject);
+			IProject iProject = new ProjectMapper().getProjectByID(project
+					.getName());
+			List<String> actorList = (new ProjectMapper())
+					.getProjectScrumWorkerList(userSession, iProject);
 
 			actorList.remove(0);
 			actorList.add(0, "ALL");
 
 			request.setAttribute("ActorList", actorList);
-			request.setAttribute("SprintPlans", plans);
+			request.setAttribute("SprintPlans", sprints);
 
 			TaskBoard board = null;
 			if (sprintId == null) {
 				board = new TaskBoard(sprintBacklogLogic, backlog);
 			} else {
-				ISprintPlanDesc desc = sprintPlanHelper.loadPlan(sprintId);
+				SprintObject sprint = sprintPlanHelper.getSprint(Long.parseLong(sprintId));
 
-				if (!desc.getID().equals("-1")) {
+				if (sprint.getId() != -1) {
 					board = new TaskBoard(sprintBacklogLogic,
 							(new SprintBacklogLogic(project, Long
 									.parseLong(sprintId)))
@@ -100,7 +103,7 @@ public class ShowTaskBoardAction extends Action {
 		} else {
 			List<String> ActorList = new ArrayList<String>();
 			request.setAttribute("ActorList", ActorList);
-			request.setAttribute("SprintPlans", plans);
+			request.setAttribute("SprintPlans", sprints);
 			TaskBoard board = null;
 			request.setAttribute("TaskBoard", board);
 		}

@@ -118,7 +118,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	assertEquals(format.format(StartDate), releasePlan.getStartDate());
     	assertEquals(format.format(EndDate), releasePlan.getEndDate());
     	assertEquals(releaseDesc, releasePlan.getDescription());
-    	assertEquals(0, releasePlan.getSprintDescList().size());
+    	assertEquals(0, releasePlan.getSprints().size());
     	
     	// ============= release ==============
     	project = null;
@@ -174,7 +174,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	assertEquals(format.format(StartDate), releasePlan.getStartDate());
     	assertEquals(format.format(EndDate), releasePlan.getEndDate());
     	assertEquals(releaseDesc, releasePlan.getDescription());
-    	assertEquals(0, releasePlan.getSprintDescList().size());
+    	assertEquals(0, releasePlan.getSprints().size());
     	
     	// ============= release ==============
     	project = null;

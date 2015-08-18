@@ -1,10 +1,9 @@
 package ntut.csie.ezScrum.iteration.iternal;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class ReleasePlanDesc implements IReleasePlanDesc {
 	private String ID;
@@ -12,7 +11,7 @@ public class ReleasePlanDesc implements IReleasePlanDesc {
 	private String StartDate;
 	private String EndDate;
 	private String Description;
-	private List<ISprintPlanDesc> SprintList;
+	private ArrayList<SprintObject> SprintList;
 	
 	public ReleasePlanDesc() {
 		this.ID = "0";
@@ -20,7 +19,7 @@ public class ReleasePlanDesc implements IReleasePlanDesc {
 		this.StartDate = "";
 		this.EndDate = "";
 		this.Description = "";
-		this.SprintList = new LinkedList<ISprintPlanDesc>();
+		this.SprintList = new ArrayList<SprintObject>();
 	}
 
 	@Override
@@ -74,12 +73,12 @@ public class ReleasePlanDesc implements IReleasePlanDesc {
 	}
 
 	@Override
-	public List<ISprintPlanDesc> getSprintDescList() {
+	public ArrayList<SprintObject> getSprints() {
 		return this.SprintList;
 	}
 
 	@Override
-	public void setSprintDescList(List<ISprintPlanDesc> SprintList) {
+	public void setSprintDescList(ArrayList<SprintObject> SprintList) {
 		this.SprintList = SprintList;
 	}
 }

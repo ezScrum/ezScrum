@@ -43,15 +43,15 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		String sprintId = request.getParameter("sprintID");
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
-		ArrayList<StoryObject> stories = sprintBacklogLogic.getStories();
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(project);
 		for (StoryObject story : stories) {
 			productBacklogLogic.dropStoryFromSprint(story.getId());
 		}
 		
 		//刪除sprint資訊
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-		SPhelper.deleteSprint(sprintId);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		sprintPlanHelper.deleteSprint(Long.parseLong(sprintId));
 		StringBuilder result = new StringBuilder("{\"success\":true}");
 		return result;
 	}
