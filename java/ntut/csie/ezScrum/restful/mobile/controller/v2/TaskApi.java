@@ -41,8 +41,7 @@ public class TaskApi extends BaseAuthApi {
 			tasks.addAll(story.getTasks());
 		}
 
-		ConvertSprintBacklog convertSprintBacklog = new ConvertSprintBacklog();
-		return response(200, convertSprintBacklog.readTasksInformationList(tasks));
+		return response(200, ConvertSprintBacklog.getTasksJsonString(tasks));
 	}
  
 	@Override

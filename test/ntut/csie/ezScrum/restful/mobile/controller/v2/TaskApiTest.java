@@ -209,7 +209,7 @@ public class TaskApiTest extends ApiTest {
 		JSONObject tasksJson = new JSONObject(response);
 		for (int i = 0; i < tasks.size(); i++) {
 			TaskObject task = tasks.get(i);
-			JSONObject taskJson = tasksJson.getJSONArray(SprintBacklogUtil.TAG_TASKLIST).getJSONObject(i);
+			JSONObject taskJson = tasksJson.getJSONArray(SprintBacklogUtil.TAG_TASKS).getJSONObject(i);
 			assertEquals(task.getId(), taskJson.getLong(TaskEnum.ID));
 			assertEquals(task.getName(), taskJson.getString(TaskEnum.NAME));
 			assertEquals(task.getNotes(), taskJson.getString(TaskEnum.NOTES));

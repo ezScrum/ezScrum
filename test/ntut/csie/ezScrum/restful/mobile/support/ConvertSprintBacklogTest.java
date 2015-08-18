@@ -240,10 +240,10 @@ public class ConvertSprintBacklogTest {
 			
 			assertEquals(task.getId(), taskJson.getLong("id"));
 			assertEquals(task.getName(), taskJson.getString("name"));
-			assertEquals("", taskJson.getString("handler"));
+			assertEquals("{}", taskJson.getString("handler"));
 			assertEquals("[]", taskJson.getJSONArray("partners").toString());
 			assertEquals(task.getEstimate(), taskJson.getInt("estimate"));
-			assertEquals(task.getRemains(), taskJson.getInt("remains"));
+			assertEquals(task.getRemains(), taskJson.getInt("remain"));
 			assertEquals(task.getActual(), taskJson.getInt("actual"));
 			assertEquals(task.getNotes(), taskJson.getString("notes"));
 		}

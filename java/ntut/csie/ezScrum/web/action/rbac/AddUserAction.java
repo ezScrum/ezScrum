@@ -47,6 +47,7 @@ public class AddUserAction extends Action {
 			try {
 				AccountHelper accountHelper = new AccountHelper(session);
 				AccountObject account = accountHelper.addAssignedRole(id, projectId, scrumRole);
+				String string = accountHelper.getAccountXML(account);
 				writer.write(accountHelper.getAccountXML(account));
 			} catch (IllegalArgumentException e) {
 				response.setContentType("application/json; charset=utf-8");

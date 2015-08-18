@@ -186,13 +186,13 @@ public class ConvertSprintBacklog {
 	 */
 	public static String getTasksJsonString(ArrayList<TaskObject> tasks) throws JSONException {
 		JSONObject tasksJsonString = new JSONObject();
-		JSONArray tasksJsonArray = new JSONArray();
+		JSONArray taskArray = new JSONArray();
 		if (tasks == null)
 			return "";
 		for (TaskObject task : tasks) {
 			taskArray.put(task.toJSON());
 		}
-		tasksJsonString.put(SprintBacklogUtil.TAG_TASKS, tasksJsonArray);
+		tasksJsonString.put(SprintBacklogUtil.TAG_TASKS, taskArray);
 		return tasksJsonString.toString();
 	}
 
