@@ -32,7 +32,7 @@ import org.junit.Test;
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
-public class ProjectApiTest extends ApiTest {
+public class ProjectApiTest extends ApiTestBaseClass {
 	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/api";
 	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/projects";
 	private static HttpServer mServer;
