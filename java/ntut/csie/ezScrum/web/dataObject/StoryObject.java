@@ -267,7 +267,6 @@ public class StoryObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -382,6 +381,7 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
 		saveTags();

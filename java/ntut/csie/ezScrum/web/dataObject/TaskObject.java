@@ -378,7 +378,6 @@ public class TaskObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -414,6 +413,7 @@ public class TaskObject implements IBaseObject {
 		if (success) {
 			mId = DEFAULT_VALUE;
 			mSerialId = DEFAULT_VALUE;
+			mProjectId = DEFAULT_VALUE;
 		}
 		return success;
 	}
@@ -456,6 +456,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		TaskObject oldTask = TaskObject.get(mId);
 
 		TaskDAO.getInstance().update(this);

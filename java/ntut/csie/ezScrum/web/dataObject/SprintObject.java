@@ -179,22 +179,7 @@ public class SprintObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
-		} else {
-			doCreate();
-		}
-	}
-
-	/**
-	 * Update time will equal to parameter you passed.
-	 * 
-	 * @param specificTime
-	 */
-	public void save(long specificTime) {
-		if (exists()) {
-			mUpdateTime = specificTime;
-			doUpdate(specificTime);
 		} else {
 			doCreate();
 		}
@@ -225,11 +210,7 @@ public class SprintObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
-		SprintDAO.getInstance().update(this);
-	}
-
-	private void doUpdate(long specificTime) {
-		mUpdateTime = specificTime;
+		mUpdateTime = System.currentTimeMillis();
 		SprintDAO.getInstance().update(this);
 	}
 
