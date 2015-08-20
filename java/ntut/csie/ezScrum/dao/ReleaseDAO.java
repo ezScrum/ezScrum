@@ -78,15 +78,28 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 	}
 
 	@Override
-	public boolean update(ReleaseObject dataObject) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean update(ReleaseObject release) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ReleaseEnum.TABLE_NAME);
+		valueSet.addInsertValue(ReleaseEnum.NAME, release.getName());
+		valueSet.addInsertValue(ReleaseEnum.DESCRIPTION, release.getDescription());
+		valueSet.addInsertValue(ReleaseEnum.START_DATE, release.getStartDateString());
+		valueSet.addInsertValue(ReleaseEnum.DUE_DATE, release.getDueDateString());
+		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getUpdateTime());
+		valueSet.addEqualCondition(ReleaseEnum.ID, release.getId());
+		String query = valueSet.getUpdateQuery();
+		
+		return mControl.executeUpdate(query);
 	}
 
 	@Override
 	public boolean delete(long id) {
-		// TODO Auto-generated method stub
-		return false;
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ReleaseEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ReleaseEnum.ID, id);
+		String query = valueSet.getDeleteQuery();
+		
+		return mControl.executeUpdate(query);
 	}
 
 	public static ReleaseObject convert(ResultSet result) throws SQLException {
