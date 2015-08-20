@@ -45,7 +45,7 @@ public class ReleaseObject {
 	    this.name = name;
     }
 
-	public String getStartDate() {
+	public String getStartDateString() {
 	    return startDate;
     }
 
