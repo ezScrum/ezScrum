@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -176,18 +175,7 @@ public class SprintDAOTest {
 		// assert 
 		assertTrue(updateStatus);
 
-		// 從資料庫撈出 Sprint
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(SprintEnum.TABLE_NAME);
-		valueSet.addEqualCondition(SprintEnum.ID, sprint.getId());
-
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		SprintObject sprintFromDB = null;
-		if (result.next()) {
-			sprintFromDB = SprintDAO.convert(result);
-		}
-		closeResultSet(result);
+		SprintObject sprintFromDB = SprintDAO.getInstance().get(mSprintId);
 
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
 		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
@@ -249,7 +237,7 @@ public class SprintDAOTest {
 
 		// call DAO
 		long sprintId = SprintDAO.getInstance().create(sprint);
-		assertNotSame(-1, sprintId);
+		assertTrue(sprintId > 0);
 		
 		return sprintId;
 	}

@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ReleaseDocxObject {
-	private ReleasePlanObject releasePlanDesc;
+	private ReleaseObject releasePlanDesc;
 	private List<SprintObject> sprintDescList;
 	private HashMap<String, List<StoryObject>> stories;
 	private LinkedHashMap<Long, List<TaskObject>> taskMap;
@@ -13,11 +13,11 @@ public class ReleaseDocxObject {
 	
 	public ReleaseDocxObject() {}
 
-	public ReleasePlanObject getReleasePlanDesc() {
+	public ReleaseObject getReleasePlanDesc() {
 	    return releasePlanDesc;
     }
 
-	public void setReleasePlanDesc(ReleasePlanObject releasePlanDesc) {
+	public void setReleasePlanDesc(ReleaseObject releasePlanDesc) {
 	    this.releasePlanDesc = releasePlanDesc;
     }
 

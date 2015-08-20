@@ -295,6 +295,7 @@ public class ProjectObject implements IBaseObject {
 	}
 	
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		ProjectDAO.getInstance().update(this);
 	}
 }

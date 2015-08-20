@@ -272,6 +272,7 @@ public class AccountObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		AccountDAO.getInstance().update(this);
 	}
 

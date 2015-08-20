@@ -86,7 +86,6 @@ public class TagObject implements IBaseObject{
 	@Override
     public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -129,6 +128,7 @@ public class TagObject implements IBaseObject{
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		TagDAO.getInstance().update(this);
 	}
 

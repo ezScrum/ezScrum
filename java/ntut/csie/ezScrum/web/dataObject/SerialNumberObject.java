@@ -13,7 +13,7 @@ import org.codehaus.jettison.json.JSONObject;
  * 預設為 0, 為當下物件的數量, 若要拿 serialId 必須加 1
  * @author cutecool
  */
-public class SerialNumberObject {
+public class SerialNumberObject implements IBaseObject {
 	private long mId = -1;
 	private long mProjectId = -1;
 	private long mReleaseId = -1;
@@ -123,10 +123,19 @@ public class SerialNumberObject {
 	
 	public void save() {
 		if (exists()) {
-			SerialNumberDAO.getInstance().update(this);
+			doUpdate();
 		} else {
-			mId = SerialNumberDAO.getInstance().create(this);
+			doCreate();
 		}
+	}
+	
+	private void doCreate() {
+		mId = SerialNumberDAO.getInstance().create(this);
+		reload();
+	}
+	
+	private void doUpdate() {
+		SerialNumberDAO.getInstance().update(this);
 	}
 	
 	/**
@@ -138,12 +147,13 @@ public class SerialNumberObject {
 		return SerialNumberDAO.getInstance().get(projectId);
 	}
 	
-	public void reload() throws Exception {
+	@Override
+	public void reload() {
 		if (exists()) {
 			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
 			resetData(serialNumber);
 		} else {
-			throw new Exception("Record not exists");
+			System.out.println("Record not exists");
 		}
 	}
 	
@@ -168,5 +178,10 @@ public class SerialNumberObject {
 		mTaskId = serialNumber.getTaskId();
 		mUnplannedId = serialNumber.getUnplannedId();
 		mRetrospectiveId = serialNumber.getRetrospectiveId();
+	}
+
+	@Override
+	public boolean delete() {
+		return false;
 	}
 }

@@ -10,7 +10,7 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
-import ntut.csie.ezScrum.web.dataObject.ReleasePlanObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -58,9 +58,9 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 */
 	public String getAllReleasePlanWithAllItem() throws SQLException {
 		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
-		List<ReleasePlanObject> releases = new ArrayList<ReleasePlanObject>();
+		List<ReleaseObject> releases = new ArrayList<ReleaseObject>();
 		for (IReleasePlanDesc releaseDesc : releaseDescs) {
-			ReleasePlanObject releaseObject = new ReleasePlanObject(releaseDesc);
+			ReleaseObject releaseObject = new ReleaseObject(releaseDesc);
 			List<SprintObject> sprints = releaseObject.getSprintPlan();
 			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
 			for (SprintObject sprint : sprints) {
@@ -84,7 +84,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 		HashMap<String, List<StoryObject>> stories = new HashMap<String, List<StoryObject>>();
 		LinkedHashMap<Long, List<TaskObject>> taskMap = new LinkedHashMap<Long, List<TaskObject>>();
 		// get sprints information of the release(release id)
-		ReleasePlanObject releasePlan = new ReleasePlanObject(mReleasePlanHelper.getReleasePlan(releaseId));
+		ReleaseObject releasePlan = new ReleaseObject(mReleasePlanHelper.getReleasePlan(releaseId));
 		List<SprintObject> sprintPlanList = releasePlan.getSprintPlan();
 		return new Gson().toJson(getReleaseDocObject(releasePlan, sprintPlanList, stories, taskMap, totalStoryPoints));
 	}
@@ -93,7 +93,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * 將  StoryObject, TaskObject 輸出成 ReleaseDocxObject
 	 * @throws SQLException 
 	 */
-	private ReleaseDocxObject getReleaseDocObject(ReleasePlanObject releasePlan, List<SprintObject> sprints, HashMap<String, List<StoryObject>> stories,
+	private ReleaseDocxObject getReleaseDocObject(ReleaseObject releasePlan, List<SprintObject> sprints, HashMap<String, List<StoryObject>> stories,
 	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Double> totalStoryPoints) throws SQLException {
 		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
 		releaseObject.setReleasePlanDesc(releasePlan);

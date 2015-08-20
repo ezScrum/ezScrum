@@ -67,8 +67,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		}
 		valueSet.addInsertValue(AccountEnum.ENABLE,
 				account.getEnable() == true ? 1 : 0);
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME,
-				String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, account.getUpdateTime());
 		String query = valueSet.getUpdateQuery();
 
 		return mControl.executeUpdate(query);
