@@ -30,9 +30,9 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(sprint.getProjectId());
 
-		long sprintId = serialNumber.getSprintId() + 1;
+		long sprintSerialId = serialNumber.getSprintId() + 1;
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
-		valueSet.addInsertValue(SprintEnum.SERIAL_ID, sprintId);
+		valueSet.addInsertValue(SprintEnum.SERIAL_ID, sprintSerialId);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
 		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersAmount());
@@ -56,7 +56,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setSprintId(sprintId);
+		serialNumber.setSprintId(sprintSerialId);
 		serialNumber.save();
 
 		return id;
