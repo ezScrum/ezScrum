@@ -6,7 +6,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 
-public class ReleasePlanObject {
+public class ReleaseObject {
 	private String id;
 	private String name;
 	private String startDate;
@@ -14,7 +14,7 @@ public class ReleasePlanObject {
 	private String description;
 	private List<SprintObject> sprintPlan;
 	
-	public ReleasePlanObject(IReleasePlanDesc releasePlanDesc) {
+	public ReleaseObject(IReleasePlanDesc releasePlanDesc) {
 		setId(releasePlanDesc.getID());
 		setName(releasePlanDesc.getName());
 		setStartDate(releasePlanDesc.getStartDate());
