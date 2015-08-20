@@ -107,17 +107,7 @@ public class ReleaseObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
-		} else {
-			doCreate();
-		}
-	}
-
-	public void save(long specificTime) {
-		if (exists()) {
-			mUpdateTime = specificTime;
-			doUpdate(specificTime);
 		} else {
 			doCreate();
 		}
@@ -148,11 +138,7 @@ public class ReleaseObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
-		ReleaseDAO.getInstance().update(this);
-	}
-
-	private void doUpdate(long specificTime) {
-		mUpdateTime = specificTime;
+		mUpdateTime = System.currentTimeMillis();
 		ReleaseDAO.getInstance().update(this);
 	}
 	
