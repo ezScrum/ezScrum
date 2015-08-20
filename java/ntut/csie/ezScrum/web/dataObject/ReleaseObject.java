@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.ReleaseDAO;
+import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.codehaus.jettison.json.JSONException;
@@ -98,6 +99,10 @@ public class ReleaseObject implements IBaseObject {
 	public long getUpdateTime() {
 		return mUpdateTime;
 	}
+	
+	public static ReleaseObject get(long id) {
+		return ReleaseDAO.getInstance().get(id);
+	}
 
 	@Override
 	public void save() {
@@ -168,11 +173,27 @@ public class ReleaseObject implements IBaseObject {
 		ReleaseObject release = ReleaseDAO.getInstance().get(mId);
 		return release != null;
 	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
 
 	@Override
     public JSONObject toJSON() throws JSONException {
 		JSONObject release = new JSONObject();
-	    return null;
+		release.put(ReleaseEnum.ID, mId)
+		       .put(ReleaseEnum.PROJECT_ID, mProjectId)
+		       .put(ReleaseEnum.NAME, mName)
+		       .put(ReleaseEnum.DESCRIPTION, mDescription)
+		       .put(ReleaseEnum.START_DATE, getStartDateString())
+		       .put(ReleaseEnum.DUE_DATE, getDueDateString())
+		       .put(ReleaseEnum.CREATE_TIME, mCreateTime)
+		       .put(ReleaseEnum.UPDATE_TIME, mUpdateTime);
+	    return release;
     }
 	
 }
