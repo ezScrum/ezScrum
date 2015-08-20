@@ -1,79 +1,178 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.dao.ReleaseDAO;
+import ntut.csie.jcis.core.util.DateUtil;
 
-public class ReleaseObject {
-	private String id;
-	private String name;
-	private String startDate;
-	private String endDate;
-	private String description;
-	private List<SprintObject> sprintPlan;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+public class ReleaseObject implements IBaseObject {
+	private final static int DEFAULT_VALUE = -1;
+
+	private long mId = DEFAULT_VALUE;
+	private long mSerialId = DEFAULT_VALUE;
+	private long mProjectId = DEFAULT_VALUE;
+
+	private String mName = "";
+	private String mDescription = "";
+	private Date mStartDate = new Date();
+	private Date mDueDate = new Date();
+
+	private long mCreateTime = 0;
+	private long mUpdateTime = 0;
 	
-	public ReleaseObject(IReleasePlanDesc releasePlanDesc) {
-		setId(releasePlanDesc.getID());
-		setName(releasePlanDesc.getName());
-		setStartDate(releasePlanDesc.getStartDate());
-		setEndDate(releasePlanDesc.getEndDate());
-		setDescription(releasePlanDesc.getDescription());
-		setSprintPlan(new LinkedList<SprintObject>());
-		
-		ArrayList<SprintObject> sprints = releasePlanDesc.getSprints();
-		for (SprintObject sprint : sprints) {
-			sprintPlan.add(sprint);
-		}
-			
-    }
+	public ReleaseObject(long projectId) {
+		mProjectId = projectId;
+	}
+	
+	public ReleaseObject(long id, Long serialId, long projectId) {
+		mId = id;
+		mSerialId = serialId;
+		mProjectId = projectId;
+	}
+	
+	public ReleaseObject setName(String name) {
+		mName = name;
+		return this;
+	}
+	
+	public ReleaseObject setDescription(String description) {
+		mDescription = description;
+		return this;
+	}
+	
+	public ReleaseObject setStartDate(String startDate) {
+		mStartDate = DateUtil.dayFilter(startDate);
+		return this;
+	}
 
-	public String getId() {
-	    return id;
-    }
+	public ReleaseObject setDueDate(String dueDate) {
+		mDueDate = DateUtil.dayFilter(dueDate);
+		return this;
+	}
+	
+	public ReleaseObject setCreateTime(long createTime) {
+		mCreateTime = createTime;
+		return this;
+	}
 
-	public void setId(String id) {
-	    this.id = id;
-    }
+	public ReleaseObject setUpdateTime(long updateTime) {
+		mUpdateTime = updateTime;
+		return this;
+	}
+	
+	public long getId() {
+		return mId;
+	}
+	
+	public long getSerialId() {
+		return mSerialId;
+	}
 
+	public long getProjectId() {
+		return mProjectId;
+	}
+	
 	public String getName() {
-	    return name;
-    }
-
-	public void setName(String name) {
-	    this.name = name;
-    }
-
-	public String getStartDateString() {
-	    return startDate;
-    }
-
-	public void setStartDate(String startDate) {
-	    this.startDate = startDate;
-    }
-
-	public String getEndDate() {
-	    return endDate;
-    }
-
-	public void setEndDate(String endDate) {
-	    this.endDate = endDate;
-    }
-
+		return mName;
+	}
+	
 	public String getDescription() {
-	    return description;
-    }
+		return mDescription;
+	}
+	
+	public String getStartDateString() {
+		return DateUtil.formatBySlashForm(mStartDate);
+	}
 
-	public void setDescription(String description) {
-	    this.description = description;
-    }
+	public String getDueDateString() {
+		return DateUtil.formatBySlashForm(mDueDate);
+	}
+	
+	public long getCreateTime() {
+		return mCreateTime;
+	}
 
-	public List<SprintObject> getSprintPlan() {
-	    return sprintPlan;
-    }
+	public long getUpdateTime() {
+		return mUpdateTime;
+	}
 
-	public void setSprintPlan(List<SprintObject> sprintPlan) {
-	    this.sprintPlan = sprintPlan;
+	@Override
+	public void save() {
+		if (exists()) {
+			mUpdateTime = System.currentTimeMillis();
+			doUpdate();
+		} else {
+			doCreate();
+		}
+	}
+
+	public void save(long specificTime) {
+		if (exists()) {
+			mUpdateTime = specificTime;
+			doUpdate(specificTime);
+		} else {
+			doCreate();
+		}
+	}
+
+	@Override
+	public void reload() {
+		if (exists()) {
+			ReleaseObject sprint = ReleaseDAO.getInstance().get(mId);
+			resetData(sprint);
+		}
+	}
+
+	@Override
+	public boolean delete() {
+		boolean success = ReleaseDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+			mSerialId = DEFAULT_VALUE;
+			mProjectId = DEFAULT_VALUE;
+		}
+		return success;
+	}
+	
+	private void doCreate() {
+		mId = ReleaseDAO.getInstance().create(this);
+		reload();
+	}
+
+	private void doUpdate() {
+		ReleaseDAO.getInstance().update(this);
+	}
+
+	private void doUpdate(long specificTime) {
+		mUpdateTime = specificTime;
+		ReleaseDAO.getInstance().update(this);
+	}
+	
+	private void resetData(ReleaseObject release) {
+		mId = release.getId();
+		mProjectId = release.getProjectId();
+		mSerialId = release.getSerialId();
+
+		setName(release.getName());
+		setDescription(release.getDescription());
+		setStartDate(release.getStartDateString());
+		setDueDate(release.getDueDateString());
+		setCreateTime(release.getCreateTime());
+		setUpdateTime(release.getUpdateTime());
+	}
+	
+	private boolean exists() {
+		ReleaseObject release = ReleaseDAO.getInstance().get(mId);
+		return release != null;
+	}
+
+	@Override
+    public JSONObject toJSON() throws JSONException {
+		JSONObject release = new JSONObject();
+	    return null;
     }
+	
 }
