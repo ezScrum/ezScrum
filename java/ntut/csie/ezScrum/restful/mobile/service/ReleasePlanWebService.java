@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
@@ -47,7 +47,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * @return
 	 */
 	public String getAllReleasePlan() {
-		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
 		return new Gson().toJson(releaseDescs);
 	}
 	
@@ -57,9 +57,9 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * @throws SQLException 
 	 */
 	public String getAllReleasePlanWithAllItem() throws SQLException {
-		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
 		List<ReleaseObject> releases = new ArrayList<ReleaseObject>();
-		for (IReleasePlanDesc releaseDesc : releaseDescs) {
+		for (ReleaseObject releaseDesc : releaseDescs) {
 			ReleaseObject releaseObject = new ReleaseObject(releaseDesc);
 			List<SprintObject> sprints = releaseObject.getSprintPlan();
 			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();

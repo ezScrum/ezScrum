@@ -172,6 +172,11 @@ public class ReleaseDAOTest {
 		assertNull(releaseFromDB);
 	}
 	
+	@Test
+	public void testGetReleasesByProjectId() {
+		// TODO
+	}
+	
 	private long createRelease() {
 		// Test data
 		String name = "TEST_RELEASE_NAME";

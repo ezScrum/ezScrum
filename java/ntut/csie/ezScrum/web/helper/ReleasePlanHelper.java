@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBoard;
@@ -41,21 +41,21 @@ public class ReleasePlanHelper {
 	}
 	
 	// remove later
-	public IReleasePlanDesc[] loadReleasePlans(){
-		List<IReleasePlanDesc> list = rpMapper.getReleasePlanList();
+	public ReleaseObject[] loadReleasePlans(){
+		List<ReleaseObject> list = rpMapper.getReleases();
 		list = linkReleasePlanWithSprintList(list);
-		return list.toArray(new IReleasePlanDesc[list.size()]);		
+		return list.toArray(new ReleaseObject[list.size()]);		
 	}
 	
-	public List<IReleasePlanDesc> loadReleasePlansList(){
-		List<IReleasePlanDesc> list = rpMapper.getReleasePlanList();
+	public List<ReleaseObject> loadReleasePlansList(){
+		List<ReleaseObject> list = rpMapper.getReleases();
 		list = linkReleasePlanWithSprintList(list);
 		return list;
 	}
 	
 	public int getLastReleasePlanNumber() {
-		int length = rpMapper.getReleasePlanList().size();				// get array's length
-		List<IReleasePlanDesc> IRPD = rpMapper.getReleasePlanList();	// get the array data
+		int length = rpMapper.getReleases().size();				// get array's length
+		List<ReleaseObject> IRPD = rpMapper.getReleases();	// get the array data
 		
 		if (length > 0) {
 			return Integer.parseInt(IRPD.get(length-1).getID());
@@ -65,12 +65,12 @@ public class ReleasePlanHelper {
 	}
 	
 	// 連結SprintList動作移到ReleaesPlanHelper, 從Mapper搬過來的
-	private List<IReleasePlanDesc> linkReleasePlanWithSprintList(List<IReleasePlanDesc> descList) {
-		List<IReleasePlanDesc> newDescList = new LinkedList<IReleasePlanDesc>();
+	private List<ReleaseObject> linkReleasePlanWithSprintList(List<ReleaseObject> descList) {
+		List<ReleaseObject> newDescList = new LinkedList<ReleaseObject>();
 		
 		for (int i=0; i<descList.size(); i++)
 		{			
-			IReleasePlanDesc desc = new ReleasePlanDesc();
+			ReleaseObject desc = new ReleasePlanDesc();
 		
 			desc.setID(descList.get(i).getID());
 			desc.setName(descList.get(i).getName());
@@ -105,7 +105,7 @@ public class ReleasePlanHelper {
 	}
 	
 	public void deleteReleasePlan(String id) {
-		rpMapper.deleteReleasePlan(id);
+		rpMapper.deleteRelease(id);
 	}
 	
 	public void editReleasePlan(String ID, String Name, String StartDate, String EndDate, String Description, String action) {
@@ -117,17 +117,17 @@ public class ReleasePlanHelper {
 		desc.setDescription(Description);	// set Description
 				
 		if (action.equals("save")) {
-			rpMapper.addReleasePlan(desc);
+			rpMapper.addRelease(desc);
 		} else if (action.equals("edit")) {
-			rpMapper.updateReleasePlan(desc);
+			rpMapper.updateRelease(desc);
 		}
 	}
 
 	// return the release plan of releasePlanID
-	public IReleasePlanDesc getReleasePlan(String releasePlanID) {
-		IReleasePlanDesc[] descs = loadReleasePlans();
+	public ReleaseObject getReleasePlan(String releasePlanID) {
+		ReleaseObject[] descs = loadReleasePlans();
 		
-		for (IReleasePlanDesc desc : descs) {
+		for (ReleaseObject desc : descs) {
 			if (desc.getID().equals(releasePlanID))
 				return desc;
 		}
@@ -135,8 +135,8 @@ public class ReleasePlanHelper {
 	}
 	
 	// return the release plans of releasePlanID' string
-	public List<IReleasePlanDesc> getReleasePlansByIDs(String releasePlanIDs) {
-		List<IReleasePlanDesc> plans = new ArrayList<IReleasePlanDesc>();
+	public List<ReleaseObject> getReleasePlansByIDs(String releasePlanIDs) {
+		List<ReleaseObject> plans = new ArrayList<ReleaseObject>();
 		if (releasePlanIDs.length() == 0) {
 			return plans;
 		}
@@ -150,9 +150,9 @@ public class ReleasePlanHelper {
 	// return the releaseID which has the sprintID
 	public String getReleaseID(long sprintId) {
 		String rid = "0";
-		IReleasePlanDesc[] plans = loadReleasePlans();
+		ReleaseObject[] plans = loadReleasePlans();
 		
-		for (IReleasePlanDesc plan : plans) {
+		for (ReleaseObject plan : plans) {
 			if (plan.getSprints() != null) {
 				for (SprintObject sprint : plan.getSprints()) {
 					// 找到此 sprint 所被包含的 release ID
@@ -170,16 +170,16 @@ public class ReleasePlanHelper {
 	 * from ShowReleasePlan2Action
 	 */
 	
-	public List<IReleasePlanDesc> sortStartDate(List<IReleasePlanDesc> releaseDescs){	
-		List<IReleasePlanDesc> ListReleaseDescs = new ArrayList<IReleasePlanDesc>();
+	public List<ReleaseObject> sortStartDate(List<ReleaseObject> releaseDescs){	
+		List<ReleaseObject> ListReleaseDescs = new ArrayList<ReleaseObject>();
 		// ListReleaseDescs 依照 StartDate 排序
-		for (IReleasePlanDesc desc : releaseDescs) {
+		for (ReleaseObject desc : releaseDescs) {
 			Date addDate = DateUtil.dayFilter(desc.getStartDate());			// 要新增的 Date
 			
 			if (ListReleaseDescs.size() > 0) {
 				int index = 0;
 				for (index=0 ; index<ListReleaseDescs.size() ; index++) {
-					IReleasePlanDesc Desc = ListReleaseDescs.get(index);		// 目前要被比對的 relase
+					ReleaseObject Desc = ListReleaseDescs.get(index);		// 目前要被比對的 relase
 					Date cmpDate = DateUtil.dayFilter(Desc.getStartDate());		// 要被比對的 Date
 					if ( addDate.compareTo(cmpDate) < 0 ) {
 						break;
@@ -193,13 +193,13 @@ public class ReleasePlanHelper {
 		return ListReleaseDescs;
 	}
 	
-	public String setJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintPlanHelper SPhelper){
+	public String setJSon(List<ReleaseObject> ListReleaseDescs, SprintPlanHelper SPhelper){
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		
 		String tree = "";
 		tree += "[";
 		int i = 0;
-		for(IReleasePlanDesc des: ListReleaseDescs){
+		for(ReleaseObject des: ListReleaseDescs){
 			if(i==0)
 				tree+="{";
 			else
@@ -234,11 +234,11 @@ public class ReleasePlanHelper {
 	 *  from AjaxGetReleasePlanAction,
 	 *  將release讀出並列成list再轉成JSON
 	 */
-    public String setReleaseListToJSon (List<IReleasePlanDesc> ListReleaseDescs) {
+    public String setReleaseListToJSon (List<ReleaseObject> ListReleaseDescs) {
     	JSONObject releaseObject = new JSONObject();
     	JSONArray releaseplanlist = new JSONArray();
     	try {
-			for (IReleasePlanDesc plan : ListReleaseDescs) {
+			for (ReleaseObject plan : ListReleaseDescs) {
 				JSONObject releaseplan = new JSONObject();
 				releaseplan.put("ID", plan.getID());
 		        releaseplan.put("Name", plan.getName());
@@ -256,14 +256,14 @@ public class ReleasePlanHelper {
      *  from AjaxGetVelocityAction,
      *  將被選到的release plans拿出他們的sprint point並算出velocity,算出平均值再轉成JSON
      */
-    public String getSprintVelocityToJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    public String getSprintVelocityToJSon(List<ReleaseObject> ListReleaseDescs, SprintBacklogHelper SBhelper) {
     	JSONObject velocityobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
     	HashMap<String, Integer> storyinfo;
     	double totalvelocity = 0;
     	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
-	    	for (IReleasePlanDesc release : ListReleaseDescs) {
+	    	for (ReleaseObject release : ListReleaseDescs) {
 	    		if (release == null)
 	    			break;
 	    		for (SprintObject sprint : release.getSprints()) {
@@ -292,7 +292,7 @@ public class ReleasePlanHelper {
      * form AjaxGetStoryCountAction
      * 將被選到的release plans將所含的sprint中的story point算出總和,再轉成JSON
      */
-    public String getStoryCountChartJSon(List<IReleasePlanDesc> ListReleaseDescs, SprintBacklogHelper SBhelper) {
+    public String getStoryCountChartJSon(List<ReleaseObject> ListReleaseDescs, SprintBacklogHelper SBhelper) {
     	JSONObject storycountobject = new JSONObject();
     	JSONArray sprints = new JSONArray();
     	HashMap<String, Integer> storyinfo;
@@ -300,7 +300,7 @@ public class ReleasePlanHelper {
     	int sprintcount = 0; // 計算被選的release內的sprint總數
     	try {
     		ArrayList<SprintObject> allSprints = new ArrayList<SprintObject>();
-    		for (IReleasePlanDesc release : ListReleaseDescs) {
+    		for (ReleaseObject release : ListReleaseDescs) {
     			if (release == null)
     				break;
 	    		for (SprintObject sprint : release.getSprints()) {
@@ -376,7 +376,7 @@ public class ReleasePlanHelper {
     }
 	
 	//透過release des將sprint的資訊寫成JSon
-	private String setSprintToJSon (IReleasePlanDesc IRDesc, SprintPlanHelper SPhelper){
+	private String setSprintToJSon (ReleaseObject IRDesc, SprintPlanHelper SPhelper){
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		String sprintTree="";
 		if (IRDesc.getSprints() != null) {				// 有 sprint 資訊，則抓取 sprint 的 xml 資料
@@ -408,7 +408,7 @@ public class ReleasePlanHelper {
 	 */
 	
 	public StringBuilder showStoryFromRelease(IProject project, String R_ID, ArrayList<StoryObject> storyList) {
-		IReleasePlanDesc plan = getReleasePlan(R_ID);
+		ReleaseObject plan = getReleasePlan(R_ID);
 		
 		ReleaseBacklog releaseBacklog;
 		try {
@@ -526,10 +526,10 @@ public class ReleasePlanHelper {
 	 */
 	
 	public StringBuilder checkReleaseDate(String releaseId, String startDate, String endDate, String action) {
-		List<IReleasePlanDesc> rpList = this.loadReleasePlansList();
+		List<ReleaseObject> rpList = this.loadReleasePlansList();
 		String result = "legal";
 		
-		for (IReleasePlanDesc rp : rpList) {
+		for (ReleaseObject rp : rpList) {
 			if (action.equals("edit")
 					&& releaseId.equals(rp.getID())) {// 不與自己比較
 				continue;
@@ -552,7 +552,7 @@ public class ReleasePlanHelper {
 	 */	
 	
 	//加入 Release 日期範圍內 Sprint 底下的 Story
-	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<SprintObject> oldSprintList, IReleasePlanDesc reDesc){
+	public void addReleaseSprintStory(ProjectObject project, IUserSession session, String ID, List<SprintObject> oldSprintList, ReleaseObject reDesc){
 		List<SprintObject> newSprintList =  reDesc.getSprints();
 		ArrayList<Long> storyList;
 		
@@ -608,7 +608,7 @@ public class ReleasePlanHelper {
 	 */
 	public StringBuilder getReleaseBurndownChartData(ProjectObject project, IUserSession session, String releaseId) {
 		ProductBacklogHelper pbHelper = new ProductBacklogHelper(project);
-		IReleasePlanDesc plan = this.getReleasePlan(releaseId);
+		ReleaseObject plan = this.getReleasePlan(releaseId);
 
 		ReleaseBacklog releaseBacklog = null;
 		StringBuilder result = new StringBuilder("");

@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
@@ -27,12 +27,12 @@ public class CreateRelease {
 	private String EndDate = "";
 	
 	private Date mToday = null;
-	private List<IReleasePlanDesc> mIReleasePlanDescs = null;
+	private List<ReleaseObject> mIReleasePlanDescs = null;
 	
 	public CreateRelease(int Count, CreateProject cp) {
 		mReleaseCount = Count;
 		mCP = cp;
-		mIReleasePlanDescs = new LinkedList<IReleasePlanDesc>();
+		mIReleasePlanDescs = new LinkedList<ReleaseObject>();
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class CreateRelease {
 				desc.setDescription(releseDesc);	// set Description
 				
 				// save to file
-				saver.addReleasePlan(desc);
+				saver.addRelease(desc);
 				mIReleasePlanDescs.add(desc);
 			}
 			mlog.info(project.getName() + " create " + mReleaseCount + " release plan success.");
@@ -88,7 +88,7 @@ public class CreateRelease {
 		mlog.info("Create Release Finish");
 	}
 	
-	public List<IReleasePlanDesc> getReleaseList() {
+	public List<ReleaseObject> getReleaseList() {
 		return mIReleasePlanDescs;
 	}
 	

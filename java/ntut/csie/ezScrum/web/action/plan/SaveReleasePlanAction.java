@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -64,7 +64,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 			rphelper.addReleaseSprintStory(project, session, ID, null, rphelper.getReleasePlan(ID));
 			
 		} else if (Action.equals("edit")) {
-			IReleasePlanDesc releasePlanDesc = rphelper.getReleasePlan(ID);
+			ReleaseObject releasePlanDesc = rphelper.getReleasePlan(ID);
 			ArrayList<SprintObject> oldSprintList =  releasePlanDesc.getSprints();//get the original list of sprint
 			
 			rphelper.editReleasePlan(ID, Name, StartDate, EndDate, Description, "edit");

@@ -7,6 +7,7 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
@@ -241,6 +242,10 @@ public class ProjectObject implements IBaseObject {
 	
 	public ArrayList<TagObject> getTags() {
 		return TagDAO.getInstance().getTagsByProjectId(mId);
+	}
+	
+	public ArrayList<ReleaseObject> getReleases() {
+		return ReleaseDAO.getInstance().getReleasesByProjectId(mId);
 	}
 	
 	@Override

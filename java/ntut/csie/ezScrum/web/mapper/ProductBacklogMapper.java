@@ -7,7 +7,7 @@ import java.util.Date;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -51,7 +51,7 @@ public class ProductBacklogMapper {
 	// get all stories by release
 	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc releasePlanDesc = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject releasePlanDesc = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 

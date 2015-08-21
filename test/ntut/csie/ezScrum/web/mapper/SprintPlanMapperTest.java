@@ -107,7 +107,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.dueDate = "2015/06/24";
 
 		// call SprintPlanMapper addSprintPlan
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
@@ -216,7 +217,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
 		sprintInfo.dueDate = "2015/07/01";
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 		
 		// Get first default Sprint
 		SprintObject defaultSprint = SprintObject.get(mCS.getSprintsId().get(0));
@@ -249,7 +251,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.dailyInfo = "11:10@Lab1321";
 		sprintInfo.dueDate = "2015/06/24";
 		// addSprint
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 		// echo
 		mlog.info("Create 1 test Sprint success.");
 		return sprint;

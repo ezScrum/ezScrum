@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -14,14 +14,14 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleaseBacklog {
 	private IProject mProject;
-	private IReleasePlanDesc mPlanDesc;
+	private ReleaseObject mPlanDesc;
 	private ArrayList<StoryObject> mStories;
 	private Date mStartDate;
 	private Date mEndDate;
 
 	final private long OneDay = ScrumEnum.DAY_MILLISECOND;
 	
-	public ReleaseBacklog(ProjectObject project, IReleasePlanDesc plan, ArrayList<StoryObject> storyList) {
+	public ReleaseBacklog(ProjectObject project, ReleaseObject plan, ArrayList<StoryObject> storyList) {
 		mProject = new ProjectMapper().getProjectByID(project.getName());
 		mPlanDesc = plan;
 		//Release Plan下所有的Story
@@ -30,7 +30,7 @@ public class ReleaseBacklog {
 		init();
 	}
 
-	public ReleaseBacklog(IProject project, IReleasePlanDesc plan, ArrayList<StoryObject> storyList) {
+	public ReleaseBacklog(IProject project, ReleaseObject plan, ArrayList<StoryObject> storyList) {
 		mProject = project;
 		mPlanDesc = plan;
 		//Release Plan下所有的Story

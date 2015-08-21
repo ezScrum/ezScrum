@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -72,7 +72,7 @@ public class ReleasePlanDescLoaderTest {
 	@Test
 	public void testloadReleasePlan() {
 		// 資料尚未建立就去讀取，不會回傳任何資料
-		List<IReleasePlanDesc> descs = mReleasePlanMapper.getReleasePlanList();
+		List<ReleaseObject> descs = mReleasePlanMapper.getReleases();
 		assertEquals(descs.size(), 0);
 		
 		// 建立一筆假資料
@@ -80,10 +80,10 @@ public class ReleasePlanDescLoaderTest {
 		cr.exe();
 		
 		// 會回傳一筆 release
-		descs = mReleasePlanMapper.getReleasePlanList();
+		descs = mReleasePlanMapper.getReleases();
 		assertEquals(descs.size(), 2);
 		
-		IReleasePlanDesc desc = descs.get(0);
+		ReleaseObject desc = descs.get(0);
 		assertEquals(desc.getID(), "1");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "1");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "1");
@@ -97,7 +97,7 @@ public class ReleasePlanDescLoaderTest {
 	@Test
 	public void testloadReleasePlanList() {
 		// 資料尚未建立就去讀取，不會回傳任何資料
-		List<IReleasePlanDesc> descs = mReleasePlanMapper.getReleasePlanList();
+		List<ReleaseObject> descs = mReleasePlanMapper.getReleases();
 		assertEquals(descs.size(), 0);
 		
 		// 建立一筆假資料
@@ -105,10 +105,10 @@ public class ReleasePlanDescLoaderTest {
 		cr.exe();
 		
 		// 會回傳一筆 release
-		descs = this.mReleasePlanMapper.getReleasePlanList();
+		descs = this.mReleasePlanMapper.getReleases();
 		assertEquals(descs.size(), 2);
 		
-		IReleasePlanDesc desc = descs.get(0);
+		ReleaseObject desc = descs.get(0);
 		assertEquals(desc.getID(), "1");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "1");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "1");		

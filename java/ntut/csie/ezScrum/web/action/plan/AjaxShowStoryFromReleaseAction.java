@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -50,7 +50,7 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		String releaseId = request.getParameter("Rid");
 		
 		// 取得 ReleasePlan
-		IReleasePlanDesc plan = planHelper.getReleasePlan(releaseId);
+		ReleaseObject plan = planHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> storyList = PBHelper.getStoriesByRelease(plan);
 		return planHelper.showStoryFromRelease(iProject, releaseId, storyList);

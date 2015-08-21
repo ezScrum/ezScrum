@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -91,7 +91,7 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releasePlanDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releasePlanDescs = mReleasePlanHelper.loadReleasePlansList();
 		JSONArray releasesJSONArray = new JSONArray(mReleasePlanWebService.getAllReleasePlan());
 		
 		for (int i = 0; i < mReleaseCount; i++) {
@@ -128,7 +128,7 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releaselist = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaselist = mReleasePlanHelper.loadReleasePlansList();
 		
 		for(int i = 0; i < mReleaseCount ; i++){
 			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getID()));
