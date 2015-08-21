@@ -2,12 +2,13 @@ package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -22,12 +23,8 @@ import org.junit.Test;
 public class ReleasePlanMapperTest {
 	private static Log mlog = LogFactory.getLog(SprintPlanMapperTest.class);
 	private CreateProject mCP;
-	private CreateSprint mCS;
-	private CreateProductBacklog mCPB;
 
 	private int mProjectCount = 1;
-	private int mSprintCount = 1;
-	private int mStoryCount = 2;
 
 	private ReleasePlanMapper mReleasePlanMapper = null;
 	private Configuration mConfig = null;
@@ -45,13 +42,6 @@ public class ReleasePlanMapperTest {
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
-
-		mCS = new CreateSprint(mSprintCount, mCP);
-		mCS.exe();
-
-		// 新增 Story
-		mCPB = new CreateProductBacklog(mStoryCount, mCP);
-		mCPB.exe();
 
 		// 建立 SprintPlanMapper 物件
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -79,8 +69,6 @@ public class ReleasePlanMapperTest {
 		// ============= release ==============
 		ini = null;
 		mCP = null;
-		mCS = null;
-		mCPB = null;
 		mReleasePlanMapper = null;
 		projectManager = null;
 		mConfig = null;
@@ -97,10 +85,11 @@ public class ReleasePlanMapperTest {
 		// add release
 		long releaseId = mReleasePlanMapper.addRelease(releaseInfo);
 		ReleaseObject release = ReleaseObject.get(releaseId);
-		
+
 		// assert
 		assertTrue(release.getId() > 0);
-		assertEquals(release.getProjectId(), mCP.getAllProjects().get(0).getId());
+		assertEquals(release.getProjectId(), mCP.getAllProjects().get(0)
+				.getId());
 		assertEquals("TEST_RELEASE_NAME", release.getName());
 		assertEquals("TEST_RELEASE_DESCRIPTION", release.getDescription());
 		assertEquals("2015/06/10", release.getStartDateString());
@@ -109,17 +98,73 @@ public class ReleasePlanMapperTest {
 
 	@Test
 	public void testGetReleases() {
-		// TODO
+		// create releases
+		long projectId = mCP.getAllProjects().get(0).getId();
+		ReleaseObject release1 = new ReleaseObject(projectId);
+		release1.setName("TEST_RELEASE_NAME_1")
+		        .setStartDate("2015/06/10")
+		        .setDueDate("2015/06/24")
+		        .save();
+		ReleaseObject release2 = new ReleaseObject(projectId);
+		release2.setName("TEST_RELEASE_NAME_2")
+		        .setStartDate("2015/07/10")
+		        .setDueDate("2015/07/24")
+		        .save();
+		ReleaseObject release3 = new ReleaseObject(projectId);
+		release3.setName("TEST_RELEASE_NAME_3")
+		        .setStartDate("2015/08/10")
+		        .setDueDate("2015/08/24")
+		        .save();
+		
+		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
+		// assert
+		assertEquals(3, releases.size());
+		// release 1
+		assertEquals(release1.getId(), releases.get(0).getId());
+		assertEquals(release1.getName(), releases.get(0).getName());
+		assertEquals(release1.getStartDateString(), releases.get(0).getStartDateString());
+		assertEquals(release1.getDueDateString(), releases.get(0).getDueDateString());
+		// release 2
+		assertEquals(release2.getId(), releases.get(1).getId());
+		assertEquals(release2.getName(), releases.get(1).getName());
+		assertEquals(release2.getStartDateString(), releases.get(1).getStartDateString());
+		assertEquals(release2.getDueDateString(), releases.get(1).getDueDateString());
+		// release 3
+		assertEquals(release3.getId(), releases.get(2).getId());
+		assertEquals(release3.getName(), releases.get(2).getName());
+		assertEquals(release3.getStartDateString(), releases.get(2).getStartDateString());
+		assertEquals(release3.getDueDateString(), releases.get(2).getDueDateString());
 	}
 
 	@Test
 	public void testUpdateRelease() {
-		// TODO
+		ReleaseObject release = createRelease();
+		
+		ReleaseInfo releaseInfo = new ReleaseInfo();
+		releaseInfo.id = release.getId();
+		releaseInfo.name = "TEST_RELEASE_NAME_UPDATE";
+		releaseInfo.description = "TEST_RELEASE_DESCRIPTION_UPDATE";
+		releaseInfo.startDate = "2015/07/10";
+		releaseInfo.dueDate = "2015/07/24";
+		
+		mReleasePlanMapper.updateRelease(releaseInfo);
+		release = ReleaseObject.get(release.getId());
+		assertEquals("TEST_RELEASE_NAME_UPDATE", release.getName());
+		assertEquals("TEST_RELEASE_DESCRIPTION_UPDATE", release.getDescription());
+		assertEquals("2015/07/10", release.getStartDateString());
+		assertEquals("2015/07/24", release.getDueDateString());
 	}
 
 	@Test
 	public void testDeleteRelease() {
-		// TODO
+		ReleaseObject release = createRelease();
+		long releaseId = release.getId();
+		assertTrue(releaseId > 0);
+		// delete release
+		mReleasePlanMapper.deleteRelease(releaseId);
+		// get release
+		ReleaseObject releaseFromDB = ReleaseObject.get(releaseId);
+		assertNull(releaseFromDB);
 	}
 
 	private ReleaseObject createRelease() {
