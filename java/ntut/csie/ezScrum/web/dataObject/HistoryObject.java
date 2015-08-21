@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 
@@ -35,6 +34,7 @@ public class HistoryObject implements IBaseObject {
 	public final static int TYPE_NOTE = 19;
 	public final static int TYPE_HOWTODEMO = 20;
 	public final static int TYPE_PARTNERS = 21;
+	public final static int TYPE_SPRINTID = 22;
 
 	private long mId;
 	private long mIssueId;
