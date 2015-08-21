@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -46,7 +46,7 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		String ReleaseId = request.getParameter("releaseID");
 
 		ReleasePlanHelper helper = new ReleasePlanHelper(project);
-		IReleasePlanDesc releasePlanDesc = helper.getReleasePlan(ReleaseId);
+		ReleaseObject releasePlanDesc = helper.getReleasePlan(ReleaseId);
 		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 

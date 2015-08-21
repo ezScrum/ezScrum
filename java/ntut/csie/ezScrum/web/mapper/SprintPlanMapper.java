@@ -20,7 +20,7 @@ public class SprintPlanMapper {
 	/**
 	 * Add New SprintPlan
 	 */
-	public SprintObject addSprint(SprintInfo sprintInfo) {
+	public long addSprint(SprintInfo sprintInfo) {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.setInterval(sprintInfo.interval)
 		        .setMembers(sprintInfo.membersAmount)
@@ -33,7 +33,7 @@ public class SprintPlanMapper {
 		        .setDailyInfo(sprintInfo.dailyInfo)
 		        .setDueDate(sprintInfo.dueDate)
 		        .save();
-		return getSprint(sprint.getId());
+		return sprint.getId();
 	}
 	
 	/**

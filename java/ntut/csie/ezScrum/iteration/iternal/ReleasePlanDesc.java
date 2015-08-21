@@ -2,10 +2,10 @@ package ntut.csie.ezScrum.iteration.iternal;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
-public class ReleasePlanDesc implements IReleasePlanDesc {
+public class ReleasePlanDesc implements ReleaseObject {
 	private String ID;
 	private String Name;
 	private String StartDate;

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -100,6 +101,28 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		String query = valueSet.getDeleteQuery();
 		
 		return mControl.executeUpdate(query);
+	}
+	
+	public ArrayList<ReleaseObject> getReleasesByProjectId(long projectId) {
+		ArrayList<ReleaseObject> releases = new ArrayList<ReleaseObject>();
+
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ReleaseEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ReleaseEnum.PROJECT_ID, projectId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		try {
+			while (result.next()) {
+				releases.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return releases;
 	}
 
 	public static ReleaseObject convert(ResultSet result) throws SQLException {
