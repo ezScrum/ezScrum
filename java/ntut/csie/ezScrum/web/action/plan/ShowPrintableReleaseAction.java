@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -50,7 +50,7 @@ public class ShowPrintableReleaseAction extends Action {
     	
     	//get release information
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
-    	IReleasePlanDesc releasePlanDesc = releasePlanHelper.getReleasePlan(releaseID);		
+    	ReleaseObject releasePlanDesc = releasePlanHelper.getReleasePlan(releaseID);		
     	//initial data
     	storiesMap = new HashMap<String, ArrayList<StoryObject>>();
     	tatolStoryPoints = new HashMap<String, Float>();

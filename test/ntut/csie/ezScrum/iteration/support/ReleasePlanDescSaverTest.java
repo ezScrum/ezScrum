@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.iternal.ReleasePlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -73,7 +73,7 @@ public class ReleasePlanDescSaverTest {
 	public void testsaveReleasePlan() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -81,17 +81,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -100,15 +100,15 @@ public class ReleasePlanDescSaverTest {
 
 		
 		// 第二筆假資料
-		IReleasePlanDesc ActualDesc_2 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_2 = new ReleasePlanDesc();
 		ActualDesc_2.setID("2");
 		ActualDesc_2.setName("Release Name - 2");
 		ActualDesc_2.setStartDate(getDate(today, 0));
 		ActualDesc_2.setEndDate(getDate(today, 250));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -130,7 +130,7 @@ public class ReleasePlanDescSaverTest {
 	public void testsaveReleasePlan_duplicate() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -138,17 +138,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -157,15 +157,15 @@ public class ReleasePlanDescSaverTest {
 
 		
 		// 第二筆假資料
-		IReleasePlanDesc ActualDesc_2 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_2 = new ReleasePlanDesc();
 		ActualDesc_2.setID("2");
 		ActualDesc_2.setName("Release Name - 2");
 		ActualDesc_2.setStartDate(getDate(today, 0));
 		ActualDesc_2.setEndDate(getDate(today, 250));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -183,14 +183,14 @@ public class ReleasePlanDescSaverTest {
 		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
 		
 		
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
 		
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -212,29 +212,29 @@ public class ReleasePlanDescSaverTest {
 	public void testsaveReleasePlan_empty() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 		
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);		
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
+		mRelasePlanMapper.addRelease(ActualDesc_1);		
 	}
 	
 	@Test
 	public void testeditReleasePlan_empty() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 		
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
 	}
 	
 	@Test
 	public void testeditReleasePlan_ID() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -242,17 +242,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -261,8 +261,8 @@ public class ReleasePlanDescSaverTest {
 		
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setID("2");
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), "1");
@@ -276,7 +276,7 @@ public class ReleasePlanDescSaverTest {
 	public void testeditReleasePlan_Name() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -284,17 +284,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -303,8 +303,8 @@ public class ReleasePlanDescSaverTest {
 		
 		// 修改 ActualDesc_1 的 Name 並且編輯存入
 		ActualDesc_1.setName("New Release Name - 1");
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
@@ -315,7 +315,7 @@ public class ReleasePlanDescSaverTest {
 	public void testeditReleasePlan_StartDate() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -323,17 +323,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -342,8 +342,8 @@ public class ReleasePlanDescSaverTest {
 		
 		// 修改 ActualDesc_1 的 StartDate 並且編輯存入
 		ActualDesc_1.setStartDate(getDate(today, 100));
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
@@ -354,7 +354,7 @@ public class ReleasePlanDescSaverTest {
 	public void testeditReleasePlan_EndDate() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -362,17 +362,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -381,8 +381,8 @@ public class ReleasePlanDescSaverTest {
 		
 		// 修改 ActualDesc_1 的 EndDate 並且編輯存入
 		ActualDesc_1.setEndDate(getDate(today, 150));
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
@@ -393,7 +393,7 @@ public class ReleasePlanDescSaverTest {
 	public void testeditReleasePlan_Desc() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -401,17 +401,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -420,8 +420,8 @@ public class ReleasePlanDescSaverTest {
 		
 		// 修改 ActualDesc_1 的 Description 並且編輯存入
 		ActualDesc_1.setDescription("New Release Description - 1");
-		mRelasePlanMapper.updateReleasePlan(ActualDesc_1);
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.updateRelease(ActualDesc_1);
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -432,7 +432,7 @@ public class ReleasePlanDescSaverTest {
 	public void testdeleteReleasePlan_1() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -440,17 +440,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -459,16 +459,16 @@ public class ReleasePlanDescSaverTest {
 
 		
 		// 第二筆假資料
-		IReleasePlanDesc ActualDesc_2 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_2 = new ReleasePlanDesc();
 		ActualDesc_2.setID("2");
 		ActualDesc_2.setName("Release Name - 2");
 		ActualDesc_2.setDescription("Description - 2");
 		ActualDesc_2.setStartDate(getDate(today, 0));
 		ActualDesc_2.setEndDate(getDate(today, 250));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -486,8 +486,8 @@ public class ReleasePlanDescSaverTest {
 		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
 		
 		// 測試刪除第一筆
-		mRelasePlanMapper.deleteReleasePlan("1");
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.deleteRelease("1");
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
@@ -501,7 +501,7 @@ public class ReleasePlanDescSaverTest {
 	public void testdeleteReleasePlan_2() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 
 		// 設定時間
@@ -509,17 +509,17 @@ public class ReleasePlanDescSaverTest {
 		Date today = cal.getTime();
 		
 		// 第一筆假資料
-		IReleasePlanDesc ActualDesc_1 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_1 = new ReleasePlanDesc();
 		ActualDesc_1.setID("1");
 		ActualDesc_1.setName("Release Name - 1");
 		ActualDesc_1.setStartDate(getDate(today, 0));
 		ActualDesc_1.setEndDate(getDate(today, 180));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_1);
+		mRelasePlanMapper.addRelease(ActualDesc_1);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
-		IReleasePlanDesc ExpectedDesc = descs.get(0);
+		ReleaseObject ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
@@ -528,15 +528,15 @@ public class ReleasePlanDescSaverTest {
 
 		
 		// 第二筆假資料
-		IReleasePlanDesc ActualDesc_2 = new ReleasePlanDesc();
+		ReleaseObject ActualDesc_2 = new ReleasePlanDesc();
 		ActualDesc_2.setID("2");
 		ActualDesc_2.setName("Release Name - 2");
 		ActualDesc_2.setStartDate(getDate(today, 0));
 		ActualDesc_2.setEndDate(getDate(today, 250));
-		mRelasePlanMapper.addReleasePlan(ActualDesc_2);
+		mRelasePlanMapper.addRelease(ActualDesc_2);
 		
 		// 驗證資料是否存入
-		descs = loader.getReleasePlanList();
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -554,8 +554,8 @@ public class ReleasePlanDescSaverTest {
 		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
 		
 		// 測試刪除第二筆
-		mRelasePlanMapper.deleteReleasePlan("2");
-		descs = loader.getReleasePlanList();
+		mRelasePlanMapper.deleteRelease("2");
+		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
 		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
@@ -569,10 +569,10 @@ public class ReleasePlanDescSaverTest {
 	public void testdeleteReleasePlan_empty() {
 		// 測試讀取資料尚未存入
 		ReleasePlanMapper loader = new ReleasePlanMapper(mProject);
-		List<IReleasePlanDesc> descs = loader.getReleasePlanList();
+		List<ReleaseObject> descs = loader.getReleases();
 		assertEquals(descs.size(), 0);
 		
-		mRelasePlanMapper.deleteReleasePlan("1");
+		mRelasePlanMapper.deleteRelease("1");
 	}
 	
 	

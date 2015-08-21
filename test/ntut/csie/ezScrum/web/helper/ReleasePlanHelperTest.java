@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -72,7 +72,7 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testLoadReleasePlans() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		IReleasePlanDesc[] ReleasePlans = mReleasePlanHelper.loadReleasePlans();
+		ReleaseObject[] ReleasePlans = mReleasePlanHelper.loadReleasePlans();
 		assertEquals(this.mReleaseCount, ReleasePlans.length);
 
 		for (int i = 0; i < ReleasePlans.length; i++) {
@@ -85,7 +85,7 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testLoadReleasePlansList() {
 		this.mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<IReleasePlanDesc> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
 		assertEquals(mReleaseCount, ReleasePlans.size());
 
 		for (int i = 0; i < ReleasePlans.size(); i++) {
@@ -98,7 +98,7 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testGetLastReleasePlanNumber() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<IReleasePlanDesc> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
 		assertEquals(mReleaseCount, ReleasePlans.size());
 		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
 	}
@@ -106,7 +106,7 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testDeleteReleasePlan() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<IReleasePlanDesc> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
 		assertEquals(mReleaseCount, ReleasePlans.size());
 		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
 
@@ -125,7 +125,7 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testEditReleasePlan() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<IReleasePlanDesc> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.loadReleasePlansList();
 		assertEquals(mReleaseCount, ReleasePlans.size());
 		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
 
@@ -143,7 +143,7 @@ public class ReleasePlanHelperTest {
 
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(), NewDesc, "edit");
 
-		IReleasePlanDesc editRelease = this.mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
+		ReleaseObject editRelease = this.mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
 		assertEquals(Integer.toString(lastID), editRelease.getID());
 		assertEquals(NewName, editRelease.getName());
 		assertEquals(NewDesc, editRelease.getDescription());
@@ -155,7 +155,7 @@ public class ReleasePlanHelperTest {
 		NewName = "ReleaseName-New";
 		NewDesc = "ReleaseDesc-New";
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(),NewDesc, "save");
-		IReleasePlanDesc saveRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
+		ReleaseObject saveRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
 		assertEquals(mCR.getReleaseCount() + 1, mReleasePlanHelper.loadReleasePlans().length);
 		assertEquals(Integer.toString(lastID), saveRelease.getID());
 		assertEquals(NewName, saveRelease.getName());
@@ -165,7 +165,7 @@ public class ReleasePlanHelperTest {
 
 		// default 除錯測試
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(), NewDesc, "xxxx");
-		IReleasePlanDesc otherRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
+		ReleaseObject otherRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
 		assertEquals(Integer.toString(lastID), otherRelease.getID());
 		assertEquals(NewName, otherRelease.getName());
 		assertEquals(NewDesc, otherRelease.getDescription());
@@ -178,7 +178,7 @@ public class ReleasePlanHelperTest {
 		this.mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
 		// no release plan select
 		String releasePlanIDs = "";
-		List<IReleasePlanDesc> plans = mReleasePlanHelper.getReleasePlansByIDs(releasePlanIDs);
+		List<ReleaseObject> plans = mReleasePlanHelper.getReleasePlansByIDs(releasePlanIDs);
 		assertEquals(0, plans.size());
 		
 		// select wrong releaseID
@@ -201,7 +201,7 @@ public class ReleasePlanHelperTest {
 		// 取得ReleasePlans
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(project);
-		List<IReleasePlanDesc> releaseDescs = mReleasePlanHelper.getReleasePlansByIDs(releases);
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleasePlansByIDs(releases);
 		// 取得SprintBacklog
 		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project);
 		// assert no release plan string value

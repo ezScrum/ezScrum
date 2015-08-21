@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -225,7 +225,7 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testGetStoriesByRelease() {
-		IReleasePlanDesc release = mCR.getReleaseList().get(0);
+		ReleaseObject release = mCR.getReleaseList().get(0);
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(release);
 		assertEquals(6, stories.size());
 		

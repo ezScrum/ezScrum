@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
@@ -42,8 +42,8 @@ public class ShowReleasePlan2Action extends PermissionAction {
 		ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
 		
-		List<IReleasePlanDesc> releaseDescs = RPhelper.loadReleasePlansList();
-		List<IReleasePlanDesc> ListReleaseDescs = RPhelper.sortStartDate(releaseDescs);
+		List<ReleaseObject> releaseDescs = RPhelper.loadReleasePlansList();
+		List<ReleaseObject> ListReleaseDescs = RPhelper.sortStartDate(releaseDescs);
 	
     	StringBuilder result = new StringBuilder(RPhelper.setJSon(ListReleaseDescs, SPhelper));
     	

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -108,7 +108,7 @@ public class ReleaseBacklogTest {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(mProject);
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc plan = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject plan = releasePlanHelper.getReleasePlan(releaseId);
 
 		ArrayList<StoryObject> stories = productBacklogLogic.getStories();
 		ArrayList<Long> storyIdList = new ArrayList<Long>();
@@ -146,7 +146,7 @@ public class ReleaseBacklogTest {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(mProject);
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc plan = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject plan = releasePlanHelper.getReleasePlan(releaseId);
 		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
 
 		SprintPlanMapper sprintMapper = new SprintPlanMapper(mProject);

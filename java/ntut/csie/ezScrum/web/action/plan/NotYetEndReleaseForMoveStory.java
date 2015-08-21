@@ -7,7 +7,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
@@ -50,7 +50,7 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 		Date today = new Date();
 		StringBuilder sprintTree = new StringBuilder("");
 		
-		IReleasePlanDesc[] descs = RPhelper.loadReleasePlans(); 
+		ReleaseObject[] descs = RPhelper.loadReleasePlans(); 
 		if (descs != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			sprintTree.append("[");
 			// 將資訊設定成 JSon 輸出格式 sprint已經開始的無法被移動
