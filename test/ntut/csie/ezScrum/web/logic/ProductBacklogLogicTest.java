@@ -225,7 +225,7 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testGetStoriesByRelease() {
-		ReleaseObject release = mCR.getReleaseList().get(0);
+		ReleaseObject release = mCR.getReleases().get(0);
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(release);
 		assertEquals(6, stories.size());
 		
