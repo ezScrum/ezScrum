@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -45,13 +46,13 @@ public class ReleaseObject implements IBaseObject {
 		return this;
 	}
 	
-	public ReleaseObject setStartDate(String startDate) {
-		mStartDate = DateUtil.dayFilter(startDate);
+	public ReleaseObject setStartDate(String startDateString) {
+		mStartDate = DateUtil.dayFilter(startDateString);
 		return this;
 	}
 
-	public ReleaseObject setDueDate(String dueDate) {
-		mDueDate = DateUtil.dayFilter(dueDate);
+	public ReleaseObject setDueDate(String dueDateString) {
+		mDueDate = DateUtil.dayFilter(dueDateString);
 		return this;
 	}
 	
@@ -133,8 +134,24 @@ public class ReleaseObject implements IBaseObject {
 		return success;
 	}
 	
+	public boolean containsSprint(SprintObject sprint) {
+		Date sprintStartDate = DateUtil.dayFilter(sprint.getStartDateString());
+		Date sprintDueDate = DateUtil.dayFilter(sprint.getDueDateString());
+		boolean isContains = sprintStartDate.after(mStartDate) || DateUtils.isSameDay(sprintStartDate, mStartDate);
+		isContains &= sprintDueDate.before(mDueDate) || DateUtils.isSameDay(sprintDueDate, mDueDate);
+		return isContains;
+	}
+	
 	public ArrayList<SprintObject> getSprints() {
-		return null;
+		ArrayList<SprintObject> sprints = new ArrayList<>();
+		ProjectObject project = ProjectObject.get(mProjectId);
+		ArrayList<SprintObject> allSprints = project.getSprints();
+		for (SprintObject sprint : allSprints) {
+			if (containsSprint(sprint)) {
+				sprints.add(sprint);
+			}
+		}
+		return sprints;
 	}
 	
 	public ArrayList<StoryObject> getStories() {

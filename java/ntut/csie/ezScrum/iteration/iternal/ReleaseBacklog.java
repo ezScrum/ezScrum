@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.iteration.iternal;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -13,8 +12,6 @@ public class ReleaseBacklog {
 	private ProjectObject mProject;
 	private ReleaseObject mRelease;
 	private ArrayList<StoryObject> mStories;
-
-	final private long OneDay = ScrumEnum.DAY_MILLISECOND;
 	
 	public ReleaseBacklog(ProjectObject project, ReleaseObject release, ArrayList<StoryObject> stories) {
 		mProject = project;
