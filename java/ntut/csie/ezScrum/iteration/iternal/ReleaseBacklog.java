@@ -3,80 +3,59 @@ package ntut.csie.ezScrum.iteration.iternal;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleaseBacklog {
-	private IProject mProject;
-	private ReleaseObject mPlanDesc;
+	private ProjectObject mProject;
+	private ReleaseObject mRelease;
 	private ArrayList<StoryObject> mStories;
-	private Date mStartDate;
-	private Date mEndDate;
 
 	final private long OneDay = ScrumEnum.DAY_MILLISECOND;
 	
-	public ReleaseBacklog(ProjectObject project, ReleaseObject plan, ArrayList<StoryObject> storyList) {
-		mProject = new ProjectMapper().getProjectByID(project.getName());
-		mPlanDesc = plan;
-		//Release Plan下所有的Story
-		mStories = storyList;
-
-		init();
-	}
-
-	public ReleaseBacklog(IProject project, ReleaseObject plan, ArrayList<StoryObject> storyList) {
+	public ReleaseBacklog(ProjectObject project, ReleaseObject release, ArrayList<StoryObject> stories) {
 		mProject = project;
-		mPlanDesc = plan;
+		mRelease = release;
 		//Release Plan下所有的Story
-		mStories = storyList;
-
-		init();
-	}
-
-	private void init() {
-		mStartDate = DateUtil.dayFilter(mPlanDesc.getStartDate());
-		mEndDate = DateUtil.dayFilter(mPlanDesc.getEndDate());
+		mStories = stories;
 	}
 	
-	public IProject getProject(){
+	public ProjectObject getProject(){
 		return mProject;
 	}
 	
-	public String getID(){
-		return mPlanDesc.getID();
+	public long getReleaseId(){
+		return mRelease.getId();
 	}
 	
-	public String getName(){
-		return mPlanDesc.getName();
+	public String getReleaseName(){
+		return mRelease.getName();
 	}
 	
 	public Date getStartDate() {
-		return mStartDate;
+		return DateUtil.dayFilter(mRelease.getStartDateString());
 	}
 	
-	public Date getEndDate() {
-		return mEndDate;
+	public Date getDueDate() {
+		return DateUtil.dayFilter(mRelease.getDueDateString());
 	}
 	
-	public ArrayList<StoryObject> getStory(){
+	public ArrayList<StoryObject> getStories(){
 		return mStories;
 	}
 		
 	public int getStoryCount() {
-		if (mStories != null)
+		if (mStories != null) {
 			return mStories.size();
-
+		}
 		return 0;
 	}
 	
-	public int getSprintPlanCounts() {
-		return mPlanDesc.getSprints().size();
+	public int getSprintCounts() {
+		return mRelease.getSprints().size();
 	}
 	
 	// 取得該日期前已完成的Story數量

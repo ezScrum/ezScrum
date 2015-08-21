@@ -96,7 +96,7 @@ public class ReleasePlanWebServiceTest {
 		
 		for (int i = 0; i < mReleaseCount; i++) {
 			JSONObject releaseJSONObject = (JSONObject) releasesJSONArray.get(i);
-			assertEquals(releasePlanDescs.get(i).getID(), releaseJSONObject.get("ID"));
+			assertEquals(releasePlanDescs.get(i).getId(), releaseJSONObject.get("ID"));
 			assertEquals(releasePlanDescs.get(i).getName(), releaseJSONObject.get("Name"));
 			assertEquals(releasePlanDescs.get(i).getDescription(), releaseJSONObject.get("Description"));
 			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("SprintList").toString());
@@ -131,12 +131,12 @@ public class ReleasePlanWebServiceTest {
 		List<ReleaseObject> releaselist = mReleasePlanHelper.loadReleasePlansList();
 		
 		for(int i = 0; i < mReleaseCount ; i++){
-			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getID()));
+			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getId()));
 			JSONObject releasePlanDescJSONObject = new JSONObject(releaseJSONObject.get("releasePlanDesc").toString());
-			assertEquals(releaselist.get(i).getID(), releasePlanDescJSONObject.get("id"));
+			assertEquals(releaselist.get(i).getId(), releasePlanDescJSONObject.get("id"));
 			assertEquals(releaselist.get(i).getName(), releasePlanDescJSONObject.get("name"));
 			assertEquals(releaselist.get(i).getStartDate(), releasePlanDescJSONObject.get("startDate"));
-			assertEquals(releaselist.get(i).getEndDate(), releasePlanDescJSONObject.get("endDate"));
+			assertEquals(releaselist.get(i).getDueDate(), releasePlanDescJSONObject.get("endDate"));
 			assertEquals(releaselist.get(i).getDescription(), releasePlanDescJSONObject.get("description"));
 		}
 	}

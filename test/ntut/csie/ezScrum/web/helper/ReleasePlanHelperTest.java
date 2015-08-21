@@ -76,7 +76,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(this.mReleaseCount, ReleasePlans.length);
 
 		for (int i = 0; i < ReleasePlans.length; i++) {
-			assertEquals(Integer.toString(i + 1), ReleasePlans[i].getID());
+			assertEquals(Integer.toString(i + 1), ReleasePlans[i].getId());
 			assertEquals(mCR.getDefault_RELEASE_NAME(i + 1), ReleasePlans[i].getName());
 			assertEquals(mCR.getDefault_RELEASE_DESC(i + 1), ReleasePlans[i].getDescription());
 		}
@@ -89,7 +89,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(mReleaseCount, ReleasePlans.size());
 
 		for (int i = 0; i < ReleasePlans.size(); i++) {
-			assertEquals(Integer.toString(i + 1), ReleasePlans.get(i).getID());
+			assertEquals(Integer.toString(i + 1), ReleasePlans.get(i).getId());
 			assertEquals(mCR.getDefault_RELEASE_NAME(i + 1), ReleasePlans.get(i).getName());
 			assertEquals(mCR.getDefault_RELEASE_DESC(i + 1), ReleasePlans.get(i).getDescription());
 		}
@@ -116,7 +116,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(mReleaseCount - 1, mReleasePlanHelper.getLastReleasePlanNumber());
 
 		for (int i = 0; i < ReleasePlans.size(); i++) {
-			assertEquals(Integer.toString(i + 1), ReleasePlans.get(i).getID());
+			assertEquals(Integer.toString(i + 1), ReleasePlans.get(i).getId());
 			assertEquals(mCR.getDefault_RELEASE_NAME(i + 1), ReleasePlans.get(i).getName());
 			assertEquals(mCR.getDefault_RELEASE_DESC(i + 1), ReleasePlans.get(i).getDescription());
 		}
@@ -144,11 +144,11 @@ public class ReleasePlanHelperTest {
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(), NewDesc, "edit");
 
 		ReleaseObject editRelease = this.mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
-		assertEquals(Integer.toString(lastID), editRelease.getID());
+		assertEquals(Integer.toString(lastID), editRelease.getId());
 		assertEquals(NewName, editRelease.getName());
 		assertEquals(NewDesc, editRelease.getDescription());
 		assertEquals(format.format(NewSD).toString(), editRelease.getStartDate());
-		assertEquals(format.format(NewED).toString(), editRelease.getEndDate());
+		assertEquals(format.format(NewED).toString(), editRelease.getDueDate());
 
 		// save 判斷式的測試
 		lastID++;
@@ -157,20 +157,20 @@ public class ReleasePlanHelperTest {
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(),NewDesc, "save");
 		ReleaseObject saveRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
 		assertEquals(mCR.getReleaseCount() + 1, mReleasePlanHelper.loadReleasePlans().length);
-		assertEquals(Integer.toString(lastID), saveRelease.getID());
+		assertEquals(Integer.toString(lastID), saveRelease.getId());
 		assertEquals(NewName, saveRelease.getName());
 		assertEquals(NewDesc, saveRelease.getDescription());
 		assertEquals(format.format(NewSD).toString(), saveRelease.getStartDate());
-		assertEquals(format.format(NewED).toString(), saveRelease.getEndDate());
+		assertEquals(format.format(NewED).toString(), saveRelease.getDueDate());
 
 		// default 除錯測試
 		mReleasePlanHelper.editReleasePlan(Integer.toString(lastID), NewName, format.format(NewSD).toString(), format.format(NewED).toString(), NewDesc, "xxxx");
 		ReleaseObject otherRelease = mReleasePlanHelper.getReleasePlan(Integer.toString(lastID));
-		assertEquals(Integer.toString(lastID), otherRelease.getID());
+		assertEquals(Integer.toString(lastID), otherRelease.getId());
 		assertEquals(NewName, otherRelease.getName());
 		assertEquals(NewDesc, otherRelease.getDescription());
 		assertEquals(format.format(NewSD).toString(), otherRelease.getStartDate());
-		assertEquals(format.format(NewED).toString(), otherRelease.getEndDate());
+		assertEquals(format.format(NewED).toString(), otherRelease.getDueDate());
 	}
 	
 	@Test

@@ -113,10 +113,10 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount() + 1));
-    	assertEquals(Integer.toString(mCR.getReleaseCount() + 1), releasePlan.getID());
+    	assertEquals(Integer.toString(mCR.getReleaseCount() + 1), releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
     	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getEndDate());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -169,10 +169,10 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	// 驗證ReleasePlan資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
     	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
-    	assertEquals(Integer.toString(mCR.getReleaseCount()), releasePlan.getID());
+    	assertEquals(Integer.toString(mCR.getReleaseCount()), releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
     	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getEndDate());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	

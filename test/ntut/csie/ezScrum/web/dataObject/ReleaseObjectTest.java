@@ -148,6 +148,16 @@ public class ReleaseObjectTest {
 		assertNull(release);
 	}
 	
+	@Test
+	public void testGetSprints() {
+		// TODO
+	}
+	
+	@Test
+	public void testGetStories() {
+		// TODO
+	}
+	
 	private ReleaseObject createRelease() {
 		// Test Data
 		String releaseName = "TEST_RELEASE_NAME";

@@ -92,11 +92,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 
 		
 		// 第二筆假資料
@@ -111,19 +111,19 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 驗證資料是否存入
 		ExpectedDesc = descs.get(1);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 	}
 	
 	@Test
@@ -149,11 +149,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 
 		
 		// 第二筆假資料
@@ -168,19 +168,19 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 驗證資料是否存入
 		ExpectedDesc = descs.get(1);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 		
 		
 		mRelasePlanMapper.addRelease(ActualDesc_1);
@@ -193,19 +193,19 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 驗證資料是否存入
 		ExpectedDesc = descs.get(1);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 	}
 	
 	@Test
@@ -253,11 +253,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 修改 ActualDesc_1 的 ID 並且編輯存入，但是不會有任何異動
 		ActualDesc_1.setID("2");
@@ -265,11 +265,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), "1");
+		assertEquals(ExpectedDesc.getId(), "1");
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 	}
 	
 	@Test
@@ -295,11 +295,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 修改 ActualDesc_1 的 Name 並且編輯存入
 		ActualDesc_1.setName("New Release Name - 1");
@@ -334,11 +334,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 修改 ActualDesc_1 的 StartDate 並且編輯存入
 		ActualDesc_1.setStartDate(getDate(today, 100));
@@ -373,11 +373,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 修改 ActualDesc_1 的 EndDate 並且編輯存入
 		ActualDesc_1.setEndDate(getDate(today, 150));
@@ -385,8 +385,8 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
-		assertEquals(ExpectedDesc.getEndDate(), getDate(today, 150));
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
+		assertEquals(ExpectedDesc.getDueDate(), getDate(today, 150));
 	}
 	
 	@Test
@@ -412,11 +412,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 修改 ActualDesc_1 的 Description 並且編輯存入
 		ActualDesc_1.setDescription("New Release Description - 1");
@@ -451,11 +451,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 
 		
 		// 第二筆假資料
@@ -471,30 +471,30 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 驗證資料是否存入
 		ExpectedDesc = descs.get(1);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 		
 		// 測試刪除第一筆
 		mRelasePlanMapper.deleteRelease("1");
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 	}
 	
 	@Test
@@ -520,11 +520,11 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ReleaseObject ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 
 		
 		// 第二筆假資料
@@ -539,30 +539,30 @@ public class ReleasePlanDescSaverTest {
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 2);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 		
 		// 驗證資料是否存入
 		ExpectedDesc = descs.get(1);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_2.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_2.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_2.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_2.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_2.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_2.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_2.getDueDate());
 		
 		// 測試刪除第二筆
 		mRelasePlanMapper.deleteRelease("2");
 		descs = loader.getReleases();
 		assertEquals(descs.size(), 1);
 		ExpectedDesc = descs.get(0);
-		assertEquals(ExpectedDesc.getID(), ActualDesc_1.getID());
+		assertEquals(ExpectedDesc.getId(), ActualDesc_1.getId());
 		assertEquals(ExpectedDesc.getName(), ActualDesc_1.getName());
 		assertEquals(ExpectedDesc.getDescription(), ActualDesc_1.getDescription());
 		assertEquals(ExpectedDesc.getStartDate(), ActualDesc_1.getStartDate());
-		assertEquals(ExpectedDesc.getEndDate(), ActualDesc_1.getEndDate());
+		assertEquals(ExpectedDesc.getDueDate(), ActualDesc_1.getDueDate());
 	}
 	
 	@Test
