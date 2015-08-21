@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -16,6 +17,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 
@@ -27,6 +29,7 @@ public class ReleaseObjectTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
+	private CreateSprint mCS = null;
 	private final int mPROJECT_COUNT = 1;
 	private long mProjectId = -1;
 	private ReleaseObject mRelease = null;
@@ -155,7 +158,73 @@ public class ReleaseObjectTest {
 	
 	@Test
 	public void testGetStories() {
-		// TODO
+		// Test Data
+		String storyName = "TEST_STORY_NAME_";
+		String storyNotes = "TEST_STORY_NOTES_";
+		String storyHowtodemo = "TEST_STORY_HOW_TO_DEMO_";
+		int storyEstimate = 8;
+		int storyImportance = 96;
+		
+		// Create Sprint
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setInterval(2)
+		      .setHoursCanCommit(100)
+		      .setMembers(4)
+		      .setSprintGoal("TEST_SPRINT_GOAL")
+		      .setDailyInfo("TEST_SPRINT_DAILY_INFO")
+		      .setStartDate("2015/08/03")
+		      .setDemoDate("2015/08/17")
+		      .setDueDate("2015/08/17")
+		      .save();
+		
+		// Create Story 1
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+		      .setName(storyName + 1)
+		      .setEstimate(storyEstimate)
+		      .setStatus(StoryObject.STATUS_UNCHECK)
+		      .setNotes(storyNotes + 1)
+		      .setImportance(storyImportance)
+		      .setHowToDemo(storyHowtodemo + 1)
+		      .save();
+		
+		// Create Story 2
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+		        .setName(storyName + 2)
+		        .setEstimate(storyEstimate)
+		        .setStatus(StoryObject.STATUS_UNCHECK)
+		        .setNotes(storyNotes + 2)
+		        .setImportance(storyImportance)
+		        .setHowToDemo(storyHowtodemo + 2)
+		        .save();
+		
+		// Create Story 3
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+		        .setName(storyName + 3)
+		        .setEstimate(storyEstimate)
+		        .setStatus(StoryObject.STATUS_UNCHECK)
+		        .setNotes(storyNotes + 3)
+		        .setImportance(storyImportance)
+		        .setHowToDemo(storyHowtodemo + 3)
+		        .save();
+		
+		// GetStories
+		ArrayList<StoryObject> stories = mRelease.getStories();
+		
+		// Assert
+		assertEquals(3, stories.size());
+		
+		for (int i = 0; i < stories.size(); i++) {
+			assertEquals(storyName + (i + 1), stories.get(i).getName());
+			assertEquals(storyNotes + (i + 1), stories.get(i).getNotes());
+			assertEquals(storyHowtodemo + (i + 1), stories.get(i).getHowToDemo());
+			assertEquals(storyEstimate, stories.get(i).getEstimate());
+			assertEquals(storyImportance, stories.get(i).getImportance());
+			assertEquals(StoryObject.STATUS_UNCHECK, stories.get(i).getStatus());
+			assertEquals(sprint.getId(), stories.get(i).getSprintId());
+		}
 	}
 	
 	private ReleaseObject createRelease() {

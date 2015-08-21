@@ -138,7 +138,12 @@ public class ReleaseObject implements IBaseObject {
 	}
 	
 	public ArrayList<StoryObject> getStories() {
-		return null;
+		ArrayList<SprintObject> sprints = getSprints();
+		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
+		for (SprintObject sprint : sprints) {
+			stories.addAll(sprint.getStories());
+		}
+		return stories;
 	}
 	
 	private void doCreate() {
