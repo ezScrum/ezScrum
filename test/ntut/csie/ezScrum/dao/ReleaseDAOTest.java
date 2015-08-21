@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.PrimitiveIterator.OfDouble;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -174,7 +176,36 @@ public class ReleaseDAOTest {
 	
 	@Test
 	public void testGetReleasesByProjectId() {
-		// TODO
+		// Test data
+		String name = "TEST_RELEASE_NAME_";
+		String description = "TEST_RELEASE_DESCRIPTION_";
+		String releaseStartDateStrings[] = {"2015/03/01", "2015/05/10", "2015/07/01"};
+		String releaseDueDateStrings[] = {"2015/05/01", "2015/06/01", "2015/08/01"};
+		
+		// Create 3 Releases
+		for (int i = 0; i < 3; i++) {
+			ReleaseObject release = new ReleaseObject(sProjectId);
+			release.setName(name + i)
+			       .setDescription(description + i)
+			       .setStartDate(releaseStartDateStrings[i])
+			       .setDueDate(releaseDueDateStrings[i])
+			       .save();
+			assertTrue(release.getId() > 0);
+		}
+
+		// Call DAO getReleasesByProjectId
+        ArrayList<ReleaseObject> releases = ReleaseDAO.getInstance().getReleasesByProjectId(sProjectId);
+		
+		// Assert
+        assertEquals(4, releases.size());
+        
+        // Assert Added 3 Releases
+		for (int i = 0; i < releases.size() - 1; i++) {
+			assertEquals(name + i, releases.get(i + 1).getName());
+			assertEquals(description + i, releases.get(i + 1).getDescription());
+			assertEquals(releaseStartDateStrings[i], releases.get(i + 1).getStartDateString());
+			assertEquals(releaseDueDateStrings[i], releases.get(i + 1).getDueDateString());
+		}
 	}
 	
 	private long createRelease() {
