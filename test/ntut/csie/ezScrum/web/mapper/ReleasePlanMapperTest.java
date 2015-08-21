@@ -1,12 +1,7 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import static org.junit.Assert.assertTrue;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -14,9 +9,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
+import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +45,7 @@ public class ReleasePlanMapperTest {
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
 		mCP.exeCreate();
-		
+
 		mCS = new CreateSprint(mSprintCount, mCP);
 		mCS.exe();
 
@@ -58,7 +53,7 @@ public class ReleasePlanMapperTest {
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
 		mCPB.exe();
 
-		// 建立  SprintPlanMapper 物件
+		// 建立 SprintPlanMapper 物件
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mReleasePlanMapper = new ReleasePlanMapper(project);
 
@@ -77,7 +72,7 @@ public class ReleasePlanMapperTest {
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 
-		// 讓 config 回到  Production 模式
+		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -93,7 +88,23 @@ public class ReleasePlanMapperTest {
 
 	@Test
 	public void testAddRelease() {
-		// TODO
+		// create release
+		ReleaseInfo releaseInfo = new ReleaseInfo();
+		releaseInfo.name = "TEST_RELEASE_NAME";
+		releaseInfo.description = "TEST_RELEASE_DESCRIPTION";
+		releaseInfo.startDate = "2015/06/10";
+		releaseInfo.dueDate = "2015/06/24";
+		// add release
+		long releaseId = mReleasePlanMapper.addRelease(releaseInfo);
+		ReleaseObject release = ReleaseObject.get(releaseId);
+		
+		// assert
+		assertTrue(release.getId() > 0);
+		assertEquals(release.getProjectId(), mCP.getAllProjects().get(0).getId());
+		assertEquals("TEST_RELEASE_NAME", release.getName());
+		assertEquals("TEST_RELEASE_DESCRIPTION", release.getDescription());
+		assertEquals("2015/06/10", release.getStartDateString());
+		assertEquals("2015/06/24", release.getDueDateString());
 	}
 
 	@Test
@@ -111,7 +122,18 @@ public class ReleasePlanMapperTest {
 		// TODO
 	}
 
-	private SprintObject createRelease() {
-		return null;
+	private ReleaseObject createRelease() {
+		// create release
+		ReleaseInfo releaseInfo = new ReleaseInfo();
+		releaseInfo.name = "TEST_RELEASE_NAME";
+		releaseInfo.description = "TEST_RELEASE_DESCRIPTION";
+		releaseInfo.startDate = "2015/06/10";
+		releaseInfo.dueDate = "2015/06/24";
+		// add release
+		long releaseId = mReleasePlanMapper.addRelease(releaseInfo);
+		ReleaseObject release = ReleaseObject.get(releaseId);
+		// echo
+		mlog.info("Create 1 test Release success.");
+		return release;
 	}
 }
