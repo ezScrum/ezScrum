@@ -1300,13 +1300,13 @@ CREATE TABLE `unplanned` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
-  `handler` BIGINT UNSIGNED NOT NULL,
-  `estimation` INT NOT NULL,
+  `handler_id` BIGINT NOT NULL,
+  `estimate` INT NOT NULL,
   `actual` INT NOT NULL,
   `notes` TEXT NOT NULL,
   `status` VARCHAR(255) NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
-  `story_id` BIGINT UNSIGNED NOT NULL,
+  `sprint_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
@@ -1342,6 +1342,18 @@ CREATE TABLE `serial_number` (
   `task` BIGINT UNSIGNED NOT NULL,
   `unplanned` BIGINT UNSIGNED NOT NULL,
   `retrospective` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT UNSIGNED NOT NULL,
+  `public_token` TEXT NOT NULL,
+  `private_token` TEXT NOT NULL,
+  `platform_type` TEXT NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
