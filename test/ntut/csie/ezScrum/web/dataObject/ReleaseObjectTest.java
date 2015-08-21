@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -152,8 +153,72 @@ public class ReleaseObjectTest {
 	}
 	
 	@Test
+	public void testContainsSprint() {
+		ReleaseObject release = new ReleaseObject(mProjectId);
+		release.setName("TEST_RELEASE")
+		       .setStartDate("2015/08/01")
+		       .setDueDate("2015/08/31")
+		       .save();
+		SprintObject sprint1 = new SprintObject(mProjectId);
+		sprint1.setSprintGoal("TEST_SPRINT_GOAL_1")
+		       .setStartDate("2015/07/24")
+		       .setDueDate("2015/08/01")
+		       .save();
+		SprintObject sprint2 = new SprintObject(mProjectId);
+		sprint2.setSprintGoal("TEST_SPRINT_GOAL_2")
+		       .setStartDate("2015/08/31")
+		       .setDueDate("2015/09/06")
+		       .save();
+		SprintObject sprint3 = new SprintObject(mProjectId);
+		sprint3.setSprintGoal("TEST_SPRINT_GOAL_3")
+		       .setStartDate("2015/08/15")
+		       .setDueDate("2015/08/21")
+		       .save();
+		// assert
+		assertFalse(release.containsSprint(sprint1));
+		assertFalse(release.containsSprint(sprint2));
+		assertTrue(release.containsSprint(sprint3));
+	}
+	
+	@Test
 	public void testGetSprints() {
-		// TODO
+		ReleaseObject release = new ReleaseObject(mProjectId);
+		release.setName("TEST_RELEASE")
+		       .setStartDate("2015/08/01")
+		       .setDueDate("2015/08/31")
+		       .save();
+		SprintObject sprint1 = new SprintObject(mProjectId);
+		sprint1.setSprintGoal("TEST_SPRINT_GOAL_1")
+		       .setStartDate("2015/08/01")
+		       .setDueDate("2015/08/07")
+		       .save();
+		SprintObject sprint2 = new SprintObject(mProjectId);
+		sprint2.setSprintGoal("TEST_SPRINT_GOAL_2")
+		       .setStartDate("2015/08/08")
+		       .setDueDate("2015/08/14")
+		       .save();
+		SprintObject sprint3 = new SprintObject(mProjectId);
+		sprint3.setSprintGoal("TEST_SPRINT_GOAL_3")
+		       .setStartDate("2015/08/15")
+		       .setDueDate("2015/08/21")
+		       .save();
+		// assert sprint count
+		assertEquals(3, release.getSprints().size());
+		// assert sprint 1
+		assertEquals(sprint1.getId(), release.getSprints().get(0).getId());
+		assertEquals(sprint1.getSprintGoal(), release.getSprints().get(0).getSprintGoal());
+		assertEquals(sprint1.getStartDateString(), release.getSprints().get(0).getStartDateString());
+		assertEquals(sprint1.getDueDateString(), release.getSprints().get(0).getDueDateString());
+		// assert sprint 2
+		assertEquals(sprint2.getId(), release.getSprints().get(1).getId());
+		assertEquals(sprint2.getSprintGoal(), release.getSprints().get(1).getSprintGoal());
+		assertEquals(sprint2.getStartDateString(), release.getSprints().get(1).getStartDateString());
+		assertEquals(sprint2.getDueDateString(), release.getSprints().get(1).getDueDateString());
+		// assert sprint 3
+		assertEquals(sprint3.getId(), release.getSprints().get(2).getId());
+		assertEquals(sprint3.getSprintGoal(), release.getSprints().get(2).getSprintGoal());
+		assertEquals(sprint3.getStartDateString(), release.getSprints().get(2).getStartDateString());
+		assertEquals(sprint3.getDueDateString(), release.getSprints().get(2).getDueDateString());
 	}
 	
 	@Test
