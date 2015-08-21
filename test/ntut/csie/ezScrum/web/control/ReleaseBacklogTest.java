@@ -8,13 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ReleaseBacklog;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -22,13 +18,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintPlanMapper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +33,6 @@ public class ReleaseBacklogTest {
 	private CreateRelease mCR;
 	private CreateSprint mCS;
 	private ReleaseBacklog mReleaseBacklog;
-	private IUserSession mUserSession = null;
 	private ProjectObject mProject = null;
 	private Configuration mConfig = null;
 
@@ -61,7 +54,6 @@ public class ReleaseBacklogTest {
 		mCR = new CreateRelease(1, mCP);
 		mCR.exe();
 
-		mUserSession = mConfig.getUserSession();
 		mProject = mCP.getAllProjects().get(0);
 		ini = null;
 	}
@@ -88,7 +80,6 @@ public class ReleaseBacklogTest {
 		projectManager = null;
 		mReleaseBacklog = null;
 		mProject = null;
-		mUserSession = null;
 		mConfig = null;
 	}
 
@@ -104,11 +95,9 @@ public class ReleaseBacklogTest {
 		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCS, mCP, "EST");
 		ASS.exe();
 
-		String releaseId = "1";
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
+		long releaseId = 1;
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(mProject);
-		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		ReleaseObject plan = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject release = ReleaseObject.get(releaseId);
 
 		ArrayList<StoryObject> stories = productBacklogLogic.getStories();
 		ArrayList<Long> storyIdList = new ArrayList<Long>();
@@ -117,14 +106,14 @@ public class ReleaseBacklogTest {
 		}
 
 		// 把 Story 加入 release plan 1 中
-		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
+		mReleaseBacklog = new ReleaseBacklog(mProject, release, release.getStories());
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		for (int i = 0; i < stories.size(); i++) {
 			// 把除了最後一筆 story 以外的 story 都設成 done
 			if (stories.get(i).getId() != stories.size()) {
 				sprintBacklogLogic.closeStory(stories.get(i).getId(), stories.get(i).getName(), stories.get(i).getNotes(), "2015/02/03-16:00:00");
 				// 每做完一筆 story done 就更新 release 裡面 story 的資訊
-				mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
+				mReleaseBacklog = new ReleaseBacklog(mProject, release, release.getStories());
 			}
 		}
 		assertEquals(1.0, mReleaseBacklog.getReleaseAllStoryDone());
@@ -142,14 +131,10 @@ public class ReleaseBacklogTest {
 		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCS, mCP, "EST");
 		ASS.exe();
 
-		String releaseId = "1";
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
+		long releaseId = 1;
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(mProject);
-		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		ReleaseObject plan = releasePlanHelper.getReleasePlan(releaseId);
-		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
-
-		SprintPlanMapper sprintMapper = new SprintPlanMapper(mProject);
+		ReleaseObject release = ReleaseObject.get(releaseId);
+		mReleaseBacklog = new ReleaseBacklog(mProject, release, release.getStories());
 		ArrayList<SprintObject> sprints = mProject.getSprints();
 		// 用來設定最後一個 story 的 close date
 		String theDate = sprints.get(mCS.getSprintCount() - 1).getDueDateString();
@@ -168,7 +153,7 @@ public class ReleaseBacklogTest {
 			if (stories.get(i).getId() != stories.size()) {
 				sprintBacklogLogic.closeStory(stories.get(i).getId(), stories.get(i).getName(), stories.get(i).getNotes(), "2015/01/29-16:00:00");
 				// 每做完一筆 story done 就更新 release 裡面 story 的資訊
-				mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
+				mReleaseBacklog = new ReleaseBacklog(mProject, release, release.getStories());
 			}
 			else {
 				lastStory = stories.get(i);
@@ -179,7 +164,7 @@ public class ReleaseBacklogTest {
 		// 讓 story 的 close date 為 sprint endDate 的後一天
 		sprintBacklogLogic.closeStory(lastStory.getId(), lastStory.getName(), lastStory.getNotes(), getDate(theDate, 1));
 		// 更新 release 裡面 story 的資訊
-		mReleaseBacklog = new ReleaseBacklog(mProject, plan, productBacklogHelper.getStoriesByRelease(plan));
+		mReleaseBacklog = new ReleaseBacklog(mProject, release, release.getStories());
 		assertEquals(0.0, mReleaseBacklog.getReleaseAllStoryDone());
 	}
 

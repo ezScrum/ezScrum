@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.dataObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.ReleaseDAO;
@@ -130,6 +131,14 @@ public class ReleaseObject implements IBaseObject {
 			mProjectId = DEFAULT_VALUE;
 		}
 		return success;
+	}
+	
+	public ArrayList<SprintObject> getSprints() {
+		return null;
+	}
+	
+	public ArrayList<StoryObject> getStories() {
+		return null;
 	}
 	
 	private void doCreate() {

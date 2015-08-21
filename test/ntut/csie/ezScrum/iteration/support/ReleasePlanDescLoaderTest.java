@@ -84,12 +84,12 @@ public class ReleasePlanDescLoaderTest {
 		assertEquals(descs.size(), 2);
 		
 		ReleaseObject desc = descs.get(0);
-		assertEquals(desc.getID(), "1");
+		assertEquals(desc.getId(), "1");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "1");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "1");
 		
 		desc = descs.get(1);
-		assertEquals(desc.getID(), "2");
+		assertEquals(desc.getId(), "2");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "2");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "2");
 	}
@@ -109,12 +109,12 @@ public class ReleasePlanDescLoaderTest {
 		assertEquals(descs.size(), 2);
 		
 		ReleaseObject desc = descs.get(0);
-		assertEquals(desc.getID(), "1");
+		assertEquals(desc.getId(), "1");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "1");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "1");		
 		
 		desc = descs.get(1);
-		assertEquals(desc.getID(), "2");
+		assertEquals(desc.getId(), "2");
 		assertEquals(desc.getName(), cr.TEST_RELEASE_NAME + "2");
 		assertEquals(desc.getDescription(), cr.TEST_RELEASE_DESC + "2");
 	}

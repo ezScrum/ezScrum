@@ -48,7 +48,7 @@ public class ReleasePlanDesc implements ReleaseObject {
 	}
 	
 	@Override
-	public String getID() {
+	public String getId() {
 		return this.ID;
 	}
 	
@@ -63,7 +63,7 @@ public class ReleasePlanDesc implements ReleaseObject {
 	}
 	
 	@Override
-	public String getEndDate() {
+	public String getDueDate() {
 		return this.EndDate;
 	}
 	

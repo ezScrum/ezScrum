@@ -39,7 +39,7 @@ public class ProductBacklogLogic {
 	 */
 	public ArrayList<StoryObject> getStoriesByRelease(ReleaseObject release) {
 		// get Story back and sort it by importance
-		String releaseId = release.getID();
+		String releaseId = release.getId();
 		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoriesByRelease(releaseId);
 		stories = sortStoriesByImportance(stories);
 		return stories;
