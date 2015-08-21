@@ -56,8 +56,8 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 			// 將資訊設定成 JSon 輸出格式 sprint已經開始的無法被移動
 			for (int i=0 ; i<descs.length ; i++) {
 				// 尚未開始的sprint
-				if (stringToDate(descs[i].getEndDate()).compareTo(today) >= 0) {
-					sprintTree.append("{ID:\'" + descs[i].getID() + "\'");
+				if (stringToDate(descs[i].getDueDate()).compareTo(today) >= 0) {
+					sprintTree.append("{ID:\'" + descs[i].getId() + "\'");
 					sprintTree.append(", Goal:\'" + descs[i].getName() + "\'" + "},");
 				}
 			}

@@ -34,7 +34,7 @@ public class ReleaseBoard {
 	// 2. 先前版本是可以產生一個 JFreeChart
 	private void init() {
 		if(m_backlog!=null){
-			int totalDays = (int) ((m_backlog.getEndDate().getTime() - m_backlog.getStartDate().getTime()) / OneDay);
+			int totalDays = (int) ((m_backlog.getDueDate().getTime() - m_backlog.getStartDate().getTime()) / OneDay);
 			m_storyCount = Double.parseDouble(String.valueOf(m_backlog.getStoryCount()));
 	
 			// ============產生繪製story用的資料=======================
@@ -52,11 +52,11 @@ public class ReleaseBoard {
 			int num = 0;
 			// 因為一個 release 可能包含很多個 sprint ，一次顯示所有日期會太多資訊
 			// 所以設定區間為每個 sprint 顯示兩筆資料
-			int interval_count = m_backlog.getSprintPlanCounts() * 2;
+			int interval_count = m_backlog.getSprintCounts() * 2;
 			int increase_days = (int) (totalDays/interval_count);
 			// 每一天的理想與真實點數
 			while (indexDate.getTimeInMillis() < m_currentDate.getTime()) {
-				if (indexDate.getTimeInMillis() > m_backlog.getEndDate().getTime())
+				if (indexDate.getTimeInMillis() > m_backlog.getDueDate().getTime())
 					break;
 				
 				Date key = indexDate.getTime();
@@ -70,7 +70,7 @@ public class ReleaseBoard {
 			}
 			
 			// 針對 release 的最後一天作特別處理顯示當天的點數
-			indexDate.setTime(m_backlog.getEndDate());
+			indexDate.setTime(m_backlog.getDueDate());
 			Date key = indexDate.getTime();
 			m_storyIdealMap.put(key, 0.0);
 			m_storyRealMap.put(key, m_backlog.getReleaseAllStoryDone());
@@ -86,11 +86,11 @@ public class ReleaseBoard {
 	}
 
 	public String getPlanID(){
-		return m_backlog.getID();
+		return m_backlog.getReleaseId();
 	}
 	
 	public String getPlanName(){
-		return m_backlog.getName();
+		return m_backlog.getReleaseName();
 	}
 	
 	public double getStoryCount(){
@@ -105,14 +105,14 @@ public class ReleaseBoard {
 		IProject project = m_backlog.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
 		String chartPath = project.getFolder(IProject.METADATA).getFullPath()
-				+ File.separator + this.NAME + File.separator + "Plan" + m_backlog.getID() + File.separator
+				+ File.separator + this.NAME + File.separator + "Plan" + m_backlog.getReleaseId() + File.separator
 				+ STORY_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.STORY_ISSUE_TYPE, chartPath);
 
 		String link = "./Workspace/" + project.getName() + "/"
-				+ IProject.METADATA + "/" + NAME + "/Plan" + m_backlog.getID() + "/" + STORY_CHART_FILE;
+				+ IProject.METADATA + "/" + NAME + "/Plan" + m_backlog.getId() + "/" + STORY_CHART_FILE;
 
 		return link;
 	}
@@ -120,9 +120,9 @@ public class ReleaseBoard {
 	private synchronized void drawGraph(String type, String chartPath) {
 		// 設定圖表內容
 		ChartUtil chartUtil = new ChartUtil(
-				"Stories Burndown Chart in Release Plan #" + m_backlog.getID(), 
+				"Stories Burndown Chart in Release Plan #" + m_backlog.getReleaseId(), 
 				this.m_backlog.getStartDate(), 
-				new Date(this.m_backlog.getEndDate().getTime()+24*3600*1000));
+				new Date(this.m_backlog.getDueDate().getTime()+24*3600*1000));
 
 		chartUtil.setChartType(ChartUtil.LINECHART);
 

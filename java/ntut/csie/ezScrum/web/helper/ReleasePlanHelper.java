@@ -58,7 +58,7 @@ public class ReleasePlanHelper {
 		List<ReleaseObject> IRPD = rpMapper.getReleases();	// get the array data
 		
 		if (length > 0) {
-			return Integer.parseInt(IRPD.get(length-1).getID());
+			return Integer.parseInt(IRPD.get(length-1).getId());
 		} else {
 			return 0;
 		}				
@@ -72,10 +72,10 @@ public class ReleasePlanHelper {
 		{			
 			ReleaseObject desc = new ReleasePlanDesc();
 		
-			desc.setID(descList.get(i).getID());
+			desc.setID(descList.get(i).getId());
 			desc.setName(descList.get(i).getName());
 			desc.setStartDate(descList.get(i).getStartDate());
-			desc.setEndDate(descList.get(i).getEndDate());
+			desc.setEndDate(descList.get(i).getDueDate());
 			desc.setDescription(descList.get(i).getDescription());		
 			
 			// 自動尋找此 release date 內的 sprint plan
@@ -84,7 +84,7 @@ public class ReleasePlanHelper {
 			ArrayList<SprintObject> allSprints = sprintPlanMapper.getSprints();
 			
 			Date releaseStartDate = DateUtil.dayFilter(desc.getStartDate());	// release start date get from XML
-			Date releaseEndDate = DateUtil.dayFilter(desc.getEndDate());		// release end date get from XML
+			Date releaseEndDate = DateUtil.dayFilter(desc.getDueDate());		// release end date get from XML
 			
 			for (SprintObject sprint : allSprints) {
 				Date sprintStartDate = DateUtil.dayFilter(sprint.getStartDateString());
@@ -128,7 +128,7 @@ public class ReleasePlanHelper {
 		ReleaseObject[] descs = loadReleasePlans();
 		
 		for (ReleaseObject desc : descs) {
-			if (desc.getID().equals(releasePlanID))
+			if (desc.getId().equals(releasePlanID))
 				return desc;
 		}
 		return null;
@@ -157,7 +157,7 @@ public class ReleasePlanHelper {
 				for (SprintObject sprint : plan.getSprints()) {
 					// 找到此 sprint 所被包含的 release ID
 					if (sprint.getId() == sprintId) {
-						return plan.getID();
+						return plan.getId();
 					}
 				}
 			}
@@ -205,10 +205,10 @@ public class ReleasePlanHelper {
 			else
 				tree+=",{";
 			tree+="Type:\'Release\',";
-			tree+="ID:\'"+des.getID()+"\',";
+			tree+="ID:\'"+des.getId()+"\',";
 			tree+="Name:\'"+tsc.TranslateJSONChar(des.getName())+"\',";
 			tree+="StartDate:\'"+des.getStartDate()+"\',";
-			tree+="EndDate:\'"+des.getEndDate()+"\',";
+			tree+="EndDate:\'"+des.getDueDate()+"\',";
 			tree+="Description:\'"+ tsc.TranslateJSONChar(des.getDescription()) +"\',";
 			
 			if(des.getSprints()!=null&&des.getSprints().size()!=0){
@@ -240,7 +240,7 @@ public class ReleasePlanHelper {
     	try {
 			for (ReleaseObject plan : ListReleaseDescs) {
 				JSONObject releaseplan = new JSONObject();
-				releaseplan.put("ID", plan.getID());
+				releaseplan.put("ID", plan.getId());
 		        releaseplan.put("Name", plan.getName());
 				releaseplanlist.put(releaseplan);
 			}
@@ -419,7 +419,7 @@ public class ReleasePlanHelper {
 		}
 		
 		if (R_ID != null) {
-			ArrayList<StoryObject> stories = releaseBacklog.getStory();
+			ArrayList<StoryObject> stories = releaseBacklog.getStories();
 			stories = sortStory(stories);
 			
 			// write stories to XML format
@@ -531,14 +531,14 @@ public class ReleasePlanHelper {
 		
 		for (ReleaseObject rp : rpList) {
 			if (action.equals("edit")
-					&& releaseId.equals(rp.getID())) {// 不與自己比較
+					&& releaseId.equals(rp.getId())) {// 不與自己比較
 				continue;
 			}
 			// check日期的頭尾是否有在各個RP日期範圍內
 			if ((startDate.compareTo(rp.getStartDate()) >= 0 
-					&& startDate.compareTo(rp.getEndDate()) <= 0)
+					&& startDate.compareTo(rp.getDueDate()) <= 0)
 					|| (endDate.compareTo(rp.getStartDate()) >= 0 
-					&& endDate.compareTo(rp.getEndDate()) <= 0)) {
+					&& endDate.compareTo(rp.getDueDate()) <= 0)) {
 				result = "illegal";
 				break;
 			}
