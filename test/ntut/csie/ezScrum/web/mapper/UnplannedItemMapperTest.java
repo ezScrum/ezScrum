@@ -181,7 +181,7 @@ public class UnplannedItemMapperTest {
 		unplannedInfo.sprintId = 2;
 		unplannedInfo.status = UnplannedObject.STATUS_DONE;
 		
-		mUnplannedMapper.updateUnplanned(unplannedInfo);
+		mUnplannedMapper.updateUnplanned(unplanned.getId(), unplannedInfo);
 		
 		unplanned.reload();
 		assertEquals(1, unplanned.getId());
@@ -210,7 +210,7 @@ public class UnplannedItemMapperTest {
 		unplannedInfo.sprintId = 2;
 		unplannedInfo.status = UnplannedObject.STATUS_DONE;
 		
-		mUnplannedMapper.updateUnplanned(unplannedInfo);
+		mUnplannedMapper.updateUnplanned(unplanned.getId(), unplannedInfo);
 		
 		unplanned.reload();
 		assertEquals(1, unplanned.getId());
