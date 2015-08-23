@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.dao.UnplannedDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
@@ -171,6 +172,11 @@ public class ProjectObject implements IBaseObject {
 	// get all stories
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesByProjectId(mId);
+	}
+	
+	//get all unplanneds
+	public ArrayList<UnplannedObject> getUnplanneds() {
+		return UnplannedDAO.getInstance().getUnplannedsByProjectId(mId);
 	}
 
 	public ArrayList<TaskObject> getTasksWithNoParent() {

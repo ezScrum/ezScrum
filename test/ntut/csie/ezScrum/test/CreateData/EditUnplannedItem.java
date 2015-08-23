@@ -37,8 +37,8 @@ public class EditUnplannedItem {
 		String name, handler, status, partners, estimated, actualHour, sprintID;
 		String specificTime = DateUtil.getNow();
 		Date date = DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME);
-		for (int i = 0; i < mCU.getIdList().size(); i++) {
-			issueId = mCU.getIdList().get(i);
+		for (int i = 0; i < mCU.getUnplannedsId().size(); i++) {
+			issueId = mCU.getUnplannedsId().get(i);
 			name = mCU.getIssueList().get(i).getSummary();
 			handler = mCU.getIssueList().get(i).getAssignto(); 
 			status = mCU.getIssueList().get(i).getStatus();
@@ -60,8 +60,8 @@ public class EditUnplannedItem {
 		String name, handler, partners, estimated, actualHour, sprintID;
 		String specificTime = DateUtil.getNow();
 		Date date = DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME);
-		for (int i = 0; i < mCU.getIdList().size(); i++) {
-			issueId = mCU.getIdList().get(i);
+		for (int i = 0; i < mCU.getUnplannedsId().size(); i++) {
+			issueId = mCU.getUnplannedsId().get(i);
 			name = mCU.getIssueList().get(i).getSummary();
 			handler = mCA.getAccount_ID(i+1);
 			partners = mCU.getIssueList().get(i).getPartners();
@@ -82,8 +82,8 @@ public class EditUnplannedItem {
 		String name, handler, partners, estimated, actualHour, sprintID;
 		String specificTime = DateUtil.getNow();
 		Date date = DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME);
-		for (int i = 0; i < mCU.getIdList().size(); i++) {
-			issueId = mCU.getIdList().get(i);
+		for (int i = 0; i < mCU.getUnplannedsId().size(); i++) {
+			issueId = mCU.getUnplannedsId().get(i);
 			name = mCU.getIssueList().get(i).getSummary();
 			handler = mCA.getAccount_ID(i+1);
 			partners = mCU.getIssueList().get(i).getPartners();

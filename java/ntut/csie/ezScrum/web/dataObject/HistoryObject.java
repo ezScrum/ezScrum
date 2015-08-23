@@ -150,6 +150,8 @@ public class HistoryObject implements IBaseObject {
 			return getDropChildDesc();
 		case TYPE_REMOVE:
 			return getRemoveParentDesc();
+		case TYPE_SPRINTID:
+			return getSprintDesc();
 		}
 		return "";
 	}
@@ -255,9 +257,9 @@ public class HistoryObject implements IBaseObject {
 			map.put(String.valueOf(StoryObject.STATUS_UNCHECK), "Not Check Out");
 			map.put(String.valueOf(StoryObject.STATUS_DONE), "Done");
 		} else {
-			map.put("10", "Not Check Out");
-			map.put("50", "Check Out");
-			map.put("90", "Done");
+			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
 		}
 		
 		return map.get(mOldValue) + " => " + map.get(mNewValue);
@@ -314,6 +316,10 @@ public class HistoryObject implements IBaseObject {
 			return "Drop Task #" + mNewValue;
 		}
 		return "";
+	}
+	
+	private String getSprintDesc() {
+		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
 	}
 
 	public long getCreateTime() {

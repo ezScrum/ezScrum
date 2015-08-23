@@ -247,7 +247,7 @@ public class UnplannedDATTest {
 	}
 	
 	@Test
-	public void testGetAllUnplanneds() throws SQLException {
+	public void testGetUnplannedsByProjectId() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			UnplannedObject unplanned = null;
@@ -265,7 +265,7 @@ public class UnplannedDATTest {
 		}
 		
 		// get project #1 unplanneds
-		ArrayList<UnplannedObject> tasks = UnplannedDAO.getInstance().getAllUnplanneds(sProjectId);
+		ArrayList<UnplannedObject> tasks = UnplannedDAO.getInstance().getUnplannedsByProjectId(sProjectId);
 		assertEquals(2, tasks.size());
 	}
 	
