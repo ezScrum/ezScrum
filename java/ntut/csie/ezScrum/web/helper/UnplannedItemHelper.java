@@ -1,78 +1,60 @@
 package ntut.csie.ezScrum.web.helper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.UnplannedInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
 import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class UnplannedItemHelper {
 
 	private UnplannedItemMapper mUnplannedMapper;
-
-	public UnplannedItemHelper(IProject project, IUserSession userSession) {
-		mUnplannedMapper = new UnplannedItemMapper(project, userSession);
+	private ProjectObject mProject;
+	
+	public UnplannedItemHelper(ProjectObject project) {
+		mUnplannedMapper = new UnplannedItemMapper(project);
+		mProject = project;
 	}
 	
-	public UnplannedItemHelper(ProjectObject project, IUserSession userSession) {
-		IProject iProject = (new ProjectMapper()).getProjectByID(project.getName());
-		mUnplannedMapper = new UnplannedItemMapper(iProject, userSession);
+	public long addUnplanned(long projectId, long sprintId, UnplannedInfo unplannedInfo) {
+		return mUnplannedMapper.addUnplanned(projectId, sprintId, unplannedInfo);
 	}
-
-	public void modifyUnplannedItemIssue(long issueId, String name,
-	        String handler, String status, String partners, String estimated,
-	        String actualHour, String notes, String sprintId, Date date) {
-		mUnplannedMapper.update(issueId, name, handler, status, partners, estimated, actualHour, notes, sprintId, date);
+	
+	public UnplannedObject getUnplanned(long unplannedId) {
+		return UnplannedObject.get(unplannedId);
 	}
-
-	public IIssue getIssue(long id) {
-		return mUnplannedMapper.getById(id);
+	
+	public void updateUnplanned(long unplannedId, UnplannedInfo unplannedInfo) {
+		mUnplannedMapper.updateUnplanned(unplannedId, unplannedInfo);
 	}
-
-	public void delete(String issueId) {
-		mUnplannedMapper.delete(issueId);
+	
+	public void deleteUnplanned(long unplannedId) {
+		mUnplannedMapper.deleteUnplanned(unplannedId);
 	}
-
-	// 待修正:回傳統一為List
-	public IIssue[] getAllUnplannedItem() throws SQLException {
-		List<IIssue> issues = mUnplannedMapper.getAll();
-		for (IIssue issue : issues)
-		{
-			issues.add(issue);
-		}
-		return issues.toArray(new IIssue[issues.size()]);
+	
+	public ArrayList<UnplannedObject> getUnplannedsIbSprint(long sprintId) {
+		SprintObject sprint = SprintObject.get(sprintId);
+		return sprint.getUnplanneds();
 	}
-
-	// 待修正:回傳統一為List
-	public IIssue[] getUnplannedItemIssue(int iteration) throws SQLException {
-		List<IIssue> issuelist = mUnplannedMapper.getList(Integer.toString(iteration));
-		return issuelist.toArray(new IIssue[issuelist.size()]);
-	}
-
-	public long addUnplannedItem(String name, String estimate,
-	        String handler, String partners, String notes, Date date,
-	        String unplanneditemIssueType, long SprintId) {
-		return mUnplannedMapper.add(name, estimate, handler, partners, notes, date, unplanneditemIssueType, SprintId);
+	
+	public ArrayList<UnplannedObject> getAllUnplanneds() {
+		return mProject.getUnplanneds();
 	}
 
 	/*
-	 * 以下為Response給前端之資料格式轉換函式
+	 * 以下為 Response 給前端之資料格式轉換函式
 	 */
+	
+	public StringBuilder getListXML(String sprintId) {
+		ArrayList<UnplannedObject> unplanneds = null;
 
-	public StringBuilder getListXML(String sprintId) throws SQLException {
-		ArrayList<IIssue> unplannedItem = null;
-
-		if (sprintId.equalsIgnoreCase("All")) {
-			unplannedItem = mUnplannedMapper.getAll();
+		if (sprintId.equals("ALL")) {
+			unplanneds = mUnplannedMapper.getAllUnplanneds();
 		} else {
-			unplannedItem = mUnplannedMapper.getList(sprintId);
+			unplanneds = mUnplannedMapper.getUnplannedsInSprint(Long.parseLong(sprintId));
 		}
 
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
@@ -80,19 +62,22 @@ public class UnplannedItemHelper {
 		// write stories to XML format
 		StringBuilder result = new StringBuilder();
 
-		result.append("<UnplannedItems><Sprint><Id>" + sprintId + "</Id><Name>Sprint " + sprintId + "</Name></Sprint>");
-		for (int i = 0; i < unplannedItem.size(); i++) {
+		result.append("<UnplannedItems><Sprint>")
+			.append("<Id>").append(sprintId).append("</Id>")
+			.append("<Name>Sprint ").append(sprintId).append("</Name>")
+			.append("</Sprint>");
+		for (int i = 0; i < unplanneds.size(); i++) {
 			result.append("<UnplannedItem>");
-			result.append("<Id>" + unplannedItem.get(i).getIssueID() + "</Id>");
-			result.append("<Link>" + tsc.TranslateXMLChar(unplannedItem.get(i).getIssueLink()) + "</Link>");
-			result.append("<Name>" + tsc.TranslateXMLChar(unplannedItem.get(i).getSummary()) + "</Name>");
-			result.append("<SprintID>" + unplannedItem.get(i).getSprintID() + "</SprintID>");
-			result.append("<Estimate>" + unplannedItem.get(i).getEstimated() + "</Estimate>");
-			result.append("<Status>" + unplannedItem.get(i).getStatus() + "</Status>");
-			result.append("<ActualHour>" + unplannedItem.get(i).getActualHour() + "</ActualHour>");
-			result.append("<Handler>" + unplannedItem.get(i).getAssignto() + "</Handler>");
-			result.append("<Partners>" + tsc.TranslateXMLChar(unplannedItem.get(i).getPartners()) + "</Partners>");
-			result.append("<Notes>" + tsc.TranslateXMLChar(unplannedItem.get(i).getNotes()) + "</Notes>");
+			result.append("<Id>").append(unplanneds.get(i).getId()).append("</Id>");
+			result.append("<Link></Link>");
+			result.append("<Name>").append(tsc.TranslateXMLChar(unplanneds.get(i).getName())).append("</Name>");
+			result.append("<SprintID>").append(unplanneds.get(i).getSprintId()).append("</SprintID>");
+			result.append("<Estimate>").append(unplanneds.get(i).getEstimate()).append("</Estimate>");
+			result.append("<Status>").append(unplanneds.get(i).getStatus()).append("</Status>");
+			result.append("<ActualHour>").append(unplanneds.get(i).getActual()).append("</ActualHour>");
+			result.append("<Handler>").append(unplanneds.get(i).getHandlerName()).append("</Handler>");
+			result.append("<Partners>").append(tsc.TranslateXMLChar(unplanneds.get(i).getPartnersUsername())).append("</Partners>");
+			result.append("<Notes>").append(tsc.TranslateXMLChar(unplanneds.get(i).getNotes())).append("</Notes>");
 			result.append("</UnplannedItem>");
 		}
 		result.append("</UnplannedItems>");

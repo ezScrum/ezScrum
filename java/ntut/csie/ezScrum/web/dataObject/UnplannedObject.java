@@ -144,6 +144,13 @@ public class UnplannedObject implements IBaseObject {
 		AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
 		return handler;
 	}
+	
+	public String getHandlerName() {
+		if (getHandler() == null) {
+			return "";
+		}
+		return getHandler().getUsername();
+	}
 
 	public int getEstimate() {
 		return mEstimate;

@@ -43,8 +43,8 @@ public class UnplannedItemMapper {
 		return unplanned.getId();
 	}
 
-	public void updateUnplanned(UnplannedInfo unplannedInfo) {
-		UnplannedObject unplanned = UnplannedObject.get(unplannedInfo.id);
+	public void updateUnplanned(long unplannedId, UnplannedInfo unplannedInfo) {
+		UnplannedObject unplanned = UnplannedObject.get(unplannedId);
 		if (unplanned != null) {
 			unplanned.setName(unplannedInfo.name).setNotes(unplannedInfo.notes)
 			.setEstimate(unplannedInfo.estimate).setActual(unplannedInfo.actual)
