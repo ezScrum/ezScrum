@@ -79,7 +79,7 @@ public class TaskBoardHelper {
 			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-			String releaseID = releasePlanHelper.getReleaseID(currentSprintID);
+			String releaseID = releasePlanHelper.getReleaseId(currentSprintID);
 			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}

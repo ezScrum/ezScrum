@@ -47,7 +47,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * @return
 	 */
 	public String getAllReleasePlan() {
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleases();
 		return new Gson().toJson(releaseDescs);
 	}
 	
@@ -57,7 +57,7 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * @throws SQLException 
 	 */
 	public String getAllReleasePlanWithAllItem() throws SQLException {
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleases();
 		List<ReleaseObject> releases = new ArrayList<ReleaseObject>();
 		for (ReleaseObject releaseDesc : releaseDescs) {
 			ReleaseObject releaseObject = new ReleaseObject(releaseDesc);

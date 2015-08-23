@@ -22,6 +22,10 @@ public class ReleasePlanMapper {
 		       .save();
 		return release.getId();
 	}
+	
+	public ReleaseObject getRelease(long releaseId) {
+		return ReleaseObject.get(releaseId);
+	}
 		
 	public ArrayList<ReleaseObject> getReleases() {
 		return mProject.getReleases();

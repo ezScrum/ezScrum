@@ -49,13 +49,13 @@ public class ProductBacklogMapper {
 	}
 
 	// get all stories by release
-	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
+	public ArrayList<StoryObject> getStoriesByRelease(long releaseId) {
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		ReleaseObject releasePlanDesc = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 
-		for (SprintObject sprint : releasePlanDesc.getSprints()) {
+		for (SprintObject sprint : release.getSprints()) {
 			ArrayList<StoryObject> storiesInSprint = sprint.getStories();
 			for (StoryObject story : storiesInSprint) {
 				stories.add(story);

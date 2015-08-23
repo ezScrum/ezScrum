@@ -1,13 +1,13 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -39,14 +39,13 @@ public class ShowReleasePlan2Action extends PermissionAction {
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
     	
-		ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		
-		List<ReleaseObject> releaseDescs = RPhelper.loadReleasePlansList();
-		List<ReleaseObject> ListReleaseDescs = RPhelper.sortStartDate(releaseDescs);
+		ArrayList<ReleaseObject> releases = releasePlanHelper.getReleases();
+		ArrayList<ReleaseObject> releasesSortedByStartDate = releasePlanHelper.sortStartDate(releases);
 	
-    	StringBuilder result = new StringBuilder(RPhelper.setJSon(ListReleaseDescs, SPhelper));
-    	
+    	StringBuilder result = new StringBuilder(releasePlanHelper.setJSon(releasesSortedByStartDate, sprintPlanHelper));
 		return result;
 	}	
 }
