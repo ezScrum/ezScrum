@@ -5,6 +5,7 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.UnplannedDAO;
 import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -169,6 +170,10 @@ public class SprintObject implements IBaseObject {
 
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
+	}
+	
+	public ArrayList<UnplannedObject> getUnplanneds() {
+		return UnplannedDAO.getInstance().getUnplannedBySprintId(mId);
 	}
 
 	@Override

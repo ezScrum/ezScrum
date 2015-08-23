@@ -136,7 +136,7 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 	 * @param projectId
 	 * @return All unplanneds which in this project
 	 */
-	public ArrayList<UnplannedObject> getAllUnplanneds(long projectId) {
+	public ArrayList<UnplannedObject> getUnplannedsByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(UnplannedEnum.TABLE_NAME);
 		valueSet.addEqualCondition(UnplannedEnum.PROJECT_ID, projectId);

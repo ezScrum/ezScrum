@@ -2,21 +2,18 @@ package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.UnplannedInfo;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,20 +22,18 @@ import org.junit.Test;
 public class UnplannedItemMapperTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private CreateUnplannedItem mCUI; 
+	private CreateUnplannedItem mCUI;
 	private Configuration mConfig;
-	private MySQLControl mControl;
-	private IProject mProject;
+	private ProjectObject mProject;
 	private UnplannedItemMapper mUnplannedMapper;
+	private static long sProjectId;
+	private static long sSprintId;
 
 	@Before
-	public void setUp() throws InterruptedException {
+	public void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-
-		mControl = new MySQLControl(mConfig);
-		mControl.connect();
 
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -52,12 +47,10 @@ public class UnplannedItemMapperTest {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 		
-		// 新增 Unplanned
-		mCUI = new CreateUnplannedItem(1, mCP, mCS);
-		mCUI.exe();
-
-		mProject = mCP.getProjectList().get(0);
-		mUnplannedMapper = new UnplannedItemMapper(mProject, mConfig.getUserSession());
+		mProject = mCP.getAllProjects().get(0);
+		mUnplannedMapper = new UnplannedItemMapper(mProject);
+		sProjectId = mProject.getId();
+		sSprintId = mCS.getSprints().get(0).getId();
 		
 		// 為了使 Story 建立時間與修改時間分開而停下
 		Thread.sleep(1000);
@@ -83,77 +76,195 @@ public class UnplannedItemMapperTest {
     	ini = null;
     	mCP = null;
     	mCS = null;
-    	mCUI = null;
+//    	mCUI = null;
     	projectManager = null;
     	mUnplannedMapper = null;
     	mConfig = null;
-    	mControl = null;
+//    	mControl = null;
+	}
+	
+	@Test
+	public void testGetUnplanned() {
+		// 新增 1 Unplanned
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
+		UnplannedObject unplanned = mCUI.getUnplanneds().get(0);
+		
+		assertEquals(1, unplanned.getId());
+		assertEquals(1, unplanned.getSerialId());
+		assertEquals("TEST_UNPLANNED_1", unplanned.getName());
+		assertEquals("TEST_UNPLANNED_NOTES_1", unplanned.getNotes());
+		assertEquals(2, unplanned.getEstimate());
+		assertEquals(0, unplanned.getActual());
+		assertEquals(1, unplanned.getSprintId());
+		assertEquals(1, unplanned.getProjectId());
+	}
+	
+	@Test
+	public void testGetUnplannedsInSprint() {
+		// 新增 3 Unplanned
+		mCUI = new CreateUnplannedItem(3, mCP, mCS);
+		mCUI.exe();
+		
+		ArrayList<UnplannedObject> expectUnplanneds = mCUI.getUnplanneds();
+		ArrayList<UnplannedObject> actualUnplanneds = mUnplannedMapper.getUnplannedsInSprint(sSprintId);
+		assertEquals(expectUnplanneds.size(), actualUnplanneds.size());
+		for (int i = 0; i < 3; i++) {
+			UnplannedObject actualUnplanned = actualUnplanneds.get(i);
+			UnplannedObject expectUnplanned = expectUnplanneds.get(i);
+			assertEquals(expectUnplanned.getId(), actualUnplanned.getId());
+			assertEquals(expectUnplanned.getSerialId(), actualUnplanned.getSerialId());
+			assertEquals(expectUnplanned.getName(), actualUnplanned.getName());
+			assertEquals(expectUnplanned.getNotes(), actualUnplanned.getNotes());
+			assertEquals(expectUnplanned.getEstimate(), actualUnplanned.getEstimate());
+			assertEquals(expectUnplanned.getActual(), actualUnplanned.getActual());
+			assertEquals(expectUnplanned.getSprintId(), actualUnplanned.getSprintId());
+			assertEquals(expectUnplanned.getProjectId(), actualUnplanned.getProjectId());
+		}
+	}
+	
+	@Test
+	public void testGetAllUnplanneds() {
+		// 新增 3 Unplanned
+		mCUI = new CreateUnplannedItem(3, mCP, mCS);
+		mCUI.exe();
+		
+		ArrayList<UnplannedObject> expectUnplanneds = mCUI.getUnplanneds();
+		ArrayList<UnplannedObject> actualUnplanneds = mUnplannedMapper.getAllUnplanneds();
+		assertEquals(expectUnplanneds.size(), actualUnplanneds.size());
+	}
+	
+	@Test
+	public void testAddUnplanned() {
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.name = "TEST_NAME";
+		unplannedInfo.notes = "TEST_NOTES";
+		unplannedInfo.estimate = 10;
+		unplannedInfo.actual = 0;
+		
+		long id = mUnplannedMapper.addUnplanned(sProjectId, sSprintId, unplannedInfo);
+		UnplannedObject unplanned = UnplannedObject.get(id);
+		
+		assertEquals(unplannedInfo.name, unplanned.getName());
+		assertEquals(unplannedInfo.notes, unplanned.getNotes());
+		assertEquals(unplannedInfo.estimate, unplanned.getEstimate());
+		assertEquals(unplannedInfo.actual, unplanned.getActual());
+		assertEquals(UnplannedObject.STATUS_UNCHECK, unplanned.getStatus());
+		assertEquals(1, unplanned.getSerialId());
+		assertEquals(sProjectId, unplanned.getProjectId());
+		assertEquals(sSprintId, unplanned.getSprintId());
+		assertEquals(1, unplanned.getHistories().size());
+	}
+	
+	@Test
+	public void testUpdateUnplanned() {
+		// 新增 1 Unplanned
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
+		UnplannedObject unplanned = mCUI.getUnplanneds().get(0);
+		
+		assertEquals(1, unplanned.getId());
+		assertEquals(1, unplanned.getSerialId());
+		assertEquals("TEST_UNPLANNED_1", unplanned.getName());
+		assertEquals("TEST_UNPLANNED_NOTES_1", unplanned.getNotes());
+		assertEquals(2, unplanned.getEstimate());
+		assertEquals(0, unplanned.getActual());
+		assertEquals(sSprintId, unplanned.getSprintId());
+		assertEquals(sProjectId, unplanned.getProjectId());
+		
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = unplanned.getId();
+		unplannedInfo.name = "亨利欺負學長";
+		unplannedInfo.notes = "亨利快衝阿";
+		unplannedInfo.estimate = 888;
+		unplannedInfo.actual = 456;
+		unplannedInfo.sprintId = 2;
+		unplannedInfo.status = UnplannedObject.STATUS_DONE;
+		
+		mUnplannedMapper.updateUnplanned(unplannedInfo);
+		
+		unplanned.reload();
+		assertEquals(1, unplanned.getId());
+		assertEquals(1, unplanned.getSerialId());
+		assertEquals("亨利欺負學長", unplanned.getName());
+		assertEquals("亨利快衝阿", unplanned.getNotes());
+		assertEquals(888, unplanned.getEstimate());
+		assertEquals(456, unplanned.getActual());
+		assertEquals(2, unplanned.getSprintId());
+		assertEquals(sProjectId, unplanned.getProjectId());
 	}
 	
     @Test
-	public void testUpdate_History() throws SQLException {
-		long issueId = mCUI.getIdList().get(0);
-		String name = "快接 task 啦";
-		String handler = "admin";
-		String partners = "Sam, Jay";
-		String estimate = "6";
-		String actualHour = "6";
-		String notes = "已哭";
-		long sprintId = mCS.getSprintsId().get(0);
-		Date date = new Date(System.currentTimeMillis());
-		mUnplannedMapper.update(issueId, name, handler, ITSEnum.S_ASSIGNED_STATUS, partners, estimate, actualHour, notes, String.valueOf(sprintId), date);
-		// assert issue info
-		IIssue unplanned = mUnplannedMapper.getById(issueId);
-		assertEquals(issueId, unplanned.getIssueID());
-		assertEquals(name, unplanned.getSummary());
-		assertEquals(handler, unplanned.getAssignto());
-		assertEquals(partners, unplanned.getPartners());
-		assertEquals(estimate, unplanned.getEstimated());
-		assertEquals(actualHour, unplanned.getActualHour());
-		assertEquals(notes, unplanned.getNotes());
-		assertEquals(String.valueOf(sprintId), unplanned.getSprintID());
+	public void testUpdateUnplanned_History() {
+		// 新增 1 Unplanned
+		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		mCUI.exe();
+		UnplannedObject unplanned = mCUI.getUnplanneds().get(0);
+		
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = unplanned.getId();
+		unplannedInfo.name = "亨利欺負學長";
+		unplannedInfo.notes = "亨利快衝阿";
+		unplannedInfo.estimate = 888;
+		unplannedInfo.actual = 456;
+		unplannedInfo.sprintId = 2;
+		unplannedInfo.status = UnplannedObject.STATUS_DONE;
+		
+		mUnplannedMapper.updateUnplanned(unplannedInfo);
+		
+		unplanned.reload();
+		assertEquals(1, unplanned.getId());
+		assertEquals(1, unplanned.getSerialId());
+		assertEquals("亨利欺負學長", unplanned.getName());
+		assertEquals("亨利快衝阿", unplanned.getNotes());
+		assertEquals(888, unplanned.getEstimate());
+		assertEquals(456, unplanned.getActual());
+		assertEquals(2, unplanned.getSprintId());
+		assertEquals(sProjectId, unplanned.getProjectId());
+		
 		// get histories
 		ArrayList<HistoryObject> histories = unplanned.getHistories();
-		/*
-		 * expected histories size = 9
-		 * expected 1th history type = 1, description = "Create Unplanned #1"
-		 * expected 2th history type = 16, description = "Append to Sprint #1"
-		 * expected 3th history type = 2, description = "\"p1s1_TEST_UNPLANNED_1\" => \"快接 task 啦\""
-		 * expected 4th history type = 12, description = "Not Check Out => Check Out"
-		 * expected 5th history type = 13, description = "admin"
-		 * expected 6th history type = 21, description = ""
-		 * expected 7th history type = 3, description = "2 => 6"
-		 * expected 8th history type = 5, description = "0 => 6"
-		 * expected 9th history type = 19, description = "\"TEST_UNPLANNED_NOTES_1\" => \"已哭\""
-		 */
 		// check histories size
-		assertEquals(9, histories.size());
+		assertEquals(7, histories.size());
 		// check 1th history
-		assertEquals(1, histories.get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_CREATE, histories.get(0).getHistoryType());
 		assertEquals("Create Unplanned #1", histories.get(0).getDescription());
 		// check 2th history
-		assertEquals(16, histories.get(1).getHistoryType());
-		assertEquals("Append to Sprint #1", histories.get(1).getDescription());
+		assertEquals(HistoryObject.TYPE_NAME, histories.get(1).getHistoryType());
+		assertEquals("\"TEST_UNPLANNED_1\" => \"亨利欺負學長\"", histories.get(1).getDescription());
 		// check 3th history
-		assertEquals(2, histories.get(2).getHistoryType());
-		assertEquals("\"p1s1_TEST_UNPLANNED_1\" => \"快接 task 啦\"", histories.get(2).getDescription());
+		assertEquals(HistoryObject.TYPE_NOTE, histories.get(2).getHistoryType());
+		assertEquals("\"TEST_UNPLANNED_NOTES_1\" => \"亨利快衝阿\"", histories.get(2).getDescription());
 		// check 4th history
-		assertEquals(12, histories.get(3).getHistoryType());
-		assertEquals("Not Check Out => Check Out", histories.get(3).getDescription());
+		assertEquals(HistoryObject.TYPE_STATUS, histories.get(3).getHistoryType());
+		assertEquals("Not Check Out => Done", histories.get(3).getDescription());
 		// check 5th history
-		assertEquals(13, histories.get(4).getHistoryType());
-		assertEquals("admin", histories.get(4).getDescription());
+		assertEquals(HistoryObject.TYPE_ESTIMATE, histories.get(4).getHistoryType());
+		assertEquals("2 => 888", histories.get(4).getDescription());
 		// check 6th history
-		assertEquals(21, histories.get(5).getHistoryType());
-		assertEquals("", histories.get(5).getDescription());
+		assertEquals(HistoryObject.TYPE_ACTUAL, histories.get(5).getHistoryType());
+		assertEquals("0 => 456", histories.get(5).getDescription());
 		// check 7th history
-		assertEquals(3, histories.get(6).getHistoryType());
-		assertEquals("2 => 6", histories.get(6).getDescription());
-		// check 8th history
-		assertEquals(5, histories.get(7).getHistoryType());
-		assertEquals("0 => 6", histories.get(7).getDescription());
-		// check 9th history
-		assertEquals(19, histories.get(8).getHistoryType());
-		assertEquals("\"TEST_UNPLANNED_NOTES_1\" => \"已哭\"", histories.get(8).getDescription());
+		assertEquals(HistoryObject.TYPE_SPRINTID, histories.get(6).getHistoryType());
+		assertEquals("Sprint #1 => Sprint #2", histories.get(6).getDescription());
+	}
+	
+	@Test
+	public void testDeleteUnplanned() {
+		// 新增 3 Unplanned
+		mCUI = new CreateUnplannedItem(3, mCP, mCS);
+		mCUI.exe();
+		ArrayList<Long> unplannedsId = mCUI.getUnplannedsId();
+		
+		// delete the unplanneds
+		for (long unplannedId : unplannedsId) {
+			mUnplannedMapper.deleteUnplanned(unplannedId);
+		}
+		
+		// all unplanneds should be deleted
+		for (long unplannedId : unplannedsId) {
+			UnplannedObject unplanned = UnplannedObject.get(unplannedId);
+			assertEquals(null, unplanned);
+		}
 	}
 }

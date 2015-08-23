@@ -608,7 +608,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 新增一個 UnplannedItem
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
 		mCUI.exe();
-		String issueId = String.valueOf(mCUI.getIdList().get(0));
+		String issueId = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
 		addRequestParameter("sprintID",
@@ -672,7 +672,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		EU.exe_CO();
 		Thread.sleep(1000);
 
-		String issueID = String.valueOf(mCUI.getIdList().get(0));
+		String issueID = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
 		addRequestParameter("sprintID",
@@ -742,7 +742,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		EU.exe_DONE();
 		Thread.sleep(1000);
 
-		String issueId = String.valueOf(mCUI.getIdList().get(0));
+		String issueId = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
 		addRequestParameter("sprintID",
