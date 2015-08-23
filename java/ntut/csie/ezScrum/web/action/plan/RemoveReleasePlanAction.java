@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
@@ -43,19 +43,19 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		// get parameter info
-		String ReleaseId = request.getParameter("releaseID");
-
-		ReleasePlanHelper helper = new ReleasePlanHelper(project);
-		ReleaseObject releasePlanDesc = helper.getReleasePlan(ReleaseId);
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
+		String releaseIdString = request.getParameter("releaseID");
+		long releaseId = Long.parseLong(releaseIdString);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 
-		if (releasePlanDesc == null) {
+		if (release == null) {
 			return new StringBuilder("false");
 		} else {
-			ArrayList<StoryObject> stories = PBHelper
-					.getStoriesByRelease(releasePlanDesc);
-			ArrayList<SprintObject> sprints = releasePlanDesc.getSprints();
+			ArrayList<StoryObject> stories = productBacklogHelper
+					.getStoriesByRelease(release);
+			ArrayList<SprintObject> sprints = release.getSprints();
 
 			for (SprintObject sprint : sprints) {
 				sprintPlanHelper.deleteSprint(sprint.getId());
@@ -64,11 +64,11 @@ public class RemoveReleasePlanAction extends PermissionAction {
 			// 移除 sprint 與底下 Story 的關係
 			for (int index = 0; index < stories.size(); index++) {
 				if (stories.get(index).getSprintId() > 0) {
-					PBHelper.dropStoryFromSprint(stories.get(index).getId());
+					productBacklogHelper.dropStoryFromSprint(stories.get(index).getId());
 				}
 			}
 			// 刪除Release
-			helper.deleteReleasePlan(ReleaseId);
+			releasePlanHelper.deleteReleasePlan(releaseId);
 
 			return new StringBuilder("true");
 		}

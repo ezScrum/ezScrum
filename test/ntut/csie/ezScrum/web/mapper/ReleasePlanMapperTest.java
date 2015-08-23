@@ -1,11 +1,8 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-
+import static org.junit.Assert.assertTrue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -96,45 +93,7 @@ public class ReleasePlanMapperTest {
 		assertEquals("2015/06/24", release.getDueDateString());
 	}
 
-	@Test
-	public void testGetReleases() {
-		// create releases
-		long projectId = mCP.getAllProjects().get(0).getId();
-		ReleaseObject release1 = new ReleaseObject(projectId);
-		release1.setName("TEST_RELEASE_NAME_1")
-		        .setStartDate("2015/06/10")
-		        .setDueDate("2015/06/24")
-		        .save();
-		ReleaseObject release2 = new ReleaseObject(projectId);
-		release2.setName("TEST_RELEASE_NAME_2")
-		        .setStartDate("2015/07/10")
-		        .setDueDate("2015/07/24")
-		        .save();
-		ReleaseObject release3 = new ReleaseObject(projectId);
-		release3.setName("TEST_RELEASE_NAME_3")
-		        .setStartDate("2015/08/10")
-		        .setDueDate("2015/08/24")
-		        .save();
-		
-		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
-		// assert
-		assertEquals(3, releases.size());
-		// release 1
-		assertEquals(release1.getId(), releases.get(0).getId());
-		assertEquals(release1.getName(), releases.get(0).getName());
-		assertEquals(release1.getStartDateString(), releases.get(0).getStartDateString());
-		assertEquals(release1.getDueDateString(), releases.get(0).getDueDateString());
-		// release 2
-		assertEquals(release2.getId(), releases.get(1).getId());
-		assertEquals(release2.getName(), releases.get(1).getName());
-		assertEquals(release2.getStartDateString(), releases.get(1).getStartDateString());
-		assertEquals(release2.getDueDateString(), releases.get(1).getDueDateString());
-		// release 3
-		assertEquals(release3.getId(), releases.get(2).getId());
-		assertEquals(release3.getName(), releases.get(2).getName());
-		assertEquals(release3.getStartDateString(), releases.get(2).getStartDateString());
-		assertEquals(release3.getDueDateString(), releases.get(2).getDueDateString());
-	}
+	
 
 	@Test
 	public void testUpdateRelease() {

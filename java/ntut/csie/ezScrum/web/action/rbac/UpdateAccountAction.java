@@ -37,8 +37,8 @@ public class UpdateAccountAction extends Action {
 		} catch (NumberFormatException e) {
 			accountInfo.id = 0;
 		}
-		
-		AccountHelper accountHelper = new AccountHelper(session);
+	
+		AccountHelper accountHelper = new AccountHelper();
 		AccountMapper accountMapper = new AccountMapper();
 		AccountObject oldAccount = accountMapper.getAccount(accountInfo.id);
 		AccountObject newAccount = accountHelper.updateAccount(accountInfo);

@@ -390,4 +390,46 @@ public class ProjectObjectTest {
 		calendarEnd.add(Calendar.DAY_OF_YEAR, duration);
 		return format.format(calendarEnd.getTime());
 	}
+	
+	@Test
+	public void testGetReleases() {
+		ProjectObject project = new ProjectObject("TEST_PROJECT");
+		project.save();
+		// create releases
+		long projectId = project.getId();
+		ReleaseObject release1 = new ReleaseObject(projectId);
+		release1.setName("TEST_RELEASE_NAME_1")
+		        .setStartDate("2015/06/10")
+		        .setDueDate("2015/06/24")
+		        .save();
+		ReleaseObject release2 = new ReleaseObject(projectId);
+		release2.setName("TEST_RELEASE_NAME_2")
+		        .setStartDate("2015/07/10")
+		        .setDueDate("2015/07/24")
+		        .save();
+		ReleaseObject release3 = new ReleaseObject(projectId);
+		release3.setName("TEST_RELEASE_NAME_3")
+		        .setStartDate("2015/08/10")
+		        .setDueDate("2015/08/24")
+		        .save();
+		
+		ArrayList<ReleaseObject> releases = project.getReleases();
+		// assert
+		assertEquals(3, releases.size());
+		// release 1
+		assertEquals(release1.getId(), releases.get(0).getId());
+		assertEquals(release1.getName(), releases.get(0).getName());
+		assertEquals(release1.getStartDateString(), releases.get(0).getStartDateString());
+		assertEquals(release1.getDueDateString(), releases.get(0).getDueDateString());
+		// release 2
+		assertEquals(release2.getId(), releases.get(1).getId());
+		assertEquals(release2.getName(), releases.get(1).getName());
+		assertEquals(release2.getStartDateString(), releases.get(1).getStartDateString());
+		assertEquals(release2.getDueDateString(), releases.get(1).getDueDateString());
+		// release 3
+		assertEquals(release3.getId(), releases.get(2).getId());
+		assertEquals(release3.getName(), releases.get(2).getName());
+		assertEquals(release3.getStartDateString(), releases.get(2).getStartDateString());
+		assertEquals(release3.getDueDateString(), releases.get(2).getDueDateString());
+	}
 }

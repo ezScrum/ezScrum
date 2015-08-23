@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -44,33 +45,33 @@ public class SaveReleasePlanAction extends PermissionAction {
 		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 
 		// get parameter info
-		String ID = request.getParameter("Id");
-		String Name = translateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
-		String StartDate = request.getParameter("StartDate");
-		String EndDate = request.getParameter("EndDate");
-		String Description = translateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
-		
+		String releaseIdString = request.getParameter("Id");
+		String name = translateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
+		String startDate = request.getParameter("StartDate");
+		String dueDate = request.getParameter("EndDate");
+		String description = translateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
+		long releaseId = -1;
+		if (releaseIdString != null) {
+			releaseId = Long.parseLong(releaseIdString);
+		}
 		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
 			return null;
 		}			
 			
 		String Action = request.getParameter("action");
-		ReleasePlanHelper rphelper = new ReleasePlanHelper(project);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
 	
+		ReleaseInfo releaseInfo = new ReleaseInfo();
+		releaseInfo.id = releaseId;
+		releaseInfo.name = name;
+		releaseInfo.startDate = startDate;
+		releaseInfo.dueDate = dueDate;
+		releaseInfo.description = description;
+		
 		if (Action.equals("save")) {
-			rphelper.editReleasePlan(ID, Name, StartDate, EndDate, Description, "save");
-			
-			//Add release Plan 後, 自動加入日期範圍內 Sprint 底下的 Story
-			rphelper.addReleaseSprintStory(project, session, ID, null, rphelper.getReleasePlan(ID));
-			
+			releasePlanHelper.editReleasePlan(releaseInfo);
 		} else if (Action.equals("edit")) {
-			ReleaseObject releasePlanDesc = rphelper.getReleasePlan(ID);
-			ArrayList<SprintObject> oldSprintList =  releasePlanDesc.getSprints();//get the original list of sprint
-			
-			rphelper.editReleasePlan(ID, Name, StartDate, EndDate, Description, "edit");
-			
-			//Edit Release Plan 後, 重新抓取日期範圍內 Sprint 底下的 Story
-			rphelper.addReleaseSprintStory(project, session, ID, oldSprintList, rphelper.getReleasePlan(ID));
+			releasePlanHelper.editReleasePlan(releaseInfo);
 		}	
 		return new StringBuilder("true");
 	}

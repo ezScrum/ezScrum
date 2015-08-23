@@ -36,14 +36,5 @@ public class AjaxGetNewReleaseIDAction extends PermissionAction {
 		
 		ReleasePlanHelper helper = new ReleasePlanHelper(project);
 		return helper.getNewReleaseId();
-		
-//		int id = helper.getLastReleasePlanNumber() + 1;	// 依照目前最近ID count 累加
-//
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("<Root><Release>");
-//		sb.append("<ID>" + id + "</ID>");
-//		sb.append("</Release></Root>");
-//		
-//		return sb;
 	}
 }
