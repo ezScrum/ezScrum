@@ -474,24 +474,19 @@ public class ReleasePlanHelper {
 
 		return stringBuilder;
 	}
-
-	/*
-	 * from CheckReleaseDateAction
-	 */
-
-	public StringBuilder checkReleaseDate(String releaseId, String startDate,
-			String endDate, String action) {
+	
+	public StringBuilder checkReleaseDateOverlapping(String releaseId, String startDateString,
+			String dueDateString, String action) {
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
+		Date startDate = DateUtil.dayFilter(startDateString);
+		Date dueDate = DateUtil.dayFilter(dueDateString);
 		String result = "legal";
 		for (ReleaseObject release : releases) {
 			if (action.equals("edit") && releaseId.equals(release.getId())) {// 不與自己比較
 				continue;
 			}
-			// check日期的頭尾是否有在各個RP日期範圍內
-			if ((startDate.compareTo(release.getStartDateString()) >= 0 && startDate
-					.compareTo(release.getDueDateString()) <= 0)
-					|| (endDate.compareTo(release.getStartDateString()) >= 0 && endDate
-							.compareTo(release.getDueDateString()) <= 0)) {
+			// check 日期的頭尾是否有在各個 release plan 日期範圍內
+			if (release.contains(startDate) || release.contains(dueDate)) {
 				result = "illegal";
 				break;
 			}
