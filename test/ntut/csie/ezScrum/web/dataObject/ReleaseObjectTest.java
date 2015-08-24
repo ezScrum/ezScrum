@@ -24,6 +24,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.jcis.core.util.DateUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -302,6 +303,24 @@ public class ReleaseObjectTest {
 			}
 		}
 		assertEquals(1.0, release.getReleaseAllStoryDone());
+	}
+	
+	@Test
+	public void testContains() {
+		ReleaseObject release = new ReleaseObject(mProject.getId());
+		release.setStartDate("2015/08/24");
+		release.setDueDate("2015/08/31");
+		release.save();
+		assertFalse(release.contains(DateUtil.dayFilter("2015/08/23")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/24")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/25")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/26")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/27")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/28")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/29")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/30")));
+		assertTrue(release.contains(DateUtil.dayFilter("2015/08/31")));
+		assertFalse(release.contains(DateUtil.dayFilter("2015/09/01")));
 	}
 
 	private ReleaseObject createRelease() {

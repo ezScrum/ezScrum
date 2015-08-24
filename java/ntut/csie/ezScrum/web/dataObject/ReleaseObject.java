@@ -192,6 +192,14 @@ public class ReleaseObject implements IBaseObject {
 		}
 		return count;
 	}
+	
+	public boolean contains(Date date) {
+		if ((date.compareTo(mStartDate) >= 0)
+				&& (date.compareTo(mDueDate) <= 0)) {
+			return true;
+		}
+		return false;
+	}
 
 	private void doCreate() {
 		mId = ReleaseDAO.getInstance().create(this);
