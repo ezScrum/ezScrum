@@ -33,19 +33,16 @@ public class ShowTaskBoardAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession userSession = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
+		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get Account, ScrumRole
 		AccountObject account = userSession.getAccount();
 
-		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project,
-				account);
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project,account);
 		AccountLogic accountLogic = new AccountLogic();
 
 		// 檢查帳號不通過，提示錯誤頁面 // 檢查此帳號是否允許操作 action 的權限
-		if (!(accountLogic.checkAccount(request) && scrumRole
-				.getAccessTaskBoard())) {
+		if (!(accountLogic.checkAccount(request) && scrumRole.getAccessTaskBoard())) {
 			return mapping.findForward("permissionDenied");
 		}
 
@@ -61,17 +58,12 @@ public class ShowTaskBoardAction extends Action {
 
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project,
-				-1);
-		SprintBacklogMapper backlog = sprintBacklogLogic
-				.getSprintBacklogMapper();
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
+		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
 
 		// backlog = null 代表取得 sprintBackLog 發生問題，所以進入防錯處理，塞入假資料
 		if (backlog != null) {
-			IProject iProject = new ProjectMapper().getProjectByID(project
-					.getName());
-			List<String> actorList = (new ProjectMapper())
-					.getProjectScrumWorkerList(userSession, iProject);
+			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, iProject);
 
 			actorList.remove(0);
 			actorList.add(0, "ALL");

@@ -26,16 +26,14 @@ public class ShowScheduleReportAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		String iter = request.getParameter("sprintID");
 		ScheduleReport report = null;
 		if (iter == null) {
 			report = new ScheduleReport(project, session);
 		} else {
-			report = new ScheduleReport(project, session,
-					Integer.parseInt(iter));
+			report = new ScheduleReport(project, session, Integer.parseInt(iter));
 		}
 
 		try {
@@ -60,8 +58,7 @@ public class ShowScheduleReportAction extends Action {
 		request.setAttribute("SprintPlans", sprints); // set sprint combo
 
 		AccountObject account = session.getAccount();
-		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project,
-				account);
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		if (scrumRole.getReadReport()) {
 			return mapping.findForward("success");
 		} else {

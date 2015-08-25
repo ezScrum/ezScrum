@@ -16,7 +16,7 @@ public class GetReleaseBurndownChartDataAction extends PermissionAction {
 	
 	@Override
 	public boolean isValidAction() {
-		return super.getScrumRole().getAccessReleasePlan();
+		return getScrumRole().getAccessReleasePlan();
 	}
 
 	@Override
@@ -26,11 +26,9 @@ public class GetReleaseBurndownChartDataAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
-	
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		ProjectObject project = SessionManager.getProjectObject(request);
-		String releaseIdString = request.getParameter("ReleaseID");			// get release ID
+		String releaseIdString = request.getParameter("ReleaseID");	// get release ID
 		long releaseId = Long.parseLong(releaseIdString);
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
 		return releasePlanHelper.getReleaseBurndownChartData(releaseId);

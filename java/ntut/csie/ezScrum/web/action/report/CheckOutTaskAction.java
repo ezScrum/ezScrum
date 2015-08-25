@@ -31,8 +31,7 @@ public class CheckOutTaskAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
@@ -49,14 +48,19 @@ public class CheckOutTaskAction extends PermissionAction {
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 
 		try {
-			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
+			// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
+			if (changeDate != null && !changeDate.equals("")) {
 				dateFormat.parse(changeDate);
+			}
 			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
-			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
+			// return checkout的issue的相關資訊
+			TaskObject task = sprintBacklogHelper.getTask(taskId);
 			result.append(Translation.translateTaskboardTaskToJson(task));
-		} catch (ParseException e) {								// ChangeDate格式錯誤
+		} catch (ParseException e) {
+			// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");
-		} catch (NullPointerException e) {							// issue為null
+		} catch (NullPointerException e) {
+			// issue為null
 			result.append("fail...issue不存在");
 		}
 		return result;

@@ -20,11 +20,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowCheckOutIssueAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(ShowCheckOutIssueAction.class);
+	private static Log slog = LogFactory.getLog(ShowCheckOutIssueAction.class);
 
 	@Override
 	public boolean isValidAction() {
-		return super.getScrumRole().getAccessSprintBacklog();
+		return getScrumRole().getAccessSprintBacklog();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 			}
 		} catch (Exception e) {
 			result.append(getIssueJsonString(null, defaultHandlerUsername));
-			log.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
+			slog.debug("class : ShowCheckOutTaskAction, method : execute, exception : " + e.toString());
 		}
 		return result;
 	}

@@ -17,12 +17,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class ReopenIssueAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(ReopenIssueAction.class);
+	private static Log slog = LogFactory.getLog(ReopenIssueAction.class);
 
 	@Override
 	public boolean isValidAction() {
-		return (super.getScrumRole().getAccessProductBacklog() && (!super
-				.getScrumRole().isGuest()));
+		return (super.getScrumRole().getAccessProductBacklog() && (!super.getScrumRole().isGuest()));
 	}
 
 	@Override
@@ -31,9 +30,8 @@ public class ReopenIssueAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Reopen Issue in ReopenIssueAction.");
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		slog.info("Reopen Issue in ReopenIssueAction.");
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
@@ -45,8 +43,7 @@ public class ReopenIssueAction extends PermissionAction {
 		String changeDate = request.getParameter("ChangeDate");
 		String issueType = request.getParameter("IssueType");
 
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				project);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 		StringBuilder result = new StringBuilder("");
 
 		if (issueType.equals("Story")) {
@@ -59,7 +56,6 @@ public class ReopenIssueAction extends PermissionAction {
 			TaskObject task = sprintBacklogHelper.getTask(issueId);
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
-
 		return result;
 	}
 }

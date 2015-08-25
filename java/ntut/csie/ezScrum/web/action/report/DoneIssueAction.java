@@ -17,11 +17,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class DoneIssueAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(DoneIssueAction.class);
+	private static Log slog = LogFactory.getLog(DoneIssueAction.class);
 
 	@Override
 	public boolean isValidAction() {
-		return (super.getScrumRole().getAccessProductBacklog() && (!super.getScrumRole().isGuest()));
+		return (getScrumRole().getAccessProductBacklog() && (!getScrumRole().isGuest()));
 	}
 
 	@Override
@@ -30,9 +30,8 @@ public class DoneIssueAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
-		log.info("Done Issue in DoneIssueAction.");
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		slog.info("Done Issue in DoneIssueAction.");
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
