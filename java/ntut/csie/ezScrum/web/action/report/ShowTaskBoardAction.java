@@ -63,6 +63,8 @@ public class ShowTaskBoardAction extends Action {
 
 		// backlog = null 代表取得 sprintBackLog 發生問題，所以進入防錯處理，塞入假資料
 		if (backlog != null) {
+			IProject iProject = new ProjectMapper().getProjectByID(project
+					.getName());
 			List<String> actorList = (new ProjectMapper()).getProjectScrumWorkerList(userSession, iProject);
 
 			actorList.remove(0);
