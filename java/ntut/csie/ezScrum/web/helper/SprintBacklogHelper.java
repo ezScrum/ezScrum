@@ -243,7 +243,7 @@ public class SprintBacklogHelper {
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mProject);
 			releaseId = Integer.parseInt(releasePlanHelper
-					.getReleaseId(currentSprintId));
+					.getReleaseIdBySprintId(currentSprintId));
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 

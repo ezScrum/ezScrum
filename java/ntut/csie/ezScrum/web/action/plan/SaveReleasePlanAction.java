@@ -58,7 +58,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 			return null;
 		}			
 			
-		String Action = request.getParameter("action");
+		String action = request.getParameter("action");
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
 	
 		ReleaseInfo releaseInfo = new ReleaseInfo();
@@ -68,10 +68,10 @@ public class SaveReleasePlanAction extends PermissionAction {
 		releaseInfo.dueDate = dueDate;
 		releaseInfo.description = description;
 		
-		if (Action.equals("save")) {
-			releasePlanHelper.editReleasePlan(releaseInfo);
-		} else if (Action.equals("edit")) {
-			releasePlanHelper.editReleasePlan(releaseInfo);
+		if (action.equals("save")) {
+			releasePlanHelper.createRelease(releaseInfo);
+		} else if (action.equals("edit")) {
+			releasePlanHelper.editRelease(releaseInfo);
 		}	
 		return new StringBuilder("true");
 	}
