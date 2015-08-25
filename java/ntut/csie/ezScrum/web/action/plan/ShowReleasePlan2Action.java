@@ -45,7 +45,7 @@ public class ShowReleasePlan2Action extends PermissionAction {
 		ArrayList<ReleaseObject> releases = releasePlanHelper.getReleases();
 		ArrayList<ReleaseObject> releasesSortedByStartDate = releasePlanHelper.sortStartDate(releases);
 	
-    	StringBuilder result = new StringBuilder(releasePlanHelper.setJSon(releasesSortedByStartDate, sprintPlanHelper));
+    	StringBuilder result = new StringBuilder(releasePlanHelper.setJson(releasesSortedByStartDate, sprintPlanHelper));
 		return result;
 	}	
 }

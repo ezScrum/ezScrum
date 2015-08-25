@@ -55,7 +55,7 @@ public class ReleasePlanHelper {
 	}
 
 	// return the release plans of releasePlanID' string
-	public List<ReleaseObject> getReleasesByIds(String releaseIds) {
+	public ArrayList<ReleaseObject> getReleasesByIds(String releaseIds) {
 		ArrayList<ReleaseObject> releases = new ArrayList<ReleaseObject>();
 		if (releaseIds.length() == 0) {
 			return releases;
@@ -112,56 +112,64 @@ public class ReleasePlanHelper {
 		return sortedReleases;
 	}
 
-	public String setJSon(ArrayList<ReleaseObject> releases,
+	public String setJson(ArrayList<ReleaseObject> releases,
 			SprintPlanHelper sprintPlanHelper) {
 		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
-
-		String tree = "";
-		tree += "[";
-		int i = 0;
+		StringBuilder stringBuilder = new StringBuilder("[");
+		boolean isFirstRelease = true;
 		for (ReleaseObject release : releases) {
-			if (i == 0)
-				tree += "{";
-			else
-				tree += ",{";
-			tree += "Type:\'Release\',";
-			tree += "ID:\'" + release.getId() + "\',";
-			tree += "Name:\'" + translateSpecialChar.TranslateJSONChar(release.getName())
-					+ "\',";
-			tree += "StartDate:\'" + release.getStartDateString() + "\',";
-			tree += "EndDate:\'" + release.getDueDateString() + "\',";
-			tree += "Description:\'"
-					+ translateSpecialChar.TranslateJSONChar(release.getDescription()) + "\',";
+			if (isFirstRelease) {
+				stringBuilder.append("{");
+				isFirstRelease = false;
+			}
+			else {
+				stringBuilder.append(",{");
+			}
+			stringBuilder.append("Type:\'Release\',");
+			stringBuilder.append("ID:\'");
+			stringBuilder.append(release.getId());
+			stringBuilder.append("\',");
+			stringBuilder.append("Name:\'");
+			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getName()));
+			stringBuilder.append("\',");
+			stringBuilder.append("StartDate:\'");
+			stringBuilder.append(release.getStartDateString());
+			stringBuilder.append("\',");
+			stringBuilder.append("EndDate:\'");
+			stringBuilder.append(release.getDueDateString());
+			stringBuilder.append("\',");
+			stringBuilder.append("Description:\'");
+			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getDescription()));
+			stringBuilder.append("\',");
+			
 
 			if (release.getSprints() != null
-					&& release.getSprints().size() != 0) {
-				tree += "expanded: true,";
-				tree += "iconCls:\'task-folder\',";
-
-				tree += "children:[";
-				tree += setSprintToJSon(release, sprintPlanHelper);
-				tree += "]";
+					&& !release.getSprints().isEmpty()) {
+				stringBuilder.append("expanded: true,");
+				stringBuilder.append("iconCls:\'task-folder\',");
+				stringBuilder.append("children:[");
+				stringBuilder.append(setSprintToJson(release, sprintPlanHelper));
+				stringBuilder.append("]");
 			} else {
-				tree += "leaf: true";
+				stringBuilder.append("leaf: true");
 			}
-			tree += "}";
-			i++;
+			stringBuilder.append("}");
 		}
-		tree += "]";
-		return tree;
+		stringBuilder.append("]");
+		return stringBuilder.toString();
 	}
 
 	/**
 	 * from AjaxGetReleasePlanAction, 將release讀出並列成list再轉成JSON
 	 */
-	public String setReleaseListToJSon(List<ReleaseObject> releases) {
+	public String setReleaseListToJson(List<ReleaseObject> releases) {
 		JSONObject releaseJson = new JSONObject();
-		JSONArray releaseArray = new JSONArray();
+		JSONArray releaseJsonArray = new JSONArray();
 		try {
 			for (ReleaseObject release : releases) {
-				releaseArray.put(release.toJSON());
+				releaseJsonArray.put(release.toJSON());
 			}
-			releaseJson.put("Releases", releaseArray);
+			releaseJson.put("Releases", releaseJsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -173,55 +181,58 @@ public class ReleasePlanHelper {
 	 * from AjaxGetVelocityAction, 將被選到的release plans拿出他們的sprint
 	 * point並算出velocity,算出平均值再轉成JSON
 	 */
-	public String getSprintVelocityToJSon(List<ReleaseObject> ListReleaseDescs,
-			SprintBacklogHelper SBhelper) {
-		JSONObject velocityobject = new JSONObject();
-		JSONArray sprints = new JSONArray();
-		HashMap<String, Integer> storyinfo;
-		double totalvelocity = 0;
-		int sprintcount = 0; // 計算被選的release內的sprint總數
+	public String getSprintVelocityToJson(ArrayList<ReleaseObject> releases,
+			SprintBacklogHelper sprintPlanHelper) {
+		JSONObject velocityJson = new JSONObject();
+		JSONArray sprintJsonArray = new JSONArray();
+		HashMap<String, Integer> storyInfoMap;
+		double totalVelocity = 0;
+		int sprintCount = 0; // 計算被選的release內的sprint總數
 		try {
-			for (ReleaseObject release : ListReleaseDescs) {
-				if (release == null)
+			for (ReleaseObject release : releases) {
+				if (release == null) {
 					break;
+				}
 				for (SprintObject sprint : release.getSprints()) {
 					JSONObject sprintplan = new JSONObject();
 					sprintplan.put("ID", String.valueOf(sprint.getId()));
 					sprintplan.put("Name",
 							"Sprint" + String.valueOf(sprint.getId()));
-					storyinfo = getStoryInfo(String.valueOf(sprint.getId()),
-							SBhelper);
-					sprintplan.put("Velocity", storyinfo.get("StoryPoint"));
-					sprints.put(sprintplan);
-					totalvelocity += storyinfo.get("StoryPoint");
-					sprintcount++;
+					storyInfoMap = getStoryInfo(String.valueOf(sprint.getId()),
+							sprintPlanHelper);
+					sprintplan.put("Velocity", storyInfoMap.get("StoryPoint"));
+					sprintJsonArray.put(sprintplan);
+					totalVelocity += storyInfoMap.get("StoryPoint");
+					sprintCount++;
 				}
 			}
-			velocityobject.put("Sprints", sprints);
-			if (sprintcount != 0)
-				velocityobject.put("Average", totalvelocity / sprintcount);
-			else
-				velocityobject.put("Average", "");
+			velocityJson.put("Sprints", sprintJsonArray);
+			if (sprintCount != 0) {
+				velocityJson.put("Average", totalVelocity / sprintCount);
+			}
+			else {
+				velocityJson.put("Average", "");
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return velocityobject.toString();
+		return velocityJson.toString();
 	}
 
 	/**
 	 * form AjaxGetStoryCountAction 將被選到的release plans將所含的sprint中的story
 	 * point算出總和,再轉成JSON
 	 */
-	public String getStoryCountChartJSon(List<ReleaseObject> ListReleaseDescs,
-			SprintBacklogHelper SBhelper) {
-		JSONObject storycountobject = new JSONObject();
-		JSONArray sprints = new JSONArray();
-		HashMap<String, Integer> storyinfo;
-		int totalstorycount = 0;
-		int sprintcount = 0; // 計算被選的release內的sprint總數
+	public String getStoryCountChartJson(List<ReleaseObject> releases,
+			SprintBacklogHelper sprintPlanHelper) {
+		JSONObject storyCountJson = new JSONObject();
+		JSONArray sprintJsonArray = new JSONArray();
+		HashMap<String, Integer> storyInfoMap;
+		int totalStoryCount = 0;
+		int sprintCount = 0; // 計算被選的release內的sprint總數
 		try {
 			ArrayList<SprintObject> allSprints = new ArrayList<SprintObject>();
-			for (ReleaseObject release : ListReleaseDescs) {
+			for (ReleaseObject release : releases) {
 				if (release == null)
 					break;
 				for (SprintObject sprint : release.getSprints()) {
@@ -237,101 +248,111 @@ public class ReleasePlanHelper {
 			});
 
 			for (SprintObject sprint : allSprints) {
-				JSONObject sprintplan = new JSONObject();
-				sprintplan.put("ID", String.valueOf(sprint.getId()));
-				sprintplan.put("Name",
+				JSONObject sprintJson = new JSONObject();
+				sprintJson.put("ID", String.valueOf(sprint.getId()));
+				sprintJson.put("Name",
 						"Sprint" + String.valueOf(sprint.getId()));
-				storyinfo = getStoryInfo(String.valueOf(sprint.getId()),
-						SBhelper);
-				totalstorycount += storyinfo.get("StoryCount");
-				sprintplan.put("StoryDoneCount",
-						storyinfo.get("StoryDoneCount"));
-				sprints.put(sprintplan);
-				sprintcount++;
+				storyInfoMap = getStoryInfo(String.valueOf(sprint.getId()),
+						sprintPlanHelper);
+				totalStoryCount += storyInfoMap.get("StoryCount");
+				sprintJson.put("StoryDoneCount",
+						storyInfoMap.get("StoryDoneCount"));
+				sprintJsonArray.put(sprintJson);
+				sprintCount++;
 			}
-			storycountobject.put("Sprints", sprints);
-			storycountobject.put("TotalSprintCount", sprintcount);
-			storycountobject.put("TotalStoryCount", totalstorycount);
+			storyCountJson.put("Sprints", sprintJsonArray);
+			storyCountJson.put("TotalSprintCount", sprintCount);
+			storyCountJson.put("TotalStoryCount", totalStoryCount);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		updateJSonInfo(storycountobject);
-		return storycountobject.toString();
+		updateJsonInfo(storyCountJson);
+		return storyCountJson.toString();
 	}
 
 	// 取得Sprint的Story資訊
-	private HashMap<String, Integer> getStoryInfo(String sprintID,
+	private HashMap<String, Integer> getStoryInfo(String sprintId,
 			SprintBacklogHelper sprintBacklogHelper) {
-		HashMap<String, Integer> storyinfo = new HashMap<String, Integer>();
+		HashMap<String, Integer> storyInfoMap = new HashMap<String, Integer>();
 		ArrayList<StoryObject> stories = sprintBacklogHelper
 				.getStoriesSortedByIdInSprint();
-		int storypoint = 0;
-		int storydonecount = 0;
+		int storyPoint = 0;
+		int storyDoneCount = 0;
 		for (StoryObject story : stories) {
 			if (story.getStatus() == StoryObject.STATUS_DONE) {
-				storypoint += story.getEstimate();
-				storydonecount++;
+				storyPoint += story.getEstimate();
+				storyDoneCount++;
 			}
 		}
-		storyinfo.put("StoryPoint", storypoint);
-		storyinfo.put("StoryCount", stories.size());
-		storyinfo.put("StoryDoneCount", storydonecount);
-		return storyinfo;
+		storyInfoMap.put("StoryPoint", storyPoint);
+		storyInfoMap.put("StoryCount", stories.size());
+		storyInfoMap.put("StoryDoneCount", storyDoneCount);
+		return storyInfoMap;
 	}
 
 	// 更新JSON string裡面的資訊, 第一次只建立story data
-	private JSONObject updateJSonInfo(JSONObject jsoninfo) {
+	private JSONObject updateJsonInfo(JSONObject jsonInfo) {
 		try {
 			// JSON是call by reference!!! 查memory=>System.identityHashCode(Object
 			// x)
-			JSONArray sprints = (JSONArray) jsoninfo.get("Sprints");
-			int sprintcount = jsoninfo.getInt("TotalSprintCount");
-			int storycount = jsoninfo.getInt("TotalStoryCount");
-			int storyremaining = jsoninfo.getInt("TotalStoryCount");
-			double idealrange = (double) storycount / sprintcount;
-			for (int i = 0; i < sprints.length(); i++) {
-				JSONObject sprintplan = sprints.getJSONObject(i);
-				storyremaining -= sprintplan.getInt("StoryDoneCount");
-				sprintplan.put("StoryRemainingCount", storyremaining);
-				sprintplan.put("StoryIdealCount", storycount
-						- (idealrange * (i + 1)));
+			JSONArray sprintJsonArray = (JSONArray) jsonInfo.get("Sprints");
+			int sprintCount = jsonInfo.getInt("TotalSprintCount");
+			int storyCount = jsonInfo.getInt("TotalStoryCount");
+			int storyRemaining = jsonInfo.getInt("TotalStoryCount");
+			double idealRange = (double) storyCount / sprintCount;
+			for (int i = 0; i < sprintJsonArray.length(); i++) {
+				JSONObject sprintJson = sprintJsonArray.getJSONObject(i);
+				storyRemaining -= sprintJson.getInt("StoryDoneCount");
+				sprintJson.put("StoryRemainingCount", storyRemaining);
+				sprintJson.put("StoryIdealCount", storyCount
+						- (idealRange * (i + 1)));
 			}
-			jsoninfo.put("Sprints", sprints);
+			jsonInfo.put("Sprints", sprintJsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return jsoninfo;
+		return jsonInfo;
 	}
 
-	// 透過release des將sprint的資訊寫成JSon
-	private String setSprintToJSon(ReleaseObject IRDesc,
+	// 透過release 將 sprint 的資訊寫成 Json
+	private String setSprintToJson(ReleaseObject release,
 			SprintPlanHelper sprintPlanHelper) {
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		String sprintTree = "";
-		if (IRDesc.getSprints() != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
-			int i = 0;
+		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
+		StringBuilder stringBuilder = new StringBuilder("");
+		if (release.getSprints() != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
+			boolean isFirstSprint = true;
 			// 將資訊設定成 JSon 輸出格式
-			for (SprintObject sprint : IRDesc.getSprints()) {
-				if (i == 0)
-					sprintTree += "{";
-				else
-					sprintTree += ",{";
-				sprintTree += "Type:\'Sprint\',";
-				sprintTree += "ID:\'" + String.valueOf(sprint.getId()) + "\',";
-				sprintTree += "Name:\'"
-						+ tsc.TranslateJSONChar(sprint.getSprintGoal()) + "\',";
-				sprintTree += "StartDate:\'" + sprint.getStartDateString()
-						+ "\',";
-				sprintTree += "EndDate:\'" + sprint.getDueDateString() + "\',";
-				sprintTree += "Interval:\'" + sprint.getInterval() + "\',";
-				sprintTree += "Description:\' \',";
-				sprintTree += "iconCls:\'task\',";
-				sprintTree += "leaf: true";
-				sprintTree += "}";
-				i++;
+			for (SprintObject sprint : release.getSprints()) {
+				if (isFirstSprint) {
+					stringBuilder.append("{");
+					isFirstSprint = false;
+				}
+				else {
+					stringBuilder.append(",{");
+				}
+				stringBuilder.append("Type:\'Sprint\',");
+				stringBuilder.append("ID:\'");
+				stringBuilder.append(sprint.getId());
+				stringBuilder.append("\',");
+				stringBuilder.append("Name:\'");
+				stringBuilder.append(translateSpecialChar.TranslateJSONChar(sprint.getSprintGoal()));
+				stringBuilder.append("\',");
+				stringBuilder.append("StartDate:\'");
+				stringBuilder.append(sprint.getStartDateString());
+				stringBuilder.append("\',");
+				stringBuilder.append("EndDate:\'");
+				stringBuilder.append(sprint.getDueDateString());
+				stringBuilder.append("\',");
+				stringBuilder.append("Interval:\'");
+				stringBuilder.append(sprint.getInterval());
+				stringBuilder.append("\',");
+				stringBuilder.append("Description:\' \',");
+				stringBuilder.append("iconCls:\'task\',");
+				stringBuilder.append("leaf: true");
+				stringBuilder.append("}");
 			}
 		}
-		return sprintTree;
+		return stringBuilder.toString();
 	}
 
 	/**
@@ -343,7 +364,7 @@ public class ReleasePlanHelper {
 
 		if (releaseId > 0) {
 			ArrayList<StoryObject> stories = release.getStories();
-			stories = sortStory(stories);
+			stories = sortStories(stories);
 
 			// write stories to XML format
 			StringBuilder stringBuilder = new StringBuilder();
@@ -386,7 +407,7 @@ public class ReleasePlanHelper {
 	}
 
 	// sort story information by importance
-	private ArrayList<StoryObject> sortStory(ArrayList<StoryObject> stories) {
+	private ArrayList<StoryObject> sortStories(ArrayList<StoryObject> stories) {
 		ArrayList<StoryObject> sortedStories = new ArrayList<StoryObject>();
 
 		for (StoryObject story : stories) {

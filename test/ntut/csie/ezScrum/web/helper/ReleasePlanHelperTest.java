@@ -198,15 +198,15 @@ public class ReleasePlanHelperTest {
 		/**
 		 * no release plan select
 		 */
-		String releases = "";
+		String releasesString = "";
 		// 取得ReleasePlans
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(project);
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleasesByIds(releases);
+		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleasesByIds(releasesString);
 		// 取得SprintBacklog
-		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 		// assert no release plan string value
-		String actualTest = mReleasePlanHelper.getSprintVelocityToJSon(releaseDescs, SBhelper);
+		String actualTest = mReleasePlanHelper.getSprintVelocityToJson(releases, sprintBacklogHelper);
 		StringBuilder expectTest = new StringBuilder();
 		expectTest.append("{")
 				  .append("\"Sprints\":[],")
@@ -223,12 +223,12 @@ public class ReleasePlanHelperTest {
 		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, CS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		ASS.exe(); // 每個Sprint中新增2筆Story
 		// 取得ReleasePlans
-		releases = "1,2,3";
-		releaseDescs = mReleasePlanHelper.getReleasesByIds(releases);
+		releasesString = "1,2,3";
+		releases = mReleasePlanHelper.getReleasesByIds(releasesString);
 		// update SprintBacklog mapper info
-		SBhelper = new SprintBacklogHelper(project);
+		sprintBacklogHelper = new SprintBacklogHelper(project);
 		// assert release plan string value
-		actualTest = mReleasePlanHelper.getSprintVelocityToJSon(releaseDescs, SBhelper);
+		actualTest = mReleasePlanHelper.getSprintVelocityToJson(releases, sprintBacklogHelper);
 		expectTest.replace(0, actualTest.length(), ""); // clear builder
 		/**
 		 * {"Sprints":[{"ID":"1","Name":"Sprint1","Velocity":0},
