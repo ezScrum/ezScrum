@@ -77,6 +77,7 @@ public class CreateRelease {
 				releaseInfo.name = releaseName;
 				releaseInfo.startDate = StartDate;
 				releaseInfo.dueDate = DueDate;
+				releaseInfo.description = TEST_RELEASE_DESC + (j + 1);
 
 				// save to file
 				long releaseId = releasePlanMapper.addRelease(releaseInfo);

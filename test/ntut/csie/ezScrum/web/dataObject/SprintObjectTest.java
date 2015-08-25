@@ -19,6 +19,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.jcis.core.util.DateUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -225,6 +226,24 @@ public class SprintObjectTest {
 		assertEquals(sprintDueDate, sprint.getDueDateString());
 
 		return sprint;
+	}
+	
+	@Test
+	public void testContains() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		assertFalse(sprint.contains(DateUtil.dayFilter("2015/08/23")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/24")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/25")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/26")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/27")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/28")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/29")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/30")));
+		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/31")));
+		assertFalse(sprint.contains(DateUtil.dayFilter("2015/09/01")));
 	}
 
 	@Test

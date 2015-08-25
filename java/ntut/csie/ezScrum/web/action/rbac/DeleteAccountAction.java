@@ -32,7 +32,7 @@ public class DeleteAccountAction extends Action {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setCharacterEncoding("UTF-8");
 		
-		boolean result = (new AccountHelper(userSession)).deleteAccount(accountId);
+		boolean result = (new AccountHelper()).deleteAccount(accountId);
 		
 		try {
 			response.getWriter().write(String.valueOf(result));

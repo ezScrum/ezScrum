@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.action.report;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
@@ -31,10 +30,9 @@ public class GetReleaseBurndownChartDataAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 	
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		String releaseId = request.getParameter("ReleaseID");			// get release ID
-		
-		ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
-		return rpHelper.getReleaseBurndownChartData(project, session, releaseId);
+		String releaseIdString = request.getParameter("ReleaseID");			// get release ID
+		long releaseId = Long.parseLong(releaseIdString);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		return releasePlanHelper.getReleaseBurndownChartData(releaseId);
 	}
 }

@@ -91,7 +91,7 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<ReleaseObject> releasePlanDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releasePlanDescs = mReleasePlanHelper.getReleases();
 		JSONArray releasesJSONArray = new JSONArray(mReleasePlanWebService.getAllReleasePlan());
 		
 		for (int i = 0; i < mReleaseCount; i++) {
@@ -128,7 +128,7 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<ReleaseObject> releaselist = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releaselist = mReleasePlanHelper.getReleases();
 		
 		for(int i = 0; i < mReleaseCount ; i++){
 			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getId()));
