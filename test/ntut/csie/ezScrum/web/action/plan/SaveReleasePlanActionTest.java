@@ -7,12 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -112,11 +112,11 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount() + 1));
-    	assertEquals(Integer.toString(mCR.getReleaseCount() + 1), releasePlan.getId());
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount() + 1);
+    	assertEquals(mCR.getReleaseCount() + 1, releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
-    	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
+    	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -168,11 +168,11 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證ReleasePlan資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
-    	assertEquals(Integer.toString(mCR.getReleaseCount()), releasePlan.getId());
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
+    	assertEquals(mCR.getReleaseCount(), releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
-    	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
+    	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -183,57 +183,57 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	releasePlan = null;
     }
     
-//    // 待修正: PermissionAction.java 之  getResponse()帶入null參數造成錯誤
-//    // 測試沒有 action 參數的路徑
-//    public void testExecuteNullParameter() throws Exception {
-//    	// ================ set initial data =======================
-//    	IProject project = mCP.getProjectList().get(0);
-//    	Calendar cal = Calendar.getInstance();
-//    	Date StartDate = cal.getTime();
-//    	cal.add(Calendar.DAY_OF_YEAR, 10);
-//    	Date EndDate = cal.getTime();
-//    	SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-//    	
-//    	String ReleaseName = "Release New Name";
-//    	String ReleaseDesc = "Release New Desc";
-//    	String action = null;
-//    	// ================ set initial data =======================
-//    	
-//    	
-//    	// ================== set parameter info ====================
-//    	addRequestParameter("Id", Integer.toString(mCR.getReleaseCount()));		// 編輯第一筆
-//    	addRequestParameter("Name", ReleaseName);
-//    	addRequestParameter("StartDate", format.format(StartDate));
-//    	addRequestParameter("EndDate", format.format(EndDate));
-//    	addRequestParameter("Description", ReleaseDesc);
-//    	addRequestParameter("action", action);
-//    	// ================== set parameter info ====================
-//    
-//    	
-//    	// ================ set session info ========================
-//    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
-//    	request.getSession().setAttribute("Project", project);
-//    	// ================ set session info ========================
-//		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-//
-//		actionPerform();		// 執行 action
-//    	
-//    	// 驗證回傳 path
-//    	verifyForwardPath(null);
-//    	verifyForward(null);
-//    	verifyNoActionErrors();
-//    	
-//    	// 驗證 ReleasePlan 資料
-//    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((IProject) request.getSession().getAttribute("Project"));
-//    	IReleasePlanDesc releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
-//    	assertNotNull(releasePlan);
-//    	
-//    	
-//    	// ============= release ==============
-//    	project = null;
-//    	releasePlanHelper = null;
-//    	releasePlan = null;
-//    }
+    // 待修正: PermissionAction.java 之  getResponse()帶入null參數造成錯誤
+    // 測試沒有 action 參數的路徑
+    public void testExecuteNullParameter() throws Exception {
+    	// ================ set initial data =======================
+    	ProjectObject project = mCP.getAllProjects().get(0);
+    	Calendar cal = Calendar.getInstance();
+    	Date StartDate = cal.getTime();
+    	cal.add(Calendar.DAY_OF_YEAR, 10);
+    	Date EndDate = cal.getTime();
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+    	
+    	String ReleaseName = "Release New Name";
+    	String ReleaseDesc = "Release New Desc";
+    	String action = null;
+    	// ================ set initial data =======================
+    	
+    	
+    	// ================== set parameter info ====================
+    	addRequestParameter("Id", Integer.toString(mCR.getReleaseCount()));		// 編輯第一筆
+    	addRequestParameter("Name", ReleaseName);
+    	addRequestParameter("StartDate", format.format(StartDate));
+    	addRequestParameter("EndDate", format.format(EndDate));
+    	addRequestParameter("Description", ReleaseDesc);
+    	addRequestParameter("action", action);
+    	// ================== set parameter info ====================
+    
+    	
+    	// ================ set session info ========================
+    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
+    	request.getSession().setAttribute("Project", project);
+    	// ================ set session info ========================
+		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+
+		actionPerform();		// 執行 action
+    	
+    	// 驗證回傳 path
+    	verifyForwardPath(null);
+    	verifyForward(null);
+    	verifyNoActionErrors();
+    	
+    	// 驗證 ReleasePlan 資料
+    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
+    	ReleaseObject release = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
+    	assertNotNull(release);
+    	
+    	
+    	// ============= release ==============
+    	project = null;
+    	releasePlanHelper = null;
+    	release = null;
+    }
     
     // 測試參數沒有給正確數值，如，（日期格式錯誤）
     public void testExecuteWrongParameter1() throws Exception {
@@ -243,7 +243,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
     	Date EndDate = cal.getTime();
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
     	
     	String releaseName = "Release New Name";
     	String releaseDesc = "Release New Desc";
@@ -275,7 +275,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
     	assertNotNull(releasePlan);
     	
     	
@@ -326,7 +326,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
     	assertNotNull(releasePlan);
     	
     	// ============= release ==============

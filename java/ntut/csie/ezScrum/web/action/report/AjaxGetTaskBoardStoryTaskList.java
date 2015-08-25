@@ -8,13 +8,10 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
-	private static Log log = LogFactory.getLog(AjaxGetTaskBoardStoryTaskList.class);
 
 	@Override
 	public boolean isValidAction() {
@@ -27,10 +24,9 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProjectObject(request);
 		// get parameter info
 		String sprintIdString = request.getParameter("sprintID");
 		

@@ -47,7 +47,7 @@ public class AccountHelperTest {
 		mCA.exe();
 		
 		// create account helper
-		mAccountHelper = new AccountHelper(mConfig.getUserSession());
+		mAccountHelper = new AccountHelper();
 		
 		// release
 		ini = null;

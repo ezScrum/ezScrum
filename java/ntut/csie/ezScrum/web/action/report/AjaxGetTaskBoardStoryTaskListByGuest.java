@@ -24,14 +24,13 @@ import org.apache.struts.action.ActionMapping;
 import com.google.gson.Gson;
 
 public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		ProjectObject project = SessionManager.getProjectObject(request);
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
@@ -61,13 +60,14 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	public boolean checkParent(String name, String partners, String assignto) {
 		String[] parents = partners.split(";");
 		for (String p : parents) {
-			if (name.compareTo(p) == 0)
+			if (name.compareTo(p) == 0) {
 				return true;
+			}
 		}
 
-		if (name.compareTo(assignto) == 0)
+		if (name.compareTo(assignto) == 0) {
 			return true;
-
+		}
 		return false;
 	}
 	
@@ -103,11 +103,11 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 			Link = "";
 			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
 
-			if (!AttachFileList.isEmpty())
+			if (!AttachFileList.isEmpty()) {
 				Attach = "true";
-			else
+			} else {
 				Attach = "false";
-
+			}
 		}
 	}
 

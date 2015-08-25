@@ -1,21 +1,23 @@
 package ntut.csie.ezScrum.web.action.report;
 
-import java.util.List;
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ntut.csie.ezScrum.pic.core.IUserSession;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.ProjectHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class AjaxGetPartnerListAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(AjaxGetPartnerListAction.class);
+	private static Log slog = LogFactory.getLog(AjaxGetPartnerListAction.class);
 
 	@Override
 	public boolean isValidAction() {
@@ -29,20 +31,18 @@ public class AjaxGetPartnerListAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-	        HttpServletRequest request, HttpServletResponse response) {
-		log.info("Get Partner List in AjaxGetPartnerListAction.java");
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		slog.info("Get Partner List in AjaxGetPartnerListAction.java");
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
-		List<AccountObject> users = new ProjectHelper().getProjectScrumWorkersForDb(userSession, project);
+		ArrayList<AccountObject> accounts = new ProjectHelper().getProjectScrumWorkersForDb(project);
 		StringBuilder result = new StringBuilder();
 		result.append("<Partners><Result>success</Result>");
 
-		for (int i = 0, size = users.size(); i < size; i++) {
+		for (int i = 0, size = accounts.size(); i < size; i++) {
 			result.append("<Partner>")
-			      .append("<Name>").append(users.get(i).getUsername()).append("</Name>")
+			      .append("<Name>").append(accounts.get(i).getUsername()).append("</Name>")
 			      .append("</Partner>");
 		}
 		result.append("</Partners>");

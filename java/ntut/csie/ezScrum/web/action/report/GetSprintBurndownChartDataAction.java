@@ -19,10 +19,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class GetSprintBurndownChartDataAction extends Action {
-	private static Log log = LogFactory.getLog(GetSprintBurndownChartDataAction.class);
+	private static Log slog = LogFactory.getLog(GetSprintBurndownChartDataAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		log.info(" Get Sprint Burndown Chart Data. In Project Summary Page.");
+		slog.info(" Get Sprint Burndown Chart Data. In Project Summary Page.");
 
 		ProjectObject project = SessionManager.getProjectObject(request);
 		long sprintId = Long.parseLong(request.getParameter("SprintID"));

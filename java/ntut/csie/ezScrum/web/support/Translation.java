@@ -315,7 +315,7 @@ public class Translation {
 	public static String translateSprintBacklogToJson(
 			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
-			int releaseId, String sprintGoal) {
+			long releaseId, String sprintGoal) {
 
 		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
@@ -337,7 +337,7 @@ public class Translation {
 			sprint.put(
 					"ReleaseID",
 					"Release #"
-							+ translateChar.HandleNullString(Integer
+							+ translateChar.HandleNullString(Long
 									.toString(releaseId)));
 			sprint.put("SprintGoal", sprintGoal);
 			responseText.put("Sprint", sprint);

@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -94,7 +94,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	
 		// 驗證 ReleasePlan 資料
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-		ReleaseObject relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+		ReleaseObject relasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
 		assertNull(relasePlan);
     	
     	
@@ -131,7 +131,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject relasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	ReleaseObject relasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
     	assertNotNull(relasePlan);		// 沒有刪除掉第一筆 Release Plan
     	
     	// ============= release ==============

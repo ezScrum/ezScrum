@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,11 +75,9 @@ public class ProjectHelper {
 	/**
 	 * 回傳此專案的Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
 	 * ezScrum v1.8
-	 * 
-	 * @param userSession
 	 * @param project
 	 */
-	public List<AccountObject> getProjectScrumWorkersForDb(IUserSession userSession, ProjectObject project) {
+	public ArrayList<AccountObject> getProjectScrumWorkersForDb(ProjectObject project) {
 		return ProjectMapper.getProjectWorkers(project.getId());
 	}
 

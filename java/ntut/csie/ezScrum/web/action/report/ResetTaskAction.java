@@ -16,12 +16,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class ResetTaskAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(ResetTaskAction.class);
+	private static Log slog = LogFactory.getLog(ResetTaskAction.class);
 
 	@Override
 	public boolean isValidAction() {
-		return (super.getScrumRole().getAccessProductBacklog() && (!super
-				.getScrumRole().isGuest()));
+		return (super.getScrumRole().getAccessProductBacklog() && (!super.getScrumRole().isGuest()));
 	}
 
 	@Override
@@ -30,28 +29,24 @@ public class ResetTaskAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Reset Task in ResetTaskAction.");
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		slog.info("Reset Task in ResetTaskAction.");
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		// get parameter info
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				project);
-		long issueId = Long.parseLong(request.getParameter("Id"));
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
+		long taskId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String bugNote = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 
-		sprintBacklogHelper.resetTask(issueId, name, bugNote, changeDate);
+		sprintBacklogHelper.resetTask(taskId, name, bugNote, changeDate);
 
 		// return reset task的相關資訊
-		TaskObject task = sprintBacklogHelper.getTask(issueId);
-		// IIssue issue = sprintBacklogHelper.getStory(issueID);
+		TaskObject task = sprintBacklogHelper.getTask(taskId);
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateTaskboardTaskToJson(task));
-
 		return result;
 	}
 }

@@ -32,8 +32,7 @@ public class ShowRemainingReportAction extends Action {
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		String sprintId = request.getParameter("sprintID");
 		String category = request.getParameter("type");
@@ -68,8 +67,7 @@ public class ShowRemainingReportAction extends Action {
 		Date currentDate = null;
 		if (date != null && date != "") { // 得到使用者設定的時間
 			date += ":00";
-			currentDate = DateUtil
-					.dayFillter(date, DateUtil._16DIGIT_DATE_TIME);
+			currentDate = DateUtil.dayFillter(date, DateUtil._16DIGIT_DATE_TIME);
 		}
 
 		// 報表產生以兩種方式，一種對時間、另一種對sprint or type
@@ -87,19 +85,16 @@ public class ShowRemainingReportAction extends Action {
 					currentDate = Today; // default set today to show report
 				}
 
-				currentId = sprintPlanHelper.getSprintByDate(currentDate)
-						.getId();
+				currentId = sprintPlanHelper.getSprintByDate(currentDate).getId();
 
 				// 若 user 選擇的日期不在任何 sprint 內，且目前沒有進行中的 sprint
 				if (currentId == -1) {
 					currentId = sprintPlanHelper.getCurrentSprint().getId();
 				}
 
-				report = new RemainingWorkReport(project, session, category,
-						currentId, currentDate);
+				report = new RemainingWorkReport(project, session, category, currentId, currentDate);
 
-				SimpleDateFormat format = new SimpleDateFormat(
-						"yyyy/MM/dd-HH:mm");
+				SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd-HH:mm");
 				request.setAttribute("setDate", format.format(currentDate));
 			} else {
 				// generate by sprint
@@ -109,8 +104,7 @@ public class ShowRemainingReportAction extends Action {
 					currentId = Integer.parseInt(sprintId);
 				}
 
-				report = new RemainingWorkReport(project, session, category,
-						currentId);
+				report = new RemainingWorkReport(project, session, category,currentId);
 
 				request.setAttribute("setDate", "");
 			}

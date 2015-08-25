@@ -1,10 +1,12 @@
 package ntut.csie.ezScrum.test.CreateData;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class AddSprintToRelease {
 	private int mEachCount = 1;
@@ -28,12 +30,12 @@ public class AddSprintToRelease {
 		for (int i=0 ; i<mProjectCount ; i++) {
 			String projectName = mCP.mProjectName + Integer.toString((i+1));	// TEST_PROJECT_X
             // IProject project = ResourceFacade.getWorkspace().getRoot().getProject(projectName);
-			IProject project = mProjectMapper.getProjectByID(projectName);
+			ProjectObject project = mProjectMapper.getProject(projectName);
 			// 此路徑為開發端的   TestData/MyWorkspace/
 			
 			for (int j=0 ; j<mReleaseCount ; j++) {
 				String releaseID = Integer.toString(j+1);
-				createSprint(project, j, mCR.getReleases().get(i).getStartDate());
+				createSprint(project, j, mCR.getReleases().get(i).getStartDateString());
 				
 				for (int k=0 ; k<mEachCount ; k++) {
 					System.out.println("專案 " + projectName + ", 第 " + releaseID + " 個 release 加入 sprint-" + ( (j*mEachCount)+(k+1) ) + " 成功");
@@ -43,10 +45,19 @@ public class AddSprintToRelease {
 	}
 	
 	// 建立所需的 sprints
-	private void createSprint(IProject Project, int ReleaseIndex, String StartDate) {
-		Date SD = new Date(StartDate);
+	private void createSprint(ProjectObject project, int ReleaseIndex, String StartDate) {
+		// 設定日期格式
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		// 進行轉換
+		Date startDate = null;
+		try {
+			startDate = simpleDateFormat.parse(StartDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
         // CreateSprint CS = new CreateSprint(EachCount, ReleaseIndex, SD, Project);
-		mCS = new CreateSprint(mEachCount, ReleaseIndex, SD, mCP);
+		mCS = new CreateSprint(mEachCount, ReleaseIndex, startDate, mCP);
 		mCS.exe();
 		// add to list
 		createSprints.add(mCS);
