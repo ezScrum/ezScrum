@@ -33,35 +33,19 @@ public class ReleasePlanHelper {
 		mReleasePlanMapper = new ReleasePlanMapper(mProject);
 	}
 
-	// remove later
-	public ReleaseObject[] getReleaseArray() {
-		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
-		return releases.toArray(new ReleaseObject[releases.size()]);
-	}
-
 	public ArrayList<ReleaseObject> getReleases() {
 		return mReleasePlanMapper.getReleases();
-	}
-
-	public long getLastReleasePlanNumber() {
-		int length = mReleasePlanMapper.getReleases().size();
-		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
-		if (length > 0) {
-			return releases.get(length - 1).getId();
-		} else {
-			return 0;
-		}
 	}
 
 	public void deleteReleasePlan(long id) {
 		mReleasePlanMapper.deleteRelease(id);
 	}
 
-	public void editReleasePlan(ReleaseInfo releaseInfo) {
+	public void editRelease(ReleaseInfo releaseInfo) {
 		mReleasePlanMapper.updateRelease(releaseInfo);
 	}
 	
-	public long createReleasePlan(ReleaseInfo releaseInfo) {
+	public long createRelease(ReleaseInfo releaseInfo) {
 		return mReleasePlanMapper.addRelease(releaseInfo);
 	}
 
@@ -71,28 +55,28 @@ public class ReleasePlanHelper {
 	}
 
 	// return the release plans of releasePlanID' string
-	public List<ReleaseObject> getReleasePlansByIds(String releasePlanIDs) {
-		List<ReleaseObject> plans = new ArrayList<ReleaseObject>();
-		if (releasePlanIDs.length() == 0) {
-			return plans;
+	public List<ReleaseObject> getReleasesByIds(String releaseIds) {
+		ArrayList<ReleaseObject> releases = new ArrayList<ReleaseObject>();
+		if (releaseIds.length() == 0) {
+			return releases;
 		}
-		String[] releasesIdString = releasePlanIDs.split(",");
+		String[] releasesIdString = releaseIds.split(",");
 		for (String releaseIdString : releasesIdString) {
-			plans.add(mReleasePlanMapper.getRelease(Long
+			releases.add(mReleasePlanMapper.getRelease(Long
 					.parseLong(releaseIdString)));
 		}
-		return plans;
+		return releases;
 	}
 
 	// return the releaseID which has the sprintID
-	public String getReleaseId(long sprintId) {
-		String releaseId = "0";
+	public long getReleaseIdBySprintId(long sprintId) {
+		long releaseId = -1;
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
 
 		for (ReleaseObject release : releases) {
 			SprintObject sprint = SprintObject.get(sprintId);
 			if (release.containsSprint(sprint)) {
-				return String.valueOf(release.getId());
+				return release.getId();
 			}
 		}
 
@@ -104,33 +88,33 @@ public class ReleasePlanHelper {
 	 */
 
 	public ArrayList<ReleaseObject> sortStartDate(ArrayList<ReleaseObject> releases) {
-		ArrayList<ReleaseObject> ListReleaseDescs = new ArrayList<ReleaseObject>();
+		ArrayList<ReleaseObject> sortedReleases = new ArrayList<ReleaseObject>();
 		// ListReleaseDescs 依照 StartDate 排序
-		for (ReleaseObject desc : releases) {
-			Date addDate = DateUtil.dayFilter(desc.getStartDateString()); // 要新增的  Date
+		for (ReleaseObject release : releases) {
+			Date addDate = DateUtil.dayFilter(release.getStartDateString()); // 要新增的  Date
 
-			if (ListReleaseDescs.size() > 0) {
+			if (!sortedReleases.isEmpty()) {
 				int index = 0;
-				for (index = 0; index < ListReleaseDescs.size(); index++) {
-					ReleaseObject Desc = ListReleaseDescs.get(index); // 目前要被比對的 release
-					Date cmpDate = DateUtil
+				for (index = 0; index < sortedReleases.size(); index++) {
+					ReleaseObject Desc = sortedReleases.get(index); // 目前要被比對的 release
+					Date comparedDate = DateUtil
 							.dayFilter(Desc.getStartDateString()); // 要被比對的
 					// Date
-					if (addDate.compareTo(cmpDate) < 0) {
+					if (addDate.compareTo(comparedDate) < 0) {
 						break;
 					}
 				}
-				ListReleaseDescs.add(index, desc);
+				sortedReleases.add(index, release);
 			} else {
-				ListReleaseDescs.add(desc);
+				sortedReleases.add(release);
 			}
 		}
-		return ListReleaseDescs;
+		return sortedReleases;
 	}
 
 	public String setJSon(ArrayList<ReleaseObject> releases,
-			SprintPlanHelper SPhelper) {
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
+			SprintPlanHelper sprintPlanHelper) {
+		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 
 		String tree = "";
 		tree += "[";
@@ -142,12 +126,12 @@ public class ReleasePlanHelper {
 				tree += ",{";
 			tree += "Type:\'Release\',";
 			tree += "ID:\'" + release.getId() + "\',";
-			tree += "Name:\'" + tsc.TranslateJSONChar(release.getName())
+			tree += "Name:\'" + translateSpecialChar.TranslateJSONChar(release.getName())
 					+ "\',";
 			tree += "StartDate:\'" + release.getStartDateString() + "\',";
 			tree += "EndDate:\'" + release.getDueDateString() + "\',";
 			tree += "Description:\'"
-					+ tsc.TranslateJSONChar(release.getDescription()) + "\',";
+					+ translateSpecialChar.TranslateJSONChar(release.getDescription()) + "\',";
 
 			if (release.getSprints() != null
 					&& release.getSprints().size() != 0) {
@@ -155,7 +139,7 @@ public class ReleasePlanHelper {
 				tree += "iconCls:\'task-folder\',";
 
 				tree += "children:[";
-				tree += setSprintToJSon(release, SPhelper);
+				tree += setSprintToJSon(release, sprintPlanHelper);
 				tree += "]";
 			} else {
 				tree += "leaf: true";
@@ -163,9 +147,6 @@ public class ReleasePlanHelper {
 			tree += "}";
 			i++;
 		}
-		// [{task:\'Project: Shopping\',duration:13.25,user:\'Tommy
-		// Maintz\',leaf: true}]
-
 		tree += "]";
 		return tree;
 	}
@@ -173,22 +154,19 @@ public class ReleasePlanHelper {
 	/**
 	 * from AjaxGetReleasePlanAction, 將release讀出並列成list再轉成JSON
 	 */
-	public String setReleaseListToJSon(List<ReleaseObject> ListReleaseDescs) {
-		JSONObject releaseObject = new JSONObject();
-		JSONArray releaseplanlist = new JSONArray();
+	public String setReleaseListToJSon(List<ReleaseObject> releases) {
+		JSONObject releaseJson = new JSONObject();
+		JSONArray releaseArray = new JSONArray();
 		try {
-			for (ReleaseObject plan : ListReleaseDescs) {
-				JSONObject releaseplan = new JSONObject();
-				releaseplan.put("ID", plan.getId());
-				releaseplan.put("Name", plan.getName());
-				releaseplanlist.put(releaseplan);
+			for (ReleaseObject release : releases) {
+				releaseArray.put(release.toJSON());
 			}
-			releaseObject.put("Releases", releaseplanlist);
+			releaseJson.put("Releases", releaseArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		return releaseObject.toString();
+		return releaseJson.toString();
 	}
 
 	/**
@@ -327,7 +305,7 @@ public class ReleasePlanHelper {
 
 	// 透過release des將sprint的資訊寫成JSon
 	private String setSprintToJSon(ReleaseObject IRDesc,
-			SprintPlanHelper SPhelper) {
+			SprintPlanHelper sprintPlanHelper) {
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		String sprintTree = "";
 		if (IRDesc.getSprints() != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
@@ -458,21 +436,6 @@ public class ReleasePlanHelper {
 		}
 
 		return str;
-	}
-
-	/*
-	 * from AjaxGetNewReleaseIDAction
-	 */
-
-	public StringBuilder getNewReleaseId() {
-		long id = getLastReleasePlanNumber() + 1; // 依照目前最近ID count 累加
-
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("<Root><Release>");
-		stringBuilder.append("<ID>" + id + "</ID>");
-		stringBuilder.append("</Release></Root>");
-
-		return stringBuilder;
 	}
 	
 	public StringBuilder checkReleaseDateOverlapping(String releaseId, String startDateString,

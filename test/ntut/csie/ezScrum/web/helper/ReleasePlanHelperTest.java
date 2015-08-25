@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -73,13 +74,13 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testLoadReleasePlans() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		ReleaseObject[] ReleasePlans = mReleasePlanHelper.getReleaseArray();
-		assertEquals(mReleaseCount, ReleasePlans.length);
+		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleases();
+		assertEquals(mReleaseCount, releases.size());
 
-		for (int i = 0; i < ReleasePlans.length; i++) {
-			assertEquals((i + 1), ReleasePlans[i].getId());
-			assertEquals(mCR.getDefault_RELEASE_NAME(i + 1), ReleasePlans[i].getName());
-			assertEquals(mCR.getDefault_RELEASE_DESC(i + 1), ReleasePlans[i].getDescription());
+		for (int i = 0; i < releases.size(); i++) {
+			assertEquals((i + 1), releases.get(i).getId());
+			assertEquals(mCR.getDefault_RELEASE_NAME(i + 1), releases.get(i).getName());
+			assertEquals(mCR.getDefault_RELEASE_DESC(i + 1), releases.get(i).getDescription());
 		}
 	}
 
@@ -97,24 +98,14 @@ public class ReleasePlanHelperTest {
 	}
 
 	@Test
-	public void testGetLastReleasePlanNumber() {
-		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.getReleases();
-		assertEquals(mReleaseCount, ReleasePlans.size());
-		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
-	}
-
-	@Test
 	public void testDeleteReleasePlan() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
 		List<ReleaseObject> releases = mReleasePlanHelper.getReleases();
 		assertEquals(mReleaseCount, releases.size());
-		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
 
 		mReleasePlanHelper.deleteReleasePlan(releases.get(2).getId()); // 刪除 ID = 3
 
-		assertEquals(mReleaseCount - 1, mReleasePlanHelper.getReleaseArray().length);
-		assertEquals(mReleaseCount - 1, mReleasePlanHelper.getLastReleasePlanNumber());
+		assertEquals(mReleaseCount - 1, mReleasePlanHelper.getReleases().size());
 
 		for (int i = 0; i < releases.size(); i++) {
 			assertEquals(i + 1, releases.get(i).getId());
@@ -126,9 +117,8 @@ public class ReleasePlanHelperTest {
 	@Test
 	public void testEditReleasePlan() {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
-		List<ReleaseObject> ReleasePlans = mReleasePlanHelper.getReleases();
-		assertEquals(mReleaseCount, ReleasePlans.size());
-		assertEquals(mReleaseCount, mReleasePlanHelper.getLastReleasePlanNumber());
+		List<ReleaseObject> releases = mReleasePlanHelper.getReleases();
+		assertEquals(mReleaseCount, releases.size());
 
 		// 設定修改的 ReleasePlan 日期
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
@@ -138,7 +128,7 @@ public class ReleasePlanHelperTest {
 		Date NewDueDate = cal.getTime(); // set New End Date
 
 		// edit 判斷式的測試
-		long lastId = mReleasePlanHelper.getLastReleasePlanNumber(); // 修改最後一筆資訊
+		long lastId = releases.get(releases.size() - 1).getId(); // 修改最後一筆資訊
 		String NewName = "ReleaseName";
 		String NewDesc = "ReleaseDesc";
 
@@ -148,7 +138,7 @@ public class ReleasePlanHelperTest {
 		releaseInfo.startDate = format.format(NewStartDate).toString();
 		releaseInfo.dueDate = format.format(NewDueDate).toString();
 		releaseInfo.description = NewDesc;
-		mReleasePlanHelper.editReleasePlan(releaseInfo);
+		mReleasePlanHelper.editRelease(releaseInfo);
 
 		ReleaseObject editRelease = mReleasePlanHelper.getReleasePlan(lastId);
 		assertEquals(lastId, editRelease.getId());
@@ -165,9 +155,9 @@ public class ReleasePlanHelperTest {
 		releaseInfo.startDate = format.format(NewStartDate).toString();
 		releaseInfo.dueDate = format.format(NewDueDate).toString();
 		releaseInfo.description = "ReleaseDesc-New";
-		mReleasePlanHelper.createReleasePlan(releaseInfo);
+		mReleasePlanHelper.createRelease(releaseInfo);
 		ReleaseObject saveRelease = mReleasePlanHelper.getReleasePlan(lastId);
-		assertEquals(mCR.getReleaseCount() + 1, mReleasePlanHelper.getReleaseArray().length);
+		assertEquals(mCR.getReleaseCount() + 1, mReleasePlanHelper.getReleases().size());
 		assertEquals(lastId, saveRelease.getId());
 		assertEquals("ReleaseName-New", saveRelease.getName());
 		assertEquals("ReleaseDesc-New", saveRelease.getDescription());
@@ -175,7 +165,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(format.format(NewDueDate).toString(), saveRelease.getDueDateString());
 
 		// default 除錯測試
-		mReleasePlanHelper.editReleasePlan(releaseInfo);
+		mReleasePlanHelper.editRelease(releaseInfo);
 		ReleaseObject otherRelease = mReleasePlanHelper.getReleasePlan(lastId);
 		assertEquals(lastId, otherRelease.getId());
 		assertEquals("ReleaseName-New", otherRelease.getName());
@@ -189,17 +179,17 @@ public class ReleasePlanHelperTest {
 		mReleasePlanHelper = new ReleasePlanHelper(mCP.getAllProjects().get(0));
 		// no release plan select
 		String releasePlanIDs = "";
-		List<ReleaseObject> plans = mReleasePlanHelper.getReleasePlansByIds(releasePlanIDs);
+		List<ReleaseObject> plans = mReleasePlanHelper.getReleasesByIds(releasePlanIDs);
 		assertEquals(0, plans.size());
 		
 		// select wrong releaseID
 		releasePlanIDs = "4";
-		plans = mReleasePlanHelper.getReleasePlansByIds(releasePlanIDs);
+		plans = mReleasePlanHelper.getReleasesByIds(releasePlanIDs);
 		assertEquals(null, plans.get(0));
 		
 		// select releaseID = 1,2,3
 		releasePlanIDs = "1,2,3";
-		plans = mReleasePlanHelper.getReleasePlansByIds(releasePlanIDs);
+		plans = mReleasePlanHelper.getReleasesByIds(releasePlanIDs);
 		assertEquals(3, plans.size());
 	}
 	
@@ -212,7 +202,7 @@ public class ReleasePlanHelperTest {
 		// 取得ReleasePlans
 		ProjectObject project = mCP.getAllProjects().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(project);
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleasePlansByIds(releases);
+		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleasesByIds(releases);
 		// 取得SprintBacklog
 		SprintBacklogHelper SBhelper = new SprintBacklogHelper(project);
 		// assert no release plan string value
@@ -234,7 +224,7 @@ public class ReleasePlanHelperTest {
 		ASS.exe(); // 每個Sprint中新增2筆Story
 		// 取得ReleasePlans
 		releases = "1,2,3";
-		releaseDescs = mReleasePlanHelper.getReleasePlansByIds(releases);
+		releaseDescs = mReleasePlanHelper.getReleasesByIds(releases);
 		// update SprintBacklog mapper info
 		SBhelper = new SprintBacklogHelper(project);
 		// assert release plan string value
