@@ -126,7 +126,7 @@ public class AddUserToRole {
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
 		AccountObject account = CA.getAccountList().get(index);
-		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
+		AccountHelper helper = new AccountHelper();
 		AccountInfo user = new AccountInfo();
 		user.id = account.getId();
 		user.username = account.getUsername();
@@ -139,7 +139,7 @@ public class AddUserToRole {
 
 	private void updateAccount(long projectId, String role) {
 		// ezScrum v1.8
-		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
+		AccountHelper helper = new AccountHelper();
 		try {
 			helper.addAssignedRole(mAccount.getId(), projectId, role);
 		} catch (Exception e) {
