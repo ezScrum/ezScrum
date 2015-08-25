@@ -26,7 +26,7 @@ public class UnplannedItemHelperTest {
 	private UnplannedItemHelper mUnplannedHelper;
 	private Configuration mConfig;
 	private ProjectObject mProject;
-	
+
 	@Before
 	public void setUp() {
 		mConfig = new Configuration();
@@ -36,22 +36,18 @@ public class UnplannedItemHelperTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		// 新增 Project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 
-		// 新增 Sprint
-		mCS = new CreateSprint(1, mCP);
-		mCS.exe();
-		
 		mProject = mCP.getAllProjects().get(0);
 		mUnplannedHelper = new UnplannedItemHelper(mProject);
-		
+
 		// release
 		ini = null;
 	}
-	
+
 	@After
 	public void tearDown() {
 		// 初始化 SQL
@@ -64,46 +60,121 @@ public class UnplannedItemHelperTest {
 
 		mConfig.setTestMode(false);
 		mConfig.save();
-		
+
 		// release
 		ini = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
 	}
-	
+
 	@Test
-	public void testGetListXML() {
-		// 新增 3 Unplanned
+	public void testGetListXML_ThereIsNoAnySprint() {
+		ArrayList<UnplannedObject> unplanneds = new ArrayList<UnplannedObject>();
+		String selectSprint = "-1";
+
+		String expected = genXML(selectSprint, unplanneds);
+		String actualed = mUnplannedHelper.getListXML(selectSprint).toString();
+		assertEquals(expected, actualed);
+	}
+
+	@Test
+	public void testGetListXML_DefaultSelectSprint() {
+		ArrayList<UnplannedObject> unplanneds = null;
+		long sprintId;
+		String selectSprint = "";
+
+		// create 2 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		// create 2 Unplanned in every sprint
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe();
+
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mProject);
+		sprintId = sprintPlanHelper.getCurrentSprint().getId();
+		unplanneds = mUnplannedHelper.getUnplannedsInSprint(sprintId);
+		selectSprint = String.valueOf(sprintId);
+
+		String expected = genXML(selectSprint, unplanneds);
+		String actualed = mUnplannedHelper.getListXML("").toString();
+		assertEquals(expected, actualed);
+	}
+
+	@Test
+	public void testGetListXML_SelectOneSprint() {
+		ArrayList<UnplannedObject> unplanneds = null;
+		long sprintId;
+		String selectSprint;
+
+		// create 2 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		// create 2 Unplanned in every sprint
+		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		mCUI.exe();
+
+		// case (I) select sprint #1
+
+		sprintId = mCS.getSprintsId().get(0);
+		unplanneds = mUnplannedHelper.getUnplannedsInSprint(sprintId);
+		selectSprint = String.valueOf(sprintId);
+
+		String expected = genXML(selectSprint, unplanneds);
+		String actualed = mUnplannedHelper.getListXML(selectSprint).toString();
+		assertEquals(expected, actualed);
+
+		// case (II) select sprint #2
+
+		sprintId = mCS.getSprintsId().get(1);
+		unplanneds = mUnplannedHelper.getUnplannedsInSprint(sprintId);
+		selectSprint = String.valueOf(sprintId);
+
+		expected = genXML(selectSprint, unplanneds);
+		actualed = mUnplannedHelper.getListXML(selectSprint).toString();
+		assertEquals(expected, actualed);
+	}
+
+	@Test
+	public void testGetListXML_ALL() {
+		// create 1 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
+		// create 3 Unplanned
 		mCUI = new CreateUnplannedItem(3, mCP, mCS);
 		mCUI.exe();
-		
+
 		ArrayList<UnplannedObject> unplanneds = mCUI.getUnplanneds();
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		
-		
-		StringBuilder expectString = new StringBuilder();
-		expectString.append("<UnplannedItems><Sprint>")
-			.append("<Id>ALL</Id>")
-			.append("<Name>Sprint ALL</Name>")
-			.append("</Sprint>");
-		for (int i = 0; i < unplanneds.size(); i++) {
-			expectString.append("<UnplannedItem>");
-			expectString.append("<Id>").append(unplanneds.get(i).getId()).append("</Id>");
-			expectString.append("<Link></Link>");
-			expectString.append("<Name>").append(tsc.TranslateXMLChar(unplanneds.get(i).getName())).append("</Name>");
-			expectString.append("<SprintID>").append(unplanneds.get(i).getSprintId()).append("</SprintID>");
-			expectString.append("<Estimate>").append(unplanneds.get(i).getEstimate()).append("</Estimate>");
-			expectString.append("<Status>").append(unplanneds.get(i).getStatus()).append("</Status>");
-			expectString.append("<ActualHour>").append(unplanneds.get(i).getActual()).append("</ActualHour>");
-			expectString.append("<Handler>").append(unplanneds.get(i).getHandlerName()).append("</Handler>");
-			expectString.append("<Partners>").append(tsc.TranslateXMLChar(unplanneds.get(i).getPartnersUsername())).append("</Partners>");
-			expectString.append("<Notes>").append(tsc.TranslateXMLChar(unplanneds.get(i).getNotes())).append("</Notes>");
-			expectString.append("</UnplannedItem>");
+		String selectSprint = "ALL";
+
+		String expected = genXML(selectSprint, unplanneds);
+		String actualed = mUnplannedHelper.getListXML(selectSprint).toString();
+		assertEquals(expected, actualed);
+	}
+
+	private String genXML(String selectSprint, ArrayList<UnplannedObject> unplanneds) {
+		StringBuilder result = new StringBuilder();
+		result.append("<UnplannedItems><Sprint>")
+		        .append("<Id>").append(selectSprint).append("</Id>")
+		        .append("<Name>Sprint ").append(selectSprint).append("</Name>")
+		        .append("</Sprint>");
+		for (UnplannedObject unplanned : unplanneds) {
+			result.append("<UnplannedItem>")
+			        .append("<Id>").append(unplanned.getId()).append("</Id>")
+			        .append("<Link></Link>")
+			        .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplanned.getName())).append("</Name>")
+			        .append("<SprintID>").append(unplanned.getSprintId()).append("</SprintID>")
+			        .append("<Estimate>").append(unplanned.getEstimate()).append("</Estimate>")
+			        .append("<Status>").append(unplanned.getStatusString()).append("</Status>")
+			        .append("<ActualHour>").append(unplanned.getActual()).append("</ActualHour>")
+			        .append("<Handler>").append(unplanned.getHandlerName()).append("</Handler>")
+			        .append("<Partners>").append(unplanned.getPartnersUsername()).append("</Partners>")
+			        .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplanned.getNotes())).append("</Notes>")
+			        .append("</UnplannedItem>");
 		}
-		expectString.append("</UnplannedItems>");
-		
-		StringBuilder actualString = mUnplannedHelper.getListXML("ALL");
-		assertEquals(expectString.toString(), actualString.toString());
+		result.append("</UnplannedItems>");
+		return result.toString();
 	}
 }

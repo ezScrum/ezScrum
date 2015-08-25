@@ -37,7 +37,7 @@ public class UnplannedItemMapper {
 			.setActual(unplannedInfo.actual).setHandlerId(unplannedInfo.handlerId)
 			.setCreateTime(unplannedInfo.specificTime).save();
 		
-		for (long partnerId : unplannedInfo.partnerId) {
+		for (long partnerId : unplannedInfo.partnersId) {
 			unplanned.addPartner(partnerId);
 		}
 		return unplanned.getId();
@@ -48,7 +48,7 @@ public class UnplannedItemMapper {
 		if (unplanned != null) {
 			unplanned.setName(unplannedInfo.name).setNotes(unplannedInfo.notes)
 			.setEstimate(unplannedInfo.estimate).setActual(unplannedInfo.actual)
-			.setHandlerId(unplannedInfo.handlerId).setPartnersId(unplannedInfo.partnerId)
+			.setHandlerId(unplannedInfo.handlerId).setPartnersId(unplannedInfo.partnersId)
 			.setStatus(unplannedInfo.status).setSprintId(unplannedInfo.sprintId)
 			.setUpdateTime(unplannedInfo.specificTime).save();
 		}

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.plan;
+package ntut.csie.ezScrum.web.action.unplanned;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,7 +26,8 @@ public class AjaxGetUnplannedItemPermissionAction extends Action {
 			ProjectObject project = SessionManager.getProjectObject(request);
 			String projrctName = project.getName();
 			
-			Map<String, ScrumRole> scrumRoles = ( Map<String, ScrumRole> )request.getSession().getAttribute("ScrumRoles");
+			@SuppressWarnings("unchecked")
+            Map<String, ScrumRole> scrumRoles = ( Map<String, ScrumRole> )request.getSession().getAttribute("ScrumRoles");
 			//取得專案對應的角色權限
 			ScrumRole role =  scrumRoles.get(projrctName);
 			

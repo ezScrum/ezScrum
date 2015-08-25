@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -34,10 +33,10 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private Configuration mConfig;
-	private final String mACTION_PATH = "/showIssueHistory";
-	private ProjectObject mProject;
 	private CreateUnplannedItem mCUI;
+	private Configuration mConfig;
+	private ProjectObject mProject;
+	private final String mACTION_PATH = "/showIssueHistory";
 
 	public ShowIssueHistoryTest(String testName) {
 		super(testName);
@@ -84,20 +83,20 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
+		mCUI = null;
 		mConfig = null;
+		projectManager = null;
 	}
 
 	public void testShowSprintBacklogTreeListInfo() throws Exception {
-		List<Long> idList = mCS.getSprintsId();
-		long sprintId = idList.get(0);
+		ArrayList<Long> idList = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount,
-				storyEst, mCS.getSprintsId().size(), mCP,
-				CreateProductBacklog.COLUMN_TYPE_EST);
+		        storyEst, mCS.getSprintsId().size(), mCP,
+		        CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		Thread.sleep(1000);
@@ -105,7 +104,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		int taskCount = 1;
 		int taskEst = 2;
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst,
-				addStoryToSprint, mCP);
+		        addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		// ================ set request info ========================
@@ -117,29 +116,27 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		addRequestParameter("issueType", "Task");
 		String expectedTaskName = addTaskToStory.getTasks().get(0).getName();
 		String expectedIssueType = "Task";
-		List<String> expectedDescription = genArrayList("Create Task #1",
-				"Append to Story #1");
-		List<String> expectedHistoryType = genArrayList("", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
+		        "Append to Story #1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 
-		// ================ 執行 action ==============================
+		// 執行 action
 		actionPerform();
 
-		// ================ assert =============================
+		// assert
 		verifyNoActionErrors();
 		verifyNoActionMessages();
+
 		// assert response text
 		String actualResponseText = response.getWriterBuffer().toString();
-
 		JSONObject historyObj = new JSONObject(actualResponseText);
-
 		assertEquals(expectedTaskName, historyObj.getString("Name"));
 		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -147,48 +144,46 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest1() throws Exception {
 		// 加入1個 Sprint
-		List<Long> idList = mCS.getSprintsId();
+		ArrayList<Long> idList = mCS.getSprintsId();
 		long sprintId = idList.get(0);
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定 Session 資訊
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.setHeader("Referer", "?PID=" + projectName);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
 		String expectedIssueType = "Story";
-		List<String> expectedDescription = genArrayList("Create Story #"
-				+ storyId, "Append to Sprint #1");
-		List<String> expectedHistoryType = genArrayList("", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Story #"
+		        + storyId, "Append to Sprint #1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "");
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
 		addRequestParameter("issueType", "Story");
 
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
+
 		String actualResponseText = response.getWriterBuffer().toString();
-
 		JSONObject historyObj = new JSONObject(actualResponseText);
-
 		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
 		assertEquals(addStoryToSprint.getStories().get(0).getName(),
-				historyObj.getString("Name"));
+		        historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -196,53 +191,51 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest2() throws Exception {
 		// 加入1個 Sprint
-		List<Long> idList = mCS.getSprintsId();
+		ArrayList<Long> idList = mCS.getSprintsId();
 		long sprintId = idList.get(0);
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1,
-				addStoryToSprint, mCP);
+		        addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定 Session 資訊
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.setHeader("Referer", "?PID=" + projectName);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
 		String expectedIssueType = "Story";
-		List<String> expectedDescription = genArrayList("Create Story #1",
-				"Append to Sprint #1", "Add Task #1");
-		List<String> expectedHistoryType = genArrayList("", "", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Story #1",
+		        "Append to Sprint #1", "Add Task #1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "", "");
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
 		addRequestParameter("issueType", "Story");
 
-		// ================ 執行 action ======================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
+
 		String actualResponseText = response.getWriterBuffer().toString();
-
 		JSONObject historyObj = new JSONObject(actualResponseText);
-
 		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
 		assertEquals(addStoryToSprint.getStories().get(0).getName(),
-				historyObj.getString("Name"));
+		        historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -250,17 +243,17 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 	 */
 	public void testShowStoryHistoryTest3() throws Exception {
 		// 加入1個 Sprint
-		List<Long> idList = mCS.getSprintsId();
+		ArrayList<Long> idList = mCS.getSprintsId();
 		long sprintId = idList.get(0);
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        idList.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1,
-				addStoryToSprint, mCP);
+		        addStoryToSprint, mCP);
 		addTaskToStory.exe();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
@@ -270,40 +263,38 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
 		// 設定 Session 資訊
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.setHeader("Referer", "?PID=" + projectName);
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
 		String expectedStoryId = String.valueOf(storyId);
 		String expectedSprintId = String.valueOf(sprintId);
 		String expectedIssueType = "Story";
-		List<String> expectedDescription = genArrayList("Create Story #1",
-				"Append to Sprint #1", "Add Task #1", "Drop Task #1");
-		List<String> expectedHistoryType = genArrayList("", "", "", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Story #1",
+		        "Append to Sprint #1", "Add Task #1", "Drop Task #1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "", "", "");
 
 		addRequestParameter("sprintID", expectedSprintId);
 		addRequestParameter("issueID", expectedStoryId);
 		addRequestParameter("issueType", "Story");
 
-		// ================ 執行 action ====================
+		// 執行 action
 		actionPerform();
 
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
+
 		String actualResponseText = response.getWriterBuffer().toString();
-
 		JSONObject historyObj = new JSONObject(actualResponseText);
-
 		assertEquals(expectedIssueType, historyObj.getString("IssueType"));
 		assertEquals(addStoryToSprint.getStories().get(0).getName(),
-				historyObj.getString("Name"));
+		        historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
-	
+
 	/**
 	 * change story status
 	 */
@@ -340,17 +331,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject storyHistory = new JSONObject(actualResponseText);
-		
+
 		// assert
 		assertEquals(1, storyHistory.getLong("Id"));
 		assertEquals(story.getName(), storyHistory.getString("Name"));
 		assertEquals("Story", storyHistory.getString("IssueType"));
-		
+
 		JSONArray histories = storyHistory.getJSONArray("IssueHistories");
 		assertEquals("Not Check Out => Done", histories.getJSONObject(2).getString("Description"));
 		assertEquals("Status", histories.getJSONObject(2).getString("HistoryType"));
 	}
-
 
 	/**
 	 * test add 1 task
@@ -360,12 +350,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long sprintId = Long.valueOf(mCS.getSprintsId().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				(int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
 		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1,
-				addStoryToSprint, mCP);
+		        addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		// ================ set request info ========================
@@ -374,8 +364,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
 		// 先 assert story 的 history
@@ -391,12 +380,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #1",
-				"Append to Story #1");
-		List<String> expectedHistoryType = genArrayList("", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
+		        "Append to Story #1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "");
 
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -407,12 +396,11 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long sprintId = Long.valueOf(mCS.getSprintsId().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				(int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1,
-				addStoryToSprint, mCP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		String projectName = mProject.getName();
@@ -434,8 +422,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
 		// 先 assert story 的 history
@@ -451,15 +438,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #1",
-				"Append to Story #1", "\"TEST_TASK_1\" => \"崩潰啦\"",
-				"\"TEST_TASK_NOTES_1\" => \"煩死啦\"", "1 => 13", "0 => 2",
-				"1 => 8", "admin");
-		List<String> expectedHistoryType = genArrayList("", "", "Name", "Note",
-				"Estimate", "Actual Hour", "Remains", "Handler");
+		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
+		        "Append to Story #1", "\"TEST_TASK_1\" => \"崩潰啦\"",
+		        "\"TEST_TASK_NOTES_1\" => \"煩死啦\"", "1 => 13", "0 => 2",
+		        "1 => 8", "admin");
+		ArrayList<String> expectedHistoryType = genArrayList("", "", "Name", "Note",
+		        "Estimate", "Actual Hour", "Remains", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -470,38 +457,36 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long sprintId = Long.valueOf(mCS.getSprintsId().get(0));
 		// Sprint 加入1個 Story
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(1, 1,
-				(int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
+		        (int) sprintId, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
 		// Story 加入1個 Task
-		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1,
-				addStoryToSprint, mCP);
+		AddTaskToStory addTaskToStory = new AddTaskToStory(1, 1, addStoryToSprint, mCP);
 		addTaskToStory.exe();
 
 		String projectName = mProject.getName();
 		long taskId = addTaskToStory.getTasksId().get(0);
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				mProject, sprintId);
+		        mProject, sprintId);
 		// task Not Check Out -> Check Out
 		TaskObject task = sprintBacklogHelper.getTask(taskId);
 		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", "",
-				task.getNotes(), "");
+		        task.getNotes(), "");
 		// task Check Out -> Done
 		sprintBacklogHelper.closeTask(taskId, task.getName(), task.getNotes(),
-				task.getActual(), "");
+		        task.getActual(), "");
 		// task Done -> Check Out
 		sprintBacklogHelper.reopenTask(taskId, task.getName(), task.getNotes(),
-				"");
+		        "");
 		// task Check Out -> Not Check Out
 		sprintBacklogHelper.resetTask(taskId, task.getName(), task.getNotes(),
-				"");
+		        "");
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
 		// 先 assert story 的 history
@@ -517,15 +502,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #1",
-				"Append to Story #1", "Not Check Out => Check Out", "admin",
-				"1 => 0", "Check Out => Done", "Done => Check Out",
-				"Check Out => Not Check Out", "Remove handler admin");
-		List<String> expectedHistoryType = genArrayList("", "", "Status",
-				"Handler", "Remains", "Status", "Status", "Status", "Handler");
+		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
+		        "Append to Story #1", "Not Check Out => Check Out", "admin",
+		        "1 => 0", "Check Out => Done", "Done => Check Out",
+		        "Check Out => Not Check Out", "Remove handler admin");
+		ArrayList<String> expectedHistoryType = genArrayList("", "", "Status",
+		        "Handler", "Remains", "Status", "Status", "Status", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -536,7 +521,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// Sprint 加入1個 Story
 		AddStoryToSprint ASTS = new AddStoryToSprint(1, 1, (int) sprintId, mCP,
-				CreateProductBacklog.COLUMN_TYPE_EST);
+		        CreateProductBacklog.COLUMN_TYPE_EST);
 		ASTS.exe();
 
 		// 新增1個 account
@@ -555,11 +540,11 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long taskId = ATTS.getTasksId().get(0);
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
-				mProject, sprintId);
+		        mProject, sprintId);
 		// task Not Check Out -> Check Out
 		TaskObject task = sprintBacklogHelper.getTask(taskId);
 		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin",
-				task.getPartnersUsername(), task.getNotes(), "");
+		        task.getPartnersUsername(), task.getNotes(), "");
 
 		TaskInfo taskInfo = new TaskInfo();
 		taskInfo.taskId = task.getId();
@@ -569,13 +554,12 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		taskInfo.actual = task.getActual();
 		taskInfo.remains = task.getRemains();
 		sprintBacklogHelper.updateTask(taskInfo, AUTR.getNowAccount()
-				.getUsername(), "");
+		        .getUsername(), "");
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
 		request.setHeader("Referer", "?PID=" + projectName);
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
 		// 先 assert story 的 history
@@ -591,16 +575,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// get assert data
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject historyObj = new JSONObject(actualResponseText);
-		List<String> expectedDescription = genArrayList("Create Task #1",
-				"Append to Story #1", "Not Check Out => Check Out", "admin",
-				"admin => TEST_ACCOUNT_ID_1");
-		List<String> expectedHistoryType = genArrayList("", "", "Status",
-				"Handler", "Handler");
+		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
+		        "Append to Story #1", "Not Check Out => Check Out", "admin",
+		        "admin => TEST_ACCOUNT_ID_1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "", "Status",
+		        "Handler", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
-	
+
 	/**
 	 * UnplanedItem History 的測試 1 unplanedItem without editing
 	 */
@@ -608,21 +592,17 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// 新增一個 UnplannedItem
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
 		mCUI.exe();
-		String issueId = String.valueOf(mCUI.getUnplannedsId().get(0));
+		String sprintId = String.valueOf(mCS.getSprintsId().get(0));
+		String unplannedId = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID",
-				String.valueOf(mCS.getSprintsId().get(0)));
-		addRequestParameter("issueID", issueId);
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("issueID", unplannedId);
 		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-
-		// ================ set session info ========================
-		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
 
 		// 執行 action
@@ -633,21 +613,16 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForward(null);
 		verifyNoActionErrors();
 
-		List<String> expectedDescription = genArrayList("Create Unplanned #1",
-				"Append to Sprint #1");
-		List<String> expectedHistoryType = genArrayList("", "");
+		ArrayList<String> expectedDescription = genArrayList("Create Unplanned #1");
+		ArrayList<String> expectedHistoryType = genArrayList("");
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println(actualResponseText);
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(mCUI.getIssueList().get(0).getCategory(),
-				historyObj.getString("IssueType"));
-		assertEquals(mCUI.getIssueList().get(0).getIssueLink(),
-				historyObj.getString("Link"));
-		assertEquals(mCUI.getIssueList().get(0).getSummary(),
-				historyObj.getString("Name"));
+		assertEquals("Unplanned", historyObj.getString("IssueType"));
+		assertEquals(mCUI.getUnplanneds().get(0).getName(),
+		        historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -663,30 +638,25 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		addUserToRole.exe_ST();
 		Thread.sleep(1000);
 
-		// 新增一個 UnplannedItem
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
 		mCUI.exe();
 		Thread.sleep(1000);
 
 		EditUnplannedItem EU = new EditUnplannedItem(mCUI, mCP, createAccount);
-		EU.exe_CO();
+		EU.exe_CHECKOUT();
 		Thread.sleep(1000);
 
-		String issueID = String.valueOf(mCUI.getUnplannedsId().get(0));
+		String sprintId = String.valueOf(mCS.getSprintsId().get(0));
+		String unplannedId = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID",
-				String.valueOf(mCS.getSprintsId().get(0)));
-		addRequestParameter("issueID", issueID);
+		addRequestParameter("sprintID", sprintId);
+		addRequestParameter("issueID", unplannedId);
 		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-
-		// ================ set session info ========================
-		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
 
 		// 執行 action
@@ -696,24 +666,18 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
-		List<String> expectedDescription = genArrayList("Create Unplanned #1",
-				"Append to Sprint #1", "Not Check Out => Check Out",
-				"TEST_ACCOUNT_ID_1",
-				"\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"");
-		List<String> expectedHistoryType = genArrayList("", "", "Status",
-				"Handler", "Note");
+		ArrayList<String> expectedDescription = genArrayList("Create Unplanned #1",
+		        "\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"",
+		        "Not Check Out => Check Out", "TEST_ACCOUNT_ID_1");
+		ArrayList<String> expectedHistoryType = genArrayList("", "Note",
+		        "Status", "Handler");
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println(actualResponseText);
 		JSONObject historyObj = new JSONObject(actualResponseText);
 
-		assertEquals(mCUI.getIssueList().get(0).getCategory(),
-				historyObj.getString("IssueType"));
-		assertEquals(mCUI.getIssueList().get(0).getIssueLink(),
-				historyObj.getString("Link"));
-		assertEquals(mCUI.getIssueList().get(0).getSummary(),
-				historyObj.getString("Name"));
+		assertEquals("Unplanned", historyObj.getString("IssueType"));
+		assertEquals(mCUI.getUnplanneds().get(0).getName(), historyObj.getString("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));
 	}
 
 	/**
@@ -735,7 +699,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		Thread.sleep(1000);
 
 		EditUnplannedItem EU = new EditUnplannedItem(mCUI, mCP, createAccount);
-		EU.exe_CO();
+		EU.exe_CHECKOUT();
 		Thread.sleep(1000);
 
 		EU = new EditUnplannedItem(mCUI, mCP, createAccount);
@@ -745,18 +709,13 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		String issueId = String.valueOf(mCUI.getUnplannedsId().get(0));
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID",
-				String.valueOf(mCS.getSprintsId().get(0)));
+		addRequestParameter("sprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("issueType", "Unplanned");
 
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession",
-				mConfig.getUserSession());
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-
-		// ================ set session info ========================
-		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
 
 		// 執行 action
@@ -766,43 +725,37 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
-		List<String> expectedDescription = genArrayList("Create Unplanned #1",
-				"Append to Sprint #1", "Not Check Out => Check Out",
-				"TEST_ACCOUNT_ID_1",
+		ArrayList<String> expectedDescription = genArrayList("Create Unplanned #1",
 				"\"TEST_UNPLANNED_NOTES_1\" => \"i am the update one\"",
-				"Check Out => Done");
-		List<String> expectedHistoryType = genArrayList("", "", "Status",
-				"Handler", "Note", "Status");
+		        "Not Check Out => Check Out", "TEST_ACCOUNT_ID_1",
+		        "Check Out => Done");
+		ArrayList<String> expectedHistoryType = genArrayList("", "Note", "Status",
+		        "Handler", "Status");
 		String actualResponseText = response.getWriterBuffer().toString();
-		System.out.println(actualResponseText);
 		JSONObject object = new JSONObject(actualResponseText);
 
-		assertEquals(mCUI.getIssueList().get(0).getCategory(),
-				object.get("IssueType"));
-		assertEquals(mCUI.getIssueList().get(0).getIssueLink(),
-				object.get("Link"));
-		assertEquals(mCUI.getIssueList().get(0).getSummary(),
-				object.get("Name"));
+		assertEquals("Unplanned", object.get("IssueType"));
+		assertEquals(mCUI.getUnplanneds().get(0).getName(), object.get("Name"));
 		assertData(expectedHistoryType, expectedDescription,
-				object.getJSONArray("IssueHistories"));
+		        object.getJSONArray("IssueHistories"));
 	}
 
 	/**
 	 * 傳入若干個字串，組合成arrayList傳出
 	 */
-	private List<String> genArrayList(String... strs) {
-		List<String> arrayList = new ArrayList<String>();
+	private ArrayList<String> genArrayList(String... strs) {
+		ArrayList<String> arrayList = new ArrayList<String>();
 		for (String str : strs) {
 			arrayList.add(str);
 		}
 		return arrayList;
 	}
 
-	private void assertData(List<String> expectedHistoryType,
-			List<String> expectedDesc, JSONArray actualData)
-			throws JSONException {
+	private void assertData(ArrayList<String> expectedHistoryType,
+	        ArrayList<String> expectedDesc, JSONArray actualData)
+	        throws JSONException {
 		assertEquals(expectedHistoryType.size(), expectedDesc.size());
-		assertEquals(actualData.length(), expectedDesc.size());
+		assertEquals(expectedDesc.size(), actualData.length());
 		for (int i = 0; i < expectedDesc.size(); i++) {
 			JSONObject history = actualData.getJSONObject(i);
 

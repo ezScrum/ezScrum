@@ -6,7 +6,9 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
 
 public class CreateUnplannedItem {
-	private int mItemCount = 1;
+	private int mProjectCount;
+	private int mSprintCount;
+	private int mUnplannedCount = 1;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private ArrayList<Long> mUnplannedItemsId = new ArrayList<Long>();
@@ -19,13 +21,15 @@ public class CreateUnplannedItem {
 	private long mSpecificTime = System.currentTimeMillis();
 
 	public CreateUnplannedItem(int count, CreateProject CP, CreateSprint CS) {
-		mItemCount = count;
 		mCP = CP;
 		mCS = CS;
+		mUnplannedCount = count;
+		mProjectCount = mCP.getAllProjects().size();
+		mSprintCount = mCS.getSprintCount();
 	}
 
 	public int getCount() {
-		return mItemCount;
+		return mUnplannedCount;
 	}
 
 	public ArrayList<Long> getUnplannedsId() {
@@ -37,21 +41,16 @@ public class CreateUnplannedItem {
 	}
 
 	public void exe() {
-		int projectCount = mCP.getAllProjects().size();
-		int sprintCount = mCS.getSprintCount();
-
-		// get parameter info
-		
-		for (int i = 0; i < projectCount; i++) {
+		for (int i = 0; i < mProjectCount; i++) {
 			ProjectObject project = mCP.getAllProjects().get(i);
 			long projectId = project.getId();
-
-			for (int j = 0; j < sprintCount; j++) {
-				long sprintId = mCS.getSprintsId().get(j);
-
-				for (int k = 0; k < mItemCount; k++) {
-					String name = TEST_NAME + String.valueOf(k + 1);
-					String notes = TEST_NOTE + String.valueOf(k + 1);
+			for (int sprintIndex = 0; sprintIndex < mSprintCount; sprintIndex++) {
+				long sprintId = sprintIndex + 1;
+				for (int unplannedIndex = 0; unplannedIndex < mUnplannedCount; unplannedIndex++) {
+					int unplannedPositionInSprints = 1 + unplannedIndex +
+							mUnplannedCount * sprintIndex;
+					String name = TEST_NAME + unplannedPositionInSprints;
+					String notes = TEST_NOTE + unplannedPositionInSprints;
 					
 					UnplannedObject unplanned = new UnplannedObject(sprintId, projectId);
 					unplanned.setName(name).setNotes(notes).setEstimate(TEST_EST)
@@ -61,10 +60,10 @@ public class CreateUnplannedItem {
 					mUnplannedItems.add(unplanned);
 					mUnplannedItemsId.add(unplanned.getId());
 				}
-				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintId + " 創建" + mItemCount + "個unplanned item(s) 成功.");
+				System.out.println("   專案:" + project.getName() + " 的sprintID:" + sprintId + " 創建" + mUnplannedCount + "個unplanned item(s) 成功.");
 			}
 		}
-		System.out.println("Create " + String.valueOf(projectCount) + " project(s) " + String.valueOf(sprintCount) + " sprint(s)" + String.valueOf(mItemCount) + " UnplannedItem Finish!");
+		System.out.println("Create " + String.valueOf(mProjectCount) + " project(s) " + String.valueOf(mSprintCount) + " sprint(s)" + String.valueOf(mUnplannedCount) + " UnplannedItem Finish!");
 	}
 
 }
