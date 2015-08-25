@@ -1,16 +1,11 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -40,7 +35,6 @@ public class SaveReleasePlanAction extends PermissionAction {
 		
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 
@@ -55,7 +49,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 			releaseId = Long.parseLong(releaseIdString);
 		}
 		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
-			return null;
+			return new StringBuilder();
 		}			
 			
 		String action = request.getParameter("action");
