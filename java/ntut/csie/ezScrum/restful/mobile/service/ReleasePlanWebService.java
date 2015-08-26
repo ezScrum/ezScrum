@@ -39,13 +39,11 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 */
 	public String getAllReleasePlan() throws JSONException {
 		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleases();
-		JSONObject wholeJson = new JSONObject();
 		JSONArray releaseJsonArray = new JSONArray();
 		for (ReleaseObject release : releases) {
 			releaseJsonArray.put(release.toJSON());
 		}
-		wholeJson.put("releases", releaseJsonArray);
-		return wholeJson.toString();
+		return releaseJsonArray.toString();
 	}
 	
 	/**

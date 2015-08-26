@@ -112,10 +112,10 @@ public class SprintPlanMapperTest {
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembersAmount());
-		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
 		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
 		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
@@ -128,10 +128,10 @@ public class SprintPlanMapperTest {
 		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId().get(0));
 		// assert
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembersAmount());
-		assertEquals(120, sprint.getHoursCanCommit());
+		assertEquals(4, sprint.getMembers());
+		assertEquals(120, sprint.getAvailableHours());
 		assertEquals(80, sprint.getFocusFactor());
-		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getGoal());
 		assertEquals(CreateSprint.SPRINT_DEMOPLACE, sprint.getDemoPlace());
 		assertEquals(mCS.TEST_SPRINT_DAILY_INFO + 1, sprint.getDailyInfo());
 		
@@ -183,10 +183,10 @@ public class SprintPlanMapperTest {
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembersAmount());
-		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
 		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
 		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());

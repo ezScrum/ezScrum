@@ -473,7 +473,7 @@ public class StoryObjectTest {
 		project.setAttachFileSize(2)
 		       .save();
 		SprintObject sprint = new SprintObject(project.getId());
-		sprint.setHoursCanCommit(80)
+		sprint.setAvailableHours(80)
 		      .setFocusFactor(25)
 		      .save();
 		assertEquals(20, sprint.getLimitedPoint());

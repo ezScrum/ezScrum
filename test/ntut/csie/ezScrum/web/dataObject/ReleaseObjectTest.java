@@ -158,13 +158,13 @@ public class ReleaseObjectTest {
 		release.setName("TEST_RELEASE").setStartDate("2015/08/01")
 				.setDueDate("2015/08/31").save();
 		SprintObject sprint1 = new SprintObject(mProject.getId());
-		sprint1.setSprintGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/07/24")
+		sprint1.setGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/07/24")
 				.setDueDate("2015/08/01").save();
 		SprintObject sprint2 = new SprintObject(mProject.getId());
-		sprint2.setSprintGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/31")
+		sprint2.setGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/31")
 				.setDueDate("2015/09/06").save();
 		SprintObject sprint3 = new SprintObject(mProject.getId());
-		sprint3.setSprintGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
+		sprint3.setGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
 				.setDueDate("2015/08/21").save();
 		// assert
 		assertFalse(release.containsSprint(sprint1));
@@ -178,36 +178,36 @@ public class ReleaseObjectTest {
 		release.setName("TEST_RELEASE").setStartDate("2015/08/01")
 				.setDueDate("2015/08/31").save();
 		SprintObject sprint1 = new SprintObject(mProject.getId());
-		sprint1.setSprintGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/08/01")
+		sprint1.setGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/08/01")
 				.setDueDate("2015/08/07").save();
 		SprintObject sprint2 = new SprintObject(mProject.getId());
-		sprint2.setSprintGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/08")
+		sprint2.setGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/08")
 				.setDueDate("2015/08/14").save();
 		SprintObject sprint3 = new SprintObject(mProject.getId());
-		sprint3.setSprintGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
+		sprint3.setGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
 				.setDueDate("2015/08/21").save();
 		// assert sprint count
 		assertEquals(3, release.getSprints().size());
 		// assert sprint 1
 		assertEquals(sprint1.getId(), release.getSprints().get(0).getId());
-		assertEquals(sprint1.getSprintGoal(), release.getSprints().get(0)
-				.getSprintGoal());
+		assertEquals(sprint1.getGoal(), release.getSprints().get(0)
+				.getGoal());
 		assertEquals(sprint1.getStartDateString(), release.getSprints().get(0)
 				.getStartDateString());
 		assertEquals(sprint1.getDueDateString(), release.getSprints().get(0)
 				.getDueDateString());
 		// assert sprint 2
 		assertEquals(sprint2.getId(), release.getSprints().get(1).getId());
-		assertEquals(sprint2.getSprintGoal(), release.getSprints().get(1)
-				.getSprintGoal());
+		assertEquals(sprint2.getGoal(), release.getSprints().get(1)
+				.getGoal());
 		assertEquals(sprint2.getStartDateString(), release.getSprints().get(1)
 				.getStartDateString());
 		assertEquals(sprint2.getDueDateString(), release.getSprints().get(1)
 				.getDueDateString());
 		// assert sprint 3
 		assertEquals(sprint3.getId(), release.getSprints().get(2).getId());
-		assertEquals(sprint3.getSprintGoal(), release.getSprints().get(2)
-				.getSprintGoal());
+		assertEquals(sprint3.getGoal(), release.getSprints().get(2)
+				.getGoal());
 		assertEquals(sprint3.getStartDateString(), release.getSprints().get(2)
 				.getStartDateString());
 		assertEquals(sprint3.getDueDateString(), release.getSprints().get(2)
@@ -225,8 +225,8 @@ public class ReleaseObjectTest {
 
 		// Create Sprint
 		SprintObject sprint = new SprintObject(mProject.getId());
-		sprint.setInterval(2).setHoursCanCommit(100).setMembers(4)
-				.setSprintGoal("TEST_SPRINT_GOAL")
+		sprint.setInterval(2).setAvailableHours(100).setMembers(4)
+				.setGoal("TEST_SPRINT_GOAL")
 				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
 				.setStartDate("2015/08/03").setDemoDate("2015/08/17")
 				.setDueDate("2015/08/17").save();

@@ -213,7 +213,7 @@ public class SprintBacklogMapper {
 		if (mSprint == null) {
 			return "";
 		}
-		return mSprint.getSprintGoal();
+		return mSprint.getGoal();
 	}
 	
 	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
