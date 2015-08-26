@@ -409,4 +409,73 @@ public class StoryObjectTest {
 		
 		return story;
 	}
+	
+	@Test
+	public void testGetTotalTaskPoints() {
+		StoryObject story = new StoryObject(mProjectId);
+		story.save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story.getId())
+		     .setEstimate(1)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story.getId())
+		     .setEstimate(2)
+		     .save();
+
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story.getId())
+		     .setEstimate(3)
+		     .save();
+		
+		double totalEstimatePoint = story.getTotalTaskPoints();
+		assertEquals(6.0, totalEstimatePoint);
+	}
+	
+	@Test
+	public void testGetTaskRemainsPoints() {
+		StoryObject story = new StoryObject(mProjectId);
+		story.save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story.getId())
+		     .setEstimate(1)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story.getId())
+		     .setEstimate(2)
+		     .save();
+
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story.getId())
+		     .setEstimate(3)
+		     .save();
+		
+		assertEquals(6.0, story.getTaskRemainsPoints());
+	}
+	
+	@Test
+	public void testGetLimitedPoint() {
+		ProjectObject project = new ProjectObject("testGetLimitedPoint");
+		project.setAttachFileSize(2)
+		       .save();
+		SprintObject sprint = new SprintObject(project.getId());
+		sprint.save();
+		assertEquals(0, sprint.getLimitedPoint());
+	}
+	
+	@Test
+	public void testGetLimitedPoint_WithCurrentSprint() {
+		ProjectObject project = new ProjectObject("testGetLimitedPoint");
+		project.setAttachFileSize(2)
+		       .save();
+		SprintObject sprint = new SprintObject(project.getId());
+		sprint.setHoursCanCommit(80)
+		      .setFocusFactor(25)
+		      .save();
+		assertEquals(20, sprint.getLimitedPoint());
+	}
 }

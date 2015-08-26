@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;

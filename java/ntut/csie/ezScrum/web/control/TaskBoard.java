@@ -13,6 +13,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -36,13 +37,11 @@ public class TaskBoard {
 	private LinkedHashMap<Date, Double> mDateToTaskRealPoint;
 	private Date mCurrentDate = new Date();
 	private Date mGeneratedTime = new Date();
-	private long mSprintId = 1;
 	final private long mOneDay = ScrumEnum.DAY_MILLISECOND;
 
 	public TaskBoard(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sprintBacklogMapper) {
 		mSprintBacklogLogic = sprintBacklogLogic;
 		mSprintBacklogMapper = sprintBacklogMapper;
-		mSprintId = sprintBacklogMapper.getSprintId();
 		init();
 	}
 
@@ -126,7 +125,7 @@ public class TaskBoard {
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if (story.getSprintId() == mSprintId) {
+		if (story.getSprintId() == mSprintBacklogMapper.getSprintId()) {
 			point = story.getEstimate();
 		} 
 		else {
@@ -229,24 +228,27 @@ public class TaskBoard {
 	}
 
 	public long getSprintId() {
-		return mSprintId;
+		return mSprintBacklogMapper.getSprintId();
 	}
 
 	public String getStoryPoint() {
-		return mSprintBacklogLogic.getStoryUnclosedPoints()
+		SprintObject sprint = mSprintBacklogMapper.getSprint();
+		return sprint.getStoryUnclosedPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTotalStoryPoints();
+		        + sprint.getTotalStoryPoints();
 	}
 
 	public String getTaskPoint() {
-		return mSprintBacklogLogic.getTaskRemainsPoints()
+		SprintObject sprint = mSprintBacklogMapper.getSprint();
+		return sprint.getTaskRemainsPoints()
 		        + " / "
-		        + mSprintBacklogLogic.getTotalTaskPoints();
+		        + sprint.getTotalTaskPoints();
 	}
 
 	public String getInitialStoryPoint() {
+		SprintObject sprint = mSprintBacklogMapper.getSprint();
 		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[0]) + " / "
-		        + mSprintBacklogMapper.getLimitedPoint();
+		        + sprint.getLimitedPoint();
 	}
 
 	public String getInitialTaskPoint() {
