@@ -1,32 +1,26 @@
 package ntut.csie.ezScrum.web.action.unplanned;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataInfo.UnplannedInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class EditUnplannedItemActionTest extends MockStrutsTestCase {
+	
 	private CreateProject mCP;
 	private CreateSprint mCS;
+	private CreateAccount mCA;
 	private CreateUnplannedItem mCUI;
 	private Configuration mConfig;
-	private IProject mProject;
-
-	private String mPREFIX = "TEST_UNPLANNED_EDIT_";
-	private String mUPDATE_NAME = "NAME_";
-	private String mUPDATE_ESTIMATION = "99";
-	private String mUPDATE_HOUR = "9";
-	private String mUPDATE_PARTNER = "PARTNER_";
-	private String mUPDATE_NOTE = "NOTE_";
-	private String mUPDATE_STATUS[] = {"new", "assigned", "closed"};
-
+	private ProjectObject mProject;
 	private String mActionPath = "/editUnplannedItem";
 
 	public EditUnplannedItemActionTest(String testMethod) {
@@ -46,7 +40,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 
-		mProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 
@@ -58,7 +52,7 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -80,49 +74,56 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		mCUI = null;
 		mConfig = null;
 		mProject = null;
+		projectManager = null;
 	}
 
-	// case 1: One sprint(s) with One Unplanned item(s)
-	// 將 name, partners, status, estimation, actual hour, notes 更新
-	public void testEditOneSprint1ui() throws Exception {
-		// 新增一個 Sprint
+	/**
+	 * case 1: One sprint(s) with One Unplanned item(s)
+	 * 將 name, partners, status, estimate, actual, notes 更新
+	 */
+	public void testEditOneSprintWithOneUnplanned() {
+		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
+		
+		// create one unplanned
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
 		mCUI.exe();
-
-		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
-		Thread.sleep(1000);
+		
+		// create one account
+		mCA = new CreateAccount(1);
+		mCA.exe();
 
 		// ================ set initial data =======================
-		String sprintId = "1";
-		String issueId = "1";
-		String name = mPREFIX + mUPDATE_NAME + issueId;
-		String handler = "";
-		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		String estimate = mUPDATE_ESTIMATION;
-		String actualHour = mUPDATE_HOUR;
-		String notes = mPREFIX + mUPDATE_NOTE + issueId;
+		String handlerUsername = "";
+		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		String status = mUPDATE_STATUS[1];
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 1;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + 1;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + 1;
+		unplannedInfo.statusString = "new";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
 
@@ -132,431 +133,461 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 	}
 
-	// case 2: One sprint(s) with Two Unplanned item(s)
-	// 測試先修改 UI2 再修改 UI1
-	public void testEditOneSprint2ui() throws Exception {
-		// 新增一個 Sprint
+	/**
+	 * case 2: One sprint(s) with Two Unplanned item(s)
+	 * 測試先修改 UI2 再修改 UI1
+	 */
+	public void testEditOneSprintWithTwoUnplanned() {
+		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
+		
+		// create two unplanned
 		mCUI = new CreateUnplannedItem(2, mCP, mCS);
 		mCUI.exe();
+		
+		// create two account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
-		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
-		Thread.sleep(1000);
-
-		// (I) test update UI 2
+		// (I) test update unplanned #2
 
 		// ================ set initial data =======================
-		String sprintId = "1";
-		String issueId = "2";
-		String name = mPREFIX + mUPDATE_NAME + issueId;
-		String handler = "";
-		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		String estimate = mUPDATE_ESTIMATION;
-		String actualHour = mUPDATE_HOUR;
-		String notes = mPREFIX + mUPDATE_NOTE + issueId;
+		String handlerUsername = "";
+		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		String status = mUPDATE_STATUS[1];
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 2;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "new";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 
-		// (II) test update UI 1
+		// (II) test update unplanned #1
 
-		// 執行下一次的action必須做此動作,否則response內容不會更新!
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		sprintId = "1";
-		issueId = "2";
-		name = mPREFIX + mUPDATE_NAME + issueId;
-		handler = "";
-		partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		estimate = mUPDATE_ESTIMATION;
-		actualHour = mUPDATE_HOUR;
-		notes = mPREFIX + mUPDATE_NOTE + issueId;
+		handlerUsername = mCA.getAccountList().get(0).getUsername();;
+		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		status = mUPDATE_STATUS[2];
-
+		unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 1;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "assigned";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
+		
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// ================ set session info ========================
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] b = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		expected = genXML(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 	}
 
-	// case 3: Two sprint(s) with One Unplanned item(s)
-	// 測試先修改 sprint2 再修改 sprint1
-	public void testEditTwoSprint1ui() throws Exception {
-		// 新增一個 Sprint
+	/**
+	 * case 3: Two sprint(s) with One Unplanned item(s)
+	 * 測試先修改 sprint2 UI1 再修改 sprint1 UI1
+	 */
+	public void testEditTwoSprintWithOneUnplanned() {
+		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
+		
+		// create one unplanned
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
 		mCUI.exe();
+		
+		// create two account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
-		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
-		Thread.sleep(1000);
-
-		// (I) test update sprint2 UI
+		// (I) test update sprint2 unplanned 1
 
 		// ================ set initial data =======================
-		String sprintId = "2";
-		String issueId = "2";
-		String name = mPREFIX + mUPDATE_NAME + issueId;
-		String handler = "";
-		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		String estimate = mUPDATE_ESTIMATION;
-		String actualHour = mUPDATE_HOUR;
-		String notes = mPREFIX + mUPDATE_NOTE + issueId;
+		String handlerUsername = "";
+		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		String status = mUPDATE_STATUS[1];
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 2;
+		unplannedInfo.sprintId = 2;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "new";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 
-		// (II) test update sprint1 UI
+		// (II) test update sprint1 unplanned
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		sprintId = "1";
-		issueId = "1";
-		name = mPREFIX + mUPDATE_NAME + issueId;
-		handler = "";
-		partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		estimate = mUPDATE_ESTIMATION;
-		actualHour = mUPDATE_HOUR;
-		notes = mPREFIX + mUPDATE_NOTE + issueId;
+		handlerUsername = mCA.getAccountList().get(0).getUsername();
+		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		status = mUPDATE_STATUS[2];
+		unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 1;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "assigned";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] b = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		expected = genXML(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 	}
 
-	// case 4: Two sprint(s) with Two Unplanned item(s)
-	// 測試先修改 sprint1 UI1.UI2 再修改 sprint2 UI2.UI1
-	public void testEditTwoSprint2ui() throws Exception {
-		// 新增一個 Sprint
+	/**
+	 * case 4: Two sprint(s) with Two Unplanned item(s)
+	 * 測試先修改 sprint1 UI1.UI2 再修改 sprint2 UI2.UI1
+	 */
+	public void testEditTwoSprintWithTwoUnplanned() {
+		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
+		
+		// create two unplanned
 		mCUI = new CreateUnplannedItem(2, mCP, mCS);
 		mCUI.exe();
+		
+		// create two account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
-		// 若新增跟編輯 unplanned item 的秒數一致，會造成從 history 抓取最新值 estimation 與 note 錯誤
-		Thread.sleep(1000);
-
-		// (I) test update sprint1 UI1
+		// (I) test update sprint1 unplanned #1
 
 		// ================ set initial data =======================
-		String sprintId = "1";
-		String issueId = "1";
-		String name = mPREFIX + mUPDATE_NAME + issueId;
-		String handler = "";
-		String partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		String estimate = mUPDATE_ESTIMATION;
-		String actualHour = mUPDATE_HOUR;
-		String notes = mPREFIX + mUPDATE_NOTE + issueId;
+		String handlerUsername = "";
+		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		String status = mUPDATE_STATUS[1];
+		UnplannedInfo unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 1;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "new";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 
-		// (II) test update sprint1 UI2
+		// (II) test update sprint1 unplanned #2
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		sprintId = "1";
-		issueId = "2";
-		name = mPREFIX + mUPDATE_NAME + issueId;
-		handler = "";
-		partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		estimate = mUPDATE_ESTIMATION;
-		actualHour = mUPDATE_HOUR;
-		notes = mPREFIX + mUPDATE_NOTE + issueId;
+		handlerUsername = mCA.getAccountList().get(0).getUsername();
+		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		status = mUPDATE_STATUS[2];
+		unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 2;
+		unplannedInfo.sprintId = 1;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "assigned";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] b = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		expected = genXML(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 
-		// (III) test update sprint2 UI2
+		// (III) test update sprint2 unplanned #2
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		sprintId = "2";
-		issueId = "4";
-		name = mPREFIX + mUPDATE_NAME + issueId;
-		handler = "";
-		partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		estimate = mUPDATE_ESTIMATION;
-		actualHour = mUPDATE_HOUR;
-		notes = mPREFIX + mUPDATE_NOTE + issueId;
+		handlerUsername = mCA.getAccountList().get(0).getUsername();
+		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		status = mUPDATE_STATUS[2];
+		unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 4;
+		unplannedInfo.sprintId = 2;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "assigned";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] c = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		expected = genXML(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 
-		// (IV) test update sprint2 UI1
+		// (IV) test update sprint2 unplanned #1
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		sprintId = "2";
-		issueId = "3";
-		name = mPREFIX + mUPDATE_NAME + issueId;
-		handler = "";
-		partners = mPREFIX + mUPDATE_PARTNER + issueId;
-		estimate = mUPDATE_ESTIMATION;
-		actualHour = mUPDATE_HOUR;
-		notes = mPREFIX + mUPDATE_NOTE + issueId;
+		handlerUsername = mCA.getAccountList().get(0).getUsername();
+		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		status = mUPDATE_STATUS[2];
+		unplannedInfo = new UnplannedInfo();
+		unplannedInfo.id = 3;
+		unplannedInfo.sprintId = 2;
+		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
+		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
+		unplannedInfo.statusString = "assigned";
+		unplannedInfo.estimate = 99;
+		unplannedInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueId);
-		addRequestParameter("Name", name);
-		addRequestParameter("Status", status);
-		addRequestParameter("SprintID", "Sprint #" + sprintId);
-		addRequestParameter("Estimate", estimate);
-		addRequestParameter("Handler", handler);
-		addRequestParameter("Partners", partners);
-		addRequestParameter("ActualHour", actualHour);
-		addRequestParameter("Notes", notes);
+		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
+		addRequestParameter("Name", unplannedInfo.name);
+		addRequestParameter("Notes", unplannedInfo.notes);
+		addRequestParameter("Status", unplannedInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("Handler", handlerUsername);
+		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
-
+		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
 		request.setHeader("Referer", "?PID=" + mProject.getName());
+		
 		// 執行 action
 		actionPerform();
+		
 		// 驗證回傳 path
 		verifyForwardPath(null);
 		verifyForward(null);
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] d = {sprintId, issueId, name, handler, partners, estimate, notes, actualHour, status};
-		expected = genXML(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
-		assertEquals(expected, response.getWriterBuffer().toString());
+		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 	}
 
-	private String genXML(String sprintId, String issueId, String name, String handler, String partners, String estimation, String notes, String actualhour, String status) {
-		StringBuilder result = new StringBuilder("");
-
+	private String genXML(String handlerUsername, String partnerUsername,
+			UnplannedInfo unplannedInfo) {
+		StringBuilder result = new StringBuilder();
 		result.append("<EditUnplannedItem>");
 		result.append("<Result>success</Result>");
 		result.append("<UnplannedItem>");
-		result.append("<Id>" + issueId + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueId + "</Link>");
-		result.append("<Name>" + name + "</Name>");
-		result.append("<SprintID>" + sprintId + "</SprintID>");
-		result.append("<Estimate>" + estimation + "</Estimate>");
-		result.append("<Status>" + status + "</Status>");
-		result.append("<ActualHour>" + actualhour + "</ActualHour>");
-		result.append("<Handler>" + handler + "</Handler>");
-		result.append("<Partners>" + partners + "</Partners>");
-		result.append("<Notes>" + notes + "</Notes>");
+		result.append("<Id>").append(unplannedInfo.id).append("</Id>");
+		result.append("<Link></Link>");
+		result.append("<Name>").append(unplannedInfo.name).append("</Name>");
+		result.append("<SprintID>").append(unplannedInfo.sprintId).append("</SprintID>");
+		result.append("<Estimate>").append(unplannedInfo.estimate).append("</Estimate>");
+		result.append("<Status>").append(unplannedInfo.statusString).append("</Status>");
+		result.append("<ActualHour>").append(unplannedInfo.actual).append("</ActualHour>");
+		result.append("<Handler>").append(handlerUsername).append("</Handler>");
+		result.append("<Partners>").append(partnerUsername).append("</Partners>");
+		result.append("<Notes>").append(unplannedInfo.notes).append("</Notes>");
 		result.append("</UnplannedItem>");
 		result.append("</EditUnplannedItem>");
 

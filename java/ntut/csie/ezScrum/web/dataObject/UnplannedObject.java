@@ -313,6 +313,7 @@ public class UnplannedObject implements IBaseObject {
 
 	@Override
 	public boolean delete() {
+		HistoryDAO.getInstance().deleteByIssue(mId,	IssueTypeEnum.TYPE_UNPLANNED);
 		boolean success = UnplannedDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;

@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
 public class UnplannedInfo {
 	public long id = -1, sprintId = -1, projectId = -1;
 	public long serialId, handlerId = -1, specificTime = 0;
-	public String name, notes;
+	public String name, notes, statusString;
 	public int estimate, actual, status = UnplannedObject.STATUS_UNCHECK;
-	public ArrayList<Long> partnerId = new ArrayList<Long>();
+	public ArrayList<Long> partnersId = new ArrayList<Long>();
 }

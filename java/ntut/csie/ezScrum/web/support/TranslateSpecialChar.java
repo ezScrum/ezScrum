@@ -1,13 +1,13 @@
 package ntut.csie.ezScrum.web.support;
 
 
-public class TranslateSpecialChar{
+public class TranslateSpecialChar {
 	/*
 	 * replace: CharSequence target to CharSequence replacement 
 	 * replaceAll: String  "regex" to String replacement
 	 */
 	
-	public String TranslateDBChar(String tagName) {
+	public static String TranslateDBChar(String tagName) {
 		if (tagName != null) {
 			if (tagName.contains("\\")) {
 				tagName = tagName.replace("\\", "\\\\");
@@ -20,7 +20,7 @@ public class TranslateSpecialChar{
 		return tagName;
 	}
 	
-	public String TranslateXMLChar(String tagName) {
+	public static String TranslateXMLChar(String tagName) {
 		if (tagName != null) {
 			if (tagName.contains("&")) {
 				tagName = tagName.replaceAll("&", "&amp;");
@@ -45,7 +45,7 @@ public class TranslateSpecialChar{
 		return tagName;
 	}
 	
-	public String TranslateJSONChar(String tagName) {
+	public static String TranslateJSONChar(String tagName) {
 		if (tagName != null) {
 
 			if (tagName.contains("\\")) {
@@ -75,7 +75,7 @@ public class TranslateSpecialChar{
 		return tagName;
 	}
 	
-	public String HandleNullString(String str) {
+	public static String HandleNullString(String str) {
 		if(str.equals("") || str.equals("0") || str.equals("-1")) {
 			return "None";
 		}

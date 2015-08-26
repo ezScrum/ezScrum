@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -9,15 +8,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.ezScrum.web.support.SessionManager;
+import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,15 +40,11 @@ public class ShowIssueHistoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Show Issue History. ");
 
-		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
 		// get parameter info
 		long issueId = Long.parseLong(request.getParameter("issueID"));
 		String issueType = request.getParameter("issueType");
 
-		// 用Gson轉換issue為json格式傳出
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
-
+		// 用 Gson 轉換 issue 為 json 格式傳出
 		IssueHistoryUI ihui = null;
 		if (issueType.equals("Task")) {
 			TaskObject task = TaskObject.get(issueId);
@@ -61,17 +52,14 @@ public class ShowIssueHistoryAction extends PermissionAction {
 				ihui = new IssueHistoryUI(task);
 			}
 		} else if (issueType.equals("Story")){
-			StoryObject story = productBacklogHelper.getStory(issueId);
-			try {
+			StoryObject story = StoryObject.get(issueId);
+			if (story != null) {
 				ihui = new IssueHistoryUI(story);
-			} catch (SQLException e) {
 			}
-		} else { // for unplanned
-			ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project);
-			IIssue issue = productBacklogMapper.getIssue(issueId);
-			try {
-				ihui = new IssueHistoryUI(issue);
-			} catch (SQLException e) {
+		} else {
+			UnplannedObject unplanned = UnplannedObject.get(issueId);
+			if (unplanned != null) {
+				ihui = new IssueHistoryUI(unplanned);
 			}
 		}
 		Gson gson = new Gson();
@@ -86,15 +74,15 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
 		
-		public IssueHistoryUI(IIssue issue) throws SQLException {
-			if (issue != null) {
-				Id = issue.getIssueID();
-				Link = issue.getIssueLink();
-				Name = issue.getSummary();
-				IssueType = issue.getCategory();
+		public IssueHistoryUI(UnplannedObject unplanned) {
+			if (unplanned != null) {
+				Id = unplanned.getId();
+				Link = "";
+				Name = unplanned.getName();
+				IssueType = "Unplanned";
 
-				if (issue.getHistories().size() > 0) {
-					for (HistoryObject history : issue.getHistories()) {
+				if (unplanned.getHistories().size() > 0) {
+					for (HistoryObject history : unplanned.getHistories()) {
 						if (history.getDescription().length() > 0) {
 							IssueHistories.add(new IssueHistoryList(history));
 						}
@@ -103,7 +91,7 @@ public class ShowIssueHistoryAction extends PermissionAction {
 			}
 		}
 
-		public IssueHistoryUI(StoryObject story) throws SQLException {
+		public IssueHistoryUI(StoryObject story) {
 			if (story != null) {
 				Id = story.getId();
 				Link = "";

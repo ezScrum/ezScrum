@@ -409,6 +409,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public boolean delete() {
+		HistoryDAO.getInstance().deleteByIssue(mId, IssueTypeEnum.TYPE_TASK);
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;
