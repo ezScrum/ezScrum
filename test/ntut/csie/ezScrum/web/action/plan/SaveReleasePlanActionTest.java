@@ -7,12 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -112,11 +112,11 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount() + 1));
-    	assertEquals(Integer.toString(mCR.getReleaseCount() + 1), releasePlan.getId());
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount() + 1);
+    	assertEquals(mCR.getReleaseCount() + 1, releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
-    	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
+    	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -168,11 +168,11 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證ReleasePlan資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
-    	assertEquals(Integer.toString(mCR.getReleaseCount()), releasePlan.getId());
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
+    	assertEquals(mCR.getReleaseCount(), releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
-    	assertEquals(format.format(StartDate), releasePlan.getStartDate());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDate());
+    	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -243,7 +243,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	Date StartDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 10);
     	Date EndDate = cal.getTime();
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
     	
     	String releaseName = "Release New Name";
     	String releaseDesc = "Release New Desc";
@@ -275,7 +275,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
     	assertNotNull(releasePlan);
     	
     	
@@ -326,7 +326,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	
     	// 驗證 ReleasePlan 資料
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper((ProjectObject) request.getSession().getAttribute("Project"));
-    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(Integer.toString(mCR.getReleaseCount()));
+    	ReleaseObject releasePlan = releasePlanHelper.getReleasePlan(mCR.getReleaseCount());
     	assertNotNull(releasePlan);
     	
     	// ============= release ==============

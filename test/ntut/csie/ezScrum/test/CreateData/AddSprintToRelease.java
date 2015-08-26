@@ -33,7 +33,7 @@ public class AddSprintToRelease {
 			
 			for (int j=0 ; j<mReleaseCount ; j++) {
 				String releaseID = Integer.toString(j+1);
-				createSprint(project, j, mCR.getReleases().get(i).getStartDate());
+				createSprint(project, j, mCR.getReleases().get(i).getStartDateString());
 				
 				for (int k=0 ; k<mEachCount ; k++) {
 					System.out.println("專案 " + projectName + ", 第 " + releaseID + " 個 release 加入 sprint-" + ( (j*mEachCount)+(k+1) ) + " 成功");
