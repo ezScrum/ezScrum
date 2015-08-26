@@ -79,12 +79,14 @@ public class UnplannedItemHelper {
 			SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mProject);
 			// if there is not current sprint, then get latest sprint
 			SprintObject sprint = sprintPlanHelper.getCurrentSprint();
-			unplanneds = getUnplannedsInSprint(sprint.getId());
-			selectedSprint = String.valueOf(sprint.getId());
-		}
-		// The project has no any sprint
-		else if (selectedSprint.equals("-1")) {
-			unplanneds = new ArrayList<UnplannedObject>();
+			// The project has no any sprint
+			if (sprint == null) {
+				unplanneds = new ArrayList<UnplannedObject>();
+				selectedSprint = "-1";
+			} else {
+				unplanneds = getUnplannedsInSprint(sprint.getId());
+				selectedSprint = String.valueOf(sprint.getId());
+			}
 		}
 		// Get select sprint unplanneds
 		else {
