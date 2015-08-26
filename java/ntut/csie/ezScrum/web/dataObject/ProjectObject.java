@@ -110,8 +110,8 @@ public class ProjectObject implements IBaseObject {
 	}
 
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object
+		JSONObject projectJson = new JSONObject();
+		projectJson
 		        .put(ProjectEnum.ID, mId)
 		        .put(ProjectEnum.NAME, mName)
 		        .put(ProjectEnum.DISPLAY_NAME, mDisplayName)
@@ -120,7 +120,7 @@ public class ProjectObject implements IBaseObject {
 		        .put(ProjectEnum.ATTATCH_MAX_SIZE, mAttachFileSize)
 		        .put(ProjectEnum.CREATE_TIME, mCreateTime)
 		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
-		return object;
+		return projectJson;
 	}
 	
 	public String toString() {

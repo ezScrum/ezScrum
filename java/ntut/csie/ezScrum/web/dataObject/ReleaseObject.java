@@ -242,14 +242,14 @@ public class ReleaseObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject release = new JSONObject();
+		JSONObject releaseJson = new JSONObject();
 		
 		JSONArray sprintJsonArray = new JSONArray();
 		for (SprintObject sprint : getSprints()) {
 			sprintJsonArray.put(sprint.toJSON());
 		}
 		
-		release.put(ReleaseEnum.ID, mId)
+		releaseJson.put(ReleaseEnum.ID, mId)
 				.put(ReleaseEnum.PROJECT_ID, mProjectId)
 				.put(ReleaseEnum.NAME, mName)
 				.put(ReleaseEnum.DESCRIPTION, mDescription)
@@ -258,7 +258,7 @@ public class ReleaseObject implements IBaseObject {
 				.put(ReleaseEnum.CREATE_TIME, mCreateTime)
 				.put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
 				.put("sprints", sprintJsonArray);
-		return release;
+		return releaseJson;
 	}
 
 }
