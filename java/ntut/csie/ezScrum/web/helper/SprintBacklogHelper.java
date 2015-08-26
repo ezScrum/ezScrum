@@ -7,6 +7,7 @@ import java.util.List;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
@@ -236,9 +237,10 @@ public class SprintBacklogHelper {
 			// 存在一 current sprint
 			stories = getStoriesSortedByImpInSprint();
 			currentSprintId = mSprintBacklogMapper.getSprintId();
-			totalStoryPoints = mSprintBacklogLogic.getTotalStoryPoints();
-			limitedPoint = mSprintBacklogMapper.getLimitedPoint();
-			totalTaskPoints = mSprintBacklogLogic.getTotalTaskPoints();
+			SprintObject sprint = mSprintBacklogMapper.getSprint();
+			totalStoryPoints = sprint.getTotalStoryPoints();
+			limitedPoint = sprint.getLimitedPoint();
+			totalTaskPoints = sprint.getTotalTaskPoints();
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mProject);

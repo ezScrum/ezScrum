@@ -91,8 +91,8 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
@@ -112,10 +112,10 @@ public class SprintObjectTest {
 
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
-		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
+		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
-		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
+		assertEquals(sprintGoal, sprintFromDB.getGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
@@ -141,8 +141,8 @@ public class SprintObjectTest {
 		String sprintDueDate = "2015/06/19";
 
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoPlace(sprintDemoPlace).setDemoDate(sprintDemoDate)
 				.save();
@@ -151,10 +151,10 @@ public class SprintObjectTest {
 
 		// assert
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersAmount());
-		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(membersNumbre, sprint.getMembers());
+		assertEquals(hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintGoal, sprint.getGoal());
 		assertEquals(sprintDailyInfo, sprint.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
@@ -207,18 +207,18 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 
 		assertNotSame(-1, sprint.getId());
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersAmount());
-		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(membersNumbre, sprint.getMembers());
+		assertEquals(hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintGoal, sprint.getGoal());
 		assertEquals(sprintDailyInfo, sprint.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
@@ -245,6 +245,140 @@ public class SprintObjectTest {
 		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/31")));
 		assertFalse(sprint.contains(DateUtil.dayFilter("2015/09/01")));
 	}
+	
+	@Test
+	public void testGetTotalStoryPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		assertEquals(6, sprint.getTotalStoryPoints());
+	}
+	
+	@Test
+	public void testGetStoryUnclosedPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		assertEquals(4.0, sprint.getStoryUnclosedPoints());
+	}
+	
+	@Test
+	public void testGetTotalTaskPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story1.getId())
+		     .setEstimate(4)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story2.getId())
+		     .setEstimate(5)
+		     .save();
+		
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story3.getId())
+		     .setEstimate(6)
+		     .save();
+		assertEquals(15.0, sprint.getTotalTaskPoints());
+	}
+	
+	@Test
+	public void testGetTaskRemainsPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story1.getId())
+		     .setEstimate(4)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story2.getId())
+		     .setEstimate(5)
+		     .save();
+		
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story3.getId())
+		     .setEstimate(6)
+		     .save();
+		assertEquals(15.0, sprint.getTaskRemainsPoints());
+	}
+	
+	@Test
+	public void testGetLimitedPoint() {
+		
+	}
 
 	@Test
 	public void testContainsStory() {
@@ -264,8 +398,8 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();

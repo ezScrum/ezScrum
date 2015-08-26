@@ -134,13 +134,13 @@ public class TagObject implements IBaseObject{
 
 	@Override
     public JSONObject toJSON() throws JSONException {
-		JSONObject tag = new JSONObject();
-		tag.put(TagEnum.ID, mId);
-		tag.put(TagEnum.NAME, mName);
-		tag.put(TagEnum.PROJECT_ID, mProjectId);
-		tag.put(TagEnum.CREATE_TIME, mCreateTime);
-		tag.put(TagEnum.UPDATE_TIME, mUpdateTime);
-	    return tag;
+		JSONObject tagJson = new JSONObject();
+		tagJson.put(TagEnum.ID, mId);
+		tagJson.put(TagEnum.NAME, mName);
+		tagJson.put(TagEnum.PROJECT_ID, mProjectId);
+		tagJson.put(TagEnum.CREATE_TIME, mCreateTime);
+		tagJson.put(TagEnum.UPDATE_TIME, mUpdateTime);
+	    return tagJson;
     }
 
 	public String toString() {

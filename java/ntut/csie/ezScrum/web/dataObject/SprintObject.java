@@ -20,10 +20,10 @@ public class SprintObject implements IBaseObject {
 	private long mProjectId = DEFAULT_VALUE;
 
 	private int mInterval = 0;
-	private int mMembersAmount = 0;
-	private int mHoursCanCommit = 0;
+	private int mMembers = 0;
+	private int mAvailableHours = 0;
 	private int mFocusFactor = 0;
-	private String mSprintGoal = "";
+	private String mGoal = "";
 	private Date mStartDate = new Date();
 	private Date mDemoDate = new Date();
 	private Date mDueDate = new Date();
@@ -48,13 +48,13 @@ public class SprintObject implements IBaseObject {
 		return this;
 	}
 
-	public SprintObject setMembers(int membersAmount) {
-		mMembersAmount = membersAmount;
+	public SprintObject setMembers(int members) {
+		mMembers = members;
 		return this;
 	}
 
-	public SprintObject setHoursCanCommit(int hoursCanCommit) {
-		mHoursCanCommit = hoursCanCommit;
+	public SprintObject setAvailableHours(int availableHours) {
+		mAvailableHours = availableHours;
 		return this;
 	}
 
@@ -63,8 +63,8 @@ public class SprintObject implements IBaseObject {
 		return this;
 	}
 
-	public SprintObject setSprintGoal(String sprintGoal) {
-		mSprintGoal = sprintGoal;
+	public SprintObject setGoal(String goal) {
+		mGoal = goal;
 		return this;
 	}
 
@@ -119,20 +119,20 @@ public class SprintObject implements IBaseObject {
 		return mInterval;
 	}
 
-	public int getMembersAmount() {
-		return mMembersAmount;
+	public int getMembers() {
+		return mMembers;
 	}
 
-	public int getHoursCanCommit() {
-		return mHoursCanCommit;
+	public int getAvailableHours() {
+		return mAvailableHours;
 	}
 
 	public int getFocusFactor() {
 		return mFocusFactor;
 	}
 
-	public String getSprintGoal() {
-		return mSprintGoal;
+	public String getGoal() {
+		return mGoal;
 	}
 
 	public String getStartDateString() {
@@ -220,10 +220,10 @@ public class SprintObject implements IBaseObject {
 		mSerialId = sprint.getSerialId();
 
 		setInterval(sprint.getInterval());
-		setMembers(sprint.getMembersAmount());
-		setHoursCanCommit(sprint.getHoursCanCommit());
+		setMembers(sprint.getMembers());
+		setAvailableHours(sprint.getAvailableHours());
 		setFocusFactor(sprint.getFocusFactor());
-		setSprintGoal(sprint.getSprintGoal());
+		setGoal(sprint.getGoal());
 		setStartDate(sprint.getStartDateString());
 		setDemoDate(sprint.getDemoDateString());
 		setDemoPlace(sprint.getDemoPlace());
@@ -270,6 +270,52 @@ public class SprintObject implements IBaseObject {
 	public static long getNextSprintId() {
 		return SprintDAO.getInstance().getNextSprintId();
 	}
+	
+	public double getLimitedPoint() {
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除改為只計算 aDay:hours can commit * focus factor
+		double limitedPoint = mAvailableHours* mFocusFactor * 0.01;
+		return limitedPoint;
+	}
+	
+	public double getTotalStoryPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getStoryUnclosedPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			if (story.getStatus() == StoryObject.STATUS_DONE) {
+				continue;
+			}
+			point += story.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getTotalTaskPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getTotalTaskPoints();
+		}
+		return point;
+	}
+	
+	public double getTaskRemainsPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getTaskRemainsPoints();
+		}
+		return point;
+	}
 
 	public String toString() {
 		try {
@@ -281,28 +327,30 @@ public class SprintObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject sprint = new JSONObject();
-		JSONArray stories = new JSONArray();
+		JSONObject sprintJson = new JSONObject();
+		JSONArray storyJsonArray = new JSONArray();
 
+		// sprint toJSON including stories to JSON
 		for (StoryObject story : getStories()) {
-			stories.put(story.getId());
+			storyJsonArray.put(story.toJSON());
 		}
 
-		sprint.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
+		sprintJson.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
 				.put(SprintEnum.START_DATE, getStartDateString())
 				.put(SprintEnum.DUE_DATE, getDueDateString())
 				.put(SprintEnum.INTERVAL, mInterval)
-				.put(SprintEnum.MEMBERS, mMembersAmount)
+				.put(SprintEnum.MEMBERS, mMembers)
 				.put(SprintEnum.SERIAL_ID, mSerialId)
-				.put(SprintEnum.GOAL, mSprintGoal)
-				.put(SprintEnum.AVAILABLE_HOURS, mHoursCanCommit)
+				.put(SprintEnum.GOAL, mGoal)
+				.put(SprintEnum.AVAILABLE_HOURS, mAvailableHours)
 				.put(SprintEnum.FOCUS_FACTOR, mFocusFactor)
 				.put(SprintEnum.DEMO_DATE, getDemoDateString())
 				.put(SprintEnum.DEMO_PLACE, mDemoPlace)
 				.put(SprintEnum.DAILY_INFO, mDailyInfo)
 				.put(SprintEnum.CREATE_TIME, mCreateTime)
 				.put(SprintEnum.UPDATE_TIME, mUpdateTime)
-				.put("stories", stories);
-		return sprint;
+				.put("totalStoryPoint", getTotalStoryPoints())
+				.put("stories", storyJsonArray);
+		return sprintJson;
 	}
 }

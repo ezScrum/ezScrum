@@ -235,24 +235,24 @@ public class ProjectObjectTest {
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
 		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -1))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
 				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 12)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
 		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -15))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
 				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -2)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
 		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -29))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
 				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -16)).setDemoPlace(sprintDemoPlace)
 				.save();
@@ -289,24 +289,24 @@ public class ProjectObjectTest {
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
 		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, 1))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, 1))
 				.setDueDate(getDate(today, 14)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 14)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
 		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, 15))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, 15))
 				.setDueDate(getDate(today, 28)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 28)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
 		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, 29))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, 29))
 				.setDueDate(getDate(today, 42)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 42)).setDemoPlace(sprintDemoPlace)
 				.save();
@@ -354,24 +354,24 @@ public class ProjectObjectTest {
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
 		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -1))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
 				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 12)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
 		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -15))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
 				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -2)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
 		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(getDate(today, -29))
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
 				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -16)).setDemoPlace(sprintDemoPlace)
 				.save();

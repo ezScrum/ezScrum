@@ -33,10 +33,10 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		long sprintSerialId = serialNumber.getSprintId() + 1;
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addInsertValue(SprintEnum.SERIAL_ID, sprintSerialId);
-		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
+		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersAmount());
-		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
+		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembers());
+		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
 		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
@@ -88,10 +88,10 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	public boolean update(SprintObject sprint) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
-		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getSprintGoal());
+		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembersAmount());
-		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getHoursCanCommit());
+		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembers());
+		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
 		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
@@ -170,10 +170,10 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		SprintObject sprint = new SprintObject(result.getLong(SprintEnum.ID),
 		        result.getLong(SprintEnum.SERIAL_ID),
 		        result.getLong(SprintEnum.PROJECT_ID));
-		sprint.setSprintGoal(result.getString(SprintEnum.GOAL))
+		sprint.setGoal(result.getString(SprintEnum.GOAL))
 		        .setInterval(result.getInt(SprintEnum.INTERVAL))
 		        .setMembers(result.getInt(SprintEnum.MEMBERS))
-		        .setHoursCanCommit(result.getInt(SprintEnum.AVAILABLE_HOURS))
+		        .setAvailableHours(result.getInt(SprintEnum.AVAILABLE_HOURS))
 		        .setFocusFactor(result.getInt(SprintEnum.FOCUS_FACTOR))
 		        .setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.START_DATE)))
 		        .setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DUE_DATE)))

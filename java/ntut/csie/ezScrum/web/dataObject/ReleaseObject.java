@@ -3,11 +3,14 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.ws.rs.PUT;
+
 import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -239,16 +242,23 @@ public class ReleaseObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject release = new JSONObject();
-		release.put(ReleaseEnum.ID, mId)
+		JSONObject releaseJson = new JSONObject();
+		
+		JSONArray sprintJsonArray = new JSONArray();
+		for (SprintObject sprint : getSprints()) {
+			sprintJsonArray.put(sprint.toJSON());
+		}
+		
+		releaseJson.put(ReleaseEnum.ID, mId)
 				.put(ReleaseEnum.PROJECT_ID, mProjectId)
 				.put(ReleaseEnum.NAME, mName)
 				.put(ReleaseEnum.DESCRIPTION, mDescription)
 				.put(ReleaseEnum.START_DATE, getStartDateString())
 				.put(ReleaseEnum.DUE_DATE, getDueDateString())
 				.put(ReleaseEnum.CREATE_TIME, mCreateTime)
-				.put(ReleaseEnum.UPDATE_TIME, mUpdateTime);
-		return release;
+				.put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
+				.put("sprints", sprintJsonArray);
+		return releaseJson;
 	}
 
 }

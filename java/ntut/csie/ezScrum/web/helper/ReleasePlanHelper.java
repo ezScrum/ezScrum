@@ -335,7 +335,7 @@ public class ReleasePlanHelper {
 				stringBuilder.append(sprint.getId());
 				stringBuilder.append("\',");
 				stringBuilder.append("Name:\'");
-				stringBuilder.append(translateSpecialChar.TranslateJSONChar(sprint.getSprintGoal()));
+				stringBuilder.append(translateSpecialChar.TranslateJSONChar(sprint.getGoal()));
 				stringBuilder.append("\',");
 				stringBuilder.append("StartDate:\'");
 				stringBuilder.append(sprint.getStartDateString());

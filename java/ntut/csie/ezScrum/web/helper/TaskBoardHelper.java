@@ -10,6 +10,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -75,8 +76,9 @@ public class TaskBoardHelper {
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
 			long currentSprintID = mSprintBacklogMapper.getSprintId();
-			double currentPoint = mSprintBacklogLogic.getStoryUnclosedPoints();
-			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
+			SprintObject sprint = mSprintBacklogMapper.getSprint();
+			double currentPoint = sprint.getStoryUnclosedPoints();
+			double currentHours = sprint.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 			long releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintID);

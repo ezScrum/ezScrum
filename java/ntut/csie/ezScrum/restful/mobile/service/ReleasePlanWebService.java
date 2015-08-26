@@ -2,28 +2,19 @@ package ntut.csie.ezScrum.restful.mobile.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ReleaseDocxObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.account.core.LogonException;
 
-import com.google.gson.Gson;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 public class ReleasePlanWebService extends ProjectWebService {
 	private ReleasePlanHelper mReleasePlanHelper;
-	private SprintPlanHelper mSprintPlanHelper;
 	private ProjectObject mProject;
 	
 	public ReleasePlanWebService(AccountObject user, String projectName) throws LogonException {
@@ -39,37 +30,37 @@ public class ReleasePlanWebService extends ProjectWebService {
 	private void initialize() {
 		mProject = getAllProjects().get(0);
 		mReleasePlanHelper = new ReleasePlanHelper(mProject);
-		mSprintPlanHelper = new SprintPlanHelper(mProject);
 	}
 
 	/**
 	 * 取得專案底下所有的Release plan
 	 * @return
+	 * @throws JSONException 
 	 */
-	public String getAllReleasePlan() {
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleases();
-		return new Gson().toJson(releaseDescs);
+	public String getAllReleasePlan() throws JSONException {
+		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleases();
+		JSONArray releaseJsonArray = new JSONArray();
+		for (ReleaseObject release : releases) {
+			releaseJsonArray.put(release.toJSON());
+		}
+		return releaseJsonArray.toString();
 	}
 	
 	/**
 	 * 取得專案底下所有的Release plan with all item
 	 * @return
 	 * @throws SQLException 
+	 * @throws JSONException 
 	 */
-	public String getAllReleasePlanWithAllItem() throws SQLException {
-		List<ReleaseObject> releaseDescs = mReleasePlanHelper.getReleases();
-		List<ReleaseObject> releases = new ArrayList<ReleaseObject>();
-		for (ReleaseObject releaseDesc : releaseDescs) {
-			ReleaseObject releaseObject = new ReleaseObject(releaseDesc);
-			List<SprintObject> sprints = releaseObject.getSprintPlan();
-			List<SprintObject> sprintsWithAllItem = new ArrayList<SprintObject>();
-			for (SprintObject sprint : sprints) {
-				sprintsWithAllItem.add(mSprintPlanHelper.getSprint(sprint.getId()));
-			}
-			releaseObject.setSprintPlan(sprintsWithAllItem);
-			releases.add(releaseObject);
+	public String getAllReleasePlanWithAllItem() throws JSONException {
+		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleases();
+		JSONObject wholeJson = new JSONObject();
+		JSONArray releaseJsonArray = new JSONArray();
+		for (ReleaseObject release : releases) {
+			releaseJsonArray.put(release.toJSON());
 		}
-		return new Gson().toJson(releases);
+		wholeJson.put("releases", releaseJsonArray);
+		return wholeJson.toString();
 	}
 
 	/**
@@ -79,38 +70,8 @@ public class ReleasePlanWebService extends ProjectWebService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getReleasePlan(String releaseId) throws SQLException {
-		HashMap<String, Double> totalStoryPoints = new HashMap<String, Double>();
-		HashMap<String, List<StoryObject>> stories = new HashMap<String, List<StoryObject>>();
-		LinkedHashMap<Long, List<TaskObject>> taskMap = new LinkedHashMap<Long, List<TaskObject>>();
-		// get sprints information of the release(release id)
-		ReleaseObject releasePlan = new ReleaseObject(mReleasePlanHelper.getReleasePlan(releaseId));
-		List<SprintObject> sprintPlanList = releasePlan.getSprintPlan();
-		return new Gson().toJson(getReleaseDocObject(releasePlan, sprintPlanList, stories, taskMap, totalStoryPoints));
-	}
-
-	/**
-	 * 將  StoryObject, TaskObject 輸出成 ReleaseDocxObject
-	 * @throws SQLException 
-	 */
-	private ReleaseDocxObject getReleaseDocObject(ReleaseObject releasePlan, List<SprintObject> sprints, HashMap<String, List<StoryObject>> stories,
-	        LinkedHashMap<Long, List<TaskObject>> taskMap, HashMap<String, Double> totalStoryPoints) throws SQLException {
-		ReleaseDocxObject releaseObject = new ReleaseDocxObject();
-		releaseObject.setReleasePlanDesc(releasePlan);
-		releaseObject.setSprintDescList(sprints);
-		if (sprints != null) {
-			for (SprintObject sprint : sprints) {	// set story, task, story points to release object
-				long sprintId = sprint.getId();
-				SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-				ArrayList<StoryObject> storyList = sprintBacklogLogic.getStoriesSortedByImpInSprint();
-				double total = sprintBacklogLogic.getTotalStoryPoints();	// the sum of story points
-				stories.put(String.valueOf(sprintId), storyList);
-				totalStoryPoints.put(String.valueOf(sprintId), total);
-			}
-			releaseObject.setTaskMap(taskMap);
-			releaseObject.setStories(stories);
-			releaseObject.setTotalStoryPoints(totalStoryPoints);
-		}
-		return releaseObject;
+	public String getReleasePlan(long releaseId) throws SQLException {
+		ReleaseObject release = mReleasePlanHelper.getReleasePlan(releaseId);
+		return release.toString();
 	}
 }
