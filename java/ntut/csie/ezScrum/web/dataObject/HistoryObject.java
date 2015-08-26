@@ -335,13 +335,13 @@ public class HistoryObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object.put(HistoryEnum.ID, getId())
+		JSONObject historyJson = new JSONObject();
+		historyJson.put(HistoryEnum.ID, getId())
 		        .put(HistoryEnum.ISSUE_ID, getIssueId())
 		        .put(HistoryEnum.ISSUE_TYPE, getIssueType())
 		        .put(HistoryEnum.HISTORY_TYPE, getHistoryType())
 		        .put(HistoryEnum.DESCRIPTION, getDescription())
 		        .put(HistoryEnum.CREATE_TIME, getCreateTime());
-		return object;
+		return historyJson;
 	}
 }

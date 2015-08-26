@@ -332,15 +332,15 @@ public class SprintObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject sprint = new JSONObject();
-		JSONArray stories = new JSONArray();
+		JSONObject sprintJson = new JSONObject();
+		JSONArray storyJsonArray = new JSONArray();
 
 		// sprint toJSON including stories to JSON
 		for (StoryObject story : getStories()) {
-			stories.put(story.toJSON());
+			storyJsonArray.put(story.toJSON());
 		}
 
-		sprint.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
+		sprintJson.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
 				.put(SprintEnum.START_DATE, getStartDateString())
 				.put(SprintEnum.DUE_DATE, getDueDateString())
 				.put(SprintEnum.INTERVAL, mInterval)
@@ -355,7 +355,7 @@ public class SprintObject implements IBaseObject {
 				.put(SprintEnum.CREATE_TIME, mCreateTime)
 				.put(SprintEnum.UPDATE_TIME, mUpdateTime)
 				.put("totalStoryPoint", getTotalStoryPoints())
-				.put("stories", stories);
-		return sprint;
+				.put("stories", storyJsonArray);
+		return sprintJson;
 	}
 }

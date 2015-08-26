@@ -349,24 +349,24 @@ public class StoryObject implements IBaseObject {
 	
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject story = new JSONObject();
-		JSONArray tasks = new JSONArray();
-		JSONArray histories = new JSONArray();
-		JSONArray tags = new JSONArray();
+		JSONObject storyJson = new JSONObject();
+		JSONArray taskJsonArray = new JSONArray();
+		JSONArray historyJsonArray = new JSONArray();
+		JSONArray tagJsonArray = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.toJSON());
+			taskJsonArray.put(task.toJSON());
 		}
 		
 		for (HistoryObject history : getHistories()) {
-			histories.put(history.toJSON());
+			historyJsonArray.put(history.toJSON());
 		}
 		
 		for (TagObject tag : getTags()) {
-			tags.put(tag.toJSON());
+			tagJsonArray.put(tag.toJSON());
 		}
 		
-		story
+		storyJson
 			.put(StoryEnum.ID, mId)
 			.put(StoryEnum.NAME, mName)
 			.put(StoryEnum.NOTES, mNotes)
@@ -377,11 +377,11 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.STATUS, mStatus)
 			.put(StoryEnum.SPRINT_ID, mSprintId)
 			.put("totalTaskPoint", getTotalTaskPoints())
-			.put("tasks", tasks)
-			.put("histories", histories)
-			.put("tags", tags);
+			.put("tasks", taskJsonArray)
+			.put("histories", historyJsonArray)
+			.put("tags", tagJsonArray);
 		
-		return story;
+		return storyJson;
 	}
 	
 	private boolean exists() {
