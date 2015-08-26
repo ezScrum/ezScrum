@@ -35,15 +35,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
-
-	/**
-	 * clean previous action info
-	 */
-	/*	private void cleanActionInformation(){
-			clearRequestParameters();
-			response.reset();
-		}*/
-
+	
 	/**
 	 * 取得一般使用者的UserSession
 	 * 

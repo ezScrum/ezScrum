@@ -233,22 +233,26 @@ public class TaskBoard {
 
 	public String getStoryPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		return sprint.getStoryUnclosedPoints()
-		        + " / "
-		        + sprint.getTotalStoryPoints();
+		if(sprint == null){
+			return "0.0 / 0.0";
+		}
+		return sprint.getStoryUnclosedPoints() + " / " + sprint.getTotalStoryPoints();
 	}
 
 	public String getTaskPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		return sprint.getTaskRemainsPoints()
-		        + " / "
-		        + sprint.getTotalTaskPoints();
+		if(sprint == null){
+			return "0.0 / 0.0";
+		}
+		return sprint.getTaskRemainsPoints() + " / " + sprint.getTotalTaskPoints();
 	}
 
 	public String getInitialStoryPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[0]) + " / "
-		        + sprint.getLimitedPoint();
+		if(sprint == null){
+			return "0.0 / 0.0";
+		}
+		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[0]) + " / " + sprint.getLimitedPoint();
 	}
 
 	public String getInitialTaskPoint() {
