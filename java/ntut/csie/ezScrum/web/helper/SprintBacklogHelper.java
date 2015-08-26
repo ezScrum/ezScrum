@@ -226,7 +226,7 @@ public class SprintBacklogHelper {
 		// 建立 this Sprint Store 的資料
 		ArrayList<StoryObject> stories = null;
 		long currentSprintId = 0;
-		int releaseId = 0;
+		long releaseId = 0;
 		double totalStoryPoints = 0.0d;
 		double limitedPoint = 0.0d;
 		double totalTaskPoints = 0.0d;
@@ -242,8 +242,7 @@ public class SprintBacklogHelper {
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mProject);
-			releaseId = Integer.parseInt(releasePlanHelper
-					.getReleaseIdBySprintId(currentSprintId));
+			releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintId);
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 
