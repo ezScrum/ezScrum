@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ReleaseObject;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -15,6 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
@@ -117,7 +117,7 @@ public class ReleasePlanWebServiceTest {
 	}
 	
 	@Test
-	public void testgetReleasePlan() throws LogonException, JSONException, SQLException {
+	public void testGetReleasePlan() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = mProject.getName();
@@ -135,8 +135,8 @@ public class ReleasePlanWebServiceTest {
 			JSONObject releasePlanDescJSONObject = new JSONObject(releaseJSONObject.get("releasePlanDesc").toString());
 			assertEquals(releaselist.get(i).getId(), releasePlanDescJSONObject.get("id"));
 			assertEquals(releaselist.get(i).getName(), releasePlanDescJSONObject.get("name"));
-			assertEquals(releaselist.get(i).getStartDate(), releasePlanDescJSONObject.get("startDate"));
-			assertEquals(releaselist.get(i).getDueDate(), releasePlanDescJSONObject.get("endDate"));
+			assertEquals(releaselist.get(i).getStartDateString(), releasePlanDescJSONObject.get("startDate"));
+			assertEquals(releaselist.get(i).getDueDateString(), releasePlanDescJSONObject.get("endDate"));
 			assertEquals(releaselist.get(i).getDescription(), releasePlanDescJSONObject.get("description"));
 		}
 	}

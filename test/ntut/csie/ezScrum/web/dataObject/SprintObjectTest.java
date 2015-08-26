@@ -245,6 +245,140 @@ public class SprintObjectTest {
 		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/31")));
 		assertFalse(sprint.contains(DateUtil.dayFilter("2015/09/01")));
 	}
+	
+	@Test
+	public void testGetTotalStoryPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		assertEquals(6, sprint.getTotalStoryPoints());
+	}
+	
+	@Test
+	public void testGetStoryUnclosedPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		assertEquals(4.0, sprint.getStoryUnclosedPoints());
+	}
+	
+	@Test
+	public void testGetTotalTaskPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story1.getId())
+		     .setEstimate(4)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story2.getId())
+		     .setEstimate(5)
+		     .save();
+		
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story3.getId())
+		     .setEstimate(6)
+		     .save();
+		assertEquals(15.0, sprint.getTotalTaskPoints());
+	}
+	
+	@Test
+	public void testGetTaskRemainsPoints() {
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setDueDate("2015/08/31");
+		sprint.save();
+		
+		StoryObject story1 = new StoryObject(mProjectId);
+		story1.setSprintId(sprint.getId())
+			  .setEstimate(1)
+			  .save();
+		
+		StoryObject story2 = new StoryObject(mProjectId);
+		story2.setSprintId(sprint.getId())
+			  .setEstimate(2)
+			  .setStatus(StoryObject.STATUS_DONE)
+			  .save();
+		
+		StoryObject story3 = new StoryObject(mProjectId);
+		story3.setSprintId(sprint.getId())
+			  .setEstimate(3)
+			  .save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story1.getId())
+		     .setEstimate(4)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story2.getId())
+		     .setEstimate(5)
+		     .save();
+		
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story3.getId())
+		     .setEstimate(6)
+		     .save();
+		assertEquals(15.0, sprint.getTaskRemainsPoints());
+	}
+	
+	@Test
+	public void testGetLimitedPoint() {
+		
+	}
 
 	@Test
 	public void testContainsStory() {

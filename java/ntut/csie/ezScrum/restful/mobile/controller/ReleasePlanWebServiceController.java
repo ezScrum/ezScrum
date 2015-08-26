@@ -11,6 +11,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONException;
+
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.restful.mobile.support.InformationDecoder;
 import ntut.csie.jcis.account.core.LogonException;
@@ -28,7 +30,7 @@ public class ReleasePlanWebServiceController {
 	public String getReleasePlan(@QueryParam("username") String username,
 								 @QueryParam("password") String password,
 								 @PathParam("projectName") String projectName, 
-								 @PathParam("releaseId") String releaseId) {
+								 @PathParam("releaseId") long releaseId) {
 		String jsonString = "";
 		try {
 			InformationDecoder decodeAccount = new InformationDecoder();
@@ -81,6 +83,11 @@ public class ReleasePlanWebServiceController {
 								"method: getAllReleasePlan, " +
 								"exception: " + e.toString());
 			e.printStackTrace();
+		} catch (JSONException e) {
+			System.out.println("class: ReleasePlanWebServiceController, " +
+					"method: getAllReleasePlan, " +
+					"exception: " + e.toString());
+			e.printStackTrace();
 		}
 		return jsonString;
 	}
@@ -111,10 +118,10 @@ public class ReleasePlanWebServiceController {
 								"method: getAllReleasePlan, " +
 								"exception: " + e.toString());
 			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (JSONException e) {
 			System.out.println("class: ReleasePlanWebServiceController, " +
-								"method: getAllReleasePlanWithAllItem, " +
-								"exception: " + e.toString());
+					"method: getAllReleasePlan, " +
+					"exception: " + e.toString());
 			e.printStackTrace();
 		}
 		return jsonString;

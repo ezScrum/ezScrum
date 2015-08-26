@@ -229,6 +229,27 @@ public class StoryObject implements IBaseObject {
 		return tagsId;
 	}
 	
+	public double getTotalTaskPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			point += task.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getTaskRemainsPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			if (task.getStatus() == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			point += task.getRemains();
+		}
+		return point;
+	}
+	
 	public void removeTag(long tagId) {
 		if (mCacheTagsId.size() == 0) {
 			mCacheTagsId = getTagsId();
@@ -355,6 +376,7 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.ESTIMATE, mEstimate)
 			.put(StoryEnum.STATUS, mStatus)
 			.put(StoryEnum.SPRINT_ID, mSprintId)
+			.put("totalTaskPoint", getTotalTaskPoints())
 			.put("tasks", tasks)
 			.put("histories", histories)
 			.put("tags", tags);

@@ -270,6 +270,52 @@ public class SprintObject implements IBaseObject {
 	public static long getNextSprintId() {
 		return SprintDAO.getInstance().getNextSprintId();
 	}
+	
+	public double getLimitedPoint() {
+		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
+		// 的機制移除改為只計算 aDay:hours can commit * focus factor
+		double limitedPoint = mHoursCanCommit* mFocusFactor * 0.01;
+		return limitedPoint;
+	}
+	
+	public double getTotalStoryPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getStoryUnclosedPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			if (story.getStatus() == StoryObject.STATUS_DONE) {
+				continue;
+			}
+			point += story.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getTotalTaskPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getTotalTaskPoints();
+		}
+		return point;
+	}
+	
+	public double getTaskRemainsPoints() {
+		ArrayList<StoryObject> stories = getStories();
+		double point = 0;
+		for (StoryObject story : stories) {
+			point += story.getTaskRemainsPoints();
+		}
+		return point;
+	}
 
 	public String toString() {
 		try {
@@ -284,8 +330,9 @@ public class SprintObject implements IBaseObject {
 		JSONObject sprint = new JSONObject();
 		JSONArray stories = new JSONArray();
 
+		// sprint toJSON including stories to JSON
 		for (StoryObject story : getStories()) {
-			stories.put(story.getId());
+			stories.put(story.toJSON());
 		}
 
 		sprint.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
@@ -302,6 +349,7 @@ public class SprintObject implements IBaseObject {
 				.put(SprintEnum.DAILY_INFO, mDailyInfo)
 				.put(SprintEnum.CREATE_TIME, mCreateTime)
 				.put(SprintEnum.UPDATE_TIME, mUpdateTime)
+				.put("totalStoryPoint", getTotalStoryPoints())
 				.put("stories", stories);
 		return sprint;
 	}
