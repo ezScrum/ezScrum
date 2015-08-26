@@ -185,10 +185,10 @@ public class SprintBacklogWebServiceControllerTest {
 		assertEquals(currentSprint.getProjectId(), wholeJson.getLong(SprintUtil.TAG_PROJECT_ID));
 		assertEquals(currentSprint.getStartDateString(), wholeJson.getString(SprintUtil.TAG_START_DATE));
 		assertEquals(currentSprint.getInterval(), wholeJson.getLong(SprintUtil.TAG_INTERVAL));
-		assertEquals(currentSprint.getMembersAmount(), wholeJson.getLong(SprintUtil.TAG_MEMBERS));
+		assertEquals(currentSprint.getMembers(), wholeJson.getLong(SprintUtil.TAG_MEMBERS));
 		assertEquals(currentSprint.getSerialId(), wholeJson.getLong(SprintUtil.TAG_SERIAL_ID));
-		assertEquals(currentSprint.getSprintGoal(), wholeJson.getString(SprintUtil.TAG_SPRINT_GOAL));
-		assertEquals(currentSprint.getHoursCanCommit(), wholeJson.getLong(SprintUtil.TAG_HOURS_CAN_COMMIT));
+		assertEquals(currentSprint.getGoal(), wholeJson.getString(SprintUtil.TAG_SPRINT_GOAL));
+		assertEquals(currentSprint.getAvailableHours(), wholeJson.getLong(SprintUtil.TAG_HOURS_CAN_COMMIT));
 		assertEquals(currentSprint.getFocusFactor(), wholeJson.getLong(SprintUtil.TAG_FOCUS_FACTOR));
 		assertEquals(currentSprint.getDemoDateString(), wholeJson.getString(SprintUtil.TAG_DEMO_DATE));
 		assertEquals(currentSprint.getDemoPlace(), wholeJson.getString(SprintUtil.TAG_DEMO_PLACE));

@@ -92,13 +92,13 @@ public class ConvertSprintBacklogTest {
 		// assert sprint data
 		JSONObject responseJson = new JSONObject(response);
 		assertEquals(sprint.getId(), responseJson.getLong("id"));
-		assertEquals(sprint.getSprintGoal(), responseJson.getString("sprintGoal"));
+		assertEquals(sprint.getGoal(), responseJson.getString("sprintGoal"));
 		assertEquals(sprint.getStartDateString(), responseJson.getString("startDate"));
 		assertEquals(sprint.getDemoDateString(), responseJson.getString("demoDate"));
 		assertEquals(sprint.getDueDateString(), responseJson.getString("dueDate"));
 		assertEquals(sprint.getInterval(), responseJson.getInt("interval"));
-		assertEquals(sprint.getMembersAmount(), responseJson.getInt("members"));
-		assertEquals(sprint.getHoursCanCommit(), responseJson.getInt("hoursCanCommit"));
+		assertEquals(sprint.getMembers(), responseJson.getInt("members"));
+		assertEquals(sprint.getAvailableHours(), responseJson.getInt("hoursCanCommit"));
 		assertEquals(sprint.getDailyInfo(), responseJson.getString("dailyMeeting"));
 		assertEquals(sprint.getDemoPlace(), responseJson.getString("demoPlace"));
 		
@@ -123,13 +123,13 @@ public class ConvertSprintBacklogTest {
 			SprintObject sprint = mSprints.get(i);
 			
 			assertEquals(sprint.getId(), sprintJson.getLong("id"));
-			assertEquals(sprint.getSprintGoal(), sprintJson.getString("sprintGoal"));
+			assertEquals(sprint.getGoal(), sprintJson.getString("sprintGoal"));
 			assertEquals(sprint.getStartDateString(), sprintJson.getString("startDate"));
 			assertEquals(sprint.getDemoDateString(), sprintJson.getString("demoDate"));
 			assertEquals(sprint.getDueDateString(), sprintJson.getString("dueDate"));
 			assertEquals(sprint.getInterval(), sprintJson.getInt("interval"));
-			assertEquals(sprint.getMembersAmount(), sprintJson.getInt("members"));
-			assertEquals(sprint.getHoursCanCommit(), sprintJson.getInt("hoursCanCommit"));
+			assertEquals(sprint.getMembers(), sprintJson.getInt("members"));
+			assertEquals(sprint.getAvailableHours(), sprintJson.getInt("hoursCanCommit"));
 			assertEquals(sprint.getDailyInfo(), sprintJson.getString("dailyMeeting"));
 			assertEquals(sprint.getDemoPlace(), sprintJson.getString("demoPlace"));
 		}

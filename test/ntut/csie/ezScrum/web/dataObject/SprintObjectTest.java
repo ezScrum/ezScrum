@@ -91,8 +91,8 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
@@ -112,10 +112,10 @@ public class SprintObjectTest {
 
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
-		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
+		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
-		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
+		assertEquals(sprintGoal, sprintFromDB.getGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
@@ -141,8 +141,8 @@ public class SprintObjectTest {
 		String sprintDueDate = "2015/06/19";
 
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoPlace(sprintDemoPlace).setDemoDate(sprintDemoDate)
 				.save();
@@ -151,10 +151,10 @@ public class SprintObjectTest {
 
 		// assert
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersAmount());
-		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(membersNumbre, sprint.getMembers());
+		assertEquals(hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintGoal, sprint.getGoal());
 		assertEquals(sprintDailyInfo, sprint.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
@@ -207,18 +207,18 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 
 		assertNotSame(-1, sprint.getId());
 		assertEquals(sprintInterval, sprint.getInterval());
-		assertEquals(membersNumbre, sprint.getMembersAmount());
-		assertEquals(hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(membersNumbre, sprint.getMembers());
+		assertEquals(hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintGoal, sprint.getGoal());
 		assertEquals(sprintDailyInfo, sprint.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
@@ -398,8 +398,8 @@ public class SprintObjectTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setMembers(membersNumbre)
-				.setHoursCanCommit(hoursCanCommit).setFocusFactor(focusFactor)
-				.setSprintGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
 				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();

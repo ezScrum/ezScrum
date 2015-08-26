@@ -24,9 +24,9 @@ public class SprintPlanMapper {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.setInterval(sprintInfo.interval)
 		        .setMembers(sprintInfo.membersAmount)
-		        .setHoursCanCommit(sprintInfo.hoursCanCommit)
+		        .setAvailableHours(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
-		        .setSprintGoal(sprintInfo.sprintGoal)
+		        .setGoal(sprintInfo.sprintGoal)
 		        .setStartDate(sprintInfo.startDate)
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
@@ -72,9 +72,9 @@ public class SprintPlanMapper {
 		SprintObject sprint = SprintObject.get(sprintInfo.id);
 		sprint.setInterval(sprintInfo.interval)
 		        .setMembers(sprintInfo.membersAmount)
-		        .setHoursCanCommit(sprintInfo.hoursCanCommit)
+		        .setAvailableHours(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
-		        .setSprintGoal(sprintInfo.sprintGoal)
+		        .setGoal(sprintInfo.sprintGoal)
 		        .setStartDate(sprintInfo.startDate)
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
