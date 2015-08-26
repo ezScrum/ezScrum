@@ -115,7 +115,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintsId().get(0), sprintInfo.SprintGoal);
 		assertEquals(STORY_COUNT * STORY_EST, storyPoint.intValue());
 		assertEquals(STORY_COUNT * TASK_COUNT * TASK_EST, taskPoint.intValue());
-		assertEquals("Release #0", sprintInfo.ReleaseID);
+		assertEquals("Release #-1", sprintInfo.ReleaseID);
 		assertEquals(true, sprintInfo.isCurrentSprint);
 	}
 
@@ -161,7 +161,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 		assertEquals(mCS.TEST_SPRINT_GOAL + mCS.getSprintsId().get(0), sprintInfo.SprintGoal);
 		assertEquals((STORY_COUNT - 1) * STORY_EST, storyPoint.intValue());				// done 1個story
 		assertEquals((STORY_COUNT * TASK_COUNT - 2) * TASK_EST, taskPoint.intValue());	// done 2個task
-		assertEquals("Release #0", sprintInfo.ReleaseID);
+		assertEquals("Release #-1", sprintInfo.ReleaseID);
 		assertEquals(true, sprintInfo.isCurrentSprint);
 	}
 }

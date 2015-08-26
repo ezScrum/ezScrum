@@ -79,11 +79,11 @@ public class TaskBoardHelper {
 			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-			String releaseID = releasePlanHelper.getReleaseIdBySprintId(currentSprintID);
+			long releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintID);
 			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
-			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseID, isCurrentSprint);
+			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseId, isCurrentSprint);
 		} else {
 			sprintInfoUI = new SprintInfoUI();
 		}
@@ -132,12 +132,12 @@ public class TaskBoardHelper {
 
 		public SprintInfoUI() {}
 
-		public SprintInfoUI(long id, String goal, double sp, double tp, String rid, boolean current) {
+		public SprintInfoUI(long id, String goal, double sp, double tp, long releaseId, boolean current) {
 			ID = id;
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;
-			ReleaseID = "Release #" + rid;
+			ReleaseID = "Release #" + releaseId;
 			isCurrentSprint = current;
 		}
 	}
