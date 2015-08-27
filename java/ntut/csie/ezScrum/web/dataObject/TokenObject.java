@@ -163,6 +163,7 @@ public class TokenObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		TokenDAO.getInstance().update(this);
 	}
 

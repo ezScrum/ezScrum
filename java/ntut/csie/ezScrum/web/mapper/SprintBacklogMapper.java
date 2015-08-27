@@ -209,21 +209,11 @@ public class SprintBacklogMapper {
 		return DateUtil.dayFilter(mSprint.getDueDateString());
 	}
 
-	public double getLimitedPoint() {
-		// 將判斷 aDay:hours can commit 為 0 時, 計算 sprint 天數 * focus factor
-		// 的機制移除改為只計算 aDay:hours can commit * focus factor
-		double limitedPoint = 0;
-		if (mSprint != null) {
-			limitedPoint = mSprint.getHoursCanCommit() * mSprint.getFocusFactor() * 0.01;
-		}
-		return limitedPoint;
-	}
-
 	public String getSprintGoal() {
 		if (mSprint == null) {
 			return "";
 		}
-		return mSprint.getSprintGoal();
+		return mSprint.getGoal();
 	}
 	
 	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {

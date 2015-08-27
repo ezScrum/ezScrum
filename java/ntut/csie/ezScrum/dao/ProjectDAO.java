@@ -154,15 +154,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 
 	@Override
 	public boolean update(ProjectObject project) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.DISPLAY_NAME, project.getDisplayName());
 		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
 		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
 		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, project.getUpdateTime());
 		valueSet.addEqualCondition(ProjectEnum.ID, project.getId());
 		String query = valueSet.getUpdateQuery();
 

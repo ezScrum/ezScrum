@@ -7,12 +7,12 @@ import java.util.Date;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -49,13 +49,13 @@ public class ProductBacklogMapper {
 	}
 
 	// get all stories by release
-	public ArrayList<StoryObject> getStoriesByRelease(String releaseId) {
+	public ArrayList<StoryObject> getStoriesByRelease(long releaseId) {
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-		IReleasePlanDesc releasePlanDesc = releasePlanHelper.getReleasePlan(releaseId);
+		ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);
 		
 		ArrayList<StoryObject> stories = new ArrayList<StoryObject>();
 
-		for (SprintObject sprint : releasePlanDesc.getSprints()) {
+		for (SprintObject sprint : release.getSprints()) {
 			ArrayList<StoryObject> storiesInSprint = sprint.getStories();
 			for (StoryObject story : storiesInSprint) {
 				stories.add(story);

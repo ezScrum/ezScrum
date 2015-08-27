@@ -27,7 +27,7 @@ public class ModifyAccountAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		AccountHelper accountHelper = new AccountHelper(session);
+		AccountHelper accountHelper = new AccountHelper();
 		AccountObject newAccount = null;
 		AccountInfo accountInfo = new AccountInfo();
 

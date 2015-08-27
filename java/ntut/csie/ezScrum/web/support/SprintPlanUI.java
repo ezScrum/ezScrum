@@ -38,12 +38,12 @@ public class SprintPlanUI {
 
 		public SprintPlanItem(SprintObject sprint) {
 			this.Id = String.valueOf(sprint.getId());
-			this.Goal = sprint.getSprintGoal();
+			this.Goal = sprint.getGoal();
 			this.StartDate = sprint.getStartDateString();
 			this.Interval = String.valueOf(sprint.getInterval());
 			this.DueDate = sprint.getDueDateString();
-			this.Members = String.valueOf(sprint.getMembersAmount());
-			this.AvaliableDays = sprint.getHoursCanCommit() + " hours";
+			this.Members = String.valueOf(sprint.getMembers());
+			this.AvaliableDays = sprint.getAvailableHours() + " hours";
 			this.FocusFactor = String.valueOf(sprint.getFocusFactor());
 			this.DailyScrum = sprint.getDailyInfo();
 			this.DemoDate = sprint.getDemoDateString();

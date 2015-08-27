@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -90,9 +89,9 @@ public class SprintDAOTest {
 		SprintObject sprint = new SprintObject(sProjectId);
 		sprint.setInterval(sprintInterval)
 		      .setMembers(membersNumbre)
-		      .setHoursCanCommit(hoursCanCommit)
+		      .setAvailableHours(hoursCanCommit)
 		      .setFocusFactor(focusFactor)
-		      .setSprintGoal(sprintGoal)
+		      .setGoal(sprintGoal)
 		      .setStartDate(sprintStartDate)
 		      .setDailyInfo(sprintDailyInfo)
 		      .setDemoDate(sprintDemoDate)
@@ -118,10 +117,10 @@ public class SprintDAOTest {
 		
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
-		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
+		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
-		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
+		assertEquals(sprintGoal, sprintFromDB.getGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
@@ -135,10 +134,10 @@ public class SprintDAOTest {
 		// assert
 		assertNotNull(sprint);
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembersAmount());
-		assertEquals(150, sprint.getHoursCanCommit());
+		assertEquals(4, sprint.getMembers());
+		assertEquals(150, sprint.getAvailableHours());
 		assertEquals(80, sprint.getFocusFactor());
-		assertEquals("TEST_SPRINT_GOAL", sprint.getSprintGoal());
+		assertEquals("TEST_SPRINT_GOAL", sprint.getGoal());
 		assertEquals("TEST_SPRINT_DAILY_INFO", sprint.getDailyInfo());
 		assertEquals("TEST_SPRINT_DEMO_PLACE", sprint.getDemoPlace());
 		assertEquals("2015/05/28", sprint.getStartDateString());
@@ -163,9 +162,9 @@ public class SprintDAOTest {
 		// update data
 		sprint.setInterval(sprintInterval)
 		        .setMembers(membersNumbre)
-		        .setHoursCanCommit(hoursCanCommit)
+		        .setAvailableHours(hoursCanCommit)
 		        .setFocusFactor(focusFactor)
-		        .setSprintGoal(sprintGoal)
+		        .setGoal(sprintGoal)
 		        .setStartDate(sprintStartDate)
 		        .setDailyInfo(sprintDailyInfo)
 		        .setDemoPlace(sprintDemoPlace)
@@ -176,24 +175,13 @@ public class SprintDAOTest {
 		// assert 
 		assertTrue(updateStatus);
 
-		// 從資料庫撈出 Sprint
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(SprintEnum.TABLE_NAME);
-		valueSet.addEqualCondition(SprintEnum.ID, sprint.getId());
-
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		SprintObject sprintFromDB = null;
-		if (result.next()) {
-			sprintFromDB = SprintDAO.convert(result);
-		}
-		closeResultSet(result);
+		SprintObject sprintFromDB = SprintDAO.getInstance().get(mSprintId);
 
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembersAmount());
-		assertEquals(hoursCanCommit, sprintFromDB.getHoursCanCommit());
+		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
-		assertEquals(sprintGoal, sprintFromDB.getSprintGoal());
+		assertEquals(sprintGoal, sprintFromDB.getGoal());
 		assertEquals(sprintDailyInfo, sprintFromDB.getDailyInfo());
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
@@ -239,9 +227,9 @@ public class SprintDAOTest {
 		SprintObject sprint = new SprintObject(sProjectId);
 		sprint.setInterval(sprintInterval)
 		        .setMembers(membersNumbre)
-		        .setHoursCanCommit(hoursCanCommit)
+		        .setAvailableHours(hoursCanCommit)
 		        .setFocusFactor(focusFactor)
-		        .setSprintGoal(sprintGoal)
+		        .setGoal(sprintGoal)
 		        .setStartDate(sprintStartDate)
 		        .setDailyInfo(sprintDailyInfo)
 		        .setDemoDate(sprintDemoDate)
@@ -249,7 +237,7 @@ public class SprintDAOTest {
 
 		// call DAO
 		long sprintId = SprintDAO.getInstance().create(sprint);
-		assertNotSame(-1, sprintId);
+		assertTrue(sprintId > 0);
 		
 		return sprintId;
 	}

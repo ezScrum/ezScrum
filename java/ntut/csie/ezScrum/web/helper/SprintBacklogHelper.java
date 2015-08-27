@@ -7,6 +7,7 @@ import java.util.List;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
@@ -226,7 +227,7 @@ public class SprintBacklogHelper {
 		// 建立 this Sprint Store 的資料
 		ArrayList<StoryObject> stories = null;
 		long currentSprintId = 0;
-		int releaseId = 0;
+		long releaseId = 0;
 		double totalStoryPoints = 0.0d;
 		double limitedPoint = 0.0d;
 		double totalTaskPoints = 0.0d;
@@ -236,14 +237,14 @@ public class SprintBacklogHelper {
 			// 存在一 current sprint
 			stories = getStoriesSortedByImpInSprint();
 			currentSprintId = mSprintBacklogMapper.getSprintId();
-			totalStoryPoints = mSprintBacklogLogic.getTotalStoryPoints();
-			limitedPoint = mSprintBacklogMapper.getLimitedPoint();
-			totalTaskPoints = mSprintBacklogLogic.getTotalTaskPoints();
+			SprintObject sprint = mSprintBacklogMapper.getSprint();
+			totalStoryPoints = sprint.getTotalStoryPoints();
+			limitedPoint = sprint.getLimitedPoint();
+			totalTaskPoints = sprint.getTotalTaskPoints();
 
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
 					mProject);
-			releaseId = Integer.parseInt(releasePlanHelper
-					.getReleaseID(currentSprintId));
+			releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintId);
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
 

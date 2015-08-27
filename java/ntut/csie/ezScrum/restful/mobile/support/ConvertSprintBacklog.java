@@ -32,13 +32,13 @@ public class ConvertSprintBacklog {
 	public static String getSprintJSONString(SprintObject sprint) throws JSONException {
 		JSONObject sprintJson = new JSONObject();
 		sprintJson.put(SprintPlanUtil.TAG_ID, sprint.getId());
-		sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal());
+		sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getGoal());
 		sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
 		sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
 		sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
 		sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
-		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersAmount());
-		sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit());
+		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembers());
+		sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());
 		sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 		sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());
 		
@@ -59,13 +59,13 @@ public class ConvertSprintBacklog {
 		for (SprintObject sprint : sprints) {
 			JSONObject sprintJson = new JSONObject();
 			sprintJson.put(SprintPlanUtil.TAG_ID, sprint.getId());
-			sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getSprintGoal());
+			sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getGoal());
 			sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
 			sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
 			sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
 			sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
-			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembersAmount());
-			sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getHoursCanCommit());
+			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembers());
+			sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());
 			sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 			sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());
 			sprintsJsonArray.put(sprintJson);

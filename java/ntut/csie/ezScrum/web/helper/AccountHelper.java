@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -21,14 +20,8 @@ import ntut.csie.ezScrum.web.support.TranslateUtil;
 public class AccountHelper {
 	private final String SYSTEM = "system";
 	private AccountMapper mAccountMapper;
-	private IUserSession mUserSession;
 	public AccountHelper() {
 		mAccountMapper = new AccountMapper();
-	}
-	
-	public AccountHelper(IUserSession userSession) {
-		mUserSession = userSession;
-		mAccountMapper = new AccountMapper(mUserSession);
 	}
 
 	public String validateUsername(String username) {

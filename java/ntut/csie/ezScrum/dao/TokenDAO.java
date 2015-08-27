@@ -103,7 +103,7 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		valueSet.addTextFieldEqualCondition(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
-		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, token.getUpdateTime());
 		String query = valueSet.getUpdateQuery();
 		boolean success = mControl.executeUpdate(query);
 		return success;

@@ -51,7 +51,7 @@ public class AddUserAction extends Action {
 
 		if (isAdmin || hasPermission) {
 			try {
-				AccountHelper accountHelper = new AccountHelper(session);
+				AccountHelper accountHelper = new AccountHelper();
 				AccountObject account = accountHelper.addAssignedRole(id, projectId, scrumRole);
 				writer.write(accountHelper.getAccountXML(account));
 			} catch (IllegalArgumentException e) {

@@ -73,7 +73,7 @@ public class CreateSprint {
 			for (int j = 0; j < mSprintCount; j++) {
 				long index = (j + 1);
 				SprintObject sprint = new SprintObject(project.getId());
-				sprint.setSprintGoal(TEST_SPRINT_GOAL + index)
+				sprint.setGoal(TEST_SPRINT_GOAL + index)
 				.setStartDate(getDate(mToday, j * SPRINT_INTERVAL * 7 + j))
 				.setInterval(SPRINT_INTERVAL)
 				.setMembers(SPRINT_MEMBER)
@@ -82,7 +82,7 @@ public class CreateSprint {
 				.setDueDate(getDate(mToday, ((j + 1) * SPRINT_INTERVAL * 7 + j) - 1))
 				.setDemoPlace(SPRINT_DEMOPLACE)
 				.setDailyInfo(TEST_SPRINT_DAILY_INFO + index)
-				.setHoursCanCommit(SPRINT_HOURS_CAN_COMMIT)
+				.setAvailableHours(SPRINT_HOURS_CAN_COMMIT)
 				.save();
 				
 				long sprintId = sprint.getId();

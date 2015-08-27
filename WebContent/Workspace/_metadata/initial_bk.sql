@@ -1273,7 +1273,7 @@ CREATE TABLE `release` (
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   `start_date` DATETIME NOT NULL,
-  `demo_date` DATETIME NOT NULL,
+  `due_date` DATETIME NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,

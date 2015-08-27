@@ -267,68 +267,6 @@ public class SprintBacklogLogic {
 				+ oneDay - 1));
 	}
 
-	/**
-	 * Get all tasks estimate point in one sprint
-	 * 
-	 * @return total task estimate point
-	 */
-	public double getTotalTaskPoints() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksInSprint();
-		double point = 0;
-		for (TaskObject task : tasks) {
-			point += task.getEstimate();
-		}
-		return point;
-	}
-
-	/**
-	 * Get all stories estimate point in one sprint
-	 * 
-	 * @return total story estimate point
-	 */
-	public double getTotalStoryPoints() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
-		double point = 0;
-		for (StoryObject story : stories) {
-			point += story.getEstimate();
-		}
-		return point;
-	}
-
-	/**
-	 * Get tasks remains point in one sprint
-	 * 
-	 * @return task remains point
-	 */
-	public double getTaskRemainsPoints() {
-		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getTasksInSprint();
-		double point = 0;
-		for (TaskObject task : tasks) {
-			if (task.getStatus() == TaskObject.STATUS_DONE) {
-				continue;
-			}
-			point += task.getRemains();
-		}
-		return point;
-	}
-
-	/**
-	 * Get stories unclosed point in one sprint
-	 * 
-	 * @return story unclosed point
-	 */
-	public double getStoryUnclosedPoints() {
-		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
-		double point = 0;
-		for (StoryObject story : stories) {
-			if (story.getStatus() == StoryObject.STATUS_DONE) {
-				continue;
-			}
-			point += story.getEstimate();
-		}
-		return point;
-	}
-
 	public ArrayList<StoryObject> getStoriesSortedByIdInSprint() {
 		ArrayList<StoryObject> stories = mSprintBacklogMapper.getStoriesInSprint();
 		return sort(stories, "");

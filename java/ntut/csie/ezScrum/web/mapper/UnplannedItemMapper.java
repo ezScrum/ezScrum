@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
@@ -21,7 +20,6 @@ import org.jdom.Element;
 
 public class UnplannedItemMapper {
 	// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-	private boolean mUpdateFlag = true;
 	private IProject mProject;
 	private Configuration mConfig;
 	private IUserSession mUserSession;
@@ -99,7 +97,6 @@ public class UnplannedItemMapper {
  		editNote(unplannedId, estimate, partners, actualHour, notes, date, String.valueOf(sprintId));
 
 		// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-		mUpdateFlag = true;
 		mMantisService.closeConnect();
 		return unplannedId;
 	}
@@ -207,7 +204,6 @@ public class UnplannedItemMapper {
 			// 最後將修改的結果更新至DB
 			updateTagValue(unplanned);
 			// 因使用暫存的方式來加速存取速度,所以當有變動時則需更新
-			mUpdateFlag = true;
 			return true;
 		}
 		return false;

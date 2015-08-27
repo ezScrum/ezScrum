@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -15,7 +14,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -91,33 +93,33 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releasePlanDescs = mReleasePlanHelper.loadReleasePlansList();
+		List<ReleaseObject> releasePlanDescs = mReleasePlanHelper.getReleases();
 		JSONArray releasesJSONArray = new JSONArray(mReleasePlanWebService.getAllReleasePlan());
 		
 		for (int i = 0; i < mReleaseCount; i++) {
-			JSONObject releaseJSONObject = (JSONObject) releasesJSONArray.get(i);
-			assertEquals(releasePlanDescs.get(i).getID(), releaseJSONObject.get("ID"));
-			assertEquals(releasePlanDescs.get(i).getName(), releaseJSONObject.get("Name"));
-			assertEquals(releasePlanDescs.get(i).getDescription(), releaseJSONObject.get("Description"));
-			JSONArray sprintsJSONArray = new JSONArray(releaseJSONObject.get("SprintList").toString());
+			JSONObject releaseJson = (JSONObject) releasesJSONArray.get(i);
+			assertEquals(releasePlanDescs.get(i).getId(), releaseJson.get(ReleaseEnum.ID));
+			assertEquals(releasePlanDescs.get(i).getName(), releaseJson.get(ReleaseEnum.NAME));
+			assertEquals(releasePlanDescs.get(i).getDescription(), releaseJson.get(ReleaseEnum.DESCRIPTION));
+			JSONArray sprintJsonArray = new JSONArray(releaseJson.get("sprints").toString());
 			ArrayList<SprintObject> sprints = releasePlanDescs.get(i).getSprints();
 			// assert ReleasePlan中的SprintPlan
-			for(int j = 0; j < sprintsJSONArray.length(); j++) {
-				JSONObject sprintJSONObject = (JSONObject) sprintsJSONArray.get(j);
-				assertEquals(sprints.get(j).getId(), sprintJSONObject.getLong("mId"));
-				assertEquals(sprints.get(j).getSprintGoal(), sprintJSONObject.get("mSprintGoal"));
-				assertEquals(sprints.get(j).getInterval(), sprintJSONObject.get("mInterval"));
-				assertEquals(sprints.get(j).getMembersAmount(), sprintJSONObject.get("mMembersAmount"));
-				assertEquals(sprints.get(j).getFocusFactor(), sprintJSONObject.get("mFocusFactor"));
-				assertEquals(sprints.get(j).getHoursCanCommit(), sprintJSONObject.get("mHoursCanCommit"));
-				assertEquals(sprints.get(j).getDemoPlace(), sprintJSONObject.get("mDemoPlace"));
-				assertEquals(sprints.get(j).getDailyInfo(), sprintJSONObject.get("mDailyInfo"));
+			for(int j = 0; j < sprintJsonArray.length(); j++) {
+				JSONObject sprintJson = (JSONObject) sprintJsonArray.get(j);
+				assertEquals(sprints.get(j).getId(), sprintJson.getLong(SprintEnum.ID));
+				assertEquals(sprints.get(j).getGoal(), sprintJson.get(SprintEnum.GOAL));
+				assertEquals(sprints.get(j).getInterval(), sprintJson.get(SprintEnum.INTERVAL));
+				assertEquals(sprints.get(j).getMembers(), sprintJson.get(SprintEnum.MEMBERS));
+				assertEquals(sprints.get(j).getFocusFactor(), sprintJson.get(SprintEnum.FOCUS_FACTOR));
+				assertEquals(sprints.get(j).getAvailableHours(), sprintJson.get(SprintEnum.AVAILABLE_HOURS));
+				assertEquals(sprints.get(j).getDemoPlace(), sprintJson.get(SprintEnum.DEMO_PLACE));
+				assertEquals(sprints.get(j).getDailyInfo(), sprintJson.get(SprintEnum.DAILY_INFO));
 			}
 		}
 	}
 	
 	@Test
-	public void testgetReleasePlan() throws LogonException, JSONException, SQLException {
+	public void testGetReleasePlan() throws LogonException, JSONException, SQLException {
 		String username = "admin";
 		String userpwd = "admin";
 		String projectID = mProject.getName();
@@ -128,16 +130,15 @@ public class ReleasePlanWebServiceTest {
 		CS.exe();
 
 		// 從ReleasePlanHelper拿出release做assert
-		List<IReleasePlanDesc> releaselist = mReleasePlanHelper.loadReleasePlansList();
+		ArrayList<ReleaseObject> releases = mReleasePlanHelper.getReleases();
 		
 		for(int i = 0; i < mReleaseCount ; i++){
-			JSONObject releaseJSONObject = new JSONObject(mReleasePlanWebService.getReleasePlan(releaselist.get(i).getID()));
-			JSONObject releasePlanDescJSONObject = new JSONObject(releaseJSONObject.get("releasePlanDesc").toString());
-			assertEquals(releaselist.get(i).getID(), releasePlanDescJSONObject.get("id"));
-			assertEquals(releaselist.get(i).getName(), releasePlanDescJSONObject.get("name"));
-			assertEquals(releaselist.get(i).getStartDate(), releasePlanDescJSONObject.get("startDate"));
-			assertEquals(releaselist.get(i).getEndDate(), releasePlanDescJSONObject.get("endDate"));
-			assertEquals(releaselist.get(i).getDescription(), releasePlanDescJSONObject.get("description"));
+			JSONObject releaseJson = new JSONObject(mReleasePlanWebService.getReleasePlan(releases.get(i).getId()));
+			assertEquals(releases.get(i).getId(), releaseJson.get(ReleaseEnum.ID));
+			assertEquals(releases.get(i).getName(), releaseJson.get(ReleaseEnum.NAME));
+			assertEquals(releases.get(i).getStartDateString(), releaseJson.get(ReleaseEnum.START_DATE));
+			assertEquals(releases.get(i).getDueDateString(), releaseJson.get(ReleaseEnum.DUE_DATE));
+			assertEquals(releases.get(i).getDescription(), releaseJson.get(ReleaseEnum.DESCRIPTION));
 		}
 	}
 }

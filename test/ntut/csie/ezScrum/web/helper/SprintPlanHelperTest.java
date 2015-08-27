@@ -120,15 +120,15 @@ public class SprintPlanHelperTest {
 		// assert
 		assertEquals(thirdSprint.getId(), lastSprint.getId());
 		assertEquals(thirdSprint.getProjectId(), lastSprint.getProjectId());
-		assertEquals(thirdSprint.getMembersAmount(),
-				lastSprint.getMembersAmount());
+		assertEquals(thirdSprint.getMembers(),
+				lastSprint.getMembers());
 		assertEquals(thirdSprint.getInterval(), lastSprint.getInterval());
 		assertEquals(thirdSprint.getFocusFactor(), lastSprint.getFocusFactor());
-		assertEquals(thirdSprint.getHoursCanCommit(),
-				lastSprint.getHoursCanCommit());
+		assertEquals(thirdSprint.getAvailableHours(),
+				lastSprint.getAvailableHours());
 		assertEquals(thirdSprint.getStartDateString(), lastSprint.getStartDateString());
 		assertEquals(thirdSprint.getDemoDateString(), lastSprint.getDemoDateString());
-		assertEquals(thirdSprint.getSprintGoal(), lastSprint.getSprintGoal());
+		assertEquals(thirdSprint.getGoal(), lastSprint.getGoal());
 		assertEquals(thirdSprint.getDailyInfo(), lastSprint.getDailyInfo());
 		assertEquals(thirdSprint.getStories().size(), lastSprint.getStories()
 				.size());
@@ -144,14 +144,14 @@ public class SprintPlanHelperTest {
 		// assert
 		assertEquals(firstSprint.getId(), sprint.getId());
 		assertEquals(firstSprint.getProjectId(), sprint.getProjectId());
-		assertEquals(firstSprint.getMembersAmount(), sprint.getMembersAmount());
+		assertEquals(firstSprint.getMembers(), sprint.getMembers());
 		assertEquals(firstSprint.getInterval(), sprint.getInterval());
 		assertEquals(firstSprint.getFocusFactor(), sprint.getFocusFactor());
-		assertEquals(firstSprint.getHoursCanCommit(),
-				sprint.getHoursCanCommit());
+		assertEquals(firstSprint.getAvailableHours(),
+				sprint.getAvailableHours());
 		assertEquals(firstSprint.getStartDateString(), sprint.getStartDateString());
 		assertEquals(firstSprint.getDemoDateString(), sprint.getDemoDateString());
-		assertEquals(firstSprint.getSprintGoal(), sprint.getSprintGoal());
+		assertEquals(firstSprint.getGoal(), sprint.getGoal());
 		assertEquals(firstSprint.getDailyInfo(), sprint.getDailyInfo());
 		assertEquals(firstSprint.getStories().size(), sprint.getStories()
 				.size());

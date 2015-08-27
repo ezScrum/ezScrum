@@ -804,26 +804,6 @@ public class SprintBacklogMapperTest {
 	}
 	
 	@Test
-	public void testGetLimitedPoint() {
-		ProjectObject project = new ProjectObject("testGetLimitedPoint");
-		project.setAttachFileSize(2).save();
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
-		assertEquals(0, sprintBacklogMapper.getLimitedPoint());
-	}
-	
-	@Test
-	public void testGetLimitedPoint_WithCurrentSprint() {
-		ProjectObject project = new ProjectObject("testGetLimitedPoint");
-		project.setAttachFileSize(2).save();
-		SprintObject sprint = new SprintObject(project.getId());
-		sprint.setHoursCanCommit(80);
-		sprint.setFocusFactor(25);
-		sprint.save();
-		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project);
-		assertEquals(20, sprintBacklogMapper.getLimitedPoint());
-	}
-	
-	@Test
 	public void testGetSprintId() {
 		ProjectObject project = new ProjectObject("testGetSprintId");
 		project.setAttachFileSize(2).save();

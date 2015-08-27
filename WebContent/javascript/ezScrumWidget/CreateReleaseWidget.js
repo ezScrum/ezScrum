@@ -135,20 +135,6 @@ ezScrum.AddNewReleaseWidget = Ext.extend(Ext.Window, {
 	 *  新增Release所要顯示的一些基本資訊
 	 *-------------------------------------------------------------*/
 	loadIDForNewRelease: function() {
-		Ext.Ajax.request({
-			url: 'AjaxGetNewReleaseID.do',
-			success: function(response) {
-				ConfirmWidget.loadData(response);
-				if (ConfirmWidget.confirmAction()) {
-					var rs = newReleaseIDReader.readRecords(response.responseXML);
-					if (rs.success) {
-						var record = rs.records[0];
-						var newID = record.data['ID'];
-						ReleaseId.setValue(newID);
-					}
-				}
-			}
-		});
 		action.setValue("save");
 	},
 	/*-----------------------------------------------------------

@@ -3,8 +3,8 @@ package ntut.csie.ezScrum.test.CreateData;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -126,7 +126,7 @@ public class AddUserToRole {
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
 		AccountObject account = CA.getAccountList().get(index);
-		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
+		AccountHelper helper = new AccountHelper();
 		AccountInfo user = new AccountInfo();
 		user.id = account.getId();
 		user.username = account.getUsername();
@@ -139,7 +139,7 @@ public class AddUserToRole {
 
 	private void updateAccount(long projectId, String role) {
 		// ezScrum v1.8
-		AccountHelper helper = new AccountHelper(mConfig.getUserSession());
+		AccountHelper helper = new AccountHelper();
 		try {
 			helper.addAssignedRole(mAccount.getId(), projectId, role);
 		} catch (Exception e) {

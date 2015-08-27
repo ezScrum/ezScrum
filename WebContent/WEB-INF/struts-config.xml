@@ -91,7 +91,6 @@
 			
 			<!-- Release Plan -->
 				<!-- ReleasePlan Action: CRUD -->
-    		<action path="/AjaxGetNewReleaseID"			type="ntut.csie.ezScrum.web.action.plan.AjaxGetNewReleaseIDAction" />
     		<action path="/checkReleaseDate"			type="ntut.csie.ezScrum.web.action.plan.CheckReleaseDateAction"/>
     		<action path="/saveReleasePlan"				type="ntut.csie.ezScrum.web.action.plan.SaveReleasePlanAction" />
     		<action path="/removeReleasePlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleasePlanAction" />				    		
