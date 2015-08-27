@@ -1,0 +1,34 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../ezScrum_Login.txt
+Resource          ../Project/ezScrum_Project.txt
+Resource          ezScrum_Unplanned.txt
+
+*** Keywords ***
+Test Unplanned Suite Setup
+    Close All Browsers
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+
+Test Unplanned Suite Teardown
+    Close Browser
+    Close All Browsers
+
+Test Unplanned Add Setup
+    Login Page    ${LOGIN_URL}
+    # 確認專案是否存在
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    # 新增 Sprint
+    Select Node Product    Sprint Plan
+    Create Sprint    Test Sprint 1    2    4    100    100
+    # 切換到 Unplanned 頁面
+    Select Node Product    Unplanned
+
+Test Unplanned Add Teardown
+    Clean All Unplanned
+    # delete sprint
+    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

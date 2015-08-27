@@ -1,0 +1,41 @@
+*** Settings ***
+Resource          ../common_resource.txt
+Library           ../lib/Selenium2Improved.py
+
+*** Keywords ***
+Clean All Unplanned
+    # get Unplanned count
+    ${_count} =    Get Matching Xpath Count    //div[@id="UnplannedItem_Page"]//table[@class="x-grid3-row-table"]
+    # delete all Unplanned
+    : FOR    ${_index}    IN RANGE    0    ${_count}
+    \    Delete Unplanned
+
+Delete Unplanned
+    [Documentation]    固定點選表格內的第一個 unplanned,透過按下button"Delete Unplanned Item"來刪除 unplanned
+    Mouse Down    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Mouse Up    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Click Element    xpath=//button[text()="Delete Unplanned Item"]
+    ${xpathDeleteUnplanned}=    Find Current Window Element    Delete Unplanned Item    Delete
+    Click Element    xpath=${xpathDeleteUnplanned}
+    Wait Until Page Contains    Success.
+
+Add Unplanned
+    [Arguments]    @{unplannedInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+    ${name} =    Set Variable    ${unplannedInfo[1]}
+    ${estimate} =    Set Variable    ${unplannedInfo[5]}
+    ${notes} =    Set Variable    ${unplannedInfo[6]}
+    # action
+    Click Element    xpath=//button[text()='Add Unplanned Item']    # 元件本身已存在,不需等待
+    Element Should Be Visible    xpath=//span[.='Add New Unplanned Item']    # for check
+    # fill info
+    Focus AND Input Text    //input[@name='Name']    ${name}
+    Focus AND Input Text    //input[@name='Estimate']    ${estimate}
+    Focus AND Input Text    //textarea[@name='Notes']    ${notes}
+    # save
+    ${_xpathAddNew} =    Find Current Window Element    Add New Unplanned Item    Submit
+    Element Enable And Submit    ${_xpathAddNew}
+    Wait Until Page Contains    Success.
+
+Edit Unplanned
+
+Get Unplanned Id

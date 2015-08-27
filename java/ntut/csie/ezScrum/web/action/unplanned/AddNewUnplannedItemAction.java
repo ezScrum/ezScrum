@@ -39,8 +39,8 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 		// get parameter info
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");
-		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
-		int estimate = Integer.parseInt(request.getParameter("Estimate"));
+		String sprintId = sprintName.substring(sprintName.indexOf("#") + 1);
+		String estimate = request.getParameter("Estimate");
 		String handlerUsername = request.getParameter("Handler");
 		String partnersUsername = request.getParameter("Partners");
 		String notes = request.getParameter("Notes");
@@ -57,9 +57,9 @@ public class AddNewUnplannedItemAction extends PermissionAction {
 		UnplannedInfo unplannedInfo = new UnplannedInfo();
 		unplannedInfo.name = name;
 		unplannedInfo.notes = notes;
-		unplannedInfo.estimate = estimate;
+		unplannedInfo.estimate = (estimate.equals("") ? 0 : Integer.parseInt(estimate));
 		unplannedInfo.projectId = project.getId();
-		unplannedInfo.sprintId = sprintId;
+		unplannedInfo.sprintId = Long.parseLong(sprintId);
 		unplannedInfo.specificTime = specificDate.getTime();
 		
 		// Add new unplanned item

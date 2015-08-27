@@ -1,0 +1,41 @@
+*** Settings ***
+Suite Setup       Test Unplanned Suite Setup
+Suite Teardown    Test Unplanned Suite Teardown
+Force Tags        Unplanned
+Resource          keywords/Unplanned/ezScrum_Unplanned_SetupTeardown.txt
+
+*** Variables ***
+@{tsUnplannedList}    1    Test Unplanned    1    ?    ?    99    This is Unplanned Notes
+...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+
+*** Test Cases ***
+Test Unplanned - Add Unplanned
+    [Setup]    Test Unplanned Add Setup
+    Add Unplanned    @{tsUnplannedList}
+    # get data
+    ${tcItems} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    ${actualId} =     Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']
+    ${actualName} =     Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
+    ${actualSprintId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
+    ${actualEstimate} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
+    ${actualStatus} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
+    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
+    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
+    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']
+    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-8']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+    # assert
+    Should Be Equal    1    ${tcItems}
+    Should Be Equal    ${tsUnplannedList[0]}    ${actualId}
+    Should Be Equal    ${tsUnplannedList[1]}    ${actualName}
+    Should Be Equal    ${tsUnplannedList[2]}    ${actualSprintId}
+    Should Be Equal    ${SPACE}    ${actualHandler}
+    Should Be Equal    ${SPACE}    ${actualPartners}
+    Should Be Equal    ${tsUnplannedList[5]}    ${actualEstimate}
+    Should Be Equal    ${tsUnplannedList[6]}    ${actualNotes}
+    Should Be Equal    0    ${actualActual}
+    Should Be Equal    new    ${actualStatus}
+    [Teardown]    Test Unplanned Add Teardown
+
+Test Unplanned - Edit Unplanned
+
+Test Unplanned - Delete Unplanned
