@@ -79,11 +79,10 @@ NewReleasePlan
     @{_tmp} =    _getReleasePlanFieldnameList
     # click "Add" Button
     Click Element    xpath=//button[text()="New Release Plan"]
-    ${releaseID}=    Get Value    xpath=//div[@id="ReleaseDetailForm"]//input[@name="Id"]
     _fillReleasePlanInfo    @{info}
     _saveCreateReleasePlanInfo    Create Release    Submit
     Wait Until Page Contains    ${info[0]}
-    #
+    ${releaseID}=    Get Text    //div[@id="ReleasePlan_ReleaseTree"]//tbody//tr//td/div[text()="${_info[0]}"]/../../td[1]/a/span
     ${_foundIndex} =    _findReleasePlanItem    @{info}
     @{_actualDataList}    _getReleasePlanDataList    ${_foundIndex}
     CompareList    @{info}    @{_actualDataList}
