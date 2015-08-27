@@ -3,8 +3,6 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.ws.rs.PUT;
-
 import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
