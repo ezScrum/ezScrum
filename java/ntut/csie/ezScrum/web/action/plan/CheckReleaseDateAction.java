@@ -35,17 +35,21 @@ public class CheckReleaseDateAction extends PermissionAction {
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 
 		// get parameter info
-		String releaseID = request.getParameter("Id");
+		String releaseIdString = request.getParameter("Id");
 		String startDate = request.getParameter("StartDate");
 		String dueDate = request.getParameter("EndDate");
-
-		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
+		String action = request.getParameter("action");
+		if (action == null || action.isEmpty()) {
 			return null;
 		} 		
-		String Action = request.getParameter("action");
+		long releaseId = -1;
+		if (releaseIdString != null && !releaseIdString.isEmpty()) {
+			releaseId = Long.parseLong(releaseIdString);
+		}
+		
 		
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
-		return releasePlanHelper.checkReleaseDateOverlapping(releaseID, startDate, dueDate, Action);
+		return releasePlanHelper.checkReleaseDateOverlapping(releaseId, startDate, dueDate, action);
 	}
 
 }

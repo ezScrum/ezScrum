@@ -459,14 +459,14 @@ public class ReleasePlanHelper {
 		return str;
 	}
 	
-	public StringBuilder checkReleaseDateOverlapping(String releaseId, String startDateString,
+	public StringBuilder checkReleaseDateOverlapping(long releaseId, String startDateString,
 			String dueDateString, String action) {
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
 		Date startDate = DateUtil.dayFilter(startDateString);
 		Date dueDate = DateUtil.dayFilter(dueDateString);
 		String result = "legal";
 		for (ReleaseObject release : releases) {
-			if (action.equals("edit") && releaseId.equals(release.getId())) {// 不與自己比較
+			if (action.equals("edit") && (releaseId == release.getId())) {// 不與自己比較
 				continue;
 			}
 			// check 日期的頭尾是否有在各個 release plan 日期範圍內
