@@ -45,7 +45,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 		String dueDate = request.getParameter("EndDate");
 		String description = translateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
 		String action = request.getParameter("action");
-		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
+		if (action == null || action.isEmpty()) {
 			return null;
 		}	
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
