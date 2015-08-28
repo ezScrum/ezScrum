@@ -92,9 +92,7 @@ public class AccountMapper {
 	public AccountObject confirmAccount(String username, String password) throws LogonException {
 		AccountObject account = AccountObject.confirmAccount(username, password);
 		if (account == null) {
-			LogonException exception= new LogonException(false, false);
-			String message = exception.getMessage();
-			throw exception;
+			throw new LogonException(false, false);
 		} else {
 			return account;
 		}
