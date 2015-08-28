@@ -134,6 +134,7 @@ public class AccountDAOTest {
 		account.setPassword("12312113134546");
 		account.setEmail("hello@gmail.com");
 		account.setEnable(true);
+		account.setUpdateTime(System.currentTimeMillis());
 		boolean updateResult = AccountDAO.getInstance().update(account);
 		assertTrue(updateResult);
 		// get 

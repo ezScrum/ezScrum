@@ -56,7 +56,6 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 
 	@Override
 	public boolean update(AccountObject account) {
-		long currentTime = System.currentTimeMillis();
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AccountEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AccountEnum.ID, account.getId());
@@ -68,7 +67,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		}
 		valueSet.addInsertValue(AccountEnum.ENABLE,
 				account.getEnable() == true ? 1 : 0);
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, account.getUpdateTime());
 		String query = valueSet.getUpdateQuery();
 
 		return mControl.executeUpdate(query);
