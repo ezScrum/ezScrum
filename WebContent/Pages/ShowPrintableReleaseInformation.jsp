@@ -15,16 +15,16 @@
 		<!-- release information -->
 		<table cellspacing="0" cellpadding="3" width="100%" border="0">
 			<tr class="ReportTitle"><td colspan="4">
-				Release Plan #${release.ID}：${release.name}</td>
+				Release Plan #${release.id}：${release.name}</td>
 			</tr>
 			<tr class="ReportInfo"><td align="right" width="15%">
 				Start Date：</td>
-				<td align="left">${release.startDate}</td>
+				<td align="left">${release.startDateString}</td>
 				<td  colspan="2"></td>
 			</tr>
 			<tr class="ReportInfo"><td align="right" width="15%">
 				End Date：</td>
-				<td align="left">${release.endDate}</td>
+				<td align="left">${release.dueDateString}</td>
 				<td colspan="2"></td>
 			</tr>
 			<tr><td align="right" width="15%" class="ReportInfoButtom">
@@ -40,17 +40,17 @@
 				</tr>
 				<tr>
 					<td width="5%" align="right">●</td>
-					<td colspan="5" class="ReportElementTitle">Sprint #${element.ID}: ${element.goal}&nbsp;</td>
+					<td colspan="5" class="ReportElementTitle">Sprint #${element.id}: ${element.goal}&nbsp;</td>
 				</tr>
 				<tr>
 					<td width="5%"></td>
-					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">Start Date: ${element.startDate}&nbsp;</td>
+					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">Start Date: ${element.startDateString}&nbsp;</td>
 					<td class="ReportFrameWithoutBorder" colspan="3"></td>
 				</tr>
 				<tr>
 					<td width="5%"></td>
-					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.endDate}&nbsp;</td>
-					<td class="ReportFrameWithoutBorder" colspan="3" align="right">Total Story Points: ${tatolStoryPoints[element.ID]}</td>
+					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.dueDateString}&nbsp;</td>
+					<td class="ReportFrameWithoutBorder" colspan="3" align="right">Total Story Points: ${tatolStoryPoints[element.id]}</td>
 				</tr>
 				<!-- story information -->
 				<tr>
@@ -61,13 +61,13 @@
 					<td class="ReportFrameTitle" align="center" width="10%">Est.</td>
 					<td class="ReportFrameTitle" align="center" width="35%">Notes</td>
 				</tr>
-				<logic:iterate id="story" property="${element.ID}" name="stories">
+				<logic:iterate id="story" property="${element.id}" name="stories">
 					<tr>
 						<td></td>
-						<td class="ReportFrame" align="center" width="5%">${story.issueID}&nbsp;</td>
-						<td class="ReportFrame" align="left" width="40%">${story.summary}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="5%">${story.id}&nbsp;</td>
+						<td class="ReportFrame" align="left" width="40%">${story.notes}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="10%">${story.importance}&nbsp;</td>
-						<td class="ReportFrame" align="center" width="10%">${story.estimated}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="10%">${story.estimate}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="35%">
 							<c:if test="${story.notes!=null}">
 								${story.notes}
@@ -76,7 +76,7 @@
 					</tr>
 					
 					<!-- task information -->
-					<c:if test="${TaskMap[story.issueID]!=null}">
+					<c:if test="${TaskMap[story.id]!=null}">
 					<tr>
 						<td></td>
 						<td class="ReportFrame" colspan="5">
@@ -90,12 +90,12 @@
 									<td class="ReportFrameTitle" width="10%" align="center">Partners</td>
 									<td class="ReportFrameTitle" width="25%" align="center">Notes</td>
 								</tr>
-								<c:forEach var="task" items="${TaskMap[story.issueID]}">
+								<c:forEach var="task" items="${TaskMap[story.id]}">
 									<tr>
 										<td width="5%"></td>
-										<td class="ReportFrame" width="5%" align="center">${task.issueID }&nbsp;</td>
-										<td class="ReportFrame" width="40%" align="left">${task.summary }&nbsp;</td>
-										<td class="ReportFrame" width="5%" align="center">${task.estimated }&nbsp;</td>
+										<td class="ReportFrame" width="5%" align="center">${task.id }&nbsp;</td>
+										<td class="ReportFrame" width="40%" align="left">${task.notes }&nbsp;</td>
+										<td class="ReportFrame" width="5%" align="center">${task.estimate }&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">${task.assignto}&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">
 											<c:if test="${task.partners!=null}">
