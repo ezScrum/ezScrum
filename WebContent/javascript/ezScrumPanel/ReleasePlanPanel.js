@@ -158,6 +158,7 @@ ezScrum.ReleasePlan_MasterPanel = Ext.extend(Ext.Panel, {
 			Ext.example.msg(title, "Success.");
 
 			Ext.getCmp('ReleasePlan_ReleaseTree').reloadTreeData();
+			SprintBacklogPage.fireEvent('reloadComboData');
 		} else {
 			Ext.example.msg(title, "Sorry, please try again.");
 		}
