@@ -107,14 +107,15 @@ public class SprintPlanMapperTest {
 		sprintInfo.dueDate = "2015/06/24";
 
 		// call SprintPlanMapper addSprintPlan
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembersAmount());
-		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
 		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
 		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
@@ -127,10 +128,10 @@ public class SprintPlanMapperTest {
 		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId().get(0));
 		// assert
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembersAmount());
-		assertEquals(120, sprint.getHoursCanCommit());
+		assertEquals(4, sprint.getMembers());
+		assertEquals(120, sprint.getAvailableHours());
 		assertEquals(80, sprint.getFocusFactor());
-		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getSprintGoal());
+		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getGoal());
 		assertEquals(CreateSprint.SPRINT_DEMOPLACE, sprint.getDemoPlace());
 		assertEquals(mCS.TEST_SPRINT_DAILY_INFO + 1, sprint.getDailyInfo());
 		
@@ -182,10 +183,10 @@ public class SprintPlanMapperTest {
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembersAmount());
-		assertEquals(sprintInfo.hoursCanCommit, sprint.getHoursCanCommit());
+		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
-		assertEquals(sprintInfo.sprintGoal, sprint.getSprintGoal());
+		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
 		assertEquals(sprintInfo.startDate, sprint.getStartDateString());
 		assertEquals(sprintInfo.demoDate, sprint.getDemoDateString());
 		assertEquals(sprintInfo.demoPlace, sprint.getDemoPlace());
@@ -216,7 +217,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
 		sprintInfo.dueDate = "2015/07/01";
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 		
 		// Get first default Sprint
 		SprintObject defaultSprint = SprintObject.get(mCS.getSprintsId().get(0));
@@ -249,7 +251,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.dailyInfo = "11:10@Lab1321";
 		sprintInfo.dueDate = "2015/06/24";
 		// addSprint
-		SprintObject sprint = mSprintPlanMapper.addSprint(sprintInfo);
+		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
+		SprintObject sprint = SprintObject.get(sprintId);
 		// echo
 		mlog.info("Create 1 test Sprint success.");
 		return sprint;

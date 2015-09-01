@@ -97,7 +97,7 @@ public class GetPastRetrospectiveInfoAction extends Action {
 				-------------------------------------------------------------*/
 				stringBuilder.append("<Goal>");
 				stringBuilder.append(translateSpecialChar
-						.TranslateXMLChar(sprint.getSprintGoal()));
+						.TranslateXMLChar(sprint.getGoal()));
 				stringBuilder.append("</Goal>");
 
 				stringBuilder.append("</Sprint>");

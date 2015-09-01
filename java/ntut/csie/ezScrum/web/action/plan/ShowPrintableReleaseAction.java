@@ -7,10 +7,10 @@ import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -38,9 +38,9 @@ public class ShowPrintableReleaseAction extends Action {
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// get parameter info
-    	String releaseID = request.getParameter("releaseID");
+    	String releaseIdString = request.getParameter("releaseID");
     	String showTask = request.getParameter("showtask");
-    	
+    	long releaseId = Long.parseLong(releaseIdString);
     	boolean printTask = false;
     	if (showTask != null) {
     		if (showTask.equals("true")) {
@@ -50,7 +50,7 @@ public class ShowPrintableReleaseAction extends Action {
     	
     	//get release information
     	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
-    	IReleasePlanDesc releasePlanDesc = releasePlanHelper.getReleasePlan(releaseID);		
+    	ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);		
     	//initial data
     	storiesMap = new HashMap<String, ArrayList<StoryObject>>();
     	tatolStoryPoints = new HashMap<String, Float>();
@@ -58,7 +58,7 @@ public class ShowPrintableReleaseAction extends Action {
     	//get sprints information of the release(release id) 
     	
     	try {
-	    	ArrayList<SprintObject> sprints = releasePlanDesc.getSprints();
+	    	ArrayList<SprintObject> sprints = release.getSprints();
 	    	if(sprints != null) {
 	    		for (SprintObject sprint : sprints) {
 	    			String sprintId = String.valueOf(sprint.getId());
@@ -84,7 +84,7 @@ public class ShowPrintableReleaseAction extends Action {
 	    	}
 	    	
 	    	//set attribute in request
-	    	request.setAttribute("release", releasePlanDesc);
+	    	request.setAttribute("release", release);
 			request.setAttribute("sprints", sprints);
 			request.setAttribute("stories", storiesMap);
 			request.setAttribute("TaskMap", TaskMap);

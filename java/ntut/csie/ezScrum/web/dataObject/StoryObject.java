@@ -229,6 +229,27 @@ public class StoryObject implements IBaseObject {
 		return tagsId;
 	}
 	
+	public double getTotalTaskPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			point += task.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getTaskRemainsPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			if (task.getStatus() == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			point += task.getRemains();
+		}
+		return point;
+	}
+	
 	public void removeTag(long tagId) {
 		if (mCacheTagsId.size() == 0) {
 			mCacheTagsId = getTagsId();
@@ -267,7 +288,6 @@ public class StoryObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -329,24 +349,24 @@ public class StoryObject implements IBaseObject {
 	
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject story = new JSONObject();
-		JSONArray tasks = new JSONArray();
-		JSONArray histories = new JSONArray();
-		JSONArray tags = new JSONArray();
+		JSONObject storyJson = new JSONObject();
+		JSONArray taskJsonArray = new JSONArray();
+		JSONArray historyJsonArray = new JSONArray();
+		JSONArray tagJsonArray = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.toJSON());
+			taskJsonArray.put(task.toJSON());
 		}
 		
 		for (HistoryObject history : getHistories()) {
-			histories.put(history.toJSON());
+			historyJsonArray.put(history.toJSON());
 		}
 		
 		for (TagObject tag : getTags()) {
-			tags.put(tag.toJSON());
+			tagJsonArray.put(tag.toJSON());
 		}
 		
-		story
+		storyJson
 			.put(StoryEnum.ID, mId)
 			.put(StoryEnum.NAME, mName)
 			.put(StoryEnum.NOTES, mNotes)
@@ -356,11 +376,12 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.ESTIMATE, mEstimate)
 			.put(StoryEnum.STATUS, mStatus)
 			.put(StoryEnum.SPRINT_ID, mSprintId)
-			.put("tasks", tasks)
-			.put("histories", histories)
-			.put("tags", tags);
+			.put("totalTaskPoint", getTotalTaskPoints())
+			.put("tasks", taskJsonArray)
+			.put("histories", historyJsonArray)
+			.put("tags", tagJsonArray);
 		
-		return story;
+		return storyJson;
 	}
 	
 	private boolean exists() {
@@ -382,6 +403,7 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
 		saveTags();

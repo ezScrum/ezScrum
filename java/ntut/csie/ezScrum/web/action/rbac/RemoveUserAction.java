@@ -36,7 +36,7 @@ public class RemoveUserAction extends Action {
 		String role = request.getParameter("operation");
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		AccountHelper accountHelper = new AccountHelper(session);
+		AccountHelper accountHelper = new AccountHelper();
 		
 		if (accountId > 0 && projectId > -1 && role != null) {
 			try {

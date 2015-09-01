@@ -62,14 +62,14 @@ public class ShowEditSprintInfoAction extends PermissionAction {
 					// 將所有的Sprint資訊寫入XML的TAG內的Value中
 					result.append("<Sprint>");
 					result.append("<Id>" + currentSprintId + "</Id>");
-					result.append("<Goal>" + sprint.getSprintGoal() + "</Goal>");
+					result.append("<Goal>" + sprint.getGoal() + "</Goal>");
 					result.append("<StartDate>" + sprint.getStartDateString()
 							+ "</StartDate>");
 					result.append("<Interval>" + sprint.getInterval()
 							+ " </Interval>");
-					result.append("<Members>" + sprint.getMembersAmount()
+					result.append("<Members>" + sprint.getMembers()
 							+ " </Members>");
-					result.append("<AvaliableDays>" + sprint.getHoursCanCommit()
+					result.append("<AvaliableDays>" + sprint.getAvailableHours()
 							+ " hours</AvaliableDays>");
 					result.append("<FocusFactor>" + sprint.getFocusFactor()
 							+ " </FocusFactor>");

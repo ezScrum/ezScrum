@@ -1,18 +1,12 @@
 package ntut.csie.ezScrum.web.action.plan;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;
@@ -43,32 +37,21 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProjectObject(request);
 
 		// get parameter info
-		String ReleaseId = request.getParameter("releaseID");
+		String releaseIdString = request.getParameter("releaseID");
+		long releaseId = -1;
+		try {
+			releaseId = Long.parseLong(releaseIdString);
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);
 
-		ReleasePlanHelper helper = new ReleasePlanHelper(project);
-		IReleasePlanDesc releasePlanDesc = helper.getReleasePlan(ReleaseId);
-		ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-
-		if (releasePlanDesc == null) {
+		if (release == null) {
 			return new StringBuilder("false");
 		} else {
-			ArrayList<StoryObject> stories = PBHelper
-					.getStoriesByRelease(releasePlanDesc);
-			ArrayList<SprintObject> sprints = releasePlanDesc.getSprints();
-
-			for (SprintObject sprint : sprints) {
-				sprintPlanHelper.deleteSprint(sprint.getId());
-			}
-
-			// 移除 sprint 與底下 Story 的關係
-			for (int index = 0; index < stories.size(); index++) {
-				if (stories.get(index).getSprintId() > 0) {
-					PBHelper.dropStoryFromSprint(stories.get(index).getId());
-				}
-			}
 			// 刪除Release
-			helper.deleteReleasePlan(ReleaseId);
+			releasePlanHelper.deleteReleasePlan(releaseId);
 
 			return new StringBuilder("true");
 		}

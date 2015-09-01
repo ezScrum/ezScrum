@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -13,6 +14,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -315,7 +317,7 @@ public class Translation {
 	public static String translateSprintBacklogToJson(
 			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
-			int releaseId, String sprintGoal) {
+			long releaseId, String sprintGoal) {
 
 		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
@@ -337,7 +339,7 @@ public class Translation {
 			sprint.put(
 					"ReleaseID",
 					"Release #"
-							+ translateChar.HandleNullString(Integer
+							+ translateChar.HandleNullString(Long
 									.toString(releaseId)));
 			sprint.put("SprintGoal", sprintGoal);
 			responseText.put("Sprint", sprint);

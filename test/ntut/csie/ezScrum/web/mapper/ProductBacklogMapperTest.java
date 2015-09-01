@@ -156,7 +156,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testGetStoriesByRelease() throws Exception {
 		// get Release
-		mCR.getReleaseList().get(0);
+		mCR.getReleases().get(0);
 		// get CreateSprint
 		CreateSprint createSprint = mASTR.getCreateSprintsList().get(0);
 		// test data
@@ -167,7 +167,7 @@ public class ProductBacklogMapperTest {
 		mASTS.exe();
 		
 		// test getStoriesByRelease
-		ArrayList<StoryObject> storie = mProductBacklogMapper.getStoriesByRelease(mCR.getReleaseList().get(0).getID());
+		ArrayList<StoryObject> storie = mProductBacklogMapper.getStoriesByRelease(mCR.getReleases().get(0).getId());
 		// assert
 		assertEquals(storyCount, storie.size());
 	}

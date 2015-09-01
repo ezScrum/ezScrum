@@ -1,11 +1,11 @@
 package ntut.csie.ezScrum.web.logic;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -15,15 +15,12 @@ import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 public class ProductBacklogLogicTest {
 	private ProductBacklogLogic mProductBacklogLogic = null;
@@ -225,7 +222,7 @@ public class ProductBacklogLogicTest {
 	
 	@Test
 	public void testGetStoriesByRelease() {
-		IReleasePlanDesc release = mCR.getReleaseList().get(0);
+		ReleaseObject release = mCR.getReleases().get(0);
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(release);
 		assertEquals(6, stories.size());
 		

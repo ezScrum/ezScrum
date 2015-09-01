@@ -12,7 +12,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -20,7 +19,6 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -33,7 +31,6 @@ public class ShowSprintInformationAction extends Action {
 
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*
@@ -44,7 +41,7 @@ public class ShowSprintInformationAction extends Action {
 		 * 3. displayName對應 IProjectPreference(class) 的 getDisplayName(method)
 		 * 目的:解決開不同分頁瀏覽不同專案時，在Sprint backlog點選Sprint Information顯示正確的sprint information.
 		 */
-		request.setAttribute(IProjectSummaryEnum.PROJECT, iProject);
+		request.setAttribute(IProjectSummaryEnum.PROJECT, project);
  
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
@@ -55,17 +52,16 @@ public class ShowSprintInformationAction extends Action {
 		}
 		sprintId = sprintBacklogMapper.getSprintId();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
-		
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
+		SprintObject sprint = sprintBacklogMapper.getSprint();
 		
 		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
 		request.setAttribute("Stories", stories);
 
-		request.setAttribute("StoryPoint", sprintBacklogLogic.getTotalStoryPoints());
+		request.setAttribute("StoryPoint", sprint.getTotalStoryPoints());
 
-		SprintObject plan = sprintBacklogMapper.getSprint();
-		System.out.println(plan);
-		request.setAttribute("SprintPlan", plan);
+		
+		request.setAttribute("SprintPlan", sprint);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
 		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
 		        DateUtil._8DIGIT_DATE_1)
@@ -75,8 +71,8 @@ public class ShowSprintInformationAction extends Action {
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
 		AccountObject account = userSession.getAccount();
-		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
-		if (sr != null && sr.getAccessSprintBacklog()) {
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
+		if (scrumRole != null && scrumRole.getAccessSprintBacklog()) {
 			return mapping.findForward("success");
 		} else {
 			return mapping.findForward("GuestOnly");

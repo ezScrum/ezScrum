@@ -89,7 +89,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 				 *	加入Sprint Goal
 				-------------------------------------------------------------*/
 				sb.append("<Goal>");
-				sb.append(tsc.TranslateXMLChar(sprint.getSprintGoal()));
+				sb.append(tsc.TranslateXMLChar(sprint.getGoal()));
 				sb.append("</Goal>");
 
 				sb.append("</Sprint>");
