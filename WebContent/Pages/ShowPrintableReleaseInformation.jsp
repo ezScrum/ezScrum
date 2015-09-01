@@ -96,7 +96,7 @@
 										<td class="ReportFrame" width="5%" align="center">${task.id }&nbsp;</td>
 										<td class="ReportFrame" width="40%" align="left">${task.notes }&nbsp;</td>
 										<td class="ReportFrame" width="5%" align="center">${task.estimate }&nbsp;</td>
-										<td class="ReportFrame" width="10%" align="center">${task.assignto}&nbsp;</td>
+										<td class="ReportFrame" width="10%" align="center">${task.handlerId}&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">
 											<c:if test="${task.partners!=null}">
 												${task.partners}
