@@ -360,6 +360,7 @@ ezScrum.SprintDetail = Ext.extend(Ext.FormPanel, {
 				if (ConfirmWidget.confirmAction()) {
                 	this.fireEvent('SubmitSuccess', this, response, this.getForm().getValues());
                 }
+				
                 // this.ownerCt.hide();
             },
             /*-----------------------------------------------------------
