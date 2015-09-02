@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databasEnum.RetrospectiveEnum;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
 
 public class RetrospectiveDAO extends
 		AbstractDAO<RetrospectiveObject, RetrospectiveObject> {
@@ -79,7 +78,7 @@ public class RetrospectiveDAO extends
 		valueSet.addInsertValue(RetrospectiveEnum.NAME, retrospective.getName());
 		valueSet.addInsertValue(RetrospectiveEnum.DESCRIPTION, retrospective.getDescription());
 		valueSet.addInsertValue(RetrospectiveEnum.TYPE, retrospective.getType());
-		valueSet.addInsertValue(RetrospectiveEnum.SPRINT_ID, retrospective.getretrospectiveSprintId());
+		valueSet.addInsertValue(RetrospectiveEnum.SPRINT_ID, retrospective.getSprintId());
 		valueSet.addInsertValue(RetrospectiveEnum.STATUS, retrospective.getStatus());
 		valueSet.addInsertValue(RetrospectiveEnum.UPDATE_TIME, retrospective.getUpdateTime());
 		valueSet.addEqualCondition(RetrospectiveEnum.ID, retrospective.getId());
@@ -95,10 +94,10 @@ public class RetrospectiveDAO extends
 		valueSet.addEqualCondition(RetrospectiveEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
 
-		return mControl.executeUpdate(query);//
+		return mControl.executeUpdate(query);
 	}
 
-	public static RetrospectiveObject convert(ResultSet result){
+	public static RetrospectiveObject convert(ResultSet result) throws SQLException{
 		RetrospectiveObject retrospective = new RetrospectiveObject(
 				result.getLong(RetrospectiveEnum.ID), 
 				result.getLong(RetrospectiveEnum.SERIAL_ID),
@@ -108,7 +107,7 @@ public class RetrospectiveDAO extends
 				     .setType(result.getString(RetrospectiveEnum.TYPE))
 				     .setStatus(result.getString(RetrospectiveEnum.STATUS))
 				     .setSprintId(result.getLong(RetrospectiveEnum.SPRINT_ID))
-				     .setProgectId(result.getLong(RetrospectiveEnum.PROJECT_ID))
+				     .setProjectId(result.getLong(RetrospectiveEnum.PROJECT_ID))
 				     .setCreateTime(result.getLong(RetrospectiveEnum.CREATE_TIME))
 				     .setUpdateTime(result.getLong(RetrospectiveEnum.UPDATE_TIME));
 		return retrospective;

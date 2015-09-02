@@ -341,6 +341,7 @@ public class SprintObject implements IBaseObject {
 		}
 
 		sprintJson.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
+				.put(SprintEnum.SERIAL_ID, mSerialId)
 				.put(SprintEnum.START_DATE, getStartDateString())
 				.put(SprintEnum.DUE_DATE, getDueDateString())
 				.put(SprintEnum.INTERVAL, mInterval)
