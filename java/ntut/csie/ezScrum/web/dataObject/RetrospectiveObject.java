@@ -7,6 +7,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class RetrospectiveObject implements IBaseObject {
+	public final static int TYPE_GOOD = 1;
+	public final static int TYPE_IMPROVEMENT = 2;
+	public final static int STATUS_NEW = 1;
+	public final static int STATUS_CLOSED = 2;
+	public final static int STATUS_RESOLVED = 3;
+	public final static int STATUS_ASSIGNED = 4;
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;
