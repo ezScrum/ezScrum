@@ -22,8 +22,8 @@ public class RetrospectiveObject implements IBaseObject {
 
 	private String mName = "";
 	private String mDescription = "";
-	private String mType = "";
-	private String mStatus = "";
+	private int mType = DEFAULT_VALUE;
+	private int mStatus = DEFAULT_VALUE;
 
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
@@ -48,12 +48,12 @@ public class RetrospectiveObject implements IBaseObject {
 		return this;
 	}
 
-	public RetrospectiveObject setType(String type) {
+	public RetrospectiveObject setType(int type) {
 		mType = type;
 		return this;
 	}
 
-	public RetrospectiveObject setStatus(String status) {
+	public RetrospectiveObject setStatus(int status) {
 		mStatus = status;
 		return this;
 	}
@@ -98,11 +98,11 @@ public class RetrospectiveObject implements IBaseObject {
 		return mDescription;
 	}
 
-	public String getType() {
+	public int getType() {
 		return mType;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return mStatus;
 	}
 
