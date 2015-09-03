@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
-import ntut.csie.ezScrum.web.databasEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -36,6 +36,10 @@ public class RetrospectiveObject implements IBaseObject {
 		mId = id;
 		mSerialId = serialId;
 		mProjectId = projectId;
+	}
+	
+	public static RetrospectiveObject get(long retrospectiveId) {
+		return RetrospectiveDAO.getInstance().get(retrospectiveId);
 	}
 
 	public RetrospectiveObject setName(String name) {

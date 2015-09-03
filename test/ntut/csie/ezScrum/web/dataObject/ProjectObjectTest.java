@@ -15,7 +15,7 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.junit.After;
 import org.junit.Before;

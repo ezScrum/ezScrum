@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
-import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 
 public abstract class AbstractMantisService {
 

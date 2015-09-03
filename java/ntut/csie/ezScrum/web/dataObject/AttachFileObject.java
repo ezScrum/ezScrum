@@ -2,8 +2,8 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
 
-import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

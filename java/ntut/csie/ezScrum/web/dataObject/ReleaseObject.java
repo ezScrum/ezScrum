@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.ReleaseDAO;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.apache.commons.lang.time.DateUtils;

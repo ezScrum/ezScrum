@@ -9,8 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
