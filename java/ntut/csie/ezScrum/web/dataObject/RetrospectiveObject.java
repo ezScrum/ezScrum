@@ -174,6 +174,14 @@ public class RetrospectiveObject implements IBaseObject {
 		RetrospectiveObject retrospective = RetrospectiveDAO.getInstance().get(mId);
 		return retrospective != null;
 	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();			
+		} catch(JSONException e) {
+			return "JSON Exception";
+		}
+	}
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
