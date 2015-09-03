@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	private static StoryDAO sInstance = null;

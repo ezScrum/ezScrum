@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.databasEnum;
+package ntut.csie.ezScrum.web.databaseEnum;
 
 public class IssueTypeEnum {
 	public static final int TYPE_TASK = 1;

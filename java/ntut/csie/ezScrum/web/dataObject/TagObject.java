@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.TagDAO;
-import ntut.csie.ezScrum.web.databasEnum.TagEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

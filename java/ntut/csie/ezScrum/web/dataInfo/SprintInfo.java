@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.web.dataInfo;
 
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

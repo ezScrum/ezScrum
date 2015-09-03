@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.databasEnum;
+package ntut.csie.ezScrum.web.databaseEnum;
 
 public class AttachFileEnum {
 	public final static String TABLE_NAME = "attach_file";

@@ -2,12 +2,13 @@ package ntut.csie.ezScrum.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 public class RetrospectiveDAO extends
 		AbstractDAO<RetrospectiveObject, RetrospectiveObject> {
@@ -95,6 +96,25 @@ public class RetrospectiveDAO extends
 		String query = valueSet.getDeleteQuery();
 
 		return mControl.executeUpdate(query);
+	}
+	
+	public ArrayList<RetrospectiveObject> getRetrospectivesBySprintId(long sprintId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.SPRINT_ID, sprintId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<RetrospectiveObject> retrospectives = new ArrayList<>();
+		try {
+			while (result.next()) {
+				retrospectives.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return retrospectives;
 	}
 
 	public static RetrospectiveObject convert(ResultSet result) throws SQLException{
