@@ -223,4 +223,18 @@ public class RetrospectiveObjectTest {
 		retrospective.setStatus(RetrospectiveObject.STATUS_CLOSED);
 		assertEquals("closed", retrospective.getStatusString());
 	}
+	
+	@Test
+	public void testGetTypeByTypeString() {
+		assertEquals(RetrospectiveObject.TYPE_GOOD, RetrospectiveObject.getTypeByTypeString("Good"));
+		assertEquals(RetrospectiveObject.TYPE_IMPROVEMENT, RetrospectiveObject.getTypeByTypeString("Improvement"));
+	}
+	
+	@Test
+	public void testGetStatusByStatusString() {
+		assertEquals(RetrospectiveObject.STATUS_NEW, RetrospectiveObject.getStatusByStatusString("new"));
+		assertEquals(RetrospectiveObject.STATUS_ASSIGNED, RetrospectiveObject.getStatusByStatusString("assigned"));
+		assertEquals(RetrospectiveObject.STATUS_RESOLVED, RetrospectiveObject.getStatusByStatusString("resolved"));
+		assertEquals(RetrospectiveObject.STATUS_CLOSED, RetrospectiveObject.getStatusByStatusString("closed"));
+	}
 }

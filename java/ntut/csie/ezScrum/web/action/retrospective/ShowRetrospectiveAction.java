@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -37,8 +36,6 @@ public class ShowRetrospectiveAction extends PermissionAction {
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession()
-				.getAttribute("UserSession");
 
 		// ger parameter info
 		String sprintId = request.getParameter("sprintID");
@@ -55,7 +52,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
 		}
 
 		try {
-			return (new RetrospectiveHelper(project, session))
+			return (new RetrospectiveHelper(project))
 					.getListXML(sprintId);
 		} catch (SQLException e) {
 			return new StringBuilder("error");
