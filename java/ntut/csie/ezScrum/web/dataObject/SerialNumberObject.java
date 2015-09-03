@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.sql.SQLException;
 
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

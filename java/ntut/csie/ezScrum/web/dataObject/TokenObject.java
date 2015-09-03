@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ntut.csie.ezScrum.dao.TokenDAO;
-import ntut.csie.ezScrum.web.databasEnum.TokenEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TokenEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

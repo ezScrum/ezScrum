@@ -18,7 +18,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
-import ntut.csie.ezScrum.web.databasEnum.TokenEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TokenEnum;
 
 import org.junit.After;
 import org.junit.Before;

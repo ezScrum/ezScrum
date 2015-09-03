@@ -17,8 +17,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;

@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
-import ntut.csie.ezScrum.web.databasEnum.TokenEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TokenEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

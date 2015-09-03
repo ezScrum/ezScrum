@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
-import ntut.csie.ezScrum.web.databasEnum.TokenEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TokenEnum;
 
 public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 	

@@ -25,8 +25,8 @@ import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 public class ProjectMapperTest{
 	private long mProjectId = 0;

@@ -16,8 +16,8 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 

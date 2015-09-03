@@ -18,9 +18,9 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 import org.junit.After;
 import org.junit.Before;

@@ -3,9 +3,10 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -169,6 +170,21 @@ public class SprintObject implements IBaseObject {
 
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
+	}
+	
+	public ArrayList<RetrospectiveObject> getRetrospectiveByType(int type) {
+		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
+		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
+		for (RetrospectiveObject retrospective : retrospectives) {
+			if (retrospective.getType() == type) {
+				filteredRetrospectives.add(retrospective);
+			}
+		}
+		return filteredRetrospectives;
+	}
+	
+	private ArrayList<RetrospectiveObject> getRetrospectives() {
+		return RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(mId);
 	}
 
 	@Override
