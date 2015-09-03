@@ -368,6 +368,7 @@ public class StoryObject implements IBaseObject {
 		
 		storyJson
 			.put(StoryEnum.ID, mId)
+			.put(StoryEnum.SERIAL_ID, mSerialId)
 			.put(StoryEnum.NAME, mName)
 			.put(StoryEnum.NOTES, mNotes)
 			.put(StoryEnum.HOW_TO_DEMO, mHowToDemo)

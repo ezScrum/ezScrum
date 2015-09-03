@@ -248,14 +248,15 @@ public class ReleaseObject implements IBaseObject {
 		}
 		
 		releaseJson.put(ReleaseEnum.ID, mId)
-				.put(ReleaseEnum.PROJECT_ID, mProjectId)
-				.put(ReleaseEnum.NAME, mName)
-				.put(ReleaseEnum.DESCRIPTION, mDescription)
-				.put(ReleaseEnum.START_DATE, getStartDateString())
-				.put(ReleaseEnum.DUE_DATE, getDueDateString())
-				.put(ReleaseEnum.CREATE_TIME, mCreateTime)
-				.put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
-				.put("sprints", sprintJsonArray);
+				   .put(ReleaseEnum.SERIAL_ID, mSerialId)
+				   .put(ReleaseEnum.PROJECT_ID, mProjectId)
+				   .put(ReleaseEnum.NAME, mName)
+				   .put(ReleaseEnum.DESCRIPTION, mDescription)
+				   .put(ReleaseEnum.START_DATE, getStartDateString())
+				   .put(ReleaseEnum.DUE_DATE, getDueDateString())
+				   .put(ReleaseEnum.CREATE_TIME, mCreateTime)
+				   .put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
+				   .put("sprints", sprintJsonArray);
 		return releaseJson;
 	}
 
