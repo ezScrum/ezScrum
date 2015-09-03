@@ -29,7 +29,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 //import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;

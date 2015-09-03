@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -18,7 +19,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.junit.After;
@@ -174,6 +175,40 @@ public class SprintObjectTest {
 
 		sprint = SprintObject.get(mSprintId);
 		assertNull(sprint);
+	}
+	
+	@Test
+	public void testgetRetrospectiveByType_Good() {
+		SprintObject sprint = createSprint();
+		ArrayList<RetrospectiveObject> retrospectives = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_GOOD);
+		assertEquals(0, retrospectives.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective1.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_GOOD).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective2.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_IMPROVEMENT).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective3.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_GOOD).save();
+		retrospectives = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_GOOD);
+		assertEquals(2, retrospectives.size());
+		assertEquals(retrospective1.getId(), retrospectives.get(0).getId());
+		assertEquals(retrospective3.getId(), retrospectives.get(1).getId());
+	}
+	
+	@Test
+	public void testgetRetrospectiveByType_Improvement() {
+		SprintObject sprint = createSprint();
+		ArrayList<RetrospectiveObject> retrospectives = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_IMPROVEMENT);
+		assertEquals(0, retrospectives.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective1.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_IMPROVEMENT).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective2.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_GOOD).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(sprint.getProjectId());
+		retrospective3.setSprintId(sprint.getId()).setType(RetrospectiveObject.TYPE_IMPROVEMENT).save();
+		retrospectives = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_IMPROVEMENT);
+		assertEquals(2, retrospectives.size());
+		assertEquals(retrospective1.getId(), retrospectives.get(0).getId());
+		assertEquals(retrospective3.getId(), retrospectives.get(1).getId());
 	}
 
 	@Test

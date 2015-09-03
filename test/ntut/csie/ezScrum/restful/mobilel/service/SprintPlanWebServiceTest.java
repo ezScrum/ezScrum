@@ -19,7 +19,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
 

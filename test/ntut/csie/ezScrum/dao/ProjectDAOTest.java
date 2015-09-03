@@ -18,9 +18,9 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.databasEnum.ScrumRoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 
 import org.junit.After;
 import org.junit.Before;

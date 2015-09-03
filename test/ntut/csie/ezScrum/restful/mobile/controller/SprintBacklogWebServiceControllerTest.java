@@ -22,7 +22,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.ParseException;

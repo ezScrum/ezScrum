@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.UnplannedDAO;
@@ -172,7 +173,22 @@ public class SprintObject implements IBaseObject {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
 	}
 	
-	public ArrayList<UnplannedObject> getUnplanneds() {
+	public ArrayList<RetrospectiveObject> getRetrospectiveByType(int type) {
+		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
+		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
+		for (RetrospectiveObject retrospective : retrospectives) {
+			if (retrospective.getType() == type) {
+				filteredRetrospectives.add(retrospective);
+			}
+		}
+		return filteredRetrospectives;
+	}
+	
+	private ArrayList<RetrospectiveObject> getRetrospectives() {
+		return RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(mId);
+	}
+
+    public ArrayList<UnplannedObject> getUnplanneds() {
 		return UnplannedDAO.getInstance().getUnplannedBySprintId(mId);
 	}
 

@@ -22,7 +22,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 
 import org.apache.http.HttpResponse;

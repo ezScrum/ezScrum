@@ -21,7 +21,7 @@ import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;

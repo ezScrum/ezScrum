@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.databasEnum;
+package ntut.csie.ezScrum.web.databaseEnum;
 
 public enum RoleEnum {
     ProductOwner,

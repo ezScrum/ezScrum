@@ -20,7 +20,7 @@ public class RetrospectiveHelper {
 	}
 
 	public IIssue get(long id) {
-		return this.retrospectiveMapper.getById(id);
+		return this.retrospectiveMapper.getRetrospective(id);
 	}
 
 	public long add(String name, String description, String sprintID, String type) {
@@ -28,11 +28,11 @@ public class RetrospectiveHelper {
 	}	
 
 	public void edit(long issueID, String name, String description,	String sprintID, String type, String status) {
-		this.retrospectiveMapper.update(issueID, name, description, sprintID, type, status);
+		this.retrospectiveMapper.updateRetrospective(issueID, name, description, sprintID, type, status);
 	}
 
 	public void delete(String issueID) {
-		this.retrospectiveMapper.delete(issueID);
+		this.retrospectiveMapper.deleteRetrospective(issueID);
 	}
 
 	// 前端XML格式定義在: Common.js 之 變數 Retrospective, Parser 為 retReader
@@ -76,7 +76,7 @@ public class RetrospectiveHelper {
 	public StringBuilder getListXML(String sprintID) throws SQLException {
     	TranslateSpecialChar tsc = new TranslateSpecialChar();
     	//Good Retrospective 封裝成 XML 給 Ext 使用
-    	List<IScrumIssue> goodRes = this.retrospectiveMapper.getList(ScrumEnum.GOOD_ISSUE_TYPE);
+    	List<IScrumIssue> goodRes = this.retrospectiveMapper.getRetrospectivesByType(ScrumEnum.GOOD_ISSUE_TYPE);
     	
 		StringBuilder result = new StringBuilder();
 		
@@ -99,7 +99,7 @@ public class RetrospectiveHelper {
 			}
 		}
 		//Improvement Retrospective 封裝成 XML 給 Ext 使用
-		List<IScrumIssue> improveRes = this.retrospectiveMapper.getList(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);		
+		List<IScrumIssue> improveRes = this.retrospectiveMapper.getRetrospectivesByType(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);		
 		
 		for(int i = 0; i < improveRes.size(); i++){
 			IScrumIssue improveR = improveRes.get(i);

@@ -3,11 +3,12 @@ package ntut.csie.ezScrum.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.databasEnum.StoryTagRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.TagEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryTagRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 
 public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	private static TagDAO sInstance = null;

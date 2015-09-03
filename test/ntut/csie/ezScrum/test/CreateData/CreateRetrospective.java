@@ -66,14 +66,14 @@ public class CreateRetrospective {
 					String prefix = mGoodRetrospective + String.valueOf(k + 1);
 					rm.add(prefix, prefix + "_description", String.valueOf(sprintID), ScrumEnum.GOOD_ISSUE_TYPE);
 				}
-				mGoodRetrospectives = rm.getList(ScrumEnum.GOOD_ISSUE_TYPE);
+				mGoodRetrospectives = rm.getRetrospectivesByType(ScrumEnum.GOOD_ISSUE_TYPE);
 
 				// improve
 				for (int k = 0; k < mImproveCount; k++) {
 					String prefix = mImproveRetrospective + String.valueOf(k + 1);
 					rm.add(prefix, prefix + "_description", String.valueOf(sprintID), ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
 				}
-				mImproveRetrospectives = rm.getList(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
+				mImproveRetrospectives = rm.getRetrospectivesByType(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
 
 				System.out.println("  " + project.getName() + " create sprint_" + sprintID + " with " + mGoodCount + " good retrospective success.");
 				System.out.println("  " + project.getName() + " create sprint_" + sprintID + " with " + mImproveCount + " improve retrospective success.");
@@ -94,8 +94,8 @@ public class CreateRetrospective {
 			RetrospectiveMapper rm = new RetrospectiveMapper(project, userSession);
 
 			for (int j = 0; j < sprintCount; j++) {
-				mGoodRetrospectives = rm.getList(ScrumEnum.GOOD_ISSUE_TYPE);
-				mImproveRetrospectives = rm.getList(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
+				mGoodRetrospectives = rm.getRetrospectivesByType(ScrumEnum.GOOD_ISSUE_TYPE);
+				mImproveRetrospectives = rm.getRetrospectivesByType(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
 
 				mGoodCount = mGoodRetrospectives.size();
 				mImproveCount = mImproveRetrospectives.size();

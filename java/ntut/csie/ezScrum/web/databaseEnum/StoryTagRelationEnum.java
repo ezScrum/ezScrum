@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.databasEnum;
+package ntut.csie.ezScrum.web.databaseEnum;
 
 public class StoryTagRelationEnum {
 	public static final String TABLE_NAME = "story_tag_relation";

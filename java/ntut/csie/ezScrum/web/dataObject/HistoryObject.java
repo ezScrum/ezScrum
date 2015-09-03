@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

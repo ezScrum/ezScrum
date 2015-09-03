@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObject>{
 

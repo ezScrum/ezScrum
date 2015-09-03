@@ -14,8 +14,8 @@ import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.dao.UnplannedDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

@@ -20,8 +20,8 @@ import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.junit.After;
 import org.junit.Before;

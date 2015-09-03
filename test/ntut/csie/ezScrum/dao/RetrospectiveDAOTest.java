@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
@@ -17,7 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
-import ntut.csie.ezScrum.web.databasEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 import org.junit.After;
 import org.junit.Before;
@@ -68,6 +69,7 @@ public class RetrospectiveDAOTest {
 		// release
 		ini = null;
 		mCP = null;
+		mProject = null;
 		mConfig = null;
 		mControl = null;
 	}
@@ -173,6 +175,24 @@ public class RetrospectiveDAOTest {
 		
 		// assert
 		assertNull(retrospectiveFromDB);
+	}
+	
+	@Test
+	public void testGetRetrospectivesBySprintId() {
+		long sprintId = 2;
+		ArrayList<RetrospectiveObject> retrospectives = RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(sprintId);
+		assertEquals(0, retrospectives.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(mProject.getId());
+		retrospective1.setSprintId(sprintId).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(mProject.getId());
+		retrospective2.setSprintId(sprintId).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(mProject.getId());
+		retrospective3.setSprintId(sprintId).save();
+		retrospectives = RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(sprintId);
+		assertEquals(3, retrospectives.size());
+		assertEquals(retrospectives.get(0).getId(), retrospective1.getId());
+		assertEquals(retrospectives.get(1).getId(), retrospective2.getId());
+		assertEquals(retrospectives.get(2).getId(), retrospective3.getId());
 	}
 	
 	private long createRetrospective() {

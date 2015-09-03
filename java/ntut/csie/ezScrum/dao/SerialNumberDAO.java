@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
 
 public class SerialNumberDAO extends
 		AbstractDAO<SerialNumberObject, SerialNumberObject> {

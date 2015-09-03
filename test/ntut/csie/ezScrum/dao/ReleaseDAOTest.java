@@ -17,7 +17,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 
 import org.junit.After;
 import org.junit.Before;
