@@ -154,7 +154,8 @@ public class RetrospectiveDAOTest {
 	@Test
 	public void testDelete() throws SQLException {
 		// Call DAO delete
-		RetrospectiveDAO.getInstance().delete(mRtrospectiveId);
+		boolean isDeleteSuccess = RetrospectiveDAO.getInstance().delete(mRtrospectiveId);
+		assertTrue(isDeleteSuccess );
 		
 		// Fetch Retrospective from DB
 		IQueryValueSet valueSet = new MySQLQuerySet();

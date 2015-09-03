@@ -3,14 +3,9 @@ package ntut.csie.ezScrum.web.dataObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import static org.junit.Assert.assertTrue;
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -33,7 +28,7 @@ public class RetrospectiveObjectTest {
 	private final int mSPRINT_COUNT = 2;
 	
 	@Before
-	public void setUp(){
+	public void setUp() {
 		// set ini test mode 
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -55,7 +50,7 @@ public class RetrospectiveObjectTest {
 	}
 	
 	@After
-	public void tearDown(){
+	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
@@ -73,9 +68,9 @@ public class RetrospectiveObjectTest {
 		ini = null;
 		projectManager = null;
 	}
-	
+
 	@Test
-	public void testSaveCreate() throws SQLException{
+	public void testSaveCreate() {
 		// test data 
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
@@ -91,19 +86,8 @@ public class RetrospectiveObjectTest {
 					 .setType(type)
 					 .save();
 		
-		// 從資料庫撈出 Retrospective
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
-		valueSet.addEqualCondition(RetrospectiveEnum.ID, retrospective.getId());
-
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		RetrospectiveObject retrospectiveCreated = null;
-		if (result.next()) {
-			retrospectiveCreated = RetrospectiveDAO.convert(result);
-		}
-		// Close result set
-		closeResultSet(result);
+		// Get RetrospectiveObject By DAO
+		RetrospectiveObject retrospectiveCreated = RetrospectiveDAO.getInstance().get(retrospective.getId());
 		
 		assertEquals(name, retrospectiveCreated.getName());
 		assertEquals(description, retrospectiveCreated.getDescription());
@@ -155,7 +139,7 @@ public class RetrospectiveObjectTest {
 	}
 	
 	@Test
-	public void testDelete() throws SQLException{
+	public void testDelete() {
 		// test data
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
@@ -175,28 +159,18 @@ public class RetrospectiveObjectTest {
 		assertNotSame(-1, retrospective.getId());
 		
 		// delete
-		retrospective.delete();
+		boolean isDeleteSuccess = retrospective.delete();
 		
-		// 從資料庫撈出 Retrospective
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
-		valueSet.addEqualCondition(RetrospectiveEnum.ID, retrospective.getId());
-
-		String query = valueSet.getSelectQuery();
-		ResultSet result = mControl.executeQuery(query);
-		RetrospectiveObject retrospectiveCreated = null;
-		if (result.next()) {
-			retrospectiveCreated = RetrospectiveDAO.convert(result);
-		}
+		assertTrue(isDeleteSuccess);
 		
-		// Close result set
-		closeResultSet(result);
+		// Get RetrospectiveObject By DAO
+		RetrospectiveObject retrospectiveCreated = RetrospectiveDAO.getInstance().get(retrospective.getId());
 		
 		assertNull(retrospectiveCreated);
 	}
 	
 	@Test
-	public void testToJSON() throws JSONException{
+	public void testToJSON() throws JSONException {
 		// test data
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
@@ -224,15 +198,5 @@ public class RetrospectiveObjectTest {
 		assertEquals(RetrospectiveObject.STATUS_NEW, retrospectiveJson.get(RetrospectiveEnum.STATUS));
 		assertEquals(projectId, retrospectiveJson.get(RetrospectiveEnum.PROJECT_ID));
 		
-	}
-	
-	private void closeResultSet(ResultSet result) {
-		if (result != null) {
-			try {
-				result.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
