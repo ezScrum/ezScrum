@@ -199,4 +199,28 @@ public class RetrospectiveObjectTest {
 		assertEquals(projectId, retrospectiveJson.get(RetrospectiveEnum.PROJECT_ID));
 		
 	}
+	
+	@Test
+	public void testGetTypeString() {
+		long projectId = mCP.getAllProjects().get(0).getId();
+		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
+		retrospective.setType(RetrospectiveObject.TYPE_GOOD);
+		assertEquals("Good", retrospective.getTypeString());
+		retrospective.setType(RetrospectiveObject.TYPE_IMPROVEMENT);
+		assertEquals("Improvement", retrospective.getTypeString());
+	}
+	
+	@Test
+	public void testGetStatusString() {
+		long projectId = mCP.getAllProjects().get(0).getId();
+		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
+		retrospective.setStatus(RetrospectiveObject.STATUS_NEW);
+		assertEquals("new", retrospective.getStatusString());
+		retrospective.setStatus(RetrospectiveObject.STATUS_ASSIGNED);
+		assertEquals("assigned", retrospective.getStatusString());
+		retrospective.setStatus(RetrospectiveObject.STATUS_RESOLVED);
+		assertEquals("resolved", retrospective.getStatusString());
+		retrospective.setStatus(RetrospectiveObject.STATUS_CLOSED);
+		assertEquals("closed", retrospective.getStatusString());
+	}
 }
