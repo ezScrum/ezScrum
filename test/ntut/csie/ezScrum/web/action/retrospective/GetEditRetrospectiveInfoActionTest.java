@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -18,7 +17,6 @@ import servletunit.struts.MockStrutsTestCase;
 public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private CreateRetrospective mCR;
 	
 	private Configuration mConfig;
 	
@@ -70,7 +68,6 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		projectManager = null;
 		mCP = null;
 		mCS = null;
-		mCR = null;
 		mConfig = null;
 	}
 	
