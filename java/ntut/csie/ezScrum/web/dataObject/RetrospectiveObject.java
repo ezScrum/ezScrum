@@ -151,6 +151,26 @@ public class RetrospectiveObject implements IBaseObject {
 			return "closed";
 		}
 	}
+	
+	public static int getTypeByTypeString(String typeString) {
+		if (typeString.equals("Good")) {
+			return TYPE_GOOD;
+		} else {
+			return TYPE_IMPROVEMENT;
+		}
+	}
+	
+	public static int getStatusByStatusString(String statusString) {
+		if (statusString.equals("new")) {
+			return STATUS_NEW;
+		} else if (statusString.equals("assigned")) {
+			return STATUS_ASSIGNED;
+		} else if (statusString.equals("resolved")) {
+			return STATUS_RESOLVED;
+		} else {
+			return STATUS_CLOSED;
+		}
+	}
 
 	public long getSprintId() {
 		return mSprintId;
