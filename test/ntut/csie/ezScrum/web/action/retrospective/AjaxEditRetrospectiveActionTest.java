@@ -9,16 +9,14 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-
 	private Configuration mConfig;
-
 	private String mPrefix = "TEST_RETROSPECTIVE_EDIT_";
 	private String[] mStatus = {"new", "closed", "resolved", "assigned"};
 	private String actionPath = "/ajaxEditRetrospective";
@@ -91,23 +89,20 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		long goodRetrospectiveId = goodRetrospective.getId();
 
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String sprintID = "1";
-		long issueID = goodRetrospectiveId;
-		String rName = mPrefix + "updateName";
-		String rID = "1";
-		String rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		String rDesc = mPrefix + "updateDescription";
-		String rStatus = mStatus[1];
+		ProjectObject project = mCP.getAllProjects().get(0);
+		String retrospectiveName = mPrefix + "updateName";
+		String retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "updateDescription";
+		String retrospectiveStatus = mStatus[1];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(goodRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" +  String.valueOf(sprintId));
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -124,8 +119,7 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintID, rID, rName, rType, rDesc, rStatus};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5]);
+		String expected = genXML(sprintId, goodRetrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription, retrospectiveStatus);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
@@ -148,23 +142,20 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		long improvementRetrospectiveId = improvementRetrospective.getId();
 		                        
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String sprintID = "1";
-		long issueID = improvementRetrospectiveId;
-		String rName = mPrefix + "updateName";
-		String rID = "1";
-		String rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		String rDesc = mPrefix + "updateDescription";
-		String rStatus = mStatus[1];
+		ProjectObject project = mCP.getAllProjects().get(0);
+		String retrospectiveName = mPrefix + "updateName";
+		String retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "updateDescription";
+		String retrospectiveStatus = mStatus[1];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(improvementRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -181,8 +172,7 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintID, rID, rName, rType, rDesc, rStatus};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5]);
+		String expected = genXML(sprintId, improvementRetrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription, retrospectiveStatus);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
@@ -191,6 +181,7 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 	public void testEditGood2() throws Exception {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint				
+		
 		long projectId = mCP.getAllProjects().get(0).getId();
 		long sprintId = mCS.getSprintsId().get(0);
 		
@@ -201,30 +192,26 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		                 .setSprintId(sprintId)
 		                 .save();
 		
-		
 		long goodRetrospectiveId = goodRetrospective.getId();
 
 		/*
 		 * (I)
 		 */
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String sprintID = "1";
-		long issueID = goodRetrospectiveId;
-		String rName = mPrefix + "updateName";
-		String rID = "1";
-		String rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		String rDesc = mPrefix + "updateDescription";
-		String rStatus = mStatus[2];
+		ProjectObject project = mCP.getAllProjects().get(0);
+		String retrospectiveName = mPrefix + "updateName";
+		String retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "updateDescription";
+		String retrospectiveStatus = mStatus[2];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(goodRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -248,20 +235,19 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		response.reset();
 
 		// ================ set initial data =======================
-		rName = mPrefix + "name";
-		rID = "1";
-		rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		rDesc = mPrefix + "description";
-		rStatus = mStatus[0];
+		retrospectiveName = mPrefix + "name";
+		retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		retrospectiveDescription = mPrefix + "description";
+		retrospectiveStatus = mStatus[0];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(goodRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -278,8 +264,7 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintID, rID, rName, rType, rDesc, rStatus};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5]);
+		String expected = genXML(sprintId, goodRetrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription, retrospectiveStatus);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
@@ -305,23 +290,20 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		 * (I)
 		 */
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String sprintID = "1";
-		long issueID = improvementRetrospectiveId;
-		String rName = mPrefix + "updateName";
-		String rID = "1";
-		String rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		String rDesc = mPrefix + "updateDescription";
-		String rStatus = mStatus[3];
+		ProjectObject project = mCP.getAllProjects().get(0);
+		String retrospectiveName = mPrefix + "updateName";
+		String retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "updateDescription";
+		String retrospectiveStatus = mStatus[3];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(improvementRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -345,20 +327,19 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		response.reset();
 
 		// ================ set initial data =======================
-		rName = mPrefix + "name";
-		rID = "1";
-		rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		rDesc = mPrefix + "description";
-		rStatus = mStatus[0];
+		retrospectiveName = mPrefix + "name";
+		retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		retrospectiveDescription = mPrefix + "description";
+		retrospectiveStatus = mStatus[0];
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);
-		addRequestParameter("Status", rStatus);
+		addRequestParameter("issueID", String.valueOf(improvementRetrospectiveId));
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);
+		addRequestParameter("Status", retrospectiveStatus);
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -375,24 +356,21 @@ public class AjaxEditRetrospectiveActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String[] a = {sprintID, rID, rName, rType, rDesc, rStatus};
-		String expected = genXML(a[0], a[1], a[2], a[3], a[4], a[5]);
+		String expected = genXML(sprintId, improvementRetrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription, retrospectiveStatus);
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
-	private String genXML(String sprintID, String issueID, String name, String type, String desc, String status) {
+	private String genXML(long sprintId, long retrospectiveId, String name, String type, String description, String status) {
 		StringBuilder result = new StringBuilder("");
-
 		result.append("<EditRetrospective><Result>true</Result><Retrospective>");
-		result.append("<Id>" + issueID + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueID + "</Link>");
-		result.append("<SprintID>" + sprintID + "</SprintID>");
+		result.append("<Id>" + retrospectiveId + "</Id>");
+		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospectiveId + "</Link>");
+		result.append("<SprintID>" + sprintId + "</SprintID>");
 		result.append("<Name>" + name + "</Name>");
 		result.append("<Type>" + type + "</Type>");
-		result.append("<Description>" + desc + "</Description>");
+		result.append("<Description>" + description + "</Description>");
 		result.append("<Status>" + status + "</Status>");
 		result.append("</Retrospective></EditRetrospective>");
-
 		return result.toString();
 	}
 }
