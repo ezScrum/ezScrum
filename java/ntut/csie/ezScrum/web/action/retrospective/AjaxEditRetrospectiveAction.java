@@ -28,34 +28,34 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
 
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
+		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// get parameter info
 		long retrospectiveId = Long.valueOf(request.getParameter("issueID"));
 		
 		String name = request.getParameter("Name");
-		String description = tsc.TranslateDBChar(request.getParameter("Description"));
 		String sprintName = request.getParameter("SprintID");
-		String sprintIdString = sprintName.substring(sprintName.indexOf("#") + 1);
-		String typeString = request.getParameter("Type");
-		String statusString = request.getParameter("Status");
+		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
+		String type = request.getParameter("Type");
+		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
+		String status = request.getParameter("Status");
+		
+		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
 		
 		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
 		retrospectiveInfo.id = retrospectiveId;
-		long sprintId = Long.parseLong(sprintIdString);
-		retrospectiveInfo.sprintId = sprintId;
 		retrospectiveInfo.name = name;
 		retrospectiveInfo.description = description;
-		retrospectiveInfo.type = RetrospectiveObject.getTypeByTypeString(typeString);
-		retrospectiveInfo.status = RetrospectiveObject.getStatusByStatusString(statusString);
-		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
-		retrospectiveHelper.editRetrospective(retrospectiveInfo);
+		retrospectiveInfo.sprintId = sprintId;
+		retrospectiveInfo.typeString = type;
+		retrospectiveInfo.statusString = status;
+		
+		retrospectiveHelper.editRetrospective(retrospectiveInfo); 
 		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
 				
 		return retrospectiveHelper.getXML("edit", retrospective);
