@@ -25,8 +25,6 @@ import org.apache.struts.action.ActionMapping;
 public class GetAddNewRetrospectiveInfoAction extends Action {
 	// --------------------------------------------------------- Instance
 	// Variables
-	private static Log log = LogFactory
-			.getLog(GetAddNewRetrospectiveInfoAction.class);
 
 	// --------------------------------------------------------- Methods
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -53,8 +51,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 			for (SprintObject sprint : sprints) {
 				sb.append("<Sprint>");
 				sb.append("<Id>" + String.valueOf(sprint.getId()) + "</Id>");
-				sb.append("<Name>Sprint #" + String.valueOf(sprint.getId())
-						+ "</Name>");
+				sb.append("<Name>Sprint #" + String.valueOf(sprint.getId()) + "</Name>");
 
 				/*-----------------------------------------------------------
 				 *	判斷此Sprint是否已經開始了

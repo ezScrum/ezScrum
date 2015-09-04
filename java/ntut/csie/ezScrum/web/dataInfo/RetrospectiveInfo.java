@@ -9,4 +9,6 @@ public class RetrospectiveInfo {
 	public String description = "";
 	public int type = RetrospectiveObject.TYPE_GOOD;
 	public int status = RetrospectiveObject.STATUS_NEW;
+	public String typeString = "";
+	public String statusString = "";
 }

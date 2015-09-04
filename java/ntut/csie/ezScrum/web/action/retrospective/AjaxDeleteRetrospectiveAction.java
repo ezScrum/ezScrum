@@ -3,10 +3,9 @@ package ntut.csie.ezScrum.web.action.retrospective;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.helper.RetrospectiveHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -27,23 +26,21 @@ public class AjaxDeleteRetrospectiveAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 	
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		// get parameter info
-		long issueID = Long.parseLong(request.getParameter("issueID"));
-		
-		RetrospectiveHelper rh = new RetrospectiveHelper(project, session);
-
-		IIssue issue = rh.get(issueID);
-		StringBuilder result = rh.getXML("delete", issue);
-		
-		rh.delete(Long.toString(issueID));
-		
+		long retrospectiveId = Long.parseLong(request.getParameter("issueID"));
+		// Create Helper
+		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
+		// Get Retrospective
+		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
+		// Get Result
+		StringBuilder result = retrospectiveHelper.getXML("delete", retrospective);
+		// Do delete
+		retrospectiveHelper.deleteRetrospective(retrospectiveId);
 		return result;
 	}
 }

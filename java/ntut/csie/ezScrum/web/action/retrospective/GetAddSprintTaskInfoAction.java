@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -29,7 +28,6 @@ public class GetAddSprintTaskInfoAction extends Action {
 		log.info("Get Add Sprint Task Information in GetAddSprintTaskInfoAction");
 		
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession mUserSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
 		StringBuilder mStringBuilder = new StringBuilder();
@@ -77,7 +75,6 @@ public class GetAddSprintTaskInfoAction extends Action {
 			response.getWriter().write(mStringBuilder.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
