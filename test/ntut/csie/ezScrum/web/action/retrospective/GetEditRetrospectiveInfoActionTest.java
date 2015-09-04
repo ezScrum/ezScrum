@@ -329,19 +329,19 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 	}	
 	
 	private String genXML(RetrospectiveObject retrospective) {
-		StringBuilder result = new StringBuilder("");
+ 		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 
 		result.append("<EditRetrospective><Result>true</Result><Retrospective>");
 		result.append("<Id>" + retrospective.getId() + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
-		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
-		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");
-		result.append("<Type>" + retrospective.getTypeString() + "</Type>");
+		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getIssueID() + "</Link>");		
+		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");		
+		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");		
+		result.append("<Type>" + 11 + "</Type>");
 		result.append("<Description>" + tsc.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
-		result.append("<Status>" + retrospective.getStatusString() + "</Status>");
-		result.append("</Retrospective></EditRetrospective>");
-
+		result.append("<Status>" + retrospective.getStatus() + "</Status>");				
+		result.append("</Retrospective></EditRetrospective>");	
+		
 		return result.toString();
 	}
 }
