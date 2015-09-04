@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
@@ -76,16 +77,25 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(1, 0, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		long goodRetrospectiveId = goodRetrospective.getId();
 		
 		// ================ set initial data =======================
 		IProject project = mCP.getProjectList().get(0);
-		String issueID = "1";
+		long issueID = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(issueID));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -102,8 +112,7 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	IScrumIssue issue = mCR.getGoodRetrospectiveList().get(0);
-    	String expected = genXML(issue);
+    	String expected = genXML(goodRetrospective);
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}			
 	
@@ -283,18 +292,18 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	assertEquals(expected, response.getWriterBuffer().toString());	    	
 	}	
 	
-	private String genXML(IIssue issue) {
+	private String genXML(RetrospectiveObject retrospective) {
  		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		
 		result.append("<EditRetrospective><Result>true</Result><Retrospective>");
-		result.append("<Id>" + issue.getIssueID() + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issue.getIssueID() + "</Link>");		
-		result.append("<SprintID>" + issue.getSprintID() + "</SprintID>");		
-		result.append("<Name>" + tsc.TranslateXMLChar(issue.getSummary()) + "</Name>");		
-		result.append("<Type>" + issue.getCategory() + "</Type>");
-		result.append("<Description>" + tsc.TranslateXMLChar(issue.getDescription()) + "</Description>");
-		result.append("<Status>" + issue.getStatus() + "</Status>");				
+		result.append("<Id>" + retrospective.getId() + "</Id>");
+		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getIssueID() + "</Link>");		
+		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");		
+		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");		
+		result.append("<Type>" + 11 + "</Type>");
+		result.append("<Description>" + tsc.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
+		result.append("<Status>" + retrospective.getStatus() + "</Status>");				
 		result.append("</Retrospective></EditRetrospective>");	
 		
 		return result.toString();
