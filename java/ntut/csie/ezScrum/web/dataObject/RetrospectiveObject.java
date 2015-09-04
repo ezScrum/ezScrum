@@ -51,6 +51,28 @@ public class RetrospectiveObject implements IBaseObject {
 		mDescription = description;
 		return this;
 	}
+	
+	public RetrospectiveObject setTypeString(String typeString) {
+		if (typeString.equals("Good")) {
+			mType = TYPE_GOOD;
+		} else {
+			mType = TYPE_IMPROVEMENT;
+		}
+		return this;
+	}
+	
+	public RetrospectiveObject setStatusString(String statusString) {
+		if (statusString.equals("new")) {
+			mStatus = STATUS_NEW;
+		} else if (statusString.equals("assigned")) {
+			mStatus = STATUS_ASSIGNED;
+		} else if (statusString.equals("resolved")) {
+			mStatus = STATUS_RESOLVED;
+		} else {
+			mStatus = STATUS_CLOSED;
+		}
+		return this;
+	}
 
 	public RetrospectiveObject setType(int type) {
 		mType = type;

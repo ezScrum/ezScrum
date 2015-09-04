@@ -3,10 +3,10 @@ package ntut.csie.ezScrum.web.action.retrospective;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataInfo.RetrospectiveInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.helper.RetrospectiveHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -28,27 +28,32 @@ public class AjaxAddNewRetrospectiveAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
+		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// get parameter info
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");
-		String sprintID = sprintName.substring(sprintName.indexOf("#") + 1);
+		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		String type = request.getParameter("Type");
-		String description = tsc.TranslateDBChar(request.getParameter("Description"));
+		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		
-		RetrospectiveHelper rh = new RetrospectiveHelper(project,session);
+		// Create Helper
+		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
 		
-		Long issueID = rh.add(name, description, sprintID, type);		
-		IIssue issue = rh.get(issueID);
-		
-		return rh.getXML("add", issue);
+		// 組合 RetrospectiveInfo
+		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
+		retrospectiveInfo.name = name;
+		retrospectiveInfo.description = description;
+		retrospectiveInfo.sprintId = sprintId;
+		retrospectiveInfo.typeString = type;
+
+		long retrospectiveId = retrospectiveHelper.addRetrospective(retrospectiveInfo);
+		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
+
+		return retrospectiveHelper.getXML("add", retrospective);
 	}
 }
