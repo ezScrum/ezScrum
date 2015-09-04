@@ -26,8 +26,7 @@ public class RemoveUnplannedItemAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);

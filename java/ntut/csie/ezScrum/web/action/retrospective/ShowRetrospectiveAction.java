@@ -16,8 +16,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowRetrospectiveAction extends PermissionAction {
-	// private static Log log =
-	// LogFactory.getLog(ShowRetrospectiveAction.class);
 
 	@Override
 	public boolean isValidAction() {
@@ -31,8 +29,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
 	}
 
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
@@ -52,8 +49,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
 		}
 
 		try {
-			return (new RetrospectiveHelper(project))
-					.getListXML(sprintId);
+			return (new RetrospectiveHelper(project)).getListXML(sprintId);
 		} catch (SQLException e) {
 			return new StringBuilder("error");
 		}

@@ -26,22 +26,21 @@ public class AjaxDeleteRetrospectiveAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 	
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
 		long retrospectiveId = Long.parseLong(request.getParameter("issueID"));
-		
+		// Create Helper
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
-
+		// Get Retrospective
 		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
+		// Get Result
 		StringBuilder result = retrospectiveHelper.getXML("delete", retrospective);
-		
+		// Do delete
 		retrospectiveHelper.deleteRetrospective(retrospectiveId);
-		
 		return result;
 	}
 }

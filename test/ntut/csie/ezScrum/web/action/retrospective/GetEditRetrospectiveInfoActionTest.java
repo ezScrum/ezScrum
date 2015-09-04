@@ -3,16 +3,14 @@ package ntut.csie.ezScrum.web.action.retrospective;
 import java.io.File;
 import java.io.IOException;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
@@ -90,12 +88,12 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		long goodRetrospectiveId = goodRetrospective.getId();
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		long issueID = goodRetrospectiveId;
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(issueID));		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -121,16 +119,25 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(0, 1, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String issueID = "1";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -147,8 +154,7 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	IScrumIssue issue = mCR.getImproveRetrospectiveList().get(0);
-    	String expected = genXML(issue);
+    	String expected = genXML(improvementRetrospective);
      	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}	
 	
@@ -157,18 +163,35 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(1, 1, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		long goodRetrospectiveId = goodRetrospective.getId();
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		
 		// (I) 先取得good
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String issueID = "1";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -185,8 +208,7 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	IScrumIssue issue = mCR.getGoodRetrospectiveList().get(0);
-    	String expected = genXML(issue);
+    	String expected = genXML(goodRetrospective);
     	assertEquals(expected, response.getWriterBuffer().toString());	
     	
 		// (II) 再取得improvement
@@ -196,11 +218,11 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		response.reset();
 		
 		// ================ set initial data =======================
-		issueID = "2";
+		retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -217,8 +239,7 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	issue = mCR.getImproveRetrospectiveList().get(0);
-    	expected = genXML(issue);
+    	expected = genXML(improvementRetrospective);
     	assertEquals(expected, response.getWriterBuffer().toString());	    	
 	}	
 
@@ -227,18 +248,35 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(1, 1, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		long goodRetrospectiveId = goodRetrospective.getId();
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		
 		// (I) 先取得improve
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		String issueID = "2";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -255,22 +293,21 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	IScrumIssue issue = mCR.getImproveRetrospectiveList().get(0);
-    	String expected = genXML(issue);
+    	String expected = genXML(improvementRetrospective);
     	assertEquals(expected, response.getWriterBuffer().toString());	
     	
-		// (II) 再取得improvement
+		// (II) 再取得 Good
     	
     	// 執行下一次的action必須做此動作,否則response內容不會更新!
 		clearRequestParameters();
 		response.reset();
 		
 		// ================ set initial data =======================
-		issueID = "1";
+		retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -287,25 +324,24 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	issue = mCR.getGoodRetrospectiveList().get(0);
-    	expected = genXML(issue);
+    	expected = genXML(goodRetrospective);
     	assertEquals(expected, response.getWriterBuffer().toString());	    	
 	}	
 	
 	private String genXML(RetrospectiveObject retrospective) {
- 		StringBuilder result = new StringBuilder("");
+		StringBuilder result = new StringBuilder("");
 		TranslateSpecialChar tsc = new TranslateSpecialChar();
-		
+
 		result.append("<EditRetrospective><Result>true</Result><Retrospective>");
 		result.append("<Id>" + retrospective.getId() + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getIssueID() + "</Link>");		
-		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");		
-		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");		
-		result.append("<Type>" + 11 + "</Type>");
+		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
+		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
+		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");
+		result.append("<Type>" + retrospective.getTypeString() + "</Type>");
 		result.append("<Description>" + tsc.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
-		result.append("<Status>" + retrospective.getStatus() + "</Status>");				
-		result.append("</Retrospective></EditRetrospective>");	
-		
+		result.append("<Status>" + retrospective.getStatusString() + "</Status>");
+		result.append("</Retrospective></EditRetrospective>");
+
 		return result.toString();
 	}
 }

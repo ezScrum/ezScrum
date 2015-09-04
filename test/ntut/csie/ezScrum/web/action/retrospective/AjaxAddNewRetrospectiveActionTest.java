@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
@@ -69,24 +69,25 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
 	}
 	
 	// case 1: One sprint with adding Good retrospective
-	public void testAddGood() throws Exception {	
-		this.mCS = new CreateSprint(1, this.mCP);
-		this.mCS.exe(); // 新增一個 Sprint		
+	public void testAddGood() throws Exception {
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint	
 		
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String sprintID = "1";
-		String rName = mPrefix + "name";
-		String rID = "1";
-		String rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		String rDesc = mPrefix + "description";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		long sprintId = 1;
+		long retrospectiveId = 1;
+		String retrospectiveName = mPrefix + "name";
+		String retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -103,31 +104,29 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String[] a = { sprintID, rID, rName, rType, rDesc };    	
-    	String expected = genXML(a[0], a[1], a[2], a[3], a[4]);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	String expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}		
 					
 	// case 2: One sprint with adding Improvement retrospective
 	public void testAddImprovement() throws Exception {	
-		this.mCS = new CreateSprint(1, this.mCP);
-		this.mCS.exe(); // 新增一個 Sprint		
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint		
 		
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String sprintID = "1";
-		String rName = mPrefix + "name";
-		String rID = "1";
-		String rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		String rDesc = mPrefix + "description";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long sprintId = 1;
+		long retrospectiveId = 1;
+		String retrospectiveName = mPrefix + "name";
+		String retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -144,34 +143,32 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String[] a = { sprintID, rID, rName, rType, rDesc };    	
-    	String expected = genXML(a[0], a[1], a[2], a[3], a[4]);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	String expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}	
 	
 	// case 3: One sprint with adding Improvement & Good retrospective
 	public void testAddImporveAndGood() throws Exception {	
-		this.mCS = new CreateSprint(1, this.mCP);
-		this.mCS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
 		/*
 		 * (I) add Improvement
 		 */
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String sprintID = "1";
-		String rName = mPrefix + "name";
-		String rID = "1";
-		String rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		String rDesc = mPrefix + "description";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long sprintId = 1;
+		long retrospectiveId = 1;
+		String retrospectiveName = mPrefix + "name";
+		String retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -188,9 +185,7 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String[] a = { sprintID, rID, rName, rType, rDesc };    	
-    	String expected = genXML(a[0], a[1], a[2], a[3], a[4]);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	String expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
     	// 執行下一次的action必須做此動作,否則response內容不會更新!
@@ -202,16 +197,16 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	 */    	    	
     	
 		// ================ set initial data =======================
-		rID = "2";
-		rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		rDesc = mPrefix + "description";
+		retrospectiveId = 2;
+		retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -228,33 +223,32 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	expected = genXML(sprintID, rID, rName, rType, rDesc);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());     
 	}	
 	
 	// case 4: One sprint with adding Good & Improvement retrospective
 	public void testAddGoodAndImporve() throws Exception {	
-		this.mCS = new CreateSprint(1, this.mCP);
-		this.mCS.exe(); // 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe(); // 新增一個 Sprint
 		
 		/*
 		 * (I) add Good
 		 */
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String sprintID = "1";
-		String rName = mPrefix + "name";
-		String rID = "1";
-		String rType = ScrumEnum.GOOD_ISSUE_TYPE;
-		String rDesc = mPrefix + "description";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long sprintId = 1;
+		long retrospectiveId = 1;
+		String retrospectiveName = mPrefix + "name";
+		String retrospectiveType = ScrumEnum.GOOD_ISSUE_TYPE;
+		String retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -271,9 +265,7 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String[] a = { sprintID, rID, rName, rType, rDesc };    	
-    	String expected = genXML(a[0], a[1], a[2], a[3], a[4]);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	String expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
     	// 執行下一次的action必須做此動作,否則response內容不會更新!
@@ -285,16 +277,16 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	 */    	    	
     	
 		// ================ set initial data =======================
-		rID = "2";
-		rType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
-		rDesc = mPrefix + "description";
+		retrospectiveId = 2;
+		retrospectiveType = ScrumEnum.IMPROVEMENTS_ISSUE_TYPE;
+		retrospectiveDescription = mPrefix + "description";
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("Name", rName);
-		addRequestParameter("SprintID", "#" + sprintID);
-		addRequestParameter("Type", rType);
-		addRequestParameter("Description", rDesc);		
+		addRequestParameter("Name", retrospectiveName);
+		addRequestParameter("SprintID", "#" + sprintId);
+		addRequestParameter("Type", retrospectiveType);
+		addRequestParameter("Description", retrospectiveDescription);		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -311,26 +303,24 @@ public class AjaxAddNewRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	expected = genXML(sprintID, rID, rName, rType, rDesc);
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
+    	expected = genXML(sprintId, retrospectiveId, retrospectiveName, retrospectiveType, retrospectiveDescription);
     	assertEquals(expected, response.getWriterBuffer().toString());     
 	}
 	
 	
 	
-	private String genXML(String sprintID, String issueID, String name, String type, String desc) {
- 		StringBuilder result = new StringBuilder("");
-		
+	private String genXML(long sprintId, long retrospectiveId, String name, String type, String description) {
+		StringBuilder result = new StringBuilder("");
+
 		result.append("<AddNewRetrospective><Result>true</Result><Retrospective>");
-		result.append("<Id>" + issueID + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueID + "</Link>");
-		result.append("<SprintID>" + sprintID + "</SprintID>");
+		result.append("<Id>" + retrospectiveId + "</Id>");
+		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospectiveId + "</Link>");
+		result.append("<SprintID>" + sprintId + "</SprintID>");
 		result.append("<Name>" + name + "</Name>");
 		result.append("<Type>" + type + "</Type>");
-		result.append("<Description>" + desc + "</Description>");
+		result.append("<Description>" + description + "</Description>");
 		result.append("<Status>" + "new" + "</Status>");
-		result.append("</Retrospective></AddNewRetrospective>");	
-		
+		result.append("</Retrospective></AddNewRetrospective>");
 		return result.toString();
 	}
 }

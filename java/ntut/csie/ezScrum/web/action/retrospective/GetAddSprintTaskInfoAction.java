@@ -75,7 +75,6 @@ public class GetAddSprintTaskInfoAction extends Action {
 			response.getWriter().write(mStringBuilder.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

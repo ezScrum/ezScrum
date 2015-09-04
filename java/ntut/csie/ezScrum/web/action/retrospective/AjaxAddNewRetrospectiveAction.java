@@ -28,31 +28,32 @@ public class AjaxAddNewRetrospectiveAction extends PermissionAction {
 	}
 	
 	@Override
-	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		
 		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// get parameter info
 		String name = request.getParameter("Name");
-		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		String sprintName = request.getParameter("SprintID");
-		String sprintIdString = sprintName.substring(sprintName.indexOf("#") + 1);
-		String typeString = request.getParameter("Type");
+		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
+		String type = request.getParameter("Type");
+		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		
+		// Create Helper
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
+		
+		// 組合 RetrospectiveInfo
 		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
-		long sprintId = Long.parseLong(sprintIdString);
-		retrospectiveInfo.sprintId = sprintId;
 		retrospectiveInfo.name = name;
 		retrospectiveInfo.description = description;
-		retrospectiveInfo.type = RetrospectiveObject.getTypeByTypeString(typeString);
-		long retrospectiveId = retrospectiveHelper.addRetrospective(retrospectiveInfo);		
+		retrospectiveInfo.sprintId = sprintId;
+		retrospectiveInfo.typeString = type;
+
+		long retrospectiveId = retrospectiveHelper.addRetrospective(retrospectiveInfo);
 		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
-		
+
 		return retrospectiveHelper.getXML("add", retrospective);
 	}
 }
