@@ -97,7 +97,6 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 			response.getWriter().write(sb.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
