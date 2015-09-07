@@ -30,13 +30,13 @@ public class GetAddSprintTaskInfoAction extends Action {
 		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
-		StringBuilder mStringBuilder = new StringBuilder();
+		StringBuilder stringBuilder = new StringBuilder();
 
 		String mSprintId = request.getParameter("sprintId");
 
 		if ( (mSprintId == null) || (mSprintId.length() <= 0 ) || (mSprintId.equals("")) || (mSprintId.equals("0")) || (mSprintId.equals("-1")) ) {
 			// default data for empty sprint backlog information
-			mStringBuilder.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
+			stringBuilder.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
 		}
 		
 		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, Long.parseLong(mSprintId))).getSprintBacklogMapper();
@@ -61,18 +61,18 @@ public class GetAddSprintTaskInfoAction extends Action {
 				}
 			}
 			
-			mStringBuilder.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
+			stringBuilder.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
 			for (String handler : actors) {
-				mStringBuilder.append("<Handler>");
-				mStringBuilder.append("<Name>" + handler + "</Name>");
-				mStringBuilder.append("</Handler>");
+				stringBuilder.append("<Handler>");
+				stringBuilder.append("<Name>" + handler + "</Name>");
+				stringBuilder.append("</Handler>");
 			}
-			mStringBuilder.append("</Handlers>");
+			stringBuilder.append("</Handlers>");
 		}
 		
 		try {
 			response.setContentType("text/xml; charset=utf-8");
-			response.getWriter().write(mStringBuilder.toString());
+			response.getWriter().write(stringBuilder.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();
