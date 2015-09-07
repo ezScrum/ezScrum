@@ -280,7 +280,7 @@ public class Translation {
 	// for AjaxGetSprintIndexInfoAction
 	public static String translateSprintInfoToJson(long currentSprintId,
 			double InitialPoint, double CurrentPoint, double InitialHours,
-			double CurrentHours, int releaseId, String SprintGoal,
+			double CurrentHours, long releaseId, String SprintGoal,
 			String StoryChartUrl, String TaskChartUrl, boolean isCurrentSprint)
 			throws JSONException {
 
@@ -302,7 +302,7 @@ public class Translation {
 		sprint.put(
 				"ReleaseID",
 				"Release #"
-						+ translateChar.HandleNullString(Integer
+						+ translateChar.HandleNullString(Long
 								.toString(releaseId)));
 		sprint.put("SprintGoal", translateChar.TranslateJSONChar(SprintGoal));
 		sprint.put("StoryChartUrl", StoryChartUrl);
