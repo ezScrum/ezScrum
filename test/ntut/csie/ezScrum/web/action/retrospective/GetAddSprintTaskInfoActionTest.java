@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.web.action.retrospective;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
