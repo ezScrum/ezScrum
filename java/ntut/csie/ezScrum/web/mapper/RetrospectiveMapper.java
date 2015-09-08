@@ -32,8 +32,8 @@ public class RetrospectiveMapper {
 		RetrospectiveObject retrospective = new RetrospectiveObject(mSprint.getProjectId());
 		retrospective.setName(retrospectiveInfo.name)
 					 .setDescription(retrospectiveInfo.description)
-					 .setTypeString(retrospectiveInfo.typeString)
-					 .setStatusString(retrospectiveInfo.statusString)
+					 .setType(retrospectiveInfo.typeString)
+					 .setStatus(retrospectiveInfo.statusString)
 					 .setSprintId(sprintId)
 					 .save();
 		return retrospective.getId();
@@ -43,7 +43,7 @@ public class RetrospectiveMapper {
 		return RetrospectiveObject.get(retrospectiveId);
 	}	
 
-	public ArrayList<RetrospectiveObject> getRetrospectivesByType(int type) {
+	public ArrayList<RetrospectiveObject> getRetrospectivesByType(String type) {
 		if (mSprint == null) {
 			return new ArrayList<RetrospectiveObject>();
 		}
@@ -54,8 +54,8 @@ public class RetrospectiveMapper {
 		RetrospectiveObject retrospective = RetrospectiveObject.get(retrospectiveInfo.id);
 		retrospective.setName(retrospectiveInfo.name)
 					 .setDescription(retrospectiveInfo.description)
-					 .setTypeString(retrospectiveInfo.typeString)
-					 .setStatusString(retrospectiveInfo.statusString)
+					 .setType(retrospectiveInfo.typeString)
+					 .setStatus(retrospectiveInfo.statusString)
 					 .setSprintId(retrospectiveInfo.sprintId)
 					 .save();
 	}

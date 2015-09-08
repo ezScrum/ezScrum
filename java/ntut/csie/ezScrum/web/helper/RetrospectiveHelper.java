@@ -61,9 +61,9 @@ public class RetrospectiveHelper {
 			result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
 			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
 			result.append("<Name>" + translateSpecialChar.TranslateXMLChar(retrospective.getName()) + "</Name>");
-			result.append("<Type>" + retrospective.getTypeString() + "</Type>");
+			result.append("<Type>" + retrospective.getType() + "</Type>");
 			result.append("<Description>" + translateSpecialChar.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
-			result.append("<Status>" + retrospective.getStatusString() + "</Status>");
+			result.append("<Status>" + retrospective.getStatus() + "</Status>");
 		} else if (actionType.equals("delete")) {
 			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
 		}
@@ -96,9 +96,9 @@ public class RetrospectiveHelper {
 				result.append("<Link></Link>");
 				result.append("<SprintID>" + good.getSprintId() + "</SprintID>");
 				result.append("<Name>" + translateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
-				result.append("<Type>" + good.getTypeString() + "</Type>");
+				result.append("<Type>" + good.getType() + "</Type>");
 				result.append("<Description>" + translateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
-				result.append("<Status>" + good.getStatusString() + "</Status>");
+				result.append("<Status>" + good.getStatus() + "</Status>");
 				result.append("</Retrospective>");
 			}
 		}
@@ -116,9 +116,9 @@ public class RetrospectiveHelper {
 				result.append("<Link></Link>");
 				result.append("<SprintID>" + improvement.getSprintId() + "</SprintID>");
 				result.append("<Name>" + translateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
-				result.append("<Type>" + improvement.getTypeString() + "</Type>");
+				result.append("<Type>" + improvement.getType() + "</Type>");
 				result.append("<Description>" + translateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");
-				result.append("<Status>" + improvement.getStatusString() + "</Status>");
+				result.append("<Status>" + improvement.getStatus() + "</Status>");
 				result.append("</Retrospective>");
 			}
 		}

@@ -76,7 +76,7 @@ public class RetrospectiveObjectTest {
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		long sprintId = mCS.getSprintsId().get(0);
 		long projectId = mCP.getAllProjects().get(0).getId();
-		int type = RetrospectiveObject.TYPE_GOOD;
+		String type = RetrospectiveObject.TYPE_GOOD;
 		
 		
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
@@ -104,13 +104,13 @@ public class RetrospectiveObjectTest {
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		long sprintId = mCS.getSprintsId().get(0);
 		long projectId = mCP.getAllProjects().get(0).getId();
-		int type = RetrospectiveObject.TYPE_GOOD;
+		String type = RetrospectiveObject.TYPE_GOOD;
 		
 		String nameUpdate = "TEST_RETROSPECTIVE_NAME_Update";
 		String descriptionUpdate = "TEST_RETROSPECTIVE_DESCRIPTION_Update";
 		long sprintIdUpdate = mCS.getSprintsId().get(1);
-		int statusUpdate = RetrospectiveObject.STATUS_ASSIGNED;
-		int typeUpdate = RetrospectiveObject.TYPE_IMPROVEMENT;
+		String statusUpdate = RetrospectiveObject.STATUS_ASSIGNED;
+		String typeUpdate = RetrospectiveObject.TYPE_IMPROVEMENT;
 
 		// create retrospective
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
@@ -145,7 +145,7 @@ public class RetrospectiveObjectTest {
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		long sprintId = mCS.getSprintsId().get(0);
 		long projectId = mCP.getAllProjects().get(0).getId();
-		int type = RetrospectiveObject.TYPE_GOOD;
+		String type = RetrospectiveObject.TYPE_GOOD;
 		
 		// create retrospective
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
@@ -176,7 +176,7 @@ public class RetrospectiveObjectTest {
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		long sprintId = mCS.getSprintsId().get(0);
 		long projectId = mCP.getAllProjects().get(0).getId();
-		int type = RetrospectiveObject.TYPE_GOOD;
+		String type = RetrospectiveObject.TYPE_GOOD;
 
 		// create retrospective
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
@@ -201,40 +201,26 @@ public class RetrospectiveObjectTest {
 	}
 	
 	@Test
-	public void testGetTypeString() {
+	public void testGetType() {
 		long projectId = mCP.getAllProjects().get(0).getId();
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
 		retrospective.setType(RetrospectiveObject.TYPE_GOOD);
-		assertEquals("Good", retrospective.getTypeString());
+		assertEquals("Good", retrospective.getType());
 		retrospective.setType(RetrospectiveObject.TYPE_IMPROVEMENT);
-		assertEquals("Improvement", retrospective.getTypeString());
+		assertEquals("Improvement", retrospective.getType());
 	}
-	
+
 	@Test
-	public void testGetStatusString() {
+	public void testGetStatus() {
 		long projectId = mCP.getAllProjects().get(0).getId();
 		RetrospectiveObject retrospective = new RetrospectiveObject(projectId);
 		retrospective.setStatus(RetrospectiveObject.STATUS_NEW);
-		assertEquals("new", retrospective.getStatusString());
+		assertEquals("new", retrospective.getStatus());
 		retrospective.setStatus(RetrospectiveObject.STATUS_ASSIGNED);
-		assertEquals("assigned", retrospective.getStatusString());
+		assertEquals("assigned", retrospective.getStatus());
 		retrospective.setStatus(RetrospectiveObject.STATUS_RESOLVED);
-		assertEquals("resolved", retrospective.getStatusString());
+		assertEquals("resolved", retrospective.getStatus());
 		retrospective.setStatus(RetrospectiveObject.STATUS_CLOSED);
-		assertEquals("closed", retrospective.getStatusString());
-	}
-	
-	@Test
-	public void testGetTypeByTypeString() {
-		assertEquals(RetrospectiveObject.TYPE_GOOD, RetrospectiveObject.getTypeByTypeString("Good"));
-		assertEquals(RetrospectiveObject.TYPE_IMPROVEMENT, RetrospectiveObject.getTypeByTypeString("Improvement"));
-	}
-	
-	@Test
-	public void testGetStatusByStatusString() {
-		assertEquals(RetrospectiveObject.STATUS_NEW, RetrospectiveObject.getStatusByStatusString("new"));
-		assertEquals(RetrospectiveObject.STATUS_ASSIGNED, RetrospectiveObject.getStatusByStatusString("assigned"));
-		assertEquals(RetrospectiveObject.STATUS_RESOLVED, RetrospectiveObject.getStatusByStatusString("resolved"));
-		assertEquals(RetrospectiveObject.STATUS_CLOSED, RetrospectiveObject.getStatusByStatusString("closed"));
+		assertEquals("closed", retrospective.getStatus());
 	}
 }
