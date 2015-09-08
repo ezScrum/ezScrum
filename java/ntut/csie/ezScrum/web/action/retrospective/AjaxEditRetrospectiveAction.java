@@ -52,8 +52,8 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 		retrospectiveInfo.name = name;
 		retrospectiveInfo.description = description;
 		retrospectiveInfo.sprintId = sprintId;
-		retrospectiveInfo.typeString = type;
-		retrospectiveInfo.statusString = status;
+		retrospectiveInfo.type = type;
+		retrospectiveInfo.status = status;
 		
 		retrospectiveHelper.editRetrospective(retrospectiveInfo); 
 		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
