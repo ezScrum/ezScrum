@@ -7,6 +7,4 @@ public class RetrospectiveInfo {
 	public String description = "";
 	public String type = "";
 	public String status = "";
-	public String typeString = "";
-	public String statusString = "";
 }

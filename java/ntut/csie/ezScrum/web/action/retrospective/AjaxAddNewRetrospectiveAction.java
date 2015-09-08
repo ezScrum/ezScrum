@@ -49,7 +49,7 @@ public class AjaxAddNewRetrospectiveAction extends PermissionAction {
 		retrospectiveInfo.name = name;
 		retrospectiveInfo.description = description;
 		retrospectiveInfo.sprintId = sprintId;
-		retrospectiveInfo.typeString = type;
+		retrospectiveInfo.type = type;
 
 		long retrospectiveId = retrospectiveHelper.addRetrospective(retrospectiveInfo);
 		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
