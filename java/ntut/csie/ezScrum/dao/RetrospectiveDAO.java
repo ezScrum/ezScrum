@@ -124,8 +124,8 @@ public class RetrospectiveDAO extends
 				result.getLong(RetrospectiveEnum.PROJECT_ID));
 		retrospective.setName(result.getString(RetrospectiveEnum.NAME))
 				     .setDescription(result.getString(RetrospectiveEnum.DESCRIPTION))
-				     .setType(result.getInt(RetrospectiveEnum.TYPE))
-				     .setStatus(result.getInt(RetrospectiveEnum.STATUS))
+				     .setType(result.getString(RetrospectiveEnum.TYPE))
+				     .setStatus(result.getString(RetrospectiveEnum.STATUS))
 				     .setSprintId(result.getLong(RetrospectiveEnum.SPRINT_ID))
 				     .setProjectId(result.getLong(RetrospectiveEnum.PROJECT_ID))
 				     .setCreateTime(result.getLong(RetrospectiveEnum.CREATE_TIME))

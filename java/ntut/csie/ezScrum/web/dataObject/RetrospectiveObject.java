@@ -7,12 +7,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class RetrospectiveObject implements IBaseObject {
-	public final static int TYPE_GOOD = 1;
-	public final static int TYPE_IMPROVEMENT = 2;
-	public final static int STATUS_NEW = 1;
-	public final static int STATUS_CLOSED = 2;
-	public final static int STATUS_RESOLVED = 3;
-	public final static int STATUS_ASSIGNED = 4;
+	public final static String TYPE_GOOD = "Good";
+	public final static String TYPE_IMPROVEMENT = "Improvement";
+	public final static String STATUS_NEW = "new";
+	public final static String STATUS_CLOSED = "closed";
+	public final static String STATUS_RESOLVED = "resolved";
+	public final static String STATUS_ASSIGNED = "assigned";
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;
@@ -22,8 +22,8 @@ public class RetrospectiveObject implements IBaseObject {
 
 	private String mName = "";
 	private String mDescription = "";
-	private int mType = DEFAULT_VALUE;
-	private int mStatus = DEFAULT_VALUE;
+	private String mType = "";
+	private String mStatus = "";
 
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
@@ -52,35 +52,13 @@ public class RetrospectiveObject implements IBaseObject {
 		return this;
 	}
 	
-	public RetrospectiveObject setTypeString(String typeString) {
-		if (typeString.equals("Good")) {
-			mType = TYPE_GOOD;
-		} else {
-			mType = TYPE_IMPROVEMENT;
-		}
-		return this;
-	}
-	
-	public RetrospectiveObject setStatusString(String statusString) {
-		if (statusString.equals("new")) {
-			mStatus = STATUS_NEW;
-		} else if (statusString.equals("assigned")) {
-			mStatus = STATUS_ASSIGNED;
-		} else if (statusString.equals("resolved")) {
-			mStatus = STATUS_RESOLVED;
-		} else {
-			mStatus = STATUS_CLOSED;
-		}
+	public RetrospectiveObject setType(String typeString) {
+		mType = typeString;
 		return this;
 	}
 
-	public RetrospectiveObject setType(int type) {
-		mType = type;
-		return this;
-	}
-
-	public RetrospectiveObject setStatus(int status) {
-		mStatus = status;
+	public RetrospectiveObject setStatus(String statusString) {
+		mStatus = statusString;
 		return this;
 	}
 
@@ -124,52 +102,12 @@ public class RetrospectiveObject implements IBaseObject {
 		return mDescription;
 	}
 
-	public int getType() {
+	public String getType() {
 		return mType;
 	}
-	
-	public String getTypeString() {
-		if (mType == TYPE_GOOD) {
-			return "Good";
-		} else {
-			return "Improvement";
-		}
-	}
 
-	public int getStatus() {
+	public String getStatus() {
 		return mStatus;
-	}
-	
-	public String getStatusString() {
-		if (mStatus == STATUS_NEW) {
-			return "new";
-		} else if (mStatus == STATUS_ASSIGNED) {
-			return "assigned";
-		} else if (mStatus == STATUS_RESOLVED) {
-			return "resolved";
-		} else {
-			return "closed";
-		}
-	}
-	
-	public static int getTypeByTypeString(String typeString) {
-		if (typeString.equals("Good")) {
-			return TYPE_GOOD;
-		} else {
-			return TYPE_IMPROVEMENT;
-		}
-	}
-	
-	public static int getStatusByStatusString(String statusString) {
-		if (statusString.equals("new")) {
-			return STATUS_NEW;
-		} else if (statusString.equals("assigned")) {
-			return STATUS_ASSIGNED;
-		} else if (statusString.equals("resolved")) {
-			return STATUS_RESOLVED;
-		} else {
-			return STATUS_CLOSED;
-		}
 	}
 
 	public long getSprintId() {

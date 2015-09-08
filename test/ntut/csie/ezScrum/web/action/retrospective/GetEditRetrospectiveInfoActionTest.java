@@ -337,9 +337,9 @@ public class GetEditRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
 		result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
 		result.append("<Name>" + tsc.TranslateXMLChar(retrospective.getName()) + "</Name>");
-		result.append("<Type>" + retrospective.getTypeString() + "</Type>");
+		result.append("<Type>" + retrospective.getType() + "</Type>");
 		result.append("<Description>" + tsc.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
-		result.append("<Status>" + retrospective.getStatusString() + "</Status>");
+		result.append("<Status>" + retrospective.getStatus() + "</Status>");
 		result.append("</Retrospective></EditRetrospective>");
 
 		return result.toString();

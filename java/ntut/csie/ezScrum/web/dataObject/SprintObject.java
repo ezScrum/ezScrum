@@ -173,11 +173,11 @@ public class SprintObject implements IBaseObject {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
 	}
 	
-	public ArrayList<RetrospectiveObject> getRetrospectiveByType(int type) {
+	public ArrayList<RetrospectiveObject> getRetrospectiveByType(String type) {
 		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
 		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
 		for (RetrospectiveObject retrospective : retrospectives) {
-			if (retrospective.getType() == type) {
+			if (retrospective.equals(type)) {
 				filteredRetrospectives.add(retrospective);
 			}
 		}
