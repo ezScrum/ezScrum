@@ -177,7 +177,7 @@ public class SprintObject implements IBaseObject {
 		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
 		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
 		for (RetrospectiveObject retrospective : retrospectives) {
-			if (retrospective.equals(type)) {
+			if (retrospective.getType().equals(type)) {
 				filteredRetrospectives.add(retrospective);
 			}
 		}
