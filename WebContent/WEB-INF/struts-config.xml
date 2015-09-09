@@ -140,6 +140,7 @@
 			
 			<action path="/ajaxDeleteSprintTask"			type="ntut.csie.ezScrum.web.action.backlog.AjaxDeleteSprintTaskAction" />
 			<action path="/getEditTaskInfo"					type="ntut.csie.ezScrum.web.action.backlog.GetEditTaskInfoAction" />
+			<action path="/showSprintInfobyCombo"			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintIndexInfoAction" />
 			<action path="/showSprintBacklog"				type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="sprintBacklog.show" />
 			</action>				

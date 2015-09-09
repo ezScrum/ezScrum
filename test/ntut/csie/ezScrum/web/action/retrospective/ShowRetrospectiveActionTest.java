@@ -292,9 +292,9 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 				sb.append("<Link></Link>");
 				sb.append("<SprintID>" + goodRetrospective.getSprintId() + "</SprintID>");
 				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getName()) + "</Name>");
-				sb.append("<Type>" + goodRetrospective.getTypeString() + "</Type>");
+				sb.append("<Type>" + goodRetrospective.getType() + "</Type>");
 				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getDescription()) + "</Description>");
-				sb.append("<Status>" + goodRetrospective.getStatusString() + "</Status>");
+				sb.append("<Status>" + goodRetrospective.getStatus() + "</Status>");
 				sb.append("</Retrospective>");
 			}
 		}
@@ -307,9 +307,9 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 				sb.append("<Link></Link>");
 				sb.append("<SprintID>" + improvementRetrospective.getSprintId() + "</SprintID>");
 				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getName()) + "</Name>");
-				sb.append("<Type>" + improvementRetrospective.getTypeString() + "</Type>");
+				sb.append("<Type>" + improvementRetrospective.getType() + "</Type>");
 				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getDescription()) + "</Description>");
-				sb.append("<Status>" + improvementRetrospective.getStatusString() + "</Status>");
+				sb.append("<Status>" + improvementRetrospective.getStatus() + "</Status>");
 				sb.append("</Retrospective>");
 			}
 		}

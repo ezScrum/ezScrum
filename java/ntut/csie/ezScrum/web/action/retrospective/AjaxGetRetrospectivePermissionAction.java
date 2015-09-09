@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.jcis.resource.core.IProject;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -22,7 +21,6 @@ public class AjaxGetRetrospectivePermissionAction extends Action {
 		//取得專案名稱
 		ProjectObject project = (ProjectObject) request.getSession().getAttribute("Project");
 		String projrctName = project.getName();
-		
 		Map<String, ScrumRole> scrumRoles = (Map<String, ScrumRole>)request.getSession().getAttribute("ScrumRoles");
 		//取得專案對應的角色權限
 		ScrumRole role =  scrumRoles.get(projrctName);
@@ -40,9 +38,9 @@ public class AjaxGetRetrospectivePermissionAction extends Action {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<Permission>");
 			sb.append("<Function name =\"Restrospective\">");
-			sb.append("<AddRetrospective>"+role.getAccessRetrospective()+"</AddRetrospective>");
-			sb.append("<EditRetrospective>"+role.getAccessRetrospective()+"</EditRetrospective>");
-			sb.append("<DeleteRetrospective>"+role.getAccessRetrospective()+"</DeleteRetrospective>");
+			sb.append("<AddRetrospective>" + role.getAccessRetrospective() + "</AddRetrospective>");
+			sb.append("<EditRetrospective>" + role.getAccessRetrospective() + "</EditRetrospective>");
+			sb.append("<DeleteRetrospective>" + role.getAccessRetrospective() + "</DeleteRetrospective>");
 			sb.append("</Function>");
 			sb.append("</Permission>");
 			result = sb.toString();

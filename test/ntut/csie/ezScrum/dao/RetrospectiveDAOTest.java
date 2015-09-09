@@ -79,14 +79,14 @@ public class RetrospectiveDAOTest {
 		// Test data
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
-		int type = RetrospectiveObject.TYPE_GOOD;
-		int status = RetrospectiveObject.STATUS_NEW;
+		String type = RetrospectiveObject.TYPE_GOOD;
+		String status = RetrospectiveObject.STATUS_NEW;
 		long sprintId = 1;
 
 		// Create Retrospective
 		RetrospectiveObject retrospective = new RetrospectiveObject(mProject.getId());
 		retrospective.setName(name).setDescription(description)
-				.setType(type).setStatus(status).setSprintId(sprintId);
+				     .setType(type).setStatus(status).setSprintId(sprintId);
 
 		// Test create method
 		long retrospectiveId = RetrospectiveDAO.getInstance().create(retrospective);
@@ -133,8 +133,8 @@ public class RetrospectiveDAOTest {
 		// Test data
 		String name = "TEST_RETROSPECTIVE_NAME_UPDATE";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION_UPDATE";
-		int type = RetrospectiveObject.TYPE_IMPROVEMENT;
-		int status = RetrospectiveObject.STATUS_CLOSED;
+		String type = RetrospectiveObject.TYPE_IMPROVEMENT;
+		String status = RetrospectiveObject.STATUS_CLOSED;
 		
 		// Get retrospective
 		RetrospectiveObject retrospective = RetrospectiveDAO.getInstance().get(mRtrospectiveId);
@@ -199,8 +199,8 @@ public class RetrospectiveDAOTest {
 		// Test data
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
-		int type = RetrospectiveObject.TYPE_GOOD;
-		int status = RetrospectiveObject.STATUS_NEW;
+		String type = RetrospectiveObject.TYPE_GOOD;
+		String status = RetrospectiveObject.STATUS_NEW;
 		long sprintId = 1;
 
 		// Create Retrospective
