@@ -125,7 +125,7 @@ Edit Story With Arguments
     Wait Until Page Contains    Success.
 
 Verify Invalid Value
-    [Arguments]    ${element}    ${value}    ${widgetName}
+    [Arguments]    ${element}    ${value}
     [Documentation]    輸入特殊字元及非法字元，驗證 add story 和 edit story widget 內容，判斷submit的disable的xpath路徑數量是否等於一
     Focus AND Input Text    //input[@name="${element}"]    ${value}
     Focus    xpath=//textarea[@name="HowToDemo"]
