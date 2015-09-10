@@ -31,7 +31,6 @@ Test ProductBacklog - Create Story Identify Invalid Value
     Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
     Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Add New Story
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     Verify Invalid Value    Value    a    Add New Story
     Verify Invalid Value    Value    &    Add New Story
     Verify Invalid Value    Value    \\    Add New Story
@@ -63,7 +62,7 @@ Test ProductBacklog - Edit Story Identify Invalid Value
     Verify Invalid Value    Importance    a    Edit Story
     Verify Invalid Value    Importance    &    Edit Story
     Verify Invalid Value    Importance    \\    Edit Story
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
+    ${storyID}=    Get Story ID
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     [Teardown]    Test Edit Story Identify Invalid Value Teardown
