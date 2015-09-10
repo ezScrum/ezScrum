@@ -133,12 +133,11 @@ Verify Invalid Value
     Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Verify Invalid Value Textarea
-    [Arguments]    ${element}    ${value}    ${widgetName}
+    [Arguments]    ${element}    ${value}
     [Documentation]    輸入特殊字元及非法字元，驗證 add story 和 edit story widget 內容，判斷submit的disable的xpath路徑數量是否等於一
     Focus AND Input Text    //textarea[@name="${element}"]    ${value}
     Focus    xpath=//textarea[@name="HowToDemo"]
-    Run Keyword If    "${widgetName}"=="Edit Story"    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
+    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Clean All Story
     # get Story count
