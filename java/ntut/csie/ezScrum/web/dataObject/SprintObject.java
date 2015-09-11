@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.UnplannedDAO;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.codehaus.jettison.json.JSONArray;

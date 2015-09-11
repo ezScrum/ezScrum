@@ -8,9 +8,9 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
-import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 /**
  * @author AllenHuang 2015/08/21

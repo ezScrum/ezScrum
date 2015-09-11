@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.UnplannedDAO;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;

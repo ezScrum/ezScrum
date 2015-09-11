@@ -19,9 +19,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
-import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.junit.After;
 import org.junit.Before;
