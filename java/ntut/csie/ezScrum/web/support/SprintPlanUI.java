@@ -42,7 +42,7 @@ public class SprintPlanUI {
 			this.StartDate = sprint.getStartDateString();
 			this.Interval = String.valueOf(sprint.getInterval());
 			this.DueDate = sprint.getDueDateString();
-			this.Members = String.valueOf(sprint.getMembers());
+			this.Members = String.valueOf(sprint.getTeamSize());
 			this.AvaliableDays = sprint.getAvailableHours() + " hours";
 			this.FocusFactor = String.valueOf(sprint.getFocusFactor());
 			this.DailyScrum = sprint.getDailyInfo();

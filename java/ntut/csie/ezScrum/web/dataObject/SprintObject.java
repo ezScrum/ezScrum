@@ -22,7 +22,7 @@ public class SprintObject implements IBaseObject {
 	private long mProjectId = DEFAULT_VALUE;
 
 	private int mInterval = 0;
-	private int mMembers = 0;
+	private int mTeamSize = 0;
 	private int mAvailableHours = 0;
 	private int mFocusFactor = 0;
 	private String mGoal = "";
@@ -50,8 +50,8 @@ public class SprintObject implements IBaseObject {
 		return this;
 	}
 
-	public SprintObject setMembers(int members) {
-		mMembers = members;
+	public SprintObject setTeamSize(int teamSize) {
+		mTeamSize = teamSize;
 		return this;
 	}
 
@@ -121,8 +121,8 @@ public class SprintObject implements IBaseObject {
 		return mInterval;
 	}
 
-	public int getMembers() {
-		return mMembers;
+	public int getTeamSize() {
+		return mTeamSize;
 	}
 
 	public int getAvailableHours() {
@@ -241,7 +241,7 @@ public class SprintObject implements IBaseObject {
 		mSerialId = sprint.getSerialId();
 
 		setInterval(sprint.getInterval());
-		setMembers(sprint.getMembers());
+		setTeamSize(sprint.getTeamSize());
 		setAvailableHours(sprint.getAvailableHours());
 		setFocusFactor(sprint.getFocusFactor());
 		setGoal(sprint.getGoal());
@@ -361,7 +361,7 @@ public class SprintObject implements IBaseObject {
 				.put(SprintEnum.START_DATE, getStartDateString())
 				.put(SprintEnum.DUE_DATE, getDueDateString())
 				.put(SprintEnum.INTERVAL, mInterval)
-				.put(SprintEnum.MEMBERS, mMembers)
+				.put(SprintEnum.TEAM_SIZE, mTeamSize)
 				.put(SprintEnum.SERIAL_ID, mSerialId)
 				.put(SprintEnum.GOAL, mGoal)
 				.put(SprintEnum.AVAILABLE_HOURS, mAvailableHours)

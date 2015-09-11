@@ -225,7 +225,7 @@ public class ReleaseObjectTest {
 
 		// Create Sprint
 		SprintObject sprint = new SprintObject(mProject.getId());
-		sprint.setInterval(2).setAvailableHours(100).setMembers(4)
+		sprint.setInterval(2).setAvailableHours(100).setTeamSize(4)
 				.setGoal("TEST_SPRINT_GOAL")
 				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
 				.setStartDate("2015/08/03").setDemoDate("2015/08/17")

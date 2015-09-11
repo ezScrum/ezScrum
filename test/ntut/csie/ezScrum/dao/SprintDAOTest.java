@@ -88,7 +88,7 @@ public class SprintDAOTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(sProjectId);
 		sprint.setInterval(sprintInterval)
-		      .setMembers(membersNumbre)
+		      .setTeamSize(membersNumbre)
 		      .setAvailableHours(hoursCanCommit)
 		      .setFocusFactor(focusFactor)
 		      .setGoal(sprintGoal)
@@ -117,7 +117,7 @@ public class SprintDAOTest {
 		
 		// assert
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(membersNumbre, sprintFromDB.getTeamSize());
 		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
 		assertEquals(sprintGoal, sprintFromDB.getGoal());
@@ -134,7 +134,7 @@ public class SprintDAOTest {
 		// assert
 		assertNotNull(sprint);
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembers());
+		assertEquals(4, sprint.getTeamSize());
 		assertEquals(150, sprint.getAvailableHours());
 		assertEquals(80, sprint.getFocusFactor());
 		assertEquals("TEST_SPRINT_GOAL", sprint.getGoal());
@@ -161,7 +161,7 @@ public class SprintDAOTest {
 		SprintObject sprint = SprintDAO.getInstance().get(mSprintId);
 		// update data
 		sprint.setInterval(sprintInterval)
-		        .setMembers(membersNumbre)
+		        .setTeamSize(membersNumbre)
 		        .setAvailableHours(hoursCanCommit)
 		        .setFocusFactor(focusFactor)
 		        .setGoal(sprintGoal)
@@ -178,7 +178,7 @@ public class SprintDAOTest {
 		SprintObject sprintFromDB = SprintDAO.getInstance().get(mSprintId);
 
 		assertEquals(sprintInterval, sprintFromDB.getInterval());
-		assertEquals(membersNumbre, sprintFromDB.getMembers());
+		assertEquals(membersNumbre, sprintFromDB.getTeamSize());
 		assertEquals(hoursCanCommit, sprintFromDB.getAvailableHours());
 		assertEquals(focusFactor, sprintFromDB.getFocusFactor());
 		assertEquals(sprintGoal, sprintFromDB.getGoal());
@@ -226,7 +226,7 @@ public class SprintDAOTest {
 		// create sprint object
 		SprintObject sprint = new SprintObject(sProjectId);
 		sprint.setInterval(sprintInterval)
-		        .setMembers(membersNumbre)
+		        .setTeamSize(membersNumbre)
 		        .setAvailableHours(hoursCanCommit)
 		        .setFocusFactor(focusFactor)
 		        .setGoal(sprintGoal)

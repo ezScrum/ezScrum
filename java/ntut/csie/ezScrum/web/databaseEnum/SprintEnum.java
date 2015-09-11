@@ -6,7 +6,7 @@ public class SprintEnum {
 	public static final String SERIAL_ID = "serial_id";
 	public static final String GOAL = "goal";
 	public static final String INTERVAL = "interval";
-	public static final String MEMBERS = "members";
+	public static final String TEAM_SIZE = "team_size";
 	public static final String AVAILABLE_HOURS = "available_hours";
 	public static final String FOCUS_FACTOR = "focus_factor";
 	public static final String START_DATE = "start_date";

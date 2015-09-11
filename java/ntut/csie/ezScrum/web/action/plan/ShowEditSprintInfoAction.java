@@ -67,7 +67,7 @@ public class ShowEditSprintInfoAction extends PermissionAction {
 							+ "</StartDate>");
 					result.append("<Interval>" + sprint.getInterval()
 							+ " </Interval>");
-					result.append("<Members>" + sprint.getMembers()
+					result.append("<Members>" + sprint.getTeamSize()
 							+ " </Members>");
 					result.append("<AvaliableDays>" + sprint.getAvailableHours()
 							+ " hours</AvaliableDays>");

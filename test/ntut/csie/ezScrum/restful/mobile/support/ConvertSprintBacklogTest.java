@@ -97,7 +97,7 @@ public class ConvertSprintBacklogTest {
 		assertEquals(sprint.getDemoDateString(), responseJson.getString("demoDate"));
 		assertEquals(sprint.getDueDateString(), responseJson.getString("dueDate"));
 		assertEquals(sprint.getInterval(), responseJson.getInt("interval"));
-		assertEquals(sprint.getMembers(), responseJson.getInt("members"));
+		assertEquals(sprint.getTeamSize(), responseJson.getInt("members"));
 		assertEquals(sprint.getAvailableHours(), responseJson.getInt("hoursCanCommit"));
 		assertEquals(sprint.getDailyInfo(), responseJson.getString("dailyMeeting"));
 		assertEquals(sprint.getDemoPlace(), responseJson.getString("demoPlace"));
@@ -128,7 +128,7 @@ public class ConvertSprintBacklogTest {
 			assertEquals(sprint.getDemoDateString(), sprintJson.getString("demoDate"));
 			assertEquals(sprint.getDueDateString(), sprintJson.getString("dueDate"));
 			assertEquals(sprint.getInterval(), sprintJson.getInt("interval"));
-			assertEquals(sprint.getMembers(), sprintJson.getInt("members"));
+			assertEquals(sprint.getTeamSize(), sprintJson.getInt("members"));
 			assertEquals(sprint.getAvailableHours(), sprintJson.getInt("hoursCanCommit"));
 			assertEquals(sprint.getDailyInfo(), sprintJson.getString("dailyMeeting"));
 			assertEquals(sprint.getDemoPlace(), sprintJson.getString("demoPlace"));

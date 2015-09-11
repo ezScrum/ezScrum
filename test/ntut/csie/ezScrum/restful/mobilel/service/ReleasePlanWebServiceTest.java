@@ -109,7 +109,7 @@ public class ReleasePlanWebServiceTest {
 				assertEquals(sprints.get(j).getId(), sprintJson.getLong(SprintEnum.ID));
 				assertEquals(sprints.get(j).getGoal(), sprintJson.get(SprintEnum.GOAL));
 				assertEquals(sprints.get(j).getInterval(), sprintJson.get(SprintEnum.INTERVAL));
-				assertEquals(sprints.get(j).getMembers(), sprintJson.get(SprintEnum.MEMBERS));
+				assertEquals(sprints.get(j).getTeamSize(), sprintJson.get(SprintEnum.TEAM_SIZE));
 				assertEquals(sprints.get(j).getFocusFactor(), sprintJson.get(SprintEnum.FOCUS_FACTOR));
 				assertEquals(sprints.get(j).getAvailableHours(), sprintJson.get(SprintEnum.AVAILABLE_HOURS));
 				assertEquals(sprints.get(j).getDemoPlace(), sprintJson.get(SprintEnum.DEMO_PLACE));

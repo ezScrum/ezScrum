@@ -139,7 +139,7 @@ public class SprintPlanWebServiceControllerTest {
 		// prepare request data
 		JSONObject sprintJson = new JSONObject();
 		sprintJson.put(SprintEnum.INTERVAL, interval)
-		          .put(SprintEnum.MEMBERS, members)
+		          .put(SprintEnum.TEAM_SIZE, members)
 		          .put(SprintEnum.AVAILABLE_HOURS, availableHours)
 		          .put(SprintEnum.FOCUS_FACTOR, focusFactor)
 		          .put(SprintEnum.GOAL, sprintGoal)
@@ -202,7 +202,7 @@ public class SprintPlanWebServiceControllerTest {
 		JSONObject sprintJson = new JSONObject();
 		sprintJson.put(SprintEnum.ID, updateSpint.getId())
 		        .put(SprintEnum.INTERVAL, interval)
-		        .put(SprintEnum.MEMBERS, members)
+		        .put(SprintEnum.TEAM_SIZE, members)
 		        .put(SprintEnum.AVAILABLE_HOURS, availableHours)
 		        .put(SprintEnum.FOCUS_FACTOR, focusFactor)
 		        .put(SprintEnum.GOAL, sprintGoal)
@@ -228,7 +228,7 @@ public class SprintPlanWebServiceControllerTest {
 
 		// assert
 		assertEquals(interval, sprint.getInterval());
-		assertEquals(members, sprint.getMembers());
+		assertEquals(members, sprint.getTeamSize());
 		assertEquals(availableHours, sprint.getAvailableHours());
 		assertEquals(focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintGoal, sprint.getGoal());
@@ -257,7 +257,7 @@ public class SprintPlanWebServiceControllerTest {
 		for (int i = 0; i < response.length(); i++) {
 			assertEquals(sprints.get(i).getId(), response.getJSONObject(i).getLong(SprintUtil.TAG_ID));
 			assertEquals(sprints.get(i).getInterval(), response.getJSONObject(i).getInt(SprintUtil.TAG_INTERVAL));
-			assertEquals(sprints.get(i).getMembers(), response.getJSONObject(i).getInt(SprintUtil.TAG_MEMBERS));
+			assertEquals(sprints.get(i).getTeamSize(), response.getJSONObject(i).getInt(SprintUtil.TAG_MEMBERS));
 			assertEquals(sprints.get(i).getAvailableHours(), response.getJSONObject(i).getInt(SprintUtil.TAG_HOURS_CAN_COMMIT));
 			assertEquals(sprints.get(i).getFocusFactor(), response.getJSONObject(i).getInt(SprintUtil.TAG_FOCUS_FACTOR));
 			assertEquals(sprints.get(i).getGoal(), response.getJSONObject(i).getString(SprintUtil.TAG_SPRINT_GOAL));
@@ -285,7 +285,7 @@ public class SprintPlanWebServiceControllerTest {
 		// assert
 		assertEquals(sprint.getId(), response.getLong(SprintUtil.TAG_ID));
 		assertEquals(sprint.getInterval(), response.getInt(SprintUtil.TAG_INTERVAL));
-		assertEquals(sprint.getMembers(), response.getInt(SprintUtil.TAG_MEMBERS));
+		assertEquals(sprint.getTeamSize(), response.getInt(SprintUtil.TAG_MEMBERS));
 		assertEquals(sprint.getAvailableHours(), response.getInt(SprintUtil.TAG_HOURS_CAN_COMMIT));
 		assertEquals(sprint.getFocusFactor(), response.getInt(SprintUtil.TAG_FOCUS_FACTOR));
 		assertEquals(sprint.getGoal(), response.getString(SprintUtil.TAG_SPRINT_GOAL));

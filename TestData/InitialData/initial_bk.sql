@@ -1177,7 +1177,7 @@ CREATE TABLE `sprint` (
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `goal` TEXT NOT NULL,
   `interval` INT NOT NULL,
-  `members` INT NOT NULL,
+  `team_size` INT NOT NULL,
   `available_hours` INT NOT NULL,
   `focus_factor` INT NOT NULL DEFAULT 100,
   `start_date` DATETIME NOT NULL,

@@ -116,7 +116,7 @@ public class SprintPlanWebServiceTest {
 			assertEquals(sprints.get(i).getDemoDateString(), sprintJSONObject.get(SprintUtil.TAG_DEMO_DATE));
 			assertEquals(sprints.get(i).getInterval(), sprintJSONObject.get(SprintUtil.TAG_INTERVAL));
 			assertEquals(sprints.get(i).getFocusFactor(), sprintJSONObject.get(SprintUtil.TAG_FOCUS_FACTOR));
-			assertEquals(sprints.get(i).getMembers(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
+			assertEquals(sprints.get(i).getTeamSize(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
 			assertEquals(sprints.get(i).getAvailableHours(), sprintJSONObject.get(SprintUtil.TAG_HOURS_CAN_COMMIT));
 			assertEquals(sprints.get(i).getDemoPlace(), sprintJSONObject.get(SprintUtil.TAG_DEMO_PLACE));
 		}
@@ -164,7 +164,7 @@ public class SprintPlanWebServiceTest {
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoDateString(), sprintJSONObject.get(SprintUtil.TAG_DEMO_DATE));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getInterval(), sprintJSONObject.get(SprintUtil.TAG_INTERVAL));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getFocusFactor(), sprintJSONObject.get(SprintUtil.TAG_FOCUS_FACTOR));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getMembers(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getTeamSize(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getAvailableHours(), sprintJSONObject.get(SprintUtil.TAG_HOURS_CAN_COMMIT));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoPlace(), sprintJSONObject.get(SprintUtil.TAG_DEMO_PLACE));
 	}
@@ -201,7 +201,7 @@ public class SprintPlanWebServiceTest {
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoDateString(), sprintJSONObject.get(SprintUtil.TAG_DEMO_DATE));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getInterval(), sprintJSONObject.get(SprintUtil.TAG_INTERVAL));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getFocusFactor(), sprintJSONObject.get(SprintUtil.TAG_FOCUS_FACTOR));
-		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getMembers(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
+		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getTeamSize(), sprintJSONObject.get(SprintUtil.TAG_MEMBERS));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getAvailableHours(), sprintJSONObject.get(SprintUtil.TAG_HOURS_CAN_COMMIT));
 		assertEquals(SprintObject.get(mCS.getSprintsId().get(0)).getDemoPlace(), sprintJSONObject.get(SprintUtil.TAG_DEMO_PLACE));
 		

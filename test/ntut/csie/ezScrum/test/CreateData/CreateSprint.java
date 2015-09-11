@@ -76,7 +76,7 @@ public class CreateSprint {
 				sprint.setGoal(TEST_SPRINT_GOAL + index)
 				.setStartDate(getDate(mToday, j * SPRINT_INTERVAL * 7 + j))
 				.setInterval(SPRINT_INTERVAL)
-				.setMembers(SPRINT_MEMBER)
+				.setTeamSize(SPRINT_MEMBER)
 				.setFocusFactor(SPRINT_FOCUS_FACTOR)
 				.setDemoDate(getDate(mToday, ((j + 1) * SPRINT_INTERVAL * 7 + j) - 1))
 				.setDueDate(getDate(mToday, ((j + 1) * SPRINT_INTERVAL * 7 + j) - 1))

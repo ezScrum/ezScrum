@@ -23,7 +23,7 @@ public class SprintPlanMapper {
 	public long addSprint(SprintInfo sprintInfo) {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.setInterval(sprintInfo.interval)
-		        .setMembers(sprintInfo.membersAmount)
+		        .setTeamSize(sprintInfo.teamSize)
 		        .setAvailableHours(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
 		        .setGoal(sprintInfo.sprintGoal)
@@ -71,7 +71,7 @@ public class SprintPlanMapper {
 	public void updateSprint(SprintInfo sprintInfo) {
 		SprintObject sprint = SprintObject.get(sprintInfo.id);
 		sprint.setInterval(sprintInfo.interval)
-		        .setMembers(sprintInfo.membersAmount)
+		        .setTeamSize(sprintInfo.teamSize)
 		        .setAvailableHours(sprintInfo.hoursCanCommit)
 		        .setFocusFactor(sprintInfo.focusFactor)
 		        .setGoal(sprintInfo.sprintGoal)

@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SprintBacklogMapperTest {
-
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private Configuration mConfig = null;
 	private CreateProject mCP;

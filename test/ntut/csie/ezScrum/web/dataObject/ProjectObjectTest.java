@@ -234,7 +234,7 @@ public class ProjectObjectTest {
 
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
-		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
 				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
@@ -242,7 +242,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
-		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
 				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
@@ -250,7 +250,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
-		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
 				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
@@ -288,7 +288,7 @@ public class ProjectObjectTest {
 
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
-		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 1))
 				.setDueDate(getDate(today, 14)).setDailyInfo(sprintDailyInfo)
@@ -296,7 +296,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
-		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 15))
 				.setDueDate(getDate(today, 28)).setDailyInfo(sprintDailyInfo)
@@ -304,7 +304,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
-		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 29))
 				.setDueDate(getDate(today, 42)).setDailyInfo(sprintDailyInfo)
@@ -353,7 +353,7 @@ public class ProjectObjectTest {
 
 		// create sprint 1
 		SprintObject sprint1 = new SprintObject(project.getId());
-		sprint1.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
 				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
@@ -361,7 +361,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 2
 		SprintObject sprint2 = new SprintObject(project.getId());
-		sprint2.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
 				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
@@ -369,7 +369,7 @@ public class ProjectObjectTest {
 				.save();
 		// create sprint 3
 		SprintObject sprint3 = new SprintObject(project.getId());
-		sprint3.setInterval(sprintInterval).setMembers(membersNumbre)
+		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
 				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
