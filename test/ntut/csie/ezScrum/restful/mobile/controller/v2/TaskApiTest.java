@@ -67,10 +67,6 @@ public class TaskApiTest extends TestableApi {
 	private ProjectObject mProject;
 	@Before
 	public void setUp() throws Exception {
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
-
 		mClient = HttpClientBuilder.create().build();
 
 		// change to test mode
@@ -110,13 +106,14 @@ public class TaskApiTest extends TestableApi {
 		token.save();
 
 		mProject = mCP.getAllProjects().get(0);
+		
+		// start server
+		mServer = HttpServerFactory.create(SERVER_URL);
+		mServer.start();
 	}
 
 	@After
 	public void tearDown() {
-		// stop server
-		mServer.stop(0);
-
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -134,6 +131,9 @@ public class TaskApiTest extends TestableApi {
 		mASTS = null;
 		mProject = null;
 		mConfig = null;
+		
+		// stop server
+		mServer.stop(0);
 	}
 	
 	@Test
