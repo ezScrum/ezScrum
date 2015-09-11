@@ -52,7 +52,11 @@ public class UnplannedItemHelper {
 	
 	public ArrayList<UnplannedObject> getUnplannedsInSprint(long sprintId) {
 		SprintObject sprint = SprintObject.get(sprintId);
-		return sprint.getUnplanneds();
+		ArrayList<UnplannedObject> unplanneds = new ArrayList<>();
+		if (sprint != null) {
+			unplanneds = sprint.getUnplanneds();
+		}
+		return unplanneds;
 	}
 	
 	public ArrayList<UnplannedObject> getAllUnplanneds() {
