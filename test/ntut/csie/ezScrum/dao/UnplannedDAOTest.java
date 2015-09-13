@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author AllenHuang 2015/08/21
  */
 
-public class UnplannedDATTest {
+public class UnplannedDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
 	private CreateProject mCP;
