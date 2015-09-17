@@ -62,39 +62,41 @@ public class TaskBoard {
 		return mDateToTaskIdealPoint;
 	}
 
-	// ======================= for unit test ===========================
-
 	private void init() {
 		// 取得目前最新的Story與Task狀態
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
-		// 取得從經被drop掉的Story與其底下的Task
+		// 取得曾經被drop掉的Story與其底下的Task
 		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
+		
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
-			Date iter_Start_Work_Date = mSprintBacklogLogic.getSprintStartWorkDate();
-			Date iter_End_Work_Date = mSprintBacklogLogic.getSprintEndWorkDate();
-			Date iter_End_Date = mSprintBacklogMapper.getSprintEndDate();
+			Date sprintStartWorkDate = mSprintBacklogLogic.getSprintStartWorkDate();
+			Date sprintEndWorkDate = mSprintBacklogLogic.getSprintEndWorkDate();
+			Date sprintEndDate = mSprintBacklogMapper.getSprintEndDate();
 
-			if (iter_Start_Work_Date == null || iter_End_Work_Date == null || iter_End_Date == null) {
+			if (sprintStartWorkDate == null || sprintEndWorkDate == null || sprintEndDate == null) {
 				return;
 			}
+
 			Calendar indexDate = Calendar.getInstance();
-			indexDate.setTime(iter_Start_Work_Date);
-			long endTime = iter_End_Work_Date.getTime();
+			indexDate.setTime(sprintStartWorkDate);
 
 			mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>();	// Story的理想線
 			mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>();	// Task的理想線
-			mDateToStoryPoint = new LinkedHashMap<Date, Double>();	// Story的真實線
-			mDateToTaskRealPoint = new LinkedHashMap<Date, Double>();		// Task的真實線
-			double[] initPoint = getPointByDate(iter_Start_Work_Date);	// 第一天Story與Task的點數
-			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays();	// 扣除假日後，Sprint的總天數
-			int num = 0;	// Sprint中第幾天的Counter
-			long today = mCurrentDate.getTime();	// 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
-
-			if (mCurrentDate.getTime() > iter_End_Date.getTime()) {
-				// enddate為當日的 00:00:00 ，所以還要加入OneDay，這樣時間才會是 00:00:00 - 23:59:59
-				today = iter_End_Date.getTime() + mOneDay;
+			mDateToStoryPoint = new LinkedHashMap<Date, Double>();		// Story的真實線
+			mDateToTaskRealPoint = new LinkedHashMap<Date, Double>();	// Task的真實線
+			
+			double[] initPoint = getPointByDate(sprintStartWorkDate);	// 第一天Story與Task的點數
+			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays();	// 扣除假日後，Sprint的總天數W
+			long endTime = sprintEndWorkDate.getTime();					// End Time
+			long today = mCurrentDate.getTime();						// 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
+			int sprintDayCount = 0;										// Sprint中第幾天的Counter
+			
+			if (mCurrentDate.getTime() > sprintEndDate.getTime()) {
+				// end date 為當日的 00:00:00 ，所以還要加入OneDay，這樣時間才會是 00:00:00 - 23:59:59
+				today = sprintEndDate.getTime() + mOneDay;
 			}
+			
 			// 每一天的理想與真實點數
 			while (!(indexDate.getTimeInMillis() > endTime) || indexDate.getTimeInMillis() == endTime) {
 				Date key = indexDate.getTime();
@@ -102,8 +104,8 @@ public class TaskBoard {
 				if (!DateUtil.isHoliday(key)) {
 					// 記錄Story與Task理想線的點數
 					// 理想線直線方程式 y = - (起始點數 / 總天數) * 第幾天 + 起始點數
-					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / (dayOfSprint - 1)) * num) + initPoint[0]);
-					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / (dayOfSprint - 1)) * num) + initPoint[1]);
+					mDateToStoryIdealPoint.put(key, (((-initPoint[0]) / (dayOfSprint - 1)) * sprintDayCount) + initPoint[0]);
+					mDateToTaskIdealPoint.put(key, (((-initPoint[1]) / (dayOfSprint - 1)) * sprintDayCount) + initPoint[1]);
 
 					// 記錄Story與Task實際線的點數
 					// 只取出今天以前的資料
@@ -115,7 +117,7 @@ public class TaskBoard {
 						mDateToStoryPoint.put(key, null);
 						mDateToTaskRealPoint.put(key, null);
 					}
-					num++;
+					sprintDayCount++;
 				}
 				indexDate.add(Calendar.DATE, 1);
 			}
@@ -127,8 +129,7 @@ public class TaskBoard {
 		// 確認這個Story在那個時間是否存在
 		if (story.getSprintId() == mSprintBacklogMapper.getSprintId()) {
 			point = story.getEstimate();
-		} 
-		else {
+		} else {
 			// 表示這個Story在當時不存在於這個Sprint裡面
 			throw new Exception("this story isn't at this sprint");
 		}
@@ -140,8 +141,7 @@ public class TaskBoard {
 
 		try {
 			point = task.getRemains(date);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			try {
 				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION
 				point = task.getEstimate();
@@ -165,7 +165,7 @@ public class TaskBoard {
 		// 尋訪現有的所有Story
 		for (StoryObject story : mStories) {
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (story.getStatus() == StoryObject.STATUS_DONE) {
+			if (story.getStatus(dueDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
 
@@ -181,7 +181,7 @@ public class TaskBoard {
 				// 取得這個Story底下的Task點數
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
-					if(task.getStatus() == TaskObject.STATUS_DONE) {
+					if(task.getStatus(dueDate) == TaskObject.STATUS_DONE) {
 						continue;
 					}
 					point[1] += getTaskPoint(dueDate, task);
@@ -195,7 +195,7 @@ public class TaskBoard {
 		// 尋訪現有的所有Droped Story
 		for (StoryObject story : mDroppedStories) {
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (story.getStatus() == StoryObject.STATUS_DONE) {
+			if (story.getStatus(dueDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
 			try {
@@ -211,12 +211,12 @@ public class TaskBoard {
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
 					// 已經closed的task就不用算他的點數啦
-					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE)
+					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE) {
 						continue;
+					}
 					point[1] += getTaskPoint(dueDate, task);
 				}
 			} catch (Exception e) {
-				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
 				continue;
 			}
 		}
@@ -306,8 +306,7 @@ public class TaskBoard {
 		ChartUtil chartUtil = new ChartUtil((type
 		        .equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories")
 		        + " Burndown Chart in Sprint #" + getSprintId(),
-		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper
-		                .getSprintEndDate().getTime() + 24 * 3600 * 1000));
+		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper.getSprintEndDate().getTime() + 24 * 3600 * 1000));
 
 		chartUtil.setChartType(ChartUtil.LINECHART);
 
@@ -338,10 +337,8 @@ public class TaskBoard {
 	public Map<Integer, String> getResolutionMap() {
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
 		map.put(ITSEnum.FIXED_RESOLUTION, ITSEnum.S_FIXED_RESOLUTION);
-		map.put(ITSEnum.UNABLE_TO_REPRODUCE_RESOLUTION,
-		        ITSEnum.S_UNABLE_TO_REPRODUCE_RESOLUTION);
-		map.put(ITSEnum.NOT_FIXABLE_RESOLUTION,
-		        ITSEnum.S_NOT_FIXABLE_RESOLUTION);
+		map.put(ITSEnum.UNABLE_TO_REPRODUCE_RESOLUTION, ITSEnum.S_UNABLE_TO_REPRODUCE_RESOLUTION);
+		map.put(ITSEnum.NOT_FIXABLE_RESOLUTION, ITSEnum.S_NOT_FIXABLE_RESOLUTION);
 		map.put(ITSEnum.DUPLICATE_RESOLUTION, ITSEnum.S_DUPLICATE_RESOLUTION);
 		map.put(ITSEnum.WONT_FIX_RESOLUTION, ITSEnum.S_WONT_FIX_RESOLUTION);
 		return map;
