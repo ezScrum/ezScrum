@@ -4,23 +4,21 @@ import java.io.File;
 import java.io.IOException;
 
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private CreateRetrospective mCR;
-	
 	private Configuration mConfig;
-	
 	private String mActionPath = "/ajaxDeleteRetrospective";
 	
 	public AjaxDeleteRetrospectiveActionTest(String testMethod) {
@@ -69,25 +67,33 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
 		projectManager = null;
 		mCP = null;
 		mCS = null;
-		mCR = null;
 		mConfig = null;
 	}
 	
 	// case1: delete One good retrospective
 	public void testDeleteRetrospectiveWith1g() throws Exception {
 		mCS = new CreateSprint(1, mCP);
-		mCS.exe();	
-		mCR = new CreateRetrospective(1, 0, mCP, mCS);
-		mCR.exe();
+		mCS.exe();
+		
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		long goodRetrospectiveId = goodRetrospective.getId();
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);		
-		String sprintID = "1";
-		String issueID = "1";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -104,30 +110,38 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	String expected = genXML(sprintID, issueID);
+    	String expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
-    	mCR.update();
-    	assertEquals(0, mCR.getGoodRetrospectiveCount());
-    	assertEquals(0, mCR.getImproveRetrospectiveCount());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	RetrospectiveObject retrospectiveFromDB = RetrospectiveDAO.getInstance().get(goodRetrospectiveId);
+    	assertNull(retrospectiveFromDB);
 	}
 	
 	// case2: delete One improvement retrospective
 	public void testDeleteRetrospectiveWith1i() throws Exception {
 		mCS = new CreateSprint(1, mCP);
-		mCS.exe();	
-		mCR = new CreateRetrospective(0, 1, mCP, mCS);
-		mCR.exe();
+		mCS.exe();
+		
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);		
-		String sprintID = "1";
-		String issueID = "1";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -144,32 +158,47 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	String expected = genXML(sprintID, issueID);
+    	String expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
-    	mCR.update();
-    	assertEquals(0, mCR.getGoodRetrospectiveCount());
-    	assertEquals(0, mCR.getImproveRetrospectiveCount());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
-	}	
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	RetrospectiveObject retrospectiveFromDB = RetrospectiveDAO.getInstance().get(improvementRetrospectiveId);
+    	assertNull(retrospectiveFromDB);
+    }	
 
 	// case3: delete One good & One improvement retrospective
 	public void testDeleteRetrospectiveWith1g1i() throws Exception {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();	
-		mCR = new CreateRetrospective(1, 1, mCP, mCS);
-		mCR.exe();
+
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		long goodRetrospectiveId = goodRetrospective.getId();
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		
 		// (I) 先刪除good 
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);		
-		String sprintID = "1";
-		String issueID = "1";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -186,14 +215,12 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	String expected = genXML(sprintID, issueID);
+    	String expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
-    	mCR.update();
-    	assertEquals(0, mCR.getGoodRetrospectiveCount());
-    	assertEquals(1, mCR.getImproveRetrospectiveCount());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
-    	
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	RetrospectiveObject retrospectiveFromDB = RetrospectiveDAO.getInstance().get(goodRetrospectiveId);
+    	assertNull(retrospectiveFromDB);
 		// (II) 再刪除improvement
     	
     	// 執行下一次的action必須做此動作,否則response內容不會更新!
@@ -201,11 +228,11 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
 		response.reset();
 		
 		// ================ set initial data =======================
-		issueID = "2";
+		retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -222,32 +249,48 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	expected = genXML(sprintID, issueID);
+    	expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
     	
-    	mCR.update();
-    	assertEquals(0, mCR.getGoodRetrospectiveCount());
-    	assertEquals(0, mCR.getImproveRetrospectiveCount());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
-	}	
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	retrospectiveFromDB = RetrospectiveDAO.getInstance().get(improvementRetrospectiveId);
+    	assertNull(retrospectiveFromDB);
+    }	
 	
 	// case4: delete One improvement & One good retrospective
 	public void testDeleteRetrospectiveWith1i1g() throws Exception {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();	
-		mCR = new CreateRetrospective(1, 1, mCP, mCS);
-		mCR.exe();
 		
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		
+		long goodRetrospectiveId = goodRetrospective.getId();
+		long improvementRetrospectiveId = improvementRetrospective.getId();
 		// (I) 先刪除improve
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);		
-		String sprintID = "1";
-		String issueID = "2";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long retrospectiveId = improvementRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -264,13 +307,13 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	String expected = genXML(sprintID, issueID);
+    	String expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(retrospectiveId, IssueTypeEnum.TYPE_RETROSPECTIVE).size());
     	
-    	mCR.update();
-    	assertEquals(1, mCR.getGoodRetrospectiveCount());
-    	assertEquals(0, mCR.getImproveRetrospectiveCount());
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	RetrospectiveObject retrospectiveFromDB = RetrospectiveDAO.getInstance().get(improvementRetrospectiveId);
+    	assertNull(retrospectiveFromDB);
     	
 		// (II) 再刪除good
     	
@@ -279,11 +322,11 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
 		response.reset();
 		
 		// ================ set initial data =======================
-		issueID = "1";
+		retrospectiveId = goodRetrospectiveId;
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);		
+		addRequestParameter("issueID", String.valueOf(retrospectiveId));		
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -300,23 +343,21 @@ public class AjaxDeleteRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();	
     	
     	// 比對資料是否正確
-    	expected = genXML(sprintID, issueID);
+    	expected = genXML(sprintId, retrospectiveId);
     	assertEquals(expected, response.getWriterBuffer().toString());
-    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(Long.parseLong(issueID), IssueTypeEnum.TYPE_RETROSPECTIVE).size());
+    	assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(retrospectiveId, IssueTypeEnum.TYPE_RETROSPECTIVE).size());
     	
-    	mCR.update();
-    	assertEquals(0, mCR.getGoodRetrospectiveCount());
-    	assertEquals(0, mCR.getImproveRetrospectiveCount());    	
+    	// 從DB裡面抓回剛剛的資料, 應該為NULL
+    	retrospectiveFromDB = RetrospectiveDAO.getInstance().get(goodRetrospectiveId);
+    	assertNull(retrospectiveFromDB); 	
 	}
 	
-	private String genXML(String sprintID, String issueID) {
- 		StringBuilder result = new StringBuilder("");
-		
+	private String genXML(long sprintId, long retrospectiveId) {
+		StringBuilder result = new StringBuilder("");
 		result.append("<DeleteRetrospective><Result>true</Result><Retrospective>");
-		result.append("<Id>" + issueID + "</Id>");
-		result.append("<SprintID>" + sprintID + "</SprintID>");
-		result.append("</Retrospective></DeleteRetrospective>");	
-		
+		result.append("<Id>" + retrospectiveId + "</Id>");
+		result.append("<SprintID>" + sprintId + "</SprintID>");
+		result.append("</Retrospective></DeleteRetrospective>");
 		return result.toString();
 	}
 }

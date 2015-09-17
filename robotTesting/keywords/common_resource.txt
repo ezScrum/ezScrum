@@ -38,7 +38,8 @@ Compare Field Content
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${PROJECT_NAME}")]
+    Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
+    Click Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
 
 Select Node Product
     [Arguments]    ${nodeName}

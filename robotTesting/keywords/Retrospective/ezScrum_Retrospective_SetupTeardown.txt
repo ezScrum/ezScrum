@@ -70,7 +70,6 @@ Test Retrospective Edit Setup
     Add Retrospective    @{tsRetrospectiveList}
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
-    tempSolution
 
 Test Retrospective Edit Teardown
     Clean All Retrospective

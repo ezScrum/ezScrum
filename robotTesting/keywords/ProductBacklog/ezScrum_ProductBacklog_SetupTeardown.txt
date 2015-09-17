@@ -23,7 +23,6 @@ Test Product Backlog Suite Setup
     Clean All Story
 
 Test Product Backlog Suite Teardown
-    Select Node Product    Product Backlog
     Clean All Tag
     Clean All Story
     Click Image    images/logout.gif
@@ -199,7 +198,5 @@ Test Product Backlog Search Teardown
     Select Node Product    Product Backlog
     Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
     Clean All Story
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release

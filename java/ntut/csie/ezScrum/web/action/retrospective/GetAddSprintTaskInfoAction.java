@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -29,16 +28,15 @@ public class GetAddSprintTaskInfoAction extends Action {
 		log.info("Get Add Sprint Task Information in GetAddSprintTaskInfoAction");
 		
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession mUserSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
-		StringBuilder mStringBuilder = new StringBuilder();
+		StringBuilder stringBuilder = new StringBuilder();
 
 		String mSprintId = request.getParameter("sprintId");
 
 		if ( (mSprintId == null) || (mSprintId.length() <= 0 ) || (mSprintId.equals("")) || (mSprintId.equals("0")) || (mSprintId.equals("-1")) ) {
 			// default data for empty sprint backlog information
-			mStringBuilder.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
+			stringBuilder.append("<Handlers><Partner></Partner><Handler></Handler></Handlers>");
 		}
 		
 		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, Long.parseLong(mSprintId))).getSprintBacklogMapper();
@@ -63,21 +61,20 @@ public class GetAddSprintTaskInfoAction extends Action {
 				}
 			}
 			
-			mStringBuilder.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
+			stringBuilder.append("<Handlers><Partner><Name>" + defaultActor + "</Name></Partner>");
 			for (String handler : actors) {
-				mStringBuilder.append("<Handler>");
-				mStringBuilder.append("<Name>" + handler + "</Name>");
-				mStringBuilder.append("</Handler>");
+				stringBuilder.append("<Handler>");
+				stringBuilder.append("<Name>" + handler + "</Name>");
+				stringBuilder.append("</Handler>");
 			}
-			mStringBuilder.append("</Handlers>");
+			stringBuilder.append("</Handlers>");
 		}
 		
 		try {
 			response.setContentType("text/xml; charset=utf-8");
-			response.getWriter().write(mStringBuilder.toString());
+			response.getWriter().write(stringBuilder.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

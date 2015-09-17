@@ -74,6 +74,7 @@ public class CreateProject {
 		}
 	}
 	
+	@Deprecated
 	public void exeCreate() {
 		exeCreateForDb();	// 等全部改完後，就可以全部用此method了
 		boolean success = false;

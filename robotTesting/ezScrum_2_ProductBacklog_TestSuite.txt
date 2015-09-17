@@ -30,17 +30,16 @@ Test ProductBacklog - Create Story Identify Invalid Value
     [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)
     Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
-    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Add New Story
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    Verify Invalid Value    Value    a    Add New Story
-    Verify Invalid Value    Value    &    Add New Story
-    Verify Invalid Value    Value    \\    Add New Story
-    Verify Invalid Value    Estimate    a    Add New Story
-    Verify Invalid Value    Estimate    &    Add New Story
-    Verify Invalid Value    Estimate    \\    Add New Story
-    Verify Invalid Value    Importance    a    Add New Story
-    Verify Invalid Value    Importance    &    Add New Story
-    Verify Invalid Value    Importance    \\    Add New Story
+    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+    Verify Invalid Value    Value    a
+    Verify Invalid Value    Value    &
+    Verify Invalid Value    Value    \\
+    Verify Invalid Value    Estimate    a
+    Verify Invalid Value    Estimate    &
+    Verify Invalid Value    Estimate    \\
+    Verify Invalid Value    Importance    a
+    Verify Invalid Value    Importance    &
+    Verify Invalid Value    Importance    \\
     ${xpathCreateStoryCancel}=    Find Current Window Element    Add New Story    Cancel
     Element Should Be Visible    xpath=${xpathCreateStoryCancel}
     Click Element    xpath=${xpathCreateStoryCancel}
@@ -53,17 +52,17 @@ Test ProductBacklog - Edit Story Identify Invalid Value
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="new Edit Story With Invalid Value")]
     Click Element    xpath=//button[text()="Edit Story"]
     Wait Until Page Contains    Edit Story
-    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz    Edit Story
-    Verify Invalid Value    Value    a    Edit Story
-    Verify Invalid Value    Value    &    Edit Story
-    Verify Invalid Value    Value    \\    Edit Story
-    Verify Invalid Value    Estimate    a    Edit Story
-    Verify Invalid Value    Estimate    &    Edit Story
-    Verify Invalid Value    Estimate    \\    Edit Story
-    Verify Invalid Value    Importance    a    Edit Story
-    Verify Invalid Value    Importance    &    Edit Story
-    Verify Invalid Value    Importance    \\    Edit Story
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
+    Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+    Verify Invalid Value    Value    a
+    Verify Invalid Value    Value    &
+    Verify Invalid Value    Value    \\
+    Verify Invalid Value    Estimate    a
+    Verify Invalid Value    Estimate    &
+    Verify Invalid Value    Estimate    \\
+    Verify Invalid Value    Importance    a
+    Verify Invalid Value    Importance    &
+    Verify Invalid Value    Importance    \\
+    ${storyID}=    Get Story ID
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
     Element Enable And Submit    ${xpathEditStoryCancel}
     [Teardown]    Test Edit Story Identify Invalid Value Teardown

@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
@@ -35,7 +35,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.SERIAL_ID, sprintSerialId);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembers());
+		valueSet.addInsertValue(SprintEnum.TEAM_SIZE, sprint.getTeamSize());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
@@ -90,7 +90,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
 		valueSet.addInsertValue(SprintEnum.GOAL, sprint.getGoal());
 		valueSet.addInsertValue(SprintEnum.INTERVAL, sprint.getInterval());
-		valueSet.addInsertValue(SprintEnum.MEMBERS, sprint.getMembers());
+		valueSet.addInsertValue(SprintEnum.TEAM_SIZE, sprint.getTeamSize());
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
@@ -172,7 +172,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		        result.getLong(SprintEnum.PROJECT_ID));
 		sprint.setGoal(result.getString(SprintEnum.GOAL))
 		        .setInterval(result.getInt(SprintEnum.INTERVAL))
-		        .setMembers(result.getInt(SprintEnum.MEMBERS))
+		        .setTeamSize(result.getInt(SprintEnum.TEAM_SIZE))
 		        .setAvailableHours(result.getInt(SprintEnum.AVAILABLE_HOURS))
 		        .setFocusFactor(result.getInt(SprintEnum.FOCUS_FACTOR))
 		        .setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.START_DATE)))

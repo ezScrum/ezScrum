@@ -37,7 +37,7 @@ public class ConvertSprintBacklog {
 		sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
 		sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
 		sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
-		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembers());
+		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getTeamSize());
 		sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());
 		sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 		sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());
@@ -64,7 +64,7 @@ public class ConvertSprintBacklog {
 			sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
 			sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
 			sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
-			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getMembers());
+			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getTeamSize());
 			sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());
 			sprintJson.put(SprintPlanUtil.TAG_DAILY_MEETING, sprint.getDailyInfo());
 			sprintJson.put(SprintPlanUtil.TAG_DEMO_PLACE, sprint.getDemoPlace());

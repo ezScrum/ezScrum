@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

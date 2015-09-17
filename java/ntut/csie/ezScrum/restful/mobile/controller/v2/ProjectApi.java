@@ -9,7 +9,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;

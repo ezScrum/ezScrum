@@ -59,12 +59,6 @@ public class StoryApiTest extends TestableApi {
 
 	@Before
 	public void setUp() throws Exception {
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
-
-		mClient = HttpClientBuilder.create().build();
-
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -98,13 +92,16 @@ public class StoryApiTest extends TestableApi {
 		token.save();
 
 		mProject = mCP.getAllProjects().get(0);
+		
+		// start server
+		mServer = HttpServerFactory.create(SERVER_URL);
+		mServer.start();
+
+		mClient = HttpClientBuilder.create().build();
 	}
 
 	@After
 	public void tearDown() {
-		// stop server
-		mServer.stop(0);
-
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -115,6 +112,9 @@ public class StoryApiTest extends TestableApi {
 
 		mConfig.setTestMode(false);
 		mConfig.save();
+		
+		// stop server
+		mServer.stop(0);
 
 		// release
 		mCP = null;
@@ -144,8 +144,8 @@ public class StoryApiTest extends TestableApi {
 		HttpPost httpPost = new HttpPost(API_URL);
 		httpPost.setEntity(entity);
 		setHeaders(httpPost, mAccountId, mPlatformType);
-		String result = EntityUtils.toString(mClient.execute(httpPost)
-				.getEntity());
+		HttpResponse httpResponse = mClient.execute(httpPost);
+		String result = EntityUtils.toString(httpResponse.getEntity());
 		JSONObject response = new JSONObject(result);
 
 		// 新增一個 story，project 內的 story 要有六個
@@ -176,8 +176,8 @@ public class StoryApiTest extends TestableApi {
 		HttpPut httpPut = new HttpPut(API_URL + "/" + story.getId());
 		httpPut.setEntity(entity);
 		setHeaders(httpPut, mAccountId, mPlatformType);
-		String result = EntityUtils.toString(mClient.execute(httpPut)
-				.getEntity(), "utf-8");
+		HttpResponse httpResponse = mClient.execute(httpPut);
+		String result = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
 		System.out.println(result);
 		JSONObject response = new JSONObject(result);
@@ -260,11 +260,8 @@ public class StoryApiTest extends TestableApi {
 				+ "?project_name=" + mProject.getName());
 		setHeaders(httpDelete, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpDelete);
-		String response = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
-
-		JSONObject responseJson = new JSONObject(response);
-		assertEquals("SUCCESS", responseJson.getString("status"));
+		
+		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
 
 		story = StoryDAO.getInstance().get(story.getId());
 		assertEquals(null, story);

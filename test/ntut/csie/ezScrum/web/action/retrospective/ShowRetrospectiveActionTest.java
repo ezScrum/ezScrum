@@ -2,24 +2,25 @@ package ntut.csie.ezScrum.web.action.retrospective;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private CreateRetrospective mCR;
 	private Configuration mConfig;
+	
+	private ArrayList<RetrospectiveObject> mGoodRetrospectives;
+	private ArrayList<RetrospectiveObject> mImprovementRetrospectives;
 	
 	public ShowRetrospectiveActionTest(String testMethod) {
         super(testMethod);
@@ -35,6 +36,10 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 
 		mCP = new CreateProject(1);
 		mCP.exeCreate(); // 新增一測試專案
+		
+		// Initial ArrayList
+		mGoodRetrospectives = new ArrayList<RetrospectiveObject>();
+		mImprovementRetrospectives = new ArrayList<RetrospectiveObject>();
 
 		super.setUp();
 
@@ -59,6 +64,9 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
+		
+		mGoodRetrospectives.clear();
+		mImprovementRetrospectives.clear();
 
 		super.tearDown();
 
@@ -67,18 +75,19 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		projectManager = null;
 		mCP = null;
 		mCS = null;
-		mCR = null;
 		mConfig = null;
+		mGoodRetrospectives = null;
+		mImprovementRetrospectives = null;
 	}
 
 	// case 1: no sprint
 	public void testNoSprint() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", Integer.toString(-1)); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(-1));
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -96,7 +105,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
   
     	// 比對資料是否正確(sprintID = -1)
     	String expected = "<Retrospectives><Sprint><Id>-1</Id><Name>Sprint #-1</Name></Sprint></Retrospectives>";
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}	
 	
@@ -106,7 +114,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		mCS.exe(); // 新增一個 Sprint		
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
@@ -128,7 +136,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
   
     	// 比對資料是否正確(sprintID = -1)
     	String expected = "<Retrospectives><Sprint><Id>1</Id><Name>Sprint #1</Name></Sprint></Retrospectives>";
-//    	System.out.println("response: " + response.getWriterBuffer().toString());
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}		
 	
@@ -137,16 +144,25 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(1, 0, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		// Add Retrospective to List
+		mGoodRetrospectives.add(goodRetrospective);
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		long sprintID = mCS.getSprintsId().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintId)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -163,7 +179,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(String.valueOf(sprintID));
+    	String expected = genXML(sprintId);
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}			
 	
@@ -172,16 +188,25 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(0, 1, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+
+		// Add Retrospective to List
+		mImprovementRetrospectives.add(improvementRetrospective);
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		long sprintID = mCS.getSprintsId().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintId)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -198,7 +223,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(String.valueOf(sprintID));
+    	String expected = genXML(sprintId);
      	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
 	}	
 	
@@ -207,16 +232,33 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint		
 		
-		mCR = new CreateRetrospective(1, 1, mCP, mCS);
-		mCR.exe();
+		long projectId = mCP.getAllProjects().get(0).getId();
+		long sprintId = mCS.getSprintsId().get(0);
+		
+		RetrospectiveObject goodRetrospective = new RetrospectiveObject(projectId);
+		goodRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                 .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                 .setType(RetrospectiveObject.TYPE_GOOD)
+		                 .setSprintId(sprintId)
+		                 .save();
+		
+		RetrospectiveObject improvementRetrospective = new RetrospectiveObject(projectId);
+		improvementRetrospective.setName("TEST_RETROSPECTIVE_NAME")
+		                        .setDescription("TEST_RETROSPECTIVE_DESCRIPTION")
+		                        .setType(RetrospectiveObject.TYPE_IMPROVEMENT)
+		                        .setSprintId(sprintId)
+		                        .save();
+		
+		// Add Retrospective to List
+		mGoodRetrospectives.add(goodRetrospective);
+		mImprovementRetrospectives.add(improvementRetrospective);
 		
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
-		long sprintID = mCS.getSprintsId().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 
 		// ================== set parameter info ====================
-		addRequestParameter("sprintID", String.valueOf(sprintID)); // 取得第一筆 SprintPlan
+		addRequestParameter("sprintID", String.valueOf(sprintId)); // 取得第一筆 SprintPlan
 		// ================== set parameter info ====================
 
 		// ================ set session info ========================
@@ -233,49 +275,44 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確
-    	String expected = genXML(String.valueOf(sprintID));
+    	String expected = genXML(sprintId);
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
-	}				
+    }
 	
-	private String genXML(String sprintID) {
-    	TranslateSpecialChar tsc = new TranslateSpecialChar();				
+	private String genXML(long sprintId) {
+    	TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();				
 		StringBuilder sb = new StringBuilder();
-		sb.append("<Retrospectives><Sprint><Id>" + sprintID + "</Id><Name>Sprint #" + sprintID + "</Name></Sprint>");
+		sb.append("<Retrospectives><Sprint><Id>" + sprintId + "</Id><Name>Sprint #" + sprintId + "</Name></Sprint>");
 		
-		// good
-    	List<IScrumIssue> goodRes = mCR.getGoodRetrospectiveList();		
-		for(int i = 0; i < goodRes.size(); i++){			
-			IScrumIssue goodR = goodRes.get(i);
-			if (goodR.getSprintID().compareTo(sprintID) == 0) {
+		// Good
+		for(RetrospectiveObject goodRetrospective : mGoodRetrospectives){
+			if (goodRetrospective.getSprintId() == sprintId) {
 				sb.append("<Retrospective>");
-				sb.append("<Id>" + goodR.getIssueID() + "</Id>");
-				sb.append("<Link>" + tsc.TranslateXMLChar(goodR.getIssueLink()) + "</Link>");
-				sb.append("<SprintID>" + goodR.getSprintID() + "</SprintID>");
-				sb.append("<Name>" + tsc.TranslateXMLChar(goodR.getName()) + "</Name>");
-				sb.append("<Type>" + goodR.getCategory() + "</Type>");
-				sb.append("<Description>" + tsc.TranslateXMLChar(goodR.getDescription()) + "</Description>");
-				sb.append("<Status>" + goodR.getStatus() + "</Status>");
-				sb.append("</Retrospective>");
-			}
-		}		
-		
-		// improve
-		List<IScrumIssue> improveRes = mCR.getImproveRetrospectiveList();		
-		for(int i = 0; i < improveRes.size(); i++){
-			IScrumIssue improveR = improveRes.get(i);
-			if (improveR.getSprintID().compareTo(sprintID) == 0) {
-				sb.append("<Retrospective>");
-				sb.append("<Id>" + improveR.getIssueID() + "</Id>");
-				sb.append("<Link>" + tsc.TranslateXMLChar(improveR.getIssueLink()) + "</Link>");
-				sb.append("<SprintID>" + improveR.getSprintID() + "</SprintID>");
-				sb.append("<Name>" + tsc.TranslateXMLChar(improveR.getName()) + "</Name>");
-				sb.append("<Type>" + improveR.getCategory() + "</Type>");
-				sb.append("<Description>" + tsc.TranslateXMLChar(improveR.getDescription()) + "</Description>");
-				sb.append("<Status>" + improveR.getStatus() + "</Status>");
+				sb.append("<Id>" + goodRetrospective.getId() + "</Id>");
+				sb.append("<Link></Link>");
+				sb.append("<SprintID>" + goodRetrospective.getSprintId() + "</SprintID>");
+				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getName()) + "</Name>");
+				sb.append("<Type>" + goodRetrospective.getType() + "</Type>");
+				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getDescription()) + "</Description>");
+				sb.append("<Status>" + goodRetrospective.getStatus() + "</Status>");
 				sb.append("</Retrospective>");
 			}
 		}
 		
+		// Improvement
+		for (RetrospectiveObject improvementRetrospective : mImprovementRetrospectives) {
+			if (improvementRetrospective.getSprintId() == sprintId) {
+				sb.append("<Retrospective>");
+				sb.append("<Id>" + improvementRetrospective.getId() + "</Id>");
+				sb.append("<Link></Link>");
+				sb.append("<SprintID>" + improvementRetrospective.getSprintId() + "</SprintID>");
+				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getName()) + "</Name>");
+				sb.append("<Type>" + improvementRetrospective.getType() + "</Type>");
+				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getDescription()) + "</Description>");
+				sb.append("<Status>" + improvementRetrospective.getStatus() + "</Status>");
+				sb.append("</Retrospective>");
+			}
+		}
 		sb.append("</Retrospectives>");
 		return sb.toString();
 	}

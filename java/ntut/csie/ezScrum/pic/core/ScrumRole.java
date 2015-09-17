@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.pic.core;
 
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 /**
  * @author py2k

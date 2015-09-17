@@ -15,8 +15,6 @@ import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -25,8 +23,6 @@ import org.apache.struts.action.ActionMapping;
 public class GetAddNewRetrospectiveInfoAction extends Action {
 	// --------------------------------------------------------- Instance
 	// Variables
-	private static Log log = LogFactory
-			.getLog(GetAddNewRetrospectiveInfoAction.class);
 
 	// --------------------------------------------------------- Methods
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -53,8 +49,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 			for (SprintObject sprint : sprints) {
 				sb.append("<Sprint>");
 				sb.append("<Id>" + String.valueOf(sprint.getId()) + "</Id>");
-				sb.append("<Name>Sprint #" + String.valueOf(sprint.getId())
-						+ "</Name>");
+				sb.append("<Name>Sprint #" + String.valueOf(sprint.getId()) + "</Name>");
 
 				/*-----------------------------------------------------------
 				 *	判斷此Sprint是否已經開始了
@@ -102,7 +97,6 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 			response.getWriter().write(sb.toString());
 			response.getWriter().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

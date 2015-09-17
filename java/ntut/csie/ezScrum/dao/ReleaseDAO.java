@@ -9,8 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
-import ntut.csie.ezScrum.web.databasEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
@@ -134,8 +133,8 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 				.setDescription(result.getString(ReleaseEnum.DESCRIPTION))
 				.setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.START_DATE)))
 				.setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.DUE_DATE)))
-				.setCreateTime(result.getLong(SprintEnum.CREATE_TIME))
-				.setUpdateTime(result.getLong(SprintEnum.UPDATE_TIME));
+				.setCreateTime(result.getLong(ReleaseEnum.CREATE_TIME))
+				.setUpdateTime(result.getLong(ReleaseEnum.UPDATE_TIME));
 		return release;
 	}
 }

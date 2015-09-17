@@ -11,30 +11,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.ReleaseDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
-import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ReleaseObjectTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
-	private CreateSprint mCS = null;
 	private final int mPROJECT_COUNT = 1;
 	private ReleaseObject mRelease = null;
 	private ProjectObject mProject = null;
@@ -225,7 +220,7 @@ public class ReleaseObjectTest {
 
 		// Create Sprint
 		SprintObject sprint = new SprintObject(mProject.getId());
-		sprint.setInterval(2).setAvailableHours(100).setMembers(4)
+		sprint.setInterval(2).setAvailableHours(100).setTeamSize(4)
 				.setGoal("TEST_SPRINT_GOAL")
 				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
 				.setStartDate("2015/08/03").setDemoDate("2015/08/17")
@@ -275,34 +270,59 @@ public class ReleaseObjectTest {
 
 	@Test
 	public void testGetDoneStoryByDate() throws Exception {
-		// 新增三筆 sprints
-		mCS = new CreateSprint(3, mCP);
-		mCS.exe();
-		// 每個Sprint中新增2筆Story
-		AddStoryToSprint ASS = new AddStoryToSprint(2, 1, mCS, mCP, "EST");
-		ASS.exe();
+		// Test Data
+		String storyName = "TEST_STORY_NAME_";
+		String storyNotes = "TEST_STORY_NOTES_";
+		String storyHowtodemo = "TEST_STORY_HOW_TO_DEMO_";
+		int storyEstimate = 8;
+		int storyImportance = 96;
 
-		long releaseId = 1;
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(
-				mProject);
-		ReleaseObject release = ReleaseObject.get(releaseId);
+		// Create Sprint
+		SprintObject sprint = new SprintObject(mProject.getId());
+		sprint.setInterval(2).setAvailableHours(100).setTeamSize(4)
+				.setGoal("TEST_SPRINT_GOAL")
+				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
+				.setStartDate("2015/08/03").setDemoDate("2015/08/17")
+				.setDueDate("2015/08/17").save();
 
-		ArrayList<StoryObject> stories = productBacklogLogic.getStories();
-		ArrayList<Long> storyIdList = new ArrayList<Long>();
-		for (StoryObject story : stories) {
-			storyIdList.add(story.getId());
-		}
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(
-				mProject, mCS.getSprintsId().get(0));
-		for (int i = 0; i < stories.size(); i++) {
-			// 把除了最後一筆 story 以外的 story 都設成 done
-			if (stories.get(i).getId() != stories.size()) {
-				sprintBacklogLogic.closeStory(stories.get(i).getId(), stories
-						.get(i).getName(), stories.get(i).getNotes(),
-						"2015/02/03-16:00:00");
-			}
-		}
-		assertEquals(1.0, release.getReleaseAllStoryDone());
+		// Create Story 1
+		StoryObject story1 = new StoryObject(mProject.getId());
+		story1.setSprintId(sprint.getId()).setName(storyName + 1)
+				.setEstimate(storyEstimate)
+				.setStatus(StoryObject.STATUS_UNCHECK).setNotes(storyNotes + 1)
+				.setImportance(storyImportance)
+				.setHowToDemo(storyHowtodemo + 1).save();
+
+		// Create Story 2
+		StoryObject story2 = new StoryObject(mProject.getId());
+		story2.setSprintId(sprint.getId()).setName(storyName + 2)
+				.setEstimate(storyEstimate)
+				.setStatus(StoryObject.STATUS_UNCHECK).setNotes(storyNotes + 2)
+				.setImportance(storyImportance)
+				.setHowToDemo(storyHowtodemo + 2).save();
+
+		// Create Story 3
+		StoryObject story3 = new StoryObject(mProject.getId());
+		story3.setSprintId(sprint.getId()).setName(storyName + 3)
+				.setEstimate(storyEstimate)
+				.setStatus(StoryObject.STATUS_UNCHECK).setNotes(storyNotes + 3)
+				.setImportance(storyImportance)
+				.setHowToDemo(storyHowtodemo + 3).save();
+		
+		assertEquals(3, mRelease.getStories().size());
+		assertEquals(0.0, mRelease.getDoneStoryAmount());
+		
+		story1.setStatus(StoryObject.STATUS_DONE).save();
+		assertEquals(3, mRelease.getStories().size());
+		assertEquals(1.0, mRelease.getDoneStoryAmount());
+		
+		story2.setStatus(StoryObject.STATUS_DONE).save();
+		assertEquals(3, mRelease.getStories().size());
+		assertEquals(2.0, mRelease.getDoneStoryAmount());
+		
+		story3.setStatus(StoryObject.STATUS_DONE).save();
+		assertEquals(3, mRelease.getStories().size());
+		assertEquals(3.0, mRelease.getDoneStoryAmount());
 	}
 	
 	@Test

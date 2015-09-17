@@ -1,12 +1,10 @@
 package ntut.csie.ezScrum.web.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.jcis.resource.core.IProject;
 import ntut.csie.jcis.resource.core.IWorkspace;
@@ -20,7 +18,6 @@ import org.junit.Test;
 public class ProjectHelperTest {
 	private CreateProject mCP;
 	private int mProjectCount = 3;
-	private ProjectLogic mProjectLogic = null;
 	private ProjectMapper mProjectMapper = null;
 
 	private Configuration mConfig;
@@ -38,7 +35,6 @@ public class ProjectHelperTest {
 		mCP = new CreateProject(this.mProjectCount);
 		mCP.exeCreate();
 
-		mProjectLogic = new ProjectLogic();
 		mProjectMapper = new ProjectMapper();
 
 		// release
@@ -62,7 +58,6 @@ public class ProjectHelperTest {
 		ini = null;
 		mCP = null;
 		projectManager = null;
-		mProjectLogic = null;
 		mConfig = null;
 	}
 

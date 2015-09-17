@@ -22,7 +22,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.ParseException;
@@ -185,7 +185,7 @@ public class SprintBacklogWebServiceControllerTest {
 		assertEquals(currentSprint.getProjectId(), wholeJson.getLong(SprintUtil.TAG_PROJECT_ID));
 		assertEquals(currentSprint.getStartDateString(), wholeJson.getString(SprintUtil.TAG_START_DATE));
 		assertEquals(currentSprint.getInterval(), wholeJson.getLong(SprintUtil.TAG_INTERVAL));
-		assertEquals(currentSprint.getMembers(), wholeJson.getLong(SprintUtil.TAG_MEMBERS));
+		assertEquals(currentSprint.getTeamSize(), wholeJson.getLong(SprintUtil.TAG_TEAM_SIZE));
 		assertEquals(currentSprint.getSerialId(), wholeJson.getLong(SprintUtil.TAG_SERIAL_ID));
 		assertEquals(currentSprint.getGoal(), wholeJson.getString(SprintUtil.TAG_SPRINT_GOAL));
 		assertEquals(currentSprint.getAvailableHours(), wholeJson.getLong(SprintUtil.TAG_HOURS_CAN_COMMIT));

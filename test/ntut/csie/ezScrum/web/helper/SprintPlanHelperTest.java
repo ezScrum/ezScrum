@@ -120,8 +120,8 @@ public class SprintPlanHelperTest {
 		// assert
 		assertEquals(thirdSprint.getId(), lastSprint.getId());
 		assertEquals(thirdSprint.getProjectId(), lastSprint.getProjectId());
-		assertEquals(thirdSprint.getMembers(),
-				lastSprint.getMembers());
+		assertEquals(thirdSprint.getTeamSize(),
+				lastSprint.getTeamSize());
 		assertEquals(thirdSprint.getInterval(), lastSprint.getInterval());
 		assertEquals(thirdSprint.getFocusFactor(), lastSprint.getFocusFactor());
 		assertEquals(thirdSprint.getAvailableHours(),
@@ -144,7 +144,7 @@ public class SprintPlanHelperTest {
 		// assert
 		assertEquals(firstSprint.getId(), sprint.getId());
 		assertEquals(firstSprint.getProjectId(), sprint.getProjectId());
-		assertEquals(firstSprint.getMembers(), sprint.getMembers());
+		assertEquals(firstSprint.getTeamSize(), sprint.getTeamSize());
 		assertEquals(firstSprint.getInterval(), sprint.getInterval());
 		assertEquals(firstSprint.getFocusFactor(), sprint.getFocusFactor());
 		assertEquals(firstSprint.getAvailableHours(),

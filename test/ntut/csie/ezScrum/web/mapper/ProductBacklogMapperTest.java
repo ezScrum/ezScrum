@@ -21,7 +21,6 @@ import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
@@ -30,8 +29,8 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+//import ntut.csie.jcis.resource.core.IProject;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -158,7 +157,7 @@ public class ProductBacklogMapperTest {
 		// get Release
 		mCR.getReleases().get(0);
 		// get CreateSprint
-		CreateSprint createSprint = mASTR.getCreateSprintsList().get(0);
+		mASTR.getCreateSprintsList().get(0);
 		// test data
 		int storyCount = 3;
 		int storyEstimate = 13;
@@ -338,8 +337,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testRemoveTask() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String taskName = "TEST_TASK_1";
 		int taskEstimate = 13;
@@ -361,8 +359,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testAddNewTag() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		
@@ -378,8 +375,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testDeleteTag() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		// create tag
@@ -402,8 +398,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testGetTags() {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_";
 		// create 3 tag
@@ -425,8 +420,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testAddTagToStory() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		// create tag
@@ -444,8 +438,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testRemoveTagFromStory() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		// create tag
@@ -465,8 +458,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testUpdateTag() throws SQLException {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		String newTagName = "TEST_TAG_NAME_NEW";
@@ -485,8 +477,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testIsTagExisting() {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		// create tag
@@ -505,8 +496,7 @@ public class ProductBacklogMapperTest {
 	@Test
 	public void testGetTagByName() {
 		// get project
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = ProjectObject.get(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// test data
 		String tagName = "TEST_TAG_NAME_1";
 		// create tag

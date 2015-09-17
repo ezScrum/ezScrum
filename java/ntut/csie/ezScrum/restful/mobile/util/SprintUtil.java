@@ -9,7 +9,7 @@ public interface SprintUtil {
 	public final static String TAG_SERIAL_ID        = "serialID";
 	public final static String TAG_START_DATE  		= "startDate";
 	public final static String TAG_INTERVAL   		= "interval";
-	public final static String TAG_MEMBERS    		= "members";
+	public final static String TAG_TEAM_SIZE    	= "teamSize";
 	public final static String TAG_FOCUS_FACTOR		= "focusFactor";
 	public final static String TAG_HOURS_CAN_COMMIT	= "hoursCanCommit";
 	public final static String TAG_AVAILABLE_DAYS	= "availableDays";

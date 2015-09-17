@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.dao.ReleaseDAO;
-import ntut.csie.ezScrum.web.databasEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -171,8 +171,7 @@ public class ReleaseObject implements IBaseObject {
 		double count = 0;
 		ArrayList<StoryObject> stories = getStories();
 		for (StoryObject story : stories) {
-			// Story Close的時間
-
+			// Story Close 的時間
 			int status = story.getStatus(date);
 			if (status == StoryObject.STATUS_DONE) {
 				count++;
@@ -181,14 +180,12 @@ public class ReleaseObject implements IBaseObject {
 		return count;
 	}
 
-	// 所有story done後，不論何時把story拉到done都把real point設成0
-	public double getReleaseAllStoryDone() {
+	public double getDoneStoryAmount() {
 		ArrayList<StoryObject> stories = getStories();
-		double count = stories.size();
+		double count = 0;
 		for (StoryObject story : stories) {
-			// story狀態為done的 count就-1
 			if (story.getStatus() == StoryObject.STATUS_DONE) {
-				count--;
+				count++;
 			}
 		}
 		return count;
@@ -248,14 +245,15 @@ public class ReleaseObject implements IBaseObject {
 		}
 		
 		releaseJson.put(ReleaseEnum.ID, mId)
-				.put(ReleaseEnum.PROJECT_ID, mProjectId)
-				.put(ReleaseEnum.NAME, mName)
-				.put(ReleaseEnum.DESCRIPTION, mDescription)
-				.put(ReleaseEnum.START_DATE, getStartDateString())
-				.put(ReleaseEnum.DUE_DATE, getDueDateString())
-				.put(ReleaseEnum.CREATE_TIME, mCreateTime)
-				.put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
-				.put("sprints", sprintJsonArray);
+				   .put(ReleaseEnum.SERIAL_ID, mSerialId)
+				   .put(ReleaseEnum.PROJECT_ID, mProjectId)
+				   .put(ReleaseEnum.NAME, mName)
+				   .put(ReleaseEnum.DESCRIPTION, mDescription)
+				   .put(ReleaseEnum.START_DATE, getStartDateString())
+				   .put(ReleaseEnum.DUE_DATE, getDueDateString())
+				   .put(ReleaseEnum.CREATE_TIME, mCreateTime)
+				   .put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
+				   .put("sprints", sprintJsonArray);
 		return releaseJson;
 	}
 

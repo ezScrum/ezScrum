@@ -124,8 +124,8 @@ public class SprintBacklogHelper {
 		}
 
 		ArrayList<Long> partnersId = new ArrayList<Long>();
-		for (String parnerUsername : partnersUsername.split(";")) {
-			AccountObject partner = AccountObject.get(parnerUsername);
+		for (String partnerUsername : partnersUsername.split(";")) {
+			AccountObject partner = AccountObject.get(partnerUsername);
 			if (partner != null) {
 				partnersId.add(partner.getId());
 			}

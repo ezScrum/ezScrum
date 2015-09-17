@@ -151,6 +151,7 @@ _saveCreateReleasePlanInfo
     Element Enable And Submit    ${xpathEditReleaseBtn}
 
 Clean Release
+    Select Node Product    Release Plan
     ${ReleaseCount}=    Get Matching Xpath Count    //div[@id="ReleasePlan_ReleaseTree"]/.//table/tbody/tr[1]/td[2]/div/../..
     Log    ${ReleaseCount}    info
     : FOR    ${_index}    IN RANGE    0    ${ReleaseCount}

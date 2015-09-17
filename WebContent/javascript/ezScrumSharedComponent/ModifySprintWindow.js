@@ -70,7 +70,7 @@ var SprintDetailItems = [
     	anchor     : '95%'
     },{
     	// Members
-    	fieldLabel : 'Members',
+    	fieldLabel : 'Team size',
     	name       : 'Members',
     	xtype	   : 'numberfield',
     	allowBlank : false,

@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -408,6 +408,7 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public boolean delete() {
+		HistoryDAO.getInstance().deleteByIssue(mId, IssueTypeEnum.TYPE_TASK);
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;

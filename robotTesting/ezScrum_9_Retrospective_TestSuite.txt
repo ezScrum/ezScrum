@@ -32,7 +32,7 @@ Test Retrospective - Add Retrospective
 Test Retrospective - Edit Retrospective
     [Documentation]    測試編輯一個已存在的 Retrospective (Good type)
     [Setup]    Test Retrospective Edit Setup
-    Select Retrospective Item    2    ${tsRetrospectiveList[1]}
+    Select Retrospective Item    ${tsRetrospectiveList[0]}
     # initial variable
     Set List Value    ${tsRetrospectiveList}    1    ${tsRetrospectiveList[1]}_Edit
     Set List Value    ${tsRetrospectiveList}    5    ${tsRetrospectiveList[5]}_Edit
@@ -56,7 +56,7 @@ Test Retrospective - Delete Retrospective
     ${tcItems} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']    # include Good & Improvement
     ${tcTypes} =    Get Matching Xpath Count    //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']    # =0 empty, =1 G or I, =2 both have G & I
     # select & delete
-    Select Retrospective Item    2    ${tsRetrospectiveList[1]}
+    Select Retrospective Item    ${tsRetrospectiveList[0]}
     Delete Retrospective With Argument    @{tsRetrospectiveList}
     # assert
     Page Should Not Contain    Type: Good

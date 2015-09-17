@@ -46,12 +46,6 @@ public class ProjectApiTest extends TestableApi {
 	
 	@Before
 	public void setUp() throws Exception {
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
-
-		mClient = HttpClientBuilder.create().build();
-
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -61,21 +55,21 @@ public class ProjectApiTest extends TestableApi {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-//		mCA = new CreateAccount(1);
-//		mCA.exe();
-//		mAccountId = mCA.getAccountList().get(0).getId();
 		mAccountId = 1; // get admin
 		mPlatformType = "windows";
 		
 		TokenObject token = new TokenObject(mAccountId, mPlatformType);
 		token.save();
+		
+		// start server
+		mServer = HttpServerFactory.create(SERVER_URL);
+		mServer.start();
+
+		mClient = HttpClientBuilder.create().build();
 	}
 	
 	@After
 	public void tearDown() {
-		// stop server
-		mServer.stop(0);
-
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -86,6 +80,9 @@ public class ProjectApiTest extends TestableApi {
 
 		mConfig.setTestMode(false);
 		mConfig.save();
+		
+		// stop server
+		mServer.stop(0);
 
 		// release
 		mCP = null;

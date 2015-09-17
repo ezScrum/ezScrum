@@ -96,7 +96,7 @@ public class SprintPlanMapperTest {
 		// create Sprint
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.interval = 2;
-		sprintInfo.membersAmount = 4;
+		sprintInfo.teamSize = 4;
 		sprintInfo.hoursCanCommit = 100;
 		sprintInfo.focusFactor = 80;
 		sprintInfo.sprintGoal = "TEST_SPRINT_GOAL";
@@ -112,7 +112,7 @@ public class SprintPlanMapperTest {
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.teamSize, sprint.getTeamSize());
 		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
@@ -128,7 +128,7 @@ public class SprintPlanMapperTest {
 		SprintObject sprint = mSprintPlanMapper.getSprint(mCS.getSprintsId().get(0));
 		// assert
 		assertEquals(2, sprint.getInterval());
-		assertEquals(4, sprint.getMembers());
+		assertEquals(4, sprint.getTeamSize());
 		assertEquals(120, sprint.getAvailableHours());
 		assertEquals(80, sprint.getFocusFactor());
 		assertEquals(mCS.TEST_SPRINT_GOAL + 1, sprint.getGoal());
@@ -167,7 +167,7 @@ public class SprintPlanMapperTest {
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.id = mCS.getSprintsId().get(0);
 		sprintInfo.interval = 2;
-		sprintInfo.membersAmount = 2;
+		sprintInfo.teamSize = 2;
 		sprintInfo.hoursCanCommit = 120;
 		sprintInfo.focusFactor = 80;
 		sprintInfo.sprintGoal = "TEST_SPRINT_GOAL_NEW";
@@ -183,7 +183,7 @@ public class SprintPlanMapperTest {
 
 		// assert
 		assertEquals(sprintInfo.interval, sprint.getInterval());
-		assertEquals(sprintInfo.membersAmount, sprint.getMembers());
+		assertEquals(sprintInfo.teamSize, sprint.getTeamSize());
 		assertEquals(sprintInfo.hoursCanCommit, sprint.getAvailableHours());
 		assertEquals(sprintInfo.focusFactor, sprint.getFocusFactor());
 		assertEquals(sprintInfo.sprintGoal, sprint.getGoal());
@@ -208,7 +208,7 @@ public class SprintPlanMapperTest {
 		// create Sprint 2
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.interval = 3;
-		sprintInfo.membersAmount = 2;
+		sprintInfo.teamSize = 2;
 		sprintInfo.hoursCanCommit = 80;
 		sprintInfo.focusFactor = 70;
 		sprintInfo.sprintGoal = "TEST_SPRINT_GOAL_2";
@@ -241,7 +241,7 @@ public class SprintPlanMapperTest {
 		// create Sprint
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.interval = 2;
-		sprintInfo.membersAmount = 4;
+		sprintInfo.teamSize = 4;
 		sprintInfo.hoursCanCommit = 100;
 		sprintInfo.focusFactor = 80;
 		sprintInfo.sprintGoal = "TEST_SPRINT_GOAL";

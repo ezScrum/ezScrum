@@ -62,7 +62,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 		sprintInfo.sprintGoal = sprintGoal;
 		sprintInfo.startDate = startDate;
 		sprintInfo.interval = Integer.parseInt(interval);
-		sprintInfo.membersAmount = Integer.parseInt(membersAmount);
+		sprintInfo.teamSize = Integer.parseInt(membersAmount);
 		sprintInfo.hoursCanCommit = Integer.parseInt(hoursCanCommit);
 		sprintInfo.focusFactor = Integer.parseInt(focusFactor);
 		sprintInfo.dailyInfo = dailyInfo;

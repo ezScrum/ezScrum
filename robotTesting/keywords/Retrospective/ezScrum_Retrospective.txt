@@ -6,12 +6,10 @@ Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Select Retrospective Item
-    [Arguments]    ${columnIndex}    ${name}
+    [Arguments]    ${id}
     [Documentation]    \# 必須要Mouse Down/Up與Click才能使Ediot/Delete Button有作用
     ...    -> 待找出原因
-    Mouse Down    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
-    Mouse Up    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
-    Click Element    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]    # both
+    Click Element    //div[@id="Retrospective_Page_Layout"]//table/tbody/tr/td[1]/div[text()=${id}]/../..
 
 New Sprint
     [Arguments]    @{sprintInfo}    # 0 ID, 1 Goal, 2 Interval, 3 Members, 4 AvaliableDays, 5 FocusFactor
@@ -112,10 +110,10 @@ Edit Retrospective
     # action
     Click Element    xpath=//button[.='Edit Retrospective']    # 元件本身已存在,不需等待
     # fill info
-    Focus AND Input Text    //input[@name='Name']    ${_name}
+    Focus AND Input Text    //span[text()="Edit Retrospective #${_ID}"]/../../../../../div[2]//form[@method="POST"]/div[1]//input[@name="Name"]    ${_name}
     # select SprintID
     # select Type
-    Focus AND Input Text    //textarea[@name='Description']    ${_description}
+    Focus AND Input Text    //span[text()="Edit Retrospective #${_ID}"]/../../../../../div[2]//form[@method="POST"]/div[5]//textarea[@name='Description']    ${_description}
     # save
     ${_xpathEdit} =    Find Current Window Element    Edit Retrospective #${_ID}    Submit
     Element Enable And Submit    ${_xpathEdit}
@@ -154,6 +152,7 @@ Delete Retrospective With Argument
 Clean All Retrospective
     [Documentation]    目前只先針對單一Sprint內的所有Retrospective Items
     ...    未來可改良成清除所有Sprint內的所有Retrospective Items
+    Select Node Product    Retrospective
     # get total Retrospective
     ${_typeIndex} =    Set Variable    1    # 1 or 2(Improvement)
     # //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']/../div[${_typeIndex}] # type 表格定位
@@ -165,5 +164,5 @@ Clean All Retrospective
     ${_id} =    Set Variable    0
     : FOR    ${_index}    IN RANGE    0    ${_items}
     \    ${_id}    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${_columnIndex}']
-    \    Select Retrospective Item    ${columnIndex}    ${_id}
+    \    Select Retrospective Item    ${_id}
     \    Delete Retrospective

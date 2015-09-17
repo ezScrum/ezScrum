@@ -46,7 +46,7 @@ public class EditSprintPlanAction extends PermissionAction {
 				.getParameter("Goal"));
 		String startDate = request.getParameter("StartDate");
 		String interval = request.getParameter("Interval");
-		String membersAmount = request.getParameter("Members");
+		String teamSize = request.getParameter("Members");
 		String hoursCanCommit = request.getParameter("AvaliableDays");
 		String focusFactor = request.getParameter("FocusFactor");
 		String dailyInfo = translateSpecialChar.TranslateXMLChar(request
@@ -62,7 +62,7 @@ public class EditSprintPlanAction extends PermissionAction {
 		sprintInfo.sprintGoal = sprintGoal;
 		sprintInfo.startDate = startDate;
 		sprintInfo.interval = Integer.parseInt(interval);
-		sprintInfo.membersAmount = Integer.parseInt(membersAmount);
+		sprintInfo.teamSize = Integer.parseInt(teamSize);
 		sprintInfo.hoursCanCommit = Integer.parseInt(hoursCanCommit);
 		sprintInfo.focusFactor = Integer.parseInt(focusFactor);
 		sprintInfo.dailyInfo = dailyInfo;
