@@ -152,6 +152,7 @@ Delete Retrospective With Argument
 Clean All Retrospective
     [Documentation]    目前只先針對單一Sprint內的所有Retrospective Items
     ...    未來可改良成清除所有Sprint內的所有Retrospective Items
+    Select Node Product    Retrospective
     # get total Retrospective
     ${_typeIndex} =    Set Variable    1    # 1 or 2(Improvement)
     # //div[@id='Retrospective_Panel']//div[@class='x-grid-group ']/../div[${_typeIndex}] # type 表格定位

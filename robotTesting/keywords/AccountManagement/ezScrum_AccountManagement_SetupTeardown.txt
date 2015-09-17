@@ -13,17 +13,11 @@ Test Account Management - PreCondition
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     #    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    click element    xpath=//td[text()="Management"]
-    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
-    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
     Clean Accounts
     Logon ezScrum System
 
 Test Account Management - PostCondition
     Login With Admin
-    Click Element    xpath=//td[text()="Management"]
-    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
-    Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
     Clean Accounts
     Exit ezScrum System
 

@@ -18,7 +18,6 @@ Test SprintPlan Teardown
     Exit ezScrum System
 
 Test Create Sprint Setup
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Create Sprint Teardown
@@ -32,7 +31,6 @@ Test Delete Sprint Teardown
     Clean All Sprint
 
 Test Sprint Goal With NewLine Setup
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Sprint Goal With NewLine Teardown

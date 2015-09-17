@@ -21,9 +21,7 @@ Test Release Plan - PreCondition
 
 Test Release Plan - PostCondition
     Select Window
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Exit ezScrum System
 
@@ -157,17 +155,13 @@ Test Release Plan - Session - Contain Sprints Setup
 
 Test Release Plan - Session - Contain Sprints Teardown
     Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Close Window
     Select Window    ${tcBrowserAlias_B}
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Close Window
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

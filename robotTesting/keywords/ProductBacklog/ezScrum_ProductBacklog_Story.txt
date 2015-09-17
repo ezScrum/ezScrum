@@ -139,6 +139,7 @@ Verify Invalid Value Textarea
     Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Clean All Story
+    Select Node Product    Product Backlog
     # get Story count
     ${_storyCount} =    Get Matching Xpath Count    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
     # delete all story
