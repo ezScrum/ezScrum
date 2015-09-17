@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
@@ -29,7 +28,7 @@ public class TaskBoard {
 
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
-	private List<StoryObject> mStories;
+	private ArrayList<StoryObject> mStories;
 	private ArrayList<StoryObject> mDroppedStories;
 	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
 	private LinkedHashMap<Date, Double> mDateToStoryPoint;
@@ -259,11 +258,11 @@ public class TaskBoard {
 		return (getPointByDate(mSprintBacklogMapper.getSprintStartDate())[1]) + " / -";
 	}
 
-	public List<StoryObject> getStories() {
+	public ArrayList<StoryObject> getStories() {
 		return mStories;
 	}
 
-	public void setStories(List<StoryObject> stories) {
+	public void setStories(ArrayList<StoryObject> stories) {
 		mStories = stories;
 	}
 
