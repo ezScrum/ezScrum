@@ -6,6 +6,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.control.TaskBoard;
@@ -22,11 +27,6 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.resource.core.IProject;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
 
 public class ShowTaskBoardAction extends Action {
 
@@ -113,7 +113,7 @@ public class ShowTaskBoardAction extends Action {
 
 	private TaskBoard filterUser(String username, TaskBoard board) {
 		List<StoryObject> oldStories = board.getStories();
-		List<StoryObject> newStories = new ArrayList<StoryObject>();
+		ArrayList<StoryObject> newStories = new ArrayList<StoryObject>();
 		ArrayList<TaskObject> newTasks = null;
 
 		for (StoryObject story : oldStories) {
