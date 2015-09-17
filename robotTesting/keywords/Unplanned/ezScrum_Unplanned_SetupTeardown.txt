@@ -77,4 +77,3 @@ Test Unplanned Delete Setup
 
 Test Unplanned Delete Teardown
     Clean All Unplanned
-    Exit ezScrum System

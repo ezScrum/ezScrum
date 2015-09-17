@@ -4,6 +4,7 @@ Library           ../lib/Selenium2Improved.py
 
 *** Keywords ***
 Clean All Unplanned
+    Select Node Product    Unplanned
     # get Unplanned count
     ${_count} =    Get Matching Xpath Count    //div[@id="UnplannedItem_Page"]//table[@class="x-grid3-row-table"]
     # delete all Unplanned
