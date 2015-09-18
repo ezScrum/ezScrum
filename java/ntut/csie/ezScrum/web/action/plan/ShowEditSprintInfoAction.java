@@ -1,18 +1,15 @@
 package ntut.csie.ezScrum.web.action.plan;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,20 +35,17 @@ public class ShowEditSprintInfoAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		IProject project = (IProject) request.getSession().getAttribute("Project");
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProjectObject(request);
 		
 		// get parameter info
-		String SprintID = request.getParameter("SprintID");
+		String sprintId = request.getParameter("SprintID");
 		
 		/*-----------------------------------------------------------
 		*	變數宣告區
 		-------------------------------------------------------------*/
-		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> descs = null;
-		List<String> totalSprintID = new ArrayList<String>();
-	
-		descs = SPhelper.loadListPlans();
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ArrayList<SprintObject> sprints = null;
+		sprints = sprintPlanHelper.getSprints();
 		
 		/*-----------------------------------------------------------
 		 *	將Sprint 封裝成 XML回傳至前端
@@ -59,31 +53,29 @@ public class ShowEditSprintInfoAction extends PermissionAction {
 		// Sprint 封裝成 XML 給 Ext 使用
 		StringBuilder result = new StringBuilder();
 		result.append("<SprintBacklog>");
-		if(descs != null)
+		if(sprints != null)
 		{
-			for (ISprintPlanDesc SprintDesc : descs) {
-				if(SprintDesc.getID().equals(SprintID))
+			for (SprintObject sprint : sprints) {
+				String currentSprintId = String.valueOf(sprint.getId());
+				if(currentSprintId.equals(sprintId))
 				{
-					Date sprintStartDate = DateUtil
-							.dayFilter(SprintDesc.getStartDate());
-					Date sprintEndDate = DateUtil.dayFilter(SprintDesc.getEndDate());
 					// 將所有的Sprint資訊寫入XML的TAG內的Value中
 					result.append("<Sprint>");
-					result.append("<Id>" + SprintDesc.getID() + "</Id>");
-					result.append("<Goal>" + SprintDesc.getGoal() + "</Goal>");
-					result.append("<StartDate>" + SprintDesc.getStartDate()
+					result.append("<Id>" + currentSprintId + "</Id>");
+					result.append("<Goal>" + sprint.getGoal() + "</Goal>");
+					result.append("<StartDate>" + sprint.getStartDateString()
 							+ "</StartDate>");
-					result.append("<Interval>" + SprintDesc.getInterval()
+					result.append("<Interval>" + sprint.getInterval()
 							+ " </Interval>");
-					result.append("<Members>" + SprintDesc.getMemberNumber()
+					result.append("<Members>" + sprint.getTeamSize()
 							+ " </Members>");
-					result.append("<AvaliableDays>" + SprintDesc.getAvailableDays()
+					result.append("<AvaliableDays>" + sprint.getAvailableHours()
 							+ " hours</AvaliableDays>");
-					result.append("<FocusFactor>" + SprintDesc.getFocusFactor()
+					result.append("<FocusFactor>" + sprint.getFocusFactor()
 							+ " </FocusFactor>");
-					result.append("<DailyScrum>" + SprintDesc.getNotes() + "</DailyScrum>");
-					result.append("<DemoDate>" + SprintDesc.getDemoDate() + "</DemoDate>");
-					result.append("<DemoPlace>" + SprintDesc.getDemoPlace()
+					result.append("<DailyScrum>" + sprint.getDailyInfo() + "</DailyScrum>");
+					result.append("<DemoDate>" + sprint.getDemoDateString() + "</DemoDate>");
+					result.append("<DemoPlace>" + sprint.getDemoPlace()
 							+ "</DemoPlace>");
 					result.append("</Sprint>");
 					break;

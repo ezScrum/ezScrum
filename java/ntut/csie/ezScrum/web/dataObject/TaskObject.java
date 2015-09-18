@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -52,7 +52,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setName(String name) {
-		mName = name;
+		mName = handleSpecialChar(name);
 		return this;
 	}
 
@@ -77,7 +77,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setNotes(String notes) {
-		mNotes = notes;
+		mNotes = handleSpecialChar(notes);
 		return this;
 	}
 
@@ -330,24 +330,24 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject task = new JSONObject();
-		JSONArray partners = new JSONArray();
-		JSONArray attachFiles = new JSONArray();
-		JSONArray histories = new JSONArray();
+		JSONObject taskJson = new JSONObject();
+		JSONArray partnerJsonArray = new JSONArray();
+		JSONArray attachFileJsonArray = new JSONArray();
+		JSONArray historyJsonArray = new JSONArray();
 
 		for (AccountObject partner : getPartners()) {
-			partners.put(partner.toJSON());
+			partnerJsonArray.put(partner.toJSON());
 		}
 
 		for (AttachFileObject file : getAttachFiles()) {
-			attachFiles.put(file.toJSON());
+			attachFileJsonArray.put(file.toJSON());
 		}
 
 		for (HistoryObject history : getHistories()) {
-			histories.put(history.toJSON());
+			historyJsonArray.put(history.toJSON());
 		}
 		
-		task.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
+		taskJson.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
 				.put(TaskEnum.ACTUAL, mActual).put(TaskEnum.STORY_ID, mStoryId)
 				.put(TaskEnum.PROJECT_ID, mProjectId)
 				.put(TaskEnum.NOTES, mNotes).put(TaskEnum.REMAIN, mRemains)
@@ -355,16 +355,16 @@ public class TaskObject implements IBaseObject {
 				.put(TaskEnum.SERIAL_ID, mSerialId).put(TaskEnum.ID, mId)
 				.put(TaskEnum.CREATE_TIME, mCreateTime)
 				.put(TaskEnum.UPDATE_TIME, mUpdateTime)
-				.put("partners", partners).put("attach_files", attachFiles)
-				.put("histories", histories);
+				.put("partners", partnerJsonArray).put("attach_files", attachFileJsonArray)
+				.put("histories", historyJsonArray);
 
 		if (getHandler() != null) {
-			task.put(TaskEnum.HANDLER, getHandler().toJSON());
+			taskJson.put(TaskEnum.HANDLER, getHandler().toJSON());
 		} else {
-			task.put(TaskEnum.HANDLER, new JSONObject());
+			taskJson.put(TaskEnum.HANDLER, new JSONObject());
 		}
 		
-		return task;
+		return taskJson;
 	}
 
 	public String toString() {
@@ -378,7 +378,6 @@ public class TaskObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -409,10 +408,12 @@ public class TaskObject implements IBaseObject {
 
 	@Override
 	public boolean delete() {
+		HistoryDAO.getInstance().deleteByIssue(mId, IssueTypeEnum.TYPE_TASK);
 		boolean success = TaskDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;
 			mSerialId = DEFAULT_VALUE;
+			mProjectId = DEFAULT_VALUE;
 		}
 		return success;
 	}
@@ -455,6 +456,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		TaskObject oldTask = TaskObject.get(mId);
 
 		TaskDAO.getInstance().update(this);
@@ -611,5 +613,12 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
 		HistoryDAO.getInstance().create(history);
+	}
+	
+	private String handleSpecialChar(String str) {
+		if (str.contains("\n")) {
+			str = str.replaceAll("\n", "<br/>");
+		}
+		return str;
 	}
 }

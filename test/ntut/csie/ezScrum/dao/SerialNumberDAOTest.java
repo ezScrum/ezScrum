@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
 
 import org.junit.After;
 import org.junit.Before;
@@ -103,40 +104,6 @@ public class SerialNumberDAOTest {
 		boolean result = mSerialNumberDao.update(serialNumber);
 		assertEquals(true, result);
 
-		// 取出第二筆資料並 assert data
-		SerialNumberObject editSerialNumber = mSerialNumberDao.get(projectId);
-		assertEquals(editSerialNumber.getReleaseId(), serialNumber.getReleaseId());
-		assertEquals(editSerialNumber.getSprintId(), serialNumber.getSprintId());
-		assertEquals(editSerialNumber.getStoryId(), serialNumber.getStoryId());
-		assertEquals(editSerialNumber.getTaskId(), serialNumber.getTaskId());
-		assertEquals(editSerialNumber.getUnplannedId(), serialNumber.getUnplannedId());
-		assertEquals(editSerialNumber.getRetrospectiveId(), serialNumber.getRetrospectiveId());
-	}
-
-	@Test
-	public void testUpdateByColumn() throws SQLException {
-		// create 3筆 SerialNumberObject
-		long projectId = 2;
-		for (int i = 1; i <= 3; i++) {
-			mSerialNumberDao.create(new SerialNumberObject(i, i, i, i, i, i, i));
-		}
-		// 修改第二筆 SerialNumberObject data 再存回 DB
-		SerialNumberObject serialNumber = mSerialNumberDao.get(projectId);
-		serialNumber.setReleaseId(3);
-		serialNumber.setSprintId(4);
-		serialNumber.setStoryId(5);
-		serialNumber.setTaskId(6);
-		serialNumber.setUnplannedId(7);
-		serialNumber.setRetrospectiveId(8);
-		
-		// update
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.RELEASE, serialNumber);
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.SPRINT, serialNumber);
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.STORY, serialNumber);
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.TASK, serialNumber);
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.UNPLANNED, serialNumber);
-		mSerialNumberDao.updateByColumn(SerialNumberEnum.RETROSPECTIVE, serialNumber);
-		
 		// 取出第二筆資料並 assert data
 		SerialNumberObject editSerialNumber = mSerialNumberDao.get(projectId);
 		assertEquals(editSerialNumber.getReleaseId(), serialNumber.getReleaseId());

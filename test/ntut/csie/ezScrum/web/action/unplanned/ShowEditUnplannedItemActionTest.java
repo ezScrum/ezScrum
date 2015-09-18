@@ -9,39 +9,37 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
-
 public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
-	
+
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateUnplannedItem mCUI;
-	
 	private Configuration mConfig;
-	
 	private String mActionPath = "/showEditUnplannedItem";
-	
+
 	public ShowEditUnplannedItemActionTest(String testMethod) {
-        super(testMethod);
-    }
-	
+		super(testMethod);
+	}
+
 	protected void setUp() throws Exception {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-		
-		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
 
+		// 初始化 SQL
+		InitialSQL ini = new InitialSQL(mConfig);
+		ini.exe();
+
+		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreate();
 
 		super.setUp();
 
 		setContextDirectory(new File(mConfig.getBaseDirPath() + "/WebContent")); // 設定讀取的
-		// struts-config檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(mActionPath);
 
@@ -50,52 +48,55 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
+		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		// 刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
 
-		// 讓 config 回到  Production 模式
+		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
-		
+
 		super.tearDown();
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mCUI = null;
 		mConfig = null;
-	}	
+		projectManager = null;
+	}
 
-	// case 1: One sprint with 1 Unplanned item
-	public void testOneSprint1ui() throws Exception {
-		mCS = new CreateSprint(1, this.mCP);
-		mCS.exe(); // 新增一個 Sprint
+	// case 1: One sprint with 1 Unplanned
+	public void testOneSprintWithOneUnplanned() {
+		int index = 1;
+		// 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
 
+		// 新增一個 Unplanned
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
-		mCUI.exe(); // 新增一個UnplannedItem
+		mCUI.exe();
 
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String issueID = "1";
-		// ================ set initial data =======================
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long unplannedId = mCUI.getUnplannedsId().get(0);
+		long sprintId = mCUI.getUnplanneds().get(0).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -103,36 +104,39 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML("1", issueID, "1");
-		assertEquals(expected, response.getWriterBuffer().toString());
-	}		
-		
-	// case 2: One sprint with 2 Unplanned item
-	public void testOneSprint2ui() throws Exception {
-		mCS = new CreateSprint(1, this.mCP);
-		mCS.exe(); // 新增一個 Sprint
+		String expected = genXML(sprintId, unplannedId, index);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+	}
 
+	// case 2: One sprint with 2 Unplanned
+	public void testOneSprintWithTwoUnplanneds() {
+		int index = 0;
+		// 新增一個 Sprint
+		mCS = new CreateSprint(1, mCP);
+		mCS.exe();
+
+		// 新增兩個 Unplanned
 		mCUI = new CreateUnplannedItem(2, mCP, mCS);
-		mCUI.exe(); // 新增兩個UnplannedItem
+		mCUI.exe();
 
-		// (I) ui 1
-		
+		// (I) Unplanned 1
+
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String issueID = "1";
-		// ================ set initial data =======================
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long unplannedId = mCUI.getUnplannedsId().get(index);
+		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -140,30 +144,30 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML("1", issueID, "1");
-		assertEquals(expected, response.getWriterBuffer().toString());
-		
-		// (II) ui 2
-		
-    	// 執行下一次的action必須做此動作,否則response內容不會更新!
+		String expected = genXML(sprintId, unplannedId, index + 1);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+
+		// (II) Unplanned 2
+
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
-		
+
 		// ================ set initial data =======================
-		issueID = "2";
-		// ================ set initial data =======================
+		index = 1;
+		unplannedId = mCUI.getUnplannedsId().get(index);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -171,36 +175,39 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML("1", issueID, "2");
-		assertEquals(expected, response.getWriterBuffer().toString());	
-	}			
-	
-	// case 3: Two sprint with 1 Unplanned item
-	public void testTwoSprint1ui() throws Exception {
-		mCS = new CreateSprint(2, this.mCP);
-		mCS.exe(); // 新增一個 Sprint
+		expected = genXML(sprintId, unplannedId, index + 1);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+	}
 
+	// case 3: Two sprint with 1 Unplanned
+	public void testTwoSprintWithOneUnplanned() {
+		int index = 0;
+		// 新增二個 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		// 新增一個 Unplanned
 		mCUI = new CreateUnplannedItem(1, mCP, mCS);
-		mCUI.exe(); // 新增一個UnplannedItem
+		mCUI.exe();
 
 		// (I) sprint 1
-		
+
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String issueID = "1";
-		// ================ set initial data =======================
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long unplannedId = mCUI.getUnplannedsId().get(index);
+		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -208,30 +215,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML("1", issueID, "1"); 
-		assertEquals(expected, response.getWriterBuffer().toString());
-		
+		String expected = genXML(sprintId, unplannedId, index + 1);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+
 		// (II) sprint 2
-		
-    	// 執行下一次的action必須做此動作,否則response內容不會更新!
+
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
-		
+
 		// ================ set initial data =======================
-		issueID = "2";
-		// ================ set initial data =======================
+		index = 1;
+		unplannedId = mCUI.getUnplannedsId().get(index);
+		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -239,36 +247,39 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML("2", issueID, "1"); 
-		assertEquals(expected, response.getWriterBuffer().toString());				
+		expected = genXML(sprintId, unplannedId, index + 1);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
 	}
 
-	// case 4: Two sprint with 2 Unplanned item
-	public void testTwoSprint2ui() throws Exception {
-		mCS = new CreateSprint(2, this.mCP);
-		mCS.exe(); // 新增兩個 Sprint
+	// case 4: Two sprint with 2 Unplanned
+	public void testTwoSprintWithTwoUnplanneds() {
+		int index = 0;
+		// 新增二個 Sprint
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
 
+		// 新增二個 Unplanned
 		mCUI = new CreateUnplannedItem(2, mCP, mCS);
-		mCUI.exe(); // 新增兩個UnplannedItem
+		mCUI.exe();
 
-		// (I) sprint1, ui 1
-		
+		// (I) sprint1, unplanned1
+
 		// ================ set initial data =======================
-		IProject project = this.mCP.getProjectList().get(0);
-		String issueID = "1";
-		// ================ set initial data =======================
+		ProjectObject project = mCP.getAllProjects().get(0);
+		long unplannedId = mCUI.getUnplannedsId().get(index);
+		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -276,30 +287,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML("1", issueID, "1"); 
-		assertEquals(expected, response.getWriterBuffer().toString());
-		
-		// (II) sprint1, ui 2
-		
-    	// 執行下一次的action必須做此動作,否則response內容不會更新!
+		String expected = genXML(sprintId, unplannedId, index + 1);
+		String actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+
+		// (II) sprint1, unplanned2
+
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
-		
+
 		// ================ set initial data =======================
-		issueID = "2";
-		// ================ set initial data =======================
+		index = 1;
+		unplannedId = mCUI.getUnplannedsId().get(index);
+		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -307,30 +319,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML("1", issueID, "2"); 
-		assertEquals(expected, response.getWriterBuffer().toString());
-		
-		// (III) sprint2, ui 1
-		
-    	// 執行下一次的action必須做此動作,否則response內容不會更新!
+		expected = genXML(sprintId, unplannedId, index + 1);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+
+		// (III) sprint2, unplanned1
+
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
-		
+
 		// ================ set initial data =======================
-		issueID = "3";
-		// ================ set initial data =======================
+		index = 2;
+		unplannedId = mCUI.getUnplannedsId().get(index);
+		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -338,30 +351,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML("2", issueID, "1"); 
-		assertEquals(expected, response.getWriterBuffer().toString());
-		
-		// (IV) sprint2, ui 2
-		
-    	// 執行下一次的action必須做此動作,否則response內容不會更新!
+		expected = genXML(sprintId, unplannedId, index + 1);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+
+		// (IV) sprint2, unplanned2
+
+		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
-		
+
 		// ================ set initial data =======================
-		issueID = "4";
-		// ================ set initial data =======================
+		index = 3;
+		unplannedId = mCUI.getUnplannedsId().get(index);
+		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", issueID);
-		// ================== set parameter info ====================
+		addRequestParameter("issueID", String.valueOf(unplannedId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager會對URL的參數作分析,未帶入此參數無法存入session
+		request.setHeader("Referer", "?PID=" + project.getName());
 
-		actionPerform(); // 執行 action
+		// 執行 action
+		actionPerform();
 
 		// 驗證回傳 path
 		verifyForwardPath(null);
@@ -369,36 +383,37 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML("2", issueID, "2"); 
-		assertEquals(expected, response.getWriterBuffer().toString());			
-	}		
-	
-	// index為unplanned item在 某一個sprint內的第幾個
-	private String genXML(String sprintID, String issueID, String index) {
- 		StringBuilder result = new StringBuilder("");
- 		String namePrefix = "p1s" + sprintID;
- 		String estimation = "2";
- 		String handler = "";
- 		String partners = ""; 		 		
- 		
+		expected = genXML(sprintId, unplannedId, index + 1);
+		actualed = response.getWriterBuffer().toString();
+		assertEquals(expected, actualed);
+	}
+
+	private String genXML(long sprintId, long unplannedId, int index) {
+		StringBuilder result = new StringBuilder();
+		String name = "TEST_UNPLANNED_" + index;
+		String notes = "TEST_UNPLANNED_NOTES_" + index;
+		int estimate = 2;
+		String handlerUsername = "";
+		String partnersUsername = "";
+
 		result.append("<EditUnplannedItem>");
-		// 
-		result.append("<UnplannedItem>");
-		result.append("<Id>" + issueID + "</Id>");
-		result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + issueID + "</Link>");
-		result.append("<Name>" + namePrefix + "_TEST_UNPLANNED_" + index + "</Name>");
-		result.append("<SprintID>" + sprintID + "</SprintID>");
-		result.append("<Estimate>" + estimation + "</Estimate>");
-		result.append("<Status>" + "new" + "</Status>");
-		result.append("<ActualHour>" + "0" + "</ActualHour>");
-		result.append("<Handler>" + handler + "</Handler>");
-		result.append("<Partners>" + partners + "</Partners>");
-		result.append("<Notes>" + "TEST_UNPLANNED_NOTES_" + index + "</Notes>");
-		result.append("</UnplannedItem>");	
 		//
-		result.append("</EditUnplannedItem>");	
-		
+		result.append("<UnplannedItem>");
+		result.append("<Id>").append(unplannedId).append("</Id>");
+		result.append("<Link></Link>");
+		result.append("<Name>").append(name).append("</Name>");
+		result.append("<SprintID>").append(sprintId).append("</SprintID>");
+		result.append("<Estimate>").append(estimate).append("</Estimate>");
+		result.append("<Status>new</Status>");
+		result.append("<ActualHour>0</ActualHour>");
+		result.append("<Handler>").append(handlerUsername).append("</Handler>");
+		result.append("<Partners>").append(partnersUsername).append("</Partners>");
+		result.append("<Notes>").append(notes).append("</Notes>");
+		result.append("</UnplannedItem>");
+		//
+		result.append("</EditUnplannedItem>");
+
 		return result.toString();
 	}
-	
+
 }

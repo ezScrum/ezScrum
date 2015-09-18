@@ -9,8 +9,8 @@ import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -47,10 +47,6 @@ public class StoryObject implements IBaseObject {
 		return StoryDAO.getInstance().get(id);
 	}
 	
-	public static ArrayList<StoryObject> getStoriesBySprintId(long sprintId) {
-		return StoryDAO.getInstance().getStoriesBySprintId(sprintId);
-	}
-	
 	public StoryObject(long projectId) {
 		mProjectId = projectId;
 	}
@@ -62,17 +58,17 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public StoryObject setName(String name) {
-		mName = name;
+		mName = handleSpecialChar(name);
 		return this;
 	}
 	
 	public StoryObject setNotes(String notes) {
-		mNotes = notes;
+		mNotes = handleSpecialChar(notes);
 		return this;
 	}
 	
 	public StoryObject setHowToDemo(String howToDemo) {
-		mHowToDemo = howToDemo;
+		mHowToDemo = handleSpecialChar(howToDemo);
 		return this;
 	}
 	
@@ -233,6 +229,27 @@ public class StoryObject implements IBaseObject {
 		return tagsId;
 	}
 	
+	public double getTotalTaskPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			point += task.getEstimate();
+		}
+		return point;
+	}
+	
+	public double getTaskRemainsPoints() {
+		ArrayList<TaskObject> tasks = getTasks();
+		double point = 0;
+		for (TaskObject task : tasks) {
+			if (task.getStatus() == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			point += task.getRemains();
+		}
+		return point;
+	}
+	
 	public void removeTag(long tagId) {
 		if (mCacheTagsId.size() == 0) {
 			mCacheTagsId = getTagsId();
@@ -271,7 +288,6 @@ public class StoryObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -320,27 +336,39 @@ public class StoryObject implements IBaseObject {
 		}
 	}
 	
+	public boolean containsTask(TaskObject targetTask) {
+		boolean isContainingTask = false;
+		ArrayList<TaskObject> tasks = getTasks();
+		for (TaskObject task : tasks) {
+			if (task.getId() == targetTask.getId()) {
+				isContainingTask = true;
+			}
+		}
+		return isContainingTask;
+	}
+	
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject story = new JSONObject();
-		JSONArray tasks = new JSONArray();
-		JSONArray histories = new JSONArray();
-		JSONArray tags = new JSONArray();
+		JSONObject storyJson = new JSONObject();
+		JSONArray taskJsonArray = new JSONArray();
+		JSONArray historyJsonArray = new JSONArray();
+		JSONArray tagJsonArray = new JSONArray();
 		
 		for (TaskObject task : getTasks()) {
-			tasks.put(task.getId());
+			taskJsonArray.put(task.toJSON());
 		}
 		
 		for (HistoryObject history : getHistories()) {
-			histories.put(history.toJSON());
+			historyJsonArray.put(history.toJSON());
 		}
 		
 		for (TagObject tag : getTags()) {
-			tags.put(tag.toJSON());
+			tagJsonArray.put(tag.toJSON());
 		}
 		
-		story
+		storyJson
 			.put(StoryEnum.ID, mId)
+			.put(StoryEnum.SERIAL_ID, mSerialId)
 			.put(StoryEnum.NAME, mName)
 			.put(StoryEnum.NOTES, mNotes)
 			.put(StoryEnum.HOW_TO_DEMO, mHowToDemo)
@@ -349,11 +377,12 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.ESTIMATE, mEstimate)
 			.put(StoryEnum.STATUS, mStatus)
 			.put(StoryEnum.SPRINT_ID, mSprintId)
-			.put("tasks", tasks)
-			.put("histories", histories)
-			.put("tags", tags);
+			.put("totalTaskPoint", getTotalTaskPoints())
+			.put("tasks", taskJsonArray)
+			.put("histories", historyJsonArray)
+			.put("tags", tagJsonArray);
 		
-		return story;
+		return storyJson;
 	}
 	
 	private boolean exists() {
@@ -375,6 +404,7 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
 		saveTags();
@@ -537,5 +567,12 @@ public class StoryObject implements IBaseObject {
 			mCacheTagsId = new ArrayList<Long>();
 			mUpdateTags = false;
 		}
+	}
+	
+	private String handleSpecialChar(String str) {
+		if (str.contains("\n")) {
+			str = str.replaceAll("\n", "<br/>");
+		}
+		return str;
 	}
 }

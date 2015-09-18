@@ -8,9 +8,9 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
-import ntut.csie.ezScrum.web.databasEnum.ScrumRoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 
 public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 
@@ -154,15 +154,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 
 	@Override
 	public boolean update(ProjectObject project) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.DISPLAY_NAME, project.getDisplayName());
 		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
 		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
 		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, project.getUpdateTime());
 		valueSet.addEqualCondition(ProjectEnum.ID, project.getId());
 		String query = valueSet.getUpdateQuery();
 

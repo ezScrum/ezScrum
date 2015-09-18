@@ -6,9 +6,9 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -27,18 +27,19 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
-		
 		String result = "";
-		
+		String sprintIdString = request.getParameter("sprintID");
+		long sprintId = -1;
+		if (sprintIdString != null && !sprintIdString.isEmpty()) {
+			sprintId = Long.parseLong(sprintIdString);
+		}
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard board = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
 		
 		// 建立 thisSprintStore 的資料
 		long currentSprintId = 0;
-		int releaseID = 0;
+		long releaseId = 0;
 		double initialPoint = 0.0d;
 		double currentPoint = 0.0d;
 		double initialHours = 0.0d;
@@ -51,13 +52,14 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 		//如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ( (sprintBacklogMapper != null) && (sprintBacklogMapper.getSprintId() > 0) ) {
 			currentSprintId = sprintBacklogMapper.getSprintId();
-			initialPoint = sprintBacklogLogic.getTotalStoryPoints();
-			currentPoint = sprintBacklogLogic.getStoryUnclosedPoints();
-			initialHours = sprintBacklogLogic.getTaskEstimatePoints();
-			currentHours = sprintBacklogLogic.getTaskRemainsPoints();
+			SprintObject sprint = sprintBacklogMapper.getSprint();
+			initialPoint = sprint.getTotalStoryPoints();
+			currentPoint = sprint.getStoryUnclosedPoints();
+			initialHours = sprint.getTotalTaskPoints();
+			currentHours = sprint.getTaskRemainsPoints();
 			
-			ReleasePlanHelper rpHelper = new ReleasePlanHelper(project);
-			releaseID = Integer.parseInt(rpHelper.getReleaseID(currentSprintId));
+			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+			releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintId);
 				
 			SprintGoal = sprintBacklogMapper.getSprintGoal();
 			
@@ -69,7 +71,7 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 		} 
 		try {
 			result = Translation.translateSprintInfoToJson(
-					currentSprintId, initialPoint, currentPoint, initialHours, currentHours, releaseID, SprintGoal,
+					currentSprintId, initialPoint, currentPoint, initialHours, currentHours, releaseId, SprintGoal,
 					StoryChartUrl, TaskChartUrl, isCurrentSprint);
 			
 			response.setContentType("text/html; charset=utf-8");

@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -58,7 +58,7 @@ public class ProductBacklogHelper {
 	}
 
 	// 秀出此 release 加入的 stories，以及此 release 的 sprint 包含的 stories
-	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc desc) {
+	public ArrayList<StoryObject> getStoriesByRelease(ReleaseObject desc) {
 		ArrayList<StoryObject> stories = mProductBacklogLogic.getStoriesByRelease(desc);
 		return stories;
 	}
@@ -138,9 +138,6 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getAddNewTagResponsetext(String newTagName) {
 		String original_tagname = newTagName;
-
-		newTagName = new TranslateSpecialChar().TranslateDBChar(newTagName);
-
 		StringBuilder sb = new StringBuilder("");
 		// 先將"\","'"轉換, 判斷DB裡是否存在
 		if (newTagName.contains(",")) {

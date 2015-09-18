@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.restful.mobile.support.ConvertProductBacklog;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -13,13 +14,17 @@ import ntut.csie.jcis.account.core.LogonException;
 
 import org.codehaus.jettison.json.JSONException;
 
-import com.google.gson.Gson;
-
 public class ProductBacklogWebService extends ProjectWebService {
 	private ConvertProductBacklog mConvertProductBacklog = new ConvertProductBacklog();
 	private ProductBacklogHelper mProductBacklogHelper;
 	private String mResponse;
 	private ProjectObject mProject;
+	
+	public ProductBacklogWebService(AccountObject user, String projectName) throws LogonException {
+		super(user, projectName);
+		mProject = getAllProjects().get(0);
+		mProductBacklogHelper = new ProductBacklogHelper(mProject);
+	}
 
 	public ProductBacklogWebService(String username, String passward, String projectName) throws LogonException {
 		super(username, passward, projectName);

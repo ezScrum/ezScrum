@@ -97,7 +97,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		//	assert response text
 		long expectedSprintId= sprintsId.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10";
+		String expectedSprintHoursToCommit = "96";
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,\"Total\":0,")
 							.append("\"Sprint\":{")
@@ -153,7 +153,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		String expectedStoryNote = addStoryToSprint.getStories().get(0).getNotes();
 		long expectedSprintId= sprintsId.get(0);
 		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
-		String expectedSprintHoursToCommit = "10";
+		String expectedSprintHoursToCommit = "96";
 		long storyId = addStoryToSprint.getStories().get(0).getId();
 		
 		StringBuilder expectedResponseText = new StringBuilder();

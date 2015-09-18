@@ -23,7 +23,6 @@ Test Product Backlog Suite Setup
     Clean All Story
 
 Test Product Backlog Suite Teardown
-    Select Node Product    Product Backlog
     Clean All Tag
     Clean All Story
     Click Image    images/logout.gif
@@ -150,6 +149,7 @@ Test Product Backlog Done Filter Teardown
     Delete Story With Arguments    newStoryBacklogged
     Delete Story With Arguments    newStoryDetailed
     Delete Closed With StoryName    newStoryDone
+    Clean All Sprint
 
 Test Product Backlog Search Setup
     # 新增story
@@ -198,49 +198,5 @@ Test Product Backlog Search Teardown
     Select Node Product    Product Backlog
     Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
     Clean All Story
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
-
-Test ProductBacklog Session - New Story Setup
-    LOG    ${tsStoryA}
-    LOG    ${tsStoryB}
-    CreateStoryInA
-    CreateStoryInB
-
-Test ProductBacklog Session - New Story Teardown
-    # Window A
-    Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Product Backlog
-    Clean All Story
-    Close Window
-    # Window B
-    Select Window    ${tcBrowserAlias_B}
-    Select Node Product    Product Backlog
-    Clean All Story
-    Close Window
-    # go to main window
-    Select Window
-
-Test ProductBacklog Session - Read Story With Tag Setup
-    LOG    ${tsStoryA}
-    LOG    ${tsStoryB}
-    CreateStoryWithTagInA
-    CreateStoryWithTagInB
-
-Test ProductBacklog Session - Read Story With Tag Teardown
-    # Window A
-    Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Product Backlog
-    Clean All Tag
-    Clean All Story
-    Close Window
-    # Window B
-    Select Window    ${tcBrowserAlias_B}
-    Select Node Product    Product Backlog
-    Clean All Tag
-    Clean All Story
-    Close Window
-    # go to main window
-    Select Window

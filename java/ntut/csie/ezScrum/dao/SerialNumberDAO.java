@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
 
 public class SerialNumberDAO extends
 		AbstractDAO<SerialNumberObject, SerialNumberObject> {
@@ -84,17 +84,6 @@ public class SerialNumberDAO extends
 				serialNumber.getProjectId());
 		String query = valueSet.getUpdateQuery();
 
-		return mControl.executeUpdate(query);
-	}
-
-	public boolean updateByColumn(String updateColumn,
-			SerialNumberObject serialnumber) {
-		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
-		valueSet.addInsertValue(updateColumn, serialnumber.getId(updateColumn));
-		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID,
-				Long.toString(serialnumber.getProjectId()));
-		String query = valueSet.getUpdateQuery();
 		return mControl.executeUpdate(query);
 	}
 

@@ -78,20 +78,21 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 		mIProject = null;
 	}
 
-	public void testGetSprintPlanComboInfo() throws JSONException{
+	public void testGetSprintPlanComboInfo() throws JSONException {
 		ArrayList<Long> idList = mCS.getSprintsId();
-		
+
 		// ================ set request info ========================
 		String projectName = mIProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("SprintID", String.valueOf(idList.get(0)));
-		
+
 		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
 		// ================ 執行 action ======================
 		actionPerform();
-		
+
 		// ================ assert ========================
 		verifyNoActionErrors();
 		verifyNoActionMessages();
@@ -99,16 +100,24 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 		String actualResponseText = response.getWriterBuffer().toString();
 		JSONObject actualResponse = new JSONObject(actualResponseText);
 		JSONArray sprints = actualResponse.getJSONArray("Sprints");
-		for (int i = 0; i < 2; i++) {
-			JSONObject sprint = sprints.getJSONObject(i);
-			assertEquals(String.valueOf(idList.get(i)), sprint.getString("Id"));
-			assertEquals("Sprint #" + idList.get(i), sprint.getString("Info"));
-			assertEquals("true", sprint.getString("Edit"));
-		}
 		
-		JSONObject currentSprint = actualResponse.getJSONObject("CurrentSprint");
-		assertEquals(String.valueOf(idList.get(0)), currentSprint.getString("Id"));
-		assertEquals("Sprint #" + idList.get(0), currentSprint.getString("Info"));
+		// order by start date (decreasing)
+		JSONObject sprint1 = sprints.getJSONObject(0);
+		assertEquals(String.valueOf(idList.get(1)), sprint1.getString("Id"));
+		assertEquals("Sprint #" + idList.get(1), sprint1.getString("Info"));
+		assertEquals("true", sprint1.getString("Edit"));
+		
+		JSONObject sprint2 = sprints.getJSONObject(1);
+		assertEquals(String.valueOf(idList.get(0)), sprint2.getString("Id"));
+		assertEquals("Sprint #" + idList.get(0), sprint2.getString("Info"));
+		assertEquals("true", sprint2.getString("Edit"));
+
+		JSONObject currentSprint = actualResponse
+				.getJSONObject("CurrentSprint");
+		assertEquals(String.valueOf(idList.get(0)),
+				currentSprint.getString("Id"));
+		assertEquals("Sprint #" + idList.get(0),
+				currentSprint.getString("Info"));
 		assertEquals("true", currentSprint.getString("Edit"));
 	}
 }

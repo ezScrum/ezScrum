@@ -8,10 +8,9 @@ import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.SerialNumberEnum;
-import ntut.csie.ezScrum.web.databasEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 
@@ -31,9 +30,9 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
 				task.getProjectId());
 
+		long taskId = serialNumber.getTaskId() + 1;
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
-		valueSet.addInsertValue(TaskEnum.SERIAL_ID,
-				serialNumber.getTaskId() + 1);
+		valueSet.addInsertValue(TaskEnum.SERIAL_ID, taskId);
 		valueSet.addInsertValue(TaskEnum.NAME, task.getName());
 		valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
 		valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
@@ -53,7 +52,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setId(SerialNumberEnum.TASK, serialNumber.getTaskId() + 1);
+		serialNumber.setTaskId(taskId);
 		serialNumber.save();
 
 		return id;

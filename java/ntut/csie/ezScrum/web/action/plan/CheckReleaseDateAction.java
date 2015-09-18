@@ -35,40 +35,21 @@ public class CheckReleaseDateAction extends PermissionAction {
 		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
 
 		// get parameter info
-		String ReleaseID = request.getParameter("Id");
-		String StartDate = request.getParameter("StartDate");
-		String EndDate = request.getParameter("EndDate");
-
-		//
-		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
+		String releaseIdString = request.getParameter("Id");
+		String startDate = request.getParameter("StartDate");
+		String dueDate = request.getParameter("EndDate");
+		String action = request.getParameter("action");
+		if (action == null || action.isEmpty()) {
 			return null;
 		} 		
-		String Action = request.getParameter("action");
+		long releaseId = -1;
+		if (releaseIdString != null && !releaseIdString.isEmpty()) {
+			releaseId = Long.parseLong(releaseIdString);
+		}
 		
-		ReleasePlanHelper rphelper = new ReleasePlanHelper(project);
-		return rphelper.checkReleaseDate(ReleaseID, StartDate, EndDate, Action);
 		
-//		List<IReleasePlanDesc> rpList = rphelper.loadReleasePlansList();
-//		String result = "legal";
-//		
-//		if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) {
-//			return null;
-//		} 
-//		else{
-//			for(IReleasePlanDesc rp : rpList){
-//				if(request.getParameter("action").equals("edit") && ID.equals(rp.getID())){//不與自己比較
-//					continue;
-//				}
-//				//check日期的頭尾是否有在各個RP日期範圍內
-//				if((StartDate.compareTo(rp.getStartDate()) >= 0 && StartDate.compareTo(rp.getEndDate()) <= 0) ||
-//				   (EndDate.compareTo(rp.getStartDate()) >= 0 && EndDate.compareTo(rp.getEndDate()) <= 0 )){
-//					result = "illegal";
-//					break;
-//				}
-//			}
-//		}
-//		
-//		return new StringBuilder(result);
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		return releasePlanHelper.checkReleaseDateOverlapping(releaseId, startDate, dueDate, action);
 	}
 
 }

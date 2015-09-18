@@ -1,0 +1,79 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../ezScrum_Login.txt
+Resource          ../Project/ezScrum_Project.txt
+Resource          ezScrum_Unplanned.txt
+
+*** Keywords ***
+Test Unplanned Suite Setup
+    Close All Browsers
+    Login Page    ${LOGIN_URL}
+    # 確認專案是否存在
+    Wait Until Page Contains Element    createProjectBtn
+    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    # 切到 Magagement 頁面
+    SwitchToPage    Management
+    SwitchToItemLink    False    Account Management
+    # 新增 Account
+    Add Account    cutecool    CutecoolSoGood    1234    1234    cutecool@test.com
+    Add Account    henry    HenrySoBad    1234    1234    henry@test.com
+    Add Account    badhenry    BadHenry    1234    1234    badhenry@test.com
+    # 設定 Scrum Role
+    Assign Role - Add    cutecool    ${PROJECT_NAME}    ScrumTeam
+    Assign Role - Add    henry    ${PROJECT_NAME}    ScrumTeam
+    Assign Role - Add    badhenry    ${PROJECT_NAME}    ScrumTeam
+    # 回到 PRoject 頁面
+    SwitchToPage    ProjectList
+    Select Project    ${PROJECT_NAME}DisplayName
+    # 新增 Sprint
+    Select Node Product    Sprint Plan
+    Create Sprint    Test Sprint 1    2    4    100    100
+    Create Sprint    Test Sprint 2    2    4    100    100
+
+Test Unplanned Suite Teardown
+    Clean All Unplanned
+    # delete sprint
+    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Unplanned Add Setup
+    # 回到 PRoject 頁面
+    SwitchToPage    ProjectList
+    Select Project    ${PROJECT_NAME}DisplayName
+    # 切換到 Unplanned 頁面
+    Select Node Product    Unplanned
+
+Test Unplanned Add Teardown
+    Clean All Unplanned
+    Exit ezScrum System
+
+Test Unplanned Edit Setup
+    Login Page    ${LOGIN_URL}
+    # 回到 PRoject 頁面
+    Select Project    ${PROJECT_NAME}DisplayName
+    # 切換到 Unplanned 頁面
+    Select Node Product    Unplanned
+    # 新增 Unplanned
+    Add Unplanned    @{addUnplannedList}
+    Temp Solution    ${PROJECT_NAME}
+
+Test Unplanned Edit Teardown
+    Clean All Unplanned
+    Exit ezScrum System
+
+Test Unplanned Delete Setup
+    Login Page    ${LOGIN_URL}
+    # 回到 PRoject 頁面
+    Select Project    ${PROJECT_NAME}DisplayName
+    # 切換到 Unplanned 頁面
+    Select Node Product    Unplanned
+    # 新增 Unplanned
+    Add Unplanned    @{deleteUnplannedList1}
+    Add Unplanned    @{deleteUnplannedList2}
+    Add Unplanned    @{deleteUnplannedList3}
+
+Test Unplanned Delete Teardown
+    Clean All Unplanned

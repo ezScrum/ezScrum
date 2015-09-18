@@ -385,7 +385,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(1, sprint.getInt("Id"));
 		assertEquals("Sprint #1", sprint.getString("Name"));
 		assertEquals(15, sprint.getInt("CurrentPoint"));
-		assertEquals(10, sprint.getInt("LimitedPoint"));
+		assertEquals(96, sprint.getInt("LimitedPoint"));
 		assertEquals(72, sprint.getInt("TaskPoint"));
 		assertEquals("Release #None", sprint.getString("ReleaseID"));
 		assertEquals("TEST_SPRINTGOAL_1", sprint.getString("SprintGoal"));

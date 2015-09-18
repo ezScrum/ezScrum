@@ -1177,10 +1177,11 @@ CREATE TABLE `sprint` (
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `goal` TEXT NOT NULL,
   `interval` INT NOT NULL,
-  `membvers` INT NOT NULL,
+  `team_size` INT NOT NULL,
   `available_hours` INT NOT NULL,
   `focus_factor` INT NOT NULL DEFAULT 100,
   `start_date` DATETIME NOT NULL,
+  `due_date` DATETIME NOT NULL,
   `demo_date` DATETIME NOT NULL,
   `demo_place` TEXT NULL,
   `daily_info` TEXT NULL,
@@ -1272,7 +1273,7 @@ CREATE TABLE `release` (
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   `start_date` DATETIME NOT NULL,
-  `demo_date` DATETIME NOT NULL,
+  `due_date` DATETIME NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
@@ -1285,8 +1286,8 @@ CREATE TABLE `retrospective` (
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
-  `type` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL,
+  `type` VARCHAR(20) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
   `sprint_id` BIGINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
@@ -1299,13 +1300,13 @@ CREATE TABLE `unplanned` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
-  `handler` BIGINT UNSIGNED NOT NULL,
-  `estimation` INT NOT NULL,
+  `handler_id` BIGINT NOT NULL,
+  `estimate` INT NOT NULL,
   `actual` INT NOT NULL,
   `notes` TEXT NOT NULL,
   `status` VARCHAR(255) NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
-  `story_id` BIGINT UNSIGNED NOT NULL,
+  `sprint_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
@@ -1341,6 +1342,18 @@ CREATE TABLE `serial_number` (
   `task` BIGINT UNSIGNED NOT NULL,
   `unplanned` BIGINT UNSIGNED NOT NULL,
   `retrospective` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT UNSIGNED NOT NULL,
+  `public_token` TEXT NOT NULL,
+  `private_token` TEXT NOT NULL,
+  `platform_type` TEXT NOT NULL,
+  `create_time` BIGINT UNSIGNED NOT NULL,
+  `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

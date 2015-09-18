@@ -38,7 +38,6 @@ Test TaskBoard - Precondition
 Test TaskBoard - Postcondition
     Set Selenium Speed    ${SELENIUM_SPEED}
     # delete story and tag
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Tag
     # delete sprint
@@ -136,7 +135,6 @@ Test TaskBoard - Story Done Teardown
     # clean tag
     Clean All Tag
     # clean sprint
-    Select Node Product    Sprint Plan
     Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Logout ezScrum

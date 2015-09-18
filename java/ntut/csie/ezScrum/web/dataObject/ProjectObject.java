@@ -1,15 +1,21 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.dao.ReleaseDAO;
+import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.dao.UnplannedDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.databasEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,12 +29,13 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class ProjectObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
+	private final static int DEFAULT_FILE_SIZE = 2;
 	private long mId = DEFAULT_VALUE;
 	private String mName = "";
 	private String mDisplayName = "";
 	private String mComment = "";
 	private String mManager = "";
-	private long mAttachFileSize = DEFAULT_VALUE;
+	private long mAttachFileSize = DEFAULT_FILE_SIZE;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
 	
@@ -104,8 +111,8 @@ public class ProjectObject implements IBaseObject {
 	}
 
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object
+		JSONObject projectJson = new JSONObject();
+		projectJson
 		        .put(ProjectEnum.ID, mId)
 		        .put(ProjectEnum.NAME, mName)
 		        .put(ProjectEnum.DISPLAY_NAME, mDisplayName)
@@ -114,7 +121,7 @@ public class ProjectObject implements IBaseObject {
 		        .put(ProjectEnum.ATTATCH_MAX_SIZE, mAttachFileSize)
 		        .put(ProjectEnum.CREATE_TIME, mCreateTime)
 		        .put(ProjectEnum.UPDATE_TIME, mUpdateTime);
-		return object;
+		return projectJson;
 	}
 	
 	public String toString() {
@@ -167,9 +174,57 @@ public class ProjectObject implements IBaseObject {
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesByProjectId(mId);
 	}
+	
+	//get all unplanneds
+	public ArrayList<UnplannedObject> getUnplanneds() {
+		return UnplannedDAO.getInstance().getUnplannedsByProjectId(mId);
+	}
 
 	public ArrayList<TaskObject> getTasksWithNoParent() {
 		return TaskDAO.getInstance().getTasksWithNoParent(mId);
+	}
+
+	public ArrayList<SprintObject> getSprints() {
+		return SprintDAO.getInstance().getSprintsByProjectId(mId);
+	}
+	
+	/**
+	 * 取得目前時間所在的 sprint
+	 * @return
+	 */
+	public SprintObject getCurrentSprint() {
+		Date currentTime = new Date();
+		ArrayList<SprintObject> sprints = SprintDAO.getInstance().getSprintsByProjectId(mId);
+		if (sprints.isEmpty()) {
+			return null;
+		} else {
+			for (SprintObject sprint : sprints) {
+				if (sprint.contains(currentTime)) {
+					return sprint;
+				}
+			}
+			return getLatestSprint();
+		}
+	}
+	
+	/**
+	 * 取得最新的 sprint (目前的時間點可能沒有 sprint)
+	 * @return
+	 */
+	public SprintObject getLatestSprint() {
+		ArrayList<SprintObject> sprints = SprintDAO.getInstance().getSprintsByProjectId(mId);
+		if (sprints.isEmpty()) {
+			return null;
+		} else {
+			// Sort Sprints by SprintId in descent
+			Collections.sort(sprints, new Comparator<SprintObject>() {
+				@Override
+				public int compare(SprintObject o1, SprintObject o2) {
+					return (int) (o2.getId() - o1.getId());
+				}
+			});
+			return sprints.get(0);
+		}
 	}
 	
 	public ScrumRole getScrumRole(RoleEnum role) {
@@ -193,6 +248,10 @@ public class ProjectObject implements IBaseObject {
 	
 	public ArrayList<TagObject> getTags() {
 		return TagDAO.getInstance().getTagsByProjectId(mId);
+	}
+	
+	public ArrayList<ReleaseObject> getReleases() {
+		return ReleaseDAO.getInstance().getReleasesByProjectId(mId);
 	}
 	
 	@Override
@@ -222,8 +281,9 @@ public class ProjectObject implements IBaseObject {
     }
 	
 	private boolean exists() {
-		ProjectObject project = ProjectDAO.getInstance().get(mId);
-		return project != null;
+		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
+		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
+		return projectById != null || projectByName != null;
 	}
 	
 	private void resetData(ProjectObject project) {
@@ -239,10 +299,14 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId
+				, 0, 0, 0, 0, 0, 0);
+		serialNumber.save();
         reload();
 	}
 	
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		ProjectDAO.getInstance().update(this);
 	}
 }

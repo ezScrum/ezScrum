@@ -41,8 +41,8 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 		if (sprintBacklogMapper != null) {
 			board = new TaskBoard(sprintBacklogLogic, sprintBacklogMapper);
 		}
-		TaskBoardUI tbui = new TaskBoardUI(board);
-		return new StringBuilder( (new Gson()).toJson(tbui) );
+		TaskBoardUI taskBoardUI = new TaskBoardUI(board);
+		return new StringBuilder( (new Gson()).toJson(taskBoardUI) );
 	}
 	
 	private class TaskBoardUI {
@@ -51,11 +51,11 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 		private String Current_Story_Undone_Total_Point = "";
 		private String Current_Task_Undone_Total_Point = "";
 		
-		public TaskBoardUI(TaskBoard tb) {
-			if (tb != null) {
-				this.SprintGoal = tb.getSprintGoal();
-				this.Current_Story_Undone_Total_Point = tb.getStoryPoint();
-				this.Current_Task_Undone_Total_Point = tb.getTaskPoint();
+		public TaskBoardUI(TaskBoard taskBoard) {
+			if (taskBoard != null) {
+				this.SprintGoal = taskBoard.getSprintGoal();
+				this.Current_Story_Undone_Total_Point = taskBoard.getStoryPoint();
+				this.Current_Task_Undone_Total_Point = taskBoard.getTaskPoint();
 			}
 		}
 	}

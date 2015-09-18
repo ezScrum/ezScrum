@@ -35,15 +35,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
-
-	/**
-	 * clean previous action info
-	 */
-	/*	private void cleanActionInformation(){
-			clearRequestParameters();
-			response.reset();
-		}*/
-
+	
 	/**
 	 * 取得一般使用者的UserSession
 	 * 
@@ -120,8 +112,8 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		        //{"ID":"0","SprintGoal":"","Current_Story_Undone_Total_Point":"","Current_Task_Undone_Total_Point":""}
 		        "{\"ID\":\"0\"," +
 		                "\"SprintGoal\":\"\"," +
-		                "\"Current_Story_Undone_Total_Point\":\"\"," +
-		                "\"Current_Task_Undone_Total_Point\":\"\"}";
+		                "\"Current_Story_Undone_Total_Point\":\"0.0 / 0.0\"," +
+		                "\"Current_Task_Undone_Total_Point\":\"0.0 / 0.0\"}";
 		assertEquals(expectResponseText, actualResponseText);
 	}
 
@@ -173,8 +165,8 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		String expectResponseText =
 		        "{\"ID\":\"0\"," +
 		                "\"SprintGoal\":\"\"," +
-		                "\"Current_Story_Undone_Total_Point\":\"\"," +
-		                "\"Current_Task_Undone_Total_Point\":\"\"}";
+		                "\"Current_Story_Undone_Total_Point\":\"0.0 / 0.0\"," +
+		                "\"Current_Task_Undone_Total_Point\":\"0.0 / 0.0\"}";
 		assertEquals(expectResponseText, actualResponseText);
 	}
 

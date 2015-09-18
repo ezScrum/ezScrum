@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databasEnum.ProjectRoleEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,6 +34,15 @@ public class AccountObject implements IBaseObject {
 			throw new RuntimeException();
 		}
 	}
+	
+	public boolean isAdmin() {
+		ProjectRole projectRole = getSystemRole();
+		if (projectRole != null && projectRole.getProject().getName()
+				.equals("system")) {
+			return true;
+		}
+		return false;
+	}
 
 	public String toString() {
 		try {
@@ -47,7 +55,7 @@ public class AccountObject implements IBaseObject {
 	public long getId() {
 		return mId;
 	}
-	
+
 	public long getCreateTime() {
 		return mCreateTime;
 	}
@@ -111,14 +119,13 @@ public class AccountObject implements IBaseObject {
 		if (roles == null) {
 			roles = new HashMap<String, ProjectRole>();
 		}
-		return roles; 
+		return roles;
 	}
 
 	/**
 	 * Get account by account id
 	 * 
-	 * @param id
-	 *            account id
+	 * @param id account id
 	 * @return AccountObject
 	 */
 	public static AccountObject get(long id) {
@@ -128,8 +135,7 @@ public class AccountObject implements IBaseObject {
 	/**
 	 * Get account by account user name
 	 * 
-	 * @param username
-	 *            account user name
+	 * @param username account user name
 	 * @return AccountObject
 	 */
 	public static AccountObject get(String username) {
@@ -266,6 +272,7 @@ public class AccountObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		AccountDAO.getInstance().update(this);
 	}
 
@@ -274,12 +281,12 @@ public class AccountObject implements IBaseObject {
 		JSONObject account = new JSONObject();
 
 		account.put(AccountEnum.ID, mId)
-		       .put(AccountEnum.USERNAME, mUsername)
-		       .put(AccountEnum.NICK_NAME, mNickName)
-			   .put(AccountEnum.EMAIL, mEmail)
-			   .put(AccountEnum.ENABLE, mEnable)
-			   .put(AccountEnum.CREATE_TIME, mCreateTime)
-			   .put(AccountEnum.UPDATE_TIME, mUpdateTime);
+		        .put(AccountEnum.USERNAME, mUsername)
+		        .put(AccountEnum.NICK_NAME, mNickName)
+		        .put(AccountEnum.EMAIL, mEmail)
+		        .put(AccountEnum.ENABLE, mEnable)
+		        .put(AccountEnum.CREATE_TIME, mCreateTime)
+		        .put(AccountEnum.UPDATE_TIME, mUpdateTime);
 		return account;
 	}
 }

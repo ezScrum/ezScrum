@@ -2,7 +2,7 @@ package ntut.csie.ezScrum.web.mapper;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 public class ScrumRoleMapper {
 	

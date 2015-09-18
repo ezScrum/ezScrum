@@ -2,8 +2,8 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
 
-import ntut.csie.ezScrum.web.databasEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -106,15 +106,15 @@ public class AttachFileObject {
 	}
 
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object
+		JSONObject attachFileJson = new JSONObject();
+		attachFileJson
 			.put(AttachFileEnum.ID, mId)
 			.put(AttachFileEnum.NAME, mName)
-//			.put(AttachFileEnum.PATH, mPath)
+			.put(AttachFileEnum.PATH, mPath)
 			.put(AttachFileEnum.ISSUE_ID, mIssueId)
 			.put(AttachFileEnum.ISSUE_TYPE, mIssueType)
 			.put(AttachFileEnum.CREATE_TIME, mCreateTime);
-		return object;
+		return attachFileJson;
 	}
 
 	public static class Builder {

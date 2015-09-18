@@ -1,8 +1,12 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
@@ -10,7 +14,8 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -370,6 +375,17 @@ public class StoryObjectTest {
 		assertEquals(IssueTypeEnum.TYPE_STORY, attachFile.getIssueType());
 	}
 	
+	@Test
+	public void testContainsTask() {
+		StoryObject story = createStory();
+		TaskObject task = new TaskObject(mProjectId);
+		task.save();
+		assertFalse(story.containsTask(task));
+		task.setStoryId(story.getId());
+		task.save();
+		assertTrue(story.containsTask(task));
+	}
+	
 	private StoryObject createStory() {
 		StoryObject story = StoryObject.get(1);
 
@@ -392,5 +408,74 @@ public class StoryObjectTest {
 		assertEquals(1, story.getSprintId());
 		
 		return story;
+	}
+	
+	@Test
+	public void testGetTotalTaskPoints() {
+		StoryObject story = new StoryObject(mProjectId);
+		story.save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story.getId())
+		     .setEstimate(1)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story.getId())
+		     .setEstimate(2)
+		     .save();
+
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story.getId())
+		     .setEstimate(3)
+		     .save();
+		
+		double totalEstimatePoint = story.getTotalTaskPoints();
+		assertEquals(6.0, totalEstimatePoint);
+	}
+	
+	@Test
+	public void testGetTaskRemainsPoints() {
+		StoryObject story = new StoryObject(mProjectId);
+		story.save();
+		
+		TaskObject task1 = new TaskObject(mProjectId);
+		task1.setStoryId(story.getId())
+		     .setEstimate(1)
+		     .save();
+		
+		TaskObject task2 = new TaskObject(mProjectId);
+		task2.setStoryId(story.getId())
+		     .setEstimate(2)
+		     .save();
+
+		TaskObject task3 = new TaskObject(mProjectId);
+		task3.setStoryId(story.getId())
+		     .setEstimate(3)
+		     .save();
+		
+		assertEquals(6.0, story.getTaskRemainsPoints());
+	}
+	
+	@Test
+	public void testGetLimitedPoint() {
+		ProjectObject project = new ProjectObject("testGetLimitedPoint");
+		project.setAttachFileSize(2)
+		       .save();
+		SprintObject sprint = new SprintObject(project.getId());
+		sprint.save();
+		assertEquals(0, sprint.getLimitedPoint());
+	}
+	
+	@Test
+	public void testGetLimitedPoint_WithCurrentSprint() {
+		ProjectObject project = new ProjectObject("testGetLimitedPoint");
+		project.setAttachFileSize(2)
+		       .save();
+		SprintObject sprint = new SprintObject(project.getId());
+		sprint.setAvailableHours(80)
+		      .setFocusFactor(25)
+		      .save();
+		assertEquals(20, sprint.getLimitedPoint());
 	}
 }

@@ -6,6 +6,7 @@ Resource          ezScrum_ReleasePlan_Management.txt
 
 *** Keywords ***
 Test Release Plan - PreCondition
+    Close All Browsers
     Login Page    ${LOGIN_URL}
     Wait Until Page Contains Element    createProjectBtn
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
@@ -20,44 +21,36 @@ Test Release Plan - PreCondition
 
 Test Release Plan - PostCondition
     Select Window
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Exit ezScrum System
 
 Test Release Plan - Add Release Teardown
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Edit Release Setup
     NewReleasePlan    @{tsReleasePlan}
 
 Test Release Plan - Edit Release Teardown
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Show Release Backlog Setup
     NewReleasePlan    @{tsReleasePlan}
 
 Test Release Plan - Show Release Backlog Teardown
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Delete Release Setup
     NewReleasePlan    @{tsReleasePlan}
 
 Test Release Plan - Delete Release Teardown
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Contain Sprints Setup
     Log    setup
 
 Test Release Plan - Contain Sprints Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - New Sprint Setup
@@ -70,9 +63,7 @@ Test Release Plan - New Sprint Setup
     Wait Until Page Contains    ${tsReleasePlan[0]}
 
 Test Release Plan - New Sprint Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Edit Sprint Setup
@@ -88,9 +79,7 @@ Test Release Plan - Edit Sprint Setup
     Wait Until Page Contains    sprint1 sprint goal
 
 Test Release Plan - Edit Sprint Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
 
 Test Release Plan - Session - Contain Sprints Setup
@@ -166,17 +155,13 @@ Test Release Plan - Session - Contain Sprints Setup
 
 Test Release Plan - Session - Contain Sprints Teardown
     Select Window    ${tcBrowserAlias_A}
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Close Window
     Select Window    ${tcBrowserAlias_B}
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Sprint
-    Select Node Product    Release Plan
     Clean Release
     Close Window
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

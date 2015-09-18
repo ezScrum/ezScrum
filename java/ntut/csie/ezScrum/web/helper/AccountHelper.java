@@ -7,13 +7,12 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
@@ -21,14 +20,8 @@ import ntut.csie.ezScrum.web.support.TranslateUtil;
 public class AccountHelper {
 	private final String SYSTEM = "system";
 	private AccountMapper mAccountMapper;
-	private IUserSession mUserSession;
 	public AccountHelper() {
 		mAccountMapper = new AccountMapper();
-	}
-	
-	public AccountHelper(IUserSession userSession) {
-		mUserSession = userSession;
-		mAccountMapper = new AccountMapper(mUserSession);
 	}
 
 	public String validateUsername(String username) {

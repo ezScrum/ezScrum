@@ -29,8 +29,8 @@ import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databasEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -973,6 +973,7 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
+		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
 		jsonStory.put("Estimate", story.getEstimate());
@@ -1022,6 +1023,7 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
+		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
 		jsonStory.put("Estimate", story.getEstimate());
@@ -1072,6 +1074,7 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
+		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
 		jsonStory.put("Estimate", story.getEstimate());

@@ -15,7 +15,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.databasEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 
 import org.junit.After;
 import org.junit.Before;
@@ -134,6 +134,7 @@ public class AccountDAOTest {
 		account.setPassword("12312113134546");
 		account.setEmail("hello@gmail.com");
 		account.setEnable(true);
+		account.setUpdateTime(System.currentTimeMillis());
 		boolean updateResult = AccountDAO.getInstance().update(account);
 		assertTrue(updateResult);
 		// get 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -13,6 +14,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -278,7 +280,7 @@ public class Translation {
 	// for AjaxGetSprintIndexInfoAction
 	public static String translateSprintInfoToJson(long currentSprintId,
 			double InitialPoint, double CurrentPoint, double InitialHours,
-			double CurrentHours, int releaseId, String SprintGoal,
+			double CurrentHours, long releaseId, String SprintGoal,
 			String StoryChartUrl, String TaskChartUrl, boolean isCurrentSprint)
 			throws JSONException {
 
@@ -300,7 +302,7 @@ public class Translation {
 		sprint.put(
 				"ReleaseID",
 				"Release #"
-						+ translateChar.HandleNullString(Integer
+						+ translateChar.HandleNullString(Long
 								.toString(releaseId)));
 		sprint.put("SprintGoal", translateChar.TranslateJSONChar(SprintGoal));
 		sprint.put("StoryChartUrl", StoryChartUrl);
@@ -315,7 +317,7 @@ public class Translation {
 	public static String translateSprintBacklogToJson(
 			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
-			int releaseId, String sprintGoal) {
+			long releaseId, String sprintGoal) {
 
 		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
@@ -337,7 +339,7 @@ public class Translation {
 			sprint.put(
 					"ReleaseID",
 					"Release #"
-							+ translateChar.HandleNullString(Integer
+							+ translateChar.HandleNullString(Long
 									.toString(releaseId)));
 			sprint.put("SprintGoal", sprintGoal);
 			responseText.put("Sprint", sprint);
@@ -414,10 +416,16 @@ public class Translation {
 				obj.put("Date", formatter.format(idealPointArray[i]));
 				obj.put("IdealPoint", ideal.get(idealPointArray[i]));
 
-				if (real.get(idealPointArray[i]) != null)
+				
+				if (real.get(idealPointArray[i]) != null) {
 					obj.put("RealPoint", real.get(idealPointArray[i]));
-				else
+				}
+				else {
 					obj.put("RealPoint", "null");
+				}
+				if (i == 0) {
+					obj.put("RealPoint", ideal.get(idealPointArray[0]));
+				}
 
 				array.put(obj);
 			}

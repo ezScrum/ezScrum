@@ -115,7 +115,7 @@ public class ScheduleReport {
 			SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sb) {
 		TaskSeriesCollection collection = null;
 		// 塞入資料
-		List<StoryObject> stories = sprintBacklogLogic.getStories();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 		mSize = stories.size();
 		/**
 		 * Creating a task series And adding planned tasks dates on the series.

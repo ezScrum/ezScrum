@@ -71,9 +71,6 @@
     		<!-- Product Backlog -->
     			<!-- common -->
     		<action path="/showProductBacklog2"		type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogAction" />
-    		<action path="/showProductBacklogV2"	type="ntut.csie.ezScrum.web.action.backlog.ShowProductBacklogV2Action">
-    			<forward name="success" path="/Pages/ShowProductBacklogV2.jsp"></forward>
-    		</action>
     			<!-- Story CRUD -->
     		<action path="/ajaxAddNewStory"			type="ntut.csie.ezScrum.web.action.backlog.AjaxAddNewStoryAction" />
     		<action path="/getEditStoryInfo"		type="ntut.csie.ezScrum.web.action.backlog.GetEditStoryInfoAction" />
@@ -86,9 +83,6 @@
     		<action path="/AjaxAddStoryTag" 		type="ntut.csie.ezScrum.web.action.backlog.AjaxAddStoryTagAction" />
     		<action path="/AjaxRemoveStoryTag"		type="ntut.csie.ezScrum.web.action.backlog.AjaxRemoveStoryTagAction" />			
 				<!-- not use  -->
-			<!-- <action path="/AjaxUpdateTag"			type="ntut.csie.ezScrum.web.action.backlog.AjaxUpdateTagAction" /> -->
-			
-			<action path="/AjaxGetPBPermission"		type="ntut.csie.ezScrum.web.action.backlog.AjaxGetProductBacklogPermissionAction" />
 			<action path="/exportStories"			type="ntut.csie.ezScrum.web.action.backlog.ExportStoriesFromProductBacklogAction" />
 			<action path="/showProductBacklog"		type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="productBacklog.show" />
@@ -97,16 +91,9 @@
 			
 			<!-- Release Plan -->
 				<!-- ReleasePlan Action: CRUD -->
-    		<action path="/AjaxGetNewReleaseID"			type="ntut.csie.ezScrum.web.action.plan.AjaxGetNewReleaseIDAction" />
     		<action path="/checkReleaseDate"			type="ntut.csie.ezScrum.web.action.plan.CheckReleaseDateAction"/>
     		<action path="/saveReleasePlan"				type="ntut.csie.ezScrum.web.action.plan.SaveReleasePlanAction" />
-    		<action path="/removeReleasePlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleasePlanAction" />
-				<!-- Sprint Action: New & Edit  -->			
-<!-- 			Sprint Plan appeared  				
-    		<action path="/GetSprintPlan"				type="ntut.csie.ezScrum.web.action.plan.GetOneSprintPlanAction" />
-			<action path="/saveSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.SaveSprintPlanAction" />    		
--->				
-				<!-- Story Action: Add Existed, Move, Drop  -->						    		
+    		<action path="/removeReleasePlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveReleasePlanAction" />				    		
 				<!-- common -->
     		<action path="/showReleasePlan2"			type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlan2Action" />
     		<action path="/AjaxShowStoryfromRelease"	type="ntut.csie.ezScrum.web.action.plan.AjaxShowStoryFromReleaseAction"></action>
@@ -122,11 +109,7 @@
     		<action path="/AjaxMoveSprint"				type="ntut.csie.ezScrum.web.action.plan.AjaxMoveSprintAction" />			
 				<!-- common -->
 			<action path="/showAllSprintForSprintPlan"	type="ntut.csie.ezScrum.web.action.plan.ShowAllSprintForSprintPlanAction" />
-<!--     		Release Plan appeared	
-			<action path="/AjaxShowStoryfromSprint" 	type="ntut.csie.ezScrum.web.action.plan.AjaxShowStoryFromSprintAction" />
- -->    	
-    	
-    	
+
     		<!-- Sprint Backlog -->
     			<!-- Show Sprint Backlog -->
     		<action path="/showSprintBacklogTreeListInfo"	type="ntut.csie.ezScrum.web.action.backlog.ShowSprintBacklogListInfoAction" />
@@ -154,19 +137,10 @@
 				
 			<action path="/AjaxGetPartnerList"				type="ntut.csie.ezScrum.web.action.report.AjaxGetPartnerListAction"/>
 			<action path="/ajaxEditTask"					type="ntut.csie.ezScrum.web.action.backlog.AjaxEditTaskAction" />
-			<action path="/AjaxGetSPBPermission" 			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintBacklogPermissionAction" />
-			<action path="/showSprintInfobyCombo"			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintIndexInfoAction" />
 			
 			<action path="/ajaxDeleteSprintTask"			type="ntut.csie.ezScrum.web.action.backlog.AjaxDeleteSprintTaskAction" />
 			<action path="/getEditTaskInfo"					type="ntut.csie.ezScrum.web.action.backlog.GetEditTaskInfoAction" />
-			<!-- 
-			<action path="/showPrintableStory"	 			type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableStoryAction" />
-			
-			<action path="/showSprintInformation"	type="ntut.csie.ezScrum.web.action.backlog.ShowSprintInformationAction">
-	            <forward name="success" path="sprintInformation.show"/>
-	            <forward name="error" path="/Error.jsp" />
-	        </action>
-			-->
+			<action path="/showSprintInfobyCombo"			type="ntut.csie.ezScrum.web.action.backlog.AjaxGetSprintIndexInfoAction" />
 			<action path="/showSprintBacklog"				type="ntut.csie.ezScrum.web.action.FowardAction" >
 				<forward name="success" path="sprintBacklog.show" />
 			</action>				
@@ -184,71 +158,35 @@
 
 
     		<!-- Retrospective -->
-<!-- Sprint Backlog appeared   		
-    		<action path="/GetSprintsComboInfo"	 			type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoAction" />
--->
 	    	<action path="/showRetrospective2"			type="ntut.csie.ezScrum.web.action.retrospective.ShowRetrospectiveAction" />
 	    	<!-- CRUD -->
 	    	<action path="/getEditRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetEditRetrospectiveInfoAction" />
     		<action path="/ajaxEditRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxEditRetrospectiveAction" />	    		    
   	  		<action path="/ajaxAddNewRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxAddNewRetrospectiveAction" />
     		<action path="/ajaxDeleteRetrospective"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxDeleteRetrospectiveAction" />
-
-    		<!-- Unplanned -->
-
-    		<!-- Scrum Report -->
-
-			<!-- Export -->
-			<action path="/ajaxGetReleasePlan"			type="ntut.csie.ezScrum.web.action.export.AjaxGetReleasePlanAction" />
-			<action path="/ajaxGetVelocity"				type="ntut.csie.ezScrum.web.action.export.AjaxGetVelocityAction" />
-			<action path="/showVelocityChart" 			type="ntut.csie.ezScrum.web.action.export.ShowVelocityChartAction">
-				<forward name="success" path="/Pages/ShowVelocityChart.jsp"></forward>
-			</action>
-			<action path="/showStoryCountChart" 		type="ntut.csie.ezScrum.web.action.export.ShowStoryCountChartAction">
-				<forward name="success" path="/Pages/ShowStoryCountChart.jsp"></forward>
-			</action>
-			<action path="/ajaxGetStoryCount"			type="ntut.csie.ezScrum.web.action.export.AjaxGetStoryCountAction" />
-
-		<!-- ========================================= -->
-		<!-- 以下待確認 -->
-		<!-- ========================================= -->
 		
 		<!-- issue action -->
-		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />	
-				
-		<action path="/showEditIssueHistory" name="modifyDateForm" type="ntut.csie.ezScrum.web.action.backlog.ShowEditIssueHistoryAction">
-			<forward name="success" path="editIssueHistory.show"/>
-			<forward name="error" path="/Error.jsp" />
-		</action>		
+		<action path="/showIssueHistory" type="ntut.csie.ezScrum.web.action.backlog.ShowIssueHistoryAction" />		
 		
 		<!-- ntut.csie.ezScrum.web.action -->
 		<action path="/GetProjectDescription"				type="ntut.csie.ezScrum.web.action.AjaxGetProjectDescriptionAction" />
 		<action path="/ModifyProjectDescription"			type="ntut.csie.ezScrum.web.action.AjaxModifyProjectAction" />
 		<action path="/GetTopTitleInfo"						type="ntut.csie.ezScrum.web.action.GetTopTitleInfoAction" />
 		<action path="/GetProjectLeftTreeItem"				type="ntut.csie.ezScrum.web.action.GetProjectLeftTreeItem" />
-		
 		<action path="/feedbackDisplay"						type="ntut.csie.ezScrum.web.action.FeedbackAction" />
 		<action path="/UpdateDownload"						type="ntut.csie.ezScrum.web.action.UpdateDownloadAction" />
 		<action path="/ajaxAttachFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxAttachFileAction" />
 		<action path="/ajaxDeleteFile" name="uploadForm"	type="ntut.csie.ezScrum.web.action.AjaxDeleteFileAction" />
-		<action path="/AjaxFormCheck"						type="ntut.csie.ezScrum.web.action.AjaxFormCheckAction" />
-		<action path="/checkCreateProject"					type="ntut.csie.ezScrum.web.action.CheckCreateProjectAction" />
-		<action path="/checkExcel"							type="ntut.csie.ezScrum.web.action.CheckExcelAction"/>
 		<action path="/CheckUpdateInfo" 					type="ntut.csie.ezScrum.web.action.CheckezScrumUpdate" />
 		<action path="/logout"								type="ntut.csie.ezScrum.web.action.LogoutAction" />
 		<action path="/restartServer"						type="ntut.csie.ezScrum.web.action.RestartServerAction" />
 		<action path="/showSelectedProject"					type="ntut.csie.ezScrum.web.action.ViewListAction" />
 		<action path="/AjaxCreateProject"					type="ntut.csie.ezScrum.web.action.SaveProjectAction" />
 		<action path="/AjaxGetServerInfoAction"				type="ntut.csie.ezScrum.web.action.AjaxGetServerInfoAction" />
-		<action path="/GetTaskBoardStagesAction"			type="ntut.csie.ezScrum.web.action.GetTaskBoardStagesAction" />
 		
 		<action path="/importStories" name="uploadForm"		type="ntut.csie.ezScrum.web.action.ImportStoriesAction">
 			<forward name="success" path="/showProductBacklog.do"/>
 			<forward name="error" path="error.show" />
-        </action>
-        
-        <action path="/fileUpload" scope="request"			type="ntut.csie.ezScrum.web.action.FileUploadAction" validate="false">
-			<forward name="success" path="/Error.jsp" />
         </action>
         
         <action path="/fileDownload" type="ntut.csie.ezScrum.web.action.FileDownloadAction" />
@@ -260,57 +198,40 @@
         </action>
         
         <action attribute="logonForm" input="main.logon" name="logonForm" path="/logonSubmit" type="ntut.csie.ezScrum.web.action.LogonSubmitAction">
-            <forward name="success"					path="/resetProjectSession.do" />
-            <forward name="Admin_ManagementView"	path="project.Management" />
-            <forward name="Tenant_ManagementView"	path="project.Management.admin" />
-        </action>
-        
-        <action path="/resetProjectSession" type="ntut.csie.ezScrum.web.action.ResetProjectSessionAction">
-            <forward name="success" path="/viewList.do" redirect="true" />
-        </action>
-        
-        <action attribute="projectInfoForm" input="project.Config" name="projectInfoForm" path="/saveProject" scope="request" type="ntut.csie.ezScrum.web.action.SaveProjectAction">
-            <forward name="success" path="/viewProject.do" redirect="true" />
-            <forward name="error" path="project.Config" />
-        </action>
-        
-        <action path="/showProjectInfo"						type="ntut.csie.ezScrum.web.action.ShowProjectInfoFormAction">
+			<forward name="success"					path="/resetProjectSession.do" />
+			<forward name="Admin_ManagementView"	path="project.Management" />
+			<forward name="Tenant_ManagementView"	path="project.Management.admin" />
+		</action>
+		
+		<action path="/resetProjectSession" type="ntut.csie.ezScrum.web.action.ResetProjectSessionAction">
+			<forward name="success" path="/viewList.do" redirect="true" />
+		</action>
+		
+		<action attribute="projectInfoForm" input="project.Config" name="projectInfoForm" path="/saveProject" scope="request" type="ntut.csie.ezScrum.web.action.SaveProjectAction">
+			<forward name="success" path="/viewProject.do" redirect="true" />
+			<forward name="error" path="project.Config" />
+		</action>
+		
+		<action path="/showProjectInfo"						type="ntut.csie.ezScrum.web.action.ShowProjectInfoFormAction">
 			<forward name="success" path="project.Config" />
-        </action>
+		</action>
         
 		<action path="/viewProject"			type="ntut.csie.ezScrum.web.action.ViewProjectSummaryAction">
 			<forward name="SummaryView"		path="project.Summary" />
 			<forward name="error"			path="/Error.jsp" />
 		</action>
 		
-		<action path="/viewProjectMembers" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="project.Members" />
-        </action>
-		
 		<action path="/getProjectMembers" type="ntut.csie.ezScrum.web.action.GetProjectMembersAction" />
 		<action path="/getRemainingProjectMembers" type="ntut.csie.ezScrum.web.action.GetRemainingProjectMembersAction" />
 		
-		<action path="/showCheckUpdate" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="admin.checkUpdate" />
-        </action>
-        
-		<action path="/showRestartManager" type="ntut.csie.ezScrum.web.action.FowardAction">
-            <forward name="success" path="admin.restartManager" />
-        </action>
-		
 		<action path="/viewList"					forward="project.Projectlist" />
-
+		
 		<action path="/showProjectInfoForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
 			<forward name="success" path="project.Config" />
 		</action>
 		
 		<action path="/showProjectReference"		forward="project.References" />
-		
-		<action path="/showITSPreferenceForm"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
-			<forward name="success" path="issue.prefs" />
-		</action>
-		
-		
+
 		<!-- Common Used -->
 		<!-- ntut.csie.ezScrum.web.action -->
     	<action path="/validateUserEvent"			type="ntut.csie.ezScrum.web.action.ValidateUserEventAction" />
@@ -323,9 +244,7 @@
     	
     	<!-- ntut.csie.ezScrum.web.action.plan -->
     		<!-- release plan -->
-    		<action path="/AjaxGetRPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetReleasePlanPermissionAction" />
     		<action path="/moveStorySprint"			type="ntut.csie.ezScrum.web.action.plan.AjaxMoveStorySprint" />
-    		<action path="/AjaxShowSprintfromRelease"		type="ntut.csie.ezScrum.web.action.plan.AjaxShowSprintFromReleaseAction" />
     		<action path="/notYetEndSprintForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndSprintForMoveStory" />
     		<action path="/notYetEndReleaseForMoveStory"				type="ntut.csie.ezScrum.web.action.plan.NotYetEndReleaseForMoveStory" />
     		
@@ -333,51 +252,22 @@
 				<forward name="success" path="printableReleaseInformation.show"/>
 				<forward name="error" path="/Error.jsp" />
 	        </action>
-	        
-	        <action path="/showReleaseBacklog"				type="ntut.csie.ezScrum.web.action.plan.ShowReleaseBacklogAction">
-				<forward name="success" path="releaseBacklog.show"/>
-				<forward name="error" path="/Error.jsp" />
-	        </action>
-			
-			<action path="/showReleasePlan"					type="ntut.csie.ezScrum.web.action.plan.ShowReleasePlanAction">
-	            <forward name="success" path="releasePlan.show"/>
-	            <forward name="error" path="/Error.jsp" />
-	        </action>
     		
     		
     		<!-- sprint plan -->    		    		    		
     		<action path="/GetSprintsComboInfoAll"	type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoWithAllAction" />
-    		
-			<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
-			<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
 			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
-			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />
-
-			<action path="/showSprintPlan"								type="ntut.csie.ezScrum.web.action.plan.ShowSprintPlanAction">
-				<forward name="success" path="sprintPlan.show"/>
-				<forward name="error" path="/Error.jsp" />
-			</action>		
+			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />	
+    		<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
+    		<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
     		
     		<!-- unplanned plan -->
-    		<action path="/GetUnplannedItems"		type="ntut.csie.ezScrum.web.action.plan.ShowUnplannedItemAction" />
-    		
-    		<action path="/addNewUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.AddNewUnplannedItemAction" />
-    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetUnplannedItemPermissionAction" />
-    		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.plan.EditUnplannedItemAction" />
-    		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.plan.RemoveUnplannedItemAction" />
-    		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.plan.ShowEditUnplannedItemAction" />
-    		<action path="/showUnplannedItem"		type="ntut.csie.ezScrum.web.action.FowardAction" >
-				<forward name="success" path="unplannedItem.show" />
-			</action>
-    		
-			<!-- the action remove 2010.10.18
-	        <action path="/rmSprintFromRelease" type="ntut.csie.ezScrum.web.action.plan.RemoveSprintPlanOfReleasePlanAction" />
-	        -->
-	
-			<!-- the action remove 2010.10.18
-	        <action path="/showExistedSprint" forward="addExistedSprint.show" />
-	        <action path="/showExistedSprint2" type="ntut.csie.ezScrum.web.action.plan.ShowExistedSprintAction" />
-	        -->
+    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.unplanned.AjaxGetUnplannedItemPermissionAction" />
+    		<action path="/addNewUnplannedItem"		type="ntut.csie.ezScrum.web.action.unplanned.AddNewUnplannedItemAction" />
+    		<action path="/GetUnplannedItems"		type="ntut.csie.ezScrum.web.action.unplanned.ShowUnplannedItemAction" />
+    		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.unplanned.ShowEditUnplannedItemAction" />
+    		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.unplanned.EditUnplannedItemAction" />
+    		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.unplanned.RemoveUnplannedItemAction" />
     	<!-- ntut.csie.ezScrum.web.action.plan -->
 		
 		
@@ -399,11 +289,6 @@
     	<action path="/getResourceList"				type="ntut.csie.ezScrum.web.action.rbac.GetResourceListAction" />
     	<action path="/getScrumRolePermission"		type="ntut.csie.ezScrum.web.action.rbac.GetScrumRolePermissionListAction" />
     	<action path="/showAccountInfo"				type="ntut.csie.ezScrum.web.action.rbac.ShowAccountInfoAction" />
-    	
-        <action path="/scumRoleManage" type="ntut.csie.ezScrum.web.action.rbac.ScrumRoleManageAction">
-            <forward name="success" path="admin.scrumRoleManage" />
-        </action>
-        
             
         <!-- user -->
     	<action path="/getUserData"					type="ntut.csie.ezScrum.web.action.rbac.GetUserDataAction" />
@@ -420,13 +305,10 @@
 		<action path="/showTenantInfo"				type="ntut.csie.ezScrum.SaaS.action.Tenant.ShowTenantInfoAction" />   
     	
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
-    	<action path="/AjaxGetRETPermission"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxGetRetrospectivePermissionAction" />
     	<action path="/getAddNewRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetAddNewRetrospectiveInfoAction" />
+    	<action path="/AjaxGetRETPermission"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxGetRetrospectivePermissionAction" />
     	<action path="/getPastRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetPastRetrospectiveInfoAction" />
     	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.retrospective.GetAddSprintTaskInfoAction" />
-    	<action path="/showRetrospective"			type="ntut.csie.ezScrum.web.action.FowardAction" >			
-			<forward name="success" path="retrospective.show" />
-		</action>
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	
     	
@@ -434,19 +316,14 @@
 		<!-- ntut.csie.ezScrum.web.action.report -->
 		<action path="/GetTaskBoardDescription"			type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardDescriptionAction" />
    		<action path="/GetSprintInfoForTaskBoard"		type="ntut.csie.ezScrum.web.action.report.GetSprintInfoForTaskBoardAction" />
-<!--    <action path="/AjaxGetPartnerList"				type="ntut.csie.ezScrum.web.action.report.AjaxGetPartnerListAction"/>
- -->
     	<action path="/getTaskBoardStoryTaskList"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskList"/>
     	<action path="/getTaskBoardStoryTaskList2"		type="ntut.csie.ezScrum.web.action.report.AjaxGetTaskBoardStoryTaskListByGuest"/>
     	<action path="/checkOutTask" 					type="ntut.csie.ezScrum.web.action.report.CheckOutTaskAction" />
     	<action path="/doneIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.DoneIssueAction" />
     	<action path="/getSprintBurndownChartData"		type="ntut.csie.ezScrum.web.action.report.GetSprintBurndownChartDataAction" />
-    	<action path="/getTasksByStoryID"				type="ntut.csie.ezScrum.web.action.report.GetTasksByStoryIDAction" />
     	<action path="/reopenIssue"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ReopenIssueAction" />
     	<action path="/resetTask"	name="getDoneForm"	type="ntut.csie.ezScrum.web.action.report.ResetTaskAction" />
     	<action path="/showCheckOutIssue" 				type="ntut.csie.ezScrum.web.action.report.ShowCheckOutIssueAction" />
-    	<action path="/GetIssueStatusByIssueIDAction"	type="ntut.csie.ezScrum.web.action.report.GetIssueStatusByIssueIDAction" />
-    	
     	<action path="/showRemainingReport"				type="ntut.csie.ezScrum.web.action.report.ShowRemainingReportAction">
             <forward name="success"	path="showRemainingReport.show"/>
             <forward name="error"	path="/Error.jsp" />
@@ -457,11 +334,6 @@
             <forward name="success"	path="ScheduleReport.show"/>
             <forward name="error"	path="/Error.jsp" />
             <forward name="displayMessage"	path="/DisplayMessage.jsp" />
-        </action>
-        
-        <action path="/showScrumReport"					type="ntut.csie.ezScrum.web.action.report.ShowScrumReportAction">
-            <forward name="success"	path="scrumReport.show"/>
-            <forward name="error"	path="/Error.jsp" />
         </action>
         
         <action path="/showTaskBoard"					type="ntut.csie.ezScrum.web.action.report.ShowTaskBoardAction">
@@ -475,15 +347,8 @@
 		<!-- Issue Detail Information page -->
         <action path="/showIssueInformation" forward="project.IssueInformation" />
 
-		
-		
-        <!--    *********************
-                *		ezKanban	*
-                *********************
-             -->
-        <action path="/initialDatabase" type="ntut.csie.ezScrum.web.action.InitDatabaseAction" />
-        <action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
-
+		<action path="/initialDatabase" type="ntut.csie.ezScrum.web.action.InitDatabaseAction" />
+		<action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
         <!--    *********************
                 *		other		*
                 *********************

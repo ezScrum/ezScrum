@@ -2,10 +2,10 @@ package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -20,6 +20,7 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.control.ScheduleReport;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -102,7 +103,7 @@ public class ShowScheduleReportActionTest extends MockStrutsTestCase {
 		long sprintId = mCS.getSprintsId().get(0);
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mCS.getSprintsId().get(0));
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		List<StoryObject> stories = sprintBacklogLogic.getStories();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByIdInSprint();
 
 		// ================ set request info ========================
 		String projectName = project.getName();
@@ -130,10 +131,10 @@ public class ShowScheduleReportActionTest extends MockStrutsTestCase {
 		assertEquals(ExpectedDuration, ActualReport.getDuration()); // 驗證Sprint的Duration時間範圍
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> ExpectedPlans = sprintPlanHelper.loadListPlans();
-		List<ISprintPlanDesc> ActualPlans = (List<ISprintPlanDesc>) request.getAttribute("SprintPlans");
-		for (int i = 0; i < ExpectedPlans.size(); i++) {
-			assertEquals(ExpectedPlans.get(i).getID(), ActualPlans.get(i).getID());
+		ArrayList<SprintObject> expectedSprints = sprintPlanHelper.getSprints();
+		ArrayList<SprintObject> actualSprints = (ArrayList<SprintObject>) request.getAttribute("SprintPlans");
+		for (int i = 0; i < expectedSprints.size(); i++) {
+			assertEquals(expectedSprints.get(i).getId(), actualSprints.get(i).getId());
 		}
 
 		// ============= release ==============
@@ -142,8 +143,8 @@ public class ShowScheduleReportActionTest extends MockStrutsTestCase {
 		sprintBacklogLogic = null;
 		sprintBacklogMapper = null;
 		stories = null;
-		ExpectedPlans = null;
-		ActualPlans = null;
+		expectedSprints = null;
+		actualSprints = null;
 	}
 
 	/**

@@ -160,7 +160,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
 		AUTR.exe_PO();
 
-		AccountHelper accountHelper = new AccountHelper(mConfig.getUserSession());
+		AccountHelper accountHelper = new AccountHelper();
 		accountHelper.removeAssignRole(CA.getAccountList().get(0).getId(), mCP.getAllProjects().get(0).getId(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 
 		AUTR.exe_SM();

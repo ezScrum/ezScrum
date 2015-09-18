@@ -10,6 +10,7 @@ import java.util.Map;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
@@ -48,7 +49,7 @@ public class TaskBoardHelper {
 	 */
 	public String getSprintBurndownChartDataResponseText(String type) {
 		String responseText = "";
-		int sprintCount = (new SprintPlanHelper(mProject).loadListPlans()).size();
+		int sprintCount = (new SprintPlanHelper(mProject).getSprints()).size();
 		// backlog = null 代表沒有Sprint資訊
 		if (sprintCount != 0) {
 			// Get TaskBoard Data
@@ -75,15 +76,16 @@ public class TaskBoardHelper {
 		// 如果Sprint存在的話，那麼就取出此Sprint的資料以回傳
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
 			long currentSprintID = mSprintBacklogMapper.getSprintId();
-			double currentPoint = mSprintBacklogLogic.getStoryUnclosedPoints();
-			double currentHours = mSprintBacklogLogic.getTaskRemainsPoints();
+			SprintObject sprint = mSprintBacklogMapper.getSprint();
+			double currentPoint = sprint.getStoryUnclosedPoints();
+			double currentHours = sprint.getTaskRemainsPoints();
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
-			String releaseID = releasePlanHelper.getReleaseID(currentSprintID);
+			long releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintID);
 			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
-			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseID, isCurrentSprint);
+			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseId, isCurrentSprint);
 		} else {
 			sprintInfoUI = new SprintInfoUI();
 		}
@@ -101,7 +103,7 @@ public class TaskBoardHelper {
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 
 		if ((mSprintBacklogMapper != null) && (mSprintBacklogMapper.getSprintId() > 0)) {
-			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesByImp();		// 根據Sprint的importance來取Story
+			ArrayList<StoryObject> stories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();		// 根據Sprint的importance來取Story
 			HashMap<Long, ArrayList<TaskObject>> storyToTasks = getStoryToTasksMap(stories);
 			stories = filterStory(stories, storyToTasks, filterName);					// filter story
 
@@ -132,12 +134,12 @@ public class TaskBoardHelper {
 
 		public SprintInfoUI() {}
 
-		public SprintInfoUI(long id, String goal, double sp, double tp, String rid, boolean current) {
+		public SprintInfoUI(long id, String goal, double sp, double tp, long releaseId, boolean current) {
 			ID = id;
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;
-			ReleaseID = "Release #" + rid;
+			ReleaseID = "Release #" + releaseId;
 			isCurrentSprint = current;
 		}
 	}

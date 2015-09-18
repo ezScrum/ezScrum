@@ -14,16 +14,13 @@ Test SprintPlan Setup
     Clean All Sprint
 
 Test SprintPlan Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
     Exit ezScrum System
 
 Test Create Sprint Setup
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Create Sprint Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Delete Sprint Setup
@@ -31,15 +28,12 @@ Test Delete Sprint Setup
     Create Sprint    sprint1 sprint goal    2    4    100    100
 
 Test Delete Sprint Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Sprint Goal With NewLine Setup
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Sprint Goal With NewLine Teardown
-    Select Node Product    Sprint Plan
     Clean All Sprint
 
 Test Sprint Session Setup

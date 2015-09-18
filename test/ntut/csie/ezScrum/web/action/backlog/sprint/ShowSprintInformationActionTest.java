@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
@@ -19,6 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import servletunit.struts.MockStrutsTestCase;
@@ -137,7 +137,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		String actualSprintID = String.valueOf(request.getAttribute("SprintID"));
 		String actualStoryPoint = String.valueOf(request.getAttribute("StoryPoint"));
-		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
+		SprintObject actualSprintPlan = (SprintObject) request.getAttribute("SprintPlan");
 		String actualActors = String.valueOf(request.getAttribute("Actors"));
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
@@ -145,7 +145,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
@@ -209,7 +209,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		String actualSprintID = String.valueOf(request.getAttribute("SprintID"));
 		String actualStoryPoint = String.valueOf(request.getAttribute("StoryPoint"));
-		ISprintPlanDesc actualSprintPlan = (ISprintPlanDesc) request.getAttribute("SprintPlan");
+		SprintObject actualSprintPlan = (SprintObject) request.getAttribute("SprintPlan");
 		String actualSprintPeriod = String.valueOf(request.getAttribute("SprintPeriod"));
 		@SuppressWarnings("unchecked")
 		ArrayList<StoryObject> actualStories = (ArrayList<StoryObject>) request.getAttribute("Stories");
@@ -218,7 +218,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		TestTool testTool = new TestTool();
 		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
 		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 

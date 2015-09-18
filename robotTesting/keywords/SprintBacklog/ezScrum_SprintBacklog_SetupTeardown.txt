@@ -17,11 +17,9 @@ Test Sprint Backlog - PreCondition
 
 Test Sprint Backlog - PostCondition
     # delete story and tag
-    Select Node Product    Product Backlog
     Clean All Story
     Clean All Tag
     # delete sprint
-    Select Node Product    Sprint Plan
     Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 

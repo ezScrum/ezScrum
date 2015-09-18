@@ -28,10 +28,14 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		ProjectObject project = SessionManager.getProjectObject(request);
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		long sprintId = -1;
+		String sprintIdString = request.getParameter("sprintID");
+		if (sprintIdString != null && !sprintIdString.isEmpty()) {
+			sprintId = Long.parseLong(sprintIdString);
+		}
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		List<StoryObject> stories = sprintBacklogLogic.getStoriesByImp();
+		List<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 
 		ArrayList<TaskBoard_Story> storyList = new ArrayList<TaskBoard_Story>();
 

@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssuePartnerRelationEnum;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 
 public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 

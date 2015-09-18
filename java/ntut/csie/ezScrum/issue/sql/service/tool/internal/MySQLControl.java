@@ -188,7 +188,7 @@ public class MySQLControl implements ISQLControl {
 	}
 
 	private String getURL() {
-		return "jdbc:mysql://" + mHost + ":" + mPort + "/" + mDbName + "?useUnicode=true&characterEncoding=utf8";
+		return "jdbc:mysql://" + mHost + ":" + mPort + "/" + mDbName + "?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true";
 	}
 
 	private String getServerURL() {

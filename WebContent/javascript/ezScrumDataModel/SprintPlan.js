@@ -67,7 +67,7 @@ var SprintColumnModel = function() {
 		width : 90
 	}, {
 		dataIndex : 'Members',
-		header : 'Members',
+		header : 'Team size',
 		width : 90
 	}, {
 		dataIndex : 'AvaliableDays',

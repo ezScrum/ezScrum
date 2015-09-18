@@ -6,9 +6,8 @@ import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databasEnum.HistoryEnum;
-import ntut.csie.ezScrum.web.databasEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -26,15 +25,16 @@ public class HistoryObject implements IBaseObject {
 	public final static int TYPE_HANDLER = 13;
 	public final static int TYPE_SPECIFIC_TIME = 14;
 	public final static int TYPE_DROP = 15; // Drop from parent (for task
-											// history)
+	                                        // history)
 	public final static int TYPE_APPEND = 16; // Append to parent (for task
-												// history)
+	                                          // history)
 	public final static int TYPE_ADD = 17; // Add Child (for story history)
 	public final static int TYPE_REMOVE = 18; // Remove Child (for story
-												// history)
+	                                          // history)
 	public final static int TYPE_NOTE = 19;
 	public final static int TYPE_HOWTODEMO = 20;
 	public final static int TYPE_PARTNERS = 21;
+	public final static int TYPE_SPRINTID = 22;
 
 	private long mId;
 	private long mIssueId;
@@ -44,11 +44,10 @@ public class HistoryObject implements IBaseObject {
 	private String mOldValue = "";
 	private String mNewValue = "";
 
-	public HistoryObject() {
-	}
+	public HistoryObject() {}
 
 	public HistoryObject(long issueId, int issueType, int historyType,
-			String oldValue, String newValue, long createTime) {
+	        String oldValue, String newValue, long createTime) {
 		setIssueId(issueId);
 		setIssueType(issueType);
 		setHistoryType(historyType);
@@ -118,68 +117,70 @@ public class HistoryObject implements IBaseObject {
 
 	public String getDescription() {
 		switch (mHistoryType) {
-		case TYPE_CREATE:
-			return getCreateDesc();
-		case TYPE_NAME:
-			return getQuoteDesc();
-		case TYPE_ESTIMATE:
-			return getNormalDesc();
-		case TYPE_REMAIMS:
-			return getNormalDesc();
-		case TYPE_ACTUAL:
-			return getNormalDesc();
-		case TYPE_IMPORTANCE:
-			return getNormalDesc();
-		case TYPE_VALUE:
-			return getNormalDesc();
-		case TYPE_ATTACH_FILE:
-			return getAttachFileDesc();
-		case TYPE_STATUS:
-			return getStatusDesc();
-		case TYPE_HANDLER:
-			return getHandlerDesc();
-		case TYPE_SPECIFIC_TIME:
-			return getNormalDesc();
-		case TYPE_NOTE:
-			return getQuoteDesc();
-		case TYPE_ADD:
-			return getAddChildDesc();
-		case TYPE_APPEND:
-			return getAppendParentDesc();
-		case TYPE_DROP:
-			return getDropChildDesc();
-		case TYPE_REMOVE:
-			return getRemoveParentDesc();
+			case TYPE_CREATE:
+				return getCreateDesc();
+			case TYPE_NAME:
+				return getQuoteDesc();
+			case TYPE_ESTIMATE:
+				return getNormalDesc();
+			case TYPE_REMAIMS:
+				return getNormalDesc();
+			case TYPE_ACTUAL:
+				return getNormalDesc();
+			case TYPE_IMPORTANCE:
+				return getNormalDesc();
+			case TYPE_VALUE:
+				return getNormalDesc();
+			case TYPE_ATTACH_FILE:
+				return getAttachFileDesc();
+			case TYPE_STATUS:
+				return getStatusDesc();
+			case TYPE_HANDLER:
+				return getHandlerDesc();
+			case TYPE_SPECIFIC_TIME:
+				return getNormalDesc();
+			case TYPE_NOTE:
+				return getQuoteDesc();
+			case TYPE_ADD:
+				return getAddChildDesc();
+			case TYPE_APPEND:
+				return getAppendParentDesc();
+			case TYPE_DROP:
+				return getDropChildDesc();
+			case TYPE_REMOVE:
+				return getRemoveParentDesc();
+			case TYPE_SPRINTID:
+				return getSprintDesc();
 		}
 		return "";
 	}
 
 	public String getHistoryTypeString() {
 		switch (mHistoryType) {
-		case TYPE_NAME:
-			return "Name";
-		case TYPE_ESTIMATE:
-			return "Estimate";
-		case TYPE_REMAIMS:
-			return "Remains";
-		case TYPE_ACTUAL:
-			return "Actual Hour";
-		case TYPE_IMPORTANCE:
-			return "Importance";
-		case TYPE_VALUE:
-			return "Value";
-		case TYPE_ATTACH_FILE:
-			return "Attach File";
-		case TYPE_STATUS:
-			return "Status";
-		case TYPE_HANDLER:
-			return "Handler";
-		case TYPE_SPECIFIC_TIME:
-			return "Specific Time";
-		case TYPE_NOTE:
-			return "Note";
-		case TYPE_HOWTODEMO:
-			return "How To Demo";
+			case TYPE_NAME:
+				return "Name";
+			case TYPE_ESTIMATE:
+				return "Estimate";
+			case TYPE_REMAIMS:
+				return "Remains";
+			case TYPE_ACTUAL:
+				return "Actual Hour";
+			case TYPE_IMPORTANCE:
+				return "Importance";
+			case TYPE_VALUE:
+				return "Value";
+			case TYPE_ATTACH_FILE:
+				return "Attach File";
+			case TYPE_STATUS:
+				return "Status";
+			case TYPE_HANDLER:
+				return "Handler";
+			case TYPE_SPECIFIC_TIME:
+				return "Specific Time";
+			case TYPE_NOTE:
+				return "Note";
+			case TYPE_HOWTODEMO:
+				return "How To Demo";
 		}
 		return "";
 	}
@@ -197,51 +198,32 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	private String getHandlerDesc() {
-		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			if (mOldValue.equals("-1") && !mNewValue.equals("-1")) {
-				String newUsername = AccountDAO.getInstance()
-						.get(Long.parseLong(mNewValue)).getUsername();
-				return newUsername;
-			}
-			
-			if (!mOldValue.equals("-1") && mNewValue.equals("-1")) {
-				String newUsername = AccountDAO.getInstance()
-						.get(Long.parseLong(mOldValue)).getUsername();
-				return "Remove handler " + newUsername;
-			}
-			
-			if (!mOldValue.equals("-1") && !mNewValue.equals("-1")) {
-				AccountObject oldUser = AccountDAO.getInstance().get(Long.parseLong(mOldValue));
-				AccountObject newUser = AccountDAO.getInstance().get(Long.parseLong(mNewValue));
-				String oldUsername = "";
-				String newUsername = "";
-				if (oldUser != null) {
-					oldUsername = oldUser.getUsername();
-				}
-				
-				if (newUser != null) {
-					newUsername = newUser.getUsername();
-				}
-				return oldUsername + " => " + newUsername;
-			}
-		} else {
-			if (mOldValue.equals("") && !mNewValue.equals("")) {
-				String newUsername = AccountDAO.getInstance()
-						.get(Long.parseLong(mNewValue)).getUsername();
-				return newUsername;
-			}
-			
-			if (!mOldValue.equals("") && !mNewValue.equals("")) {
-				String oldUsername = "";
-				String newUsername = "";
-				oldUsername = AccountDAO.getInstance()
-						.get(Long.parseLong(mOldValue)).getUsername();
-				newUsername = AccountDAO.getInstance()
-						.get(Long.parseLong(mNewValue)).getUsername();
-				return oldUsername + " => " + newUsername;
-			}			
+		if (mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+			String newUsername = AccountDAO.getInstance()
+			        .get(Long.parseLong(mNewValue)).getUsername();
+			return newUsername;
 		}
-		
+
+		if (!mOldValue.equals("-1") && mNewValue.equals("-1")) {
+			String newUsername = AccountDAO.getInstance()
+			        .get(Long.parseLong(mOldValue)).getUsername();
+			return "Remove handler " + newUsername;
+		}
+
+		if (!mOldValue.equals("-1") && !mNewValue.equals("-1")) {
+			AccountObject oldUser = AccountDAO.getInstance().get(Long.parseLong(mOldValue));
+			AccountObject newUser = AccountDAO.getInstance().get(Long.parseLong(mNewValue));
+			String oldUsername = "";
+			String newUsername = "";
+			if (oldUser != null) {
+				oldUsername = oldUser.getUsername();
+			}
+
+			if (newUser != null) {
+				newUsername = newUser.getUsername();
+			}
+			return oldUsername + " => " + newUsername;
+		}
 		return "";
 	}
 
@@ -255,29 +237,29 @@ public class HistoryObject implements IBaseObject {
 			map.put(String.valueOf(StoryObject.STATUS_UNCHECK), "Not Check Out");
 			map.put(String.valueOf(StoryObject.STATUS_DONE), "Done");
 		} else {
-			map.put("10", "Not Check Out");
-			map.put("50", "Check Out");
-			map.put("90", "Done");
+			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
+			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
 		}
-		
+
 		return map.get(mOldValue) + " => " + map.get(mNewValue);
 	}
 
 	private String getCreateDesc() {
 		String desc = "";
 		switch (mIssueType) {
-		case IssueTypeEnum.TYPE_STORY:
-			desc = "Create Story #" + mIssueId;
-			break;
-		case IssueTypeEnum.TYPE_TASK:
-			desc = "Create Task #" + mIssueId;
-			break;
-		case IssueTypeEnum.TYPE_UNPLANNED:
-			desc = "Create Unplanned #" + mIssueId;
-			break;
-		case IssueTypeEnum.TYPE_RETROSPECTIVE:
-			desc = "Create Retrospective #" + mIssueId;
-			break;
+			case IssueTypeEnum.TYPE_STORY:
+				desc = "Create Story #" + mIssueId;
+				break;
+			case IssueTypeEnum.TYPE_TASK:
+				desc = "Create Task #" + mIssueId;
+				break;
+			case IssueTypeEnum.TYPE_UNPLANNED:
+				desc = "Create Unplanned #" + mIssueId;
+				break;
+			case IssueTypeEnum.TYPE_RETROSPECTIVE:
+				desc = "Create Retrospective #" + mIssueId;
+				break;
 		}
 		return desc;
 	}
@@ -286,8 +268,6 @@ public class HistoryObject implements IBaseObject {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
 			return "Append to Story #" + mNewValue;
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Append to Sprint #" + mNewValue;
-		} else if (mIssueType == IssueTypeEnum.TYPE_UNPLANNED) {
 			return "Append to Sprint #" + mNewValue;
 		}
 		return "";
@@ -316,6 +296,10 @@ public class HistoryObject implements IBaseObject {
 		return "";
 	}
 
+	private String getSprintDesc() {
+		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
+	}
+
 	public long getCreateTime() {
 		return mCreateTime;
 	}
@@ -324,14 +308,14 @@ public class HistoryObject implements IBaseObject {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
 		return sdf.format(new Date(mCreateTime));
 	}
-	
+
 	private boolean exists() {
 		HistoryObject history = HistoryDAO.getInstance().get(mId);
 		return history != null;
 	}
 
 	private void doCreate() {
-		mId =  HistoryDAO.getInstance().create(this);
+		mId = HistoryDAO.getInstance().create(this);
 	}
 
 	@Override
@@ -342,8 +326,7 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() {
-	}
+	public void reload() {}
 
 	@Override
 	public boolean delete() {
@@ -352,13 +335,13 @@ public class HistoryObject implements IBaseObject {
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object.put(HistoryEnum.ID, getId())
-				.put(HistoryEnum.ISSUE_ID, getIssueId())
-				.put(HistoryEnum.ISSUE_TYPE, getIssueType())
-				.put(HistoryEnum.HISTORY_TYPE, getHistoryType())
-				.put(HistoryEnum.DESCRIPTION, getDescription())
-				.put(HistoryEnum.CREATE_TIME, getCreateTime());
-		return object;
+		JSONObject historyJson = new JSONObject();
+		historyJson.put(HistoryEnum.ID, getId())
+		        .put(HistoryEnum.ISSUE_ID, getIssueId())
+		        .put(HistoryEnum.ISSUE_TYPE, getIssueType())
+		        .put(HistoryEnum.HISTORY_TYPE, getHistoryType())
+		        .put(HistoryEnum.DESCRIPTION, getDescription())
+		        .put(HistoryEnum.CREATE_TIME, getCreateTime());
+		return historyJson;
 	}
 }

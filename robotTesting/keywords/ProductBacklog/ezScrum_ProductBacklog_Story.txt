@@ -12,7 +12,7 @@ Library           String
 *** Keywords ***
 Verify Story Information With Arguments
     [Arguments]    ${storyID}    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${storyNotes}
-    ...    ${storyHowToDemo}    ${correctTagText}
+    ...    ${storyHowToDemo}
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
@@ -41,9 +41,7 @@ Verify Story Information With Arguments
     #將兩個變數都轉為unicode才能比對
     ${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
     ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
-    ${testTagTextLength}=    Get Length    ${testTagText}
-    ${testTagText}=    Set Variable If    ${testTagTextLength}==1    ${EMPTY}    ${testTagText}
-    Should Be Equal    ${testTagText}    ${correctTagText}
+    Should Be Equal    ${testTagText.strip()}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal    ${testStoryNameText}    ${storyName}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${storyValue}")]    1
@@ -114,12 +112,12 @@ Edit Story With Arguments
     Click Element    xpath=//button[text()="Edit Story"]
     Click Image    xpath=//label[text()="Tags:"]/.././/img
     Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
-    Focus AND Input Text    //textarea[@name="Name"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Focus AND Input Text    //textarea[@name="Name"]    EditStoryName
     Focus AND Input Text    //input[@name="Value"]    3
     Focus AND Input Text    //input[@name="Estimate"]    5
     Focus AND Input Text    //input[@name="Importance"]    8
-    Focus AND Input Text    //textarea[@name="Notes"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
-    Focus AND Input Text    //textarea[@name="HowToDemo"]    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    Focus AND Input Text    //textarea[@name="Notes"]    EditStoryNotes
+    Focus AND Input Text    //textarea[@name="HowToDemo"]    EditStoryHowToDemo
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     ${xpathEditStory}=    Find Current Window Element    Edit Story #${storyID}    Submit
     Element Enable And Submit    ${xpathEditStory}
@@ -127,24 +125,21 @@ Edit Story With Arguments
     Wait Until Page Contains    Success.
 
 Verify Invalid Value
-    [Arguments]    ${element}    ${value}    ${widgetName}
+    [Arguments]    ${element}    ${value}
     [Documentation]    輸入特殊字元及非法字元，驗證 add story 和 edit story widget 內容，判斷submit的disable的xpath路徑數量是否等於一
     Focus AND Input Text    //input[@name="${element}"]    ${value}
     Focus    xpath=//textarea[@name="HowToDemo"]
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
+    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Verify Invalid Value Textarea
-    [Arguments]    ${element}    ${value}    ${widgetName}
+    [Arguments]    ${element}    ${value}
     [Documentation]    輸入特殊字元及非法字元，驗證 add story 和 edit story widget 內容，判斷submit的disable的xpath路徑數量是否等於一
     Focus AND Input Text    //textarea[@name="${element}"]    ${value}
-    Focus    xpath=//textarea[@name="${element}"]
-    ${storyID}=    Get Value    xpath=//input[@name="issueID"]
-    Run Keyword If    "${widgetName}"=="Edit Story #${storyID}"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
-    Run Keyword If    "${widgetName}"=="Add New Story"    Xpath Should Match X Times    //span[text()="${widgetName}"]/../../../../../div[@class="x-window-bwrap"]/.//table[@class="x-btn \ \ x-btn-noicon \ x-item-disabled"]    1
+    Focus    xpath=//textarea[@name="HowToDemo"]
+    Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Clean All Story
+    Select Node Product    Product Backlog
     # get Story count
     ${_storyCount} =    Get Matching Xpath Count    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
     # delete all story

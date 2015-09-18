@@ -137,7 +137,7 @@ public class MySQLQuerySet implements IQueryValueSet {
 	@Override
 	public void addTextFieldEqualCondition(String name, String value) {
 		if (name.contains(".")) name = name.replace(".", "`.`");
-		this._conditionList.add("`" + name + "` = '" + value + "'");
+		this._conditionList.add("`" + name + "` = '" + format(value) + "'");
 	}
 
 	@Override
@@ -333,9 +333,9 @@ public class MySQLQuerySet implements IQueryValueSet {
 
 	private String format(String query) {
 		if (query == null) return query;
-		query = query.replaceAll("\'", "\\\'");
-		query = query.replaceAll("\"", "\\\"");
 		query = query.replaceAll("\\\\", "\\\\\\\\");
+		query = query.replaceAll("\"", "\\\"");
+		query = query.replaceAll("'", "\\\\\'");  //  ' -> \'
 		return query;
 	}
 

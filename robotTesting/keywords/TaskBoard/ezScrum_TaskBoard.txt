@@ -42,9 +42,9 @@ Task ReChecked Out With Arguments
 
 Story Done With Arguments
     [Arguments]    ${_StoryID}
-    Drag And Drop    xpath=//div[@id="${_StoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..    target=${_StoryID}_closed
-    Wait Until Page Contains    Done Issue
-    ${_XpathDoneStory}=    Find Current Window Element    Done Issue    Done
+    Drag And Drop    xpath=//*[@id="Story:${_StoryID}"]    target=${_StoryID}_closed
+    Wait Until Page Contains    Done Story
+    ${_XpathDoneStory}=    Find Current Window Element    Done Story #${_StoryID}    Done
     Element Enable And Submit    ${_XpathDoneStory}
     Wait Until Page Contains    Success.
 

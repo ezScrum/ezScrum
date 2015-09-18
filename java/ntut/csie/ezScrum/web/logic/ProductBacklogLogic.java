@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.support.filter.AProductBacklogFilter;
 import ntut.csie.ezScrum.iteration.support.filter.ProductBacklogFilterFactory;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 
@@ -37,10 +37,9 @@ public class ProductBacklogLogic {
 	 * @param release
 	 * @return
 	 */
-	public ArrayList<StoryObject> getStoriesByRelease(IReleasePlanDesc release) {
+	public ArrayList<StoryObject> getStoriesByRelease(ReleaseObject release) {
 		// get Story back and sort it by importance
-		String releaseId = release.getID();
-		ArrayList<StoryObject> stories = mProductBacklogMapper.getStoriesByRelease(releaseId);
+		ArrayList<StoryObject> stories = release.getStories();
 		stories = sortStoriesByImportance(stories);
 		return stories;
 	}
