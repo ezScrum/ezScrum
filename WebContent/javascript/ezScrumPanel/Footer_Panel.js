@@ -21,7 +21,7 @@ ezScrum.FooterPanel = new Ext.Panel({
     maxSize			: 40,
     lines			: false,
     items : [{
-    	html:'<center><font size="2">ezScrum v1.8.0 Alpha2, the ezScrum Team, Software Systems Lab, NTUT</font></center>' +
+    	html:'<center><font size="2">ezScrum v1.8.0 Alpha3, the ezScrum Team, Software Systems Lab, NTUT</font></center>' +
     		 '<center><font size="2">contact[at]scrum[dot]tw</font></center>'+
     		 '<center><font size="2">Science and Research Building Room 1321, No.1, Sec. 3, Jhongsiao E. Rd., Taipei City, Taiwan. 886 2 27712171 to 4263 &copy;2009-2015</font></center>'
     }]
