@@ -91,7 +91,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 	}
 	
 	private ArrayList<AttachFileObject> getSelectAttachFiles(String query) {
-		ArrayList<AttachFileObject> list = new ArrayList<AttachFileObject>();
+		ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
 		try {
 			ResultSet result = mControl.executeQuery(query);
 			while (result.next()) {
@@ -103,12 +103,12 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 				attachfileBuilder.setPath(result.getString(AttachFileEnum.PATH));
 				attachfileBuilder.setContentType(result.getString(AttachFileEnum.CONTENT_TYPE));
 				attachfileBuilder.setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
-				list.add(attachfileBuilder.build());
+				attachFiles.add(attachfileBuilder.build());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return list;
+		return attachFiles;
 	}
 
 }
