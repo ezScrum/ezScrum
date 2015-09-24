@@ -60,13 +60,12 @@ public class AttachFileDAOTest {
 		int issueType = 1;
 		
 		// Build AttachFileObject
-		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
-		attachFileBuilder.setContentType(contentType)
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(contentType)
 		                 .setName(fileName)
 		                 .setIssueId(issueId)
 		                 .setIssueType(issueType)
 		                 .setPath(filePath);
-		AttachFileObject attachFile = attachFileBuilder.build();
 		
 		// Call DAO
 		long attachFileId = AttachFileDAO.getInstance().create(attachFile);
@@ -105,14 +104,12 @@ public class AttachFileDAOTest {
 		int issueType = 1;
 
 		// Build AttachFileObject
-		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
-		attachFileBuilder.setContentType(contentType)
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(contentType)
 		        .setName(fileName)
 		        .setIssueId(issueId)
 		        .setIssueType(issueType)
 		        .setPath(filePath);
-		AttachFileObject attachFile = attachFileBuilder.build();
-
 		long attachFileId = AttachFileDAO.getInstance().create(attachFile);
 		assertNotSame(-1, attachFileId);
 		

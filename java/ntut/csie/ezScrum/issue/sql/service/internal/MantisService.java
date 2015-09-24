@@ -1234,16 +1234,13 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * for ezScrum v1.8
 	 */
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		// builder
-		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
-		attachFileBuilder.setIssueId(attachFileInfo.issueId);
-		attachFileBuilder.setIssueType(attachFileInfo.issueType);
-		attachFileBuilder.setContentType(attachFileInfo.contentType);
-		attachFileBuilder.setName(attachFileInfo.name);
-		attachFileBuilder.setPath(attachFileInfo.path);
-		
 		// create AttachFileObject
-		AttachFileObject attachFile = attachFileBuilder.build();
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setIssueId(attachFileInfo.issueId)
+						 .setIssueType(attachFileInfo.issueType)
+						 .setContentType(attachFileInfo.contentType)
+						 .setName(attachFileInfo.name)
+						 .setPath(attachFileInfo.path);
 		long newAttachFileId = AttachFileDAO.getInstance().create(attachFile);
 		return newAttachFileId;
 	}

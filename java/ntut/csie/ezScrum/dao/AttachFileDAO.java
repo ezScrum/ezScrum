@@ -103,15 +103,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		ResultSet result = mControl.executeQuery(query);
 		try {
 			while (result.next()) {
-				AttachFileObject.Builder attachfileBuilder = new AttachFileObject.Builder();
-				attachfileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID));
-				attachfileBuilder.setIssueId(result.getLong(AttachFileEnum.ISSUE_ID));
-				attachfileBuilder.setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE));
-				attachfileBuilder.setName(result.getString(AttachFileEnum.NAME));
-				attachfileBuilder.setPath(result.getString(AttachFileEnum.PATH));
-				attachfileBuilder.setContentType(result.getString(AttachFileEnum.CONTENT_TYPE));
-				attachfileBuilder.setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
-				attachFiles.add(attachfileBuilder.build());
+				attachFiles.add(convert(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -122,14 +114,13 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 	}
 	
 	public static AttachFileObject convert(ResultSet result) throws SQLException {
-		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
-		attachFileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID))
-		                 .setName(result.getString(AttachFileEnum.NAME))
-				         .setContentType(result.getString(AttachFileEnum.CONTENT_TYPE))
-				         .setPath(result.getString(AttachFileEnum.PATH))
-				         .setIssueId(result.getLong(AttachFileEnum.ISSUE_ID))
-				         .setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE))
-				         .setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
-		return attachFileBuilder.build();
+		AttachFileObject attachFile = new AttachFileObject(result.getLong(AttachFileEnum.ID));
+		attachFile.setName(result.getString(AttachFileEnum.NAME))
+				  .setContentType(result.getString(AttachFileEnum.CONTENT_TYPE))
+				  .setPath(result.getString(AttachFileEnum.PATH))
+				  .setIssueId(result.getLong(AttachFileEnum.ISSUE_ID))
+				  .setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE))
+				  .setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
+		return attachFile;
 	}
 }
