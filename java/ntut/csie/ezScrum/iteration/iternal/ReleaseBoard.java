@@ -79,7 +79,7 @@ public class ReleaseBoard {
 			indexDate.setTime(dueDate);
 			Date key = indexDate.getTime();
 			mStoryIdealMap.put(key, 0.0);
-			mStoryRealMap.put(key, mRelease.getReleaseAllStoryDone());
+			mStoryRealMap.put(key, mRelease.getDoneStoryAmount());
 		}
 	}
 
