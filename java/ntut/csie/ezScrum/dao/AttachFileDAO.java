@@ -111,4 +111,15 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		return attachFiles;
 	}
 
+	public static AttachFileObject convert(ResultSet result) throws SQLException {
+		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
+		attachFileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID))
+		                 .setName(result.getString(AttachFileEnum.NAME))
+				         .setContentType(result.getString(AttachFileEnum.CONTENT_TYPE))
+				         .setPath(result.getString(AttachFileEnum.PATH))
+				         .setIssueId(result.getLong(AttachFileEnum.ISSUE_ID))
+				         .setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE))
+				         .setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
+		return attachFileBuilder.build();
+	}
 }

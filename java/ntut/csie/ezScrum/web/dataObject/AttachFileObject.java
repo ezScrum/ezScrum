@@ -2,11 +2,11 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
 
-import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 public class AttachFileObject {
 	private long mId = -1;
