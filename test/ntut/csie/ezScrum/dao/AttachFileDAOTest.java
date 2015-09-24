@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -17,6 +20,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 public class AttachFileDAOTest {
 	private MySQLControl mControl = null;
@@ -99,17 +103,100 @@ public class AttachFileDAOTest {
 	
 	@Test
 	public void testGetAttachFilesByStoryId() {
+		// create a attach file
+		String TEST_FILE_NAME = "TEST_FILE_NAME";
+		String TEST_FILE_PATH = "/TEST_PATH";
+		String TEST_FILE_CONTENT_TYPE = "jpg";
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		long issueId = 1;
+		assertEquals(0, AttachFileDAO.getInstance().getAttachFilesByStoryId(issueId).size());
 		
+		// create a attach file append to task with id = 1
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(issueId));
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(IssueTypeEnum.TYPE_TASK));
+		valueSet.addInsertValue(AttachFileEnum.NAME, TEST_FILE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.PATH, TEST_FILE_PATH);
+		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, TEST_FILE_CONTENT_TYPE);
+		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(TEST_CREATE_TIME));
+		String query = valueSet.getInsertQuery();
+		mControl.executeInsert(query);
+		
+		// create a attach file append to story with id = 1
+		IQueryValueSet valueSet2 = new MySQLQuerySet();
+		valueSet2.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet2.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(issueId));
+		valueSet2.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(IssueTypeEnum.TYPE_STORY));
+		valueSet2.addInsertValue(AttachFileEnum.NAME, TEST_FILE_NAME);
+		valueSet2.addInsertValue(AttachFileEnum.PATH, TEST_FILE_PATH);
+		valueSet2.addInsertValue(AttachFileEnum.CONTENT_TYPE, TEST_FILE_CONTENT_TYPE);
+		valueSet2.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(TEST_CREATE_TIME));
+		String query2 = valueSet2.getInsertQuery();
+		long id = mControl.executeInsert(query2);
+		assertEquals(1, AttachFileDAO.getInstance().getAttachFilesByStoryId(issueId).size());
+		assertEquals(id, AttachFileDAO.getInstance().getAttachFilesByStoryId(issueId).get(0).getId());
 	}
 	
 	@Test
 	public void testGetAttachFilesByTaskId() {
+		// create a attach file
+		String TEST_FILE_NAME = "TEST_FILE_NAME";
+		String TEST_FILE_PATH = "/TEST_PATH";
+		String TEST_FILE_CONTENT_TYPE = "jpg";
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		long issueId = 1;
+		assertEquals(0, AttachFileDAO.getInstance().getAttachFilesByTaskId(issueId).size());
 		
+		// create a attach file append to task with id = 1
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(issueId));
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(IssueTypeEnum.TYPE_TASK));
+		valueSet.addInsertValue(AttachFileEnum.NAME, TEST_FILE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.PATH, TEST_FILE_PATH);
+		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, TEST_FILE_CONTENT_TYPE);
+		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(TEST_CREATE_TIME));
+		String query = valueSet.getInsertQuery();
+		long id = mControl.executeInsert(query);
+		
+		// create a attach file append to story with id = 1
+		IQueryValueSet valueSet2 = new MySQLQuerySet();
+		valueSet2.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet2.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(issueId));
+		valueSet2.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(IssueTypeEnum.TYPE_STORY));
+		valueSet2.addInsertValue(AttachFileEnum.NAME, TEST_FILE_NAME);
+		valueSet2.addInsertValue(AttachFileEnum.PATH, TEST_FILE_PATH);
+		valueSet2.addInsertValue(AttachFileEnum.CONTENT_TYPE, TEST_FILE_CONTENT_TYPE);
+		valueSet2.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(TEST_CREATE_TIME));
+		String query2 = valueSet2.getInsertQuery();
+		mControl.executeInsert(query2);
+		assertEquals(1, AttachFileDAO.getInstance().getAttachFilesByTaskId(issueId).size());
+		assertEquals(id, AttachFileDAO.getInstance().getAttachFilesByTaskId(issueId).get(0).getId());
 	}
 	
 	@Test
 	public void testDelete() {
+		// create a attach file
+		String TEST_FILE_NAME = "TEST_FILE_NAME";
+		String TEST_FILE_PATH = "/TEST_PATH";
+		String TEST_FILE_CONTENT_TYPE = "jpg";
+		long TEST_CREATE_TIME = System.currentTimeMillis();
+		long issueId = 1;
 		
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_ID, String.valueOf(issueId));
+		valueSet.addInsertValue(AttachFileEnum.ISSUE_TYPE, String.valueOf(IssueTypeEnum.TYPE_TASK));
+		valueSet.addInsertValue(AttachFileEnum.NAME, TEST_FILE_NAME);
+		valueSet.addInsertValue(AttachFileEnum.PATH, TEST_FILE_PATH);
+		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, TEST_FILE_CONTENT_TYPE);
+		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(TEST_CREATE_TIME));
+		String query = valueSet.getInsertQuery();
+		long id = mControl.executeInsert(query);
+		assertNotNull(AttachFileDAO.getInstance().get(id));
+		AttachFileDAO.getInstance().delete(id);
+		assertNull(AttachFileDAO.getInstance().get(id));
 	}
 	
 	private void closeResultSet(ResultSet result) {
