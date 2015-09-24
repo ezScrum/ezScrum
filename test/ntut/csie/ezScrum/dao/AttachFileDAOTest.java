@@ -41,4 +41,24 @@ public class AttachFileDAOTest {
 	public void testCreate() {
 		
 	}
+	
+	@Test
+	public void testGet() {
+		
+	}
+	
+	@Test
+	public void testGetAttachFilesByStoryId() {
+		
+	}
+	
+	@Test
+	public void testGetAttachFilesByTaskId() {
+		
+	}
+	
+	@Test
+	public void testDelete() {
+		
+	}
 }
