@@ -458,11 +458,10 @@ public class TaskObjectTest {
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
 
-		AttachFileObject.Builder builder = new AttachFileObject.Builder();
-		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
 				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile = builder.build();
 		AttachFileDAO.getInstance().create(attachFile);
 
 		assertEquals(1, task.getAttachFiles().size());
@@ -491,11 +490,10 @@ public class TaskObjectTest {
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
 
-		AttachFileObject.Builder builder = new AttachFileObject.Builder();
-		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
 				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile = builder.build();
 		AttachFileDAO.getInstance().create(attachFile);
 
 		String TEST_FILE2_NAME = "TEST_FILE_NAME";
@@ -503,12 +501,11 @@ public class TaskObjectTest {
 		String TEST_FILE2_CONTENT_TYPE = "jpg";
 
 		// second attach file
-		AttachFileObject.Builder builder2 = new AttachFileObject.Builder();
-		builder2.setContentType(TEST_FILE2_CONTENT_TYPE)
+		AttachFileObject attachFile2 = new AttachFileObject();
+		attachFile2.setContentType(TEST_FILE2_CONTENT_TYPE)
 				.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH)
 				.setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile2 = builder2.build();
 		AttachFileDAO.getInstance().create(attachFile2);
 
 		assertEquals(2, task.getAttachFiles().size());
