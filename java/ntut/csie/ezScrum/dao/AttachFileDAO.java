@@ -43,13 +43,21 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		valueSet.addEqualCondition(AttachFileEnum.ID, id);
 
 		String query = valueSet.getSelectQuery();
-		return getSelectAttachFiles(query).get(0);
+		ResultSet result = mControl.executeQuery(query);
+
+		AttachFileObject attachFile = null;
+		try {
+			if (result.next()) {
+				attachFile = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return attachFile;
 	}
 	
-	/**
-	 * 用 story id 取得 story 底下所有的 attach file
-	 * for ezScrum v1.8
-	 */
 	public ArrayList<AttachFileObject> getAttachFilesByStoryId(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
@@ -92,8 +100,8 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 	
 	private ArrayList<AttachFileObject> getSelectAttachFiles(String query) {
 		ArrayList<AttachFileObject> attachFiles = new ArrayList<AttachFileObject>();
+		ResultSet result = mControl.executeQuery(query);
 		try {
-			ResultSet result = mControl.executeQuery(query);
 			while (result.next()) {
 				AttachFileObject.Builder attachfileBuilder = new AttachFileObject.Builder();
 				attachfileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID));
@@ -107,10 +115,23 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		return attachFiles;
 	}
-
+	
+	public static AttachFileObject convert(ResultSet result) throws SQLException {
+		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
+		attachFileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID))
+		                 .setName(result.getString(AttachFileEnum.NAME))
+				         .setContentType(result.getString(AttachFileEnum.CONTENT_TYPE))
+				         .setPath(result.getString(AttachFileEnum.PATH))
+				         .setIssueId(result.getLong(AttachFileEnum.ISSUE_ID))
+				         .setIssueType(result.getInt(AttachFileEnum.ISSUE_TYPE))
+				         .setCreateTime(result.getLong(AttachFileEnum.CREATE_TIME));
+		return attachFileBuilder.build();
+	}
 	public static AttachFileObject convert(ResultSet result) throws SQLException {
 		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
 		attachFileBuilder.setAttachFileId(result.getLong(AttachFileEnum.ID))
