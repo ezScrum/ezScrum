@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.codehaus.jettison.json.JSONException;
@@ -173,16 +174,113 @@ public class SerialNumberObjectTest {
 
 	@Test
 	public void testReload() {
+		// Test Data
+		long projectId = 1;
+		long releaseId = 2;
+		long sprintId = 3;
+		long storyId = 4;
+		long taskId = 5;
+		long unplannedId = 6;
+		long retrospectiveId = 7;
 
+		// Build SerialNumberObject
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(releaseId)
+		            .setRetrospectiveId(retrospectiveId)
+		            .setSprintId(sprintId)
+		            .setStoryId(storyId)
+		            .setTaskId(taskId)
+		            .setUnplannedId(unplannedId)
+		            .save();
+		
+		assertEquals(projectId, serialNumber.getProjectId());
+		assertEquals(releaseId, serialNumber.getReleaseId());
+		assertEquals(sprintId, serialNumber.getSprintId());
+		assertEquals(storyId, serialNumber.getStoryId());
+		assertEquals(taskId, serialNumber.getTaskId());
+		assertEquals(unplannedId, serialNumber.getUnplannedId());
+		assertEquals(retrospectiveId, serialNumber.getRetrospectiveId());
+		
+		long releaseId2 = 7;
+		long sprintId2 = 6;
+		long storyId2 = 5;
+		long taskId2 = 4;
+		long unplannedId2 = 3;
+		long retrospectiveId2 = 2;
+		
+		serialNumber.setReleaseId(releaseId2)
+		            .setSprintId(sprintId2)
+		            .setStoryId(storyId2)
+		            .setTaskId(taskId2)
+		            .setUnplannedId(unplannedId2)
+		            .setRetrospectiveId(retrospectiveId2);
+		
+		assertEquals(releaseId2, serialNumber.getReleaseId());
+		assertEquals(sprintId2, serialNumber.getSprintId());
+		assertEquals(storyId2, serialNumber.getStoryId());
+		assertEquals(taskId2, serialNumber.getTaskId());
+		assertEquals(unplannedId2, serialNumber.getUnplannedId());
+		assertEquals(retrospectiveId2, serialNumber.getRetrospectiveId());
+		
+		serialNumber.reload();
+		assertEquals(projectId, serialNumber.getProjectId());
+		assertEquals(releaseId, serialNumber.getReleaseId());
+		assertEquals(sprintId, serialNumber.getSprintId());
+		assertEquals(storyId, serialNumber.getStoryId());
+		assertEquals(taskId, serialNumber.getTaskId());
+		assertEquals(unplannedId, serialNumber.getUnplannedId());
+		assertEquals(retrospectiveId, serialNumber.getRetrospectiveId());
 	}
 
 	@Test
 	public void testDelete() {
+		// Test Data
+		long projectId = 1;
+		long releaseId = 2;
+		long sprintId = 3;
+		long storyId = 4;
+		long taskId = 5;
+		long unplannedId = 6;
+		long retrospectiveId = 7;
 
+		// Build SerialNumberObject
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(releaseId)
+		            .setRetrospectiveId(retrospectiveId)
+		            .setSprintId(sprintId)
+		            .setStoryId(storyId)
+		            .setTaskId(taskId)
+		            .setUnplannedId(unplannedId)
+		            .save();
+		
+		assertTrue(serialNumber.exists());
+		assertTrue(serialNumber.delete());
+		assertFalse(serialNumber.exists());
 	}
 
 	@Test
 	public void testExists() {
+		// Test Data
+		long projectId = 1;
+		long releaseId = 2;
+		long sprintId = 3;
+		long storyId = 4;
+		long taskId = 5;
+		long unplannedId = 6;
+		long retrospectiveId = 7;
 
+		// Build SerialNumberObject
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(releaseId)
+		            .setRetrospectiveId(retrospectiveId)
+		            .setSprintId(sprintId)
+		            .setStoryId(storyId)
+		            .setTaskId(taskId)
+		            .setUnplannedId(unplannedId)
+		            .save();
+		
+		assertTrue(serialNumber.exists());
+		assertTrue(serialNumber.delete());
+		assertFalse(serialNumber.exists());
 	}
 }
