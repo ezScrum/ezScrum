@@ -160,6 +160,7 @@ public class SerialNumberObject implements IBaseObject {
 	private void resetData(SerialNumberObject serialNumber) {
 		mId = serialNumber.getId();
 		mProjectId = serialNumber.getProjectId();
+		mSprintId = serialNumber.getSprintId();
 		mReleaseId = serialNumber.getReleaseId();
 		mStoryId = serialNumber.getStoryId();
 		mTaskId = serialNumber.getTaskId();
