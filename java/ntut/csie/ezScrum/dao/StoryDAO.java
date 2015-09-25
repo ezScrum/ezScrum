@@ -24,7 +24,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	public long create(StoryObject story) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 		        story.getProjectId());
 
 		long storyId = serialNumber.getStoryId() + 1;

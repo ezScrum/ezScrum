@@ -1,12 +1,10 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.sql.SQLException;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
  * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
@@ -125,13 +123,12 @@ public class SerialNumberObject implements IBaseObject {
 		SerialNumberDAO.getInstance().update(this);
 	}
 	
-	/**
-	 * Using projectId to get serial number
-	 * @param projectId
-	 * @throws SQLException
-	 */
-	public static SerialNumberObject get(long projectId) {
-		return SerialNumberDAO.getInstance().get(projectId);
+	public static SerialNumberObject get(long id) {
+		return SerialNumberDAO.getInstance().get(id);
+	}
+	
+	public static SerialNumberObject getByProjectId(long projectId) {
+		return SerialNumberDAO.getInstance().getByProjectId(projectId);
 	}
 	
 	@Override

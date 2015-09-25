@@ -34,6 +34,10 @@ public class AttachFileObject implements IBaseObject {
 	public AttachFileObject(long id) {
 		mId = id;
 	}
+	
+	public static AttachFileObject get(long id) {
+		return AttachFileDAO.getInstance().get(id);
+	}
 
 	public long getId() {
 		return mId;
@@ -101,8 +105,9 @@ public class AttachFileObject implements IBaseObject {
 		return this;
 	}
 
-	public void setCreateTime(long createTime) {
+	public AttachFileObject setCreateTime(long createTime) {
 		mCreateTime = createTime;
+		return this;
 	}
 	
 	@Override

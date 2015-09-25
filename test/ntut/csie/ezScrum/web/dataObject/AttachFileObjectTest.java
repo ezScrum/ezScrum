@@ -70,7 +70,7 @@ public class AttachFileObjectTest {
 		long id = attachFile.getId();
 		assertTrue(id > 0);
 		
-		AttachFileObject attachFileFromDB = AttachFileDAO.getInstance().get(id);
+		AttachFileObject attachFileFromDB = AttachFileObject.get(id);
 
 		assertEquals(attachFile.getId(), attachFileFromDB.getId());
 		assertEquals(contentType, attachFileFromDB.getContentType());
@@ -158,7 +158,7 @@ public class AttachFileObjectTest {
 		assertEquals(-1, attachFile.getId());
 		assertEquals(-1, attachFile.getIssueId());
 		assertEquals(-1, attachFile.getIssueType());
-		assertEquals(null, AttachFileDAO.getInstance().get(id));
+		assertEquals(null, AttachFileObject.get(id));
 	}
 	
 	@Test
