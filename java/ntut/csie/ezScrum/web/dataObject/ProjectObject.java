@@ -300,8 +300,13 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
-		SerialNumberObject serialNumber = new SerialNumberObject(mId
-				, 0, 0, 0, 0, 0, 0);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplannedId(0);
 		serialNumber.save();
         reload();
 	}

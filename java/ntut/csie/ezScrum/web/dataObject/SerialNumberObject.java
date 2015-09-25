@@ -23,27 +23,13 @@ public class SerialNumberObject implements IBaseObject {
 	private long mUnplannedId = -1;
 	private long mRetrospectiveId = -1;
 	
-	public SerialNumberObject() {}
-	
-	public SerialNumberObject(long projectId, long releaseId, long sprintId,
-			long storyId, long taskId, long unplannedId, long retrospectiveId) {
+	public SerialNumberObject(long projectId) {
 		mProjectId = projectId;
-		mReleaseId = releaseId;
-		mSprintId = sprintId;
-		mStoryId = storyId;
-		mTaskId = taskId;
-		mUnplannedId = unplannedId;
-		mRetrospectiveId = retrospectiveId;
 	}
 	
-	public SerialNumberObject setId(long id) {
+	public SerialNumberObject(long id, long projectId) {
 		mId = id;
-		return this;
-	}
-	
-	public SerialNumberObject setProjectId(long projectId) {
 		mProjectId = projectId;
-		return this;
 	}
 	
 	public SerialNumberObject setReleaseId(long releaseId) {
@@ -160,10 +146,8 @@ public class SerialNumberObject implements IBaseObject {
 	@Override
 	public void reload() {
 		if (exists()) {
-			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
+			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mId);
 			resetData(serialNumber);
-		} else {
-			System.out.println("Record not exists");
 		}
 	}
 	
