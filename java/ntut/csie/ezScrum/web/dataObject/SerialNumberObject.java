@@ -109,8 +109,9 @@ public class SerialNumberObject implements IBaseObject {
 	}
 	
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object
+		JSONObject serialNumberJson = new JSONObject();
+		serialNumberJson
+		    .put(SerialNumberEnum.ID, mId)
 			.put(SerialNumberEnum.PROJECT_ID, mProjectId)
 			.put(SerialNumberEnum.RELEASE, mReleaseId)
 			.put(SerialNumberEnum.SPRINT, mSprintId)
@@ -118,7 +119,7 @@ public class SerialNumberObject implements IBaseObject {
 			.put(SerialNumberEnum.TASK, mTaskId)
 			.put(SerialNumberEnum.UNPLANNED, mUnplannedId)
 			.put(SerialNumberEnum.RETROSPECTIVE, mRetrospectiveId);
-		return object;
+		return serialNumberJson;
 	}
 	
 	public void save() {
@@ -148,6 +149,15 @@ public class SerialNumberObject implements IBaseObject {
 	}
 	
 	@Override
+	public boolean delete() {
+		boolean success = SerialNumberDAO.getInstance().delete(mId);
+		if (success) {
+			mId = -1;
+		}
+		return success;
+	}
+	
+	@Override
 	public void reload() {
 		if (exists()) {
 			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
@@ -155,14 +165,6 @@ public class SerialNumberObject implements IBaseObject {
 		} else {
 			System.out.println("Record not exists");
 		}
-	}
-	
-	public boolean dalete() {
-		boolean success = SerialNumberDAO.getInstance().delete(mId);
-		if (success) {
-			mId = -1;
-		}
-		return success;
 	}
 	
 	@Override
@@ -179,10 +181,5 @@ public class SerialNumberObject implements IBaseObject {
 		mTaskId = serialNumber.getTaskId();
 		mUnplannedId = serialNumber.getUnplannedId();
 		mRetrospectiveId = serialNumber.getRetrospectiveId();
-	}
-
-	@Override
-	public boolean delete() {
-		return false;
 	}
 }
