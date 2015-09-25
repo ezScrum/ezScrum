@@ -8,6 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -22,10 +26,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProjectMapperTest{
 	private long mProjectId = 0;
@@ -243,7 +243,13 @@ public class ProjectMapperTest{
 		
 		// 新建 project，也把 serial number 建起來
 		mProjectId = project.getId();
-		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-		serialnumberDAO.create(new SerialNumberObject(mProjectId, 0, 0, 0, 0, 0, 0));
+		SerialNumberObject serialNumber = new SerialNumberObject(mProjectId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplannedId(0);
+		SerialNumberDAO.getInstance().create(serialNumber);
 	}
 }
