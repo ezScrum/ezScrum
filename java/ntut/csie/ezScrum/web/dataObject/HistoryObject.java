@@ -305,7 +305,7 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	public String getFormattedModifiedTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 		return sdf.format(new Date(mCreateTime));
 	}
 
@@ -317,6 +317,7 @@ public class HistoryObject implements IBaseObject {
 
 	private void doCreate() {
 		mId = HistoryDAO.getInstance().create(this);
+		reload();
 	}
 
 	@Override
