@@ -28,7 +28,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		long currentTime = System.currentTimeMillis();
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(sprint.getProjectId());
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(sprint.getProjectId());
 
 		long sprintSerialId = serialNumber.getSprintId() + 1;
 		valueSet.addTableName(SprintEnum.TABLE_NAME);

@@ -461,8 +461,7 @@ public class TaskObjectTest {
 		AttachFileObject attachFile = new AttachFileObject();
 		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(1, task.getAttachFiles().size());
 	}
@@ -493,8 +492,7 @@ public class TaskObjectTest {
 		AttachFileObject attachFile = new AttachFileObject();
 		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		String TEST_FILE2_NAME = "TEST_FILE_NAME";
 		String TEST_FILE2_PATH = "/TEST_PATH";
@@ -505,8 +503,7 @@ public class TaskObjectTest {
 		attachFile2.setContentType(TEST_FILE2_CONTENT_TYPE)
 				.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH)
-				.setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile2);
+				.setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(2, task.getAttachFiles().size());
 	}

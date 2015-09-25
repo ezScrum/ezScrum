@@ -27,7 +27,7 @@ public class RetrospectiveDAO extends
 		long currentTime = System.currentTimeMillis();
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(retrospective.getProjectId());
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(retrospective.getProjectId());
 
 		long retorspectiveSerialId = serialNumber.getRetrospectiveId() + 1;
 

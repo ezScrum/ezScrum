@@ -72,30 +72,33 @@ public class SerialNumberDAOTest {
 	}
 
 	@Test
-	public void testGet() throws SQLException {
+	public void testGet() {
 		long projectId = 1;
-
-		// 新增三筆測試資料
-		for (int i = 1; i <= 3; i++) {
-			SerialNumberObject serialNumber = new SerialNumberObject(projectId);
-			serialNumber.setReleaseId(i)
-	        		    .setRetrospectiveId(i)
-	        		    .setSprintId(i)
-	        		    .setStoryId(i)
-	        		    .setTaskId(i)
-	        		    .setUnplannedId(i);
-			mSerialNumberDao.create(serialNumber);
-		}
-
-		// get
-		SerialNumberObject serialNumber = mSerialNumberDao.get(projectId);
-		assertEquals(projectId, serialNumber.getProjectId());
-		assertEquals(1, serialNumber.getReleaseId());
-		assertEquals(1, serialNumber.getSprintId());
-		assertEquals(1, serialNumber.getStoryId());
-		assertEquals(1, serialNumber.getTaskId());
-		assertEquals(1, serialNumber.getRetrospectiveId());
-		assertEquals(1, serialNumber.getUnplannedId());
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().get(id));
+	}
+	
+	@Test
+	public void testGetByProjectId() {
+		long projectId = 1;
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().getByProjectId(projectId));
 	}
 
 	@Test

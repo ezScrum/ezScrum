@@ -31,7 +31,7 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
     public long create(UnplannedObject unplanned) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				unplanned.getProjectId());
 
 		long unplannedId = serialNumber.getUnplannedId() + 1;
