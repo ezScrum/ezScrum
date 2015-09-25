@@ -385,7 +385,8 @@ public class StoryObject implements IBaseObject {
 		return storyJson;
 	}
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		StoryObject story = StoryDAO.getInstance().get(mId);
 		return story != null;
 	}

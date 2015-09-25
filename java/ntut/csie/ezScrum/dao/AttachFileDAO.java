@@ -95,7 +95,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		valueSet.addTableName(AttachFileEnum.TABLE_NAME);
 		valueSet.addEqualCondition(AttachFileEnum.ID, id);
 		String query = valueSet.getDeleteQuery();
-		return mControl.execute(query);
+		return mControl.executeUpdate(query);
 	}
 	
 	private ArrayList<AttachFileObject> getSelectAttachFiles(String query) {

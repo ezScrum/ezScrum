@@ -253,7 +253,8 @@ public class SprintObject implements IBaseObject {
 		setUpdateTime(sprint.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		SprintObject sprint = SprintDAO.getInstance().get(mId);
 		return sprint != null;
 	}

@@ -222,7 +222,8 @@ public class ReleaseObject implements IBaseObject {
 		setUpdateTime(release.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		ReleaseObject release = ReleaseDAO.getInstance().get(mId);
 		return release != null;
 	}

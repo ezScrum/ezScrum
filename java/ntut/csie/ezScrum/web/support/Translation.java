@@ -174,7 +174,7 @@ public class Translation {
 			for (AttachFileObject attachFile : task.getAttachFiles()) {
 				JSONObject attachFileJson = new JSONObject();
 				attachFileJson.put("IssueId", attachFile.getIssueId());
-				attachFileJson.put("IssueType", attachFile.getIssueTypeStr());
+				attachFileJson.put("IssueType", attachFile.getIssueTypeString());
 				attachFileJson.put("FileId", attachFile.getId());
 				attachFileJson.put("FileName", attachFile.getName());
 				attachFileJson.put("FilePath", "fileDownload.do?projectName="
