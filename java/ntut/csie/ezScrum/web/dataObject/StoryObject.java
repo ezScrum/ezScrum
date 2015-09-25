@@ -385,7 +385,8 @@ public class StoryObject implements IBaseObject {
 		return storyJson;
 	}
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		StoryObject story = StoryDAO.getInstance().get(mId);
 		return story != null;
 	}
@@ -394,9 +395,9 @@ public class StoryObject implements IBaseObject {
 		mId = StoryDAO.getInstance().create(this);
 		saveTags();
 		reload();
-		HistoryDAO.getInstance().create(
-				new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
-						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+				HistoryObject.TYPE_CREATE, "", "", mCreateTime); 
+		history.save();
 		if (mSprintId != DEFAULT_VALUE) {
 			// Append this story to sprint
 			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mCreateTime);
@@ -495,13 +496,13 @@ public class StoryObject implements IBaseObject {
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
 				type, oldValue, newValue, System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 	
 	private void addHistory(int type, String oldValue, String newValue, long specificTime) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
 				type, oldValue, newValue, specificTime);
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 	
 	private void resetData(StoryObject story) {

@@ -27,7 +27,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	public long create(TaskObject task) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				task.getProjectId());
 
 		long taskId = serialNumber.getTaskId() + 1;

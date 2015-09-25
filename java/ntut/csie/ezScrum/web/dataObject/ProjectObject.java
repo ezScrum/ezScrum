@@ -280,7 +280,8 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
 		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
 		return projectById != null || projectByName != null;
@@ -299,8 +300,13 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mId = ProjectDAO.getInstance().create(this);
-		SerialNumberObject serialNumber = new SerialNumberObject(mId
-				, 0, 0, 0, 0, 0, 0);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplannedId(0);
 		serialNumber.save();
         reload();
 	}

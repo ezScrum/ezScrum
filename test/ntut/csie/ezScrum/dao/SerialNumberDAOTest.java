@@ -1,21 +1,21 @@
 package ntut.csie.ezScrum.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SerialNumberDAOTest {
 	private Configuration mConfig;
@@ -60,29 +60,45 @@ public class SerialNumberDAOTest {
 	@Test
 	public void testCreate() {
 		long projectId = 1;
-		long id = mSerialNumberDao.create(new SerialNumberObject(projectId,
-		        1, 1, 1, 1, 1, 1));
-		assertNotSame(-1, id);
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
 	}
 
 	@Test
-	public void testGet() throws SQLException {
+	public void testGet() {
 		long projectId = 1;
-
-		// 新增三筆測試資料
-		for (int i = 1; i <= 3; i++) {
-			mSerialNumberDao.create(new SerialNumberObject(i, i, i, i, i, i, i));
-		}
-
-		// get
-		SerialNumberObject serialNumber = mSerialNumberDao.get(projectId);
-		assertEquals(projectId, serialNumber.getProjectId());
-		assertEquals(1, serialNumber.getReleaseId());
-		assertEquals(1, serialNumber.getSprintId());
-		assertEquals(1, serialNumber.getStoryId());
-		assertEquals(1, serialNumber.getTaskId());
-		assertEquals(1, serialNumber.getRetrospectiveId());
-		assertEquals(1, serialNumber.getUnplannedId());
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().get(id));
+	}
+	
+	@Test
+	public void testGetByProjectId() {
+		long projectId = 1;
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().getByProjectId(projectId));
 	}
 
 	@Test
@@ -90,7 +106,14 @@ public class SerialNumberDAOTest {
 		// create 3筆 SerialNumberObject
 		long projectId = 2;
 		for (int i = 1; i <= 3; i++) {
-			mSerialNumberDao.create(new SerialNumberObject(i, i, i, i, i, i, i));
+			SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+			serialNumber.setReleaseId(i)
+	        		    .setRetrospectiveId(i)
+	        		    .setSprintId(i)
+	        		    .setStoryId(i)
+	        		    .setTaskId(i)
+	        		    .setUnplannedId(i);
+			mSerialNumberDao.create(serialNumber);
 		}
 		// 修改第二筆 SerialNumberObject data 再存回 DB
 		SerialNumberObject serialNumber = mSerialNumberDao.get(projectId);
@@ -115,36 +138,36 @@ public class SerialNumberDAOTest {
 	}
 	
 	@Test
-	public void testDelete() throws SQLException {
-		int projectCount = 3;
-		long projectId = 3;
-		for(int i = 1; i <= projectCount; i++) {
-			mSerialNumberDao.create(new SerialNumberObject(i, i, i, i, i, i, i));
-		}
-		
-		// assert before delete one serial number have three data
-		ArrayList<SerialNumberObject> serialnumberList = new ArrayList<SerialNumberObject>();
-		for(int i = 1; i <= projectCount; i++) {
-			serialnumberList.add(mSerialNumberDao.get(i));
-		}
-		assertEquals(projectCount, serialnumberList.size());
-		
-		// clear serialnumberList data
-		serialnumberList = null;
-		serialnumberList = new ArrayList<SerialNumberObject>();
-		
-		// delete one serial number and assert list remain two data
-		boolean result = mSerialNumberDao.delete(projectId);
-		assertEquals(true, result);
-		
-		for(int i = 1; i <= projectCount; i++) {
-			if(i == projectId) {
-				assertNull(mSerialNumberDao.get(i));
-			} else {
-				serialnumberList.add(mSerialNumberDao.get(i));
-				assertEquals(i, serialnumberList.get(i-1).getProjectId());
-			}
-		}
-		assertEquals(projectCount-1, serialnumberList.size());
+	public void testDelete() {
+		long projectId = 1;
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().get(id));
+		SerialNumberDAO.getInstance().delete(id);
+		assertNull(SerialNumberDAO.getInstance().get(id));
+	}
+	
+	@Test
+	public void testDeleteByProjectId() {
+		long projectId = 1;
+		SerialNumberObject serialNumber = new SerialNumberObject(projectId);
+		serialNumber.setReleaseId(1)
+        		    .setRetrospectiveId(1)
+        		    .setSprintId(1)
+        		    .setStoryId(1)
+        		    .setTaskId(1)
+        		    .setUnplannedId(1);
+		long id = mSerialNumberDao.create(serialNumber);
+		assertTrue(id > 0);
+		assertNotNull(SerialNumberDAO.getInstance().get(id));
+		SerialNumberDAO.getInstance().deleteByProjectId(projectId);
+		assertNull(SerialNumberDAO.getInstance().get(id));
 	}
 }

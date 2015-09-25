@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -17,12 +23,6 @@ import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author samhuang 2014/12/23
@@ -461,8 +461,7 @@ public class TaskObjectTest {
 		AttachFileObject attachFile = new AttachFileObject();
 		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(1, task.getAttachFiles().size());
 	}
@@ -493,8 +492,7 @@ public class TaskObjectTest {
 		AttachFileObject attachFile = new AttachFileObject();
 		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		String TEST_FILE2_NAME = "TEST_FILE_NAME";
 		String TEST_FILE2_PATH = "/TEST_PATH";
@@ -505,8 +503,7 @@ public class TaskObjectTest {
 		attachFile2.setContentType(TEST_FILE2_CONTENT_TYPE)
 				.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH)
-				.setCreateTime(TEST_CREATE_TIME);
-		AttachFileDAO.getInstance().create(attachFile2);
+				.setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(2, task.getAttachFiles().size());
 	}
@@ -664,19 +661,14 @@ public class TaskObjectTest {
 		assertEquals(5, task.getEstimate());
 		assertEquals(3, task.getRemains());
 		assertEquals(1, task.getActual());
-
-		try {
-			task.reload();
-
-			assertEquals(1, task.getId());
-			assertEquals(1, task.getSerialId());
-			assertEquals("TEST_NAME", task.getName());
-			assertEquals("TEST_NOTES", task.getNotes());
-			assertEquals(10, task.getEstimate());
-			assertEquals(10, task.getRemains());
-			assertEquals(0, task.getActual());
-		} catch (Exception e) {
-		}
+		task.reload();
+		assertEquals(1, task.getId());
+		assertEquals(1, task.getSerialId());
+		assertEquals("TEST_NAME", task.getName());
+		assertEquals("TEST_NOTES", task.getNotes());
+		assertEquals(10, task.getEstimate());
+		assertEquals(10, task.getRemains());
+		assertEquals(0, task.getActual());
 	}
 
 	@Test

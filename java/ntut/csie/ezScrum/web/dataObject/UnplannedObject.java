@@ -322,7 +322,8 @@ public class UnplannedObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		UnplannedObject unplanned = UnplannedDAO.getInstance().get(mId);
 		return unplanned != null;
 	}
@@ -346,9 +347,9 @@ public class UnplannedObject implements IBaseObject {
 		mId = UnplannedDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
-		HistoryDAO.getInstance().create(
-				new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
-						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
+				HistoryObject.TYPE_CREATE, "", "", mCreateTime);
+		history.save();
 	}
 
 	private void doUpdate() {
@@ -429,7 +430,7 @@ public class UnplannedObject implements IBaseObject {
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
 				type, oldValue, newValue, System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 
 	// add history for specific time
@@ -437,7 +438,7 @@ public class UnplannedObject implements IBaseObject {
 			long specificTime) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
 				type, oldValue, newValue, specificTime);
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 	
 	private String handleSpecialChar(String str) {

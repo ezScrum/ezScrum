@@ -1240,9 +1240,9 @@ public class MantisService extends AbstractMantisService implements IITSService 
 						 .setIssueType(attachFileInfo.issueType)
 						 .setContentType(attachFileInfo.contentType)
 						 .setName(attachFileInfo.name)
-						 .setPath(attachFileInfo.path);
-		long newAttachFileId = AttachFileDAO.getInstance().create(attachFile);
-		return newAttachFileId;
+						 .setPath(attachFileInfo.path)
+			             .save();
+		return attachFile.getId();
 	}
 	
 	/**
@@ -1253,7 +1253,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 	
 	public AttachFileObject getAttachFile(long fileId) {
-		return AttachFileDAO.getInstance().get(fileId);
+		return AttachFileObject.get(fileId);
 	}
 	
 	@Override

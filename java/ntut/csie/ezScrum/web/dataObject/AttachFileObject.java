@@ -5,10 +5,12 @@ import java.util.HashMap;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
-public class AttachFileObject {
+public class AttachFileObject implements IBaseObject {
+	private final static int DEFAULT_VALUE = -1;
 	private long mId = -1;
 	private long mIssueId = -1;
 	private int mIssueType;
@@ -31,6 +33,10 @@ public class AttachFileObject {
 	
 	public AttachFileObject(long id) {
 		mId = id;
+	}
+	
+	public static AttachFileObject get(long id) {
+		return AttachFileDAO.getInstance().get(id);
 	}
 
 	public long getId() {
@@ -55,7 +61,7 @@ public class AttachFileObject {
 		return mIssueType;
 	}
 	
-	public String getIssueTypeStr() {
+	public String getIssueTypeString() {
 		HashMap<Integer, String> map = new HashMap<Integer, String>();
 		map.put(IssueTypeEnum.TYPE_STORY, "Story");
 		map.put(IssueTypeEnum.TYPE_TASK, "Task");
@@ -99,8 +105,56 @@ public class AttachFileObject {
 		return this;
 	}
 
-	public void setCreateTime(long createTime) {
+	public AttachFileObject setCreateTime(long createTime) {
 		mCreateTime = createTime;
+		return this;
+	}
+	
+	@Override
+	public void save() {
+		if (!exists()) {
+			doCreate();
+		}
+	}
+
+	@Override
+	public void reload() {
+		if (exists()) {
+			AttachFileObject attachFile = AttachFileDAO.getInstance().get(mId);
+			resetData(attachFile);
+		}
+	}
+
+	@Override
+	public boolean delete() {
+		boolean success = AttachFileDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+			mIssueId = DEFAULT_VALUE;
+			mIssueType = DEFAULT_VALUE;
+		}
+		return success;
+	}	
+	
+	@Override
+	public boolean exists() {
+		AttachFileObject attachFile = AttachFileDAO.getInstance().get(mId);
+		return attachFile != null;
+	}
+	
+	private void resetData(AttachFileObject attachFile) {
+		mId = attachFile.getId();
+		mIssueId = attachFile.getIssueId();
+		mIssueType = attachFile.getIssueType();
+		mName = attachFile.getName();
+		mPath = attachFile.getPath();
+		mContentType = attachFile.getContentType();
+		setCreateTime(attachFile.getCreateTime());
+	}
+	
+	private void doCreate() {
+		mId = AttachFileDAO.getInstance().create(this);
+		reload();
 	}
 	
 	public String toString() {

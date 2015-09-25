@@ -381,8 +381,7 @@ public class ProductBacklogHelper {
 
 		File file = new File(attachFile.getPath());
 		file.delete();
-
-		mProductBacklogMapper.deleteAttachFile(fileId);
+		attachFile.delete();
 	}
 
 	// for ezScrum v1.8

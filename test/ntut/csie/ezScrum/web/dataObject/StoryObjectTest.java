@@ -362,8 +362,7 @@ public class StoryObjectTest {
 
 		AttachFileObject attachFile = new AttachFileObject();
 		attachFile.setContentType("jpg").setIssueId(story.getId())
-				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH");
-		AttachFileDAO.getInstance().create(attachFile);
+				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH").save();
 		
 		attachFile = story.getAttachFiles().get(0);
 		assertEquals(1, story.getAttachFiles().size());

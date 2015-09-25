@@ -28,7 +28,7 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		long currentTime = System.currentTimeMillis();
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				release.getProjectId());
 
 		long releaseSerialId = serialNumber.getReleaseId() + 1;

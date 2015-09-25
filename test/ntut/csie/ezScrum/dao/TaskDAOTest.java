@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -22,17 +26,12 @@ import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 public class TaskDAOTest {
 	private MySQLControl mControl = null;
 	private Configuration mConfig;
 	private CreateProject mCP;
 	private int mProjectCount = 2;
 	private static long sProjectId;
-
 
 	@Before
 	public void setUp() throws Exception {
