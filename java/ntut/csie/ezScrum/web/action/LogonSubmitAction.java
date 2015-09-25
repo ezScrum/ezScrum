@@ -82,17 +82,7 @@ public class LogonSubmitAction extends Action {
 
 		ProjectLogic projectLogic = new ProjectLogic();
 		projectLogic.cloneDefaultFile();
-
-		Person person = this.getPerson(userSession.getAccount());
-		
-		return mapping.findForward(person.getForwardName());
-	}
-
-	private Person getPerson(AccountObject account) {
-		if (account.getRoles().get("system") != null) {
-			return new ezScrumAdmin();
-		} else {
-			return new User();
-		}
+		String defaultForwardName = "success";
+		return mapping.findForward(defaultForwardName);
 	}
 }
