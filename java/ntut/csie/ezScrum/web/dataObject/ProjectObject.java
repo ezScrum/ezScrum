@@ -280,7 +280,8 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
 		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
 		return projectById != null || projectByName != null;

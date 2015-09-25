@@ -4,13 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class HistoryObject implements IBaseObject {
 	public final static int TYPE_CREATE = 1;
@@ -309,7 +309,8 @@ public class HistoryObject implements IBaseObject {
 		return sdf.format(new Date(mCreateTime));
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		HistoryObject history = HistoryDAO.getInstance().get(mId);
 		return history != null;
 	}
@@ -326,7 +327,22 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() {}
+	public void reload() {
+		if (exists()) {
+			HistoryObject history = HistoryDAO.getInstance().get(mId);
+			resetData(history);
+		}
+	}
+	
+	private void resetData(HistoryObject history) {
+		mId = history.getId();
+		mIssueId = history.getIssueId();
+		mIssueType = history.getIssueType();
+		mHistoryType = history.getHistoryType();
+		mOldValue = history.getOldValue();
+		mNewValue = history.getNewValue();
+		setCreateTime(history.getCreateTime());
+	}
 
 	@Override
 	public boolean delete() {

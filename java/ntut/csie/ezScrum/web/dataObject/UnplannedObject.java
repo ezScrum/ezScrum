@@ -322,7 +322,8 @@ public class UnplannedObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		UnplannedObject unplanned = UnplannedDAO.getInstance().get(mId);
 		return unplanned != null;
 	}

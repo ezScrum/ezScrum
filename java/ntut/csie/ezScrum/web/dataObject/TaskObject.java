@@ -418,7 +418,7 @@ public class TaskObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean exists() {
+	public boolean exists() {
 		TaskObject task = TaskDAO.getInstance().get(mId);
 		return task != null;
 	}

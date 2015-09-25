@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -17,12 +23,6 @@ import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author samhuang 2014/12/23
@@ -664,19 +664,14 @@ public class TaskObjectTest {
 		assertEquals(5, task.getEstimate());
 		assertEquals(3, task.getRemains());
 		assertEquals(1, task.getActual());
-
-		try {
-			task.reload();
-
-			assertEquals(1, task.getId());
-			assertEquals(1, task.getSerialId());
-			assertEquals("TEST_NAME", task.getName());
-			assertEquals("TEST_NOTES", task.getNotes());
-			assertEquals(10, task.getEstimate());
-			assertEquals(10, task.getRemains());
-			assertEquals(0, task.getActual());
-		} catch (Exception e) {
-		}
+		task.reload();
+		assertEquals(1, task.getId());
+		assertEquals(1, task.getSerialId());
+		assertEquals("TEST_NAME", task.getName());
+		assertEquals("TEST_NOTES", task.getNotes());
+		assertEquals(10, task.getEstimate());
+		assertEquals(10, task.getRemains());
+		assertEquals(0, task.getActual());
 	}
 
 	@Test

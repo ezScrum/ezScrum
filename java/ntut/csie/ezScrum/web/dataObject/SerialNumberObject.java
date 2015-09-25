@@ -165,7 +165,8 @@ public class SerialNumberObject implements IBaseObject {
 		return success;
 	}
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mId);
 		return serialNumber != null;
 	}

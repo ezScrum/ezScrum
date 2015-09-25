@@ -250,7 +250,8 @@ public class AccountObject implements IBaseObject {
 		}
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		AccountObject account = AccountDAO.getInstance().get(mId);
 		return account != null;
 	}
