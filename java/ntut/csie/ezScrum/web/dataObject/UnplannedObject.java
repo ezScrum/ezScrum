@@ -344,6 +344,8 @@ public class UnplannedObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mActual = mEstimate;
+		
 		mId = UnplannedDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();

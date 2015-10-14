@@ -41,7 +41,7 @@ public class UnplannedItemHelper {
 		} else if (unplannedInfo.statusString.equals("assigned")) {
 			unplannedInfo.status = UnplannedObject.STATUS_CHECK;
 		} else {
-			unplannedInfo.status = UnplannedObject.STATUS_UNCHECK;
+			unplannedInfo.status = UnplannedObject.STATUS_DONE;
 		}
 		mUnplannedMapper.updateUnplanned(unplannedInfo.id, unplannedInfo);
 	}
