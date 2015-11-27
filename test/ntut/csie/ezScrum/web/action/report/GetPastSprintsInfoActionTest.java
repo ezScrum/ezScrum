@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.retrospective;
+package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +13,12 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.jcis.core.util.DateUtil;
 import servletunit.struts.MockStrutsTestCase;
 
-public class GetPastRetrospectiveInfoActionTest extends MockStrutsTestCase {
+public class GetPastSprintsInfoActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private Configuration mConfig;
 	private ProjectObject mProject;
 	
-	public GetPastRetrospectiveInfoActionTest(String testMethod) {
+	public GetPastSprintsInfoActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -41,7 +41,7 @@ public class GetPastRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		// struts-config
 		// 檔案路徑
 		setServletConfigFile("/WEB-INF/struts-config.xml");
-		setRequestPathInfo("/getPastRetrospectiveInfo");
+		setRequestPathInfo("/getPastSprintInfo");
 
 		// ============= release ==============
 		ini = null;

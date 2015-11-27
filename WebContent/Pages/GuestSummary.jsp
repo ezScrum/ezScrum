@@ -75,7 +75,7 @@ function setSprintFormInfo(sID, uID) {
 
 function setSprintCombo(sprintID) {
 	Ext.Ajax.request({
-		url: 'getPastRetrospectiveInfo.do',
+		url: 'getPastSprintInfo.do',
 		async: false,
 		success: function(response) {
 			sprintComboStore.loadData(response.responseXML);
