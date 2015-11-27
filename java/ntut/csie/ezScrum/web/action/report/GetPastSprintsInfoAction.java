@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.retrospective;
+package ntut.csie.ezScrum.web.action.report;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetPastRetrospectiveInfoAction extends Action {
+public class GetPastSprintsInfoAction extends Action {
 	// --------------------------------------------------------- Instance
 	// Variables
 
