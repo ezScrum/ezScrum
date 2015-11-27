@@ -95,7 +95,7 @@ public class UnplannedItemMapperTest {
 		assertEquals("TEST_UNPLANNED_1", unplanned.getName());
 		assertEquals("TEST_UNPLANNED_NOTES_1", unplanned.getNotes());
 		assertEquals(2, unplanned.getEstimate());
-		assertEquals(0, unplanned.getActual());
+		assertEquals(2, unplanned.getActual());
 		assertEquals(1, unplanned.getSprintId());
 		assertEquals(1, unplanned.getProjectId());
 	}
@@ -148,7 +148,7 @@ public class UnplannedItemMapperTest {
 		assertEquals(unplannedInfo.name, unplanned.getName());
 		assertEquals(unplannedInfo.notes, unplanned.getNotes());
 		assertEquals(unplannedInfo.estimate, unplanned.getEstimate());
-		assertEquals(unplannedInfo.actual, unplanned.getActual());
+		assertEquals(unplannedInfo.estimate, unplanned.getActual());
 		assertEquals(UnplannedObject.STATUS_UNCHECK, unplanned.getStatus());
 		assertEquals(1, unplanned.getSerialId());
 		assertEquals(sProjectId, unplanned.getProjectId());
@@ -168,7 +168,7 @@ public class UnplannedItemMapperTest {
 		assertEquals("TEST_UNPLANNED_1", unplanned.getName());
 		assertEquals("TEST_UNPLANNED_NOTES_1", unplanned.getNotes());
 		assertEquals(2, unplanned.getEstimate());
-		assertEquals(0, unplanned.getActual());
+		assertEquals(2, unplanned.getActual());
 		assertEquals(sSprintId, unplanned.getSprintId());
 		assertEquals(sProjectId, unplanned.getProjectId());
 		
@@ -243,7 +243,7 @@ public class UnplannedItemMapperTest {
 		assertEquals("2 => 888", histories.get(4).getDescription());
 		// check 6th history
 		assertEquals(HistoryObject.TYPE_ACTUAL, histories.get(5).getHistoryType());
-		assertEquals("0 => 456", histories.get(5).getDescription());
+		assertEquals("2 => 456", histories.get(5).getDescription());
 		// check 7th history
 		assertEquals(HistoryObject.TYPE_SPRINTID, histories.get(6).getHistoryType());
 		assertEquals("Sprint #1 => Sprint #2", histories.get(6).getDescription());
