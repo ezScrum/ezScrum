@@ -375,7 +375,7 @@ public class UnplannedObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplanned.getActual(), mActual);
 		}
 		if (mSprintId != oldUnplanned.getSprintId()) {
-			addHistory(HistoryObject.TYPE_SPRINTID, oldUnplanned.getSprintId(), mSprintId);
+			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplanned.getSprintId(), mSprintId);
 		}
 		if (mHandlerId != oldUnplanned.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldUnplanned.getHandlerId(),
@@ -409,7 +409,7 @@ public class UnplannedObject implements IBaseObject {
 					specificTime);
 		}
 		if (mSprintId != oldUnplanned.getSprintId()) {
-			addHistory(HistoryObject.TYPE_SPRINTID, oldUnplanned.getSprintId(), mSprintId,
+			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplanned.getSprintId(), mSprintId,
 					specificTime);
 		}
 		if (mHandlerId != oldUnplanned.getHandlerId()) {

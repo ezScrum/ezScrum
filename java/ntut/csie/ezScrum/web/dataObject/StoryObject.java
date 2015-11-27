@@ -417,7 +417,7 @@ public class StoryObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes);
 		}
 		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
-			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo);
+			addHistory(HistoryObject.TYPE_HOW_TO_DEMO, oldStory.getHowToDemo(), mHowToDemo);
 		}
 		if (mImportance != oldStory.getImportance()) {
 			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance);
@@ -457,7 +457,7 @@ public class StoryObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes, specificTime);
 		}
 		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
-			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo, specificTime);
+			addHistory(HistoryObject.TYPE_HOW_TO_DEMO, oldStory.getHowToDemo(), mHowToDemo, specificTime);
 		}
 		if (mImportance != oldStory.getImportance()) {
 			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance, specificTime);

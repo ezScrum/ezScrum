@@ -142,7 +142,7 @@ public class StoryObjectTest {
 		assertEquals("TEST_NOTE2", history.getNewValue());
 
 		history = histories.get(4);
-		assertEquals(HistoryObject.TYPE_HOWTODEMO, history.getHistoryType());
+		assertEquals(HistoryObject.TYPE_HOW_TO_DEMO, history.getHistoryType());
 		assertEquals("TEST_HOW_TO_DEMO", history.getOldValue());
 		assertEquals("TEST_HOW_TO_DEMO2", history.getNewValue());
 
