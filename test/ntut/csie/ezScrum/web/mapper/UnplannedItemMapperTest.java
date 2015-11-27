@@ -245,7 +245,7 @@ public class UnplannedItemMapperTest {
 		assertEquals(HistoryObject.TYPE_ACTUAL, histories.get(5).getHistoryType());
 		assertEquals("2 => 456", histories.get(5).getDescription());
 		// check 7th history
-		assertEquals(HistoryObject.TYPE_SPRINTID, histories.get(6).getHistoryType());
+		assertEquals(HistoryObject.TYPE_SPRINT_ID, histories.get(6).getHistoryType());
 		assertEquals("Sprint #1 => Sprint #2", histories.get(6).getDescription());
 	}
 	

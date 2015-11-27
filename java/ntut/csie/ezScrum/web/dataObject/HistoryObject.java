@@ -32,9 +32,10 @@ public class HistoryObject implements IBaseObject {
 	public final static int TYPE_REMOVE = 18; // Remove Child (for story
 	                                          // history)
 	public final static int TYPE_NOTE = 19;
-	public final static int TYPE_HOWTODEMO = 20;
-	public final static int TYPE_PARTNERS = 21;
-	public final static int TYPE_SPRINTID = 22;
+	public final static int TYPE_HOW_TO_DEMO = 20;
+	public final static int TYPE_ADD_PARTNER = 21;
+	public final static int TYPE_REMOVE_PARTNER = 22;
+	public final static int TYPE_SPRINT_ID = 23;
 
 	private long mId;
 	private long mIssueId;
@@ -149,7 +150,7 @@ public class HistoryObject implements IBaseObject {
 				return getDropChildDesc();
 			case TYPE_REMOVE:
 				return getRemoveParentDesc();
-			case TYPE_SPRINTID:
+			case TYPE_SPRINT_ID:
 				return getSprintDesc();
 		}
 		return "";
@@ -179,7 +180,7 @@ public class HistoryObject implements IBaseObject {
 				return "Specific Time";
 			case TYPE_NOTE:
 				return "Note";
-			case TYPE_HOWTODEMO:
+			case TYPE_HOW_TO_DEMO:
 				return "How To Demo";
 		}
 		return "";

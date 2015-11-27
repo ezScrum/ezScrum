@@ -265,7 +265,7 @@ public class ProductBacklogMapper {
 						oldIssue.getEstimated(), newIssue.getEstimated());
 			}
 			if (!newIssue.getHowToDemo().equals(oldIssue.getHowToDemo())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_HOWTODEMO,
+				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_HOW_TO_DEMO,
 						oldIssue.getHowToDemo(), newIssue.getHowToDemo());
 			}
 			if (!newIssue.getNotes().equals(oldIssue.getNotes())) {
