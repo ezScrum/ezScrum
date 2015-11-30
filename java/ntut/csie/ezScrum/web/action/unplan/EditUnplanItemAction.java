@@ -76,7 +76,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		UnplanObject unplan = unplanHelper.getUnplan(id);
 
 		StringBuilder result = new StringBuilder();
-		result.append("<EditUnplannedItem><Result>success</Result><UnplanItem>")
+		result.append("<EditUnplannedItem><Result>success</Result><UnplannedItem>")
 			  .append("<Id>").append(unplan.getId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
