@@ -249,7 +249,7 @@ public class ProjectMapperTest{
 	    		    .setSprintId(0)
 	    		    .setStoryId(0)
 	    		    .setTaskId(0)
-	    		    .setUnplannedId(0);
+	    		    .setUnplanId(0);
 		SerialNumberDAO.getInstance().create(serialNumber);
 	}
 }

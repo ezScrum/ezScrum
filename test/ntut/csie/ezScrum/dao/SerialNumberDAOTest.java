@@ -66,7 +66,7 @@ public class SerialNumberDAOTest {
         		    .setSprintId(1)
         		    .setStoryId(1)
         		    .setTaskId(1)
-        		    .setUnplannedId(1);
+        		    .setUnplanId(1);
 		long id = mSerialNumberDao.create(serialNumber);
 		assertTrue(id > 0);
 	}
@@ -80,7 +80,7 @@ public class SerialNumberDAOTest {
         		    .setSprintId(1)
         		    .setStoryId(1)
         		    .setTaskId(1)
-        		    .setUnplannedId(1);
+        		    .setUnplanId(1);
 		long id = mSerialNumberDao.create(serialNumber);
 		assertTrue(id > 0);
 		assertNotNull(SerialNumberDAO.getInstance().get(id));
@@ -95,7 +95,7 @@ public class SerialNumberDAOTest {
         		    .setSprintId(1)
         		    .setStoryId(1)
         		    .setTaskId(1)
-        		    .setUnplannedId(1);
+        		    .setUnplanId(1);
 		long id = mSerialNumberDao.create(serialNumber);
 		assertTrue(id > 0);
 		assertNotNull(SerialNumberDAO.getInstance().getByProjectId(projectId));
@@ -112,7 +112,7 @@ public class SerialNumberDAOTest {
 	        		    .setSprintId(i)
 	        		    .setStoryId(i)
 	        		    .setTaskId(i)
-	        		    .setUnplannedId(i);
+	        		    .setUnplanId(i);
 			mSerialNumberDao.create(serialNumber);
 		}
 		// 修改第二筆 SerialNumberObject data 再存回 DB
@@ -121,7 +121,7 @@ public class SerialNumberDAOTest {
 		serialNumber.setSprintId(4);
 		serialNumber.setStoryId(5);
 		serialNumber.setTaskId(6);
-		serialNumber.setUnplannedId(7);
+		serialNumber.setUnplanId(7);
 		serialNumber.setRetrospectiveId(8);
 
 		boolean result = mSerialNumberDao.update(serialNumber);
@@ -133,7 +133,7 @@ public class SerialNumberDAOTest {
 		assertEquals(editSerialNumber.getSprintId(), serialNumber.getSprintId());
 		assertEquals(editSerialNumber.getStoryId(), serialNumber.getStoryId());
 		assertEquals(editSerialNumber.getTaskId(), serialNumber.getTaskId());
-		assertEquals(editSerialNumber.getUnplannedId(), serialNumber.getUnplannedId());
+		assertEquals(editSerialNumber.getUnplanId(), serialNumber.getUnplanId());
 		assertEquals(editSerialNumber.getRetrospectiveId(), serialNumber.getRetrospectiveId());
 	}
 	
@@ -146,7 +146,7 @@ public class SerialNumberDAOTest {
         		    .setSprintId(1)
         		    .setStoryId(1)
         		    .setTaskId(1)
-        		    .setUnplannedId(1);
+        		    .setUnplanId(1);
 		long id = mSerialNumberDao.create(serialNumber);
 		assertTrue(id > 0);
 		assertNotNull(SerialNumberDAO.getInstance().get(id));
@@ -163,7 +163,7 @@ public class SerialNumberDAOTest {
         		    .setSprintId(1)
         		    .setStoryId(1)
         		    .setTaskId(1)
-        		    .setUnplannedId(1);
+        		    .setUnplanId(1);
 		long id = mSerialNumberDao.create(serialNumber);
 		assertTrue(id > 0);
 		assertNotNull(SerialNumberDAO.getInstance().get(id));

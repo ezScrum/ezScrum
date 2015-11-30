@@ -67,7 +67,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .setRetrospectiveId(retrospectiveId)
 		            .save();
 		
@@ -78,7 +78,7 @@ public class SerialNumberObjectTest {
 		assertEquals(serialNumber.getSprintId(), serialNumberJson.getLong(SerialNumberEnum.SPRINT));
 		assertEquals(serialNumber.getStoryId(), serialNumberJson.getLong(SerialNumberEnum.STORY));
 		assertEquals(serialNumber.getTaskId(), serialNumberJson.getLong(SerialNumberEnum.TASK));
-		assertEquals(serialNumber.getUnplannedId(), serialNumberJson.getLong(SerialNumberEnum.UNPLANNED));
+		assertEquals(serialNumber.getUnplanId(), serialNumberJson.getLong(SerialNumberEnum.UNPLAN));
 		assertEquals(serialNumber.getRetrospectiveId(), serialNumberJson.getLong(SerialNumberEnum.RETROSPECTIVE));
 	}
 
@@ -100,7 +100,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .save();
 
 		long id = serialNumber.getId();
@@ -114,7 +114,7 @@ public class SerialNumberObjectTest {
 		assertEquals(sprintId, serialNumberFromDB.getSprintId());
 		assertEquals(storyId, serialNumberFromDB.getStoryId());
 		assertEquals(taskId, serialNumberFromDB.getTaskId());
-		assertEquals(unplannedId, serialNumberFromDB.getUnplannedId());
+		assertEquals(unplannedId, serialNumberFromDB.getUnplanId());
 		assertEquals(retrospectiveId, serialNumberFromDB.getRetrospectiveId());
 	}
 	
@@ -135,7 +135,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(3)
 		            .setStoryId(4)
 		            .setTaskId(5)
-		            .setUnplannedId(6)
+		            .setUnplanId(6)
 		            .setRetrospectiveId(7)
 		            .save();
 
@@ -147,7 +147,7 @@ public class SerialNumberObjectTest {
 		assertEquals(3, serialNumber.getSprintId());
 		assertEquals(4, serialNumber.getStoryId());
 		assertEquals(5, serialNumber.getTaskId());
-		assertEquals(6, serialNumber.getUnplannedId());
+		assertEquals(6, serialNumber.getUnplanId());
 		assertEquals(7, serialNumber.getRetrospectiveId());
 		
 		// Update serialNumber
@@ -156,7 +156,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .save();
 
 		SerialNumberObject serialNumberFromDB = SerialNumberDAO.getInstance().get(id);
@@ -168,7 +168,7 @@ public class SerialNumberObjectTest {
 		assertEquals(sprintId, serialNumberFromDB.getSprintId());
 		assertEquals(storyId, serialNumberFromDB.getStoryId());
 		assertEquals(taskId, serialNumberFromDB.getTaskId());
-		assertEquals(unplannedId, serialNumberFromDB.getUnplannedId());
+		assertEquals(unplannedId, serialNumberFromDB.getUnplanId());
 		assertEquals(retrospectiveId, serialNumberFromDB.getRetrospectiveId());
 	}
 
@@ -190,7 +190,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .save();
 		
 		assertEquals(projectId, serialNumber.getProjectId());
@@ -198,7 +198,7 @@ public class SerialNumberObjectTest {
 		assertEquals(sprintId, serialNumber.getSprintId());
 		assertEquals(storyId, serialNumber.getStoryId());
 		assertEquals(taskId, serialNumber.getTaskId());
-		assertEquals(unplannedId, serialNumber.getUnplannedId());
+		assertEquals(unplannedId, serialNumber.getUnplanId());
 		assertEquals(retrospectiveId, serialNumber.getRetrospectiveId());
 		
 		long releaseId2 = 7;
@@ -212,14 +212,14 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId2)
 		            .setStoryId(storyId2)
 		            .setTaskId(taskId2)
-		            .setUnplannedId(unplannedId2)
+		            .setUnplanId(unplannedId2)
 		            .setRetrospectiveId(retrospectiveId2);
 		
 		assertEquals(releaseId2, serialNumber.getReleaseId());
 		assertEquals(sprintId2, serialNumber.getSprintId());
 		assertEquals(storyId2, serialNumber.getStoryId());
 		assertEquals(taskId2, serialNumber.getTaskId());
-		assertEquals(unplannedId2, serialNumber.getUnplannedId());
+		assertEquals(unplannedId2, serialNumber.getUnplanId());
 		assertEquals(retrospectiveId2, serialNumber.getRetrospectiveId());
 		
 		serialNumber.reload();
@@ -228,7 +228,7 @@ public class SerialNumberObjectTest {
 		assertEquals(sprintId, serialNumber.getSprintId());
 		assertEquals(storyId, serialNumber.getStoryId());
 		assertEquals(taskId, serialNumber.getTaskId());
-		assertEquals(unplannedId, serialNumber.getUnplannedId());
+		assertEquals(unplannedId, serialNumber.getUnplanId());
 		assertEquals(retrospectiveId, serialNumber.getRetrospectiveId());
 	}
 
@@ -250,7 +250,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .save();
 		
 		assertTrue(serialNumber.exists());
@@ -276,7 +276,7 @@ public class SerialNumberObjectTest {
 		            .setSprintId(sprintId)
 		            .setStoryId(storyId)
 		            .setTaskId(taskId)
-		            .setUnplannedId(unplannedId)
+		            .setUnplanId(unplannedId)
 		            .save();
 		
 		assertTrue(serialNumber.exists());

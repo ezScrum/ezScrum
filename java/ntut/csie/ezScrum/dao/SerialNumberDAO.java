@@ -33,8 +33,8 @@ public class SerialNumberDAO extends
 		valueSet.addInsertValue(SerialNumberEnum.STORY,
 				serialNumber.getStoryId());
 		valueSet.addInsertValue(SerialNumberEnum.TASK, serialNumber.getTaskId());
-		valueSet.addInsertValue(SerialNumberEnum.UNPLANNED,
-				serialNumber.getUnplannedId());
+		valueSet.addInsertValue(SerialNumberEnum.UNPLAN,
+				serialNumber.getUnplanId());
 		valueSet.addInsertValue(SerialNumberEnum.RETROSPECTIVE,
 				serialNumber.getRetrospectiveId());
 		String query = valueSet.getInsertQuery();
@@ -96,8 +96,8 @@ public class SerialNumberDAO extends
 		valueSet.addInsertValue(SerialNumberEnum.STORY,
 				serialNumber.getStoryId());
 		valueSet.addInsertValue(SerialNumberEnum.TASK, serialNumber.getTaskId());
-		valueSet.addInsertValue(SerialNumberEnum.UNPLANNED,
-				serialNumber.getUnplannedId());
+		valueSet.addInsertValue(SerialNumberEnum.UNPLAN,
+				serialNumber.getUnplanId());
 		valueSet.addInsertValue(SerialNumberEnum.RETROSPECTIVE,
 				serialNumber.getRetrospectiveId());
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID,
@@ -130,7 +130,7 @@ public class SerialNumberDAO extends
 				    .setSprintId(result.getLong(SerialNumberEnum.SPRINT))
 				    .setStoryId(result.getLong(SerialNumberEnum.STORY))
 				    .setTaskId(result.getLong(SerialNumberEnum.TASK))
-				    .setUnplannedId(result.getLong(SerialNumberEnum.UNPLANNED))
+				    .setUnplanId(result.getLong(SerialNumberEnum.UNPLAN))
 				    .setRetrospectiveId(result.getLong(SerialNumberEnum.RETROSPECTIVE));
 		return serialNumber;
 	}

@@ -306,7 +306,7 @@ public class ProjectObject implements IBaseObject {
 	    		    .setSprintId(0)
 	    		    .setStoryId(0)
 	    		    .setTaskId(0)
-	    		    .setUnplannedId(0);
+	    		    .setUnplanId(0);
 		serialNumber.save();
         reload();
 	}

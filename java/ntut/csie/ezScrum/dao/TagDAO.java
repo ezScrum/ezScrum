@@ -30,7 +30,6 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 		valueSet.addInsertValue(TagEnum.CREATE_TIME, currentTime);
 		valueSet.addInsertValue(TagEnum.UPDATE_TIME, currentTime);
 		String query = valueSet.getInsertQuery();
-		System.out.println(query);
 		long id = mControl.executeInsert(query);
 		return id;
     }

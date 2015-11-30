@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.UnplannedDAO;
-import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -248,24 +248,24 @@ public class UnplannedObject implements IBaseObject {
 			histories.put(history.toJSON());
 		}
 		
-		unplanned.put(UnplannedEnum.NAME, mName)
-				.put(UnplannedEnum.ESTIMATE, mEstimate)
-				.put(UnplannedEnum.ACTUAL, mActual)
-				.put(UnplannedEnum.SPRINT_ID, mSprintId)
-				.put(UnplannedEnum.PROJECT_ID, mProjectId)
-				.put(UnplannedEnum.NOTES, mNotes)
-				.put(UnplannedEnum.STATUS, mStatus)
-				.put(UnplannedEnum.SERIAL_ID, mSerialId)
-				.put(UnplannedEnum.ID, mId)
-				.put(UnplannedEnum.CREATE_TIME, mCreateTime)
-				.put(UnplannedEnum.UPDATE_TIME, mUpdateTime)
+		unplanned.put(UnplanEnum.NAME, mName)
+				.put(UnplanEnum.ESTIMATE, mEstimate)
+				.put(UnplanEnum.ACTUAL, mActual)
+				.put(UnplanEnum.SPRINT_ID, mSprintId)
+				.put(UnplanEnum.PROJECT_ID, mProjectId)
+				.put(UnplanEnum.NOTES, mNotes)
+				.put(UnplanEnum.STATUS, mStatus)
+				.put(UnplanEnum.SERIAL_ID, mSerialId)
+				.put(UnplanEnum.ID, mId)
+				.put(UnplanEnum.CREATE_TIME, mCreateTime)
+				.put(UnplanEnum.UPDATE_TIME, mUpdateTime)
 				.put("partners", partners)
 				.put("histories", histories);
 
 		if (getHandler() != null) {
-			unplanned.put(UnplannedEnum.HANDLER, getHandler().toJSON());
+			unplanned.put(UnplanEnum.HANDLER, getHandler().toJSON());
 		} else {
-			unplanned.put(UnplannedEnum.HANDLER, new JSONObject());
+			unplanned.put(UnplanEnum.HANDLER, new JSONObject());
 		}
 		
 		return unplanned;
