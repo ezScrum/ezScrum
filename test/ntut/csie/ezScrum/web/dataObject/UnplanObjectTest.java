@@ -5,6 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -13,16 +19,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-/**
- * @author AllenHuang 2015/08/21
- */
 
 public class UnplanObjectTest {
 	private Configuration mConfig;
@@ -450,7 +446,7 @@ public class UnplanObjectTest {
 		assertEquals(TEST_NAME, json.getString(UnplanEnum.NAME));
 		assertEquals(TEST_NOTE, json.getString(UnplanEnum.NOTES));
 		assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ESTIMATE));
-		assertEquals(TEST_ACTUAL, json.getInt(UnplanEnum.ACTUAL));
+		assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ACTUAL));
 		assertEquals(TEST_PROJECT, json.getInt(UnplanEnum.PROJECT_ID));
 		assertEquals(TEST_SPRINT_ID, json.getInt(UnplanEnum.SPRINT_ID));
 
@@ -481,7 +477,7 @@ public class UnplanObjectTest {
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(0, unplan.getActual());
+		assertEquals(10, unplan.getActual());
 		assertEquals(sSprintId, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 	}
@@ -500,7 +496,7 @@ public class UnplanObjectTest {
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(0, unplan.getActual());
+		assertEquals(10, unplan.getActual());
 		assertEquals(sSprintId, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 
@@ -528,7 +524,7 @@ public class UnplanObjectTest {
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(0, unplan.getActual());
+		assertEquals(10, unplan.getActual());
 
 		boolean deleteSuccess = unplan.delete();
 
@@ -549,7 +545,7 @@ public class UnplanObjectTest {
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(0, unplan.getActual());
+		assertEquals(10, unplan.getActual());
 
 		unplan.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
 			.setActual(1);
@@ -569,7 +565,7 @@ public class UnplanObjectTest {
 			assertEquals("TEST_NAME", unplan.getName());
 			assertEquals("TEST_NOTES", unplan.getNotes());
 			assertEquals(10, unplan.getEstimate());
-			assertEquals(0, unplan.getActual());
+			assertEquals(10, unplan.getActual());
 		} catch (Exception e) {
 		}
 	}
