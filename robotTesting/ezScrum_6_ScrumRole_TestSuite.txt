@@ -3,9 +3,9 @@ Documentation     目前設定的權限如下:
 ...               PO: 除了 TaskBoard 以外,其餘皆可操作
 ...               Master: 除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
 ...               Team: 同 Master
-...               Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+...               Stakeholder: 僅能操作 ReleasePlan / Unplan / Report
 ...               Guest: 只能看 Scrum Report (仿照 Jenkins)
-...               (注意!若無任何權限開啟,仍然可以看到目前Sprint Info Report與Task Board)
+...               (注意!若無任何權限開啟,仍然可以看到目前 Sprint Info Report 與 Task Board)
 Suite Setup
 Suite Teardown
 Force Tags        ScrumRole
@@ -18,7 +18,7 @@ Resource          Global Define.txt
 
 *** Variables ***
 @{tsPermission_PO}    1    1    1    1    0    1    1
-...               1    1    # 9 type: ProductBacklog ReleasePlan SprintPlan SprintBacklog Taskboard(x) Restrospective Unplanned Report EditProject
+...               1    1    # 9 type: ProductBacklog ReleasePlan SprintPlan SprintBacklog Taskboard(x) Restrospective Unplan Report EditProject
 @{tsPermission_Master}    0    0    1    1    1    1    1
 ...               1    0
 @{tsPermission_Team}    0    0    1    1    1    1    1
@@ -105,7 +105,7 @@ Test Scrum Role - Guest
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [ITS Configuration ]
     Page Should Not Contain    ${tsITSConfiguration_Items[0]}
@@ -147,7 +147,7 @@ Test Scrum Role - Guest Default
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [ITS Configuration ]
     Page Should Not Contain    ${tsITSConfiguration_Items[0]}
@@ -162,7 +162,7 @@ Test Scrum Role - Guest Default
     [Teardown]    Test ScrumRole Teardown for Guest Default
 
 Test Scrum Role - Stakeholder
-    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplan / Report
     ...    ?? 有包含 Plugin Configuration?
     [Setup]    Test ScrumRole Setup for Stakeholder
     Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
@@ -183,14 +183,14 @@ Test Scrum Role - Stakeholder
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [Plugin Configuration] # Issue ??
     Exit ezScrum System
     [Teardown]    Test ScrumRole Teardown for Stakeholder
 
 Test Scrum Role - Stakeholder Default
-    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplanned / Report
+    [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplan / Report
     ...    ?? 有包含 Plugin Configuration?
     [Setup]    Test ScrumRole Setup for Stakeholder Default
     Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
@@ -211,7 +211,7 @@ Test Scrum Role - Stakeholder Default
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     # [Plugin Configuration] # Issue ??
     Exit ezScrum System
@@ -237,7 +237,7 @@ Test Scrum Role - Scrum Team
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
     [Teardown]    Test ScrumRole Teardown for ScrumTeam
@@ -262,7 +262,7 @@ Test Scrum Role - Scrum Master
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
     [Teardown]    Test ScrumRole Teardown for ScrumMaster
@@ -288,7 +288,7 @@ Test Scrum Role - Product Owner
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[4]}']    # Sprint Backlog
     Page Should Not Contain Element    xpath=//span[.='${tsProjectManagement_Items[5]}']    # Task Board
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[6]}']    # Retrospective
-    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplanned
+    Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[7]}']    # Unplan
     Page Should Contain Element    xpath=//span[.='${tsProjectManagement_Items[8]}']    # Scrum Report
     Exit ezScrum System
     [Teardown]    Test ScrumRole Teardown for ProductOwner

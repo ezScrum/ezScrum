@@ -2,10 +2,10 @@
 Library           ../lib/Selenium2Improved.py
 Resource          ../ezScrum_Login.txt
 Resource          ../Project/ezScrum_Project.txt
-Resource          ezScrum_Unplanned.txt
+Resource          ezScrum_Unplan.txt
 
 *** Keywords ***
-Test Unplanned Suite Setup
+Test Unplan Suite Setup
     Close All Browsers
     Login Page    ${LOGIN_URL}
     # 確認專案是否存在
@@ -32,48 +32,48 @@ Test Unplanned Suite Setup
     Create Sprint    Test Sprint 1    2    4    100    100
     Create Sprint    Test Sprint 2    2    4    100    100
 
-Test Unplanned Suite Teardown
-    Clean All Unplanned
+Test Unplan Suite Teardown
+    Clean All Unplan
     # delete sprint
     Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
-Test Unplanned Add Setup
+Test Unplan Add Setup
     # 回到 PRoject 頁面
     SwitchToPage    ProjectList
     Select Project    ${PROJECT_NAME}DisplayName
     # 切換到 Unplanned 頁面
     Select Node Product    Unplanned
 
-Test Unplanned Add Teardown
-    Clean All Unplanned
+Test Unplan Add Teardown
+    Clean All Unplan
     Exit ezScrum System
 
-Test Unplanned Edit Setup
+Test Unplan Edit Setup
     Login Page    ${LOGIN_URL}
     # 回到 PRoject 頁面
     Select Project    ${PROJECT_NAME}DisplayName
     # 切換到 Unplanned 頁面
     Select Node Product    Unplanned
-    # 新增 Unplanned
-    Add Unplanned    @{addUnplannedList}
+    # 新增 Unplan
+    Add Unplan    @{addUnplanList}
     Temp Solution    ${PROJECT_NAME}
 
-Test Unplanned Edit Teardown
-    Clean All Unplanned
+Test Unplan Edit Teardown
+    Clean All Unplan
     Exit ezScrum System
 
-Test Unplanned Delete Setup
+Test Unplan Delete Setup
     Login Page    ${LOGIN_URL}
     # 回到 PRoject 頁面
     Select Project    ${PROJECT_NAME}DisplayName
     # 切換到 Unplanned 頁面
     Select Node Product    Unplanned
-    # 新增 Unplanned
-    Add Unplanned    @{deleteUnplannedList1}
-    Add Unplanned    @{deleteUnplannedList2}
-    Add Unplanned    @{deleteUnplannedList3}
+    # 新增 Unplan
+    Add Unplan    @{deleteUnplanList1}
+    Add Unplan    @{deleteUnplanList2}
+    Add Unplan    @{deleteUnplanList3}
 
-Test Unplanned Delete Teardown
-    Clean All Unplanned
+Test Unplan Delete Teardown
+    Clean All Unplan
