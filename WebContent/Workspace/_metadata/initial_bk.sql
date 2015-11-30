@@ -1198,7 +1198,7 @@ CREATE TABLE `story` (
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `sprint_id` BIGINT NULL,
   `name` TEXT NOT NULL,
-  `status` INT UNSIGNED NOT NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `importance` INT NOT NULL DEFAULT 0,
   `value` INT NOT NULL DEFAULT 0,
@@ -1217,7 +1217,7 @@ CREATE TABLE `task` (
   `story_id` BIGINT NULL,
   `name` TEXT NOT NULL,
   `handler_id` BIGINT,
-  `status` VARCHAR(255) NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `remain` INT NOT NULL DEFAULT 0,
   `actual` INT NOT NULL DEFAULT 0,
@@ -1251,7 +1251,7 @@ ENGINE = InnoDB DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL UNIQUE,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
@@ -1295,8 +1295,8 @@ CREATE TABLE `retrospective` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `unplanned`;
-CREATE TABLE `unplanned` (
+DROP TABLE IF EXISTS `unplan`;
+CREATE TABLE `unplan` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -1304,7 +1304,7 @@ CREATE TABLE `unplanned` (
   `estimate` INT NOT NULL,
   `actual` INT NOT NULL,
   `notes` TEXT NOT NULL,
-  `status` VARCHAR(255) NOT NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `sprint_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
@@ -1340,7 +1340,7 @@ CREATE TABLE `serial_number` (
   `sprint` BIGINT UNSIGNED NOT NULL,
   `story` BIGINT UNSIGNED NOT NULL,
   `task` BIGINT UNSIGNED NOT NULL,
-  `unplanned` BIGINT UNSIGNED NOT NULL,
+  `unplan` BIGINT UNSIGNED NOT NULL,
   `retrospective` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB DEFAULT CHARSET = utf8;

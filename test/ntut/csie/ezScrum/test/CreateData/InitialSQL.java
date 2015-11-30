@@ -140,7 +140,7 @@ public class InitialSQL {
 		sqlIns.add("TRUNCATE `story_tag_relation`;");
 		sqlIns.add("TRUNCATE `release`;");
 		sqlIns.add("TRUNCATE `retrospective`;");
-		sqlIns.add("TRUNCATE `unplanned`;");
+		sqlIns.add("TRUNCATE `unplan`;");
 		sqlIns.add("TRUNCATE `attach_file`;");
 		sqlIns.add("TRUNCATE `serial_number`;");
 		sqlIns.add("TRUNCATE `token`;");

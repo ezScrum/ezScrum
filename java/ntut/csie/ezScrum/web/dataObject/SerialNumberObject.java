@@ -18,7 +18,7 @@ public class SerialNumberObject implements IBaseObject {
 	private long mSprintId = -1;
 	private long mStoryId = -1;
 	private long mTaskId = -1;
-	private long mUnplannedId = -1;
+	private long mUnplanId = -1;
 	private long mRetrospectiveId = -1;
 	
 	public SerialNumberObject(long projectId) {
@@ -50,8 +50,8 @@ public class SerialNumberObject implements IBaseObject {
 		return this;
 	}
 	
-	public SerialNumberObject setUnplannedId(long unplannedId) {
-		mUnplannedId = unplannedId;
+	public SerialNumberObject setUnplanId(long unplanId) {
+		mUnplanId = unplanId;
 		return this;
 	}
 	
@@ -84,8 +84,8 @@ public class SerialNumberObject implements IBaseObject {
 		return mTaskId;
 	}
 	
-	public long getUnplannedId() {
-		return mUnplannedId;
+	public long getUnplanId() {
+		return mUnplanId;
 	}
 	
 	public long getRetrospectiveId() {
@@ -101,7 +101,7 @@ public class SerialNumberObject implements IBaseObject {
 			.put(SerialNumberEnum.SPRINT, mSprintId)
 			.put(SerialNumberEnum.STORY, mStoryId)
 			.put(SerialNumberEnum.TASK, mTaskId)
-			.put(SerialNumberEnum.UNPLANNED, mUnplannedId)
+			.put(SerialNumberEnum.UNPLAN, mUnplanId)
 			.put(SerialNumberEnum.RETROSPECTIVE, mRetrospectiveId);
 		return serialNumberJson;
 	}
@@ -161,7 +161,7 @@ public class SerialNumberObject implements IBaseObject {
 		mReleaseId = serialNumber.getReleaseId();
 		mStoryId = serialNumber.getStoryId();
 		mTaskId = serialNumber.getTaskId();
-		mUnplannedId = serialNumber.getUnplannedId();
+		mUnplanId = serialNumber.getUnplanId();
 		mRetrospectiveId = serialNumber.getRetrospectiveId();
 	}
 }

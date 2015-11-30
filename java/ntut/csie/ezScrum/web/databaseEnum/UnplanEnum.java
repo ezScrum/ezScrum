@@ -1,7 +1,7 @@
-package ntut.csie.ezScrum.web.databasEnum;
+package ntut.csie.ezScrum.web.databaseEnum;
 
-public class UnplannedEnum {
-	public static final String TABLE_NAME = "unplanned";
+public class UnplanEnum {
+	public static final String TABLE_NAME = "unplan";
     public static final String ID = "id";
     public static final String SERIAL_ID = "serial_id";
     public static final String NAME = "name";

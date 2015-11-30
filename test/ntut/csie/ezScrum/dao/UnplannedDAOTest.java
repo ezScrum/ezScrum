@@ -19,9 +19,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
-import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
 import org.junit.After;
 import org.junit.Before;
@@ -99,8 +99,8 @@ public class UnplannedDAOTest {
 		// 從 DB 裡取出 unplanned 資料
 		ArrayList<UnplannedObject> unplanneds = new ArrayList<UnplannedObject>();
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(UnplannedEnum.TABLE_NAME);
-		valueSet.addEqualCondition(UnplannedEnum.PROJECT_ID, sProjectId);
+		valueSet.addTableName(UnplanEnum.TABLE_NAME);
+		valueSet.addEqualCondition(UnplanEnum.PROJECT_ID, sProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		while (result.next()) {
@@ -213,8 +213,8 @@ public class UnplannedDAOTest {
 		// reload unplanneds
 		unplanneds.clear();
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(UnplannedEnum.TABLE_NAME);
-		valueSet.addEqualCondition(UnplannedEnum.PROJECT_ID, sProjectId);
+		valueSet.addTableName(UnplanEnum.TABLE_NAME);
+		valueSet.addEqualCondition(UnplanEnum.PROJECT_ID, sProjectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
@@ -459,25 +459,25 @@ public class UnplannedDAOTest {
 		long TEST_CREATE_TIME = System.currentTimeMillis();
 		
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		valueSet.addTableName(UnplannedEnum.TABLE_NAME);
-		valueSet.addInsertValue(UnplannedEnum.SERIAL_ID, TEST_SERIAL_NUMBER);
-		valueSet.addInsertValue(UnplannedEnum.NAME, TEST_NAME);
-		valueSet.addInsertValue(UnplannedEnum.HANDLER_ID, TEST_HANDLER);
-		valueSet.addInsertValue(UnplannedEnum.ESTIMATE, TEST_ESTIMATE);
-		valueSet.addInsertValue(UnplannedEnum.ACTUAL, TEST_ACTUAL);
-		valueSet.addInsertValue(UnplannedEnum.NOTES, TEST_NOTES);
-		valueSet.addInsertValue(UnplannedEnum.STATUS, TEST_STATUS);
-		valueSet.addInsertValue(UnplannedEnum.PROJECT_ID, TEST_PROJECT_ID);
-		valueSet.addInsertValue(UnplannedEnum.SPRINT_ID, TEST_SPRINT_ID);
-		valueSet.addInsertValue(UnplannedEnum.CREATE_TIME, TEST_CREATE_TIME);
-		valueSet.addInsertValue(UnplannedEnum.UPDATE_TIME, TEST_CREATE_TIME);
+		valueSet.addTableName(UnplanEnum.TABLE_NAME);
+		valueSet.addInsertValue(UnplanEnum.SERIAL_ID, TEST_SERIAL_NUMBER);
+		valueSet.addInsertValue(UnplanEnum.NAME, TEST_NAME);
+		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, TEST_HANDLER);
+		valueSet.addInsertValue(UnplanEnum.ESTIMATE, TEST_ESTIMATE);
+		valueSet.addInsertValue(UnplanEnum.ACTUAL, TEST_ACTUAL);
+		valueSet.addInsertValue(UnplanEnum.NOTES, TEST_NOTES);
+		valueSet.addInsertValue(UnplanEnum.STATUS, TEST_STATUS);
+		valueSet.addInsertValue(UnplanEnum.PROJECT_ID, TEST_PROJECT_ID);
+		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, TEST_SPRINT_ID);
+		valueSet.addInsertValue(UnplanEnum.CREATE_TIME, TEST_CREATE_TIME);
+		valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, TEST_CREATE_TIME);
 		String query = valueSet.getInsertQuery();
 		
 		long id = mControl.executeInsert(query);
 		
 		valueSet.clear();
-		valueSet.addTableName(UnplannedEnum.TABLE_NAME);
-		valueSet.addEqualCondition(UnplannedEnum.ID, id);
+		valueSet.addTableName(UnplanEnum.TABLE_NAME);
+		valueSet.addEqualCondition(UnplanEnum.ID, id);
 		query = valueSet.getSelectQuery();
 		
 		ResultSet result= mControl.executeQuery(query);

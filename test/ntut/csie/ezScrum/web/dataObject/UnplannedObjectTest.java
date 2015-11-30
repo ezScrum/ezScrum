@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databasEnum.UnplannedEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -447,14 +447,14 @@ public class UnplannedObjectTest {
 
 		// assert json object
 		JSONObject json = unplanned.toJSON();
-		assertEquals(TEST_NAME, json.getString(UnplannedEnum.NAME));
-		assertEquals(TEST_NOTE, json.getString(UnplannedEnum.NOTES));
-		assertEquals(TEST_ESTIMATE, json.getInt(UnplannedEnum.ESTIMATE));
-		assertEquals(TEST_ACTUAL, json.getInt(UnplannedEnum.ACTUAL));
-		assertEquals(TEST_PROJECT, json.getInt(UnplannedEnum.PROJECT_ID));
-		assertEquals(TEST_SPRINT_ID, json.getInt(UnplannedEnum.SPRINT_ID));
+		assertEquals(TEST_NAME, json.getString(UnplanEnum.NAME));
+		assertEquals(TEST_NOTE, json.getString(UnplanEnum.NOTES));
+		assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ESTIMATE));
+		assertEquals(TEST_ACTUAL, json.getInt(UnplanEnum.ACTUAL));
+		assertEquals(TEST_PROJECT, json.getInt(UnplanEnum.PROJECT_ID));
+		assertEquals(TEST_SPRINT_ID, json.getInt(UnplanEnum.SPRINT_ID));
 
-		JSONObject handlerJson = json.getJSONObject(UnplannedEnum.HANDLER);
+		JSONObject handlerJson = json.getJSONObject(UnplanEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
 		assertEquals(handler.getUsername(), handlerJson.getString(AccountEnum.USERNAME));
 		assertEquals(handler.getEmail(), handlerJson.getString(AccountEnum.EMAIL));
