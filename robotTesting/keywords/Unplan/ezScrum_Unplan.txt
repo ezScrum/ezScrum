@@ -3,16 +3,16 @@ Resource          ../common_resource.txt
 Library           ../lib/Selenium2Improved.py
 
 *** Keywords ***
-Clean All Unplanned
+Clean All Unplan
     Select Node Product    Unplanned
-    # get Unplanned count
+    # get Unplan count
     ${_count} =    Get Matching Xpath Count    //div[@id="UnplannedItem_Page"]//table[@class="x-grid3-row-table"]
-    # delete all Unplanned
+    # delete all Unplan
     : FOR    ${_index}    IN RANGE    0    ${_count}
-    \    Delete Unplanned
+    \    Delete Unplan
 
-Delete Unplanned
-    [Documentation]    固定點選表格內的第一個 unplanned,透過按下button"Delete Unplanned Item"來刪除 unplanned
+Delete Unplan
+    [Documentation]    固定點選表格內的第一個 unplan,透過按下button"Delete Unplan Item"來刪除 unplan
     Mouse Down    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
     Mouse Up    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
     Click Element    xpath=//button[text()="Delete Unplanned Item"]
@@ -20,13 +20,13 @@ Delete Unplanned
     Click Element    xpath=${xpathDeleteUnplanned}
     Wait Until Page Contains    Success.
 
-Add Unplanned
-    [Arguments]    @{unplannedInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
-    ${name} =    Set Variable    ${unplannedInfo[1]}
-    ${handler} =    Set Variable    ${unplannedInfo[3]}
-    ${partners} =    Set Variable    ${unplannedInfo[4]}
-    ${estimate} =    Set Variable    ${unplannedInfo[5]}
-    ${notes} =    Set Variable    ${unplannedInfo[6]}
+Add Unplan
+    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+    ${name} =    Set Variable    ${unplanInfo[1]}
+    ${handler} =    Set Variable    ${unplanInfo[3]}
+    ${partners} =    Set Variable    ${unplanInfo[4]}
+    ${estimate} =    Set Variable    ${unplanInfo[5]}
+    ${notes} =    Set Variable    ${unplanInfo[6]}
     # action
     Click Element    xpath=//button[text()='Add Unplanned Item']    # 元件本身已存在,不需等待
     Element Should Be Visible    xpath=//span[.='Add New Unplanned Item']    # for check
@@ -41,7 +41,7 @@ Add Unplanned
     Element Enable And Submit    ${_xpathAddNew}
     Wait Until Page Contains    Success.
 
-Get Unplanned Id
+Get Unplan Id
 
 Add Account
     [Arguments]    ${userId}    ${username}    ${password}    ${reEnter}    ${email}
@@ -109,22 +109,22 @@ Delete Account
     Wait Until Page Contains    Success.
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]    0
 
-Select Unplanned
+Select Unplan
     [Arguments]    ${columnIndex}    ${name}
     Mouse Down    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
     Mouse Up    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
 
-Edit Unplanned
-    [Arguments]    @{unplannedInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
-    ${id} =    Set Variable    ${unplannedInfo[0]}
-    ${name} =    Set Variable    ${unplannedInfo[1]}
-    ${sprintId} =    Set Variable    ${unplannedInfo[2]}
-    ${handler} =    Set Variable    ${unplannedInfo[3]}
-    ${partners} =    Set Variable    ${unplannedInfo[4]}
-    ${estimate} =    Set Variable    ${unplannedInfo[5]}
-    ${notes} =    Set Variable    ${unplannedInfo[6]}
-    ${actual} =    Set Variable    ${unplannedInfo[7]}
-    ${status} =    Set Variable    ${unplannedInfo[8]}
+Edit Unplan
+    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
+    ${id} =    Set Variable    ${unplanInfo[0]}
+    ${name} =    Set Variable    ${unplanInfo[1]}
+    ${sprintId} =    Set Variable    ${unplanInfo[2]}
+    ${handler} =    Set Variable    ${unplanInfo[3]}
+    ${partners} =    Set Variable    ${unplanInfo[4]}
+    ${estimate} =    Set Variable    ${unplanInfo[5]}
+    ${notes} =    Set Variable    ${unplanInfo[6]}
+    ${actual} =    Set Variable    ${unplanInfo[7]}
+    ${status} =    Set Variable    ${unplanInfo[8]}
     # action
     Click Element    xpath=//button[.='Edit Unplanned Item']
     # fill info
