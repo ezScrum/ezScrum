@@ -61,6 +61,8 @@ ezScrum.ManagementLeftPanel_Event = Ext.extend(ezScrum.Management_LeftTreePanel,
 	event_DbConfigManagement: function(node) {
 		if (node.id == "DbConfigUrl") {
 			this.Page_Index = 3;
+		} else if (node.id == "ImportUrl") {
+			this.Page_Index = 4;
 		} else {
 			this.Page_Index = 0;
 		}
