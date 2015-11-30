@@ -1,21 +1,21 @@
-package ntut.csie.ezScrum.web.action.unplanned;
+package ntut.csie.ezScrum.web.action.unplan;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
+import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-public class RemoveUnplannedItemAction extends PermissionAction {
+public class RemoveUnplanItemAction extends PermissionAction {
 
 	@Override
 	public boolean isValidAction() {
-		return super.getScrumRole().getAccessUnplannedItem();
+		return super.getScrumRole().getAccessUnplanItem();
 	}
 
 	@Override
@@ -31,15 +31,15 @@ public class RemoveUnplannedItemAction extends PermissionAction {
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
 		// get parameter info
-		long unplannedId = Long.parseLong(request.getParameter("issueID"));
+		long unplanId = Long.parseLong(request.getParameter("issueID"));
 
-		UnplannedItemHelper unplannedHelper = new UnplannedItemHelper(project);
-		unplannedHelper.deleteUnplanned(unplannedId);
+		UnplanItemHelper unplanHelper = new UnplanItemHelper(project);
+		unplanHelper.deleteUnplan(unplanId);
 
 		StringBuilder result = new StringBuilder();
-		result.append("<DeleteUnplannedItem><Result>true</Result><UnplannedItem><Id>")
-		        .append(unplannedId)
-		        .append("</Id></UnplannedItem></DeleteUnplannedItem>");
+		result.append("<DeleteUnplanItem><Result>true</Result><UnplanItem><Id>")
+		        .append(unplanId)
+		        .append("</Id></UnplanItem></DeleteUnplanItem>");
 
 		return result;
 	}

@@ -243,8 +243,8 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 				.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
 		scrumRole.setAccessSprintPlan(result
 				.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-		scrumRole.setAccessUnplannedItem(result
-				.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		scrumRole.setAccessUnplanItem(result
+				.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
 		scrumRole.setAccessTaskBoard(result
 				.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
 		scrumRole.setEditProject(result

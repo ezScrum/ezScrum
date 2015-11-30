@@ -255,8 +255,8 @@ public class HistoryObject implements IBaseObject {
 			case IssueTypeEnum.TYPE_TASK:
 				desc = "Create Task #" + mIssueId;
 				break;
-			case IssueTypeEnum.TYPE_UNPLANNED:
-				desc = "Create Unplanned #" + mIssueId;
+			case IssueTypeEnum.TYPE_UNPLAN:
+				desc = "Create Unplan #" + mIssueId;
 				break;
 			case IssueTypeEnum.TYPE_RETROSPECTIVE:
 				desc = "Create Retrospective #" + mIssueId;

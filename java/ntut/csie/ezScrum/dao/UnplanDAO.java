@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
-import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
@@ -16,38 +16,38 @@ import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
  * @author AllenHuang 2015/08/21
  */
 
-public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> {
+public class UnplanDAO extends AbstractDAO<UnplanObject, UnplanObject> {
 
-	private static UnplannedDAO sInstance = null;
+	private static UnplanDAO sInstance = null;
 	
-	public static UnplannedDAO getInstance() {
+	public static UnplanDAO getInstance() {
 		if (sInstance == null) {
-			sInstance = new UnplannedDAO();
+			sInstance = new UnplanDAO();
 		}
 		return sInstance;
 	}
 	
 	@Override
-    public long create(UnplannedObject unplanned) {
+    public long create(UnplanObject unplan) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
-				unplanned.getProjectId());
+				unplan.getProjectId());
 
-		long unplannedId = serialNumber.getUnplanId() + 1;
+		long unplanId = serialNumber.getUnplanId() + 1;
 		valueSet.addTableName(UnplanEnum.TABLE_NAME);
-		valueSet.addInsertValue(UnplanEnum.SERIAL_ID, unplannedId);
-		valueSet.addInsertValue(UnplanEnum.NAME, unplanned.getName());
-		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplanned.getHandlerId());
-		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplanned.getEstimate());
-		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplanned.getActual());
-		valueSet.addInsertValue(UnplanEnum.NOTES, unplanned.getNotes());
-		valueSet.addInsertValue(UnplanEnum.STATUS, unplanned.getStatus());
-		valueSet.addInsertValue(UnplanEnum.PROJECT_ID, unplanned.getProjectId());
-		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, unplanned.getSprintId());
-		if (unplanned.getCreateTime() > 0) {
-			valueSet.addInsertValue(UnplanEnum.CREATE_TIME, unplanned.getCreateTime());
-			valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, unplanned.getCreateTime());
+		valueSet.addInsertValue(UnplanEnum.SERIAL_ID, unplanId);
+		valueSet.addInsertValue(UnplanEnum.NAME, unplan.getName());
+		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplan.getHandlerId());
+		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplan.getEstimate());
+		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
+		valueSet.addInsertValue(UnplanEnum.NOTES, unplan.getNotes());
+		valueSet.addInsertValue(UnplanEnum.STATUS, unplan.getStatus());
+		valueSet.addInsertValue(UnplanEnum.PROJECT_ID, unplan.getProjectId());
+		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, unplan.getSprintId());
+		if (unplan.getCreateTime() > 0) {
+			valueSet.addInsertValue(UnplanEnum.CREATE_TIME, unplan.getCreateTime());
+			valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, unplan.getCreateTime());
 		} else {
 			valueSet.addInsertValue(UnplanEnum.CREATE_TIME, currentTime);
 			valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, currentTime);
@@ -55,14 +55,14 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
-		serialNumber.setUnplanId(unplannedId);
+		serialNumber.setUnplanId(unplanId);
 		serialNumber.save();
 		
 	    return id;
     }
 
 	@Override
-    public UnplannedObject get(long id) {
+    public UnplanObject get(long id) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(UnplanEnum.TABLE_NAME);
 		valueSet.addEqualCondition(UnplanEnum.ID, id);
@@ -70,32 +70,32 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 
 		ResultSet result = mControl.executeQuery(query);
 
-		UnplannedObject unplanned = null;
+		UnplanObject unplan = null;
 		try {
 			if (result.next()) {
-				unplanned = convert(result);
+				unplan = convert(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			closeResultSet(result);
 		}
-		return unplanned;
+		return unplan;
     }
 
 	@Override
-    public boolean update(UnplannedObject unplanned) {
+    public boolean update(UnplanObject unplan) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(UnplanEnum.TABLE_NAME);
-		valueSet.addInsertValue(UnplanEnum.NAME, unplanned.getName());
-		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplanned.getHandlerId());
-		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplanned.getEstimate());
-		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplanned.getActual());
-		valueSet.addInsertValue(UnplanEnum.NOTES, unplanned.getNotes());
-		valueSet.addInsertValue(UnplanEnum.STATUS, unplanned.getStatus());
-		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, unplanned.getSprintId());
-		valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, unplanned.getUpdateTime());
-		valueSet.addEqualCondition(UnplanEnum.ID, unplanned.getId());
+		valueSet.addInsertValue(UnplanEnum.NAME, unplan.getName());
+		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplan.getHandlerId());
+		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplan.getEstimate());
+		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
+		valueSet.addInsertValue(UnplanEnum.NOTES, unplan.getNotes());
+		valueSet.addInsertValue(UnplanEnum.STATUS, unplan.getStatus());
+		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, unplan.getSprintId());
+		valueSet.addInsertValue(UnplanEnum.UPDATE_TIME, unplan.getUpdateTime());
+		valueSet.addEqualCondition(UnplanEnum.ID, unplan.getId());
 		String query = valueSet.getUpdateQuery();
 
 		return mControl.executeUpdate(query);
@@ -110,43 +110,43 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 		return mControl.executeUpdate(query);
     }
 
-	public ArrayList<UnplannedObject> getUnplannedBySprintId(long sprintId) {
+	public ArrayList<UnplanObject> getUnplanBySprintId(long sprintId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(UnplanEnum.TABLE_NAME);
 		valueSet.addEqualCondition(UnplanEnum.SPRINT_ID, sprintId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 
-		ArrayList<UnplannedObject> unplanneds = new ArrayList<UnplannedObject>();
+		ArrayList<UnplanObject> unplans = new ArrayList<UnplanObject>();
 		try {
 			while (result.next()) {
-				unplanneds.add(convert(result));
+				unplans.add(convert(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			closeResultSet(result);
 		}
-		return unplanneds;
+		return unplans;
 	}
 	
 	/**
-	 * Get all unplanneds.
+	 * Get all unplans.
 	 * 
 	 * @param projectId
-	 * @return All unplanneds which in this project
+	 * @return All unplans which in this project
 	 */
-	public ArrayList<UnplannedObject> getUnplannedsByProjectId(long projectId) {
+	public ArrayList<UnplanObject> getUnplansByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(UnplanEnum.TABLE_NAME);
 		valueSet.addEqualCondition(UnplanEnum.PROJECT_ID, projectId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 
-		ArrayList<UnplannedObject> unplanneds = new ArrayList<UnplannedObject>();
+		ArrayList<UnplanObject> unplans = new ArrayList<UnplanObject>();
 		try {
 			while (result.next()) {
-				unplanneds.add(convert(result));
+				unplans.add(convert(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -154,16 +154,16 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 			closeResultSet(result);
 		}
 		
-		return unplanneds;
+		return unplans;
 	}
 	
-	public ArrayList<Long> getPartnersId(long unplannedId) {
+	public ArrayList<Long> getPartnersId(long unplanId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID,
-				Long.toString(unplannedId));
+				Long.toString(unplanId));
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE,
-				IssueTypeEnum.TYPE_UNPLANNED);
+				IssueTypeEnum.TYPE_UNPLAN);
 		valueSet.setOrderBy(IssuePartnerRelationEnum.ID, IQueryValueSet.ASC_ORDER);
 		String query = valueSet.getSelectQuery();
 
@@ -182,16 +182,16 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 		return partnersId;
 	}
 	
-	public long addPartner(long unplannedId, long partnerId) {
+	public long addPartner(long unplanId, long partnerId) {
 		long id = -1;
-		if (!partnerExists(unplannedId, partnerId)) {
+		if (!partnerExists(unplanId, partnerId)) {
 			IQueryValueSet valueSet = new MySQLQuerySet();
 			valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
-			valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, unplannedId);
+			valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_ID, unplanId);
 			valueSet.addInsertValue(IssuePartnerRelationEnum.ACCOUNT_ID,
 					partnerId);
 			valueSet.addInsertValue(IssuePartnerRelationEnum.ISSUE_TYPE,
-					IssueTypeEnum.TYPE_UNPLANNED);
+					IssueTypeEnum.TYPE_UNPLAN);
 			String query = valueSet.getInsertQuery();
 			id = mControl.executeInsert(query);
 		}
@@ -199,22 +199,22 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 		return id;
 	}
 	
-	public boolean removePartner(long unplannedId, long partnerId) {
+	public boolean removePartner(long unplanId, long partnerId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
-		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID, unplannedId);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID, unplanId);
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ACCOUNT_ID, partnerId);
-		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE, IssueTypeEnum.TYPE_UNPLANNED);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE, IssueTypeEnum.TYPE_UNPLAN);
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
 	}
 
-	public boolean partnerExists(long unplannedId, long partnerId) {
+	public boolean partnerExists(long unplanId, long partnerId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(IssuePartnerRelationEnum.TABLE_NAME);
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_TYPE,
-				IssueTypeEnum.TYPE_UNPLANNED);
-		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID, unplannedId);
+				IssueTypeEnum.TYPE_UNPLAN);
+		valueSet.addEqualCondition(IssuePartnerRelationEnum.ISSUE_ID, unplanId);
 		valueSet.addEqualCondition(IssuePartnerRelationEnum.ACCOUNT_ID,
 				partnerId);
 		String query = valueSet.getSelectQuery();
@@ -236,11 +236,11 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 		return false;
 	}
 	
-	public static UnplannedObject convert(ResultSet result) throws SQLException {
-		UnplannedObject unplanned = new UnplannedObject(result.getLong(UnplanEnum.ID),
+	public static UnplanObject convert(ResultSet result) throws SQLException {
+		UnplanObject unplan = new UnplanObject(result.getLong(UnplanEnum.ID),
 				result.getLong(UnplanEnum.SERIAL_ID),
 				result.getLong(UnplanEnum.PROJECT_ID));
-		unplanned.setName(result.getString(UnplanEnum.NAME))
+		unplan.setName(result.getString(UnplanEnum.NAME))
 				.setHandlerId(result.getLong(UnplanEnum.HANDLER_ID))
 				.setEstimate(result.getInt(UnplanEnum.ESTIMATE))
 				.setActual(result.getInt(UnplanEnum.ACTUAL))
@@ -249,6 +249,6 @@ public class UnplannedDAO extends AbstractDAO<UnplannedObject, UnplannedObject> 
 				.setSprintId(result.getLong(UnplanEnum.SPRINT_ID))
 				.setCreateTime(result.getLong(UnplanEnum.CREATE_TIME))
 				.setUpdateTime(result.getLong(UnplanEnum.UPDATE_TIME));
-		return unplanned;
+		return unplan;
 	}
 }

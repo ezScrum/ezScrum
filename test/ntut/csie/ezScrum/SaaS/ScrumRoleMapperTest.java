@@ -178,7 +178,7 @@ public class ScrumRoleMapperTest extends TestCase {
 		assertEquals(scrumrole.getAccessSprintPlan(), permission[2]);
 		assertEquals(scrumrole.getAccessSprintBacklog(), permission[3]);
 		assertEquals(scrumrole.getAccessTaskBoard(), permission[4]);
-		assertEquals(scrumrole.getAccessUnplannedItem(), permission[5]);	
+		assertEquals(scrumrole.getAccessUnplanItem(), permission[5]);	
 		assertEquals(scrumrole.getAccessRetrospective(), permission[6]);
 		assertEquals(scrumrole.getReadReport(), permission[7]);
 		assertEquals(scrumrole.getEditProject(), permission[8]);
@@ -231,7 +231,7 @@ public class ScrumRoleMapperTest extends TestCase {
 				sr.setAccessSprintPlan(srDS.getAccessSprintPlan());
 				sr.setAccessSprintBacklog(srDS.getAccessSprintBacklog());
 				sr.setAccessTaskBoard(srDS.getAccessTaskBoard());
-				sr.setAccessUnplannedItem(srDS.getAccessUnplannedItem());				
+				sr.setAccessUnplanItem(srDS.getAccessUnplannedItem());				
 				sr.setAccessRetrospective(srDS.getAccessRetrospective());
 				sr.setReadReport(srDS.getReadReport());
 				sr.setEditProject(srDS.getEditProject());
@@ -255,7 +255,7 @@ public class ScrumRoleMapperTest extends TestCase {
 		sr.setAccessSprintPlan(permission[2]);
 		sr.setAccessSprintBacklog(permission[3]);
 		sr.setAccessTaskBoard(permission[4]);
-		sr.setAccessUnplannedItem(permission[5]);				
+		sr.setAccessUnplanItem(permission[5]);				
 		sr.setAccessRetrospective(permission[6]);
 		sr.setReadReport(permission[7]);
 		sr.setEditProject(permission[8]);

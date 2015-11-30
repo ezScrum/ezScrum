@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.unplanned;
+package ntut.csie.ezScrum.web.action.unplan;
 
 import java.io.File;
 
@@ -7,23 +7,23 @@ import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.UnplannedInfo;
+import ntut.csie.ezScrum.web.dataInfo.UnplanInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class EditUnplannedItemActionTest extends MockStrutsTestCase {
+public class EditUnplanItemActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateAccount mCA;
-	private CreateUnplannedItem mCUI;
+	private CreateUnplanItem mCUI;
 	private Configuration mConfig;
 	private ProjectObject mProject;
-	private String mActionPath = "/editUnplannedItem";
+	private String mActionPath = "/editUnplanItem";
 
-	public EditUnplannedItemActionTest(String testMethod) {
+	public EditUnplanItemActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -78,16 +78,16 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * case 1: One sprint(s) with One Unplanned item(s)
+	 * case 1: One sprint(s) with One Unplan item(s)
 	 * 將 name, partners, status, estimate, actual, notes 更新
 	 */
-	public void testEditOneSprintWithOneUnplanned() {
+	public void testEditOneSprintWithOneUnplan() {
 		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 		
-		// create one unplanned
-		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		// create one unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
 		
 		// create one account
@@ -98,23 +98,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		String handlerUsername = "";
 		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		UnplannedInfo unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 1;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + 1;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + 1;
-		unplannedInfo.statusString = "new";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		UnplanInfo unplanInfo = new UnplanInfo();
+		unplanInfo.id = 1;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + 1;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + 1;
+		unplanInfo.statusString = "new";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -133,51 +133,51 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 	}
 
 	/**
-	 * case 2: One sprint(s) with Two Unplanned item(s)
+	 * case 2: One sprint(s) with Two Unplan item(s)
 	 * 測試先修改 UI2 再修改 UI1
 	 */
-	public void testEditOneSprintWithTwoUnplanned() {
+	public void testEditOneSprintWithTwoUnplan() {
 		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 		
-		// create two unplanned
-		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		// create two unplan
+		mCUI = new CreateUnplanItem(2, mCP, mCS);
 		mCUI.exe();
 		
 		// create two account
 		mCA = new CreateAccount(2);
 		mCA.exe();
 
-		// (I) test update unplanned #2
+		// (I) test update unplan #2
 
 		// ================ set initial data =======================
 		String handlerUsername = "";
 		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		UnplannedInfo unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 2;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "new";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		UnplanInfo unplanInfo = new UnplanInfo();
+		unplanInfo.id = 2;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "new";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -196,11 +196,11 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 
-		// (II) test update unplanned #1
+		// (II) test update unplan #1
 
 		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
@@ -210,23 +210,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		handlerUsername = mCA.getAccountList().get(0).getUsername();;
 		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 1;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "assigned";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		unplanInfo = new UnplanInfo();
+		unplanInfo.id = 1;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "assigned";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 		
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -245,51 +245,51 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 	}
 
 	/**
-	 * case 3: Two sprint(s) with One Unplanned item(s)
+	 * case 3: Two sprint(s) with One Unplan item(s)
 	 * 測試先修改 sprint2 UI1 再修改 sprint1 UI1
 	 */
-	public void testEditTwoSprintWithOneUnplanned() {
+	public void testEditTwoSprintWithOneUnplan() {
 		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 		
-		// create one unplanned
-		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		// create one unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
 		
 		// create two account
 		mCA = new CreateAccount(2);
 		mCA.exe();
 
-		// (I) test update sprint2 unplanned 1
+		// (I) test update sprint2 unplan 1
 
 		// ================ set initial data =======================
 		String handlerUsername = "";
 		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		UnplannedInfo unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 2;
-		unplannedInfo.sprintId = 2;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "new";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		UnplanInfo unplanInfo = new UnplanInfo();
+		unplanInfo.id = 2;
+		unplanInfo.sprintId = 2;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "new";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -308,11 +308,11 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 
-		// (II) test update sprint1 unplanned
+		// (II) test update sprint1 unplan
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
@@ -322,23 +322,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		handlerUsername = mCA.getAccountList().get(0).getUsername();
 		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 1;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "assigned";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		unplanInfo = new UnplanInfo();
+		unplanInfo.id = 1;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "assigned";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -357,51 +357,51 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 	}
 
 	/**
-	 * case 4: Two sprint(s) with Two Unplanned item(s)
+	 * case 4: Two sprint(s) with Two Unplan item(s)
 	 * 測試先修改 sprint1 UI1.UI2 再修改 sprint2 UI2.UI1
 	 */
-	public void testEditTwoSprintWithTwoUnplanned() {
+	public void testEditTwoSprintWithTwoUnplan() {
 		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 		
-		// create two unplanned
-		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		// create two unplan
+		mCUI = new CreateUnplanItem(2, mCP, mCS);
 		mCUI.exe();
 		
 		// create two account
 		mCA = new CreateAccount(2);
 		mCA.exe();
 
-		// (I) test update sprint1 unplanned #1
+		// (I) test update sprint1 unplan #1
 
 		// ================ set initial data =======================
 		String handlerUsername = "";
 		String partnersUsername = mCA.getAccountList().get(0).getUsername();
 		String specificTime = "";
-		UnplannedInfo unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 1;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "new";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		UnplanInfo unplanInfo = new UnplanInfo();
+		unplanInfo.id = 1;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "new";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -420,11 +420,11 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		String expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 
-		// (II) test update sprint1 unplanned #2
+		// (II) test update sprint1 unplan #2
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
@@ -434,23 +434,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		handlerUsername = mCA.getAccountList().get(0).getUsername();
 		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 2;
-		unplannedInfo.sprintId = 1;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "assigned";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		unplanInfo = new UnplanInfo();
+		unplanInfo.id = 2;
+		unplanInfo.sprintId = 1;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "assigned";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -469,11 +469,11 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 
-		// (III) test update sprint2 unplanned #2
+		// (III) test update sprint2 unplan #2
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
@@ -483,23 +483,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		handlerUsername = mCA.getAccountList().get(0).getUsername();
 		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 4;
-		unplannedInfo.sprintId = 2;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "assigned";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		unplanInfo = new UnplanInfo();
+		unplanInfo.id = 4;
+		unplanInfo.sprintId = 2;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "assigned";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -518,11 +518,11 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 
-		// (IV) test update sprint2 unplanned #1
+		// (IV) test update sprint2 unplan #1
 
 		// 執行下一次的 action 必須做此動作，否則 response 內容不會更新!
 		clearRequestParameters();
@@ -532,23 +532,23 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		handlerUsername = mCA.getAccountList().get(0).getUsername();
 		partnersUsername = mCA.getAccountList().get(1).getUsername();
 		specificTime = "";
-		unplannedInfo = new UnplannedInfo();
-		unplannedInfo.id = 3;
-		unplannedInfo.sprintId = 2;
-		unplannedInfo.name = "NEW_UNPLANNED_NAME_" + unplannedInfo.id;
-		unplannedInfo.notes = "NEW_UNPLANNED_NOTES_" + unplannedInfo.id;
-		unplannedInfo.statusString = "assigned";
-		unplannedInfo.estimate = 99;
-		unplannedInfo.actual = 9;
+		unplanInfo = new UnplanInfo();
+		unplanInfo.id = 3;
+		unplanInfo.sprintId = 2;
+		unplanInfo.name = "NEW_UNPLAN_NAME_" + unplanInfo.id;
+		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
+		unplanInfo.statusString = "assigned";
+		unplanInfo.estimate = 99;
+		unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedInfo.id));
-		addRequestParameter("SprintID", "Sprint #" + unplannedInfo.sprintId);
-		addRequestParameter("Name", unplannedInfo.name);
-		addRequestParameter("Notes", unplannedInfo.notes);
-		addRequestParameter("Status", unplannedInfo.statusString);
-		addRequestParameter("Estimate", String.valueOf(unplannedInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplannedInfo.actual));
+		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
+		addRequestParameter("SprintID", "Sprint #" + unplanInfo.sprintId);
+		addRequestParameter("Name", unplanInfo.name);
+		addRequestParameter("Notes", unplanInfo.notes);
+		addRequestParameter("Status", unplanInfo.statusString);
+		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
+		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -567,29 +567,29 @@ public class EditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(handlerUsername, partnersUsername, unplannedInfo);
+		expected = genXML(handlerUsername, partnersUsername, unplanInfo);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 	}
 
 	private String genXML(String handlerUsername, String partnerUsername,
-			UnplannedInfo unplannedInfo) {
+			UnplanInfo unplanInfo) {
 		StringBuilder result = new StringBuilder();
-		result.append("<EditUnplannedItem>");
+		result.append("<EditUnplanItem>");
 		result.append("<Result>success</Result>");
-		result.append("<UnplannedItem>");
-		result.append("<Id>").append(unplannedInfo.id).append("</Id>");
+		result.append("<UnplanItem>");
+		result.append("<Id>").append(unplanInfo.id).append("</Id>");
 		result.append("<Link></Link>");
-		result.append("<Name>").append(unplannedInfo.name).append("</Name>");
-		result.append("<SprintID>").append(unplannedInfo.sprintId).append("</SprintID>");
-		result.append("<Estimate>").append(unplannedInfo.estimate).append("</Estimate>");
-		result.append("<Status>").append(unplannedInfo.statusString).append("</Status>");
-		result.append("<ActualHour>").append(unplannedInfo.actual).append("</ActualHour>");
+		result.append("<Name>").append(unplanInfo.name).append("</Name>");
+		result.append("<SprintID>").append(unplanInfo.sprintId).append("</SprintID>");
+		result.append("<Estimate>").append(unplanInfo.estimate).append("</Estimate>");
+		result.append("<Status>").append(unplanInfo.statusString).append("</Status>");
+		result.append("<ActualHour>").append(unplanInfo.actual).append("</ActualHour>");
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnerUsername).append("</Partners>");
-		result.append("<Notes>").append(unplannedInfo.notes).append("</Notes>");
-		result.append("</UnplannedItem>");
-		result.append("</EditUnplannedItem>");
+		result.append("<Notes>").append(unplanInfo.notes).append("</Notes>");
+		result.append("</UnplanItem>");
+		result.append("</EditUnplanItem>");
 
 		return result.toString();
 	}

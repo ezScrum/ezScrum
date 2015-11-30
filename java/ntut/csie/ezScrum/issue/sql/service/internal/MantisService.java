@@ -243,8 +243,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		long issueId = mIssueService.newIssue(issue);
 		
 		int issueType = -1;
-		if (issue.getIssueType() == IssueTypeEnum.TYPE_UNPLANNED) {
-			issueType = IssueTypeEnum.TYPE_UNPLANNED;
+		if (issue.getIssueType() == IssueTypeEnum.TYPE_UNPLAN) {
+			issueType = IssueTypeEnum.TYPE_UNPLAN;
 		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_STORY) {
 			issueType = IssueTypeEnum.TYPE_STORY;
 		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_TASK) {

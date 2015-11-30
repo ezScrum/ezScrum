@@ -17,7 +17,7 @@ Resource          keywords/Unplanned/ezScrum_Unplanned_SetupTeardown.txt
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
 
 *** Test Cases ***
-Test Unplanned - Add Unplanned
+Test Unplan - Add Unplan
     [Setup]    Test Unplanned Add Setup
     Add Unplanned    @{addUnplannedList}
     # get data
@@ -44,7 +44,7 @@ Test Unplanned - Add Unplanned
     Should Be Equal    new    ${actualStatus}
     [Teardown]    Test Unplanned Add Teardown
 
-Test Unplanned - Edit Unplanned
+Test Unplan - Edit Unplan
     [Setup]    Test Unplanned Edit Setup
     Select Unplanned    1    ${addUnplannedList[1]}
     Edit Unplanned    @{editUnplannedList}
@@ -70,7 +70,7 @@ Test Unplanned - Edit Unplanned
     Should Be Equal    ${editUnplannedList[8]}    ${actualStatus}
     [Teardown]    Test Unplanned Edit Teardown
 
-Test Unplanned - Delete Unplanned
+Test Unplan - Delete Unplan
     [Setup]    Test Unplanned Delete Setup
     # 沒做刪除之前有3筆
     ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']

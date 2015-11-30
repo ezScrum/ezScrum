@@ -80,8 +80,8 @@ public class Issue implements IIssue {
 			return IssueTypeEnum.TYPE_TASK;
 		} else if (mCategory.equals("Story")) {
 			return IssueTypeEnum.TYPE_STORY;
-		} else if (mCategory.equals("UnplannedItem")) {
-			return IssueTypeEnum.TYPE_UNPLANNED;
+		} else if (mCategory.equals("UnplanItem")) {
+			return IssueTypeEnum.TYPE_UNPLAN;
 		} else if (mCategory.equals("Good") || mCategory.equals("Improvement")) {
 			return IssueTypeEnum.TYPE_RETROSPECTIVE;
 		} else {
