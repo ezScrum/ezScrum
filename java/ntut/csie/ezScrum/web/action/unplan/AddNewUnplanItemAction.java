@@ -70,8 +70,8 @@ public class AddNewUnplanItemAction extends PermissionAction {
 		UnplanObject unplanItem = unplanHelper.getUnplan(id);
 		
 		StringBuilder result = new StringBuilder();
-		result.append("<AddUnplanItem><Result>success</Result>")
-			  .append("<UnplanItem>")
+		result.append("<AddUnplannedItem><Result>success</Result>")
+			  .append("<UnplannedItem>")
 			  .append("<Id>").append(unplanItem.getId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getName())).append("</Name>")
@@ -82,8 +82,8 @@ public class AddNewUnplanItemAction extends PermissionAction {
 			  .append("<Handler>").append(unplanItem.getHandlerName()).append("</Handler>")
 			  .append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getPartnersUsername())).append("</Partners>")
 			  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getNotes())).append("</Notes>")
-			  .append("</UnplanItem>")
-			  .append("</AddUnplanItem>");
+			  .append("</UnplannedItem>")
+			  .append("</AddUnplannedItem>");
 		return result;
 	}
 }

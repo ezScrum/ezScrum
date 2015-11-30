@@ -575,9 +575,9 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 	private String genXML(String handlerUsername, String partnerUsername,
 			UnplanInfo unplanInfo) {
 		StringBuilder result = new StringBuilder();
-		result.append("<EditUnplanItem>");
+		result.append("<EditUnplannedItem>");
 		result.append("<Result>success</Result>");
-		result.append("<UnplanItem>");
+		result.append("<UnplannedItem>");
 		result.append("<Id>").append(unplanInfo.id).append("</Id>");
 		result.append("<Link></Link>");
 		result.append("<Name>").append(unplanInfo.name).append("</Name>");
@@ -588,8 +588,8 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnerUsername).append("</Partners>");
 		result.append("<Notes>").append(unplanInfo.notes).append("</Notes>");
-		result.append("</UnplanItem>");
-		result.append("</EditUnplanItem>");
+		result.append("</UnplannedItem>");
+		result.append("</EditUnplannedItem>");
 
 		return result.toString();
 	}

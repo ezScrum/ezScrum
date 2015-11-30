@@ -396,9 +396,9 @@ public class ShowEditUnplanItemActionTest extends MockStrutsTestCase {
 		String handlerUsername = "";
 		String partnersUsername = "";
 
-		result.append("<EditUnplanItem>");
+		result.append("<EditUnplannedItem>");
 		//
-		result.append("<UnplanItem>");
+		result.append("<UnplannedItem>");
 		result.append("<Id>").append(unplanId).append("</Id>");
 		result.append("<Link></Link>");
 		result.append("<Name>").append(name).append("</Name>");
@@ -409,9 +409,9 @@ public class ShowEditUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnersUsername).append("</Partners>");
 		result.append("<Notes>").append(notes).append("</Notes>");
-		result.append("</UnplanItem>");
+		result.append("</UnplannedItem>");
 		//
-		result.append("</EditUnplanItem>");
+		result.append("</EditUnplannedItem>");
 
 		return result.toString();
 	}

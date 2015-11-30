@@ -31,7 +31,7 @@ public class ShowEditUnplanItemAction extends Action {
 		
 		// return result of unplan item in XML
 		StringBuilder result = new StringBuilder();
-		result.append("<EditUnplanItem><UnplanItem>")
+		result.append("<EditUnplannedItem><UnplannedItem>")
 		  .append("<Id>").append(unplan.getId()).append("</Id>")
 		  .append("<Link></Link>")
 		  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
@@ -42,7 +42,7 @@ public class ShowEditUnplanItemAction extends Action {
 		  .append("<Handler>").append(unplan.getHandlerName()).append("</Handler>")
 		  .append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getPartnersUsername())).append("</Partners>")
 		  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>")
-		  .append("</UnplanItem></EditUnplanItem>");
+		  .append("</UnplannedItem></EditUnplannedItem>");
 		
 		try {
 			response.setContentType("text/xml; charset=utf-8");
