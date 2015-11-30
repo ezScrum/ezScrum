@@ -143,7 +143,7 @@ public class StoryWebServiceControllerTest {
 				.put("sprint_id", -1).put("tags", "");
 		String URL = String.format(API_URL, mProjectName, "create", mUsername, mPassword);
 		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes()));
+		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes("utf-8")));
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(URL);
 		httpPost.setEntity(entity);
@@ -169,7 +169,7 @@ public class StoryWebServiceControllerTest {
 				.put("sprint_id", -1).put("tags", "");
 		String URL = String.format(API_URL, mProjectName, "update", mUsername, mPassword);
 		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes()));
+		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes("utf-8")));
 		entity.setContentEncoding("utf-8");
 		HttpPut httpPut = new HttpPut(URL);
 		httpPut.setEntity(entity);
@@ -222,7 +222,7 @@ public class StoryWebServiceControllerTest {
 		String taskIdJsonString = String.format("[%s, %s]", task1.getId(), task2.getId());
 		String URL = String.format(API_URL, mProjectName, story.getId() + "/add-existed-task", mUsername, mPassword);
 		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(taskIdJsonString.getBytes()));
+		entity.setContent(new ByteArrayInputStream(taskIdJsonString.getBytes("utf-8")));
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(URL);
 		httpPost.setEntity(entity);
