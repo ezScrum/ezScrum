@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.dao.UnplannedDAO;
+import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
@@ -17,7 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
  * @author AllenHuang 2015/08/21
  */
 
-public class UnplannedObject implements IBaseObject {
+public class UnplanObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = 1;
 	public final static int STATUS_CHECK = 2;
 	public final static int STATUS_DONE = 3;
@@ -36,68 +36,68 @@ public class UnplannedObject implements IBaseObject {
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
 	
-	public static UnplannedObject get(long id) {
-		return UnplannedDAO.getInstance().get(id);
+	public static UnplanObject get(long id) {
+		return UnplanDAO.getInstance().get(id);
 	}
 	
-	public UnplannedObject(long sprintId, long projectId) {
+	public UnplanObject(long sprintId, long projectId) {
 		mSprintId = sprintId;
 		mProjectId = projectId;
 	}
 	
-	public UnplannedObject(long id, long serialId, long projectId) {
+	public UnplanObject(long id, long serialId, long projectId) {
 		mId = id;
 		mSerialId = serialId;
 		mProjectId = projectId;
 	}
 	
-	public UnplannedObject setName(String name) {
+	public UnplanObject setName(String name) {
 		mName = name;
 		return this;
 	}
 	
-	public UnplannedObject setHandlerId(long handlerId) {
+	public UnplanObject setHandlerId(long handlerId) {
 		mHandlerId = handlerId;
 		return this;
 	}
 	
-	public UnplannedObject setEstimate(int estimate) {
+	public UnplanObject setEstimate(int estimate) {
 		mEstimate = estimate;
 		return this;
 	}
 	
-	public UnplannedObject setActual(int actual) {
+	public UnplanObject setActual(int actual) {
 		mActual = actual;
 		return this;
 	}
 	
-	public UnplannedObject setNotes(String notes) {
+	public UnplanObject setNotes(String notes) {
 		mNotes = handleSpecialChar(notes);
 		return this;
 	}
 
-	public UnplannedObject setStatus(int status) {
+	public UnplanObject setStatus(int status) {
 		mStatus = status;
 		return this;
 	}
 
-	public UnplannedObject setSprintId(long sprintId) {
+	public UnplanObject setSprintId(long sprintId) {
 		mSprintId = sprintId;
 		return this;
 	}
 
-	public UnplannedObject setCreateTime(long createtime) {
+	public UnplanObject setCreateTime(long createtime) {
 		mCreateTime = createtime;
 		return this;
 	}
 
-	public UnplannedObject setUpdateTime(long updatetime) {
+	public UnplanObject setUpdateTime(long updatetime) {
 		mUpdateTime = updatetime;
 		return this;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public UnplannedObject setPartnersId(ArrayList<Long> newPartnersId) {
+	public UnplanObject setPartnersId(ArrayList<Long> newPartnersId) {
 		ArrayList<Long> oldPartnersId = getPartnersId();
 		ArrayList<Long> intersectionPartnersId = (ArrayList<Long>) CollectionUtils
 				.intersection(oldPartnersId, newPartnersId);
@@ -106,22 +106,22 @@ public class UnplannedObject implements IBaseObject {
 		ArrayList<Long> shouldAddPartnersId = (ArrayList<Long>) CollectionUtils.subtract(
 				newPartnersId, intersectionPartnersId);
 		for (long partnerId : shouldRemovePartnersId) {
-			UnplannedDAO.getInstance().removePartner(mId, partnerId);
+			UnplanDAO.getInstance().removePartner(mId, partnerId);
 		}
 		for (long partnerId : shouldAddPartnersId) {
-			UnplannedDAO.getInstance().addPartner(mId, partnerId);
+			UnplanDAO.getInstance().addPartner(mId, partnerId);
 		}
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
-		if (!UnplannedDAO.getInstance().partnerExists(mId, partnerId)) {
-			UnplannedDAO.getInstance().addPartner(mId, partnerId);
+		if (!UnplanDAO.getInstance().partnerExists(mId, partnerId)) {
+			UnplanDAO.getInstance().addPartner(mId, partnerId);
 		}
 	}
 
 	public void removePartner(long partnerId) {
-		UnplannedDAO.getInstance().removePartner(mId, partnerId);
+		UnplanDAO.getInstance().removePartner(mId, partnerId);
 	}
 
 	public long getId() {
@@ -198,7 +198,7 @@ public class UnplannedObject implements IBaseObject {
 	}
 
 	public ArrayList<Long> getPartnersId() {
-		ArrayList<Long> partnersId = UnplannedDAO.getInstance().getPartnersId(mId);
+		ArrayList<Long> partnersId = UnplanDAO.getInstance().getPartnersId(mId);
 		return partnersId;
 	}
 
@@ -230,13 +230,13 @@ public class UnplannedObject implements IBaseObject {
 
 	public ArrayList<HistoryObject> getHistories() {
 		ArrayList<HistoryObject> histories = HistoryDAO.getInstance()
-				.getHistoriesByIssue(mId, IssueTypeEnum.TYPE_UNPLANNED);
+				.getHistoriesByIssue(mId, IssueTypeEnum.TYPE_UNPLAN);
 		return histories;
 	}
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject unplanned = new JSONObject();
+		JSONObject unplan = new JSONObject();
 		JSONArray partners = new JSONArray();
 		JSONArray histories = new JSONArray();
 
@@ -248,7 +248,7 @@ public class UnplannedObject implements IBaseObject {
 			histories.put(history.toJSON());
 		}
 		
-		unplanned.put(UnplanEnum.NAME, mName)
+		unplan.put(UnplanEnum.NAME, mName)
 				.put(UnplanEnum.ESTIMATE, mEstimate)
 				.put(UnplanEnum.ACTUAL, mActual)
 				.put(UnplanEnum.SPRINT_ID, mSprintId)
@@ -263,12 +263,12 @@ public class UnplannedObject implements IBaseObject {
 				.put("histories", histories);
 
 		if (getHandler() != null) {
-			unplanned.put(UnplanEnum.HANDLER, getHandler().toJSON());
+			unplan.put(UnplanEnum.HANDLER, getHandler().toJSON());
 		} else {
-			unplanned.put(UnplanEnum.HANDLER, new JSONObject());
+			unplan.put(UnplanEnum.HANDLER, new JSONObject());
 		}
 		
-		return unplanned;
+		return unplan;
 	}
 
 	public String toString() {
@@ -306,15 +306,15 @@ public class UnplannedObject implements IBaseObject {
 	@Override
 	public void reload() {
 		if (exists()) {
-			UnplannedObject unplanned = UnplannedDAO.getInstance().get(mId);
-			resetData(unplanned);
+			UnplanObject unplan = UnplanDAO.getInstance().get(mId);
+			resetData(unplan);
 		}
 	}
 
 	@Override
 	public boolean delete() {
-		HistoryDAO.getInstance().deleteByIssue(mId,	IssueTypeEnum.TYPE_UNPLANNED);
-		boolean success = UnplannedDAO.getInstance().delete(mId);
+		HistoryDAO.getInstance().deleteByIssue(mId,	IssueTypeEnum.TYPE_UNPLAN);
+		boolean success = UnplanDAO.getInstance().delete(mId);
 		if (success) {
 			mId = DEFAULT_VALUE;
 			mSerialId = DEFAULT_VALUE;
@@ -324,96 +324,96 @@ public class UnplannedObject implements IBaseObject {
 
 	@Override
 	public boolean exists() {
-		UnplannedObject unplanned = UnplannedDAO.getInstance().get(mId);
-		return unplanned != null;
+		UnplanObject unplan = UnplanDAO.getInstance().get(mId);
+		return unplan != null;
 	}
 
-	private void resetData(UnplannedObject unplanned) {
-		mId = unplanned.getId();
-		mSerialId = unplanned.getSerialId();
-		mProjectId = unplanned.getProjectId();
-		setName(unplanned.getName());
-		setNotes(unplanned.getNotes());
-		setSprintId(unplanned.getSprintId());
-		setEstimate(unplanned.getEstimate());
-		setActual(unplanned.getActual());
-		setHandlerId(unplanned.getHandlerId());
-		setStatus(unplanned.getStatus());
-		setCreateTime(unplanned.getCreateTime());
-		setUpdateTime(unplanned.getUpdateTime());
+	private void resetData(UnplanObject unplan) {
+		mId = unplan.getId();
+		mSerialId = unplan.getSerialId();
+		mProjectId = unplan.getProjectId();
+		setName(unplan.getName());
+		setNotes(unplan.getNotes());
+		setSprintId(unplan.getSprintId());
+		setEstimate(unplan.getEstimate());
+		setActual(unplan.getActual());
+		setHandlerId(unplan.getHandlerId());
+		setStatus(unplan.getStatus());
+		setCreateTime(unplan.getCreateTime());
+		setUpdateTime(unplan.getUpdateTime());
 	}
 
 	private void doCreate() {
 		mActual = mEstimate;
 		
-		mId = UnplannedDAO.getInstance().create(this);
+		mId = UnplanDAO.getInstance().create(this);
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
 				HistoryObject.TYPE_CREATE, "", "", mCreateTime);
 		history.save();
 	}
 
 	private void doUpdate() {
-		UnplannedObject oldUnplanned = UnplannedObject.get(mId);
+		UnplanObject oldUnplan = UnplanObject.get(mId);
 
-		UnplannedDAO.getInstance().update(this);
-		if (!mName.equals(oldUnplanned.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldUnplanned.getName(), mName);
+		UnplanDAO.getInstance().update(this);
+		if (!mName.equals(oldUnplan.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldUnplan.getName(), mName);
 		}
-		if (!mNotes.equals(oldUnplanned.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldUnplanned.getNotes(), mNotes);
+		if (!mNotes.equals(oldUnplan.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldUnplan.getNotes(), mNotes);
 		}
-		if (mStatus != oldUnplanned.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldUnplanned.getStatus(), mStatus);
+		if (mStatus != oldUnplan.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus);
 		}
-		if (mEstimate != oldUnplanned.getEstimate()) {
-			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplanned.getEstimate(),
+		if (mEstimate != oldUnplan.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
 					mEstimate);
 		}
-		if (mActual != oldUnplanned.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplanned.getActual(), mActual);
+		if (mActual != oldUnplan.getActual()) {
+			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual);
 		}
-		if (mSprintId != oldUnplanned.getSprintId()) {
-			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplanned.getSprintId(), mSprintId);
+		if (mSprintId != oldUnplan.getSprintId()) {
+			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId);
 		}
-		if (mHandlerId != oldUnplanned.getHandlerId()) {
-			addHistory(HistoryObject.TYPE_HANDLER, oldUnplanned.getHandlerId(),
+		if (mHandlerId != oldUnplan.getHandlerId()) {
+			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
 					mHandlerId);
 		}
 	}
 
 	// for specific time update
 	private void doUpdate(long specificTime) {
-		UnplannedObject oldUnplanned = UnplannedObject.get(mId);
+		UnplanObject oldUnplan = UnplanObject.get(mId);
 		
-		UnplannedDAO.getInstance().update(this);
-		if (!mName.equals(oldUnplanned.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldUnplanned.getName(), mName,
+		UnplanDAO.getInstance().update(this);
+		if (!mName.equals(oldUnplan.getName())) {
+			addHistory(HistoryObject.TYPE_NAME, oldUnplan.getName(), mName,
 					specificTime);
 		}
-		if (!mNotes.equals(oldUnplanned.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldUnplanned.getNotes(), mNotes,
+		if (!mNotes.equals(oldUnplan.getNotes())) {
+			addHistory(HistoryObject.TYPE_NOTE, oldUnplan.getNotes(), mNotes,
 					specificTime);
 		}
-		if (mEstimate != oldUnplanned.getEstimate()) {
-			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplanned.getEstimate(),
+		if (mEstimate != oldUnplan.getEstimate()) {
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
 					mEstimate, specificTime);
 		}
-		if (mActual != oldUnplanned.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplanned.getActual(), mActual,
+		if (mActual != oldUnplan.getActual()) {
+			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual,
 					specificTime);
 		}
-		if (mStatus != oldUnplanned.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldUnplanned.getStatus(), mStatus,
+		if (mStatus != oldUnplan.getStatus()) {
+			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus,
 					specificTime);
 		}
-		if (mSprintId != oldUnplanned.getSprintId()) {
-			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplanned.getSprintId(), mSprintId,
+		if (mSprintId != oldUnplan.getSprintId()) {
+			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId,
 					specificTime);
 		}
-		if (mHandlerId != oldUnplanned.getHandlerId()) {
-			addHistory(HistoryObject.TYPE_HANDLER, oldUnplanned.getHandlerId(),
+		if (mHandlerId != oldUnplan.getHandlerId()) {
+			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
 					mHandlerId, specificTime);
 		}
 	}
@@ -430,7 +430,7 @@ public class UnplannedObject implements IBaseObject {
 	}
 
 	private void addHistory(int type, String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
 				type, oldValue, newValue, System.currentTimeMillis());
 		history.save();
 	}
@@ -438,7 +438,7 @@ public class UnplannedObject implements IBaseObject {
 	// add history for specific time
 	private void addHistory(int type, String oldValue, String newValue,
 			long specificTime) {
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLANNED,
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
 				type, oldValue, newValue, specificTime);
 		history.save();
 	}

@@ -1,26 +1,26 @@
-package ntut.csie.ezScrum.web.action.unplanned;
+package ntut.csie.ezScrum.web.action.unplan;
 
 import java.io.File;
-import java.io.IOException;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
-
+public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private CreateUnplannedItem mCUI;
+	private CreateUnplanItem mCUI;
 	private Configuration mConfig;
-	private String mActionPath = "/showEditUnplannedItem";
+	private String mActionPath = "/removeUnplanItem";
 
-	public ShowEditUnplannedItemActionTest(String testMethod) {
+	public RemoveUnplanItemActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -33,7 +33,7 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 新增一測試專案
+		// create one project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 
@@ -47,7 +47,7 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
+	protected void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -71,24 +71,22 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		projectManager = null;
 	}
 
-	// case 1: One sprint with 1 Unplanned
-	public void testOneSprintWithOneUnplanned() {
-		int index = 1;
-		// 新增一個 Sprint
+	// case 1: One sprint with 1 Unplan item
+	public void testOneSprintWithOneUnplan() {
+		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
-		// 新增一個 Unplanned
-		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		// create one unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
 
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
-		long unplannedId = mCUI.getUnplannedsId().get(0);
-		long sprintId = mCUI.getUnplanneds().get(0).getSprintId();
+		long unplanId = mCUI.getUnplansId().get(0);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -104,31 +102,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(sprintId, unplannedId, index);
+		String expected = genXML(unplanId);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 	}
 
-	// case 2: One sprint with 2 Unplanned
-	public void testOneSprintWithTwoUnplanneds() {
-		int index = 0;
-		// 新增一個 Sprint
+	// case 2: One sprint with 2 Unplan item
+	public void testOneSprintWithTwoUnplan() {
+		// create one sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
 
-		// 新增兩個 Unplanned
-		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		// create two unplan
+		mCUI = new CreateUnplanItem(2, mCP, mCS);
 		mCUI.exe();
 
-		// (I) Unplanned 1
+		// (I) unplan 1
 
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
-		long unplannedId = mCUI.getUnplannedsId().get(index);
-		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		long unplanId = mCUI.getUnplansId().get(0);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -144,22 +142,23 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(sprintId, unplannedId, index + 1);
+		String expected = genXML(unplanId);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 
-		// (II) Unplanned 2
+		// (II) unplan 2
 
 		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		index = 1;
-		unplannedId = mCUI.getUnplannedsId().get(index);
+		unplanId = mCUI.getUnplansId().get(1);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -175,31 +174,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(sprintId, unplannedId, index + 1);
+		expected = genXML(unplanId);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 	}
 
-	// case 3: Two sprint with 1 Unplanned
-	public void testTwoSprintWithOneUnplanned() {
-		int index = 0;
-		// 新增二個 Sprint
+	// case 3: Two sprint with 1 Unplan item
+	public void testTwoSprintWithOneUnplan() {
+		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
-		// 新增一個 Unplanned
-		mCUI = new CreateUnplannedItem(1, mCP, mCS);
+		// create one unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
 
-		// (I) sprint 1
+		// (I) Sprint 1 unplan 1
 
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
-		long unplannedId = mCUI.getUnplannedsId().get(index);
-		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		long unplanId = mCUI.getUnplansId().get(0);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -215,23 +214,23 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(sprintId, unplannedId, index + 1);
+		String expected = genXML(unplanId);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 
-		// (II) sprint 2
+		// (II) sprint 2 unplan 1
 
 		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		index = 1;
-		unplannedId = mCUI.getUnplannedsId().get(index);
-		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		unplanId = mCUI.getUnplansId().get(1);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -247,31 +246,31 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(sprintId, unplannedId, index + 1);
+		expected = genXML(unplanId);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 	}
 
-	// case 4: Two sprint with 2 Unplanned
-	public void testTwoSprintWithTwoUnplanneds() {
-		int index = 0;
-		// 新增二個 Sprint
+	// case 4: Two sprint with 2 Unplan item
+	public void testTwoSprintWithTwoUnplan() {
+		// create two sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
-		// 新增二個 Unplanned
-		mCUI = new CreateUnplannedItem(2, mCP, mCS);
+		// create two unplan
+		mCUI = new CreateUnplanItem(2, mCP, mCS);
 		mCUI.exe();
 
-		// (I) sprint1, unplanned1
+		// (I) sprint 1, unplan 1
 
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
-		long unplannedId = mCUI.getUnplannedsId().get(index);
-		long sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		long unplanId = mCUI.getUnplansId().get(0);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -287,23 +286,23 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		String expected = genXML(sprintId, unplannedId, index + 1);
+		String expected = genXML(unplanId);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 
-		// (II) sprint1, unplanned2
+		// (II) sprint 1, unplan 2
 
 		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		index = 1;
-		unplannedId = mCUI.getUnplannedsId().get(index);
-		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		unplanId = mCUI.getUnplansId().get(1);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -319,23 +318,23 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(sprintId, unplannedId, index + 1);
+		expected = genXML(unplanId);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 
-		// (III) sprint2, unplanned1
+		// (III) sprint 2, unplan 1
 
 		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		index = 2;
-		unplannedId = mCUI.getUnplannedsId().get(index);
-		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		unplanId = mCUI.getUnplansId().get(2);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -351,23 +350,23 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(sprintId, unplannedId, index + 1);
+		expected = genXML(unplanId);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 
-		// (IV) sprint2, unplanned2
+		// (IV) sprint 2, unplan 2
 
-		// 執行下一次的 action 必須做此動作,否則 response 內容不會更新!
+		// 執行下一次的action必須做此動作,否則response內容不會更新!
 		clearRequestParameters();
 		response.reset();
 
 		// ================ set initial data =======================
-		index = 3;
-		unplannedId = mCUI.getUnplannedsId().get(index);
-		sprintId = mCUI.getUnplanneds().get(index).getSprintId();
+		unplanId = mCUI.getUnplansId().get(3);
 
 		// ================== set parameter info ====================
-		addRequestParameter("issueID", String.valueOf(unplannedId));
+		addRequestParameter("issueID", String.valueOf(unplanId));
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -383,37 +382,25 @@ public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 		verifyNoActionErrors();
 
 		// 比對資料是否正確
-		expected = genXML(sprintId, unplannedId, index + 1);
+		expected = genXML(unplanId);
 		actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
+		assertEquals(0, HistoryDAO.getInstance().getHistoriesByIssue(unplanId,
+		        IssueTypeEnum.TYPE_UNPLAN).size());
 	}
 
-	private String genXML(long sprintId, long unplannedId, int index) {
+	private String genXML(long unplanId) {
 		StringBuilder result = new StringBuilder();
-		String name = "TEST_UNPLANNED_" + index;
-		String notes = "TEST_UNPLANNED_NOTES_" + index;
-		int estimate = 2;
-		String handlerUsername = "";
-		String partnersUsername = "";
 
-		result.append("<EditUnplannedItem>");
+		result.append("<DeleteUnplanItem>");
+		result.append("<Result>true</Result>");
 		//
-		result.append("<UnplannedItem>");
-		result.append("<Id>").append(unplannedId).append("</Id>");
-		result.append("<Link></Link>");
-		result.append("<Name>").append(name).append("</Name>");
-		result.append("<SprintID>").append(sprintId).append("</SprintID>");
-		result.append("<Estimate>").append(estimate).append("</Estimate>");
-		result.append("<Status>new</Status>");
-		result.append("<ActualHour>0</ActualHour>");
-		result.append("<Handler>").append(handlerUsername).append("</Handler>");
-		result.append("<Partners>").append(partnersUsername).append("</Partners>");
-		result.append("<Notes>").append(notes).append("</Notes>");
-		result.append("</UnplannedItem>");
+		result.append("<UnplanItem>");
+		result.append("<Id>").append(unplanId).append("</Id>");
+		result.append("</UnplanItem>");
 		//
-		result.append("</EditUnplannedItem>");
+		result.append("</DeleteUnplanItem>");
 
 		return result.toString();
 	}
-
 }

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.unplanned;
+package ntut.csie.ezScrum.web.action.unplan;
 
 import java.io.File;
 
@@ -11,19 +11,19 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
+public class AddNewUnplanItemActionTest extends MockStrutsTestCase {
 	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateAccount mCA;
 	private Configuration mConfig;
-	private String mActionPath = "/addNewUnplannedItem";
+	private String mActionPath = "/addNewUnplanItem";
 
-	private String mTestName = "TEST_UNPLANNED_NAME";
+	private String mTestName = "TEST_UNPLAN_NAME";
 	private String mTestNote = "TEST_NOTE";
 	private int mTestEstimate = 99;
 
-	public AddNewUnplannedItemActionTest(String testMethod) {
+	public AddNewUnplanItemActionTest(String testMethod) {
 		super(testMethod);
 	}
 
@@ -73,8 +73,8 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		projectManager = null;
 	}
 
-	// case 1: One sprint with adding 1 unplanned
-	public void testOneSprint_addOneUnplanned() {
+	// case 1: One sprint with adding 1 unplan
+	public void testOneSprint_addOneUnplan() {
 		// 新增一個 Sprint	
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
@@ -118,8 +118,8 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
-	// case 2: One sprint with adding 2 unplanned
-	public void testOneSprint_addTwoUnplanneds() {
+	// case 2: One sprint with adding 2 unplan
+	public void testOneSprint_addTwoUnplans() {
 		// 新增一個 Sprint	
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
@@ -212,8 +212,8 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
-	// case 3: Two sprint with adding 1 unplanned
-	public void testTwoSprint_addOneUnplanned() {
+	// case 3: Two sprint with adding 1 unplan
+	public void testTwoSprint_addOneUnplan() {
 		// 新增一個 Sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
@@ -257,8 +257,8 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
-	// case 4: Two sprint with adding 2 unplanned
-	public void testTwoSprint_addTwoUnplanneds() {
+	// case 4: Two sprint with adding 2 unplan
+	public void testTwoSprint_addTwoUnplans() {
 		// 新增一個 Sprint	
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
@@ -351,16 +351,16 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		assertEquals(expected, response.getWriterBuffer().toString());
 	}
 
-	private String genXML(long sprintId, long unplannedId, String name,
+	private String genXML(long sprintId, long unplanId, String name,
 			String handlerUsername, String partnersUsername, int estimate,
 			String notes) {
 		StringBuilder result = new StringBuilder();
 
-		result.append("<AddUnplannedItem>");
+		result.append("<AddUnplanItem>");
 		result.append("<Result>success</Result>");
 		//
-		result.append("<UnplannedItem>");
-		result.append("<Id>").append(unplannedId).append("</Id>");
+		result.append("<UnplanItem>");
+		result.append("<Id>").append(unplanId).append("</Id>");
 		result.append("<Link></Link>");
 		result.append("<Name>").append(name).append("</Name>");
 		result.append("<SprintID>").append(sprintId).append("</SprintID>");
@@ -370,9 +370,9 @@ public class AddNewUnplannedItemActionTest extends MockStrutsTestCase {
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnersUsername).append("</Partners>");
 		result.append("<Notes>").append(notes).append("</Notes>");
-		result.append("</UnplannedItem>");
+		result.append("</UnplanItem>");
 		//
-		result.append("</AddUnplannedItem>");
+		result.append("</AddUnplanItem>");
 
 		return result.toString();
 	}

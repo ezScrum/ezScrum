@@ -7,7 +7,7 @@ import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
 
 /**
- * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
+ * releaseId, sprintId, storyId, taskId, unplanId, retrospectiveId
  * 預設為 0, 為當下物件的數量, 若要拿 serialId 必須加 1
  * @author cutecool
  */

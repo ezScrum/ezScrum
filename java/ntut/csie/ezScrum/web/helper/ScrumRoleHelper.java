@@ -65,7 +65,7 @@ public class ScrumRoleHelper {
 			scrumrole.setAccessSprintPlan(permissionUI.AccessSprintPlan);
 			scrumrole.setAccessSprintBacklog(permissionUI.AccessSprintBacklog);
 			scrumrole.setAccessTaskBoard(permissionUI.AccessTaskboard);
-			scrumrole.setAccessUnplannedItem(permissionUI.AccessUnplanned);
+			scrumrole.setAccessUnplanItem(permissionUI.AccessUnplan);
 			scrumrole.setAccessRetrospective(permissionUI.AccessRetrospective);
 			scrumrole.setReadReport(permissionUI.AccessReport);
 			scrumrole.setEditProject(permissionUI.AccessEditProject);

@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,9 +57,9 @@ public class ShowIssueHistoryAction extends PermissionAction {
 				ihui = new IssueHistoryUI(story);
 			}
 		} else {
-			UnplannedObject unplanned = UnplannedObject.get(issueId);
-			if (unplanned != null) {
-				ihui = new IssueHistoryUI(unplanned);
+			UnplanObject unplan = UnplanObject.get(issueId);
+			if (unplan != null) {
+				ihui = new IssueHistoryUI(unplan);
 			}
 		}
 		Gson gson = new Gson();
@@ -74,15 +74,15 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
 		
-		public IssueHistoryUI(UnplannedObject unplanned) {
-			if (unplanned != null) {
-				Id = unplanned.getId();
+		public IssueHistoryUI(UnplanObject unplan) {
+			if (unplan != null) {
+				Id = unplan.getId();
 				Link = "";
-				Name = unplanned.getName();
-				IssueType = "Unplanned";
+				Name = unplan.getName();
+				IssueType = "Unplan";
 
-				if (unplanned.getHistories().size() > 0) {
-					for (HistoryObject history : unplanned.getHistories()) {
+				if (unplan.getHistories().size() > 0) {
+					for (HistoryObject history : unplan.getHistories()) {
 						if (history.getDescription().length() > 0) {
 							IssueHistories.add(new IssueHistoryList(history));
 						}

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.unplanned;
+package ntut.csie.ezScrum.web.action.unplan;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class AjaxGetUnplannedItemPermissionAction extends Action {
+public class AjaxGetUnplanItemPermissionAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		
@@ -33,7 +33,7 @@ public class AjaxGetUnplannedItemPermissionAction extends Action {
 			
 			/*
 			 * <Permission>
-			 * 	<Function name ="UnplannedItem">
+			 * 	<Function name ="UnplanItem">
 			 * 		<AddRetrospective> value </AddRetrospective>
 			 * 		<EditRetrospective> value </EditRetrospective>
 			 * 		<DeleteRetrospective> value </DeleteRetrospective>
@@ -43,10 +43,10 @@ public class AjaxGetUnplannedItemPermissionAction extends Action {
 		
 			StringBuilder sb = new StringBuilder();
 			sb.append("<Permission>");
-			sb.append("<Function name =\"UnplannedItem\">");
-			sb.append("<AddUnplannedItem>"+role.getAccessUnplannedItem()+"</AddUnplannedItem>");
-			sb.append("<EditUnplannedItem>"+role.getAccessUnplannedItem()+"</EditUnplannedItem>");
-			sb.append("<DeleteUnplannedItem>"+role.getAccessUnplannedItem()+"</DeleteUnplannedItem>");
+			sb.append("<Function name =\"UnplanItem\">");
+			sb.append("<AddUnplanItem>"+role.getAccessUnplanItem()+"</AddUnplanItem>");
+			sb.append("<EditUnplanItem>"+role.getAccessUnplanItem()+"</EditUnplanItem>");
+			sb.append("<DeleteUnplanItem>"+role.getAccessUnplanItem()+"</DeleteUnplanItem>");
 			sb.append("</Function>");
 			sb.append("</Permission>");
 			result = sb.toString();
