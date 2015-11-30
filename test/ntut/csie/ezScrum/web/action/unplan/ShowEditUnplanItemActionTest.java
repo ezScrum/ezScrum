@@ -405,7 +405,7 @@ public class ShowEditUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("<SprintID>").append(sprintId).append("</SprintID>");
 		result.append("<Estimate>").append(estimate).append("</Estimate>");
 		result.append("<Status>new</Status>");
-		result.append("<ActualHour>0</ActualHour>");
+		result.append("<ActualHour>").append(estimate).append("</ActualHour>");
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnersUsername).append("</Partners>");
 		result.append("<Notes>").append(notes).append("</Notes>");
