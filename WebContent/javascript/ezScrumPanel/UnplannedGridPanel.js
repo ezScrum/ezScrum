@@ -1,7 +1,7 @@
 // the form is for Unplanned Item Page
 ezScrum.UnplannedGrid = Ext.extend(Ext.grid.GridPanel, {
 	id		: 'UnplannedItem_Panel',
-	url		: 'GetUnplannedItems.do',
+	url		: 'GetUnplanItems.do',
 	border	: false,
 	bodyStyle	:'width:100%',
 	autoWidth	: true,
