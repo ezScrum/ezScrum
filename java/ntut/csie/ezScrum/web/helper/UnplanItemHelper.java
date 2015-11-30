@@ -100,12 +100,12 @@ public class UnplanItemHelper {
 		// write stories to XML format
 		StringBuilder result = new StringBuilder();
 
-		result.append("<UnplanItems><Sprint>")
+		result.append("<UnplannedItems><Sprint>")
 			.append("<Id>").append(selectedSprint).append("</Id>")
 			.append("<Name>Sprint ").append(selectedSprint).append("</Name>")
 			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
-			result.append("<UnplanItem>");
+			result.append("<UnplannedItem>");
 			result.append("<Id>").append(unplan.getId()).append("</Id>");
 			result.append("<Link></Link>");
 			result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>");
@@ -116,9 +116,9 @@ public class UnplanItemHelper {
 			result.append("<Handler>").append(unplan.getHandlerName()).append("</Handler>");
 			result.append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>");
 			result.append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>");
-			result.append("</UnplanItem>");
+			result.append("</UnplannedItem>");
 		}
-		result.append("</UnplanItems>");
+		result.append("</UnplannedItems>");
 
 		return result;
 	}

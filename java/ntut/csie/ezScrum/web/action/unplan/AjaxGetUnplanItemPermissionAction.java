@@ -43,10 +43,10 @@ public class AjaxGetUnplanItemPermissionAction extends Action {
 		
 			StringBuilder sb = new StringBuilder();
 			sb.append("<Permission>");
-			sb.append("<Function name =\"UnplanItem\">");
-			sb.append("<AddUnplanItem>"+role.getAccessUnplanItem()+"</AddUnplanItem>");
-			sb.append("<EditUnplanItem>"+role.getAccessUnplanItem()+"</EditUnplanItem>");
-			sb.append("<DeleteUnplanItem>"+role.getAccessUnplanItem()+"</DeleteUnplanItem>");
+			sb.append("<Function name =\"UnplannedItem\">");
+			sb.append("<AddUnplannedItem>"+role.getAccessUnplanItem()+"</AddUnplannedItem>");
+			sb.append("<EditUnplannedItem>"+role.getAccessUnplanItem()+"</EditUnplannedItem>");
+			sb.append("<DeleteUnplannedItem>"+role.getAccessUnplanItem()+"</DeleteUnplannedItem>");
 			sb.append("</Function>");
 			sb.append("</Permission>");
 			result = sb.toString();

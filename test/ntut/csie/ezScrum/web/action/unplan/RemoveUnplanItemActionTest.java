@@ -392,14 +392,14 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 	private String genXML(long unplanId) {
 		StringBuilder result = new StringBuilder();
 
-		result.append("<DeleteUnplanItem>");
+		result.append("<DeleteUnplannedItem>");
 		result.append("<Result>true</Result>");
 		//
-		result.append("<UnplanItem>");
+		result.append("<UnplannedItem>");
 		result.append("<Id>").append(unplanId).append("</Id>");
-		result.append("</UnplanItem>");
+		result.append("</UnplannedItem>");
 		//
-		result.append("</DeleteUnplanItem>");
+		result.append("</DeleteUnplannedItem>");
 
 		return result.toString();
 	}

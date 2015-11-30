@@ -2,9 +2,6 @@ package ntut.csie.ezScrum.pic.core;
 
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
-/**
- * @author py2k
- */
 public class ScrumRole {
 	private String mProjectName = "";
 	private String mRoleName = "";

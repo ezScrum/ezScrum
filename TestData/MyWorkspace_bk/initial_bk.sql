@@ -1147,7 +1147,7 @@ CREATE TABLE `scrum_role` (
   `access_sprintBacklog` TINYINT NOT NULL DEFAULT 1,
   `access_releasePlan` TINYINT NOT NULL DEFAULT 1,
   `access_retrospective` TINYINT NOT NULL DEFAULT 1,
-  `access_unplanned` TINYINT NOT NULL DEFAULT 1,
+  `access_unplan` TINYINT NOT NULL DEFAULT 1,
   `access_report` TINYINT NOT NULL DEFAULT 1,
   `access_editProject` TINYINT NOT NULL DEFAULT 1,
   `project_id` BIGINT UNSIGNED NOT NULL,

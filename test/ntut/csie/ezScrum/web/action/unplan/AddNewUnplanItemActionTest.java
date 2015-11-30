@@ -356,10 +356,10 @@ public class AddNewUnplanItemActionTest extends MockStrutsTestCase {
 			String notes) {
 		StringBuilder result = new StringBuilder();
 
-		result.append("<AddUnplanItem>");
+		result.append("<AddUnplannedItem>");
 		result.append("<Result>success</Result>");
 		//
-		result.append("<UnplanItem>");
+		result.append("<UnplannedItem>");
 		result.append("<Id>").append(unplanId).append("</Id>");
 		result.append("<Link></Link>");
 		result.append("<Name>").append(name).append("</Name>");
@@ -370,9 +370,9 @@ public class AddNewUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnersUsername).append("</Partners>");
 		result.append("<Notes>").append(notes).append("</Notes>");
-		result.append("</UnplanItem>");
+		result.append("</UnplannedItem>");
 		//
-		result.append("</AddUnplanItem>");
+		result.append("</AddUnplannedItem>");
 
 		return result.toString();
 	}

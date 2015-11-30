@@ -37,9 +37,9 @@ public class RemoveUnplanItemAction extends PermissionAction {
 		unplanHelper.deleteUnplan(unplanId);
 
 		StringBuilder result = new StringBuilder();
-		result.append("<DeleteUnplanItem><Result>true</Result><UnplanItem><Id>")
+		result.append("<DeleteUnplannedItem><Result>true</Result><UnplannedItem><Id>")
 		        .append(unplanId)
-		        .append("</Id></UnplanItem></DeleteUnplanItem>");
+		        .append("</Id></UnplannedItem></DeleteUnplannedItem>");
 
 		return result;
 	}

@@ -412,7 +412,7 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 	private String genXML(String selectedSprint, ArrayList<UnplanObject> unplans) {
 		StringBuilder result = new StringBuilder();
 
-		result.append("<UnplanItems>");
+		result.append("<UnplannedItems>");
 		// sprint
 		result.append("<Sprint>");
 		result.append("<Id>").append(selectedSprint).append("</Id>");
@@ -420,7 +420,7 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("</Sprint>");
 		// unplan item
 		for (UnplanObject unplan : unplans) {
-			result.append("<UnplanItem>");
+			result.append("<UnplannedItem>");
 			result.append("<Id>").append(unplan.getId()).append("</Id>");
 			result.append("<Link></Link>");
 			result.append("<Name>").append(unplan.getName()).append("</Name>");
@@ -431,10 +431,10 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 			result.append("<Handler>").append(unplan.getHandlerName()).append("</Handler>");
 			result.append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>");
 			result.append("<Notes>").append(unplan.getNotes()).append("</Notes>");
-			result.append("</UnplanItem>");
+			result.append("</UnplannedItem>");
 		}
 		//
-		result.append("</UnplanItems>");
+		result.append("</UnplannedItems>");
 		return result.toString();
 	}
 

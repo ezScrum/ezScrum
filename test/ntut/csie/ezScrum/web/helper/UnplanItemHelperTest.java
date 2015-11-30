@@ -156,12 +156,12 @@ public class UnplanItemHelperTest {
 
 	private String genXML(String selectSprint, ArrayList<UnplanObject> unplans) {
 		StringBuilder result = new StringBuilder();
-		result.append("<UnplanItems><Sprint>")
+		result.append("<UnplannedItems><Sprint>")
 		        .append("<Id>").append(selectSprint).append("</Id>")
 		        .append("<Name>Sprint ").append(selectSprint).append("</Name>")
 		        .append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
-			result.append("<UnplanItem>")
+			result.append("<UnplannedItem>")
 			        .append("<Id>").append(unplan.getId()).append("</Id>")
 			        .append("<Link></Link>")
 			        .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
@@ -172,9 +172,9 @@ public class UnplanItemHelperTest {
 			        .append("<Handler>").append(unplan.getHandlerName()).append("</Handler>")
 			        .append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>")
 			        .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>")
-			        .append("</UnplanItem>");
+			        .append("</UnplannedItem>");
 		}
-		result.append("</UnplanItems>");
+		result.append("</UnplannedItems>");
 		return result.toString();
 	}
 }

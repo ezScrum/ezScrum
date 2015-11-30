@@ -83,8 +83,8 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	private final String Project_Management_TaskBoard_Text = "TaskBoard";
 	private final String Project_Management_Retrospective_ID = "RetrospectiveUrl";
 	private final String Project_Management_Retrospective_Text = "Retrospective";
-	private final String Project_Management_Unplan_ID = "UnplanUrl";
-	private final String Project_Management_Unplan_Text = "Unplan";
+	private final String Project_Management_Unplan_ID = "UnplannedUrl";
+	private final String Project_Management_Unplan_Text = "Unplanned";
 	private final String Project_Management_ScrumReport_ID = "ScrumReportUrl";
 	private final String Project_Management_ScrumReport_Text = "Scrum Report";
 	private void appendProjectManagement(List<ParentSideUI> list) {
