@@ -11,7 +11,7 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class SprintBacklogTreeStructure {
 	// Issue info
-		String Type = "";
+		String IssueType = "";
 		String ID = "";
 		String Tag = "";
 		String Name = "";
@@ -43,7 +43,7 @@ public class SprintBacklogTreeStructure {
 
 	public SprintBacklogTreeStructure(StoryObject story,
 			ArrayList<TaskObject> tasks, ArrayList<Date> dates) {
-		Type = ScrumEnum.STORY_ISSUE_TYPE;
+		IssueType = ScrumEnum.STORY_ISSUE_TYPE;
 		ID = Long.toString(story.getId());
 		Name = HandleSpecialChar(story.getName());
 		Handler = " ";
@@ -69,7 +69,7 @@ public class SprintBacklogTreeStructure {
 	}
 
 	public SprintBacklogTreeStructure(TaskObject task, ArrayList<Date> dates) {
-		Type = ScrumEnum.TASK_ISSUE_TYPE;
+		IssueType = ScrumEnum.TASK_ISSUE_TYPE;
 		ID = String.valueOf(task.getId());
 		Name = task.getName();
 		Handler = task.getHandler() != null ? task.getHandler().getUsername() : "";
