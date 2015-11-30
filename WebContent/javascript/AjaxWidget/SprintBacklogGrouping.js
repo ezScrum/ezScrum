@@ -318,9 +318,9 @@ TreeWidget.getSelectionModel().on({
         fn: function () {
             var selectedNode = TreeWidget.getSelectionModel().getSelectedNode();
             if (selectedNode != null ) {
-	            var type = selectedNode.attributes['Type'];
+	            var issueType = selectedNode.attributes['IssueType'];
 	
-	            if (type == "Story") {
+	            if (issueType == "Story") {
 	            	set_Story_Permission_disable(false);
 	            	set_Task_Permission_disable(true);
 	            } else {
