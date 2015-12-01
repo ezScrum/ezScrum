@@ -30,7 +30,7 @@ public class AddExistedTaskAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Add wild tasks in AddExistedTaskAction");
+		log.info("Add dropped tasks in AddExistedTaskAction");
 		
 		// get parameter info
 		ProjectObject project = SessionManager.getProjectObject(request);

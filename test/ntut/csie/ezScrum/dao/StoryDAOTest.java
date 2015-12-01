@@ -248,7 +248,7 @@ public class StoryDAOTest {
 	}
 	
 	@Test
-	public void testGetStoriesWithNoParent() {
+	public void testGetDroppedStories() {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			StoryObject story = new StoryObject(sProjectId);
@@ -264,8 +264,8 @@ public class StoryDAOTest {
 			assertNotSame(-1, storyId);
 		}
 		
-		// get wild stories
-		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesWithNoParent(sProjectId);
+		// get dropped stories
+		ArrayList<StoryObject> stories = StoryDAO.getInstance().getDroppedStories(sProjectId);
 		assertEquals(2, stories.size());
 	}
 	

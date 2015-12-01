@@ -17,7 +17,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.Story;
-import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +47,6 @@ public class MantisIssueService extends AbstractMantisService {
 	public long newIssue(IIssue issue) {
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 
 		/*
 		 * 先在資料庫之中增加一筆Bug Text，之後在增加Issue的時候才有值可以給Issue建立關聯
@@ -90,7 +89,7 @@ public class MantisIssueService extends AbstractMantisService {
 			valueSet.addInsertValue("priority", ITSEnum.getPriority(issue
 					.getPriority())
 					+ "");
-		issue.setSummary(translateChar.TranslateDBChar(issue.getSummary()));
+		issue.setSummary(TranslateSpecialChar.TranslateDBChar(issue.getSummary()));
 		valueSet.addInsertValue("summary", issue.getSummary());
 
 		query = valueSet.getInsertQuery();

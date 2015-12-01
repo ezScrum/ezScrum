@@ -23,8 +23,6 @@ public class Translation {
 
 	// for GetEditStoryInfoAction
 	public static String translateStoryToXML(StoryObject story) {
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
-
 		StringBuilder responseText = new StringBuilder();
 		responseText.append("<ProductBacklog>");
 		responseText.append("<Total>1</Total>");
@@ -32,7 +30,7 @@ public class Translation {
 		responseText.append("<Id>" + story.getId() + "</Id>");
 		responseText.append("<Link></Link>");
 		responseText.append("<Name>"
-				+ translateChar.TranslateXMLChar(story.getName()) + "</Name>");
+				+ TranslateSpecialChar.TranslateXMLChar(story.getName()) + "</Name>");
 		responseText.append("<Value>" + story.getValue() + "</Value>");
 		responseText.append("<Importance>" + story.getImportance()
 				+ "</Importance>");
@@ -40,10 +38,10 @@ public class Translation {
 		responseText.append("<Status>" + story.getStatusString() + "</Status>");
 		responseText
 				.append("<Notes>"
-						+ translateChar.TranslateXMLChar(story.getNotes())
+						+ TranslateSpecialChar.TranslateXMLChar(story.getNotes())
 						+ "</Notes>");
 		responseText.append("<HowToDemo>"
-				+ translateChar.TranslateXMLChar(story.getHowToDemo())
+				+ TranslateSpecialChar.TranslateXMLChar(story.getHowToDemo())
 				+ "</HowToDemo>");
 		responseText.append("<Release></Release>");
 		if (story.getSprintId() == StoryObject.NO_PARENT) {
@@ -52,7 +50,7 @@ public class Translation {
 			responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
 		}
 		responseText.append("<Tag>"
-				+ translateChar.TranslateXMLChar(Join(story.getTags(), ","))
+				+ TranslateSpecialChar.TranslateXMLChar(Join(story.getTags(), ","))
 				+ "</Tag>");
 		if (story.getAttachFiles().size() == 0)
 			responseText.append("<Attach>false</Attach>");
@@ -72,8 +70,6 @@ public class Translation {
 
 	// for ShowProductBacklogAction
 	public static String translateStoriesToJson(ArrayList<StoryObject> stories) {
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
-
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
@@ -84,14 +80,14 @@ public class Translation {
 
 				jsonStory.put("Id", stories.get(i).getId());
 				jsonStory.put("Type", "Story");
-				jsonStory.put("Name", translateChar.TranslateJSONChar((stories.get(i).getName())));
+				jsonStory.put("Name", TranslateSpecialChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
 				jsonStory.put("Importance", stories.get(i).getImportance());
-				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
+				jsonStory.put("Tag", TranslateSpecialChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
 				jsonStory.put("Status", stories.get(i).getStatusString());
-				jsonStory.put("Notes", translateChar.TranslateJSONChar(stories.get(i).getNotes()));
-				jsonStory.put("HowToDemo", translateChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
+				jsonStory.put("Notes", TranslateSpecialChar.TranslateJSONChar(stories.get(i).getNotes()));
+				jsonStory.put("HowToDemo", TranslateSpecialChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
 				jsonStory.put("Link", "");
 				jsonStory.put("Release", "");
 				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
@@ -112,7 +108,7 @@ public class Translation {
 					JSONObject jsonAttachFile = new JSONObject();
 					jsonAttachFile.put("IssueId", attachFile.getIssueId());
 					jsonAttachFile.put("FileId", attachFile.getId());
-					jsonAttachFile.put("FileName", translateChar.TranslateJSONChar(attachFile.getName()));
+					jsonAttachFile.put("FileName", TranslateSpecialChar.TranslateJSONChar(attachFile.getName()));
 
 					// parse Dateformat as Gson Default DateFormat (TaskBoard
 					// page)
@@ -141,7 +137,6 @@ public class Translation {
 	}
 
 	public static String translateTaskToJson(TaskObject task) {
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
@@ -150,14 +145,14 @@ public class Translation {
 			JSONObject jsonTask = new JSONObject();
 			jsonTask.put("Id", task.getId());
 			jsonTask.put("Name",
-					translateChar.TranslateJSONChar((task.getName())));
+					TranslateSpecialChar.TranslateJSONChar((task.getName())));
 			jsonTask.put("Value", "");
 			jsonTask.put("Estimate", task.getEstimate());
 			jsonTask.put("Importance", "");
 			jsonTask.put("Tag", "");
 			jsonTask.put("Status", task.getStatusString());
 			jsonTask.put("Notes",
-					translateChar.TranslateJSONChar(task.getNotes()));
+					TranslateSpecialChar.TranslateJSONChar(task.getNotes()));
 			jsonTask.put("HowToDemo", "");
 			jsonTask.put("Link", "");
 			jsonTask.put("Release", "");
@@ -201,7 +196,6 @@ public class Translation {
 
 	// for Taskboard, CO data, include Handler + Partners
 	public static String translateTaskboardIssueToJson(IIssue issue) {
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
@@ -210,9 +204,9 @@ public class Translation {
 			// 若需要其他欄位請再新增
 			jsonIssue.put("Id", issue.getIssueID());
 			jsonIssue.put("Link",
-					translateChar.TranslateJSONChar(issue.getIssueLink()));
+					TranslateSpecialChar.TranslateJSONChar(issue.getIssueLink()));
 			jsonIssue.put("Name",
-					translateChar.TranslateJSONChar((issue.getSummary())));
+					TranslateSpecialChar.TranslateJSONChar((issue.getSummary())));
 			jsonIssue.put("Handler", issue.getAssignto());
 			jsonIssue.put("Partners", issue.getPartners());
 			responseText.put("Issue", jsonIssue);
@@ -283,8 +277,6 @@ public class Translation {
 			double CurrentHours, long releaseId, String SprintGoal,
 			String StoryChartUrl, String TaskChartUrl, boolean isCurrentSprint)
 			throws JSONException {
-
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 		JSONObject responseText = new JSONObject();
 		responseText.put("success", true);
 		responseText.put("Total", 1);
@@ -293,7 +285,7 @@ public class Translation {
 		sprint.put(
 				"Name",
 				"Sprint #"
-						+ translateChar.TranslateJSONChar(String
+						+ TranslateSpecialChar.TranslateJSONChar(String
 								.valueOf(currentSprintId)));
 		sprint.put("InitialPoint", String.valueOf(InitialPoint));
 		sprint.put("CurrentPoint", String.valueOf(CurrentPoint));
@@ -302,9 +294,9 @@ public class Translation {
 		sprint.put(
 				"ReleaseID",
 				"Release #"
-						+ translateChar.HandleNullString(Long
+						+ TranslateSpecialChar.HandleNullString(Long
 								.toString(releaseId)));
-		sprint.put("SprintGoal", translateChar.TranslateJSONChar(SprintGoal));
+		sprint.put("SprintGoal", TranslateSpecialChar.TranslateJSONChar(SprintGoal));
 		sprint.put("StoryChartUrl", StoryChartUrl);
 		sprint.put("TaskChartUrl", TaskChartUrl);
 		sprint.put("IsCurrentSprint", isCurrentSprint);
@@ -318,9 +310,6 @@ public class Translation {
 			ArrayList<StoryObject> stories, long currentSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
 			long releaseId, String sprintGoal) {
-
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
-
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
@@ -331,7 +320,7 @@ public class Translation {
 			sprint.put(
 					"Name",
 					"Sprint #"
-							+ translateChar.TranslateJSONChar(String
+							+ TranslateSpecialChar.TranslateJSONChar(String
 									.valueOf(currentSprintId)));
 			sprint.put("CurrentPoint", currentPoint);
 			sprint.put("LimitedPoint", limitedPoint);
@@ -339,7 +328,7 @@ public class Translation {
 			sprint.put(
 					"ReleaseID",
 					"Release #"
-							+ translateChar.HandleNullString(Long
+							+ TranslateSpecialChar.HandleNullString(Long
 									.toString(releaseId)));
 			sprint.put("SprintGoal", sprintGoal);
 			responseText.put("Sprint", sprint);
@@ -351,17 +340,17 @@ public class Translation {
 				jsonStory.put("Id", story.getId());
 				jsonStory.put("Link", "");
 				jsonStory.put("Name",
-						translateChar.TranslateJSONChar(story.getName()));
+						TranslateSpecialChar.TranslateJSONChar(story.getName()));
 				jsonStory.put("Value", story.getValue());
 				jsonStory.put("Importance", story.getImportance());
 				jsonStory.put("Estimate", story.getEstimate());
 				jsonStory.put("Status", story.getStatusString());
 				jsonStory.put("Notes",
-						translateChar.TranslateJSONChar(story.getNotes()));
-				jsonStory.put("Tag", translateChar.TranslateJSONChar(Join(
+						TranslateSpecialChar.TranslateJSONChar(story.getNotes()));
+				jsonStory.put("Tag", TranslateSpecialChar.TranslateJSONChar(Join(
 						story.getTags(), ",")));
 				jsonStory.put("HowToDemo",
-						translateChar.TranslateJSONChar(story.getHowToDemo()));
+						TranslateSpecialChar.TranslateJSONChar(story.getHowToDemo()));
 				jsonStory.put("Release", "");
 				jsonStory.put("Sprint", story.getSprintId());
 
@@ -377,8 +366,8 @@ public class Translation {
 					JSONObject jsonFile = new JSONObject();
 					jsonFile.put("IssueId", file.getIssueId());
 					jsonFile.put("FileId", file.getId());
-					jsonFile.put("FileName", translateChar
-							.TranslateXMLChar(translateChar
+					jsonFile.put("FileName", TranslateSpecialChar
+							.TranslateXMLChar(TranslateSpecialChar
 									.TranslateJSONChar(file.getName())));
 					jsonFile.put(
 							"DownloadPath",

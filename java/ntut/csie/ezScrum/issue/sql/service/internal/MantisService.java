@@ -27,7 +27,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.HSQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -670,13 +670,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	@Override
 	public void updateName(IIssue issue, String name, Date modifyDate) {
-
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
-
 		// 變更SUMMARY
 		String oldSummary = issue.getSummary();
-		oldSummary = translateChar.TranslateDBChar(oldSummary);
-		name = translateChar.TranslateDBChar(name);
+		oldSummary = TranslateSpecialChar.TranslateDBChar(oldSummary);
+		name = TranslateSpecialChar.TranslateDBChar(name);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
@@ -803,12 +800,12 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		// + ITSEnum.OPEN_RESOLUTION
 		// + "', `handler_id` = '0' WHERE `mantis_bug_table`.`id` ="
 		// + issueID;
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();// accept
-																		// special
-																		// char
-																		// ex: /
-																		// '
-		name = translateChar.TranslateDBChar(name);
+			// accept
+			// special
+			// char
+			// ex: /
+			// '
+		name = TranslateSpecialChar.TranslateDBChar(name);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");

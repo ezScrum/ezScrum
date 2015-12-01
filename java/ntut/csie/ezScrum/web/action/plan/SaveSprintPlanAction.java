@@ -38,21 +38,19 @@ public class SaveSprintPlanAction extends PermissionAction {
 		// get parameter info
 		String isCreate = request.getParameter("isCreate");
 
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
-
 		// get parameter info
 		String sprintId = request.getParameter("Id");
-		String sprintGoal = translateSpecialChar.TranslateXMLChar(request
+		String sprintGoal = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("Goal"));
 		String startDate = request.getParameter("StartDate");
 		String interval = request.getParameter("Interval");
 		String membersAmount = request.getParameter("Members");
 		String hoursCanCommit = request.getParameter("AvaliableDays");
 		String focusFactor = request.getParameter("FocusFactor");
-		String dailyInfo = translateSpecialChar.TranslateXMLChar(request
+		String dailyInfo = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("DailyScrum"));
 		String demoDate = request.getParameter("DemoDate");
-		String demoPlace = translateSpecialChar.TranslateXMLChar(request
+		String demoPlace = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("DemoPlace"));
 		String dueDate = request.getParameter("DueDate");
 

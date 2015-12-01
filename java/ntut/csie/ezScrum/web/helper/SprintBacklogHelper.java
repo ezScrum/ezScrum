@@ -111,8 +111,8 @@ public class SprintBacklogHelper {
 		return mSprintBacklogMapper.getTasksByStoryId(storyId);
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
-		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
+		return mSprintBacklogMapper.getDroppedTasks(projectId);
 	}
 
 	public void updateTask(TaskInfo taskInfo, String handlerUsername,
@@ -293,7 +293,6 @@ public class SprintBacklogHelper {
 	public StringBuilder getStoriesInSprintResponseText(
 			ArrayList<StoryObject> stories) {
 		StringBuilder sb = new StringBuilder();
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		sb.append("<ExistingStories>");
 
 		for (StoryObject story : stories) {
@@ -301,21 +300,21 @@ public class SprintBacklogHelper {
 			sb.append("<Story>");
 			sb.append("<Id>" + story.getId() + "</Id>");
 			sb.append("<Link></Link>");
-			sb.append("<Name>" + tsc.TranslateXMLChar(story.getName())
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(story.getName())
 					+ "</Name>");
 			sb.append("<Value>" + story.getValue() + "</Value>");
 			sb.append("<Importance>" + story.getImportance() + "</Importance>");
 			sb.append("<Estimate>" + story.getEstimate() + "</Estimate>");
 			sb.append("<Status>" + story.getStatusString() + "</Status>");
-			sb.append("<Notes>" + tsc.TranslateXMLChar(story.getNotes())
+			sb.append("<Notes>" + TranslateSpecialChar.TranslateXMLChar(story.getNotes())
 					+ "</Notes>");
 			sb.append("<HowToDemo>"
-					+ tsc.TranslateXMLChar(story.getHowToDemo())
+					+ TranslateSpecialChar.TranslateXMLChar(story.getHowToDemo())
 					+ "</HowToDemo>");
 			sb.append("<Release></Release>");
 			sb.append("<Sprint>" + sprintId + "</Sprint>");
 			sb.append("<Tag>"
-					+ tsc.TranslateXMLChar(Translation.Join(story.getTags(),
+					+ TranslateSpecialChar.TranslateXMLChar(Translation.Join(story.getTags(),
 							",")) + "</Tag>");
 			sb.append("</Story>");
 		}

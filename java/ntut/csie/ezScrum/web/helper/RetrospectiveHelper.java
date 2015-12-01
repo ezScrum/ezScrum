@@ -39,7 +39,6 @@ public class RetrospectiveHelper {
 	// 前端XML格式定義在: Common.js 之 變數 Retrospective, Parser 為 retReader
 	public StringBuilder getXML(String actionType, RetrospectiveObject retrospective) {
 		String tag = null;
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 
 		if (actionType.equals("add"))
 			tag = "AddNew";
@@ -60,9 +59,9 @@ public class RetrospectiveHelper {
 		if (actionType.equals("add") || actionType.equals("edit") || actionType.equals("get")) {
 			result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
 			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
-			result.append("<Name>" + translateSpecialChar.TranslateXMLChar(retrospective.getName()) + "</Name>");
+			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(retrospective.getName()) + "</Name>");
 			result.append("<Type>" + retrospective.getType() + "</Type>");
-			result.append("<Description>" + translateSpecialChar.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
+			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
 			result.append("<Status>" + retrospective.getStatus() + "</Status>");
 		} else if (actionType.equals("delete")) {
 			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
@@ -75,7 +74,6 @@ public class RetrospectiveHelper {
 
 	// 前端XML格式定義在: ShowRetrospective.jsp 之 變數 retrospectiveStore
 	public StringBuilder getListXML(String sprintId) throws SQLException {
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// Good Retrospective 封裝成 XML 給 Ext 使用
 		ArrayList<RetrospectiveObject> goods = mRetrospectiveMapper.getRetrospectivesByType(RetrospectiveObject.TYPE_GOOD);
@@ -95,9 +93,9 @@ public class RetrospectiveHelper {
 				result.append("<Id>" + good.getId() + "</Id>");
 				result.append("<Link></Link>");
 				result.append("<SprintID>" + good.getSprintId() + "</SprintID>");
-				result.append("<Name>" + translateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
+				result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
 				result.append("<Type>" + good.getType() + "</Type>");
-				result.append("<Description>" + translateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
+				result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
 				result.append("<Status>" + good.getStatus() + "</Status>");
 				result.append("</Retrospective>");
 			}
@@ -115,9 +113,9 @@ public class RetrospectiveHelper {
 				result.append("<Id>" + improvement.getId() + "</Id>");
 				result.append("<Link></Link>");
 				result.append("<SprintID>" + improvement.getSprintId() + "</SprintID>");
-				result.append("<Name>" + translateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
+				result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
 				result.append("<Type>" + improvement.getType() + "</Type>");
-				result.append("<Description>" + translateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");
+				result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");
 				result.append("<Status>" + improvement.getStatus() + "</Status>");
 				result.append("</Retrospective>");
 			}
