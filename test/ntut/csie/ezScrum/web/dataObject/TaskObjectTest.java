@@ -99,10 +99,14 @@ public class TaskObjectTest {
 		ArrayList<HistoryObject> histories = task.getHistories();
 		assertEquals(3, histories.size());
 		assertEquals(HistoryObject.TYPE_REMOVE_PARTNER, histories.get(1).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_TASK, histories.get(1).getIssueType());
+		assertEquals(task.getId(), histories.get(1).getIssueId());
 		assertEquals(account2.getId(), Long.parseLong(histories.get(1).getNewValue())); // account2 remove from task
 		assertEquals("Remove Partner", histories.get(1).getHistoryTypeString());
 		assertEquals(account2.getUsername(), histories.get(1).getDescription());
 		assertEquals(HistoryObject.TYPE_ADD_PARTNER, histories.get(2).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_TASK, histories.get(2).getIssueType());
+		assertEquals(task.getId(), histories.get(2).getIssueId());
 		assertEquals(account4.getId(), Long.parseLong(histories.get(2).getNewValue())); // add account4 to task
 		assertEquals("Add Partner", histories.get(2).getHistoryTypeString());
 		assertEquals(account4.getUsername(), histories.get(2).getDescription());

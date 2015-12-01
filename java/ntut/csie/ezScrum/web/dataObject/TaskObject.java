@@ -492,30 +492,6 @@ public class TaskObject implements IBaseObject {
 		
 		setPartnersAndHistory(System.currentTimeMillis());
 	}
-	
-	private void setPartnersAndHistory(long specificTime) {
-		List<Long> oldPartnersId = getPartnersId();
-		@SuppressWarnings("unchecked")
-		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
-				.intersection(oldPartnersId, mPartnersId);
-		@SuppressWarnings("unchecked")
-		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
-				.subtract(oldPartnersId, intersectionPartnersId);
-		@SuppressWarnings("unchecked")
-		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
-				mPartnersId, intersectionPartnersId);
-		for (long partnerId : shouldRemovePartnersId) {
-			removePartner(partnerId);
-			TaskDAO.getInstance().removePartner(mId, partnerId);
-			addHistory(HistoryObject.TYPE_REMOVE_PARTNER, "",
-					String.valueOf(partnerId), specificTime);
-		}
-		for (long partnerId : shouldAddPartnersId) {
-			addPartner(partnerId);
-			addHistory(HistoryObject.TYPE_ADD_PARTNER, "",
-					String.valueOf(partnerId), specificTime);
-		}
-	}
 
 	// for specific time update
 	private void doUpdate(long specificTime) {
@@ -564,6 +540,28 @@ public class TaskObject implements IBaseObject {
 		}
 		
 		setPartnersAndHistory(specificTime);
+	}
+	
+	private void setPartnersAndHistory(long specificTime) {
+		List<Long> oldPartnersId = getPartnersId();
+		@SuppressWarnings("unchecked")
+		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
+				.intersection(oldPartnersId, mPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
+				.subtract(oldPartnersId, intersectionPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
+				mPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
+			removePartner(partnerId);
+			TaskDAO.getInstance().removePartner(mId, partnerId);
+			addHistory(HistoryObject.TYPE_REMOVE_PARTNER, "", String.valueOf(partnerId), specificTime);
+		}
+		for (long partnerId : shouldAddPartnersId) {
+			addPartner(partnerId);
+			addHistory(HistoryObject.TYPE_ADD_PARTNER, "", String.valueOf(partnerId), specificTime);
+		}
 	}
 
 	private void addHistoryOfAddRelation(long storyId, long taskId) {
