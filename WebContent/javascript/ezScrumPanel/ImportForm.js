@@ -14,9 +14,10 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 			url : 'import.do',
 			modify_url : 'import.do',
 			items : [ {
-				width:'49.5%',
+				id:"files",
+				width : '49.5%',
 				xtype : 'fileuploadfield',
-				fieldLabel : 'Choose file',
+				fieldLabel : 'Choose file'
 			} ],
 			buttons : [ {
 				formBind : true,
@@ -32,7 +33,21 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		ImportFormLayout.superclass.initComponent.apply(this, arguments);
 	},
 	import : function() {
-		console.log($("input[type='file']")[0].value);
+		//get golden answer file content!!
+		var reader = new FileReader();
+		reader.readAsText($("input[type='file']")[0].files[0]);
+		//file content is in e.target.result
+		reader.onloadend = function(e) {
+		    $.ajax({
+				url: "",
+				method: "post",
+				data:e.target.result
+			}).done(function(msg){
+				console.log(msg);
+			}).fail(function(err){
+				console.error(err);
+			});
+		};
 	}
 });
 
