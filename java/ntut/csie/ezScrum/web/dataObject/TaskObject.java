@@ -28,6 +28,7 @@ public class TaskObject implements IBaseObject {
 	private long mProjectId = DEFAULT_VALUE;
 	private long mStoryId = DEFAULT_VALUE;
 	private long mHandlerId = DEFAULT_VALUE;
+	private ArrayList<Long> mPartnersId = new ArrayList<>();
 	private String mName = "";
 	private String mNotes = "";
 	private int mEstimate = 0;
@@ -101,26 +102,14 @@ public class TaskObject implements IBaseObject {
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
 	public TaskObject setPartnersId(ArrayList<Long> newPartnersId) {
-		List<Long> oldPartnersId = getPartnersId();
-		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
-				.intersection(oldPartnersId, newPartnersId);
-		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
-				.subtract(oldPartnersId, intersectionPartnersId);
-		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
-				newPartnersId, intersectionPartnersId);
-		for (long partnerId : shouldRemovePartnersId) {
-			TaskDAO.getInstance().removePartner(mId, partnerId);
-		}
-		for (long partnerId : shouldAddPartnersId) {
-			TaskDAO.getInstance().addPartner(mId, partnerId);
-		}
+		mPartnersId = newPartnersId;
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
-		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
+		AccountObject partner = AccountObject.get(partnerId);
+		if (partner != null && !TaskDAO.getInstance().partnerExists(mId, partnerId)) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
 		}
 	}
@@ -434,6 +423,7 @@ public class TaskObject implements IBaseObject {
 		setRemains(task.getRemains());
 		setActual(task.getActual());
 		setHandlerId(task.getHandlerId());
+		setPartnersId(task.getPartnersId());
 		setStatus(task.getStatus());
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
@@ -444,6 +434,9 @@ public class TaskObject implements IBaseObject {
 		mRemains = mEstimate;
 
 		mId = TaskDAO.getInstance().create(this);
+		for (long partnerId : mPartnersId) {
+			addPartner(partnerId);
+		}
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
@@ -496,6 +489,32 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
 					mHandlerId);
 		}
+		
+		setPartnersAndHistory(System.currentTimeMillis());
+	}
+	
+	private void setPartnersAndHistory(long specificTime) {
+		List<Long> oldPartnersId = getPartnersId();
+		@SuppressWarnings("unchecked")
+		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
+				.intersection(oldPartnersId, mPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
+				.subtract(oldPartnersId, intersectionPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
+				mPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
+			removePartner(partnerId);
+			TaskDAO.getInstance().removePartner(mId, partnerId);
+			addHistory(HistoryObject.TYPE_REMOVE_PARTNER, "",
+					String.valueOf(partnerId), specificTime);
+		}
+		for (long partnerId : shouldAddPartnersId) {
+			addPartner(partnerId);
+			addHistory(HistoryObject.TYPE_ADD_PARTNER, "",
+					String.valueOf(partnerId), specificTime);
+		}
 	}
 
 	// for specific time update
@@ -543,6 +562,8 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
 					mHandlerId, specificTime);
 		}
+		
+		setPartnersAndHistory(specificTime);
 	}
 
 	private void addHistoryOfAddRelation(long storyId, long taskId) {

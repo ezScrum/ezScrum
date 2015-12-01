@@ -260,15 +260,15 @@ public class SprintBacklogMapper {
 	 * @param id
 	 * @param name
 	 * @param handlerId
-	 * @param partners
+	 * @param partnersId
 	 * @param notes
 	 * @param specificDate
 	 */
 	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+			ArrayList<Long> partnersId, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partnersId)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}
