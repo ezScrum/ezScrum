@@ -45,8 +45,8 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public String getTasksWithNoParent() throws SQLException {
-		ArrayList<TaskObject> existingTasks = mProductBacklogHelper.getTasksWithNoParent();
+	public String getDroppedTasks() throws SQLException {
+		ArrayList<TaskObject> existingTasks = mProductBacklogHelper.getDroppedTasks();
 		Gson gson = new Gson();
 		return gson.toJson(existingTasks);
 	}

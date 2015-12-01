@@ -32,8 +32,6 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 		
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// get parameter info
 		long retrospectiveId = Long.valueOf(request.getParameter("issueID"));
@@ -42,7 +40,7 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 		String sprintName = request.getParameter("SprintID");
 		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		String type = request.getParameter("Type");
-		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
+		String description = TranslateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		String status = request.getParameter("Status");
 		
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);

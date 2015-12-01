@@ -245,7 +245,7 @@ public class TaskDAOTest {
 	}
 	
 	@Test
-	public void testGetTasksWithNoParent() throws SQLException {
+	public void testGetDroppedTasks() throws SQLException {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			TaskObject task = new TaskObject(sProjectId);
@@ -261,8 +261,8 @@ public class TaskDAOTest {
 			assertNotSame(-1, taskId);
 		}
 		
-		// get wild tasks
-		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getTasksWithNoParent(sProjectId);
+		// get dropped tasks
+		ArrayList<TaskObject> tasks = TaskDAO.getInstance().getDroppedTasks(sProjectId);
 		assertEquals(2, tasks.size());
 	}
 	

@@ -32,7 +32,7 @@ public class AddExistedStoryAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		log.info("Add wild stories in AddExistedStoryAction");
+		log.info("Add dropped stories in AddExistedStoryAction");
 		
 		// get parameter info
 		ProjectObject project = SessionManager.getProjectObject(request);

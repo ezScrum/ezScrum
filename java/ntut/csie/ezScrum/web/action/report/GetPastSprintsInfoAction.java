@@ -32,8 +32,6 @@ public class GetPastSprintsInfoAction extends Action {
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 
 		StringBuilder stringBuilder = new StringBuilder();
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
-
 		if (sprints.isEmpty()) {
 			// default data for null sprint backlog
 			stringBuilder.append("<Sprints>" + "<Sprint>" + "<Id>0</Id>"
@@ -89,7 +87,7 @@ public class GetPastSprintsInfoAction extends Action {
 				 *	加入Sprint Goal
 				-------------------------------------------------------------*/
 				stringBuilder.append("<Goal>");
-				stringBuilder.append(translateSpecialChar.TranslateXMLChar(sprint.getGoal()));
+				stringBuilder.append(TranslateSpecialChar.TranslateXMLChar(sprint.getGoal()));
 				stringBuilder.append("</Goal>");
 				stringBuilder.append("</Sprint>");
 			}

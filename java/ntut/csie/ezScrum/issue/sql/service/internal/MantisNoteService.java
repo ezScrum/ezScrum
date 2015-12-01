@@ -13,7 +13,7 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
-import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 
@@ -58,11 +58,10 @@ public class MantisNoteService extends AbstractMantisService {
 	}
 
 	public void updateBugNote(IIssue issue) {
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
 		
 		@SuppressWarnings("unchecked")
 		String updateContext = XmlFileUtil.getXmlString(issue.getTagContentRoot().getChildren());
-		updateContext = translateChar.TranslateDBChar(updateContext);
+		updateContext = TranslateSpecialChar.TranslateDBChar(updateContext);
 		// String query = "SELECT date_submitted, note,
 		// mantis_bugnote_text_table.id FROM `mantis_bugnote_table` ,
 		// `mantis_bugnote_text_table` WHERE mantis_bugnote_text_table.id =

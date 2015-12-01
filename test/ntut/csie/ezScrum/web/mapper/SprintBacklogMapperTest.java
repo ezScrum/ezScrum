@@ -227,10 +227,10 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetStoriesWithNoParent() {
+	public void testGetDroppedStories() {
 		// check existed stories before test
 		ArrayList<StoryObject> existedStories = mSprintBacklogMapper
-				.getStoriesWithNoParent();
+				.getDroppedStories();
 		assertEquals(0, existedStories.size());
 		ArrayList<StoryObject> storiesInSprint = mSprintBacklogMapper
 				.getStoriesInSprint();
@@ -242,7 +242,7 @@ public class SprintBacklogMapperTest {
 		storiesInSprint.get(0).setSprintId(StoryObject.DEFAULT_VALUE).save();
 
 		// check dropped stories after add a dropped story
-		existedStories = mSprintBacklogMapper.getStoriesWithNoParent();
+		existedStories = mSprintBacklogMapper.getDroppedStories();
 		storiesInSprint = mSprintBacklogMapper.getStoriesInSprint();
 
 		assertEquals(StoryObject.DEFAULT_VALUE, existedStories.get(0)
@@ -561,7 +561,7 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetTasksWithNoParent() {
+	public void testGetDroppedTasks() {
 		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
@@ -583,7 +583,7 @@ public class SprintBacklogMapperTest {
 
 		// assert size
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper
-				.getTasksWithNoParent(projectId);
+				.getDroppedTasks(projectId);
 		assertEquals(2, tasks.size());
 
 		// assert first task

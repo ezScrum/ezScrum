@@ -140,7 +140,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 					"<Tags><Result>true</Result>" + 
 					"<IssueTag>" + 
 					"<Id>" + (i+1) + "</Id>" + 
-					"<Name>" + new TranslateSpecialChar().TranslateXMLChar(tagList.get(i)) + "</Name>" + 
+					"<Name>" + TranslateSpecialChar.TranslateXMLChar(tagList.get(i)) + "</Name>" + 
 					"</IssueTag>" + 
 					"</Tags>";
 			

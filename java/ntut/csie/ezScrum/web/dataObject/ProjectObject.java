@@ -166,8 +166,8 @@ public class ProjectObject implements IBaseObject {
 		return projectWorkers;
 	}
 	
-	public ArrayList<StoryObject> getStoriesWithNoParent() {
-		return StoryDAO.getInstance().getStoriesWithNoParent(mId);
+	public ArrayList<StoryObject> getDroppedStories() {
+		return StoryDAO.getInstance().getDroppedStories(mId);
 	}
 	
 	// get all stories
@@ -180,8 +180,8 @@ public class ProjectObject implements IBaseObject {
 		return UnplanDAO.getInstance().getUnplansByProjectId(mId);
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent() {
-		return TaskDAO.getInstance().getTasksWithNoParent(mId);
+	public ArrayList<TaskObject> getDroppedTasks() {
+		return TaskDAO.getInstance().getDroppedTasks(mId);
 	}
 
 	public ArrayList<SprintObject> getSprints() {

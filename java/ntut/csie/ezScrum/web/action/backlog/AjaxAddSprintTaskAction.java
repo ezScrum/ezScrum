@@ -68,16 +68,15 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 
 		// 組出回傳資訊
 		StringBuilder sb = new StringBuilder();
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		sb.append("<AddNewTask><Result>true</Result><Task>");
 		sb.append("<Id>" + task.getId() + "</Id>");
 		sb.append("<Link>/ezScrum/showIssueInformation.do?issueID=" + task.getId()
 				+ "</Link>");
-		sb.append("<Name>" + tsc.TranslateXMLChar(task.getName())
+		sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())
 				+ "</Name>");
 		sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
 		sb.append("<Actual>" + task.getActual() + "</Actual>");
-		sb.append("<Notes>" + tsc.TranslateXMLChar(task.getNotes())
+		sb.append("<Notes>" + TranslateSpecialChar.TranslateXMLChar(task.getNotes())
 				+ "</Notes>");
 		sb.append("</Task></AddNewTask>");
 		return sb;

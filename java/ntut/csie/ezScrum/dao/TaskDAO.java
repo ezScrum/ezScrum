@@ -134,7 +134,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	 * @param projectId
 	 * @return All tasks which no parent in this project
 	 */
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.STORY_ID, TaskObject.NO_PARENT);

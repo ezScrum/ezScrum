@@ -857,7 +857,7 @@ public class ProductBacklogHelperTest {
 		expectResponse.append("<IssueTag>");
 		expectResponse.append("<Id>" + 1 + "</Id>");
 		expectResponse.append("<Name>"
-				+ new TranslateSpecialChar().TranslateXMLChar(TEST_TAG_NAME)
+				+ TranslateSpecialChar.TranslateXMLChar(TEST_TAG_NAME)
 				+ "</Name>");
 		expectResponse.append("</IssueTag>");
 		expectResponse.append("</Tags>");

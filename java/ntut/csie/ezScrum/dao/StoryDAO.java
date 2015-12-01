@@ -114,7 +114,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return stories;
 	}
 
-	public ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
+	public ArrayList<StoryObject> getDroppedStories(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, StoryObject.NO_PARENT);
