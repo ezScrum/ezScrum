@@ -152,6 +152,10 @@ public class HistoryObject implements IBaseObject {
 				return getRemoveParentDesc();
 			case TYPE_SPRINT_ID:
 				return getSprintDesc();
+			case TYPE_ADD_PARTNER:
+				return getPartnerDesc();
+			case TYPE_REMOVE_PARTNER:
+				return getPartnerDesc();
 		}
 		return "";
 	}
@@ -182,6 +186,10 @@ public class HistoryObject implements IBaseObject {
 				return "Note";
 			case TYPE_HOW_TO_DEMO:
 				return "How To Demo";
+			case TYPE_ADD_PARTNER:
+				return "Add Partner";
+			case TYPE_REMOVE_PARTNER:
+				return "Remove Partner";
 		}
 		return "";
 	}
@@ -299,6 +307,15 @@ public class HistoryObject implements IBaseObject {
 
 	private String getSprintDesc() {
 		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
+	}
+	
+	private String getPartnerDesc() {
+		if (mNewValue != null && !mNewValue.equals("") && !mNewValue.equals("0") && !mNewValue.equals("-1")) {
+			String partnerUsername = AccountDAO.getInstance()
+			        .get(Long.parseLong(mNewValue)).getUsername();
+			return partnerUsername;
+		}
+		return "";
 	}
 
 	public long getCreateTime() {

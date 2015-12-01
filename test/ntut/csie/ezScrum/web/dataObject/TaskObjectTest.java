@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -24,9 +23,6 @@ import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
-/**
- * @author samhuang 2014/12/23
- */
 public class TaskObjectTest {
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
@@ -69,70 +65,104 @@ public class TaskObjectTest {
 	public void testSetPartnersId() {
 		long TEST_TASK_ID = 1;
 		long projectId = mCP.getAllProjects().get(0).getId();
+		// Create account
+		AccountObject account1 = new AccountObject("account1"); // handler
+		account1.save();
+		AccountObject account2 = new AccountObject("account2"); // old partner1
+		account2.save();
+		AccountObject account3 = new AccountObject("account3"); // old partner2, new partner1
+		account3.save();
+		AccountObject account4 = new AccountObject("account4"); // new partner2
+		account4.save();
+		ArrayList<Long> oldPartnersId = new ArrayList<>();
+		oldPartnersId.add(account2.getId());
+		oldPartnersId.add(account3.getId());
+		ArrayList<Long> newPartnersId = new ArrayList<>();
+		newPartnersId.add(account3.getId());
+		newPartnersId.add(account4.getId());
 		// create a task
 		TaskObject task = new TaskObject(projectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		task.setName("TEST_NAME").setHandlerId(account1.getId()).setPartnersId(oldPartnersId).save();
 		// before testSetPartnersId
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
-		assertEquals(0, partnersId.size());
-		// set one partner
-		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		task.setPartnersId(testPartnersId);
-		// testSetPartnersId_withOnePartner
-		partnersId.clear();
-		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
-		assertEquals(1, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
+		ArrayList<Long> oldPartnersFromDAO = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, oldPartnersFromDAO.size());
+		assertEquals(account2.getId(), oldPartnersFromDAO.get(0));
+		assertEquals(account3.getId(), oldPartnersFromDAO.get(1));
+		// set new partners
+		task.setPartnersId(newPartnersId).save();
+		// test partners
+		ArrayList<Long> newPartnersFromDAO = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, newPartnersFromDAO.size());
+		assertEquals(account3.getId(), newPartnersFromDAO.get(0));
+		assertEquals(account4.getId(), newPartnersFromDAO.get(1));
+		// test partners history
+		ArrayList<HistoryObject> histories = task.getHistories();
+		assertEquals(3, histories.size());
+		assertEquals(HistoryObject.TYPE_REMOVE_PARTNER, histories.get(1).getHistoryType());
+		assertEquals(account2.getId(), Long.parseLong(histories.get(1).getNewValue())); // account2 remove from task
+		assertEquals("Remove Partner", histories.get(1).getHistoryTypeString());
+		assertEquals(account2.getUsername(), histories.get(1).getDescription());
+		assertEquals(HistoryObject.TYPE_ADD_PARTNER, histories.get(2).getHistoryType());
+		assertEquals(account4.getId(), Long.parseLong(histories.get(2).getNewValue())); // add account4 to task
+		assertEquals("Add Partner", histories.get(2).getHistoryTypeString());
+		assertEquals(account4.getUsername(), histories.get(2).getDescription());
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		task.setName("TEST_NAME").save();
 		// before testSetPartnersId
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 		// set two partners
 		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		testPartnersId.add(2L);
-		task.setPartnersId(testPartnersId);
+		testPartnersId.add(account1.getId());
+		testPartnersId.add(account2.getId());
+		task.setPartnersId(testPartnersId).save();
 		// testSetPartnersId_withTwoPartners
 		partnersId.clear();
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
-		assertEquals(2L, partnersId.get(1));
+		assertEquals(account1.getId(), partnersId.get(0));
+		assertEquals(account2.getId(), partnersId.get(1));
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartnersAddOneAndRemoveOnePartner() {
 		long TEST_TASK_ID = 1;
-		// create a task
-		TaskObject task = new TaskObject(mProjectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
+		AccountObject account3 = new AccountObject("account3");
+		account3.save();
 		// set two partners
 		ArrayList<Long> oldPartnersId = new ArrayList<Long>();
-		oldPartnersId.add(1L);
-		oldPartnersId.add(2L);
-		task.setPartnersId(oldPartnersId);
+		oldPartnersId.add(account1.getId());
+		oldPartnersId.add(account2.getId());
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setPartnersId(oldPartnersId).save();
 		// testSetPartnersId_withTwoPartnersAddOneAndRemoveOnePartner
 		ArrayList<Long> newPartnersId = new ArrayList<Long>();
-		newPartnersId.add(2L);
-		newPartnersId.add(3L);
-		task.setPartnersId(newPartnersId);
+		newPartnersId.add(account2.getId());
+		newPartnersId.add(account3.getId());
+		task.setPartnersId(newPartnersId).save();
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		partnersId.clear();
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(2L, partnersId.get(0));
-		assertEquals(3L, partnersId.get(1));
+		assertEquals(account2.getId(), partnersId.get(0));
+		assertEquals(account3.getId(), partnersId.get(1));
 	}
 
 	@Test
