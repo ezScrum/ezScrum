@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
 public class UnplanObjectTest {
@@ -68,70 +69,107 @@ public class UnplanObjectTest {
 	@Test
 	public void testSetPartnersId() {
 		long TEST_UNPLAN_ID = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1"); // handler
+		account1.save();
+		AccountObject account2 = new AccountObject("account2"); // old partner1
+		account2.save();
+		AccountObject account3 = new AccountObject("account3"); // old partner2, new partner1
+		account3.save();
+		AccountObject account4 = new AccountObject("account4"); // new partner2
+		account4.save();
+		ArrayList<Long> oldPartnersId = new ArrayList<>();
+		oldPartnersId.add(account2.getId());
+		oldPartnersId.add(account3.getId());
+		ArrayList<Long> newPartnersId = new ArrayList<>();
+		newPartnersId.add(account3.getId());
+		newPartnersId.add(account4.getId());
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
-		unplan.save();
+		unplan.setName("TEST_NAME").setHandlerId(account1.getId()).setPartnersId(oldPartnersId).save();
 		// before testSetPartnersId
-		ArrayList<Long> partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
-		assertEquals(0, partnersId.size());
-		// set one partner
-		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		unplan.setPartnersId(testPartnersId);
-		// testSetPartnersId_withOnePartner
-		partnersId.clear();
-		partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
-		assertEquals(1, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
+		ArrayList<Long> oldPartnersFromDAO = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
+		assertEquals(2, oldPartnersFromDAO.size());
+		assertEquals(account2.getId(), oldPartnersFromDAO.get(0));
+		assertEquals(account3.getId(), oldPartnersFromDAO.get(1));
+		// set new partners
+		unplan.setPartnersId(newPartnersId).save();
+		// test partners
+		ArrayList<Long> newPartnersFromDAO = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
+		assertEquals(2, newPartnersFromDAO.size());
+		assertEquals(account3.getId(), newPartnersFromDAO.get(0));
+		assertEquals(account4.getId(), newPartnersFromDAO.get(1));
+		// test partners history
+		ArrayList<HistoryObject> histories = unplan.getHistories();
+		assertEquals(3, histories.size());
+		assertEquals(HistoryObject.TYPE_REMOVE_PARTNER, histories.get(1).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_UNPLAN, histories.get(1).getIssueType());
+		assertEquals(unplan.getId(), histories.get(1).getIssueId());
+		assertEquals(account2.getId(), Long.parseLong(histories.get(1).getNewValue())); // account2 remove from task
+		assertEquals("Remove Partner", histories.get(1).getHistoryTypeString());
+		assertEquals(account2.getUsername(), histories.get(1).getDescription());
+		assertEquals(HistoryObject.TYPE_ADD_PARTNER, histories.get(2).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_UNPLAN, histories.get(2).getIssueType());
+		assertEquals(unplan.getId(), histories.get(2).getIssueId());
+		assertEquals(account4.getId(), Long.parseLong(histories.get(2).getNewValue())); // add account4 to task
+		assertEquals("Add Partner", histories.get(2).getHistoryTypeString());
+		assertEquals(account4.getUsername(), histories.get(2).getDescription());
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartners() {
 		long TEST_UNPLAN_ID = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
-		unplan.save();
+		unplan.setName("TEST_NAME").save();
 		// before testSetPartnersId
 		ArrayList<Long> partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
 		assertEquals(0, partnersId.size());
 		// set two partners
 		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		testPartnersId.add(2L);
-		unplan.setPartnersId(testPartnersId);
+		testPartnersId.add(account1.getId());
+		testPartnersId.add(account2.getId());
+		unplan.setPartnersId(testPartnersId).save();
 		// testSetPartnersId_withTwoPartners
 		partnersId.clear();
 		partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
-		assertEquals(2L, partnersId.get(1));
+		assertEquals(account1.getId(), partnersId.get(0));
+		assertEquals(account2.getId(), partnersId.get(1));
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartnersAddOneAndRemoveOnePartner() {
 		long TEST_UNPLAN_ID = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
+		AccountObject account3 = new AccountObject("account3");
+		account3.save();
+		// set old partners
+		ArrayList<Long> oldPartnersId = new ArrayList<Long>();
+		oldPartnersId.add(account1.getId());
+		oldPartnersId.add(account2.getId());
+		// set new partners
+		ArrayList<Long> newPartnersId = new ArrayList<Long>();
+		newPartnersId.add(account2.getId());
+		newPartnersId.add(account3.getId());
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
-		unplan.save();
-		// set two partners
-		ArrayList<Long> oldPartnersId = new ArrayList<Long>();
-		oldPartnersId.add(1L);
-		oldPartnersId.add(2L);
-		unplan.setPartnersId(oldPartnersId);
-		// testSetPartnersId_withTwoPartnersAddOneAndRemoveOnePartner
-		ArrayList<Long> newPartnersId = new ArrayList<Long>();
-		newPartnersId.add(2L);
-		newPartnersId.add(3L);
-		unplan.setPartnersId(newPartnersId);
+		unplan.setName("TEST_NAME").setPartnersId(oldPartnersId).save();
+		// set new partners for unplan
+		unplan.setPartnersId(newPartnersId).save();
 		ArrayList<Long> partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
-		partnersId.clear();
-		partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(2L, partnersId.get(0));
-		assertEquals(3L, partnersId.get(1));
+		assertEquals(account2.getId(), partnersId.get(0));
+		assertEquals(account3.getId(), partnersId.get(1));
 	}
 
 	@Test

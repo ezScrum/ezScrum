@@ -28,6 +28,7 @@ public class UnplanObject implements IBaseObject {
 	private long mProjectId = DEFAULT_VALUE;
 	private long mSprintId = DEFAULT_VALUE;
 	private long mHandlerId = DEFAULT_VALUE;
+	private ArrayList<Long> mPartnersId = new ArrayList<>();
 	private String mName = "";
 	private String mNotes = "";
 	private int mEstimate = 0;
@@ -96,26 +97,14 @@ public class UnplanObject implements IBaseObject {
 		return this;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public UnplanObject setPartnersId(ArrayList<Long> newPartnersId) {
-		ArrayList<Long> oldPartnersId = getPartnersId();
-		ArrayList<Long> intersectionPartnersId = (ArrayList<Long>) CollectionUtils
-				.intersection(oldPartnersId, newPartnersId);
-		ArrayList<Long> shouldRemovePartnersId = (ArrayList<Long>) CollectionUtils
-				.subtract(oldPartnersId, intersectionPartnersId);
-		ArrayList<Long> shouldAddPartnersId = (ArrayList<Long>) CollectionUtils.subtract(
-				newPartnersId, intersectionPartnersId);
-		for (long partnerId : shouldRemovePartnersId) {
-			UnplanDAO.getInstance().removePartner(mId, partnerId);
-		}
-		for (long partnerId : shouldAddPartnersId) {
-			UnplanDAO.getInstance().addPartner(mId, partnerId);
-		}
+		mPartnersId = newPartnersId;
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
-		if (!UnplanDAO.getInstance().partnerExists(mId, partnerId)) {
+		AccountObject partner = AccountObject.get(partnerId);
+		if (partner != null && !UnplanDAO.getInstance().partnerExists(mId, partnerId)) {
 			UnplanDAO.getInstance().addPartner(mId, partnerId);
 		}
 	}
@@ -347,6 +336,9 @@ public class UnplanObject implements IBaseObject {
 		mActual = mEstimate;
 		
 		mId = UnplanDAO.getInstance().create(this);
+		for (long partnerId : mPartnersId) {
+			addPartner(partnerId);
+		}
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
@@ -381,6 +373,8 @@ public class UnplanObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
 					mHandlerId);
 		}
+		
+		setPartnersAndHistory(System.currentTimeMillis());
 	}
 
 	// for specific time update
@@ -415,6 +409,29 @@ public class UnplanObject implements IBaseObject {
 		if (mHandlerId != oldUnplan.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
 					mHandlerId, specificTime);
+		}
+		
+		setPartnersAndHistory(specificTime);
+	}
+	
+	private void setPartnersAndHistory(long specificTime) {
+		ArrayList<Long> oldPartnersId = getPartnersId();
+		@SuppressWarnings("unchecked")
+		ArrayList<Long> intersectionPartnersId = (ArrayList<Long>) CollectionUtils
+				.intersection(oldPartnersId, mPartnersId);
+		@SuppressWarnings("unchecked")
+		ArrayList<Long> shouldRemovePartnersId = (ArrayList<Long>) CollectionUtils
+				.subtract(oldPartnersId, intersectionPartnersId);
+		@SuppressWarnings("unchecked")
+		ArrayList<Long> shouldAddPartnersId = (ArrayList<Long>) CollectionUtils.subtract(
+				mPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
+			removePartner(partnerId);
+			addHistory(HistoryObject.TYPE_REMOVE_PARTNER, "", String.valueOf(partnerId), specificTime);
+		}
+		for (long partnerId : shouldAddPartnersId) {
+			addPartner(partnerId);
+			addHistory(HistoryObject.TYPE_ADD_PARTNER, "", String.valueOf(partnerId), specificTime);
 		}
 	}
 

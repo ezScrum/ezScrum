@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.UnplanInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
@@ -158,6 +159,11 @@ public class UnplanItemMapperTest {
 	
 	@Test
 	public void testUpdateUnplan() {
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// 新增 1 Unplan
 		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
@@ -180,7 +186,10 @@ public class UnplanItemMapperTest {
 		unplanInfo.actual = 456;
 		unplanInfo.sprintId = 2;
 		unplanInfo.status = UnplanObject.STATUS_DONE;
-		
+		ArrayList<Long> partnersId = new ArrayList<Long>();
+		partnersId.add(account1.getId());
+		partnersId.add(account2.getId());
+		unplanInfo.partnersId = partnersId;
 		mUnplanMapper.updateUnplan(unplan.getId(), unplanInfo);
 		
 		unplan.reload();
@@ -192,6 +201,9 @@ public class UnplanItemMapperTest {
 		assertEquals(456, unplan.getActual());
 		assertEquals(2, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
+		assertEquals(2, unplan.getPartnersId().size());
+		assertEquals(account1.getId(), unplan.getPartnersId().get(0));
+		assertEquals(account2.getId(), unplan.getPartnersId().get(1));
 	}
 	
     @Test

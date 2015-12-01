@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -383,6 +384,11 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testUpdateTask() {
 		long taskId = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// get old task
 		TaskObject oldTask = TaskObject.get(taskId);
 		// check task status before update task
@@ -405,8 +411,8 @@ public class SprintBacklogMapperTest {
 		taskInfo.actual = 6;
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		ArrayList<Long> partnersId = new ArrayList<Long>();
-		partnersId.add(1L);
-		partnersId.add(2L);
+		partnersId.add(account1.getId());
+		partnersId.add(account2.getId());
 		taskInfo.partnersId = partnersId;
 		// update task
 		mSprintBacklogMapper.updateTask(taskId, taskInfo);
@@ -421,8 +427,8 @@ public class SprintBacklogMapperTest {
 		assertEquals(6, newTask.getActual());
 		assertEquals("NEW_TEST_TASK_NOTES", newTask.getNotes());
 		assertEquals(2, newTask.getPartnersId().size());
-		assertEquals(1, newTask.getPartnersId().get(0));
-		assertEquals(2, newTask.getPartnersId().get(1));
+		assertEquals(account1.getId(), newTask.getPartnersId().get(0));
+		assertEquals(account2.getId(), newTask.getPartnersId().get(1));
 	}
 
 	@Test
