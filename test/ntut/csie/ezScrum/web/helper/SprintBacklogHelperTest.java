@@ -330,7 +330,7 @@ public class SprintBacklogHelperTest {
 			JSONObject storyInfoText = sprintBacklogInfoText
 					.getJSONObject(storyIndex);
 			assertEquals(storyIndex + 1, storyInfoText.getLong("ID"));
-			assertEquals("Story", storyInfoText.getString("Type"));
+			assertEquals("Story", storyInfoText.getString("IssueType"));
 			assertEquals("", storyInfoText.getString("Tag"));
 			assertEquals("TEST_STORY_" + (storyIndex + 1),
 					storyInfoText.getString("Name"));
@@ -356,7 +356,7 @@ public class SprintBacklogHelperTest {
 				JSONObject taskInfoText = tasksInfoText
 						.getJSONObject(taskIndex);
 				assertEquals(storyCount * storyIndex + taskIndex + 1, taskInfoText.getLong("ID"));
-				assertEquals("Task", taskInfoText.getString("Type"));
+				assertEquals("Task", taskInfoText.getString("IssueType"));
 				assertEquals("TEST_TASK_" + (taskIndex + 1),
 						taskInfoText.getString("Name"));
 				assertEquals("", taskInfoText.getString("Handler"));
