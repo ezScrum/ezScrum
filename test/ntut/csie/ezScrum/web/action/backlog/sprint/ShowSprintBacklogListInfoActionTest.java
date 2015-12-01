@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
@@ -141,7 +139,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		String actualResponseText = response.getWriterBuffer().toString();
 		
 		//	story
-		String storyType = "\"Type\":\"Story\"";
+		String storyType = "\"IssueType\":\"Story\"";
 		String storyName = "\"Name\":\"TEST_STORY_1\"";
 		String storyImportance = "\"Importance\":\"100\"";
 		String storyValue = "\"Value\":\"50\"";
@@ -155,7 +153,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		assertTrue(actualResponseText.contains(storyNotes));
 		
 		//	task
-		String taskType = "\"Type\":\"Task\"";
+		String taskType = "\"IssueType\":\"Task\"";
 		String taskName = "\"Name\":\"TEST_TASK_1\"";
 		String taskValue = "\"Value\":\"\"";
 		String taskEstimatation = "\"Estimate\":\"2\"";
@@ -221,7 +219,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		TaskDate = getStoryDate.getDateList(currentDate, 10);
 		
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("[{\"Type\":\"" + issueType + "\"")
+		expectedResponseTest.append("[{\"IssueType\":\"" + issueType + "\"")
 							.append(",\"ID\":\"" + storyId + "\"")
 							.append(",\"Tag\":\"\"")
 							.append(",\"Name\":\"" + storyName + "\"")
@@ -246,7 +244,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"expanded\":false")
 							.append(",\"id\":\"Story:1\"")
 							.append(",\"cls\":\"folder\"")
-							.append(",\"children\":[{\"Type\":\"" + taskType + "\"")
+							.append(",\"children\":[{\"IssueType\":\"" + taskType + "\"")
 							.append(",\"ID\":\"" + taskId + "\"")
 							.append(",\"Tag\":\"\"")
 							.append(",\"Name\":\"" + taskName + "\"")
