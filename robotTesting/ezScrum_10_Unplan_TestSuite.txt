@@ -40,7 +40,7 @@ Test Unplan - Add Unplan
     Should Be Equal    ${addUnplanList[4]}    ${actualPartners}
     Should Be Equal    ${addUnplanList[5]}    ${actualEstimate}
     Should Be Equal    ${addUnplanList[6]}    ${actualNotes}
-    Should Be Equal    0    ${actualActual}
+    Should Be Equal    ${addUnplanList[5]}    ${actualActual}
     Should Be Equal    new    ${actualStatus}
     [Teardown]    Test Unplan Add Teardown
 
