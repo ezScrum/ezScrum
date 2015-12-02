@@ -3,10 +3,16 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	border : false,
 	frame : true,
 	title : 'Import Page',
-	bodyStyle : 'padding:0px;margin:0px',
-	labelAlign : 'left',
+	padding : '0 0 0 100',
+	labelAlign : 'center',
 	labelWidth : 80,
-	buttonAlign : 'center',
+	labelStyle: 'margin-left:100px;',
+	defaults: {
+        anchor: '-100',
+        allowBlank: false,
+        msgTarget: 'side'
+    },
+//	buttonAlign : 'center',
 	monitorValid : true,
 	loadmask : null,
 	initComponent : function() {
@@ -15,18 +21,20 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 			modify_url : 'import.do',
 			items : [ {
 				id:"files",
-				width : '49.5%',
 				xtype : 'fileuploadfield',
-				fieldLabel : 'Choose file'
-			} ],
-			buttons : [ {
+				emptyText: 'Select a document to upload...',
+                fieldLabel: 'File',
+//                anchor: '-200',
+                buttonText: 'Browse'
+			},{
+				xtype: 'button',
 				formBind : true,
 				scope : this,
 				text : 'Import',
-				disabled : true,
+//				disabled : true,
+				width: 300,
 				handler : this.import
-			} ]
-
+			} ],	
 		}
 
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -38,6 +46,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		reader.readAsText($("input[type='file']")[0].files[0]);
 		//file content is in e.target.result
 		reader.onloadend = function(e) {
+			console.log(e.target.result);
 		    $.ajax({
 				url: "",
 				method: "post",
