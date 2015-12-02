@@ -22,15 +22,14 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 
 	@Override
 	public long create(TokenObject token) {
-		long currentTime = System.currentTimeMillis();
 		IQueryValueSet valueSet = new MySQLQuerySet(); 
 		valueSet.addTableName(TokenEnum.TABLE_NAME);
 		valueSet.addInsertValue(TokenEnum.ACCOUNT_ID, token.getAccountId());
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
-		valueSet.addInsertValue(TokenEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, token.getCreateTime());
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, token.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		return id;
