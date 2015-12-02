@@ -80,6 +80,10 @@ public class TokenObject implements IBaseObject {
 		return mPlatformType;
 	}
 	
+	public void setCreateTime(long createTime) {
+		mCreateTime = createTime;
+	}
+	
 	public long getCreateTime() {
 		return mCreateTime;
 	}
@@ -158,6 +162,7 @@ public class TokenObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = TokenDAO.getInstance().create(this);
 		reload();
 	}
