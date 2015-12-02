@@ -200,6 +200,7 @@ public class ReleaseObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = ReleaseDAO.getInstance().create(this);
 		reload();
 	}

@@ -42,9 +42,9 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addInsertValue(AccountEnum.ENABLE,
 				String.valueOf(account.getEnable() == true ? 1 : 0));
 		valueSet.addInsertValue(AccountEnum.CREATE_TIME,
-				System.currentTimeMillis());
+				account.getCreateTime());
 		valueSet.addInsertValue(AccountEnum.UPDATE_TIME,
-				System.currentTimeMillis());
+				account.getCreateTime());
 		String query = valueSet.getInsertQuery();
 
 		mControl.execute(query, true);

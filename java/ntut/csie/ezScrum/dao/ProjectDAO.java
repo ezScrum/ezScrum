@@ -25,8 +25,6 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 
 	@Override
 	public long create(ProjectObject project) {
-		long createTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.NAME, project.getName());
@@ -34,8 +32,8 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
 		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
 		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
+		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, project.getCreateTime());
+		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, project.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 

@@ -25,8 +25,6 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 
 	@Override
 	public long create(ReleaseObject release) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				release.getProjectId());
@@ -43,8 +41,8 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		valueSet.addInsertValue(ReleaseEnum.DUE_DATE,
 				release.getDueDateString());
 		valueSet.addInsertValue(ReleaseEnum.PROJECT_ID, release.getProjectId());
-		valueSet.addInsertValue(ReleaseEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(ReleaseEnum.CREATE_TIME, release.getCreateTime());
+		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);

@@ -153,6 +153,7 @@ public class AttachFileObject implements IBaseObject {
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = AttachFileDAO.getInstance().create(this);
 		reload();
 	}

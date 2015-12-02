@@ -30,7 +30,7 @@ public class AttachFileDAO extends AbstractDAO<AttachFileObject, AttachFileObjec
 		valueSet.addInsertValue(AttachFileEnum.NAME, attachFile.getName());
 		valueSet.addInsertValue(AttachFileEnum.PATH, attachFile.getPath());
 		valueSet.addInsertValue(AttachFileEnum.CONTENT_TYPE, attachFile.getContentType());
-		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(AttachFileEnum.CREATE_TIME, String.valueOf(attachFile.getCreateTime()));
 		String query = valueSet.getInsertQuery();
 
 		return mControl.executeInsert(query);
