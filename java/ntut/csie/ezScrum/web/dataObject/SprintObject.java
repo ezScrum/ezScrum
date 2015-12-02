@@ -221,6 +221,7 @@ public class SprintObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = SprintDAO.getInstance().create(this);
 		reload();
 	}

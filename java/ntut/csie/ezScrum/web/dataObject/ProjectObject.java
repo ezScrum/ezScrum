@@ -299,6 +299,7 @@ public class ProjectObject implements IBaseObject {
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = ProjectDAO.getInstance().create(this);
 		SerialNumberObject serialNumber = new SerialNumberObject(mId);
 		serialNumber.setReleaseId(0)

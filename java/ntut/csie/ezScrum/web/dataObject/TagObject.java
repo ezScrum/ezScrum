@@ -124,6 +124,7 @@ public class TagObject implements IBaseObject{
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = TagDAO.getInstance().create(this);
 		reload();
 	}

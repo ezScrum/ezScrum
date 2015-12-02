@@ -23,7 +23,6 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	@Override
 	public long create(StoryObject story) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		long currentTime = System.currentTimeMillis();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 		        story.getProjectId());
 
@@ -39,8 +38,8 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
 		valueSet.addInsertValue(StoryEnum.PROJECT_ID, story.getProjectId());
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
-		valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(StoryEnum.CREATE_TIME, story.getCreateTime());
+		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		serialNumber.setStoryId(storyId);

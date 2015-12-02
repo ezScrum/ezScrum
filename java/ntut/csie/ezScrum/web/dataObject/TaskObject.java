@@ -380,7 +380,6 @@ public class TaskObject implements IBaseObject {
 	 */
 	public void save(long specificTime) {
 		if (exists()) {
-			mUpdateTime = specificTime;
 			doUpdate(specificTime);
 		} else {
 			doCreate();
@@ -432,7 +431,6 @@ public class TaskObject implements IBaseObject {
 	private void doCreate() {
 		// default remains hour should equal to estimate
 		mRemains = mEstimate;
-
 		mId = TaskDAO.getInstance().create(this);
 		for (long partnerId : mPartnersId) {
 			addPartner(partnerId);
@@ -451,43 +449,43 @@ public class TaskObject implements IBaseObject {
 	private void doUpdate() {
 		mUpdateTime = System.currentTimeMillis();
 		TaskObject oldTask = TaskObject.get(mId);
-
 		TaskDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldTask.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
+			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName, mUpdateTime);
 		}
 		if (!mNotes.equals(oldTask.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
+			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes, mUpdateTime);
 		}
 		if (mStatus != oldTask.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus, mUpdateTime);
 		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
-					mEstimate);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldTask.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual);
+			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual, mUpdateTime);
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-					mRemains);
+					mRemains, mUpdateTime);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId); // for task
-				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId); // for
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, mUpdateTime); // for task
+				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId, mUpdateTime); // for
 																		// story
 			}
 			// task append to story
 			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-				addHistoryOfAddRelation(mStoryId, mId);
+				addHistoryOfAddRelation(mStoryId, mId, mUpdateTime);
 			}
 		}
 		if (mHandlerId != oldTask.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
-					mHandlerId);
+					mHandlerId, mUpdateTime);
 		}
 		
 		setPartnersAndHistory(mUpdateTime);
@@ -495,51 +493,53 @@ public class TaskObject implements IBaseObject {
 
 	// for specific time update
 	private void doUpdate(long specificTime) {
+		mUpdateTime = specificTime;
 		TaskObject oldTask = TaskObject.get(mId);
 		TaskDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldTask.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName,
-					specificTime);
+					mUpdateTime);
 		}
 		if (!mNotes.equals(oldTask.getNotes())) {
 			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
-					mEstimate, specificTime);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldTask.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-					mRemains, specificTime);
+					mRemains, mUpdateTime);
 		}
 		if (mStatus != oldTask.getStatus()) {
 			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, specificTime); // for
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, mUpdateTime); // for
 																				// task
 				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
-						specificTime); // for story
+						mUpdateTime); // for story
 			}
 			// task append to story
 			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-				addHistoryOfAddRelation(mStoryId, mId, specificTime);
+				addHistoryOfAddRelation(mStoryId, mId, mUpdateTime);
 			}
 		}
 		if (mHandlerId != oldTask.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
-					mHandlerId, specificTime);
+					mHandlerId, mUpdateTime);
 		}
 		
-		setPartnersAndHistory(specificTime);
+		setPartnersAndHistory(mUpdateTime);
 	}
 	
 	private void setPartnersAndHistory(long specificTime) {
@@ -582,10 +582,6 @@ public class TaskObject implements IBaseObject {
 		history.save();
 	}
 
-	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(storyId));
-	}
-
 	// addHistoryOfTaskDropFromStory for specific time
 	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId,
 			long specificTime) {
@@ -593,10 +589,10 @@ public class TaskObject implements IBaseObject {
 				specificTime);
 	}
 
-	private void addHistoryOfStoryDropTask(long storyId, long taskId) {
+	private void addHistoryOfStoryDropTask(long storyId, long taskId, long specificTime) {
 		HistoryObject history = new HistoryObject(storyId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
-				String.valueOf(mId), System.currentTimeMillis());
+				String.valueOf(mId), specificTime);
 		history.save();
 	}
 
@@ -607,10 +603,6 @@ public class TaskObject implements IBaseObject {
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
 				String.valueOf(mId), specificTime);
 		history.save();
-	}
-
-	private void addHistory(int type, long oldValue, long newValue) {
-		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
 	}
 
 	// add history for specific time

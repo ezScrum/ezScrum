@@ -24,8 +24,6 @@ public class RetrospectiveDAO extends
 
 	@Override
 	public long create(RetrospectiveObject retrospective) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(retrospective.getProjectId());
 
@@ -39,8 +37,8 @@ public class RetrospectiveDAO extends
 		valueSet.addInsertValue(RetrospectiveEnum.STATUS, RetrospectiveObject.STATUS_NEW); // 新增後的狀態為new
 		valueSet.addInsertValue(RetrospectiveEnum.SPRINT_ID, retrospective.getSprintId());
 		valueSet.addInsertValue(RetrospectiveEnum.PROJECT_ID, retrospective.getProjectId());
-		valueSet.addInsertValue(RetrospectiveEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(RetrospectiveEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(RetrospectiveEnum.CREATE_TIME, retrospective.getCreateTime());
+		valueSet.addInsertValue(RetrospectiveEnum.UPDATE_TIME, retrospective.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);

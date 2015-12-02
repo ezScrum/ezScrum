@@ -271,7 +271,6 @@ public class UnplanObject implements IBaseObject {
 	@Override
 	public void save() {
 		if (exists()) {
-			mUpdateTime = System.currentTimeMillis();
 			doUpdate();
 		} else {
 			doCreate();
@@ -285,7 +284,6 @@ public class UnplanObject implements IBaseObject {
 	 */
 	public void save(long specificTime) {
 		if (exists()) {
-			mUpdateTime = specificTime;
 			doUpdate(specificTime);
 		} else {
 			doCreate();
@@ -347,71 +345,73 @@ public class UnplanObject implements IBaseObject {
 	}
 
 	private void doUpdate() {
+		mUpdateTime = System.currentTimeMillis();
 		UnplanObject oldUnplan = UnplanObject.get(mId);
-
 		UnplanDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldUnplan.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldUnplan.getName(), mName);
+			addHistory(HistoryObject.TYPE_NAME, oldUnplan.getName(), mName, mUpdateTime);
 		}
 		if (!mNotes.equals(oldUnplan.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldUnplan.getNotes(), mNotes);
+			addHistory(HistoryObject.TYPE_NOTE, oldUnplan.getNotes(), mNotes, mUpdateTime);
 		}
 		if (mStatus != oldUnplan.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus);
+			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus, mUpdateTime);
 		}
 		if (mEstimate != oldUnplan.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
-					mEstimate);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldUnplan.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual);
+			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual, mUpdateTime);
 		}
 		if (mSprintId != oldUnplan.getSprintId()) {
-			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId);
+			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId, mUpdateTime);
 		}
 		if (mHandlerId != oldUnplan.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
-					mHandlerId);
+					mHandlerId, mUpdateTime);
 		}
 		
-		setPartnersAndHistory(System.currentTimeMillis());
+		setPartnersAndHistory(mUpdateTime);
 	}
 
 	// for specific time update
 	private void doUpdate(long specificTime) {
+		mUpdateTime = specificTime;
 		UnplanObject oldUnplan = UnplanObject.get(mId);
-		
 		UnplanDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldUnplan.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldUnplan.getName(), mName,
-					specificTime);
+					mUpdateTime);
 		}
 		if (!mNotes.equals(oldUnplan.getNotes())) {
 			addHistory(HistoryObject.TYPE_NOTE, oldUnplan.getNotes(), mNotes,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mEstimate != oldUnplan.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
-					mEstimate, specificTime);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldUnplan.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mStatus != oldUnplan.getStatus()) {
 			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mSprintId != oldUnplan.getSprintId()) {
 			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mHandlerId != oldUnplan.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldUnplan.getHandlerId(),
-					mHandlerId, specificTime);
+					mHandlerId, mUpdateTime);
 		}
 		
-		setPartnersAndHistory(specificTime);
+		setPartnersAndHistory(mUpdateTime);
 	}
 	
 	private void setPartnersAndHistory(long specificTime) {
@@ -435,21 +435,11 @@ public class UnplanObject implements IBaseObject {
 		}
 	}
 
-	private void addHistory(int type, long oldValue, long newValue) {
-		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
-	}
-
 	// add history for specific time
 	private void addHistory(int type, long oldValue, long newValue,
 			long specificTime) {
 		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue),
 				specificTime);
-	}
-
-	private void addHistory(int type, String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
-				type, oldValue, newValue, System.currentTimeMillis());
-		history.save();
 	}
 
 	// add history for specific time

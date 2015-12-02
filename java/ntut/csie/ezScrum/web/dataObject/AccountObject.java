@@ -268,6 +268,7 @@ public class AccountObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = AccountDAO.getInstance().create(this);
 		reload();
 	}
