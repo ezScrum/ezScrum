@@ -68,7 +68,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -111,7 +111,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -197,7 +197,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -268,7 +268,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -323,7 +323,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -355,7 +355,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -388,7 +388,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -432,7 +432,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + (i + 1))
 			        .setComment("TEST_COMMON_" + (i + 1))
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -454,7 +454,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}

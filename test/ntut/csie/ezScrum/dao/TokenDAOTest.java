@@ -73,7 +73,6 @@ public class TokenDAOTest {
 	@Test
 	public void testCreate() throws SQLException {
 		TokenObject token = new TokenObject(mAccountId, mPlatformType);
-		
 		long id = TokenDAO.getInstance().create(token);
 		
 		assertEquals(1, id);

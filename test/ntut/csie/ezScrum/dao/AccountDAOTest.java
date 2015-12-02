@@ -61,7 +61,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -94,7 +94,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -125,7 +125,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// update 
@@ -158,7 +158,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -196,7 +196,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		
@@ -221,7 +221,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -241,7 +241,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// Query
