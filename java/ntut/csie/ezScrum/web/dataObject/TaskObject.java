@@ -490,7 +490,7 @@ public class TaskObject implements IBaseObject {
 					mHandlerId);
 		}
 		
-		setPartnersAndHistory(System.currentTimeMillis());
+		setPartnersAndHistory(mUpdateTime);
 	}
 
 	// for specific time update
