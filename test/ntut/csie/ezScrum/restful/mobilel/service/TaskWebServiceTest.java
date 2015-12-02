@@ -104,7 +104,7 @@ public class TaskWebServiceTest {
 	}
 	
 	@Test
-	public void testGetTasksWithNoParent() throws SQLException, JSONException{
+	public void testGetDroppedTasks() throws SQLException, JSONException{
 		String TEST_TASK_NAME = "TEST_TASK_1";
 		String TEST_TASK_NOTE = "TEST_TASK_NOTE_1";
 		TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
@@ -116,7 +116,7 @@ public class TaskWebServiceTest {
 		task.save();
 		task.reload();
 		
-		String actualTaskString = mTaskWebService.getTasksWithNoParent();
+		String actualTaskString = mTaskWebService.getDroppedTasks();
 		Gson gson = new Gson();
 		
 		ArrayList<TaskObject> existedTask = new ArrayList<TaskObject>();

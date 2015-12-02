@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -227,10 +228,10 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetStoriesWithNoParent() {
+	public void testGetDroppedStories() {
 		// check existed stories before test
 		ArrayList<StoryObject> existedStories = mSprintBacklogMapper
-				.getStoriesWithNoParent();
+				.getDroppedStories();
 		assertEquals(0, existedStories.size());
 		ArrayList<StoryObject> storiesInSprint = mSprintBacklogMapper
 				.getStoriesInSprint();
@@ -242,7 +243,7 @@ public class SprintBacklogMapperTest {
 		storiesInSprint.get(0).setSprintId(StoryObject.DEFAULT_VALUE).save();
 
 		// check dropped stories after add a dropped story
-		existedStories = mSprintBacklogMapper.getStoriesWithNoParent();
+		existedStories = mSprintBacklogMapper.getDroppedStories();
 		storiesInSprint = mSprintBacklogMapper.getStoriesInSprint();
 
 		assertEquals(StoryObject.DEFAULT_VALUE, existedStories.get(0)
@@ -383,6 +384,11 @@ public class SprintBacklogMapperTest {
 	@Test
 	public void testUpdateTask() {
 		long taskId = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// get old task
 		TaskObject oldTask = TaskObject.get(taskId);
 		// check task status before update task
@@ -405,8 +411,8 @@ public class SprintBacklogMapperTest {
 		taskInfo.actual = 6;
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		ArrayList<Long> partnersId = new ArrayList<Long>();
-		partnersId.add(1L);
-		partnersId.add(2L);
+		partnersId.add(account1.getId());
+		partnersId.add(account2.getId());
 		taskInfo.partnersId = partnersId;
 		// update task
 		mSprintBacklogMapper.updateTask(taskId, taskInfo);
@@ -421,8 +427,8 @@ public class SprintBacklogMapperTest {
 		assertEquals(6, newTask.getActual());
 		assertEquals("NEW_TEST_TASK_NOTES", newTask.getNotes());
 		assertEquals(2, newTask.getPartnersId().size());
-		assertEquals(1, newTask.getPartnersId().get(0));
-		assertEquals(2, newTask.getPartnersId().get(1));
+		assertEquals(account1.getId(), newTask.getPartnersId().get(0));
+		assertEquals(account2.getId(), newTask.getPartnersId().get(1));
 	}
 
 	@Test
@@ -561,7 +567,7 @@ public class SprintBacklogMapperTest {
 	}
 
 	@Test
-	public void testGetTasksWithNoParent() {
+	public void testGetDroppedTasks() {
 		long projectId = mCP.getAllProjects().get(0).getId();
 
 		// add two task, no parent
@@ -583,7 +589,7 @@ public class SprintBacklogMapperTest {
 
 		// assert size
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper
-				.getTasksWithNoParent(projectId);
+				.getDroppedTasks(projectId);
 		assertEquals(2, tasks.size());
 
 		// assert first task

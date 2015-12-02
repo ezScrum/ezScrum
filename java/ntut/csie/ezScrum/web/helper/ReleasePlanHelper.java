@@ -114,7 +114,6 @@ public class ReleasePlanHelper {
 
 	public String setJson(ArrayList<ReleaseObject> releases,
 			SprintPlanHelper sprintPlanHelper) {
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		StringBuilder stringBuilder = new StringBuilder("[");
 		boolean isFirstRelease = true;
 		for (ReleaseObject release : releases) {
@@ -130,7 +129,7 @@ public class ReleasePlanHelper {
 			stringBuilder.append(release.getId());
 			stringBuilder.append("\',");
 			stringBuilder.append("Name:\'");
-			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getName()));
+			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getName()));
 			stringBuilder.append("\',");
 			stringBuilder.append("StartDate:\'");
 			stringBuilder.append(release.getStartDateString());
@@ -139,7 +138,7 @@ public class ReleasePlanHelper {
 			stringBuilder.append(release.getDueDateString());
 			stringBuilder.append("\',");
 			stringBuilder.append("Description:\'");
-			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getDescription()));
+			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getDescription()));
 			stringBuilder.append("\',");
 			
 
@@ -317,7 +316,6 @@ public class ReleasePlanHelper {
 	// 透過release 將 sprint 的資訊寫成 Json
 	private String setSprintToJson(ReleaseObject release,
 			SprintPlanHelper sprintPlanHelper) {
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		StringBuilder stringBuilder = new StringBuilder("");
 		if (release.getSprints() != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			boolean isFirstSprint = true;
@@ -335,7 +333,7 @@ public class ReleasePlanHelper {
 				stringBuilder.append(sprint.getId());
 				stringBuilder.append("\',");
 				stringBuilder.append("Name:\'");
-				stringBuilder.append(translateSpecialChar.TranslateJSONChar(sprint.getGoal()));
+				stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(sprint.getGoal()));
 				stringBuilder.append("\',");
 				stringBuilder.append("StartDate:\'");
 				stringBuilder.append(sprint.getStartDateString());

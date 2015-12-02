@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.dao.UnplannedDAO;
+import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
@@ -166,8 +166,8 @@ public class ProjectObject implements IBaseObject {
 		return projectWorkers;
 	}
 	
-	public ArrayList<StoryObject> getStoriesWithNoParent() {
-		return StoryDAO.getInstance().getStoriesWithNoParent(mId);
+	public ArrayList<StoryObject> getDroppedStories() {
+		return StoryDAO.getInstance().getDroppedStories(mId);
 	}
 	
 	// get all stories
@@ -175,13 +175,13 @@ public class ProjectObject implements IBaseObject {
 		return StoryDAO.getInstance().getStoriesByProjectId(mId);
 	}
 	
-	//get all unplanneds
-	public ArrayList<UnplannedObject> getUnplanneds() {
-		return UnplannedDAO.getInstance().getUnplannedsByProjectId(mId);
+	//get all unplans
+	public ArrayList<UnplanObject> getUnplans() {
+		return UnplanDAO.getInstance().getUnplansByProjectId(mId);
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent() {
-		return TaskDAO.getInstance().getTasksWithNoParent(mId);
+	public ArrayList<TaskObject> getDroppedTasks() {
+		return TaskDAO.getInstance().getDroppedTasks(mId);
 	}
 
 	public ArrayList<SprintObject> getSprints() {
@@ -280,7 +280,8 @@ public class ProjectObject implements IBaseObject {
 		return success;
     }
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		ProjectObject projectById = ProjectDAO.getInstance().get(mId);
 		ProjectObject projectByName = ProjectDAO.getInstance().get(mName);
 		return projectById != null || projectByName != null;
@@ -298,9 +299,15 @@ public class ProjectObject implements IBaseObject {
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = ProjectDAO.getInstance().create(this);
-		SerialNumberObject serialNumber = new SerialNumberObject(mId
-				, 0, 0, 0, 0, 0, 0);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplanId(0);
 		serialNumber.save();
         reload();
 	}

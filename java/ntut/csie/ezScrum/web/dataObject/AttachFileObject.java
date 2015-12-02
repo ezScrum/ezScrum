@@ -2,13 +2,15 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.HashMap;
 
-import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class AttachFileObject {
+import ntut.csie.ezScrum.dao.AttachFileDAO;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+
+public class AttachFileObject implements IBaseObject {
+	private final static int DEFAULT_VALUE = -1;
 	private long mId = -1;
 	private long mIssueId = -1;
 	private int mIssueType;
@@ -26,37 +28,40 @@ public class AttachFileObject {
 	 * @param path : 完整的檔案路徑
 	 * @param createTime : 檔案上傳的時間 (Milliseconds)
 	 */
-	private AttachFileObject(AttachFileObject.Builder builder) {
-		this.mId = builder.mId;
-		this.mName = builder.mName;
-		this.mPath = builder.mPath;
-		this.mCreateTime = builder.mCreateTime;
-		this.mIssueId = builder.mIssueId;
-		this.mIssueType = builder.mIssueType;
-		this.mContentType = builder.mContentType;
+	public AttachFileObject() {
+	}
+	
+	public AttachFileObject(long id) {
+		mId = id;
+	}
+	
+	public static AttachFileObject get(long id) {
+		return AttachFileDAO.getInstance().get(id);
 	}
 
 	public long getId() {
 		return mId;
 	}
 
-	public void setId(long attachFileId) {
+	public AttachFileObject setId(long attachFileId) {
 		mId = attachFileId;
+		return this;
 	}
 
 	public long getIssueId() {
 		return mIssueId;
 	}
 
-	public void setIssueId(long issueId) {
+	public AttachFileObject setIssueId(long issueId) {
 		mIssueId = issueId;
+		return this;
 	}
 
 	public int getIssueType() {
 		return mIssueType;
 	}
 	
-	public String getIssueTypeStr() {
+	public String getIssueTypeString() {
 		HashMap<Integer, String> map = new HashMap<Integer, String>();
 		map.put(IssueTypeEnum.TYPE_STORY, "Story");
 		map.put(IssueTypeEnum.TYPE_TASK, "Task");
@@ -64,24 +69,27 @@ public class AttachFileObject {
 		return map.get(mIssueType);
 	}
 
-	public void setIssueType(int issueType) {
+	public AttachFileObject setIssueType(int issueType) {
 		mIssueType = issueType;
+		return this;
 	}
 
 	public String getName() {
 		return mName;
 	}
 
-	public void setName(String fileName) {
+	public AttachFileObject setName(String fileName) {
 		mName = fileName;
+		return this;
 	}
 
 	public String getPath() {
 		return mPath;
 	}
 
-	public void setPath(String filePath) {
+	public AttachFileObject setPath(String filePath) {
 		mPath = filePath;
+		return this;
 	}
 
 	public long getCreateTime() {
@@ -91,9 +99,63 @@ public class AttachFileObject {
 	public String getContentType() {
 		return mContentType;
 	}
+	
+	public AttachFileObject setContentType(String contentType) {
+		mContentType = contentType;
+		return this;
+	}
 
-	public void setCreateTime(long createTime) {
+	public AttachFileObject setCreateTime(long createTime) {
 		mCreateTime = createTime;
+		return this;
+	}
+	
+	@Override
+	public void save() {
+		if (!exists()) {
+			doCreate();
+		}
+	}
+
+	@Override
+	public void reload() {
+		if (exists()) {
+			AttachFileObject attachFile = AttachFileDAO.getInstance().get(mId);
+			resetData(attachFile);
+		}
+	}
+
+	@Override
+	public boolean delete() {
+		boolean success = AttachFileDAO.getInstance().delete(mId);
+		if (success) {
+			mId = DEFAULT_VALUE;
+			mIssueId = DEFAULT_VALUE;
+			mIssueType = DEFAULT_VALUE;
+		}
+		return success;
+	}	
+	
+	@Override
+	public boolean exists() {
+		AttachFileObject attachFile = AttachFileDAO.getInstance().get(mId);
+		return attachFile != null;
+	}
+	
+	private void resetData(AttachFileObject attachFile) {
+		mId = attachFile.getId();
+		mIssueId = attachFile.getIssueId();
+		mIssueType = attachFile.getIssueType();
+		mName = attachFile.getName();
+		mPath = attachFile.getPath();
+		mContentType = attachFile.getContentType();
+		setCreateTime(attachFile.getCreateTime());
+	}
+	
+	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
+		mId = AttachFileDAO.getInstance().create(this);
+		reload();
 	}
 	
 	public String toString() {
@@ -115,54 +177,5 @@ public class AttachFileObject {
 			.put(AttachFileEnum.ISSUE_TYPE, mIssueType)
 			.put(AttachFileEnum.CREATE_TIME, mCreateTime);
 		return attachFileJson;
-	}
-
-	public static class Builder {
-		private long mId = -1;
-		private long mIssueId = -1;
-		private int mIssueType;
-		private String mName;
-		private String mPath;
-		private String mContentType;
-		private long mCreateTime;
-		
-		public AttachFileObject build() {
-			return new AttachFileObject(this);
-		}
-
-		public Builder setAttachFileId(long attachFileId) {
-			mId = attachFileId;
-			return this;
-		}
-
-		public Builder setIssueId(long issueId) {
-			mIssueId = issueId;
-			return this;
-		}
-		
-		public Builder setIssueType(int issueType) {
-			mIssueType = issueType;
-			return this;
-		}
-		
-		public Builder setName(String fileName) {
-			mName = fileName;
-			return this;
-		}
-		
-		public Builder setPath(String filePath) {
-			mPath = filePath;
-			return this;
-		}
-		
-		public Builder setContentType(String contentType) {
-			mContentType = contentType;
-			return this;
-		}
-		
-		public Builder setCreateTime(long createTime) {
-			mCreateTime = createTime;
-			return this;
-		}
 	}
 }

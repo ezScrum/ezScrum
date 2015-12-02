@@ -1121,7 +1121,7 @@ CREATE TABLE `account` (
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 LOCK TABLES `account` WRITE;
 INSERT INTO `account` VALUES (1, 'admin', 'admin', 'example@ezScrum.tw', '21232f297a57a5a743894a0e4a801fc3', 1, 1379910191599, 1379910191599);
@@ -1136,7 +1136,7 @@ CREATE TABLE `project_role` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `scrum_role`;
 CREATE TABLE `scrum_role` (
@@ -1147,7 +1147,7 @@ CREATE TABLE `scrum_role` (
   `access_sprintBacklog` TINYINT NOT NULL DEFAULT 1,
   `access_releasePlan` TINYINT NOT NULL DEFAULT 1,
   `access_retrospective` TINYINT NOT NULL DEFAULT 1,
-  `access_unplanned` TINYINT NOT NULL DEFAULT 1,
+  `access_unplan` TINYINT NOT NULL DEFAULT 1,
   `access_report` TINYINT NOT NULL DEFAULT 1,
   `access_editProject` TINYINT NOT NULL DEFAULT 1,
   `project_id` BIGINT UNSIGNED NOT NULL,
@@ -1155,7 +1155,7 @@ CREATE TABLE `scrum_role` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
@@ -1169,7 +1169,7 @@ CREATE TABLE `project` (
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `sprint`;
 CREATE TABLE `sprint` (
@@ -1189,7 +1189,7 @@ CREATE TABLE `sprint` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `story`;
 CREATE TABLE `story` (
@@ -1198,7 +1198,7 @@ CREATE TABLE `story` (
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `sprint_id` BIGINT NULL,
   `name` TEXT NOT NULL,
-  `status` INT UNSIGNED NOT NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `importance` INT NOT NULL DEFAULT 0,
   `value` INT NOT NULL DEFAULT 0,
@@ -1207,7 +1207,7 @@ CREATE TABLE `story` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -1217,7 +1217,7 @@ CREATE TABLE `task` (
   `story_id` BIGINT NULL,
   `name` TEXT NOT NULL,
   `handler_id` BIGINT,
-  `status` VARCHAR(255) NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `remain` INT NOT NULL DEFAULT 0,
   `actual` INT NOT NULL DEFAULT 0,
@@ -1225,7 +1225,7 @@ CREATE TABLE `task` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
@@ -1237,7 +1237,7 @@ CREATE TABLE `history` (
   `new_value` TEXT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `issue_partner_relation`;
 CREATE TABLE `issue_partner_relation` (
@@ -1246,7 +1246,7 @@ CREATE TABLE `issue_partner_relation` (
   `issue_type` INT NOT NULL,
   `account_id` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
@@ -1256,7 +1256,7 @@ CREATE TABLE `tag` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `story_tag_relation`;
 CREATE TABLE `story_tag_relation` (
@@ -1264,7 +1264,7 @@ CREATE TABLE `story_tag_relation` (
   `tag_id` BIGINT UNSIGNED NOT NULL,
   `story_id` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `release`;
 CREATE TABLE `release` (
@@ -1278,7 +1278,7 @@ CREATE TABLE `release` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `retrospective`;
 CREATE TABLE `retrospective` (
@@ -1293,10 +1293,10 @@ CREATE TABLE `retrospective` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `unplanned`;
-CREATE TABLE `unplanned` (
+DROP TABLE IF EXISTS `unplan`;
+CREATE TABLE `unplan` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `serial_id` BIGINT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -1304,13 +1304,13 @@ CREATE TABLE `unplanned` (
   `estimate` INT NOT NULL,
   `actual` INT NOT NULL,
   `notes` TEXT NOT NULL,
-  `status` VARCHAR(255) NOT NULL,
+  `status` TINYINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,
   `sprint_id` BIGINT UNSIGNED NOT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `attach_file`;
 CREATE TABLE `attach_file` (
@@ -1322,7 +1322,7 @@ CREATE TABLE `attach_file` (
   `content_type` TEXT,
   `create_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `system`;
 CREATE TABLE `system` (
@@ -1330,7 +1330,7 @@ CREATE TABLE `system` (
   `account_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `account_id_UNIQUE` (`account_id` ASC))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `serial_number`;
 CREATE TABLE `serial_number` (
@@ -1340,10 +1340,10 @@ CREATE TABLE `serial_number` (
   `sprint` BIGINT UNSIGNED NOT NULL,
   `story` BIGINT UNSIGNED NOT NULL,
   `task` BIGINT UNSIGNED NOT NULL,
-  `unplanned` BIGINT UNSIGNED NOT NULL,
+  `unplan` BIGINT UNSIGNED NOT NULL,
   `retrospective` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `token`;
 CREATE TABLE `token` (
@@ -1355,7 +1355,7 @@ CREATE TABLE `token` (
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 LOCK TABLES `system` WRITE;
 INSERT INTO `system` VALUES (1, 1);

@@ -65,7 +65,7 @@ public class TaskBoard {
 		// 取得目前最新的Story與Task狀態
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		// 取得曾經被drop掉的Story與其底下的Task
-		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
+		mDroppedStories = mSprintBacklogMapper.getDroppedStories();
 		
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊

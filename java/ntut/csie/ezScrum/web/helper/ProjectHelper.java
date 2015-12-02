@@ -55,14 +55,13 @@ public class ProjectHelper {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Projects>");
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		for (ProjectObject project : projects) {
 			if (map.get(project.getName()) == Boolean.TRUE) {
 				sb.append("<Project>");
-				sb.append("<ID>").append(tsc.TranslateXMLChar(project.getName())).append("</ID>");
-				sb.append("<Name>").append(tsc.TranslateXMLChar(project.getDisplayName())).append("</Name>");
-				sb.append("<Comment>").append(tsc.TranslateXMLChar(project.getComment())).append("</Comment>");
-				sb.append("<ProjectManager>").append(tsc.TranslateXMLChar(project.getManager())).append("</ProjectManager>");
+				sb.append("<ID>").append(TranslateSpecialChar.TranslateXMLChar(project.getName())).append("</ID>");
+				sb.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(project.getDisplayName())).append("</Name>");
+				sb.append("<Comment>").append(TranslateSpecialChar.TranslateXMLChar(project.getComment())).append("</Comment>");
+				sb.append("<ProjectManager>").append(TranslateSpecialChar.TranslateXMLChar(project.getManager())).append("</ProjectManager>");
 				sb.append("<CreateDate>").append(dateFormat.format(project.getCreateTime())).append("</CreateDate>");
 				sb.append("<DemoDate>").append(hashMap.get(project.getName())).append("</DemoDate>");
 				sb.append("</Project>");

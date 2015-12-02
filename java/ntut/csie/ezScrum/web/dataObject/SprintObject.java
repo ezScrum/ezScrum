@@ -6,7 +6,7 @@ import java.util.Date;
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
-import ntut.csie.ezScrum.dao.UnplannedDAO;
+import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -188,8 +188,8 @@ public class SprintObject implements IBaseObject {
 		return RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(mId);
 	}
 
-    public ArrayList<UnplannedObject> getUnplanneds() {
-		return UnplannedDAO.getInstance().getUnplannedBySprintId(mId);
+    public ArrayList<UnplanObject> getUnplans() {
+		return UnplanDAO.getInstance().getUnplanBySprintId(mId);
 	}
 
 	@Override
@@ -221,6 +221,7 @@ public class SprintObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = SprintDAO.getInstance().create(this);
 		reload();
 	}
@@ -253,7 +254,8 @@ public class SprintObject implements IBaseObject {
 		setUpdateTime(sprint.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		SprintObject sprint = SprintDAO.getInstance().get(mId);
 		return sprint != null;
 	}

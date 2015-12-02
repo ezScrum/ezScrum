@@ -27,16 +27,6 @@ package ntut.csie.ezScrum.web.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.Person;
-import ntut.csie.ezScrum.web.dataObject.User;
-import ntut.csie.ezScrum.web.dataObject.ezScrumAdmin;
-import ntut.csie.ezScrum.web.form.LogonForm;
-import ntut.csie.ezScrum.web.logic.ProjectLogic;
-import ntut.csie.ezScrum.web.support.AccessPermissionManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
@@ -45,6 +35,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import ch.ethz.ssh2.crypto.Base64;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
+import ntut.csie.ezScrum.web.form.LogonForm;
+import ntut.csie.ezScrum.web.logic.ProjectLogic;
+import ntut.csie.ezScrum.web.support.AccessPermissionManager;
 
 /**
  * MyEclipse Struts
@@ -82,17 +77,7 @@ public class LogonSubmitAction extends Action {
 
 		ProjectLogic projectLogic = new ProjectLogic();
 		projectLogic.cloneDefaultFile();
-
-		Person person = this.getPerson(userSession.getAccount());
-		
-		return mapping.findForward(person.getForwardName());
-	}
-
-	private Person getPerson(AccountObject account) {
-		if (account.getRoles().get("system") != null) {
-			return new ezScrumAdmin();
-		} else {
-			return new User();
-		}
+		String defaultForwardName = "success";
+		return mapping.findForward(defaultForwardName);
 	}
 }

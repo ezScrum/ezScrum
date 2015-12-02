@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
@@ -35,13 +42,6 @@ import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProductBacklogHelperTest {
 	private ProductBacklogHelper mProductBacklogHelper1;
@@ -702,16 +702,9 @@ public class ProductBacklogHelperTest {
 			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());
 
 			mProductBacklogHelper1.deleteAttachFile(attachFile.getId());
-
-			try {
-				mProductBacklogHelper1.getAttachFile(id);
-				assertTrue(false);
-			} catch (Exception e) {
-				assertTrue(true);
-
-				File deletedFile = new File(attachFile.getPath());
-				assertEquals(false, deletedFile.exists());
-			}
+			mProductBacklogHelper1.getAttachFile(id);
+			File deletedFile = new File(attachFile.getPath());
+			assertEquals(false, deletedFile.exists());
 		} catch (IOException e) {
 			System.out.println(e);
 			assertTrue(false);
@@ -864,7 +857,7 @@ public class ProductBacklogHelperTest {
 		expectResponse.append("<IssueTag>");
 		expectResponse.append("<Id>" + 1 + "</Id>");
 		expectResponse.append("<Name>"
-				+ new TranslateSpecialChar().TranslateXMLChar(TEST_TAG_NAME)
+				+ TranslateSpecialChar.TranslateXMLChar(TEST_TAG_NAME)
 				+ "</Name>");
 		expectResponse.append("</IssueTag>");
 		expectResponse.append("</Tags>");

@@ -64,8 +64,8 @@ ezScrum.SprintBacklog_TreePanel = Ext.extend(Ext.Panel,{
     	if( selectedNode == undefined ){
     		return false;
     	}
-    	var type = selectedNode.attributes['Type'];
-    	if( type == "Story" ){
+    	var issueType = selectedNode.attributes['IssueType'];
+    	if( issueType == "Story" ){
     		return true;
     	}
     },
@@ -77,8 +77,8 @@ ezScrum.SprintBacklog_TreePanel = Ext.extend(Ext.Panel,{
     	if( selectedNode == undefined ){
     		return false;
     	}
-    	var type = selectedNode.attributes['Type'];
-    	if( type == "Task" ){
+    	var issueType = selectedNode.attributes['IssueType'];
+    	if( issueType == "Task" ){
     		return true;
     	}
     }
@@ -110,10 +110,10 @@ ezScrum.SprintBacklog_Tree = Ext.extend(Ext.ux.tree.TreeGrid, {
     	        fn: function () {
     	            var selectedNode = obj.getSelectionModel().getSelectedNode();
     	            if (selectedNode != null ) {
-    		            var type = selectedNode.attributes['Type'];
+    		            var issueType = selectedNode.attributes['IssueType'];
     		
     		            var PageEventObj = Ext.getCmp('SprintBacklog_Page_Event');
-    		            if (type == "Story") {
+    		            if (issueType == "Story") {
     		            	PageEventObj.set_Story_Permission_disable(false);
     		            	PageEventObj.set_Task_Permission_disable(true);
     		            } else {
@@ -188,11 +188,11 @@ ezScrum.SprintBacklog_Tree = Ext.extend(Ext.ux.tree.TreeGrid, {
         	// get selected Node
             var selectedNode = this.getSelectionModel().getSelectedNode();
             // get Node Type
-            var nodeType = selectedNode.attributes['Type'];
+            var issueType = selectedNode.attributes['IssueType'];
             // handle Story or Task
-            if(nodeType == 'Story'){
+            if(issueType == 'Story'){
             	Ext.getCmp('SprintBacklog_Page_Event').editStory();
-            } else if(nodeType == 'Task'){
+            } else if(issueType == 'Task'){
             	Ext.getCmp('SprintBacklog_Page_Event').editTask();
             }
         },

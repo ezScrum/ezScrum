@@ -32,14 +32,13 @@ public class AjaxAddNewRetrospectiveAction extends PermissionAction {
 		
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProjectObject(request);
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// get parameter info
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");
 		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		String type = request.getParameter("Type");
-		String description = translateSpecialChar.TranslateDBChar(request.getParameter("Description"));
+		String description = TranslateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		
 		// Create Helper
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);

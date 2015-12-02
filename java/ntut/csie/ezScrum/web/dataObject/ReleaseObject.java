@@ -200,6 +200,7 @@ public class ReleaseObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = ReleaseDAO.getInstance().create(this);
 		reload();
 	}
@@ -222,7 +223,8 @@ public class ReleaseObject implements IBaseObject {
 		setUpdateTime(release.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		ReleaseObject release = ReleaseDAO.getInstance().get(mId);
 		return release != null;
 	}

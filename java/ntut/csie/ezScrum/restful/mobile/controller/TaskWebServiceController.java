@@ -80,7 +80,7 @@ public class TaskWebServiceController {
 			decoder.decodeProjectName(projectName);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
-			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
+			existedTaskListJson = mTaskWebService.getDroppedTasks();
 		} catch (LogonException e) {
 			System.out
 					.println("class: TaskWebServiceController, "

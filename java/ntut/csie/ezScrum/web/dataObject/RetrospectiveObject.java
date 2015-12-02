@@ -151,6 +151,7 @@ public class RetrospectiveObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = RetrospectiveDAO.getInstance().create(this);
 		reload();
 	}
@@ -174,7 +175,8 @@ public class RetrospectiveObject implements IBaseObject {
 		setUpdateTime(retrospective.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		RetrospectiveObject retrospective = RetrospectiveDAO.getInstance().get(mId);
 		return retrospective != null;
 	}

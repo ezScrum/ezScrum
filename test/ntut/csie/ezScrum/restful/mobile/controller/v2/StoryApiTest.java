@@ -139,7 +139,7 @@ public class StoryApiTest extends TestableApi {
 
 		BasicHttpEntity entity = new BasicHttpEntity();
 		entity.setContent(new ByteArrayInputStream(storyJson.toString()
-				.getBytes()));
+				.getBytes("utf-8")));
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(API_URL);
 		httpPost.setEntity(entity);
@@ -171,7 +171,7 @@ public class StoryApiTest extends TestableApi {
 
 		BasicHttpEntity entity = new BasicHttpEntity();
 		entity.setContent(new ByteArrayInputStream(storyJson.toString()
-				.getBytes()));
+				.getBytes("utf-8")));
 		entity.setContentEncoding("utf-8");
 		HttpPut httpPut = new HttpPut(API_URL + "/" + story.getId());
 		httpPut.setEntity(entity);

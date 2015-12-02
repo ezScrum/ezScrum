@@ -9,7 +9,7 @@ public class AccessPermissionUI {
 	public boolean AccessSprintBacklog = false;
 	public boolean AccessTaskboard = false;
 	public boolean AccessRetrospective = false;
-	public boolean AccessUnplanned = false;
+	public boolean AccessUnplan = false;
 	public boolean AccessReport = false;
 	public boolean AccessEditProject = false;
 	
@@ -25,7 +25,7 @@ public class AccessPermissionUI {
 			this.AccessSprintBacklog = sr.getAccessSprintBacklog();
 			this.AccessTaskboard = sr.getAccessTaskBoard();
 			this.AccessRetrospective = sr.getAccessRetrospective();
-			this.AccessUnplanned = sr.getAccessUnplannedItem();
+			this.AccessUnplan = sr.getAccessUnplanItem();
 			this.AccessReport = sr.getReadReport();
 			this.AccessEditProject = sr.getEditProject();
 		}

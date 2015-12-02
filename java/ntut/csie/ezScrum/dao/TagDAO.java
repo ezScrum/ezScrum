@@ -23,14 +23,12 @@ public class TagDAO extends AbstractDAO<TagObject, TagObject>{
 	@Override
     public long create(TagObject tag) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		long currentTime = System.currentTimeMillis();
 		valueSet.addTableName(TagEnum.TABLE_NAME);
 		valueSet.addInsertValue(TagEnum.NAME, tag.getName());
 		valueSet.addInsertValue(TagEnum.PROJECT_ID, tag.getProjectId());
-		valueSet.addInsertValue(TagEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(TagEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(TagEnum.CREATE_TIME, tag.getCreateTime());
+		valueSet.addInsertValue(TagEnum.UPDATE_TIME, tag.getCreateTime());
 		String query = valueSet.getInsertQuery();
-		System.out.println(query);
 		long id = mControl.executeInsert(query);
 		return id;
     }

@@ -25,10 +25,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 
 	@Override
 	public long create(SprintObject sprint) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(sprint.getProjectId());
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(sprint.getProjectId());
 
 		long sprintSerialId = serialNumber.getSprintId() + 1;
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
@@ -44,14 +42,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
 		valueSet.addInsertValue(SprintEnum.PROJECT_ID, sprint.getProjectId());
-		// if no create time
-		if (sprint.getCreateTime() > 0) {
-			valueSet.addInsertValue(SprintEnum.CREATE_TIME, sprint.getCreateTime());
-			valueSet.addInsertValue(SprintEnum.UPDATE_TIME, sprint.getCreateTime());
-		} else {
-			valueSet.addInsertValue(SprintEnum.CREATE_TIME, currentTime);
-			valueSet.addInsertValue(SprintEnum.UPDATE_TIME, currentTime);
-		}
+		valueSet.addInsertValue(SprintEnum.CREATE_TIME, sprint.getCreateTime());
+		valueSet.addInsertValue(SprintEnum.UPDATE_TIME, sprint.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);

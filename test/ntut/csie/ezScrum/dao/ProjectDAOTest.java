@@ -68,7 +68,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -111,7 +111,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -144,7 +144,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(0).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(0).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(0).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(0).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(0).getAccessUnplanItem());
 		assertTrue(scrumRoles.get(0).getEditProject());
 		assertTrue(scrumRoles.get(0).getReadReport());
 		// assert ScrumMaster role
@@ -154,7 +154,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(1).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(1).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(1).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(1).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(1).getAccessUnplanItem());
 		assertTrue(scrumRoles.get(1).getEditProject());
 		assertTrue(scrumRoles.get(1).getReadReport());
 		// assert ScrumTeam role
@@ -164,7 +164,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(2).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(2).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(2).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(2).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(2).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(2).getEditProject());
 		assertTrue(scrumRoles.get(2).getReadReport());
 		// assert Stakeholder role
@@ -174,7 +174,7 @@ public class ProjectDAOTest {
 		assertFalse(scrumRoles.get(3).getAccessSprintBacklog());
 		assertFalse(scrumRoles.get(3).getAccessSprintPlan());
 		assertFalse(scrumRoles.get(3).getAccessTaskBoard());
-		assertFalse(scrumRoles.get(3).getAccessUnplannedItem());
+		assertFalse(scrumRoles.get(3).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(3).getEditProject());
 		assertTrue(scrumRoles.get(3).getReadReport());
 		// assert Guest role
@@ -184,7 +184,7 @@ public class ProjectDAOTest {
 		assertFalse(scrumRoles.get(4).getAccessSprintBacklog());
 		assertFalse(scrumRoles.get(4).getAccessSprintPlan());
 		assertFalse(scrumRoles.get(4).getAccessTaskBoard());
-		assertFalse(scrumRoles.get(4).getAccessUnplannedItem());
+		assertFalse(scrumRoles.get(4).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(4).getEditProject());
 		assertFalse(scrumRoles.get(4).getReadReport());
 	}
@@ -197,7 +197,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -215,7 +215,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(0).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(0).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(0).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(0).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(0).getAccessUnplanItem());
 		assertTrue(scrumRoles.get(0).getEditProject());
 		assertTrue(scrumRoles.get(0).getReadReport());
 		// assert ScrumMaster role
@@ -225,7 +225,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(1).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(1).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(1).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(1).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(1).getAccessUnplanItem());
 		assertTrue(scrumRoles.get(1).getEditProject());
 		assertTrue(scrumRoles.get(1).getReadReport());
 		// assert ScrumTeam role
@@ -235,7 +235,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(2).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(2).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(2).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(2).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(2).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(2).getEditProject());
 		assertTrue(scrumRoles.get(2).getReadReport());
 		// assert Stakeholder role
@@ -245,7 +245,7 @@ public class ProjectDAOTest {
 		assertFalse(scrumRoles.get(3).getAccessSprintBacklog());
 		assertFalse(scrumRoles.get(3).getAccessSprintPlan());
 		assertFalse(scrumRoles.get(3).getAccessTaskBoard());
-		assertFalse(scrumRoles.get(3).getAccessUnplannedItem());
+		assertFalse(scrumRoles.get(3).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(3).getEditProject());
 		assertTrue(scrumRoles.get(3).getReadReport());
 		// assert Guest role
@@ -255,7 +255,7 @@ public class ProjectDAOTest {
 		assertFalse(scrumRoles.get(4).getAccessSprintBacklog());
 		assertFalse(scrumRoles.get(4).getAccessSprintPlan());
 		assertFalse(scrumRoles.get(4).getAccessTaskBoard());
-		assertFalse(scrumRoles.get(4).getAccessUnplannedItem());
+		assertFalse(scrumRoles.get(4).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(4).getEditProject());
 		assertFalse(scrumRoles.get(4).getReadReport());
 	}
@@ -268,7 +268,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -286,7 +286,7 @@ public class ProjectDAOTest {
 		assertTrue(scrumRoles.get(0).getAccessSprintBacklog());
 		assertTrue(scrumRoles.get(0).getAccessSprintPlan());
 		assertTrue(scrumRoles.get(0).getAccessTaskBoard());
-		assertTrue(scrumRoles.get(0).getAccessUnplannedItem());
+		assertTrue(scrumRoles.get(0).getAccessUnplanItem());
 		assertTrue(scrumRoles.get(0).getEditProject());
 		assertTrue(scrumRoles.get(0).getReadReport());
 		
@@ -297,7 +297,7 @@ public class ProjectDAOTest {
 		scrumRoles.get(0).setAccessSprintBacklog(false);
 		scrumRoles.get(0).setAccessSprintPlan(false);
 		scrumRoles.get(0).setAccessTaskBoard(false);
-		scrumRoles.get(0).setAccessUnplannedItem(false);
+		scrumRoles.get(0).setAccessUnplanItem(false);
 		scrumRoles.get(0).setEditProject(false);
 		scrumRoles.get(0).setReadReport(false);
 		ProjectDAO.getInstance().updateScrumRole(projectId, RoleEnum.ProductOwner, scrumRoles.get(0));
@@ -309,7 +309,7 @@ public class ProjectDAOTest {
 		assertFalse(scrumRoles.get(0).getAccessSprintBacklog());
 		assertFalse(scrumRoles.get(0).getAccessSprintPlan());
 		assertFalse(scrumRoles.get(0).getAccessTaskBoard());
-		assertFalse(scrumRoles.get(0).getAccessUnplannedItem());
+		assertFalse(scrumRoles.get(0).getAccessUnplanItem());
 		assertFalse(scrumRoles.get(0).getEditProject());
 		assertFalse(scrumRoles.get(0).getReadReport());
 	}
@@ -323,7 +323,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -355,7 +355,7 @@ public class ProjectDAOTest {
 		        .setDisplayName("TEST_DISPLATNAME_1")
 		        .setComment("TEST_COMMON_1")
 		        .setManager("TEST_MANAGER")
-		        .setAttachFileSize(2);
+		        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 		long projectId = ProjectDAO.getInstance().create(project);
 		assertNotSame(-1, projectId);
 
@@ -388,7 +388,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -432,7 +432,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + (i + 1))
 			        .setComment("TEST_COMMON_" + (i + 1))
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -454,7 +454,7 @@ public class ProjectDAOTest {
 			        .setDisplayName("TEST_DISPLATNAME_" + i + 1)
 			        .setComment("TEST_COMMON_" + i + 1)
 			        .setManager("TEST_MANAGER")
-			        .setAttachFileSize(2);
+			        .setAttachFileSize(2).setCreateTime(System.currentTimeMillis());
 			long projectId = ProjectDAO.getInstance().create(project);
 			assertNotSame(-1, projectId);
 		}
@@ -486,7 +486,7 @@ public class ProjectDAOTest {
 		scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
 		scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
 		scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-		scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		scrumRole.setAccessUnplanItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
 		scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
 		scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
 		return scrumRole;

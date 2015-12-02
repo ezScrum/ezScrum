@@ -32,18 +32,15 @@ public class SaveReleasePlanAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		
 		// get session info
 		ProjectObject project = SessionManager.getProjectObject(request);
-		
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 
 		// get parameter info
 		String releaseIdString = request.getParameter("Id");
-		String name = translateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
+		String name = TranslateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
 		String startDate = request.getParameter("StartDate");
 		String dueDate = request.getParameter("EndDate");
-		String description = translateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
+		String description = TranslateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
 		String action = request.getParameter("action");
 		if (action == null || action.isEmpty()) {
 			return null;

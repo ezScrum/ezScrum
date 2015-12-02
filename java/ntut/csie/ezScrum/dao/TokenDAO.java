@@ -28,8 +28,8 @@ public class TokenDAO extends AbstractDAO<TokenObject, TokenObject> {
 		valueSet.addInsertValue(TokenEnum.PUBLIC_TOKEN, token.getPublicToken());
 		valueSet.addInsertValue(TokenEnum.PRIVATE_TOKEN, token.getPrivateToken());
 		valueSet.addInsertValue(TokenEnum.PLATFORM_TYPE, token.getPlatformType());
-		valueSet.addInsertValue(TokenEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
-		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(TokenEnum.CREATE_TIME, token.getCreateTime());
+		valueSet.addInsertValue(TokenEnum.UPDATE_TIME, token.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		return id;

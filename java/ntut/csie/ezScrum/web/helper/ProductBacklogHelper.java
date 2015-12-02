@@ -120,7 +120,7 @@ public class ProductBacklogHelper {
 			for (int i = 0; i < tags.size(); i++) {
 				sb.append("<IssueTag>");
 				sb.append("<Id>" + tags.get(i).getId() + "</Id>");
-				sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tags.get(i).getName()) + "</Name>");
+				sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(tags.get(i).getName()) + "</Name>");
 				sb.append("</IssueTag>");
 			}
 			sb.append("</TagList>");
@@ -145,7 +145,7 @@ public class ProductBacklogHelper {
 		} else if (isTagExist(newTagName)) {
 			// 轉換"&", "<", ">", """, 通過XML語法
 			// 因為"\","'"對xml沒影響, 所以使用original(未轉換)
-			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname);
+			newTagName = TranslateSpecialChar.TranslateXMLChar(original_tagname);
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>Tag Name : " + newTagName + " already exist</Message></Tags>");
 		} else {
 			addNewTag(newTagName);
@@ -154,7 +154,7 @@ public class ProductBacklogHelper {
 			sb.append("<Tags><Result>true</Result>");
 			sb.append("<IssueTag>");
 			sb.append("<Id>" + tag.getId() + "</Id>");
-			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getName()) + "</Name>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(tag.getName()) + "</Name>");
 			sb.append("</IssueTag>");
 			sb.append("</Tags>");
 		}
@@ -252,9 +252,9 @@ public class ProductBacklogHelper {
 		return null;
 	}
 	
-	public ArrayList<TaskObject> getTasksWithNoParent() {
+	public ArrayList<TaskObject> getDroppedTasks() {
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		tasks = mProject.getTasksWithNoParent();
+		tasks = mProject.getDroppedTasks();
 		return tasks;
 	}
 
@@ -381,8 +381,7 @@ public class ProductBacklogHelper {
 
 		File file = new File(attachFile.getPath());
 		file.delete();
-
-		mProductBacklogMapper.deleteAttachFile(fileId);
+		attachFile.delete();
 	}
 
 	// for ezScrum v1.8

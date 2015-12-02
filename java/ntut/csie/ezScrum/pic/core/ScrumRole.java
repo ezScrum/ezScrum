@@ -2,9 +2,6 @@ package ntut.csie.ezScrum.pic.core;
 
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
-/**
- * @author py2k
- */
 public class ScrumRole {
 	private String mProjectName = "";
 	private String mRoleName = "";
@@ -14,7 +11,7 @@ public class ScrumRole {
 	private Boolean mSprintPlan = false;
 	private Boolean mTaskboard = false;
 	private Boolean mSprintBacklog = false;
-	private Boolean mUnplanned = false;
+	private Boolean mUnplan = false;
 	private Boolean mRetrospective = false;
 	private Boolean mReport = false;
 	private Boolean mEditProject = false;
@@ -35,7 +32,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(true);
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
-		setAccessUnplannedItem(true);
+		setAccessUnplanItem(true);
 		setEditProject(true);
 		setReadReport(true);
 	}
@@ -75,7 +72,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(false);
 		setAccessSprintPlan(false);
 		setAccessTaskBoard(false);
-		setAccessUnplannedItem(false);
+		setAccessUnplanItem(false);
 		setEditProject(false);
 		setReadReport(true);
     }
@@ -87,7 +84,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(true);
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
-		setAccessUnplannedItem(true);
+		setAccessUnplanItem(true);
 		setEditProject(false);
 		setReadReport(true);
     }
@@ -99,7 +96,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(true);
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
-		setAccessUnplannedItem(true);
+		setAccessUnplanItem(true);
 		setEditProject(true);
 		setReadReport(true);
     }
@@ -111,7 +108,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(true);
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
-		setAccessUnplannedItem(true);
+		setAccessUnplanItem(true);
 		setEditProject(true);
 		setReadReport(true);
     }
@@ -123,7 +120,7 @@ public class ScrumRole {
 		setAccessSprintBacklog(false);
 		setAccessSprintPlan(false);
 		setAccessTaskBoard(false);
-		setAccessUnplannedItem(false);
+		setAccessUnplanItem(false);
 		setEditProject(false);
 		setReadReport(false);
     }
@@ -157,8 +154,8 @@ public class ScrumRole {
 		return mSprintBacklog;
 	}
 
-	public Boolean getAccessUnplannedItem() {
-		return mUnplanned;
+	public Boolean getAccessUnplanItem() {
+		return mUnplan;
 	}
 
 	public Boolean getAccessRetrospective() {
@@ -199,8 +196,8 @@ public class ScrumRole {
 		mSprintBacklog = permission;
 	}
 
-	public void setAccessUnplannedItem(Boolean permission) {
-		mUnplanned = permission;
+	public void setAccessUnplanItem(Boolean permission) {
+		mUnplan = permission;
 	}
 
 	public void setAccessRetrospective(Boolean permission) {

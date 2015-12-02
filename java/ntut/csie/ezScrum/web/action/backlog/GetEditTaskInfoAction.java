@@ -51,19 +51,18 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		
 		StringBuilder result = new StringBuilder();
 		TaskObject task = sprintBacklogHelper.getTask(taskId);
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		
 		String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
 
 		result.append("<EditTask><Task>");
 		result.append("<Id>").append(task.getId()).append("</Id>");
-		result.append("<Name>").append(tsc.TranslateXMLChar(task.getName())).append("</Name>");
+		result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>");
 		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
 		result.append("<Actual>").append(task.getActual()).append("</Actual>");
-		result.append("<Handler>").append(tsc.TranslateXMLChar(handlerUsername)).append("</Handler>");
+		result.append("<Handler>").append(TranslateSpecialChar.TranslateXMLChar(handlerUsername)).append("</Handler>");
 		result.append("<Remains>").append(task.getRemains()).append("</Remains>");
-		result.append("<Partners>").append(tsc.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
-		result.append("<Notes>").append(tsc.TranslateXMLChar(task.getNotes())).append("</Notes>");
+		result.append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
+		result.append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(task.getNotes())).append("</Notes>");
 		result.append("</Task></EditTask>");
 		
 		return result;

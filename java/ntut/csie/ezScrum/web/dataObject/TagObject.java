@@ -109,7 +109,8 @@ public class TagObject implements IBaseObject{
 		return success;
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		TagObject tag = TagDAO.getInstance().get(mId);
 		return tag != null;
 	}
@@ -123,6 +124,7 @@ public class TagObject implements IBaseObject{
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = TagDAO.getInstance().create(this);
 		reload();
 	}

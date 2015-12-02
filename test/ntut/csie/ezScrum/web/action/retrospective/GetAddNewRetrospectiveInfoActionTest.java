@@ -132,7 +132,6 @@ public class GetAddNewRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 		
 		Date today = new Date();
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		
 		// 所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
 		expectedStringBuilder.append("<Sprints>");
@@ -172,7 +171,7 @@ public class GetAddNewRetrospectiveInfoActionTest extends MockStrutsTestCase {
 			 *	加入Sprint Goal
 			-------------------------------------------------------------*/
 			expectedStringBuilder.append("<Goal>");
-			expectedStringBuilder.append(translateSpecialChar.TranslateXMLChar(sprint.getGoal()));
+			expectedStringBuilder.append(TranslateSpecialChar.TranslateXMLChar(sprint.getGoal()));
 			expectedStringBuilder.append("</Goal>");
 
 			expectedStringBuilder.append("</Sprint>");

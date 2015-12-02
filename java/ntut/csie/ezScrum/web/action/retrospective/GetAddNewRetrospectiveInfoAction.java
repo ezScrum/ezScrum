@@ -33,7 +33,6 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 
 		StringBuilder sb = new StringBuilder();
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 
 		if (sprints.size() <= 0) {
 			// default data for null sprint backlog
@@ -84,7 +83,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 				 *	加入Sprint Goal
 				-------------------------------------------------------------*/
 				sb.append("<Goal>");
-				sb.append(tsc.TranslateXMLChar(sprint.getGoal()));
+				sb.append(TranslateSpecialChar.TranslateXMLChar(sprint.getGoal()));
 				sb.append("</Goal>");
 
 				sb.append("</Sprint>");

@@ -80,6 +80,10 @@ public class TokenObject implements IBaseObject {
 		return mPlatformType;
 	}
 	
+	public void setCreateTime(long createTime) {
+		mCreateTime = createTime;
+	}
+	
 	public long getCreateTime() {
 		return mCreateTime;
 	}
@@ -99,7 +103,7 @@ public class TokenObject implements IBaseObject {
 	public void rehash() {
 		mPublicToken = randomString(TOKEN_LENGTH);
 		mPrivateToken = randomString(TOKEN_LENGTH);
-		if(exist()){
+		if(exists()){
 			save();
 		}
 	}
@@ -115,7 +119,7 @@ public class TokenObject implements IBaseObject {
 
 	@Override
 	public void reload() {
-		if (exist()) {
+		if (exists()) {
 			TokenObject token = TokenDAO.getInstance().get(mId);
 			resetData(token);
 		}
@@ -158,6 +162,7 @@ public class TokenObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = TokenDAO.getInstance().create(this);
 		reload();
 	}
@@ -167,7 +172,8 @@ public class TokenObject implements IBaseObject {
 		TokenDAO.getInstance().update(this);
 	}
 
-	private boolean exist() {
+	@Override
+	public boolean exists() {
 		TokenObject token = TokenDAO.getInstance().get(mId);
 		return token != null;
 	}

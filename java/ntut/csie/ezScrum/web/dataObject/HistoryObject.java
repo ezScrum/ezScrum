@@ -4,13 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class HistoryObject implements IBaseObject {
 	public final static int TYPE_CREATE = 1;
@@ -32,9 +32,10 @@ public class HistoryObject implements IBaseObject {
 	public final static int TYPE_REMOVE = 18; // Remove Child (for story
 	                                          // history)
 	public final static int TYPE_NOTE = 19;
-	public final static int TYPE_HOWTODEMO = 20;
-	public final static int TYPE_PARTNERS = 21;
-	public final static int TYPE_SPRINTID = 22;
+	public final static int TYPE_HOW_TO_DEMO = 20;
+	public final static int TYPE_ADD_PARTNER = 21;
+	public final static int TYPE_REMOVE_PARTNER = 22;
+	public final static int TYPE_SPRINT_ID = 23;
 
 	private long mId;
 	private long mIssueId;
@@ -149,8 +150,12 @@ public class HistoryObject implements IBaseObject {
 				return getDropChildDesc();
 			case TYPE_REMOVE:
 				return getRemoveParentDesc();
-			case TYPE_SPRINTID:
+			case TYPE_SPRINT_ID:
 				return getSprintDesc();
+			case TYPE_ADD_PARTNER:
+				return getPartnerDesc();
+			case TYPE_REMOVE_PARTNER:
+				return getPartnerDesc();
 		}
 		return "";
 	}
@@ -179,8 +184,12 @@ public class HistoryObject implements IBaseObject {
 				return "Specific Time";
 			case TYPE_NOTE:
 				return "Note";
-			case TYPE_HOWTODEMO:
+			case TYPE_HOW_TO_DEMO:
 				return "How To Demo";
+			case TYPE_ADD_PARTNER:
+				return "Add Partner";
+			case TYPE_REMOVE_PARTNER:
+				return "Remove Partner";
 		}
 		return "";
 	}
@@ -254,8 +263,8 @@ public class HistoryObject implements IBaseObject {
 			case IssueTypeEnum.TYPE_TASK:
 				desc = "Create Task #" + mIssueId;
 				break;
-			case IssueTypeEnum.TYPE_UNPLANNED:
-				desc = "Create Unplanned #" + mIssueId;
+			case IssueTypeEnum.TYPE_UNPLAN:
+				desc = "Create Unplan #" + mIssueId;
 				break;
 			case IssueTypeEnum.TYPE_RETROSPECTIVE:
 				desc = "Create Retrospective #" + mIssueId;
@@ -299,23 +308,34 @@ public class HistoryObject implements IBaseObject {
 	private String getSprintDesc() {
 		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
 	}
+	
+	private String getPartnerDesc() {
+		if (mNewValue != null && !mNewValue.equals("") && !mNewValue.equals("0") && !mNewValue.equals("-1")) {
+			String partnerUsername = AccountDAO.getInstance()
+			        .get(Long.parseLong(mNewValue)).getUsername();
+			return partnerUsername;
+		}
+		return "";
+	}
 
 	public long getCreateTime() {
 		return mCreateTime;
 	}
 
 	public String getFormattedModifiedTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 		return sdf.format(new Date(mCreateTime));
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		HistoryObject history = HistoryDAO.getInstance().get(mId);
 		return history != null;
 	}
 
 	private void doCreate() {
 		mId = HistoryDAO.getInstance().create(this);
+		reload();
 	}
 
 	@Override
@@ -326,7 +346,22 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() {}
+	public void reload() {
+		if (exists()) {
+			HistoryObject history = HistoryDAO.getInstance().get(mId);
+			resetData(history);
+		}
+	}
+	
+	private void resetData(HistoryObject history) {
+		mId = history.getId();
+		mIssueId = history.getIssueId();
+		mIssueType = history.getIssueType();
+		mHistoryType = history.getHistoryType();
+		mOldValue = history.getOldValue();
+		mNewValue = history.getNewValue();
+		setCreateTime(history.getCreateTime());
+	}
 
 	@Override
 	public boolean delete() {

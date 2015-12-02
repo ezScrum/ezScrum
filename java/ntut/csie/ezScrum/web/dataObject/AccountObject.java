@@ -250,7 +250,8 @@ public class AccountObject implements IBaseObject {
 		}
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		AccountObject account = AccountDAO.getInstance().get(mId);
 		return account != null;
 	}
@@ -267,6 +268,7 @@ public class AccountObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = AccountDAO.getInstance().create(this);
 		reload();
 	}

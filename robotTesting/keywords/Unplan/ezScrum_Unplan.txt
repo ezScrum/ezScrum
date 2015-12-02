@@ -1,0 +1,152 @@
+*** Settings ***
+Resource          ../common_resource.txt
+Library           ../lib/Selenium2Improved.py
+
+*** Keywords ***
+Clean All Unplan
+    Select Node Product    Unplanned
+    # get Unplan count
+    ${_count} =    Get Matching Xpath Count    //div[@id="UnplannedItem_Page"]//table[@class="x-grid3-row-table"]
+    # delete all Unplan
+    : FOR    ${_index}    IN RANGE    0    ${_count}
+    \    Delete Unplan
+
+Delete Unplan
+    [Documentation]    固定點選表格內的第一個 unplan,透過按下button"Delete Unplan Item"來刪除 unplan
+    Mouse Down    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Mouse Up    //div[@id="UnplannedItem_Page_Layout"]//table[@class="x-grid3-row-table"]
+    Click Element    xpath=//button[text()="Delete Unplanned Item"]
+    ${xpathDeleteUnplanned}=    Find Current Window Element    Delete Unplanned Item    Delete
+    Click Element    xpath=${xpathDeleteUnplanned}
+    Wait Until Page Contains    Success.
+
+Add Unplan
+    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+    ${name} =    Set Variable    ${unplanInfo[1]}
+    ${handler} =    Set Variable    ${unplanInfo[3]}
+    ${partners} =    Set Variable    ${unplanInfo[4]}
+    ${estimate} =    Set Variable    ${unplanInfo[5]}
+    ${notes} =    Set Variable    ${unplanInfo[6]}
+    # action
+    Click Element    xpath=//button[text()='Add Unplanned Item']    # 元件本身已存在,不需等待
+    Element Should Be Visible    xpath=//span[.='Add New Unplanned Item']    # for check
+    # fill info
+    Focus AND Input Text    //input[@name='Name']    ${name}
+    DropDownMenu_Select    Handler    ${handler}
+    Focus AND Input Text    //input[@name='Partners']    ${partners}
+    Focus AND Input Text    //input[@name='Estimate']    ${estimate}
+    Focus AND Input Text    //textarea[@name='Notes']    ${notes}
+    # save
+    ${_xpathAddNew} =    Find Current Window Element    Add New Unplanned Item    Submit
+    Element Enable And Submit    ${_xpathAddNew}
+    Wait Until Page Contains    Success.
+
+Get Unplan Id
+
+Add Account
+    [Arguments]    ${userId}    ${username}    ${password}    ${reEnter}    ${email}
+    Click Element    xpath=//button[text()="Add Account"]
+    Wait Until Page Contains    Add New Account
+    # fill Account Info
+    Focus AND Input Text    //input[@name="account"]    ${userId}    # User ID
+    Focus AND Input Text    //input[@name="name"]    ${username}    # User Name
+    Focus AND Input Text    //input[@name="passwd"]    ${password}    # Password
+    Focus AND Input Text    //input[@name="reenter"]    ${reEnter}    # Re-enter
+    Focus AND Input Text    //input[@name="mail"]    ${email}    # E-mail Address
+    # Save
+    ${_xpathSaveButton}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${_xpathSaveButton}
+    Wait Until Page Contains    Success.
+
+Assign Role - Add
+    [Arguments]    ${userId}    ${PROJECT_NAME}    ${role}
+    # select Account
+    TableGrid3_SelectItem    0    ${userId}
+    # click "Assign Role" button xpath=//button[text()="Assign Role"]
+    Click Button    Assign Role
+    # <User Information>
+    # check ID & Name?
+    # <Unassigned Projects>
+    # item: Unassigned Project
+    DropDownMenu_Select    unassignRole    ${PROJECT_NAME}
+    # item: Role # PO, Master, Team # Stakeholder, Guest
+    DropDownMenu_Select    Role    ${role}
+    # button: Add Role
+    Click Button    Add Role
+    Wait Until Page Contains    Update Role Success.
+    # <Assigned Projects>
+    # close window
+    Click Button    Close
+
+Assign Role - Remove
+    [Arguments]    ${accountId}    ${PROJECT_NAME}
+    # select Account
+    Sleep    3s
+    TableGrid3_SelectItem    0    ${accountId}
+    # click "Assign Role" button xpath=//button[text()="Assign Role"]
+    Click Button    Assign Role
+    # <User Information>
+    # check ID & Name?
+    # <Unassigned Projects>
+    # do nothing
+    # <Assigned Projects>
+    TableGrid3_SelectItem    0    ${PROJECT_NAME}
+    Click Button    Remove Role
+    Wait Until Page Contains    Update Role Success.
+    # close window
+    Click Button    Close
+
+Delete Account
+    # select AccountId
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]
+    # click "Delete" Button
+    Wait Until Element Is Visible    xpath=//button[text()="Delete Account"]
+    Click Element    xpath=//button[text()="Delete Account"]
+    # confirm, click "Yes" Button
+    Wait Until Element Is Visible    xpath=//button[text()="Yes"]
+    Click Element    xpath=//button[text()="Yes"]
+    Wait Until Page Contains    Success.
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tsAccountID}")]    0
+
+Select Unplan
+    [Arguments]    ${columnIndex}    ${name}
+    Mouse Down    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
+    Mouse Up    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
+
+Edit Unplan
+    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
+    ${id} =    Set Variable    ${unplanInfo[0]}
+    ${name} =    Set Variable    ${unplanInfo[1]}
+    ${sprintId} =    Set Variable    ${unplanInfo[2]}
+    ${handler} =    Set Variable    ${unplanInfo[3]}
+    ${partners} =    Set Variable    ${unplanInfo[4]}
+    ${estimate} =    Set Variable    ${unplanInfo[5]}
+    ${notes} =    Set Variable    ${unplanInfo[6]}
+    ${actual} =    Set Variable    ${unplanInfo[7]}
+    ${status} =    Set Variable    ${unplanInfo[8]}
+    # action
+    Click Element    xpath=//button[.='Edit Unplanned Item']
+    # fill info
+    Focus AND Input Text    //input[@name='Name']    ${name}
+    DropDownMenu_Select    SprintID    Sprint #${sprintId}
+    DropDownMenu_Select    Handler    ${handler}
+    DropDownMenu_Select    Status    ${status}
+    Focus AND Input Text    //input[@name='Partners']    ${partners}
+    Focus AND Input Text    //input[@name='Estimate']    ${estimate}
+    Focus AND Input Text    //input[@name='ActualHour']    ${actual}
+    Focus AND Input Text    //textarea[@name='Notes']    ${notes}
+    # save
+    ${_xpathEdit} =    Find Current Window Element    Edit Unplanned Item #${id}    Submit
+    Element Enable And Submit    ${_xpathEdit}
+    Wait Until Page Contains    Success.
+
+Temp Solution
+    [Arguments]    ${PROJECT_NAME}
+    [Documentation]    暫時用來解決一些問題;
+    ...    1.Add 完之後馬上 Edit 無法更新,在Edit Dialog輸入的值 _Edit竟然不會顯示
+    SwitchToPage    ProjectList
+    # 假設 Project 已存在
+    Wait Until Page Contains Element    createProjectBtn
+    Select Project    ${PROJECT_NAME}DisplayName
+    Select Node Product    Unplanned

@@ -67,8 +67,8 @@ public class SprintBacklogMapper {
 	/**
 	 * 取得被 Drop 掉的 Story
 	 */
-	public ArrayList<StoryObject> getStoriesWithNoParent() {
-		return mProject.getStoriesWithNoParent();
+	public ArrayList<StoryObject> getDroppedStories() {
+		return mProject.getDroppedStories();
 	}
 
 	// for ezScrum 1.8
@@ -156,8 +156,8 @@ public class SprintBacklogMapper {
 		}
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
-		return ProjectObject.get(projectId).getTasksWithNoParent();
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
+		return ProjectObject.get(projectId).getDroppedTasks();
 	}
 
 	// for ezScrum 1.8
@@ -260,15 +260,15 @@ public class SprintBacklogMapper {
 	 * @param id
 	 * @param name
 	 * @param handlerId
-	 * @param partners
+	 * @param partnersId
 	 * @param notes
 	 * @param specificDate
 	 */
 	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+			ArrayList<Long> partnersId, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partnersId)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}

@@ -19,7 +19,7 @@ ezScrum.CreateUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
     monitorValid:true,
 	initComponent:function() {
 		var config = {
-			url : 'addNewUnplannedItem.do',
+			url : 'addNewUnplanItem.do',
 			items: [
 				{
 		            fieldLabel: 'Name',

@@ -27,7 +27,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.internal.HSQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -243,8 +243,8 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		long issueId = mIssueService.newIssue(issue);
 		
 		int issueType = -1;
-		if (issue.getIssueType() == IssueTypeEnum.TYPE_UNPLANNED) {
-			issueType = IssueTypeEnum.TYPE_UNPLANNED;
+		if (issue.getIssueType() == IssueTypeEnum.TYPE_UNPLAN) {
+			issueType = IssueTypeEnum.TYPE_UNPLAN;
 		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_STORY) {
 			issueType = IssueTypeEnum.TYPE_STORY;
 		} else if (issue.getIssueType() == IssueTypeEnum.TYPE_TASK) {
@@ -670,13 +670,10 @@ public class MantisService extends AbstractMantisService implements IITSService 
 
 	@Override
 	public void updateName(IIssue issue, String name, Date modifyDate) {
-
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();
-
 		// 變更SUMMARY
 		String oldSummary = issue.getSummary();
-		oldSummary = translateChar.TranslateDBChar(oldSummary);
-		name = translateChar.TranslateDBChar(name);
+		oldSummary = TranslateSpecialChar.TranslateDBChar(oldSummary);
+		name = TranslateSpecialChar.TranslateDBChar(name);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
@@ -803,12 +800,12 @@ public class MantisService extends AbstractMantisService implements IITSService 
 		// + ITSEnum.OPEN_RESOLUTION
 		// + "', `handler_id` = '0' WHERE `mantis_bug_table`.`id` ="
 		// + issueID;
-		TranslateSpecialChar translateChar = new TranslateSpecialChar();// accept
-																		// special
-																		// char
-																		// ex: /
-																		// '
-		name = translateChar.TranslateDBChar(name);
+			// accept
+			// special
+			// char
+			// ex: /
+			// '
+		name = TranslateSpecialChar.TranslateDBChar(name);
 
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName("mantis_bug_table");
@@ -1234,18 +1231,15 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	 * for ezScrum v1.8
 	 */
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		// builder
-		AttachFileObject.Builder attachFileBuilder = new AttachFileObject.Builder();
-		attachFileBuilder.setIssueId(attachFileInfo.issueId);
-		attachFileBuilder.setIssueType(attachFileInfo.issueType);
-		attachFileBuilder.setContentType(attachFileInfo.contentType);
-		attachFileBuilder.setName(attachFileInfo.name);
-		attachFileBuilder.setPath(attachFileInfo.path);
-		
 		// create AttachFileObject
-		AttachFileObject attachFile = attachFileBuilder.build();
-		long newAttachFileId = AttachFileDAO.getInstance().create(attachFile);
-		return newAttachFileId;
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setIssueId(attachFileInfo.issueId)
+						 .setIssueType(attachFileInfo.issueType)
+						 .setContentType(attachFileInfo.contentType)
+						 .setName(attachFileInfo.name)
+						 .setPath(attachFileInfo.path)
+			             .save();
+		return attachFile.getId();
 	}
 	
 	/**
@@ -1256,7 +1250,7 @@ public class MantisService extends AbstractMantisService implements IITSService 
 	}
 	
 	public AttachFileObject getAttachFile(long fileId) {
-		return AttachFileDAO.getInstance().get(fileId);
+		return AttachFileObject.get(fileId);
 	}
 	
 	@Override

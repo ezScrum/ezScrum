@@ -19,7 +19,7 @@ ezScrum.DeleteUnplannedItemWidget = Ext.extend(Ext.Window, {
 	initComponent:function() {
 		var config = {
 			// Delete Unplanned Item action url
-			url : 'removeUnplannedItem.do',
+			url : 'removeUnplanItem.do',
 			items:{
 				xtype: 'panel',
 				html: 'Make sure you want to delete the unplanned item!'
