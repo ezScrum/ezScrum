@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restful.mobile.controller.v2;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -13,7 +12,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.http.client.ClientProtocolException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -48,8 +46,6 @@ public class ProjectApiTest extends JerseyTest {
 		mResourceConfig = new ResourceConfig(ProjectApi.class);
 		return mResourceConfig;
 	}
-	
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/projects";
 	
 	@Before
 	public void setUp() throws Exception {
@@ -97,7 +93,7 @@ public class ProjectApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGet() throws ClientProtocolException, IOException, JSONException {
+	public void testGet() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
@@ -122,7 +118,7 @@ public class ProjectApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetList() throws ClientProtocolException, IOException, JSONException {
+	public void testGetList() throws JSONException {
 		// create project
 		mCP = new CreateProject(3);
 		mCP.exeCreate();
@@ -151,7 +147,7 @@ public class ProjectApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testPost() throws Exception {
+	public void testPost() throws JSONException {
 		JSONObject projectJson = new JSONObject();
 		projectJson.put("name", "TEST_NAME")
 				.put("display_name", "TEST_DISPLAYNAME")
@@ -177,7 +173,7 @@ public class ProjectApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testPut() throws Exception {
+	public void testPut() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
@@ -207,7 +203,7 @@ public class ProjectApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testDelete() throws ClientProtocolException, IOException {
+	public void testDelete() {
 		mCP = new CreateProject(1);
 		mCP.exeCreateForDb();
 		
