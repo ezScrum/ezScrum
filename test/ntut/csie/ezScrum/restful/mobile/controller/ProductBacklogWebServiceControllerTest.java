@@ -2,9 +2,27 @@ package ntut.csie.ezScrum.restful.mobile.controller;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
 import java.util.ArrayList;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.codec.binary.Base64;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
@@ -20,29 +38,12 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-import com.sun.net.httpserver.HttpServer;
-
-public class ProductBacklogWebServiceControllerTest {
-	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/web-service";
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/product-backlog/%s?username=%s&password=%s";
-	private static HttpServer mServer;
-	private HttpClient mHttpClient;
+public class ProductBacklogWebServiceControllerTest extends JerseyTest {
+	private ResourceConfig mResourceConfig;
+	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/web-service";
+	private URI mBaseUri = URI.create(BASE_URL);
+	private Client mClient;
+	private HttpServer mHttpServer;
 	private String mUsername = "admin";
 	private String mPassword = "admin";
 	
@@ -55,14 +56,14 @@ public class ProductBacklogWebServiceControllerTest {
 	private Configuration mConfig;
 	private String mProjectName;
 
+	@Override
+	protected Application configure() {
+		mResourceConfig = new ResourceConfig(ProductBacklogWebServiceController.class);
+		return mResourceConfig;
+	}
+	
 	@Before
-	public void setUp() throws Exception {
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
-		
-		mHttpClient = HttpClientBuilder.create().build();
-
+	public void setUp() {
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -84,12 +85,18 @@ public class ProductBacklogWebServiceControllerTest {
 		mProjectName = mProject.getName();
 		mUsername = new String(Base64.encodeBase64(mUsername.getBytes()));
 		mPassword = new String(Base64.encodeBase64(mPassword.getBytes()));
+		
+		// start server
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
+
+		// Create Client
+		mClient = ClientBuilder.newClient();
 	}
 
 	@After
 	public void tearDown() {
 		// stop server
-		mServer.stop(0);
+		mHttpServer.stop(0);
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -110,15 +117,17 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetProductBacklogList() throws Exception {
-		String URL = String.format(API_URL, mProjectName, "storylist", mUsername, mPassword);
-		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mHttpClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+	public void testGetProductBacklogList() throws JSONException {
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/storylist")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
 		
 		ArrayList<StoryObject> stories = mCPB.getStories();
 		
-		JSONObject storiesJson = new JSONObject(response);
+		JSONObject storiesJson = new JSONObject(response.readEntity(String.class));
 		for (int i = 0; i < stories.size(); i++) {
 			StoryObject story = stories.get(i);
 			JSONObject storyJson = storiesJson.getJSONArray("stories").getJSONObject(i);
@@ -135,15 +144,17 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 	
 	@Test
-	public void testGetStory() throws Exception {
+	public void testGetStory() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
 		
-		String URL = String.format(API_URL, mProjectName, "storylist/" + story.getId(), mUsername, mPassword);
-		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mHttpClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/storylist/" + story.getId())
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
 		
-		JSONObject storyJson = new JSONObject(response);
+		JSONObject storyJson = new JSONObject(response.readEntity(String.class));
 		assertEquals(story.getId(), storyJson.getLong("id"));
 		assertEquals(story.getName(), storyJson.getString("name"));
 		assertEquals(story.getNotes(), storyJson.getString("notes"));
@@ -156,7 +167,7 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 	
 	@Test
-	public void testCreateStory() throws Exception {
+	public void testCreateStory() throws JSONException {
 		JSONObject storyJson = new JSONObject();
 		storyJson
 			.put("name", "TEST_STORY")
@@ -169,28 +180,25 @@ public class ProductBacklogWebServiceControllerTest {
 			.put("sprint_id", -1)
 			.put("tags", "");
 		
-		// send request to create a story
-		String URL = String.format(API_URL, mProjectName, "create", mUsername, mPassword);
-		HttpPost httpPost = new HttpPost(URL);
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
-		entity.setContentEncoding("utf-8");
-		httpPost.setEntity(entity);
-		HttpResponse httpResponse = mHttpClient.execute(httpPost);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/create")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .post(Entity.text(storyJson.toString()));
 		
 		// assert result
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
 		ArrayList<StoryObject> stories = productBacklogHelper.getStories();
 		assertEquals(4, stories.size());
 		
-		JSONObject responseJson = new JSONObject(response);
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		assertEquals("SUCCESS", responseJson.getString("status"));
 		assertEquals(stories.get(stories.size() - 1).getId(), responseJson.getLong("storyId"));
 	}
 	
 	@Test
-	public void testUpdateStory() throws Exception {
+	public void testUpdateStory() throws JSONException {
 		JSONObject storyJson = new JSONObject();
 		storyJson
 			.put("id", 1)
@@ -212,17 +220,15 @@ public class ProductBacklogWebServiceControllerTest {
 		TagObject tag3 = new TagObject("QWQ", mProject.getId());
 		tag3.save();
 		
-		String URL = String.format(API_URL, mProjectName, "update", mUsername, mPassword);
-		HttpPost httpPost = new HttpPost(URL);
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
-		entity.setContentEncoding("utf-8");
-		httpPost.setEntity(entity);
-		HttpResponse httpResponse = mHttpClient.execute(httpPost);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/update")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .post(Entity.text(storyJson.toString()));
 		
 		// assert first time
-		JSONObject responseJson = new JSONObject(response);
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		assertEquals("SUCCESS", responseJson.getString("status"));
 		
 		StoryObject story = StoryDAO.getInstance().get(1);
@@ -249,12 +255,12 @@ public class ProductBacklogWebServiceControllerTest {
 			.put("sprint_id", 1)
 			.put("tags", "QAQ,QWQ");
 		
-		entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString().getBytes(StandardCharsets.UTF_8)));
-		entity.setContentEncoding("utf-8");
-		httpPost.setEntity(entity);
-		httpResponse = mHttpClient.execute(httpPost);
-		response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		mClient.target(BASE_URL)
+        	   .path("/" + mProjectName + "/product-backlog/update")
+        	   .queryParam("username", mUsername)
+        	   .queryParam("password", mPassword)
+               .request()
+               .post(Entity.text(storyJson.toString()));
 		
 		// assert second time, make sure update successfully
 		story = StoryDAO.getInstance().get(1);
@@ -270,14 +276,17 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 	
 	@Test
-	public void testDeleteStory() throws Exception {
+	public void testDeleteStory() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
-		String URL = String.format(API_URL, mProjectName, "storylist/" + story.getId(), mUsername, mPassword);
-		HttpDelete httpDelete = new HttpDelete(URL);
-		HttpResponse httpResponse = mHttpClient.execute(httpDelete);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
-		JSONObject responseJson = new JSONObject(response);
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/storylist/" + story.getId())
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .delete();
+		
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		assertEquals("SUCCESS", responseJson.getString("status"));
 		
 		story = StoryDAO.getInstance().get(story.getId());
@@ -285,7 +294,7 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 	
 	@Test
-	public void testGetTagList() throws Exception {
+	public void testGetTagList() throws JSONException {
 		// create tags
 		TagObject tag1 = new TagObject("QOQ", mProject.getId());
 		tag1.save();
@@ -294,14 +303,16 @@ public class ProductBacklogWebServiceControllerTest {
 		TagObject tag3 = new TagObject("QWQ", mProject.getId());
 		tag3.save();
 		
-		String URL = String.format(API_URL, mProjectName, "taglist", mUsername, mPassword);
-		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mHttpClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/taglist")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
 		
 		ArrayList<TagObject> tags = TagDAO.getInstance().getTagsByProjectId(mProject.getId());
 		
-		JSONObject responseJson = new JSONObject(response);
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		JSONArray tagsJson = responseJson.getJSONArray("tags");
 		for (int i = 0; i < tagsJson.length(); i++) {
 			TagObject tag = tags.get(i);
@@ -313,15 +324,17 @@ public class ProductBacklogWebServiceControllerTest {
 	}
 	
 	@Test
-	public void testGetStoryHistory() throws Exception {
+	public void testGetStoryHistory() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
 		
-		String URL = String.format(API_URL, mProjectName, story.getId() + "/history", mUsername, mPassword);
-		HttpGet httpGet = new HttpGet(URL);
-		HttpResponse httpResponse = mHttpClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/product-backlog/" + story.getId() + "/history")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
 		
-		JSONObject responseJson = new JSONObject(response);
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		JSONArray historiesJson = responseJson.getJSONArray("histories");
 		assertEquals(1, historiesJson.length());
 		

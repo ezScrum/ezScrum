@@ -219,7 +219,7 @@ public class AccountObjectTest{
 		account.save();
 		account.reload();
 		// create project role
-		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		boolean result = account.joinProjectWithScrumRole(project.getId(), RoleEnum.ProductOwner);
 		assertTrue(result);
 	}
 	
@@ -250,7 +250,7 @@ public class AccountObjectTest{
 		account.reload();
 		
 		// create project role
-		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		boolean result = account.joinProjectWithScrumRole(project.getId(), RoleEnum.ProductOwner);
 		assertTrue(result);
 		
 		// delete project role

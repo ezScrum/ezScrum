@@ -121,8 +121,8 @@ public class GetAddSprintTaskInfoActionTest extends MockStrutsTestCase {
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
 		StringBuilder mStringBuilder = new StringBuilder();
 		// set account into project
-		account.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
-		account2.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		account2.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
 		
 		// ================== set parameter info ====================
 		addRequestParameter("sprintId", String.valueOf(sprint.getId()));

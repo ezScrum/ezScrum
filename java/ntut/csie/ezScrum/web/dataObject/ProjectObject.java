@@ -262,6 +262,13 @@ public class ProjectObject implements IBaseObject {
 			doCreate();
 		}
     }
+	
+	/**
+	 * for Import use
+	 */
+	public void save(long createTime) {
+		doCreate(createTime);
+	}
 
 	@Override
     public void reload() {
@@ -300,6 +307,20 @@ public class ProjectObject implements IBaseObject {
 	
 	private void doCreate() {
 		mCreateTime = System.currentTimeMillis();
+		mId = ProjectDAO.getInstance().create(this);
+		SerialNumberObject serialNumber = new SerialNumberObject(mId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplanId(0);
+		serialNumber.save();
+        reload();
+	}
+	
+	private void doCreate(long createTime) {
+		mCreateTime = createTime;
 		mId = ProjectDAO.getInstance().create(this);
 		SerialNumberObject serialNumber = new SerialNumberObject(mId);
 		serialNumber.setReleaseId(0)

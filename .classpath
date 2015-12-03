@@ -17,6 +17,12 @@
 	<classpathentry kind="lib" path="lib/test/http/httpcore-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpmime-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/http-20070405.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/hk2-api-2.4.0-b31.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/jersey-client.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/jersey-container-jdk-http-2.22.1.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-core-2.22.1.jar"/>
+	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-provider-jdk-http-2.22.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.5">
 		<attributes>
 			<attribute name="owner.project.facets" value="#system#"/>

@@ -158,7 +158,7 @@ public class AccountObject implements IBaseObject {
 	 * @param role
 	 * @return isCreateSuccess
 	 */
-	public boolean createProjectRole(long projectId, RoleEnum role) {
+	public boolean joinProjectWithScrumRole(long projectId, RoleEnum role) {
 		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
 	}
 
