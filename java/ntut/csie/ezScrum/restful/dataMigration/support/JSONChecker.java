@@ -12,9 +12,7 @@ public class JSONChecker {
 		try {
 			projectJSON = new JSONObject(projectJSONString);
 
-			if (projectJSON.isNull(ProjectJSONEnum.NAME)) {
-				projectJSON.put(ProjectJSONEnum.NAME, "");
-			} else if (projectJSON.isNull(ProjectJSONEnum.DISPLAY_NAME)) {
+			if (projectJSON.isNull(ProjectJSONEnum.DISPLAY_NAME)) {
 				projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, "");
 			} else if (projectJSON.isNull(ProjectJSONEnum.COMMENT)) {
 				projectJSON.put(ProjectJSONEnum.COMMENT, "");

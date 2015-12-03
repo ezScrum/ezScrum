@@ -143,7 +143,7 @@ public class StoryApiTest extends TestableApi {
 		entity.setContentEncoding("utf-8");
 		HttpPost httpPost = new HttpPost(API_URL);
 		httpPost.setEntity(entity);
-		setHeaders(httpPost, mAccountId, mPlatformType);
+		getHeaders(httpPost, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpPost);
 		String result = EntityUtils.toString(httpResponse.getEntity());
 		JSONObject response = new JSONObject(result);
@@ -175,7 +175,7 @@ public class StoryApiTest extends TestableApi {
 		entity.setContentEncoding("utf-8");
 		HttpPut httpPut = new HttpPut(API_URL + "/" + story.getId());
 		httpPut.setEntity(entity);
-		setHeaders(httpPut, mAccountId, mPlatformType);
+		getHeaders(httpPut, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpPut);
 		String result = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 		
@@ -205,7 +205,7 @@ public class StoryApiTest extends TestableApi {
 
 		HttpGet httpGet = new HttpGet(API_URL + "/" + story.getId()
 				+ "?project_name=abcd");
-		setHeaders(httpGet, mAccountId, mPlatformType);
+		getHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(),
 				"utf-8");
@@ -227,7 +227,7 @@ public class StoryApiTest extends TestableApi {
 			IOException, JSONException {
 		HttpGet httpGet = new HttpGet(API_URL + "?project_name="
 				+ mProject.getName());
-		setHeaders(httpGet, mAccountId, mPlatformType);
+		getHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(),
 				"utf-8");
@@ -258,7 +258,7 @@ public class StoryApiTest extends TestableApi {
 		StoryObject story = mCPB.getStories().get(0);
 		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + story.getId()
 				+ "?project_name=" + mProject.getName());
-		setHeaders(httpDelete, mAccountId, mPlatformType);
+		getHeaders(httpDelete, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpDelete);
 		
 		assertEquals(200, httpResponse.getStatusLine().getStatusCode());

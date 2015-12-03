@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
-import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
+import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoderTest;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 
 @Path("projects")
@@ -16,7 +16,7 @@ public class ProjectRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createProject(String entity) {
 		String projectJSONString = JSONChecker.checkProjectJSON(entity);
-		ProjectObject project = JSONDecoder.toProject(projectJSONString);
+		ProjectObject project = JSONDecoderTest.toProject(projectJSONString);
 		if (project != null) {
 			return Response.status(Response.Status.OK).entity(project.toString()).build();
 		}

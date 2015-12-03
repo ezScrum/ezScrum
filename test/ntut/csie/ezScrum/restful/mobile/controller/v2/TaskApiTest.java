@@ -171,7 +171,7 @@ public class TaskApiTest extends TestableApi {
 		entity.setContentEncoding(StandardCharsets.UTF_8.name());
 		HttpPost httpPost = new HttpPost(API_URL);
 		httpPost.setEntity(entity);
-		setHeaders(httpPost, mAccountId, mPlatformType);
+		getHeaders(httpPost, mAccountId, mPlatformType);
 		String result = EntityUtils.toString(mClient.execute(httpPost).getEntity());
 		System.out.println(result);
 		
@@ -190,7 +190,7 @@ public class TaskApiTest extends TestableApi {
 		TaskObject task = mATTS.getTasks().get(0);
 
 		HttpGet httpGet = new HttpGet(API_URL + "/" + task.getId());
-		setHeaders(httpGet, mAccountId, mPlatformType);
+		getHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
 
@@ -200,7 +200,7 @@ public class TaskApiTest extends TestableApi {
 	@Test
 	public void testGetList() throws ClientProtocolException, IOException, JSONException {
 		HttpGet httpGet = new HttpGet(API_URL + "?project_name=" + mProject.getName());
-		setHeaders(httpGet, mAccountId, mPlatformType);
+		getHeaders(httpGet, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpGet);
 		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
 
@@ -245,7 +245,7 @@ public class TaskApiTest extends TestableApi {
 		entity.setContentEncoding(StandardCharsets.UTF_8.name());
 		HttpPut httpPut = new HttpPut(API_URL + "/" + task.getId());
 		httpPut.setEntity(entity);
-		setHeaders(httpPut, mAccountId, mPlatformType);
+		getHeaders(httpPut, mAccountId, mPlatformType);
 		String result = EntityUtils.toString(mClient.execute(httpPut).getEntity(), StandardCharsets.UTF_8);
 		JSONObject response = new JSONObject(result);
 		
@@ -260,7 +260,7 @@ public class TaskApiTest extends TestableApi {
 	public void testDelete() throws JSONException, ParseException, IOException {
 		TaskObject task = mATTS.getTasks().get(0);
 		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + task.getId() + "?project_name=" + mProject.getName());
-		setHeaders(httpDelete, mAccountId, mPlatformType);
+		getHeaders(httpDelete, mAccountId, mPlatformType);
 		HttpResponse httpResponse = mClient.execute(httpDelete);
 		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
 
