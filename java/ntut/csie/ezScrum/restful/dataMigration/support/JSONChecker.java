@@ -72,4 +72,19 @@ public class JSONChecker {
 		}
 		return message;
 	}
+
+	public static String checkAccountJSON(String accountJSONString) {
+		String message = "";
+		try {
+			JSONObject accountJSON = new JSONObject(accountJSONString);
+			accountJSON.getString(AccountJSONEnum.USERNAME);
+			accountJSON.getString(AccountJSONEnum.NICK_NAME);
+			accountJSON.getString(AccountJSONEnum.PASSWORD);
+			accountJSON.getString(AccountJSONEnum.EMAIL);
+			accountJSON.getInt(AccountJSONEnum.ENABLE);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
 }

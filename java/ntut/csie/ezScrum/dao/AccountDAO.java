@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
@@ -37,14 +39,10 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addInsertValue(AccountEnum.USERNAME, account.getUsername());
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getNickName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
-		valueSet.addInsertValue(AccountEnum.PASSWORD,
-				getMd5(account.getPassword()));
-		valueSet.addInsertValue(AccountEnum.ENABLE,
-				String.valueOf(account.getEnable() == true ? 1 : 0));
-		valueSet.addInsertValue(AccountEnum.CREATE_TIME,
-				account.getCreateTime());
-		valueSet.addInsertValue(AccountEnum.UPDATE_TIME,
-				account.getCreateTime());
+		valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
+		valueSet.addInsertValue(AccountEnum.ENABLE, String.valueOf(account.getEnable() == true ? 1 : 0));
+		valueSet.addInsertValue(AccountEnum.CREATE_TIME, account.getCreateTime());
+		valueSet.addInsertValue(AccountEnum.UPDATE_TIME, account.getCreateTime());
 		String query = valueSet.getInsertQuery();
 
 		mControl.execute(query, true);
@@ -62,8 +60,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addInsertValue(AccountEnum.NICK_NAME, account.getNickName());
 		valueSet.addInsertValue(AccountEnum.EMAIL, account.getEmail());
 		if (account.getPassword() != null && !account.getPassword().equals("")) {
-			valueSet.addInsertValue(AccountEnum.PASSWORD,
-					getMd5(account.getPassword()));
+			valueSet.addInsertValue(AccountEnum.PASSWORD, getMd5(account.getPassword()));
 		}
 		valueSet.addInsertValue(AccountEnum.ENABLE,
 				account.getEnable() == true ? 1 : 0);
@@ -96,12 +93,9 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectRoleEnum.PROJECT_ID, projectId);
 		valueSet.addInsertValue(ProjectRoleEnum.ACCOUNT_ID, accountId);
-		valueSet.addInsertValue(ProjectRoleEnum.ROLE,
-				String.valueOf(role.ordinal()));
-		valueSet.addInsertValue(ProjectRoleEnum.CREATE_TIME,
-				String.valueOf(System.currentTimeMillis()));
-		valueSet.addInsertValue(ProjectRoleEnum.UPDATE_TIME,
-				String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(ProjectRoleEnum.ROLE, String.valueOf(role.ordinal()));
+		valueSet.addInsertValue(ProjectRoleEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
+		valueSet.addInsertValue(ProjectRoleEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
 		return mControl.executeUpdate(query);
 	}
@@ -156,14 +150,12 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 	 * @param role
 	 * @return isDeleteSuccess
 	 */
-	public boolean deleteProjectRole(long projectId, long accountId,
-			RoleEnum role) {
+	public boolean deleteProjectRole(long projectId, long accountId, RoleEnum role) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
 		valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, projectId);
 		valueSet.addEqualCondition(ProjectRoleEnum.ACCOUNT_ID, accountId);
-		valueSet.addEqualCondition(ProjectRoleEnum.ROLE,
-				String.valueOf(role.ordinal()));
+		valueSet.addEqualCondition(ProjectRoleEnum.ROLE, String.valueOf(role.ordinal()));
 		String query = valueSet.getDeleteQuery();
 		return mControl.executeUpdate(query);
 	}
@@ -199,9 +191,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		try {
 			if (result.next()) {
 				ProjectObject project = new ProjectObject(0, "system");
-				project.setDisplayName("system").setComment("system")
-						.setManager("admin").setAttachFileSize(0)
-						.setCreateTime(0);
+				project.setDisplayName("system")
+				       .setComment("system")
+					   .setManager("admin")
+					   .setAttachFileSize(0)
+					   .setCreateTime(0);
 				ScrumRole scrumRole = new ScrumRole("system", "admin");
 				scrumRole.setisAdmin(true);
 				projectRole = new ProjectRole(project, scrumRole);
@@ -232,33 +226,22 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			ResultSet result) throws SQLException {
 		ScrumRole scrumRole = new ScrumRole(projectName, role);
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
-		scrumRole.setAccessProductBacklog(result
-				.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
-		scrumRole.setAccessReleasePlan(result
-				.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
 		scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
-		scrumRole.setAccessRetrospective(result
-				.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
-		scrumRole.setAccessSprintBacklog(result
-				.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
-		scrumRole.setAccessSprintPlan(result
-				.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-		scrumRole.setAccessUnplanItem(result
-				.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
-		scrumRole.setAccessTaskBoard(result
-				.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
-		scrumRole.setEditProject(result
-				.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		scrumRole.setAccessUnplanItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
+		scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
 		return scrumRole;
 	}
 
-	public ProjectRole getProjectWithScrumRole(ResultSet result)
-			throws SQLException {
-		ProjectObject project = ProjectObject.get(result
-				.getLong(ProjectRoleEnum.PROJECT_ID));
+	public ProjectRole getProjectWithScrumRole(ResultSet result) throws SQLException {
+		ProjectObject project = ProjectObject.get(result.getLong(ProjectRoleEnum.PROJECT_ID));
 		RoleEnum role = RoleEnum.values()[result.getInt(ProjectRoleEnum.ROLE)];
-		ScrumRole scrumRole = convertScrumRole(project.getName(), role.name(),
-				result);
+		ScrumRole scrumRole = convertScrumRole(project.getName(), role.name(), result);
 
 		return new ProjectRole(project, scrumRole);
 	}
@@ -482,7 +465,11 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return account;
 	}
 
-	public String getMd5(String str) {
+	public static String getMd5(String str) {
+		// 如果密碼已經是md5格式，則不轉換
+		if (isMD5(str)) {
+			return str;
+		}
 		MessageDigest md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -495,7 +482,7 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return str;
 	}
 
-	private String byte2hex(byte b[]) {
+	private static String byte2hex(byte b[]) {
 		String hs = "";
 		String stmp = "";
 		for (int n = 0; n < b.length; n++) {
@@ -509,5 +496,32 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 			}
 		}
 		return hs;
+	}
+	
+	private static boolean isMD5(String str) {
+		int lengthOfMD5 = 32;
+		boolean isMD5 = (str.length() == lengthOfMD5);
+		isMD5 &= !isDigit(str);
+		isMD5 &= !isAlpha(str);
+		isMD5 &= isAlphaDigit(str);
+		return isMD5;
+	}
+
+	private static boolean isDigit(String str) {
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isDigit = pattern.matcher(str);
+		return isDigit.matches();
+	}
+
+	private static boolean isAlpha(String str) {
+		Pattern pattern = Pattern.compile("[a-z]*");
+		Matcher isDigit = pattern.matcher(str);
+		return isDigit.matches();
+	}
+
+	private static boolean isAlphaDigit(String str) {
+		Pattern pattern = Pattern.compile("[0-9a-z]*");
+		Matcher isDigit = pattern.matcher(str);
+		return isDigit.matches();
 	}
 }
