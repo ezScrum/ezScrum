@@ -132,7 +132,6 @@ public class StoryApiTest extends JerseyTest {
 		// 預設已經新增五個 stories
 		ArrayList<StoryObject> stories = mProject.getStories();
 		assertEquals(5, stories.size());
-
 		// initial request data
 		JSONObject storyJson = new JSONObject();
 		storyJson.put("name", "TEST_NAME").put("notes", "TEST_NOTES")
@@ -140,16 +139,13 @@ public class StoryApiTest extends JerseyTest {
 				.put("value", 15).put("estimate", 21).put("status", 0)
 				.put("sprint_id", -1).put("tags", "")
 				.put("project_name", mProject.getName());
-
 		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
 		Response response = mClient.target(BASE_URL)
                 .path("stories")
                 .request()
                 .headers(headersMap)
                 .post(Entity.text(storyJson.toString()));
-		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
-
 		// 新增一個 story，project 內的 story 要有六個
 		stories = mProject.getStories();
 		assertEquals(6, stories.size());
@@ -169,18 +165,14 @@ public class StoryApiTest extends JerseyTest {
 				.put("value", 15).put("estimate", 21).put("status", 0)
 				.put("sprint_id", -1).put("tags", "")
 				.put("project_name", mProject.getName());
-
 		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
-		
 		Response response = mClient.target(BASE_URL)
                 .path("stories/" + story.getId())
                 .request()
                 .headers(headersMap)
                 .put(Entity.text(storyJson.toString()));
-		
 		// assert response msg
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
-
 		assertEquals(storyJson.getLong("id"), responseJSON.getLong("id"));
 		assertEquals(storyJson.getString("name"), responseJSON.getString("name"));
 		assertEquals(storyJson.getString("notes"), responseJSON.getString("notes"));
@@ -200,7 +192,6 @@ public class StoryApiTest extends JerseyTest {
 	@Test
 	public void testGet() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
-
 		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
 		Response response = mClient.target(BASE_URL)
                 .path("stories/" + story.getId())
@@ -211,7 +202,6 @@ public class StoryApiTest extends JerseyTest {
 		
 		// assert data
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
-		
 		assertEquals(story.getId(), responseJSON.getLong("id"));
 		assertEquals(story.getName(), responseJSON.getString("name"));
 		assertEquals(story.getNotes(), responseJSON.getString("notes"));
@@ -232,9 +222,7 @@ public class StoryApiTest extends JerseyTest {
                 .request()
                 .headers(headersMap)
                 .get();
-
 		ArrayList<StoryObject> stories = mCPB.getStories();
-
 		JSONObject storiesJson = new JSONObject(response.readEntity(String.class));
 		for (int i = 0; i < stories.size(); i++) {
 			StoryObject story = stories.get(i);
@@ -256,9 +244,7 @@ public class StoryApiTest extends JerseyTest {
 	@Test
 	public void testDelete() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
-		
 		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
-
 		Response response = mClient.target(BASE_URL)
 		        .path("stories/" + story.getId())
 		        .queryParam("project_name", mProject.getName())

@@ -2,10 +2,26 @@ package ntut.csie.ezScrum.restful.mobile.controller.v2;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
 import java.util.ArrayList;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -22,53 +38,39 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-import com.sun.net.httpserver.HttpServer;
-
-public class TaskApiTest extends TestableApi {
-	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/api";
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/tasks";
-	private static HttpServer mServer;
-	private HttpClient mClient;
-	private long mAccountId;
-	private String mPlatformType;
-
-	private int mProjectCount = 1;
-	private int mSprintCount = 1;
-	private int mStoryCount = 3;
-	private int mTaskCount = 3;
+public class TaskApiTest extends JerseyTest {
+	private Configuration mConfig;
 	private CreateProject mCP;
 	private CreateProductBacklog mCPB;
 	private CreateSprint mCS;
 	private CreateAccount mCA;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
-	private Configuration mConfig;
+	private ResourceConfig mResourceConfig;
+	private Client mClient;
+	private HttpServer mHttpServer;
+	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/api";
+	private URI mBaseUri = URI.create(BASE_URL);
+	private long mAccountId;
+	private String mPlatformType;
+	private int mProjectCount = 1;
+	private int mSprintCount = 1;
+	private int mStoryCount = 5;
+	private int mTaskCount = 3;
 	private ProjectObject mProject;
+	
+	@Override
+	protected Application configure() {
+		mResourceConfig = new ResourceConfig(TaskApi.class);
+		return mResourceConfig;
+	}
+	
 	@Before
 	public void setUp() throws Exception {
-		mClient = HttpClientBuilder.create().build();
-
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -108,8 +110,10 @@ public class TaskApiTest extends TestableApi {
 		mProject = mCP.getAllProjects().get(0);
 		
 		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
+
+		// Create Client
+		mClient = ClientBuilder.newClient();
 	}
 
 	@After
@@ -133,11 +137,11 @@ public class TaskApiTest extends TestableApi {
 		mConfig = null;
 		
 		// stop server
-		mServer.stop(0);
+		mHttpServer.stop(0);
 	}
 	
 	@Test
-	public void testPost() throws JSONException, ParseException, ClientProtocolException, IOException {
+	public void testPost() throws JSONException {
 		// Assert all tasks size
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject);
 		ArrayList<StoryObject> stories = productBacklogMapper.getStories();
@@ -165,51 +169,54 @@ public class TaskApiTest extends TestableApi {
 		        .put(TaskEnum.REMAIN, TEST_TASK_REMAIN)
 		        .put(TaskEnum.HANDLER_ID, mAccountId)
 		        .put("project_name", mProject.getName());
-
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(taskJson.toString().getBytes()));
-		entity.setContentEncoding(StandardCharsets.UTF_8.name());
-		HttpPost httpPost = new HttpPost(API_URL);
-		httpPost.setEntity(entity);
-		getHeaders(httpPost, mAccountId, mPlatformType);
-		String result = EntityUtils.toString(mClient.execute(httpPost).getEntity());
-		System.out.println(result);
 		
-		tasks = new ArrayList<TaskObject>();
-
-		for (StoryObject story : stories) {
-			tasks.addAll(story.getTasks());
-		}
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("tasks")
+                .request()
+                .headers(headersMap)
+                .post(Entity.text(taskJson.toString()));
 		
-		// assert
-		assertEquals(mStoryCount * mTaskCount + 1, tasks.size());
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		assertEquals(taskJson.getString(TaskEnum.NAME), responseJSON.getString(TaskEnum.NAME));
+		assertEquals(taskJson.getString(TaskEnum.NOTES), responseJSON.getString(TaskEnum.NOTES));
+		assertEquals(taskJson.getInt(TaskEnum.ESTIMATE), responseJSON.getInt(TaskEnum.ESTIMATE));
+		assertEquals(taskJson.getLong(TaskEnum.STORY_ID), responseJSON.getLong(TaskEnum.STORY_ID));
+		assertEquals(taskJson.getInt(TaskEnum.REMAIN), responseJSON.getInt(TaskEnum.REMAIN));
+		assertEquals(taskJson.getLong(TaskEnum.HANDLER_ID), responseJSON.getJSONObject(TaskEnum.HANDLER).getLong(AccountEnum.ID));
+		assertEquals(taskJson.getString("project_name"), ProjectObject.get(responseJSON.getInt(TaskEnum.PROJECT_ID)).getName());
 	}
 	
 	@Test
-	public void testGet() throws ParseException, IOException {
+	public void testGet() {
 		TaskObject task = mATTS.getTasks().get(0);
-
-		HttpGet httpGet = new HttpGet(API_URL + "/" + task.getId());
-		getHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-		assertEquals(task.toString(), response);
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("tasks/" + task.getId())
+                .queryParam("project_name", mProject.getName())
+                .request()
+                .headers(headersMap)
+                .get();
+		
+		assertEquals(task.toString(), response.readEntity(String.class));
 	}
 
 	@Test
-	public void testGetList() throws ClientProtocolException, IOException, JSONException {
-		HttpGet httpGet = new HttpGet(API_URL + "?project_name=" + mProject.getName());
-		getHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+	public void testGetList() throws JSONException {
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("tasks")
+                .queryParam("project_name", mProject.getName())
+                .request()
+                .headers(headersMap)
+                .get();
 
 		ArrayList<TaskObject> tasks = mATTS.getTasks();
 
-		JSONObject tasksJson = new JSONObject(response);
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		for (int i = 0; i < tasks.size(); i++) {
 			TaskObject task = tasks.get(i);
-			JSONObject taskJson = tasksJson.getJSONArray(SprintBacklogUtil.TAG_TASKS).getJSONObject(i);
+			JSONObject taskJson = responseJSON.getJSONArray(SprintBacklogUtil.TAG_TASKS).getJSONObject(i);
 			assertEquals(task.getId(), taskJson.getLong(TaskEnum.ID));
 			assertEquals(task.getName(), taskJson.getString(TaskEnum.NAME));
 			assertEquals(task.getNotes(), taskJson.getString(TaskEnum.NOTES));
@@ -219,7 +226,7 @@ public class TaskApiTest extends TestableApi {
 	}
 	
 	@Test
-	public void testPut() throws JSONException, ParseException, ClientProtocolException, IOException {
+	public void testPut() throws JSONException {
 		TaskObject task = mATTS.getTasks().get(0);
 		
 		// test data
@@ -240,33 +247,35 @@ public class TaskApiTest extends TestableApi {
 		        .put(TaskEnum.HANDLER_ID, mAccountId)
 		        .put("project_name", mProject.getName());
 		
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(taskJson.toString().getBytes()));
-		entity.setContentEncoding(StandardCharsets.UTF_8.name());
-		HttpPut httpPut = new HttpPut(API_URL + "/" + task.getId());
-		httpPut.setEntity(entity);
-		getHeaders(httpPut, mAccountId, mPlatformType);
-		String result = EntityUtils.toString(mClient.execute(httpPut).getEntity(), StandardCharsets.UTF_8);
-		JSONObject response = new JSONObject(result);
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("tasks/" + task.getId())
+                .request()
+                .headers(headersMap)
+                .put(Entity.text(taskJson.toString()));
+		
+		// assert response msg
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		
 		// assert
-		assertEquals(TEST_TASK_NAME, response.getString(TaskEnum.NAME));
-		assertEquals(TEST_TASK_NOTES, response.getString(TaskEnum.NOTES));
-		assertEquals(TEST_TASK_ESTIMATE, response.getInt(TaskEnum.ESTIMATE));
-		assertEquals(TEST_TASK_REMAIN, response.getInt(TaskEnum.REMAIN));
+		assertEquals(TEST_TASK_NAME, responseJSON.getString(TaskEnum.NAME));
+		assertEquals(TEST_TASK_NOTES, responseJSON.getString(TaskEnum.NOTES));
+		assertEquals(TEST_TASK_ESTIMATE, responseJSON.getInt(TaskEnum.ESTIMATE));
+		assertEquals(TEST_TASK_REMAIN, responseJSON.getInt(TaskEnum.REMAIN));
 	}
 
 	@Test
-	public void testDelete() throws JSONException, ParseException, IOException {
+	public void testDelete() throws JSONException {
 		TaskObject task = mATTS.getTasks().get(0);
-		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + task.getId() + "?project_name=" + mProject.getName());
-		getHeaders(httpDelete, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpDelete);
-		String response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-		System.out.println(response);
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+		        .path("tasks/" + task.getId())
+		        .queryParam("project_name", mProject.getName())
+		        .request()
+		        .headers(headersMap)
+		        .delete();
 		
-		JSONObject responseJson = new JSONObject(response);
+		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		assertEquals("ok", responseJson.getString("msg"));
 
 		task = TaskDAO.getInstance().get(task.getId());
