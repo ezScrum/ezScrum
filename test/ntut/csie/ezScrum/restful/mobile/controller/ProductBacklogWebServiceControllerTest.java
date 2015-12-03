@@ -63,7 +63,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 	}
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);

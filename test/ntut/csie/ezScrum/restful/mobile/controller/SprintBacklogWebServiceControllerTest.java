@@ -2,11 +2,28 @@ package ntut.csie.ezScrum.restful.mobile.controller;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.codec.binary.Base64;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
@@ -24,28 +41,12 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-import com.sun.net.httpserver.HttpServer;
-
-public class SprintBacklogWebServiceControllerTest {
-	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/web-service";
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/web-service/%s/sprint-backlog/%s?username=%s&password=%s";
-	private static HttpServer mServer;
-	private HttpClient mHttpClient;
+public class SprintBacklogWebServiceControllerTest extends JerseyTest {
+	private ResourceConfig mResourceConfig;
+	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/web-service";
+	private URI mBaseUri = URI.create(BASE_URL);
+	private Client mClient;
+	private HttpServer mHttpServer;
 	private String mUsername = "admin";
 	private String mPassword = "admin";
 
@@ -60,14 +61,14 @@ public class SprintBacklogWebServiceControllerTest {
 	private Configuration mConfig;
 	private String mProjectName;
 
+	@Override
+	protected Application configure() {
+		mResourceConfig = new ResourceConfig(SprintBacklogWebServiceController.class);
+		return mResourceConfig;
+	}
+	
 	@Before
 	public void setUp() throws Exception {
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
-
-		mHttpClient = HttpClientBuilder.create().build();
-
 		// change to test mode
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
@@ -93,12 +94,18 @@ public class SprintBacklogWebServiceControllerTest {
 		mProjectName = mProject.getName();
 		mUsername = new String(Base64.encodeBase64(mUsername.getBytes()));
 		mPassword = new String(Base64.encodeBase64(mPassword.getBytes()));
+		
+		// start server
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
+
+		// Create Client
+		mClient = ClientBuilder.newClient();
 	}
 
 	@After
 	public void tearDown() {
 		// stop server
-		mServer.stop(0);
+		mHttpServer.stop(0);
 
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -120,45 +127,47 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetSprintInfoList() throws ParseException, ClientProtocolException, IOException, JSONException {
+	public void testGetSprintInfoList() throws JSONException {
 		// Get Sprint
 		SprintObject sprint = mProject.getCurrentSprint();
 		// Get JSON
 		String expectedJSONString = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
 		
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, "sprintlist", mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
-		JSONObject response = new JSONObject(result);
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/sprintlist")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		
 		// Assert
-		assertEquals(expectedJSONString, response.toString());
+		assertEquals(expectedJSONString, responseJSON.toString());
 	}
 
 	@Test
-	public void testGetSprintBacklog() throws ParseException, ClientProtocolException, IOException, JSONException {
+	public void testGetSprintBacklog() throws JSONException {
 		// Get Sprint
 		SprintObject sprint = mCS.getSprints().get(0);
 		// Get JSON
 		String expectedJSONString = ConvertSprintBacklog.getSprintBacklogJsonString(sprint);
 		
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprint.getId() + "/sprintbacklog", mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(), StandardCharsets.UTF_8);
-		JSONObject response = new JSONObject(result);
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprint.getId() + "/sprintbacklog")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		
 		// Assert
-		assertEquals(expectedJSONString, response.toString());
+		assertEquals(expectedJSONString, responseJSON.toString());
 	}
 
 	@Test
-	public void testGetCurrentSprintBacklog() throws Exception {
+	public void testGetCurrentSprintBacklog() throws JSONException {
 		// create test data
 		SprintObject currentSprint = mCS.getSprints().get(0);
 		StoryObject story1 = currentSprint.getStories().get(0);
@@ -173,12 +182,14 @@ public class SprintBacklogWebServiceControllerTest {
 				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
 		task2.save();
 		
-		// Send Http Request
-		String URL = String.format(API_URL, mProjectName, "current-sprint", mUsername, mPassword);
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
-		JSONObject wholeJson = new JSONObject(result);
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/current-sprint")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject wholeJson = new JSONObject(response.readEntity(String.class));
 		JSONArray storyArray = wholeJson.getJSONArray("stories");
 		// assert basic sprint info
 		assertEquals(currentSprint.getId(), wholeJson.getLong(SprintUtil.TAG_ID));
@@ -251,44 +262,43 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetStoriesId() throws Exception {
+	public void testGetStoriesId() throws JSONException {
 		long sprintId = mCS.getSprintsId().get(1);
-		
-		//Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/storylist", mUsername, mPassword);
-		
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(),StandardCharsets.UTF_8);
 		
 		// get Expected JSON String
 		String expectedJSONString = ConvertSprintBacklog.getStoriesIdJsonStringInSprint(SprintObject.get(sprintId).getStories());
 		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/storylist")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
 		// Assert
-		assertEquals(expectedJSONString, result);
+		assertEquals(expectedJSONString, response.readEntity(String.class));
 	}
 	
 	@Test
-	public void testGetStoriesId_WithCurrentSprint() throws Exception {
+	public void testGetStoriesId_WithCurrentSprint() throws JSONException {
 		String sprintId = "current";
-		
-		//Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/storylist", mUsername, mPassword);
-		
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet).getEntity(),StandardCharsets.UTF_8);
-		
 		SprintObject currentSprint = mCS.getSprints().get(0);
 		// get Expected JSON String
 		String expectedJSONString = ConvertSprintBacklog.getStoriesIdJsonStringInSprint(currentSprint.getStories());
 		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/storylist")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
 		// Assert
-		assertEquals(expectedJSONString, result);
+		assertEquals(expectedJSONString, response.readEntity(String.class));
 	}
 
 	@Test
-	public void testGetTasksId() throws Exception {
+	public void testGetTasksId() throws JSONException {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -311,14 +321,15 @@ public class SprintBacklogWebServiceControllerTest {
 		task3.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String storyId = String.valueOf(story.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/" + storyId + "/task-id-list", mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
-		JSONObject wholeJson = new JSONObject(result);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/" + storyId + "/task-id-list")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject wholeJson = new JSONObject(response.readEntity(String.class));
 		JSONObject storyJson = wholeJson
 				.getJSONObject(SprintBacklogUtil.TAG_STORY);
 		long storyIdFromResponse = storyJson.getLong(SprintBacklogUtil.TAG_ID);
@@ -331,7 +342,7 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetTasksId_WithInvalidSprintId() throws Exception {
+	public void testGetTasksId_WithInvalidSprintId() {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -359,20 +370,20 @@ public class SprintBacklogWebServiceControllerTest {
 		String storyId = String.valueOf(story.getId());
 		// create invalid sprint
 		SprintObject invalidSprint = new SprintObject(mProject.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, invalidSprint.getId() + "/" + storyId + "/task-id-list",
-				mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + invalidSprint.getId() + "/" + storyId + "/task-id-list")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
 		// assert result
-		assertEquals("", result);
+		assertEquals("", response.readEntity(String.class));
 	}
 
 	@Test
-	public void testGetTaskHistory() throws Exception {
+	public void testGetTaskHistory() throws JSONException {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -385,15 +396,15 @@ public class SprintBacklogWebServiceControllerTest {
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId + "/history",
-				mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
-		JSONObject wholeJson = new JSONObject(result);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/" + taskId + "/history")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject wholeJson = new JSONObject(response.readEntity(String.class));
 		JSONArray historyJsonArray = wholeJson
 				.getJSONArray(SprintBacklogUtil.TAG_TASKHISTORIES);
 		assertEquals(2, historyJsonArray.length());
@@ -426,7 +437,7 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetTaskHistory_WithInvalidSprint() throws Exception {
+	public void testGetTaskHistory_WithInvalidSprint() {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -441,19 +452,20 @@ public class SprintBacklogWebServiceControllerTest {
 		invalidSprint.save();
 		String invalidSprintId = String.valueOf(invalidSprint.getId());
 		String taskId = String.valueOf(task.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, invalidSprintId + "/" + taskId + "/history", mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + invalidSprintId + "/" + taskId + "/history")
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
 		// assert result
-		assertEquals("", result);
+		assertEquals("", response.readEntity(String.class));
 	}
 
 	@Test
-	public void testGetTaskInformation() throws Exception {
+	public void testGetTaskInformation() throws JSONException {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -466,15 +478,15 @@ public class SprintBacklogWebServiceControllerTest {
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId,
-				mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
-		JSONObject wholeJson = new JSONObject(result);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/" + taskId)
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		JSONObject wholeJson = new JSONObject(response.readEntity(String.class));
 		assertEquals(task.getId(), wholeJson.getLong(SprintBacklogUtil.TAG_ID));
 		assertEquals(task.getName(),
 				wholeJson.getString(SprintBacklogUtil.TAG_NAME));
@@ -492,7 +504,7 @@ public class SprintBacklogWebServiceControllerTest {
 	}
 
 	@Test
-	public void testGetTaskInformation_WithInvalidTask() throws Exception {
+	public void testGetTaskInformation_WithInvalidTask() {
 		SprintObject sprint = new SprintObject(mProject.getId());
 		sprint.save();
 		StoryObject story = new StoryObject(mProject.getId());
@@ -504,15 +516,15 @@ public class SprintBacklogWebServiceControllerTest {
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
-		// Assemble URL
-		String URL = String.format(API_URL, mProjectName, sprintId + "/" + taskId,
-				mUsername, mPassword);
-
-		// Send Http Request
-		HttpGet httpGet = new HttpGet(URL);
-		String result = EntityUtils.toString(mHttpClient.execute(httpGet)
-				.getEntity(), StandardCharsets.UTF_8);
-		assertEquals("", result);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("/" + mProjectName + "/sprint-backlog/" + sprintId + "/" + taskId)
+                .queryParam("username", mUsername)
+                .queryParam("password", mPassword)
+                .request()
+                .get();
+		
+		assertEquals("", response.readEntity(String.class));
 	}
 
 	private static String parseDate(long date) {
