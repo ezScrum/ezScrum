@@ -100,7 +100,7 @@
   	</servlet-mapping>
   	
   	<!-- restful web service setting for Data Migration -->
-	<display-name>ezScrumExport</display-name>
+	<display-name>ezScrum Data Migration</display-name>
 	<servlet>
     	<servlet-name>Jersey REST Service For Data Migration</servlet-name>
     	<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
