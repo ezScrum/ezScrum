@@ -94,50 +94,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateProject_OnlyProjectInformation() throws JSONException {
-		// Test Data
-		String projectName = "TEST_PROJECT_NAME";
-		String projectDisplayName = "TEST_PROJECT_DISPLAY_NAME";
-		String projectComment = "TEST_PROJECT_COMMENT";
-		String projectProductOwner = "TEST_PROJECT_PRODUCT_OWNER";
-		int projectMaxAttachFileSize = 2;
-		long createTime = System.currentTimeMillis();
-
-		JSONObject projectJSON = new JSONObject();
-		projectJSON.put(ProjectJSONEnum.NAME, projectName);
-		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
-		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
-		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
-		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
-		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
-		
-		JSONObject scrumRoleJSON = new JSONObject();
-		projectJSON.put(ProjectJSONEnum.SCRUM_ROLES, scrumRoleJSON);
-		JSONArray projectRoleJSONArray = new JSONArray();
-		projectJSON.put(ProjectJSONEnum.PROJECT_ROLES, projectRoleJSONArray);
-		JSONArray tagJSONArray = new JSONArray();
-		projectJSON.put(ProjectJSONEnum.TAGS, tagJSONArray);
-		
-		// Call '/projects' API
-		Response response = mClient.target(BASE_URL)
-				                   .path("projects")
-				                   .request()
-				                   .post(Entity.text(projectJSON.toString()));
-
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		
-		// Assert
-		assertTrue(jsonResponse.getLong(ProjectEnum.ID) > -1);
-		assertEquals(projectName, jsonResponse.getString(ProjectEnum.NAME));
-		assertEquals(projectDisplayName, jsonResponse.getString(ProjectEnum.DISPLAY_NAME));
-		assertEquals(projectComment, jsonResponse.getString(ProjectEnum.COMMENT));
-		assertEquals(projectProductOwner, jsonResponse.getString(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(projectMaxAttachFileSize, jsonResponse.getInt(ProjectEnum.ATTATCH_MAX_SIZE));
-		assertEquals(createTime, jsonResponse.getLong(ProjectEnum.CREATE_TIME));
-	}
-	
-	@Test
-	public void testCreateProject_WithScrumRole() throws JSONException {
+	public void testCreateProject() throws JSONException {
 		// Test Data
 		String projectName = "TEST_PROJECT_NAME";
 		String projectDisplayName = "TEST_PROJECT_DISPLAY_NAME";

@@ -121,7 +121,7 @@ public class AccountMapper {
 			RoleEnum role) {
 		AccountObject account = AccountObject.get(accountId);
 		if (account != null) {
-			account.createProjectRole(projectId, role);
+			account.joinProjectWithScrumRole(projectId, role);
 		}
 		return account;
 	}

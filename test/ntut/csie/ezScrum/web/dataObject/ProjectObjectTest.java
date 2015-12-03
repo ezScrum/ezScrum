@@ -191,7 +191,7 @@ public class ProjectObjectTest {
 		account.reload();
 
 		// create project role
-		boolean result = account.createProjectRole(project.getId(),
+		boolean result = account.joinProjectWithScrumRole(project.getId(),
 				RoleEnum.ProductOwner);
 		assertTrue(result);
 

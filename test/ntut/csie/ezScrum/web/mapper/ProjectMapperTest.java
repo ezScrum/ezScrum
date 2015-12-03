@@ -158,7 +158,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ProductOwner
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ProductOwner);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ProductOwner);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -184,7 +184,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumMaster
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumMaster);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumMaster);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -211,7 +211,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumTeam
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumTeam);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumTeam);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username

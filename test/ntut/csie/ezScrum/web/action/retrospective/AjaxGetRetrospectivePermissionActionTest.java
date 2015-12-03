@@ -83,7 +83,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();
@@ -130,7 +130,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.Guest);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.Guest);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();

@@ -105,7 +105,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		account.save();
 		account.reload();
 		// create project role
-		boolean createRoleResult = account.createProjectRole(projectId, RoleEnum.ProductOwner);
+		boolean createRoleResult = account.joinProjectWithScrumRole(projectId, RoleEnum.ProductOwner);
 		assertTrue(createRoleResult);
 		
 		// create Scrum role

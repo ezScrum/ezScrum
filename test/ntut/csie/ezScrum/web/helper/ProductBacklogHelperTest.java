@@ -807,7 +807,7 @@ public class ProductBacklogHelperTest {
 		CA.exe();
 
 		AccountObject account = CA.getAccountList().get(0);
-		account.createProjectRole(mCP.getAllProjects().get(0).getId(),
+		account.joinProjectWithScrumRole(mCP.getAllProjects().get(0).getId(),
 				RoleEnum.ScrumTeam);
 
 		boolean inProject = mProductBacklogHelper1.checkAccountInProject(
