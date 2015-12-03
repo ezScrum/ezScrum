@@ -267,7 +267,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetSprintWithStories() throws Exception {
+	public void testGetSprintWithStories() throws JSONException {
 		// get sprint
 		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));
 		
