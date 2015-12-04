@@ -13,7 +13,7 @@ import ntut.csie.ezScrum.issue.internal.IssueNote;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
-import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.core.util.XmlFileUtil;
 
