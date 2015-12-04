@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.restful.dataMigration.jsonEnum;
 
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+
 public class HistoryJSONEnum {
 	public static final String ISSUE_TYPE = "issue_type";
 	public static final String HISTORY_TYPE = "type";
@@ -9,28 +11,36 @@ public class HistoryJSONEnum {
 	
 	// History Type
 	public enum HistoryType {
-		CREATE,
-		NAME,
-		ESTIMATE,
-		REMAINS,
-		ACTUAL,
-		IMPORTANCE,
-		VALUE,
-		ATTACH_FILE,
-		STATUS,
-		HANDLER,
-		SPECIFIC_TIME,
-		DROP_TASK,
-		APPEND_TO_SPRINT,
-		APPEND_TO_STORY,
-		ADD_TASK,
-		REMOVE_FROM_SPRINT,
-		REMOVE_FROM_STORY,
-		NOTE,
-		HOW_TO_DEMO,
-		ADD_PARTNER,
-		REMOVE_PARTNER,
-		UNPLAN_CHANGE_SPRINT_ID
+		CREATE(HistoryObject.TYPE_CREATE),
+		NAME(HistoryObject.TYPE_NAME),
+		ESTIMATE(HistoryObject.TYPE_ESTIMATE),
+		REMAINS(HistoryObject.TYPE_REMAIMS),
+		ACTUAL(HistoryObject.TYPE_ACTUAL),
+		IMPORTANCE(HistoryObject.TYPE_IMPORTANCE),
+		VALUE(HistoryObject.TYPE_VALUE),
+		ATTACH_FILE(HistoryObject.TYPE_ATTACH_FILE),
+		STATUS(HistoryObject.TYPE_STATUS),
+		HANDLER(HistoryObject.TYPE_HANDLER),
+		SPECIFIC_TIME(HistoryObject.TYPE_SPECIFIC_TIME),
+		DROP_TASK(HistoryObject.TYPE_DROP),
+		APPEND_TO_SPRINT(HistoryObject.TYPE_APPEND),
+		APPEND_TO_STORY(HistoryObject.TYPE_APPEND),
+		ADD_TASK(HistoryObject.TYPE_ADD),
+		REMOVE_FROM_SPRINT(HistoryObject.TYPE_REMOVE),
+		REMOVE_FROM_STORY(HistoryObject.TYPE_REMOVE),
+		NOTE(HistoryObject.TYPE_NOTE),
+		HOW_TO_DEMO(HistoryObject.TYPE_HOW_TO_DEMO),
+		ADD_PARTNER(HistoryObject.TYPE_ADD_PARTNER),
+		REMOVE_PARTNER(HistoryObject.TYPE_REMOVE_PARTNER),
+		UNPLAN_CHANGE_SPRINT_ID(HistoryObject.TYPE_SPRINT_ID);
+		
+		private int mIndex;
+		private HistoryType(int index){
+			mIndex = index;
+		}
+		public int getIndex(){
+			return mIndex;
+		}
 	}
 	
 	// Task, Unplan status in new version

@@ -8,12 +8,14 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -80,6 +82,19 @@ public class JSONDecoder {
 			JSONObject tagJSON = new JSONObject(tagJSONString);
 			String tagName = tagJSON.getString(TagJSONEnum.NAME);
 			tag = new TagObject(tagName, projectId);
+		} catch (JSONException e) {
+			tag = null;
+		}
+		return tag;
+	}
+	
+	// Translate JSON String to Tag in Story
+	public static TagObject toTagInStory(String tagJSONString) {
+		TagObject tag = null;
+		try {
+			JSONObject tagJSON = new JSONObject(tagJSONString);
+			String tagName = tagJSON.getString(TagJSONEnum.NAME);
+			tag = TagObject.get(tagName);
 		} catch (JSONException e) {
 			tag = null;
 		}
@@ -165,7 +180,7 @@ public class JSONDecoder {
 			// Create StoryObject
 			story = new StoryObject(projectId);
 			story.setName(name)
-			     .setStatus(1)
+			     .setStatus(StatusTranslator.getStoryStatus(status))
 			     .setEstimate(estimate)
 			     .setImportance(importance)
 			     .setValue(value)
@@ -176,5 +191,31 @@ public class JSONDecoder {
 			story = null;
 		}
 		return story;
+	}
+	
+	// Translate JSON String to HistoryObject
+	public static HistoryObject toHistory(long issueId, int issueType, String historyJSONString) {
+		HistoryObject history = null;
+		try {
+			JSONObject historyJSON = new JSONObject(historyJSONString);
+
+			// Get Story Information
+			String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+			String oldValue = historyJSON.getString(HistoryJSONEnum.OLD_VALUE);
+			String newValue = historyJSON.getString(HistoryJSONEnum.NEW_VALUE);
+			long createTime = historyJSON.getLong(HistoryJSONEnum.CREATE_TIME);
+
+			// Create HistoryObject
+			history = new HistoryObject();
+			history.setIssueId(issueId)
+			       .setIssueType(issueType)
+			       .setHistoryType(HistoryTypeTranslator.getHistoryType(type))
+			       .setOldValue(oldValue)
+			       .setNewValue(newValue)
+			       .setCreateTime(createTime);
+		} catch (JSONException e) {
+			history = null;
+		}
+		return history;
 	}
 }
