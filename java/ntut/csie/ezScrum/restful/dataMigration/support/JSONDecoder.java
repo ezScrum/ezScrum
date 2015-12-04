@@ -11,10 +11,12 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class JSONDecoder {
@@ -143,5 +145,36 @@ public class JSONDecoder {
 			sprint = null;
 		}
 		return sprint;
+	}
+	
+	// Translate JSON String to SprintObject
+	public static StoryObject toStory(long projectId, long sprintId, String storyJSONString) {
+		StoryObject story = null;
+		try {
+			JSONObject storyJSON = new JSONObject(storyJSONString);
+
+			// Get Story Information
+			String name = storyJSON.getString(StoryJSONEnum.NAME);
+			String status = storyJSON.getString(StoryJSONEnum.STATUS);
+			int estimate = storyJSON.getInt(StoryJSONEnum.ESTIMATE);
+			int importance = storyJSON.getInt(StoryJSONEnum.IMPORTANCE);
+			int value = storyJSON.getInt(StoryJSONEnum.VALUE);
+			String notes = storyJSON.getString(StoryJSONEnum.NOTES);
+			String howToDemo = storyJSON.getString(StoryJSONEnum.HOW_TO_DEMO);
+
+			// Create StoryObject
+			story = new StoryObject(projectId);
+			story.setName(name)
+			     .setStatus(1)
+			     .setEstimate(estimate)
+			     .setImportance(importance)
+			     .setValue(value)
+			     .setNotes(notes)
+			     .setHowToDemo(howToDemo)
+			     .setSprintId(sprintId);
+		} catch (JSONException e) {
+			story = null;
+		}
+		return story;
 	}
 }
