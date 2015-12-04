@@ -6,6 +6,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
@@ -136,6 +137,19 @@ public class JSONChecker {
 			historyJSON.getString(HistoryJSONEnum.OLD_VALUE);
 			historyJSON.getString(HistoryJSONEnum.NEW_VALUE);
 			historyJSON.getLong(HistoryJSONEnum.CREATE_TIME);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkAttachFileJSON(String attachFileJSONString) {
+		String message = "";
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			attachFileJSON.getString(AttachFileJSONEnum.NAME);
+			attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE);
+			attachFileJSON.getString(AttachFileJSONEnum.BINARY);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}

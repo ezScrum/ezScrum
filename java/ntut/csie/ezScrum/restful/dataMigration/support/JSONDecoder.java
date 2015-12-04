@@ -8,12 +8,14 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -217,5 +219,33 @@ public class JSONDecoder {
 			history = null;
 		}
 		return history;
+	}
+	
+	// Translate JSON String to AttachFileInfo
+	public static AttachFileInfo toAttachFileInfo(String projectName, long issueId, int issueType, String attachFileJSONString) {
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			attachFileInfo.issueId = issueId;
+	        attachFileInfo.issueType = issueType;
+	        attachFileInfo.name = attachFileJSON.getString(AttachFileJSONEnum.NAME);
+	        attachFileInfo.contentType = attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE);
+	        attachFileInfo.projectName = projectName;
+		} catch (JSONException e) {
+			attachFileInfo = null;
+		}
+		return attachFileInfo;
+	}
+	
+	// Translate AttachFile JSON String to base64 binary String
+	public static String toBase64BinaryString(String attachFileJSONString) {
+		String base64BinaryString = "";
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			base64BinaryString = attachFileJSON.getString(AttachFileJSONEnum.BINARY);
+		} catch (JSONException e) {
+			base64BinaryString = "";
+		}
+		return base64BinaryString;
 	}
 }

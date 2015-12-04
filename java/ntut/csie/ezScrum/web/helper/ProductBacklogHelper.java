@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -372,7 +374,8 @@ public class ProductBacklogHelper {
 
 		// move file from tmp folder to "AttachFile" folder
 		copyFile(file, targetFile);
-
+		// remove tmp file
+		FileUtils.deleteDirectory(new File(file.getParent()));
 		return mProductBacklogMapper.addAttachFile(attachFileInfo);
 	}
 
