@@ -7,9 +7,11 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
@@ -78,5 +80,30 @@ public class JSONDecoder {
 			tag = null;
 		}
 		return tag;
+	}
+	
+	// Translate JSON String to AccountObject
+	public static AccountObject toAccount(String accountJSONString) {
+		AccountObject account = null;
+		try {
+			JSONObject accountJSON = new JSONObject(accountJSONString);
+
+			// Get Account Information
+			String userName = accountJSON.getString(AccountJSONEnum.USERNAME);
+			String userNickName = accountJSON.getString(AccountJSONEnum.NICK_NAME);
+			String userPassword = accountJSON.getString(AccountJSONEnum.PASSWORD);
+			String userEmail = accountJSON.getString(AccountJSONEnum.EMAIL);
+			int userEnable = accountJSON.getInt(AccountJSONEnum.ENABLE);
+
+			// Create AccountObject
+			account = new AccountObject(userName);
+			account.setNickName(userNickName)
+			       .setPassword(userPassword)
+			       .setEmail(userEmail)
+			       .setEnable(userEnable == 1 ? true : false);
+		} catch (JSONException e) {
+			account = null;
+		}
+		return account;
 	}
 }
