@@ -6,7 +6,7 @@ public class TranslateSpecialChar {
 	 * replaceAll: String  "regex" to String replacement
 	 */
 	
-	public String TranslateDBChar(String tagname)
+	public static String TranslateDBChar(String tagname)
 	{
 		if (tagname != null) {
 			if (tagname.contains("\\")) {
@@ -21,7 +21,7 @@ public class TranslateSpecialChar {
 		return tagname;
 	}
 	
-	public String TranslateXMLChar(String tagname)
+	public static String TranslateXMLChar(String tagname)
 	{
 		if (tagname != null) {
 			if (tagname.contains("&")) {
@@ -44,7 +44,7 @@ public class TranslateSpecialChar {
 		return tagname;
 	}
 	
-	public String TranslateJSONChar(String tagname)
+	public static String TranslateJSONChar(String tagname)
 	{
 		if (tagname != null) {
 
@@ -68,7 +68,7 @@ public class TranslateSpecialChar {
 		return tagname;
 	}
 	
-	public String HandleNullString(String str) {
+	public static String HandleNullString(String str) {
 		if(str.equals("") || str.equals("0") || str.equals("-1")) {
 			return "None";
 		}

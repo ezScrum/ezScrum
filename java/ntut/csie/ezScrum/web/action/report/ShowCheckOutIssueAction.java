@@ -16,7 +16,7 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
 
 public class ShowCheckOutIssueAction extends PermissionAction {
 	private static Log log = LogFactory.getLog(ShowCheckOutIssueAction.class);
