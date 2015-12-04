@@ -26,8 +26,8 @@ public class AccessPermissionUI {
 			this.AccessTaskboard = sr.getAccessTaskBoard();
 			this.AccessRetrospective = sr.getAccessRetrospective();
 			this.AccessUnplan = sr.getAccessUnplanItem();
-			this.AccessReport = sr.getReadReport();
-			this.AccessEditProject = sr.getEditProject();
+			this.AccessReport = sr.getAccessReport();
+			this.AccessEditProject = sr.getAccessEditProject();
 		}
 	}
 	

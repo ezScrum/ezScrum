@@ -228,13 +228,13 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		scrumRole.setisGuest(RoleEnum.Guest == RoleEnum.valueOf(role));
 		scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
 		scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
-		scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		scrumRole.setAccessReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
 		scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
 		scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
 		scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
 		scrumRole.setAccessUnplanItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
 		scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
-		scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		scrumRole.setAccessEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
 		return scrumRole;
 	}
 

@@ -116,7 +116,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		ScrumRole role = SessionManager.getScrumRole(request, mProject, account);
 		
 		assertNotNull(role);
-		assertTrue(role.getEditProject());
+		assertTrue(role.getAccessEditProject());
 	}
 	
 	@Test

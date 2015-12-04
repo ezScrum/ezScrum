@@ -65,8 +65,8 @@ public class JSONDecoder {
 				scrumRole.setAccessSprintPlan(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 				scrumRole.setAccessTaskBoard(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 				scrumRole.setAccessUnplanItem(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
-				scrumRole.setEditProject(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
-				scrumRole.setReadReport(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
+				scrumRole.setAccessEditProject(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
+				scrumRole.setAccessReport(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 				scrumRoles.add(scrumRole);
 			}
 		} catch (JSONException e) {

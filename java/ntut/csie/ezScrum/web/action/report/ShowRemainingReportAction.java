@@ -120,7 +120,7 @@ public class ShowRemainingReportAction extends Action {
 
 			AccountObject account = session.getAccount();
 			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
-			if (sr.getReadReport()) {
+			if (sr.getAccessReport()) {
 				return mapping.findForward("success");
 			}
 		} catch (Exception e) {

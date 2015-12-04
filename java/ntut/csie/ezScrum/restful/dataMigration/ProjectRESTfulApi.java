@@ -46,17 +46,19 @@ public class ProjectRESTfulApi {
 	@Path("/{projectId}/scrumroles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateScrumRoles(@PathParam("projectId") long projectId, String entity) throws JSONException {
+		// Get Project
+		ProjectObject project = ProjectObject.get(projectId);
+		if (project == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+				
 		// Error Checking
 		String message = JSONChecker.checkScrumRolesJSON(entity);
 
 		if (!message.equals("")) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
-		// Get Project
-		ProjectObject project = ProjectObject.get(projectId);
-		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
-		}
+		
 		// Create Scrum Roles
 		ArrayList<ScrumRole> scrumRoles = JSONDecoder.toScrumRoles(project.getName(), entity);
 		for (ScrumRole scrumRole : scrumRoles) {
@@ -69,17 +71,19 @@ public class ProjectRESTfulApi {
 	@Path("/{projectId}/projectroles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createProjectRole(@PathParam("projectId") long projectId, String entity) throws JSONException {
+		// Get Project
+		ProjectObject project = ProjectObject.get(projectId);
+		if (project == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+				
 		// Error Checking
 		String message = JSONChecker.checkProjectRoleJSON(entity);
 
 		if (!message.equals("")) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
-		// Get Project
-		ProjectObject project = ProjectObject.get(projectId);
-		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
-		}
+		
 		// Create ProjectRole
 		JSONObject projectRoleJSON = new JSONObject(entity);
 		String userName = projectRoleJSON.getString(AccountJSONEnum.USERNAME);
@@ -93,17 +97,19 @@ public class ProjectRESTfulApi {
 	@Path("/{projectId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTag(@PathParam("projectId") long projectId, String entity) throws JSONException {
+		// Get Project
+		ProjectObject project = ProjectObject.get(projectId);
+		if (project == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+				
 		// Error Checking
 		String message = JSONChecker.checkTagJSON(entity);
 
 		if (!message.equals("")) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
-		// Get Project
-		ProjectObject project = ProjectObject.get(projectId);
-		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
-		}
+		
 		// Create tag
 		TagObject tag = JSONDecoder.toTag(projectId, entity);
 		tag.save();

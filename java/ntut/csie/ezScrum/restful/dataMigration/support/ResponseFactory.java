@@ -13,7 +13,8 @@ public class ResponseFactory {
 		JSONObject responseJSON = new JSONObject();
 		try {
 			responseJSON.put(ResponseJSONEnum.JSON_KEY_MESSAGE, message);
-			responseJSON.put(ResponseJSONEnum.JSON_KEY_CONTENT, content);
+			JSONObject contentJSON = new JSONObject(content);
+			responseJSON.put(ResponseJSONEnum.JSON_KEY_CONTENT, contentJSON);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
