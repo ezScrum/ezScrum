@@ -66,7 +66,7 @@ public class StoryRESTfulApi {
 		// Add Tag To Story
 		TagObject tag = JSONDecoder.toTagInStory(entity);
 		story.addTag(tag.getId());
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, entity);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, tag.toString());
 	}
 	
 	@POST
