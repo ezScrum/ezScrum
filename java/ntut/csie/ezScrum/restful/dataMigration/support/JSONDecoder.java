@@ -10,9 +10,11 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class JSONDecoder {
@@ -105,5 +107,41 @@ public class JSONDecoder {
 			account = null;
 		}
 		return account;
+	}
+	
+	// Translate JSON String to SprintObject
+	public static SprintObject toSprint(long projectId, String sprintJSONString) {
+		SprintObject sprint = null;
+		try {
+			JSONObject sprintJSON = new JSONObject(sprintJSONString);
+
+			// Get Sprint Information
+			String goal = sprintJSON.getString(SprintJSONEnum.GOAL);
+			int interval = sprintJSON.getInt(SprintJSONEnum.INTERVAL);
+			int teamSize = sprintJSON.getInt(SprintJSONEnum.TEAM_SIZE);
+			int availableHours = sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS);
+			int focusFactor = sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR);
+			String startDate = sprintJSON.getString(SprintJSONEnum.START_DATE);
+			String dueDate = sprintJSON.getString(SprintJSONEnum.DUE_DATE);
+			String demoDate = sprintJSON.getString(SprintJSONEnum.DEMO_DATE);
+			String demoPlace = sprintJSON.getString(SprintJSONEnum.DEMO_PLACE);
+			String dailyInfo = sprintJSON.getString(SprintJSONEnum.DAILY_INFO);
+
+			// Create SprintObject
+			sprint = new SprintObject(projectId);
+			sprint.setGoal(goal)
+			      .setInterval(interval)
+			      .setTeamSize(teamSize)
+			      .setAvailableHours(availableHours)
+			      .setFocusFactor(focusFactor)
+			      .setStartDate(startDate)
+			      .setDueDate(dueDate)
+			      .setDemoDate(demoDate)
+			      .setDemoPlace(demoPlace)
+			      .setDailyInfo(dailyInfo);
+		} catch (JSONException e) {
+			sprint = null;
+		}
+		return sprint;
 	}
 }
