@@ -23,6 +23,7 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
@@ -32,10 +33,12 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 
@@ -144,7 +147,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		        .post(Entity.text(storyJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -191,5 +194,45 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertTrue(contentJSON.getLong(TagEnum.ID) != -1);
 		assertEquals(1, story.getTags().size());
 		assertEquals(tagName, story.getTags().get(0).getName());
+	}
+	
+	@Test
+	public void testCreateHistory_Create() throws JSONException {
+		// Test Data
+		String type = "CREATE";
+		String oldValue = "";
+		String newValue = "";
+		long createTime = System.currentTimeMillis();
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
+		           .put(HistoryJSONEnum.OLD_VALUE, oldValue)
+		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
+		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .post(Entity.text(historyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertTrue(contentJSON.getLong(HistoryEnum.ID) != -1);
+		HistoryObject historyInStory = story.getHistories().get(story.getHistories().size() - 1);
+		assertEquals(HistoryObject.TYPE_CREATE, historyInStory.getHistoryType());
+		assertEquals(oldValue, historyInStory.getOldValue());
+		assertEquals(newValue, historyInStory.getNewValue());
+		assertEquals(createTime, historyInStory.getCreateTime());
 	}
 }
