@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 
 public class JSONChecker {
@@ -82,6 +83,26 @@ public class JSONChecker {
 			accountJSON.getString(AccountJSONEnum.PASSWORD);
 			accountJSON.getString(AccountJSONEnum.EMAIL);
 			accountJSON.getInt(AccountJSONEnum.ENABLE);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkSprintJSON(String sprintJSONString) {
+		String message = "";
+		try {
+			JSONObject sprintJSON = new JSONObject(sprintJSONString);
+			sprintJSON.getString(SprintJSONEnum.GOAL);
+			sprintJSON.getInt(SprintJSONEnum.INTERVAL);
+			sprintJSON.getInt(SprintJSONEnum.TEAM_SIZE);
+			sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS);
+			sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR);
+			sprintJSON.getString(SprintJSONEnum.START_DATE);
+			sprintJSON.getString(SprintJSONEnum.DUE_DATE);
+			sprintJSON.getString(SprintJSONEnum.DEMO_DATE);
+			sprintJSON.getString(SprintJSONEnum.DEMO_PLACE);
+			sprintJSON.getString(SprintJSONEnum.DAILY_INFO);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}
