@@ -367,6 +367,14 @@ public class HistoryObject implements IBaseObject {
 	public boolean delete() {
 		return false;
 	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
+	}
 
 	@Override
 	public JSONObject toJSON() throws JSONException {

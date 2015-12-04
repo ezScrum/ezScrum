@@ -8,13 +8,19 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 
 public class JSONDecoder {
@@ -61,8 +67,8 @@ public class JSONDecoder {
 				scrumRole.setAccessSprintPlan(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 				scrumRole.setAccessTaskBoard(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 				scrumRole.setAccessUnplanItem(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
-				scrumRole.setEditProject(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
-				scrumRole.setReadReport(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
+				scrumRole.setAccessEditProject(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
+				scrumRole.setAccessReport(roleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 				scrumRoles.add(scrumRole);
 			}
 		} catch (JSONException e) {
@@ -78,6 +84,19 @@ public class JSONDecoder {
 			JSONObject tagJSON = new JSONObject(tagJSONString);
 			String tagName = tagJSON.getString(TagJSONEnum.NAME);
 			tag = new TagObject(tagName, projectId);
+		} catch (JSONException e) {
+			tag = null;
+		}
+		return tag;
+	}
+	
+	// Translate JSON String to Tag in Story
+	public static TagObject toTagInStory(String tagJSONString) {
+		TagObject tag = null;
+		try {
+			JSONObject tagJSON = new JSONObject(tagJSONString);
+			String tagName = tagJSON.getString(TagJSONEnum.NAME);
+			tag = TagObject.get(tagName);
 		} catch (JSONException e) {
 			tag = null;
 		}
@@ -143,5 +162,90 @@ public class JSONDecoder {
 			sprint = null;
 		}
 		return sprint;
+	}
+	
+	// Translate JSON String to SprintObject
+	public static StoryObject toStory(long projectId, long sprintId, String storyJSONString) {
+		StoryObject story = null;
+		try {
+			JSONObject storyJSON = new JSONObject(storyJSONString);
+
+			// Get Story Information
+			String name = storyJSON.getString(StoryJSONEnum.NAME);
+			String status = storyJSON.getString(StoryJSONEnum.STATUS);
+			int estimate = storyJSON.getInt(StoryJSONEnum.ESTIMATE);
+			int importance = storyJSON.getInt(StoryJSONEnum.IMPORTANCE);
+			int value = storyJSON.getInt(StoryJSONEnum.VALUE);
+			String notes = storyJSON.getString(StoryJSONEnum.NOTES);
+			String howToDemo = storyJSON.getString(StoryJSONEnum.HOW_TO_DEMO);
+
+			// Create StoryObject
+			story = new StoryObject(projectId);
+			story.setName(name)
+			     .setStatus(StatusTranslator.getStoryStatus(status))
+			     .setEstimate(estimate)
+			     .setImportance(importance)
+			     .setValue(value)
+			     .setNotes(notes)
+			     .setHowToDemo(howToDemo)
+			     .setSprintId(sprintId);
+		} catch (JSONException e) {
+			story = null;
+		}
+		return story;
+	}
+	
+	// Translate JSON String to HistoryObject
+	public static HistoryObject toHistory(long issueId, int issueType, String historyJSONString) {
+		HistoryObject history = null;
+		try {
+			JSONObject historyJSON = new JSONObject(historyJSONString);
+
+			// Get Story Information
+			String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+			String oldValue = historyJSON.getString(HistoryJSONEnum.OLD_VALUE);
+			String newValue = historyJSON.getString(HistoryJSONEnum.NEW_VALUE);
+			long createTime = historyJSON.getLong(HistoryJSONEnum.CREATE_TIME);
+
+			// Create HistoryObject
+			history = new HistoryObject();
+			history.setIssueId(issueId)
+			       .setIssueType(issueType)
+			       .setHistoryType(HistoryTypeTranslator.getHistoryType(type))
+			       .setOldValue(oldValue)
+			       .setNewValue(newValue)
+			       .setCreateTime(createTime);
+		} catch (JSONException e) {
+			history = null;
+		}
+		return history;
+	}
+	
+	// Translate JSON String to AttachFileInfo
+	public static AttachFileInfo toAttachFileInfo(String projectName, long issueId, int issueType, String attachFileJSONString) {
+		AttachFileInfo attachFileInfo = new AttachFileInfo();
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			attachFileInfo.issueId = issueId;
+	        attachFileInfo.issueType = issueType;
+	        attachFileInfo.name = attachFileJSON.getString(AttachFileJSONEnum.NAME);
+	        attachFileInfo.contentType = attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE);
+	        attachFileInfo.projectName = projectName;
+		} catch (JSONException e) {
+			attachFileInfo = null;
+		}
+		return attachFileInfo;
+	}
+	
+	// Translate AttachFile JSON String to base64 binary String
+	public static String toBase64BinaryString(String attachFileJSONString) {
+		String base64BinaryString = "";
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			base64BinaryString = attachFileJSON.getString(AttachFileJSONEnum.BINARY);
+		} catch (JSONException e) {
+			base64BinaryString = "";
+		}
+		return base64BinaryString;
 	}
 }

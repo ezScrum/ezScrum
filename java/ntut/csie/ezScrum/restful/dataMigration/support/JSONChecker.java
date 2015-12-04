@@ -6,9 +6,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 
 public class JSONChecker {
@@ -103,6 +106,50 @@ public class JSONChecker {
 			sprintJSON.getString(SprintJSONEnum.DEMO_DATE);
 			sprintJSON.getString(SprintJSONEnum.DEMO_PLACE);
 			sprintJSON.getString(SprintJSONEnum.DAILY_INFO);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkStoryJSON(String storyJSONString) {
+		String message = "";
+		try {
+			JSONObject storyJSON = new JSONObject(storyJSONString);
+			storyJSON.getString(StoryJSONEnum.NAME);
+			storyJSON.getString(StoryJSONEnum.STATUS);
+			storyJSON.getInt(StoryJSONEnum.ESTIMATE);
+			storyJSON.getInt(StoryJSONEnum.IMPORTANCE);
+			storyJSON.getInt(StoryJSONEnum.VALUE);
+			storyJSON.getString(StoryJSONEnum.NOTES);
+			storyJSON.getString(StoryJSONEnum.HOW_TO_DEMO);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkHistoryJSON(String historyJSONString) {
+		String message = "";
+		try {
+			JSONObject historyJSON = new JSONObject(historyJSONString);
+			historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+			historyJSON.getString(HistoryJSONEnum.OLD_VALUE);
+			historyJSON.getString(HistoryJSONEnum.NEW_VALUE);
+			historyJSON.getLong(HistoryJSONEnum.CREATE_TIME);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkAttachFileJSON(String attachFileJSONString) {
+		String message = "";
+		try {
+			JSONObject attachFileJSON = new JSONObject(attachFileJSONString);
+			attachFileJSON.getString(AttachFileJSONEnum.NAME);
+			attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE);
+			attachFileJSON.getString(AttachFileJSONEnum.BINARY);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}

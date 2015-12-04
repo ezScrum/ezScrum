@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class JSONDecoderTest {
+public class ResponseFactoryTest {
 	@Test
 	public void test() {
 		// TODO

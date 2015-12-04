@@ -67,8 +67,8 @@ public class ScrumRoleHelper {
 			scrumrole.setAccessTaskBoard(permissionUI.AccessTaskboard);
 			scrumrole.setAccessUnplanItem(permissionUI.AccessUnplan);
 			scrumrole.setAccessRetrospective(permissionUI.AccessRetrospective);
-			scrumrole.setReadReport(permissionUI.AccessReport);
-			scrumrole.setEditProject(permissionUI.AccessEditProject);
+			scrumrole.setAccessReport(permissionUI.AccessReport);
+			scrumrole.setAccessEditProject(permissionUI.AccessEditProject);
 
 			ScrumRoleMapper srm = new ScrumRoleMapper();
 			srm.updateScrumRole(Long.parseLong(id), scrumrole);
