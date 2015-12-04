@@ -14,6 +14,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
+import ntut.csie.ezScrum.restful.dataMigration.support.ResourceFinder;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -31,8 +32,9 @@ public class StoryRESTfulApi {
 	public Response createStory(@PathParam("projectId") long projectId, 
 			                    @PathParam("sprintId") long sprintId,
 			                    String entity) {
-		ProjectObject project = ProjectObject.get(projectId);
-		SprintObject sprint = SprintObject.get(sprintId);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
 		if (project == null || sprint == null) {
 			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
 		}
@@ -56,9 +58,11 @@ public class StoryRESTfulApi {
 	                                 @PathParam("sprintId") long sprintId, 
 	                                 @PathParam("storyId") long storyId,
 	                                 String entity) {
-		ProjectObject project = ProjectObject.get(projectId);
-		SprintObject sprint = SprintObject.get(sprintId);
-		StoryObject story = StoryObject.get(storyId);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
+		StoryObject story = resourceFinder.findStory(storyId);
+		
 		if (project == null || sprint == null || story == null) {
 			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
 		}
@@ -83,9 +87,11 @@ public class StoryRESTfulApi {
 	                                 	@PathParam("sprintId") long sprintId,
 	                                 	@PathParam("storyId") long storyId,
 	                                 	String entity) {
-		ProjectObject project = ProjectObject.get(projectId);
-		SprintObject sprint = SprintObject.get(sprintId);
-		StoryObject story = StoryObject.get(storyId);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
+		StoryObject story = resourceFinder.findStory(storyId);
+
 		if (project == null || sprint == null || story == null) {
 			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
 		}
@@ -109,9 +115,11 @@ public class StoryRESTfulApi {
 	        						  @PathParam("sprintId") long sprintId,
 	        						  @PathParam("storyId") long storyId,
 	        						  String entity) throws IOException {
-		ProjectObject project = ProjectObject.get(projectId);
-		SprintObject sprint = SprintObject.get(sprintId);
-		StoryObject story = StoryObject.get(storyId);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
+		StoryObject story = resourceFinder.findStory(storyId);
+		
 		if (project == null || sprint == null || story == null) {
 			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
 		}
