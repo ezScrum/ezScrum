@@ -1,7 +1,10 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 
+import javax.validation.constraints.AssertTrue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
@@ -92,35 +95,42 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testCreateDroppedStory() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
 	public void testCreateTagInStory() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
 	public void testCreateHistoryInStory() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
-	public void testCreateAttachfile() {
+	public void testCreateAttachFile() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
 	public void testCreateTaskInDroppedStory() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
 	public void testCreateHistoryInTask() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
-	public void testCreateAttachfileInTask() {
+	public void testCreateAttachFileInTask() {
 		// TODO
+		assertTrue("todo", false);
 	}
 }

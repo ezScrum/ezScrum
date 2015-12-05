@@ -96,7 +96,7 @@ public class ProjectRESTfulApi {
 	@POST
 	@Path("/{projectId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createTag(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response createTagInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {

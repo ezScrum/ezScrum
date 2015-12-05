@@ -104,7 +104,7 @@ public class DroppedStoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachfile(@PathParam("projectId") long projectId,
+	public Response createAttachFile(@PathParam("projectId") long projectId,
 	        						 @PathParam("storyId") long storyId,
 	        						 String entity) throws IOException {
 		ResourceFinder resourceFinder = new ResourceFinder();
@@ -188,7 +188,7 @@ public class DroppedStoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/tasks/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachfileInTask(@PathParam("projectId") long projectId,
+	public Response createAttachFileInTask(@PathParam("projectId") long projectId,
 	        						  	   @PathParam("storyId") long storyId,
 	        						  	   @PathParam("taskId") long taskId,
 	                                  String entity) throws IOException {

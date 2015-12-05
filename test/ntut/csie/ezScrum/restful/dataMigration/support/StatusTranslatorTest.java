@@ -8,12 +8,12 @@ public class StatusTranslatorTest {
 	@Test
 	public void testGetStoryStatus() {
 		// TODO
-		assertTrue(false);
+		assertTrue("todo", false);
 	}
 	
 	@Test
 	public void testGetTaskStatus() {
 		// TODO
-		assertTrue(false);
+		assertTrue("todo", false);
 	}
 }

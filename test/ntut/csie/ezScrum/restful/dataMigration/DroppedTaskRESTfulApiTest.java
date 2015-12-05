@@ -165,10 +165,12 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	@Test
 	public void createHistoryInDroppedTask() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
-	public void createAttachfilesInDropped() {
+	public void createAttachFileInDropped() {
 		// TODO
+		assertTrue("todo", false);
 	}
 }

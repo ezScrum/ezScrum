@@ -162,7 +162,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testAddTagToStory() throws JSONException {
+	public void testCreateTagInStory() throws JSONException {
 		// Test Data
 		String tagName = "TEST_TAG_NAME";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -197,7 +197,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateHistory_Create() throws JSONException {
+	public void testCreateHistory() throws JSONException {
 		// Test Data
 		String type = "CREATE";
 		String oldValue = "";
@@ -234,5 +234,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(oldValue, historyInStory.getOldValue());
 		assertEquals(newValue, historyInStory.getNewValue());
 		assertEquals(createTime, historyInStory.getCreateTime());
+	}
+	
+	@Test
+	public void testCreateAttachFile() {
+		// TODO
+		assertTrue("todo", false);
 	}
 }

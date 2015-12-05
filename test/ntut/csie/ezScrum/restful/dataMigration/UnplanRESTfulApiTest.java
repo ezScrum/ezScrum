@@ -171,6 +171,6 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testCreateHistoryInUnplan() {
 		// TODO
+		assertTrue("todo", false);
 	}
-
 }

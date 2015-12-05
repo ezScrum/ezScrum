@@ -177,10 +177,12 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testCreateHistoryInTask() {
 		// TODO
+		assertTrue("todo", false);
 	}
 
 	@Test
-	public void testCreateAttachFileInTask() {
+	public void testCreateAttachFile() {
 		// TODO
+		assertTrue("todo", false);
 	}
 }

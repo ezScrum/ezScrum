@@ -8,6 +8,6 @@ public class HistoryTypeTranslatorTest {
 	@Test
 	public void testGetHistoryType() {
 		// TODO
-		assertTrue(false);
+		assertTrue("todo", false);
 	}
 }

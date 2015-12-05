@@ -145,34 +145,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		assertEquals(projectMaxAttachFileSize, contentJSON.getInt(ProjectEnum.ATTATCH_MAX_SIZE));
 		assertEquals(createTime, contentJSON.getLong(ProjectEnum.CREATE_TIME));
 	}
-
-	@Test
-	public void testCreateProjectRole() throws JSONException {
-		// Test Data
-		long projectId = mCP.getAllProjects().get(0).getId();
-		String projectName = mCP.getAllProjects().get(0).getName();
-		String userName = mCA.getAccountList().get(0).getUsername();
-		String roleName = "ScrumTeam";
-
-		JSONObject projectRoleJSON = new JSONObject();
-		projectRoleJSON.put(AccountJSONEnum.USERNAME, userName);
-		projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, roleName);
-
-		// Call '/projects/{projectId}/projectroles' API
-		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + projectId +
-		              "/projectroles")
-		        .request()
-		        .post(Entity.text(projectRoleJSON.toString()));
-
-		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
-
-		// Assert
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(1, accounts.size());
-		assertEquals(userName, accounts.get(0).getUsername());
-		assertEquals(roleName, accounts.get(0).getProjectRoleMap().get(projectName).getScrumRole().getRoleName());
-	}
 	
 	@Test
 	public void testUpdateScrumRoles() throws JSONException {
@@ -368,6 +340,34 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		assertEquals(guest.getAccessUnplanItem(), guestInDB.getAccessUnplanItem());
 		assertEquals(guest.getAccessReport(), guestInDB.getAccessReport());
 		assertEquals(guest.getAccessEditProject(), guestInDB.getAccessEditProject());
+	}
+
+	@Test
+	public void testCreateProjectRole() throws JSONException {
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String projectName = mCP.getAllProjects().get(0).getName();
+		String userName = mCA.getAccountList().get(0).getUsername();
+		String roleName = "ScrumTeam";
+
+		JSONObject projectRoleJSON = new JSONObject();
+		projectRoleJSON.put(AccountJSONEnum.USERNAME, userName);
+		projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, roleName);
+
+		// Call '/projects/{projectId}/projectroles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/projectroles")
+		        .request()
+		        .post(Entity.text(projectRoleJSON.toString()));
+
+		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, accounts.size());
+		assertEquals(userName, accounts.get(0).getUsername());
+		assertEquals(roleName, accounts.get(0).getProjectRoleMap().get(projectName).getScrumRole().getRoleName());
 	}
 
 	@Test

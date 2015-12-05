@@ -79,7 +79,7 @@ public class DroppedTaskRESTfulApi {
 	@POST
 	@Path("/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachfilesInDropped(@PathParam("projectId") long projectId,
+	public Response createAttachFileInDropped(@PathParam("projectId") long projectId,
 	        						  		   @PathParam("taskId") long taskId,
 	        						  		   String entity) throws IOException {
 		ResourceFinder resourceFinder = new ResourceFinder();
