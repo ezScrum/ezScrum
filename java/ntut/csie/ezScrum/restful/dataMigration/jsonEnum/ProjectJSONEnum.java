@@ -12,5 +12,7 @@ public class ProjectJSONEnum {
     public static final String TAGS = "tags";
     public static final String RELEASES = "releases";
     public static final String SPRINTS = "sprints";
-    public static final String CREATE_TIME = "create_time"; 
+    public static final String CREATE_TIME = "create_time";
+    public static final String DROPPED_STORIES = "dropped_stories";
+	public static final String DROPPED_TASKS = "dropped_tasks";
 }
