@@ -1,13 +1,14 @@
 package ntut.csie.ezScrum.restful.dataMigration.jsonEnum;
 
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 
 public class HistoryJSONEnum {
-	public static final String ISSUE_TYPE = "issue_type";
-	public static final String HISTORY_TYPE = "type";
-	public static final String OLD_VALUE = "old_value";
-	public static final String NEW_VALUE = "new_value";
-	public static final String CREATE_TIME = "create_time";
+	public static final String ISSUE_TYPE = HistoryEnum.ISSUE_TYPE;
+	public static final String HISTORY_TYPE = HistoryEnum.HISTORY_TYPE;
+	public static final String OLD_VALUE = HistoryEnum.OLD_VALUE;
+	public static final String NEW_VALUE = HistoryEnum.NEW_VALUE;
+	public static final String CREATE_TIME = HistoryEnum.CREATE_TIME;
 	
 	// History Type
 	public enum HistoryType {

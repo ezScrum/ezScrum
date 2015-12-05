@@ -1,14 +1,16 @@
 package ntut.csie.ezScrum.restful.dataMigration.jsonEnum;
 
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+
 public class StoryJSONEnum {
-	public static final String ID = "id";
-	public static final String NAME = "name";
-	public static final String STATUS = "status";
-	public static final String ESTIMATE = "estimate";
-	public static final String IMPORTANCE = "importance";
-	public static final String VALUE = "value";
-	public static final String NOTES = "notes";
-	public static final String HOW_TO_DEMO = "how_to_demo";
+	public static final String ID = StoryEnum.ID;
+	public static final String NAME = StoryEnum.NAME;
+	public static final String STATUS = StoryEnum.STATUS;
+	public static final String ESTIMATE = StoryEnum.ESTIMATE;
+	public static final String IMPORTANCE = StoryEnum.IMPORTANCE;
+	public static final String VALUE = StoryEnum.VALUE;
+	public static final String NOTES = StoryEnum.NOTES;
+	public static final String HOW_TO_DEMO = StoryEnum.HOW_TO_DEMO;
 	public static final String TAGS = "tags";
 	public static final String HISTORIES = "histories";
 	public static final String ATTACH_FILES = "attach_files";

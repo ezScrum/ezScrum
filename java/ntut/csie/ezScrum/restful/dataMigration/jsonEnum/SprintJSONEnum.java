@@ -1,17 +1,19 @@
 package ntut.csie.ezScrum.restful.dataMigration.jsonEnum;
 
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
+
 public class SprintJSONEnum {
-	public static final String ID = "id";
-	public static final String GOAL = "goal";
-	public static final String INTERVAL = "interval";
-	public static final String TEAM_SIZE = "team_size";
-	public static final String AVAILABLE_HOURS = "available_hours";
-	public static final String FOCUS_FACTOR = "focus_factor";
-	public static final String START_DATE = "start_date";
-	public static final String DUE_DATE = "due_date";
-	public static final String DEMO_DATE = "demo_date";
-	public static final String DEMO_PLACE = "demo_place";
-	public static final String DAILY_INFO = "daily_info";
+	public static final String ID = SprintEnum.ID;
+	public static final String GOAL = SprintEnum.GOAL;
+	public static final String INTERVAL = SprintEnum.INTERVAL;
+	public static final String TEAM_SIZE = SprintEnum.TEAM_SIZE;
+	public static final String AVAILABLE_HOURS = SprintEnum.AVAILABLE_HOURS;
+	public static final String FOCUS_FACTOR = SprintEnum.FOCUS_FACTOR;
+	public static final String START_DATE = SprintEnum.START_DATE;
+	public static final String DUE_DATE = SprintEnum.DUE_DATE;
+	public static final String DEMO_DATE = SprintEnum.DEMO_DATE;
+	public static final String DEMO_PLACE = SprintEnum.DEMO_PLACE;
+	public static final String DAILY_INFO = SprintEnum.DAILY_INFO;
 	public static final String RETROSPECTIVES = "retrospectives";
 	public static final String UNPLANS = "unplans";
 	public static final String STORIES = "stories";
