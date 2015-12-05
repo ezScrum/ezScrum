@@ -11,6 +11,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.RetrospectiveJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
@@ -182,6 +183,20 @@ public class JSONChecker {
 			for (int i = 0; i < partnerJSONArray.length(); i++) {
 				partnerJSONArray.getJSONObject(i).getString(AccountJSONEnum.USERNAME);
 			}
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkRetrospectiveJSON(String retrospectiveJSONString) {
+		String message = "";
+		try {
+			JSONObject retrospectiveJSON = new JSONObject(retrospectiveJSONString);
+			retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME);
+			retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION);
+			retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE);
+			retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}

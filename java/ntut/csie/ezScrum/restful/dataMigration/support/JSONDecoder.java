@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.RetrospectiveJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
@@ -24,6 +25,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -335,6 +337,31 @@ public class JSONDecoder {
 			history = null;
 		}
 		return history;
+	}
+	
+	// Translate JSON String to Retro
+	public static RetrospectiveObject toRetrospective(long projectId, long sprintId, String retrospectiveJSONString) {
+		RetrospectiveObject retrospective = null;
+		try {
+			JSONObject retrospectiveJSON = new JSONObject(retrospectiveJSONString);
+
+			// Get Retrospective Information
+			String name = retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME);
+			String description = retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION);
+			String type = retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE);
+			String status = retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS);
+
+			// Create RetrospectiveObject
+			retrospective = new RetrospectiveObject(projectId);
+			retrospective.setSprintId(sprintId)
+			        .setName(name)
+			        .setDescription(description)
+			        .setType(type)
+			        .setStatus(status);
+		} catch (JSONException e) {
+			retrospective = null;
+		}
+		return retrospective;
 	}
 	
 	// Translate JSON String to AttachFileInfo
