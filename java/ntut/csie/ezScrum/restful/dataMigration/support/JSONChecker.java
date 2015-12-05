@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 
 public class JSONChecker {
 	public static String checkProjectJSON(String projectJSONString) {
@@ -158,6 +159,26 @@ public class JSONChecker {
 			taskJSON.getString(TaskJSONEnum.NOTES);
 			taskJSON.getString(TaskJSONEnum.STATUS);
 			JSONArray partnerJSONArray = taskJSON.getJSONArray(TaskJSONEnum.PARTNERS);
+			for (int i = 0; i < partnerJSONArray.length(); i++) {
+				partnerJSONArray.getJSONObject(i).getString(AccountJSONEnum.USERNAME);
+			}
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkUnplanJSON(String unplanJSONString) {
+		String message = "";
+		try {
+			JSONObject unplanJSON = new JSONObject(unplanJSONString);
+			unplanJSON.getString(UnplanJSONEnum.NAME);
+			unplanJSON.getString(UnplanJSONEnum.HANDLER);
+			unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
+			unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			unplanJSON.getString(UnplanJSONEnum.NOTES);
+			unplanJSON.getString(UnplanJSONEnum.STATUS);
+			JSONArray partnerJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.PARTNERS);
 			for (int i = 0; i < partnerJSONArray.length(); i++) {
 				partnerJSONArray.getJSONObject(i).getString(AccountJSONEnum.USERNAME);
 			}

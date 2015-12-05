@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -27,6 +28,7 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class JSONDecoder {
 	// Translate JSON String to ProjectObject
@@ -265,6 +267,48 @@ public class JSONDecoder {
 			task = null;
 		}
 		return task;
+	}
+	
+	// Translate JSON String to UnplanObject
+	public static UnplanObject toUnplan(long projectId, long sprintId, String unplanJSONString) {
+		UnplanObject unplan = null;
+		try {
+			JSONObject unplanJSON = new JSONObject(unplanJSONString);
+			JSONArray partnerJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.PARTNERS);
+
+			// Get Unplan Information
+			String name = unplanJSON.getString(UnplanJSONEnum.NAME);
+			String handler = unplanJSON.getString(UnplanJSONEnum.HANDLER);
+			int estimate = unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
+			int actual = unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			String notes = unplanJSON.getString(UnplanJSONEnum.NOTES);
+			String status = unplanJSON.getString(UnplanJSONEnum.STATUS);
+			ArrayList<Long> partnersId = new ArrayList<Long>();
+			for (int i = 0; i < partnerJSONArray.length(); i++) {
+				JSONObject partnerJSON = partnerJSONArray.getJSONObject(i);
+				String partnerName = partnerJSON.getString(AccountJSONEnum.USERNAME);
+				long partnerId = AccountObject.get(partnerName).getId();
+				partnersId.add(partnerId);
+			}
+
+			// Create UnplanObject
+			unplan = new UnplanObject(sprintId, projectId);
+			unplan.setName(name)
+			        .setEstimate(estimate)
+			        .setActual(actual)
+			        .setNotes(notes)
+			        .setStatus(StatusTranslator.getTaskStatus(status));
+			if (!handler.isEmpty()) {
+				long handlerId = AccountObject.get(handler).getId();
+				unplan.setHandlerId(handlerId);
+			}
+			if (!partnersId.isEmpty()) {
+				unplan.setPartnersId(partnersId);
+			}
+		} catch (JSONException e) {
+			unplan = null;
+		}
+		return unplan;
 	}
 	
 	// Translate JSON String to HistoryObject

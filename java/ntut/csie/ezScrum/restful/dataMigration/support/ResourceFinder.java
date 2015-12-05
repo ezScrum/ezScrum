@@ -4,6 +4,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class ResourceFinder {
 	private ProjectObject mProject;
@@ -71,6 +72,22 @@ public class ResourceFinder {
 			mTask = task;
 		}
 		return mTask;
+	}
+	
+	public UnplanObject findUnplan(long unplanId) {
+		UnplanObject unplan;
+		if (mProject == null || mSprint == null) {
+			return null;
+		} else {
+			unplan = UnplanObject.get(unplanId);
+			SprintObject sprint = SprintObject.get(unplan.getSprintId());
+			if (sprint.getProjectId() != mProject.getId() ||
+			        unplan.getProjectId() != mProject.getId() ||
+			        unplan.getSprintId() != mSprint.getId()) {
+				return null;
+			}
+		}
+		return unplan;
 	}
 	
 	public StoryObject findDroppedStory(long storyId) {
