@@ -58,4 +58,17 @@ public class ResourceFinder {
 		}
 		return mTask;
 	}
+	
+	public TaskObject findDroppedTask(long taskId) {
+		if (mProject == null) {
+			return null;
+		} else {
+			TaskObject task = TaskObject.get(taskId);
+			if (task.getProjectId() != mProject.getId()) {
+				return null;
+			}
+			mTask = task;
+		}
+		return mTask;
+	}
 }

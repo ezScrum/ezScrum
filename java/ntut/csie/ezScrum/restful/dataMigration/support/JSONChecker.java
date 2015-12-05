@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.dataMigration.support;
 
 import java.util.Iterator;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -141,6 +142,10 @@ public class JSONChecker {
 			taskJSON.getInt(TaskJSONEnum.ACTUAL);
 			taskJSON.getString(TaskJSONEnum.NOTES);
 			taskJSON.getString(TaskJSONEnum.STATUS);
+			JSONArray partnerJSONArray = taskJSON.getJSONArray(TaskJSONEnum.PARTNERS);
+			for (int i = 0; i < partnerJSONArray.length(); i++) {
+				partnerJSONArray.getJSONObject(i).getString(AccountJSONEnum.USERNAME);
+			}
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}
