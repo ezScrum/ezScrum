@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration.support;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -15,6 +16,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -22,6 +24,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class JSONDecoder {
 	// Translate JSON String to ProjectObject
@@ -193,6 +196,51 @@ public class JSONDecoder {
 			story = null;
 		}
 		return story;
+	}
+	
+	// Translate JSON String to TaskObject
+	public static TaskObject toTask(long projectId, long storyId, String taskJSONString) {
+		TaskObject task = null;
+		try {
+			JSONObject taskJSON = new JSONObject(taskJSONString);
+			JSONArray partnerJSONArray = taskJSON.getJSONArray(TaskJSONEnum.PARTNERS);
+
+			// Get Task Information
+			String name = taskJSON.getString(TaskJSONEnum.NAME);
+			String handler = taskJSON.getString(TaskJSONEnum.HANDLER);
+			int estimate = taskJSON.getInt(TaskJSONEnum.ESTIMATE);
+			int remain = taskJSON.getInt(TaskJSONEnum.REMAIN);
+			int actual = taskJSON.getInt(TaskJSONEnum.ACTUAL);
+			String notes = taskJSON.getString(TaskJSONEnum.NOTES);
+			String status = taskJSON.getString(TaskJSONEnum.STATUS);
+			ArrayList<Long> partnersId = new ArrayList<Long>();
+			for (int i = 0; i < partnerJSONArray.length(); i++) {
+				JSONObject partnerJSON = partnerJSONArray.getJSONObject(i);
+				String partnerName = partnerJSON.getString(AccountJSONEnum.USERNAME);
+				long partnerId = AccountObject.get(partnerName).getId();
+				partnersId.add(partnerId);
+			}
+
+			// Create StoryObject
+			task = new TaskObject(projectId);
+			task.setName(name)
+			    .setEstimate(estimate)
+			    .setRemains(remain)
+			    .setActual(actual)
+			    .setNotes(notes)
+			    .setStatus(StatusTranslator.getTaskStatus(status))
+			    .setStoryId(storyId);
+			if (!handler.isEmpty()) {
+				long handlerId = AccountObject.get(handler).getId();
+				task.setHandlerId(handlerId);
+			}
+			if (!partnersId.isEmpty()) {
+				task.setPartnersId(partnersId);
+			}
+		} catch (JSONException e) {
+			task = null;
+		}
+		return task;
 	}
 	
 	// Translate JSON String to HistoryObject

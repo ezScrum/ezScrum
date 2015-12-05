@@ -13,6 +13,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 
 public class JSONChecker {
 	public static String checkProjectJSON(String projectJSONString) {
@@ -123,6 +124,23 @@ public class JSONChecker {
 			storyJSON.getInt(StoryJSONEnum.VALUE);
 			storyJSON.getString(StoryJSONEnum.NOTES);
 			storyJSON.getString(StoryJSONEnum.HOW_TO_DEMO);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkTaskJSON(String taskJSONString) {
+		String message = "";
+		try {
+			JSONObject taskJSON = new JSONObject(taskJSONString);
+			taskJSON.getString(TaskJSONEnum.NAME);
+			taskJSON.getString(TaskJSONEnum.HANDLER);
+			taskJSON.getInt(TaskJSONEnum.ESTIMATE);
+			taskJSON.getInt(TaskJSONEnum.REMAIN);
+			taskJSON.getInt(TaskJSONEnum.ACTUAL);
+			taskJSON.getString(TaskJSONEnum.NOTES);
+			taskJSON.getString(TaskJSONEnum.STATUS);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}
