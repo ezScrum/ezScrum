@@ -33,7 +33,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(DroppedTaskRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(DroppedStoryRESTfulApi.class);
 		return mResourceConfig;
 	}
 

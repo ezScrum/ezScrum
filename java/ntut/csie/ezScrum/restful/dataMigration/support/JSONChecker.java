@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
@@ -26,6 +27,20 @@ public class JSONChecker {
 			projectJSON.getString(ProjectJSONEnum.COMMENT);
 			projectJSON.getString(ProjectJSONEnum.PRODUCT_OWNER);
 			projectJSON.getLong(ProjectJSONEnum.CREATE_TIME);
+		} catch (JSONException e) {
+			message = e.getMessage();
+		}
+		return message;
+	}
+	
+	public static String checkReleaseJSON(String releaseJSONString) {
+		String message = "";
+		try {
+			JSONObject releaseJSON = new JSONObject(releaseJSONString);
+			releaseJSON.getString(ReleaseJSONEnum.NAME);
+			releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION);
+			releaseJSON.getString(ReleaseJSONEnum.START_DATE);
+			releaseJSON.getString(ReleaseJSONEnum.DUE_DATE);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}

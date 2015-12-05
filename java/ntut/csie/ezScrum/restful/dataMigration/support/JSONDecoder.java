@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
@@ -21,6 +22,7 @@ import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -49,6 +51,28 @@ public class JSONDecoder {
 			project = null;
 		}
 		return project;
+	}
+	
+	// Translate JSON String to ReleaseObject
+	public static ReleaseObject toRelease(long projectId, String releaseJSONString) {
+		ReleaseObject release = null;
+		try {
+			JSONObject releaseJSON = new JSONObject(releaseJSONString);
+			String releaseName = releaseJSON.getString(ReleaseJSONEnum.NAME);
+			String releaseDescription = releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION);
+			String releaseStartDate = releaseJSON.getString(ReleaseJSONEnum.START_DATE);
+			String releaseDueDate = releaseJSON.getString(ReleaseJSONEnum.DUE_DATE);
+
+			// Create ReleaseObject
+			release = new ReleaseObject(projectId);
+			release.setName(releaseName)
+			        .setDescription(releaseDescription)
+			        .setStartDate(releaseStartDate)
+			        .setDueDate(releaseDueDate);
+		} catch (JSONException e) {
+			release = null;
+		}
+		return release;
 	}
 
 	// Translate JSON String to Scrum Roles
