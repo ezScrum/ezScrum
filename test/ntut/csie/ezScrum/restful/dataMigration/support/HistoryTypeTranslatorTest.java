@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ResponseFactoryTest {
+public class HistoryTypeTranslatorTest {
 	@Test
-	public void testGetResponse() {
+	public void testGetHistoryType() {
 		// TODO
 		assertTrue(false);
 	}

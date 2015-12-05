@@ -4,9 +4,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ResponseFactoryTest {
+public class StatusTranslatorTest {
 	@Test
-	public void testGetResponse() {
+	public void testGetStoryStatus() {
+		// TODO
+		assertTrue(false);
+	}
+	
+	@Test
+	public void testGetTaskStatus() {
 		// TODO
 		assertTrue(false);
 	}
