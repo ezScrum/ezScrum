@@ -3,6 +3,9 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -11,15 +14,29 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 @Path("dataMigration")
 public class IntegratedRESTfulApi {
+	private Client mClient;
+	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+
 	@POST
 	@Path("/projects")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response importProjectsJSON(String entity) {
+		// Get Client
+		mClient = ClientBuilder.newClient();
+		// Import JSON Data
 		JSONObject importDataJSON = null;
 		// 檢查JSON format
 		try {
@@ -28,19 +45,352 @@ public class IntegratedRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
 		// 檢查 Checksum
-		
+
 		// 檢查版本號
 
 		///// 資料擷取 /////
-		// Get Accounts
-		JSONArray accountJSONArray = null;
+		// Create Accounts
 		try {
-			accountJSONArray = importDataJSON.getJSONArray(ExportJSONEnum.ACCOUNTS);
-			
+			JSONArray accountJSONArray = importDataJSON.getJSONArray(ExportJSONEnum.ACCOUNTS);
+			// Create Account
+			for (int i = 0; i < accountJSONArray.length(); i++) {
+				JSONObject accountJSON = accountJSONArray.getJSONObject(i);
+				Response response = mClient.target(BASE_URL)
+				        .path("accounts")
+				        .request()
+				        .post(Entity.text(accountJSON.toString()));
+				// TODO 紀錄結果
+
+			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
 
-		return null;
+		// Create Projects
+		JSONArray projectJSONArray = null;
+		try {
+			projectJSONArray = importDataJSON.getJSONArray(ExportJSONEnum.PROJECTS);
+			//// Create Project
+			for (int i = 0; i < projectJSONArray.length(); i++) {
+				JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+				Response response = mClient.target(BASE_URL)
+				        .path("projects")
+				        .request()
+				        .post(Entity.text(projectJSON.toString()));
+				// TODO 紀錄結果
+				JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+				JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+				long projectId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(ProjectEnum.ID);
+
+				// Update ScrumRoles
+				JSONObject scrumRoleJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectId +
+				                "/scrumroles")
+				        .request()
+				        .put(Entity.text(scrumRoleJSON.toString()));
+
+				// Create ProjectRoles
+				JSONArray projectRoleJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.PROJECT_ROLES);
+				for (int j = 0; j < projectRoleJSONArray.length(); j++) {
+					JSONObject projectRoleJSON = projectRoleJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/projectroles")
+					        .request()
+					        .post(Entity.text(projectRoleJSON.toString()));
+				}
+
+				// Create Tags
+				JSONArray tagJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.TAGS);
+				for (int j = 0; j < tagJSONArray.length(); j++) {
+					JSONObject tagJSON = projectRoleJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/tags")
+					        .request()
+					        .post(Entity.text(tagJSON.toString()));
+				}
+
+				//// Create Sprints
+				JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
+				for (int j = 0; j < sprintJSONArray.length(); j++) {
+					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/sprints")
+					        .request()
+					        .post(Entity.text(sprintJSON.toString()));
+					jsonResponse = new JSONObject(response.readEntity(String.class));
+					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					long sprintId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(SprintEnum.ID);
+
+					//// Create Stories
+					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
+					for (int k = 0; k < storyJSONArray.length(); k++) {
+						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/sprints" + sprintId +
+						                "/stories")
+						        .request()
+						        .post(Entity.text(storyJSON.toString()));
+						jsonResponse = new JSONObject(response.readEntity(String.class));
+						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+
+						// Add Tag to Story
+						JSONArray tagInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TAGS);
+						for (int l = 0; l < tagInStoryJSONArray.length(); l++) {
+							JSONObject tagJSON = tagInStoryJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints" + sprintId +
+							                "/stories/" + storyId +
+							                "/tags")
+							        .request()
+							        .post(Entity.text(tagJSON.toString()));
+						}
+
+						// Add History to Story
+						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
+						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
+							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints" + sprintId +
+							                "/stories/" + storyId +
+							                "/histories")
+							        .request()
+							        .post(Entity.text(historyJSON.toString()));
+						}
+
+						// Add AttachFiles to Story
+						JSONArray attachFilesInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
+						for (int l = 0; l < attachFilesInStoryJSONArray.length(); l++) {
+							JSONObject attachFileJSON = attachFilesInStoryJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints" + sprintId +
+							                "/stories/" + storyId +
+							                "/attachfiles")
+							        .request()
+							        .post(Entity.text(attachFileJSON.toString()));
+						}
+
+						//// Create Tasks
+						JSONArray taskJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TASKS);
+						for (int m = 0; m < taskJSONArray.length(); m++) {
+							JSONObject taskJSON = taskJSONArray.getJSONObject(m);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints" + sprintId +
+							                "/stories/" + storyId +
+							                "/tasks")
+							        .request()
+							        .post(Entity.text(taskJSON.toString()));
+							jsonResponse = new JSONObject(response.readEntity(String.class));
+							contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+							long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+
+							// Add History to Task
+							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+							for (int n = 0; n < historyInTaskJSONArray.length(); n++) {
+								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(n);
+								response = mClient.target(BASE_URL)
+								        .path("projects/" + projectId +
+								                "/sprints" + sprintId +
+								                "/stories/" + storyId +
+								                "/tasks/" + taskId +
+								                "/histories")
+								        .request()
+								        .post(Entity.text(historyJSON.toString()));
+							}
+
+							// Add AttachFiles to Task
+							JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
+							for (int n = 0; n < attachFilesInTaskJSONArray.length(); n++) {
+								JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(n);
+								response = mClient.target(BASE_URL)
+								        .path("projects/" + projectId +
+								                "/sprints" + sprintId +
+								                "/stories/" + storyId +
+								                "/tasks/" + taskId +
+								                "/attachfiles")
+								        .request()
+								        .post(Entity.text(attachFileJSON.toString()));
+							}
+						}
+					}
+
+					//// Create Unplans
+					JSONArray unplanJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.UNPLANS);
+					for (int k = 0; k < unplanJSONArray.length(); k++) {
+						JSONObject unplanJSON = unplanJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/sprints" + sprintId +
+						                "/unplans")
+						        .request()
+						        .post(Entity.text(unplanJSON.toString()));
+					}
+
+					//// Create Retrospectives
+					JSONArray retrospectiveJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.RETROSPECTIVES);
+					for (int k = 0; k < retrospectiveJSONArray.length(); k++) {
+						JSONObject retrospectiveJSON = retrospectiveJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/sprints" + sprintId +
+						                "/retrospectives")
+						        .request()
+						        .post(Entity.text(retrospectiveJSON.toString()));
+					}
+				}
+
+				//// Create Releases
+				JSONArray releaseJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.RELEASES);
+				for (int j = 0; j < releaseJSONArray.length(); j++) {
+					JSONObject releaseJSON = releaseJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/releases")
+					        .request()
+					        .post(Entity.text(releaseJSON.toString()));
+				}
+
+				//// Create Dropped Stories
+				JSONArray droppedStoryJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_STORIES);
+				for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
+					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					              "/stories")
+					        .request()
+					        .post(Entity.text(droppedStoryJSON.toString()));
+					jsonResponse = new JSONObject(response.readEntity(String.class));
+					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+
+					// Add Tag to Story
+					JSONArray tagInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TAGS);
+					for (int k = 0; k < tagInStoryJSONArray.length(); k++) {
+						JSONObject tagJSON = tagInStoryJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + storyId +
+						                "/tags")
+						        .request()
+						        .post(Entity.text(tagJSON.toString()));
+					}
+
+					// Add History to Story
+					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
+					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
+						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + storyId +
+						                "/histories")
+						        .request()
+						        .post(Entity.text(historyJSON.toString()));
+					}
+
+					// Add AttachFiles to Story
+					JSONArray attachFilesInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
+					for (int k = 0; k < attachFilesInStoryJSONArray.length(); k++) {
+						JSONObject attachFileJSON = attachFilesInStoryJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + storyId +
+						                "/attachfiles")
+						        .request()
+						        .post(Entity.text(attachFileJSON.toString()));
+					}
+
+					//// Create Tasks in DroppedStory
+					JSONArray taskJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TASKS);
+					for (int k = 0; k < taskJSONArray.length(); k++) {
+						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + storyId +
+						                "/tasks")
+						        .request()
+						        .post(Entity.text(taskJSON.toString()));
+						jsonResponse = new JSONObject(response.readEntity(String.class));
+						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+
+						// Add History to Task
+						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
+							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/stories/" + storyId +
+							                "/tasks/" + taskId +
+							                "/histories")
+							        .request()
+							        .post(Entity.text(historyJSON.toString()));
+						}
+
+						// Add AttachFiles to Task
+						JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
+						for (int l = 0; l < attachFilesInTaskJSONArray.length(); l++) {
+							JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/stories/" + storyId +
+							                "/tasks/" + taskId +
+							                "/attachfiles")
+							        .request()
+							        .post(Entity.text(attachFileJSON.toString()));
+						}
+					}
+				}
+
+				//// Create Dropped Tasks
+				JSONArray droppedTaskJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_TASKS);
+				for (int j = 0; j < droppedTaskJSONArray.length(); j++) {
+					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					              "/tasks")
+					        .request()
+					        .post(Entity.text(taskJSON.toString()));
+					jsonResponse = new JSONObject(response.readEntity(String.class));
+					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+
+					// Add History to Task
+					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
+						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/tasks/" + taskId +
+						                "/histories")
+						        .request()
+						        .post(Entity.text(historyJSON.toString()));
+					}
+
+					// Add AttachFiles to Task
+					JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
+					for (int k = 0; k < attachFilesInTaskJSONArray.length(); k++) {
+						JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/tasks/" + taskId +
+						                "/attachfiles")
+						        .request()
+						        .post(Entity.text(attachFileJSON.toString()));
+					}
+				}
+			}
+		} catch (JSONException e) {
+			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
+		}
+		return ResponseFactory.getResponse(Response.Status.OK, "", "");
 	}
 }
