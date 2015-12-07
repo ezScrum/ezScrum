@@ -22,7 +22,7 @@ public class ResourceFinder {
 			return null;
 		} else {
 			SprintObject sprint = SprintObject.get(sprintId);
-			if (mProject.getId() != sprint.getProjectId()) {
+			if (sprint == null || mProject.getId() != sprint.getProjectId()) {
 				return null;
 			}
 			mSprint = sprint;
@@ -35,7 +35,7 @@ public class ResourceFinder {
 			return null;
 		} else {
 			StoryObject story = StoryObject.get(storyId);
-			if (story.getProjectId() != mProject.getId() ||
+			if (story == null || story.getProjectId() != mProject.getId() ||
 			    story.getSprintId() != mSprint.getId()) {
 				return null;
 			}
@@ -49,8 +49,11 @@ public class ResourceFinder {
 			return null;
 		} else {
 			TaskObject task = TaskObject.get(taskId);
+			if (task == null) {
+				return null;
+			}
 			StoryObject story = StoryObject.get(task.getStoryId());
-			if (task.getProjectId() != mProject.getId() ||
+			if (story == null || task.getProjectId() != mProject.getId() ||
 			    task.getStoryId() != mStory.getId() || 
 			    story.getSprintId() != mSprint.getId()) {
 				return null;
@@ -65,7 +68,7 @@ public class ResourceFinder {
 			return null;
 		} else {
 			TaskObject task = TaskObject.get(taskId);
-			if (task.getProjectId() != mProject.getId() ||
+			if (task == null || task.getProjectId() != mProject.getId() ||
 			    task.getStoryId() != mStory.getId()) {
 				return null;
 			}
@@ -80,8 +83,11 @@ public class ResourceFinder {
 			return null;
 		} else {
 			unplan = UnplanObject.get(unplanId);
+			if (unplan == null) {
+				return null;
+			}
 			SprintObject sprint = SprintObject.get(unplan.getSprintId());
-			if (sprint.getProjectId() != mProject.getId() ||
+			if (sprint == null || sprint.getProjectId() != mProject.getId() ||
 			        unplan.getProjectId() != mProject.getId() ||
 			        unplan.getSprintId() != mSprint.getId()) {
 				return null;
@@ -95,7 +101,7 @@ public class ResourceFinder {
 			return null;
 		} else {
 			StoryObject story = StoryObject.get(storyId);
-			if (story.getProjectId() != mProject.getId()) {
+			if (story == null || story.getProjectId() != mProject.getId()) {
 				return null;
 			}
 			mStory = story;
@@ -108,7 +114,7 @@ public class ResourceFinder {
 			return null;
 		} else {
 			TaskObject task = TaskObject.get(taskId);
-			if (task.getProjectId() != mProject.getId()) {
+			if (task == null || task.getProjectId() != mProject.getId()) {
 				return null;
 			}
 			mTask = task;

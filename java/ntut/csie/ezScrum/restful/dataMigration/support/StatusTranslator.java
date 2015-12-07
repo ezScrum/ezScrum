@@ -9,6 +9,9 @@ public class StatusTranslator {
 	 * @param statusName from HistoryJSONEnum
 	 */
 	public static int getStoryStatus(String statusName){
+		if (statusName == null || statusName.isEmpty()) {
+			return -1;
+		}
 		if (statusName.equals(HistoryJSONEnum.STORY_STATUS_UNCHECK)) {
 			return StoryObject.STATUS_UNCHECK;
 		} else if (statusName.equals(HistoryJSONEnum.STORY_STATUS_DONE)) {
@@ -18,6 +21,9 @@ public class StatusTranslator {
 	}
 	
 	public static int getTaskStatus(String statusName){
+		if (statusName == null || statusName.isEmpty()) {
+			return -1;
+		}
 		if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK)) {
 			return TaskObject.STATUS_UNCHECK;
 		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK)) {

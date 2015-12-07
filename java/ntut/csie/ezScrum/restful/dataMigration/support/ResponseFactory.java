@@ -12,9 +12,13 @@ public class ResponseFactory {
 	public static Response getResponse(Status status, String message, String content) {
 		JSONObject responseJSON = new JSONObject();
 		try {
-			responseJSON.put(ResponseJSONEnum.JSON_KEY_MESSAGE, message);
+			if (message == null) {
+				responseJSON.put(ResponseJSONEnum.JSON_KEY_MESSAGE, "");
+			} else {
+				responseJSON.put(ResponseJSONEnum.JSON_KEY_MESSAGE, message);
+			}
 			JSONObject contentJSON;
-			if (content.isEmpty()) {
+			if (content == null || content.isEmpty()) {
 				contentJSON = new JSONObject();
 			} else {
 				contentJSON = new JSONObject(content);

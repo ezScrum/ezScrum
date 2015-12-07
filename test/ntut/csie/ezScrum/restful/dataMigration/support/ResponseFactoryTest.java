@@ -14,7 +14,7 @@ public class ResponseFactoryTest {
 	@Test
 	public void testGetResponse_WithNullMessageAndNullContent() throws JSONException {
 		Response response = ResponseFactory.getResponse(Response.Status.OK, null, null);
-		String responseJSONString = response.readEntity(String.class);
+		String responseJSONString = response.getEntity().toString();
 		JSONObject responseJSON = new JSONObject(responseJSONString);
 		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
@@ -26,7 +26,7 @@ public class ResponseFactoryTest {
 	@Test
 	public void testGetResponse_WithEmptyMessageAndEmptyContent() throws JSONException {
 		Response response = ResponseFactory.getResponse(Response.Status.OK, "", "");
-		String responseJSONString = response.readEntity(String.class);
+		String responseJSONString = response.getEntity().toString();
 		JSONObject responseJSON = new JSONObject(responseJSONString);
 		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
@@ -41,12 +41,12 @@ public class ResponseFactoryTest {
 		expetedContentJSON.put("id", 1);
 		expetedContentJSON.put("name", "project01");
 		Response response = ResponseFactory.getResponse(Response.Status.OK, "success", expetedContentJSON.toString());
-		String responseJSONString = response.readEntity(String.class);
+		String responseJSONString = response.getEntity().toString();
 		JSONObject responseJSON = new JSONObject(responseJSONString);
 		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals("", message);
+		assertEquals("success", message);
 		assertEquals(expetedContentJSON.toString(), contentJSON.toString());
 	}
 }
