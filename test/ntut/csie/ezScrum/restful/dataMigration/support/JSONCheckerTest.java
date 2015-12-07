@@ -164,7 +164,7 @@ public class JSONCheckerTest {
 		assertFalse(JSONChecker.checkAccountJSON(accountJSON.toString()).isEmpty());
 		accountJSON.put(AccountJSONEnum.EMAIL, "email@gmail.com");
 		assertFalse(JSONChecker.checkAccountJSON(accountJSON.toString()).isEmpty());
-		accountJSON.put(AccountJSONEnum.ENABLE, 1);
+		accountJSON.put(AccountJSONEnum.ENABLE, true);
 		assertTrue(JSONChecker.checkAccountJSON(accountJSON.toString()).isEmpty());
 	}
 	

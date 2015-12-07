@@ -104,7 +104,7 @@ public class JSONChecker {
 			accountJSON.getString(AccountJSONEnum.NICK_NAME);
 			accountJSON.getString(AccountJSONEnum.PASSWORD);
 			accountJSON.getString(AccountJSONEnum.EMAIL);
-			accountJSON.getInt(AccountJSONEnum.ENABLE);
+			accountJSON.getBoolean(AccountJSONEnum.ENABLE);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}

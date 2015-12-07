@@ -40,8 +40,6 @@ public class IntegratedRESTfulApi {
 	@Path("/projects")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response importProjectsJSON(String entity) {
-		// Clean all data
-		cleanOldEzscrumData();
 		// Get Client
 		mClient = ClientBuilder.newClient();
 		// Import JSON Data
@@ -52,6 +50,8 @@ public class IntegratedRESTfulApi {
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
+		// Clean all data
+		cleanOldEzscrumData();
 		// 檢查 Checksum
 		// TODO
 		// 檢查版本號

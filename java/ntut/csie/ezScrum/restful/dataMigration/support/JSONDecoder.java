@@ -145,14 +145,14 @@ public class JSONDecoder {
 			String userNickName = accountJSON.getString(AccountJSONEnum.NICK_NAME);
 			String userPassword = accountJSON.getString(AccountJSONEnum.PASSWORD);
 			String userEmail = accountJSON.getString(AccountJSONEnum.EMAIL);
-			int userEnable = accountJSON.getInt(AccountJSONEnum.ENABLE);
+			boolean userEnable = accountJSON.getBoolean(AccountJSONEnum.ENABLE);
 
 			// Create AccountObject
 			account = new AccountObject(userName);
 			account.setNickName(userNickName)
 			       .setPassword(userPassword)
 			       .setEmail(userEmail)
-			       .setEnable(userEnable == 1 ? true : false);
+			       .setEnable(userEnable);
 		} catch (JSONException e) {
 			account = null;
 		}
