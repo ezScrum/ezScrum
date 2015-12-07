@@ -24,6 +24,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -194,7 +195,7 @@ public class IntegratedRESTfulApi {
 							// Get new TaskId
 							long taskId = contentJSON.getLong(TaskEnum.ID);
 							// Put new TaskId into JSON
-							storyJSON.put(TaskJSONEnum.ID, taskId);
+							taskJSON.put(TaskJSONEnum.ID, taskId);
 
 							// Add AttachFiles to Task
 							JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
@@ -525,6 +526,9 @@ public class IntegratedRESTfulApi {
 	}
 	
 	private void cleanOldEzscrumData() {
+		// Get Admin account
+		final String ADMIN_USER_NAME = "admin"; 
+		AccountObject adminAccount = AccountObject.get(ADMIN_USER_NAME);
 		Configuration config = new Configuration();
 		config.save();
 		InitialSQL ini = new InitialSQL(config);
@@ -532,5 +536,6 @@ public class IntegratedRESTfulApi {
 		//	刪除外部檔案
 		ProjectManager projectManager = new ProjectManager();
 		projectManager.deleteAllProject();
+		adminAccount.save();
 	}
 }
