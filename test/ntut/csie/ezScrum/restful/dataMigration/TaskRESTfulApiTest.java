@@ -32,6 +32,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -47,6 +48,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private CreateTask mCT;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -116,6 +118,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		copyProject = null;
 		mCP = null;
 		mCS = null;
+		mCT = null;
 		mHttpServer = null;
 		mClient = null;
 	}
@@ -184,5 +187,31 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	public void testCreateAttachFile() {
 		// TODO
 		assertTrue("todo", false);
+	}
+	
+	@Test
+	public void testDeleteHistoriesInTask() throws Exception {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Task
+		mCT = new CreateTask(1, 8, story.getId(), mCP);
+		mCT.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + mCT.getTaskIDList().get(0) + 
+		                "/histories")
+		        .request()
+		        .delete();
+		TaskObject task = TaskObject.get(mCT.getTaskIDList().get(0));
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(0, task.getHistories().size());
 	}
 }

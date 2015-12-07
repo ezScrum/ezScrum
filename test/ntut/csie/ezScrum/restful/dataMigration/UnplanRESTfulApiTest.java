@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -44,6 +45,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	private CreateAccount mCA;
 	private CreateProject mCP;
 	private CreateSprint mCS;
+	private CreateUnplanItem mCUI;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -109,6 +111,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		copyProject = null;
 		mCP = null;
 		mCS = null;
+		mCUI = null;
 		mHttpServer = null;
 		mClient = null;
 	}
@@ -172,5 +175,29 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	public void testCreateHistoryInUnplan() {
 		// TODO
 		assertTrue("todo", false);
+	}
+	
+	@Test
+	public void testDeleteHistoriesInUnplan() throws Exception {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Create Unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
+		mCUI.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + mCUI.getUnplansId().get(0) +
+		                "/histories")
+		        .request()
+		        .delete();
+		UnplanObject unplan = UnplanObject.get(mCUI.getUnplansId().get(0));
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(0, unplan.getHistories().size());
 	}
 }

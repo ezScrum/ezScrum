@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import java.io.File;
 import java.io.IOException;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -10,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
@@ -54,8 +56,8 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTagInStory(@PathParam("projectId") long projectId,
-	        @PathParam("storyId") long storyId,
-	        String entity) {
+	        						 @PathParam("storyId") long storyId,
+	        						 String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -80,8 +82,8 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInStory(@PathParam("projectId") long projectId,
-	        @PathParam("storyId") long storyId,
-	        String entity) {
+	        							 @PathParam("storyId") long storyId,
+	        							 String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -99,6 +101,25 @@ public class DroppedStoryRESTfulApi {
 		HistoryObject history = JSONDecoder.toHistory(droppedStory.getId(), IssueTypeEnum.TYPE_STORY, entity);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+	}
+	
+	@DELETE
+	@Path("/{storyId}/histories/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteHistoryInStory(@PathParam("projectId") long projectId,
+	        							 @PathParam("storyId") long storyId,
+	        							 String entity) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
+
+		if (project == null || droppedStory == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+
+		// Delete Histories
+		HistoryDAO.getInstance().deleteByIssue(storyId, IssueTypeEnum.TYPE_STORY);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 
 	@POST
@@ -183,6 +204,26 @@ public class DroppedStoryRESTfulApi {
 		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+	}
+	
+	@DELETE
+	@Path("/{storyId}/tasks/{taskId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
+	        							@PathParam("storyId") long storyId,
+	        							@PathParam("taskId") long taskId,
+	        							String entity) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		StoryObject story = resourceFinder.findDroppedStory(storyId);
+		TaskObject task = resourceFinder.findTaskInDroppedStory(taskId);
+		
+		if (project == null || story == null || task == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+		// Delete Histories
+		HistoryDAO.getInstance().deleteByIssue(taskId, IssueTypeEnum.TYPE_TASK);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 	
 	@POST

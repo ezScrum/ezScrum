@@ -241,4 +241,24 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// TODO
 		assertTrue("todo", false);
 	}
+	
+	@Test
+	public void testDeleteHistoriesInStory() throws JSONException {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/histories")
+		        .request()
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(0, story.getHistories().size());
+	}
 }

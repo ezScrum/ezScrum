@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -7,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
@@ -16,7 +18,6 @@ import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
@@ -55,17 +56,14 @@ public class UnplanRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInUnplan(@PathParam("projectId") long projectId,
 	                                 	  @PathParam("sprintId") long sprintId,
-	                                 	  @PathParam("storyId") long storyId,
 	                                 	  @PathParam("unplanId") long unplanId,
 	                                 	  String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
-		StoryObject story = resourceFinder.findStory(storyId);
 		UnplanObject unplan = resourceFinder.findUnplan(unplanId);
 
-		if (project == null || sprint == null ||
-		        story == null || unplan == null) {
+		if (project == null || sprint == null || unplan == null) {
 			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
 		}
 
@@ -78,5 +76,25 @@ public class UnplanRESTfulApi {
 		HistoryObject history = JSONDecoder.toHistory(unplanId, IssueTypeEnum.TYPE_UNPLAN, entity);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+	}
+	
+	@DELETE
+	@Path("/{unplanId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
+       	  								@PathParam("sprintId") long sprintId,
+       	  								@PathParam("unplanId") long unplanId,
+       	  								String entity) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
+		UnplanObject unplan = resourceFinder.findUnplan(unplanId);
+
+		if (project == null || sprint == null || unplan == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+		// Delete Histories
+		HistoryDAO.getInstance().deleteByIssue(unplanId, IssueTypeEnum.TYPE_UNPLAN);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 }

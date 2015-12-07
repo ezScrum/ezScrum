@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import java.io.File;
 import java.io.IOException;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -10,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
@@ -106,6 +108,26 @@ public class StoryRESTfulApi {
 		HistoryObject history = JSONDecoder.toHistory(story.getId(), IssueTypeEnum.TYPE_STORY, entity);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+	}
+	
+	@DELETE
+	@Path("/{storyId}/histories/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteHistoryInStory(@PathParam("projectId") long projectId,
+	        							 @PathParam("sprintId") long sprintId,
+	        							 @PathParam("storyId") long storyId,
+	        							 String entity) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		SprintObject sprint = resourceFinder.findSprint(sprintId);
+		StoryObject story = resourceFinder.findStory(storyId);
+
+		if (project == null || sprint == null || story == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+		// Delete Histories
+		HistoryDAO.getInstance().deleteByIssue(storyId, IssueTypeEnum.TYPE_STORY);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 	
 	@POST

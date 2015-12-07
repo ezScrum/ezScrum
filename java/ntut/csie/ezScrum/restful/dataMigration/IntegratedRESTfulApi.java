@@ -19,11 +19,13 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 
 @Path("dataMigration")
 public class IntegratedRESTfulApi {
@@ -45,9 +47,9 @@ public class IntegratedRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
 		// 檢查 Checksum
-
+		// TODO
 		// 檢查版本號
-
+		// TODO
 		///// 資料擷取 /////
 		// Create Accounts
 		try {
@@ -55,7 +57,7 @@ public class IntegratedRESTfulApi {
 			// Create Account
 			for (int i = 0; i < accountJSONArray.length(); i++) {
 				JSONObject accountJSON = accountJSONArray.getJSONObject(i);
-				Response response = mClient.target(BASE_URL)
+				mClient.target(BASE_URL)
 				        .path("accounts")
 				        .request()
 				        .post(Entity.text(accountJSON.toString()));
@@ -123,7 +125,10 @@ public class IntegratedRESTfulApi {
 					        .post(Entity.text(sprintJSON.toString()));
 					jsonResponse = new JSONObject(response.readEntity(String.class));
 					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					// Get new SprintId
 					long sprintId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(SprintEnum.ID);
+					// Put new SprintId into JSON
+					sprintJSON.put(SprintJSONEnum.ID, sprintId);
 
 					//// Create Stories
 					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
@@ -137,7 +142,10 @@ public class IntegratedRESTfulApi {
 						        .post(Entity.text(storyJSON.toString()));
 						jsonResponse = new JSONObject(response.readEntity(String.class));
 						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						// Get new StoryId
 						long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+						// Put new StoryId into JSON
+						storyJSON.put(SprintJSONEnum.ID, storyId);
 
 						// Add Tag to Story
 						JSONArray tagInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TAGS);
@@ -150,19 +158,6 @@ public class IntegratedRESTfulApi {
 							                "/tags")
 							        .request()
 							        .post(Entity.text(tagJSON.toString()));
-						}
-
-						// Add History to Story
-						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
-						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
-							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
-							        .path("projects/" + projectId +
-							                "/sprints" + sprintId +
-							                "/stories/" + storyId +
-							                "/histories")
-							        .request()
-							        .post(Entity.text(historyJSON.toString()));
 						}
 
 						// Add AttachFiles to Story
@@ -191,21 +186,10 @@ public class IntegratedRESTfulApi {
 							        .post(Entity.text(taskJSON.toString()));
 							jsonResponse = new JSONObject(response.readEntity(String.class));
 							contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+							// Get new TaskId
 							long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
-
-							// Add History to Task
-							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
-							for (int n = 0; n < historyInTaskJSONArray.length(); n++) {
-								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(n);
-								response = mClient.target(BASE_URL)
-								        .path("projects/" + projectId +
-								                "/sprints" + sprintId +
-								                "/stories/" + storyId +
-								                "/tasks/" + taskId +
-								                "/histories")
-								        .request()
-								        .post(Entity.text(historyJSON.toString()));
-							}
+							// Put new TaskId into JSON
+							storyJSON.put(TaskJSONEnum.ID, taskId);
 
 							// Add AttachFiles to Task
 							JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
@@ -233,6 +217,12 @@ public class IntegratedRESTfulApi {
 						                "/unplans")
 						        .request()
 						        .post(Entity.text(unplanJSON.toString()));
+						jsonResponse = new JSONObject(response.readEntity(String.class));
+						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						// Get new UnplanId
+						long unplanId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(UnplanEnum.ID);
+						// Put new UnplanId into JSON
+						unplanJSON.put(UnplanEnum.ID, unplanId);
 					}
 
 					//// Create Retrospectives
@@ -265,12 +255,15 @@ public class IntegratedRESTfulApi {
 					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectId +
-					              "/stories")
+					                "/stories")
 					        .request()
 					        .post(Entity.text(droppedStoryJSON.toString()));
 					jsonResponse = new JSONObject(response.readEntity(String.class));
 					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					// Get new StoryId
 					long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+					// Put new StoryId into JSON
+					droppedStoryJSON.put(StoryJSONEnum.ID, storyId);
 
 					// Add Tag to Story
 					JSONArray tagInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TAGS);
@@ -282,18 +275,6 @@ public class IntegratedRESTfulApi {
 						                "/tags")
 						        .request()
 						        .post(Entity.text(tagJSON.toString()));
-					}
-
-					// Add History to Story
-					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
-					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
-						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
-						        .path("projects/" + projectId +
-						                "/stories/" + storyId +
-						                "/histories")
-						        .request()
-						        .post(Entity.text(historyJSON.toString()));
 					}
 
 					// Add AttachFiles to Story
@@ -320,20 +301,10 @@ public class IntegratedRESTfulApi {
 						        .post(Entity.text(taskJSON.toString()));
 						jsonResponse = new JSONObject(response.readEntity(String.class));
 						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						// Get new TaskId
 						long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
-
-						// Add History to Task
-						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
-						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
-							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
-							        .path("projects/" + projectId +
-							                "/stories/" + storyId +
-							                "/tasks/" + taskId +
-							                "/histories")
-							        .request()
-							        .post(Entity.text(historyJSON.toString()));
-						}
+						// Put new TaskId into JSON
+						taskJSON.put(TaskJSONEnum.ID, taskId);
 
 						// Add AttachFiles to Task
 						JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
@@ -356,24 +327,15 @@ public class IntegratedRESTfulApi {
 					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectId +
-					              "/tasks")
+					                "/tasks")
 					        .request()
 					        .post(Entity.text(taskJSON.toString()));
 					jsonResponse = new JSONObject(response.readEntity(String.class));
 					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					// Get new TaskId
 					long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
-
-					// Add History to Task
-					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
-					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
-						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
-						        .path("projects/" + projectId +
-						                "/tasks/" + taskId +
-						                "/histories")
-						        .request()
-						        .post(Entity.text(historyJSON.toString()));
-					}
+					// Put new TaskId into JSON
+					taskJSON.put(TaskJSONEnum.ID, taskId);
 
 					// Add AttachFiles to Task
 					JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
@@ -385,6 +347,169 @@ public class IntegratedRESTfulApi {
 						                "/attachfiles")
 						        .request()
 						        .post(Entity.text(attachFileJSON.toString()));
+					}
+				}
+
+				//// Create Histories
+				// Create Histories in Dropped Story
+				for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
+					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
+					long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
+					// Delete old Histories
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/stories/" + droppedStoryId +
+					                "/histories")
+					        .request()
+					        .delete();
+					// Add Histories to Story
+					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
+					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
+						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + droppedStoryId +
+						                "/histories")
+						        .request()
+						        .post(Entity.text(historyJSON.toString()));
+					}
+
+					// Create Histories in Task
+					JSONArray taskJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TASKS);
+					for (int k = 0; k < taskJSONArray.length(); k++) {
+						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
+						// Delete old Histories
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/stories/" + droppedStoryId +
+						                "/tasks/" + taskId +
+						                "/histories")
+						        .request()
+						        .delete();
+						// Add Histories to Story
+						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
+							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/stories/" + droppedStoryId +
+							                "/tasks/" + taskId +
+							                "/histories")
+							        .request()
+							        .post(Entity.text(historyJSON.toString()));
+						}
+					}
+				}
+
+				// Create Histories in Dropped Task
+				for (int j = 0; j < droppedTaskJSONArray.length(); j++) {
+					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
+					long droppedTaskId = taskJSON.getLong(TaskJSONEnum.ID);
+					// Delete old Histories
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectId +
+					                "/tasks/" + droppedTaskId +
+					                "/histories")
+					        .request()
+					        .delete();
+					// Add Histories to Story
+					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
+						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/tasks/" + droppedTaskId +
+						                "/histories")
+						        .request()
+						        .post(Entity.text(historyJSON.toString()));
+					}
+				}
+
+				// Create Histories in Story
+				for (int j = 0; j < sprintJSONArray.length(); j++) {
+					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
+					long sprintId = sprintJSON.getLong(SprintJSONEnum.ID);
+					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
+					for (int k = 0; k < storyJSONArray.length(); k++) {
+						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
+						long storyId = storyJSON.getLong(StoryJSONEnum.ID);
+						// Delete old Histories
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/sprints/" + sprintId +
+						                "/stories/" + storyId +
+						                "/histories")
+						        .request()
+						        .delete();
+						// Add History to Story
+						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
+						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
+							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints" + sprintId +
+							                "/stories/" + storyId +
+							                "/histories")
+							        .request()
+							        .post(Entity.text(historyJSON.toString()));
+						}
+
+						// Create Histories in Task
+						JSONArray taskJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TASKS);
+						for (int l = 0; l < taskJSONArray.length(); l++) {
+							JSONObject taskJSON = taskJSONArray.getJSONObject(l);
+							long taskId = taskJSON.getLong(TaskJSONEnum.ID);
+							// Delete old Histories
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints/" + sprintId +
+							                "/stories/" + storyId +
+							                "/tasks/" + taskId +
+							                "/histories")
+							        .request()
+							        .delete();
+							// Add History to Task
+							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
+							for (int m = 0; m < historyInTaskJSONArray.length(); m++) {
+								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(m);
+								response = mClient.target(BASE_URL)
+								        .path("projects/" + projectId +
+								                "/sprints/" + sprintId +
+								                "/stories/" + storyId +
+								                "/tasks/" + taskId +
+								                "/histories")
+								        .request()
+								        .post(Entity.text(historyJSON.toString()));
+							}
+						}
+					}
+
+					// Create Histories in Unplans
+					JSONArray unplanJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.UNPLANS);
+					for (int k = 0; k < unplanJSONArray.length(); k++) {
+						JSONObject unplanJSON = unplanJSONArray.getJSONObject(k);
+						long unplanId = unplanJSON.getLong(UnplanJSONEnum.ID);
+						// Delete old Histories
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectId +
+						                "/sprints/" + sprintId +
+						                "/unplans/" + unplanId +
+						                "/histories")
+						        .request()
+						        .delete();
+						// Add History to Unplan
+						JSONArray historyInUnplanJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.HISTORIES);
+						for (int l = 0; l < historyInUnplanJSONArray.length(); l++) {
+							JSONObject historyJSON = historyInUnplanJSONArray.getJSONObject(l);
+							response = mClient.target(BASE_URL)
+							        .path("projects/" + projectId +
+							                "/sprints/" + sprintId +
+							                "/unplans/" + unplanId +
+							                "/histories")
+							        .request()
+							        .post(Entity.text(historyJSON.toString()));
+						}
 					}
 				}
 			}

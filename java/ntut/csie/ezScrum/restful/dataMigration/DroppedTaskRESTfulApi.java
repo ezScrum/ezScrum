@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import java.io.File;
 import java.io.IOException;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -10,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
@@ -74,6 +76,24 @@ public class DroppedTaskRESTfulApi {
 		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+	}
+	
+	@DELETE
+	@Path("/{taskId}/histories/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
+	        							@PathParam("taskId") long taskId,
+	        							String entity) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		ProjectObject project = resourceFinder.findProject(projectId);
+		TaskObject task = resourceFinder.findDroppedTask(taskId);
+
+		if (project == null || task == null) {
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+		}
+		// Delete Histories
+		HistoryDAO.getInstance().deleteByIssue(taskId, IssueTypeEnum.TYPE_TASK);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 	
 	@POST
