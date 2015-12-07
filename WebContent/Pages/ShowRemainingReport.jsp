@@ -28,7 +28,7 @@
 
 
 function show() {
-	var sprint = document.getElementById("ShowSprint");	
+	var sprint = document.getElementById("ShowSprint");
 	var type = document.getElementById("ShowReportType");
 	var pid = getURLParameter("PID");
 	replaceURL( "<html:rewrite action="/showRemainingReport" />?sprintID="+sprint.value+"&type="+type.value+"&PID="+pid );
@@ -103,8 +103,8 @@ function clearDate() {
 				<select id="ShowSprint" onchange="show()" class="selectField">
 					<logic:iterate id="element" name="SprintPlans">
 						<c:choose>
-						<c:when test="${element.ID == iteration}"><option value="${ element.ID }" selected>Sprint ${ element.ID }</option></c:when>
-							<c:otherwise><option value="${ element.ID }">Sprint ${ element.ID }</option></c:otherwise>
+						<c:when test="${element.id == iteration}"><option value="${ element.id }" selected>Sprint ${ element.id }</option></c:when>
+							<c:otherwise><option value="${ element.id }">Sprint ${ element.id }</option></c:otherwise>
 						</c:choose>						
 					</logic:iterate>
 				</select>
