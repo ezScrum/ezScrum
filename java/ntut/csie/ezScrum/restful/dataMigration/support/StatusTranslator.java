@@ -33,4 +33,15 @@ public class StatusTranslator {
 		}
 		return -1;
 	}
+	
+	public static int getUnplanStatus(String statusName){
+		if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK)) {
+			return TaskObject.STATUS_UNCHECK;
+		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK)) {
+			return TaskObject.STATUS_CHECK;
+		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_DONE)) {
+			return TaskObject.STATUS_DONE;
+		}
+		return -1;
+	}
 }

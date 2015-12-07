@@ -17,8 +17,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	loadmask : null,
 	initComponent : function() {
 		var config = {
-			url : 'import.do',
-			modify_url : 'import.do',
+			url : '/ezScrum/resource/dataMigration/projects',
 			items : [ {
 				id:"files",
 				xtype : 'fileuploadfield',
@@ -48,7 +47,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		reader.onloadend = function(e) {
 			console.log(e.target.result);
 		    $.ajax({
-				url: "",
+				url: "/ezScrum/resource/dataMigration/projects",
 				method: "post",
 				data:e.target.result
 			}).done(function(msg){

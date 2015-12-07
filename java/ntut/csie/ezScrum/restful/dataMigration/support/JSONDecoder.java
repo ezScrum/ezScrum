@@ -299,7 +299,7 @@ public class JSONDecoder {
 			        .setEstimate(estimate)
 			        .setActual(actual)
 			        .setNotes(notes)
-			        .setStatus(StatusTranslator.getTaskStatus(status));
+			        .setStatus(StatusTranslator.getUnplanStatus(status));
 			if (!handler.isEmpty()) {
 				long handlerId = AccountObject.get(handler).getId();
 				unplan.setHandlerId(handlerId);
@@ -330,9 +330,14 @@ public class JSONDecoder {
 			history.setIssueId(issueId)
 			       .setIssueType(issueType)
 			       .setHistoryType(HistoryTypeTranslator.getHistoryType(type))
-			       .setOldValue(oldValue)
-			       .setNewValue(newValue)
 			       .setCreateTime(createTime);
+			if (HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_STATUS) {
+				history.setOldValue(String.valueOf(StatusTranslator.getUnplanStatus(oldValue)))
+				       .setNewValue(String.valueOf(StatusTranslator.getUnplanStatus(newValue)));
+			} else {
+				history.setOldValue(oldValue)
+			           .setNewValue(newValue);
+			}
 		} catch (JSONException e) {
 			history = null;
 		}

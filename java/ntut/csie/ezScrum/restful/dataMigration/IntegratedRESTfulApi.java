@@ -13,6 +13,8 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
@@ -21,6 +23,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
+import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -36,6 +39,8 @@ public class IntegratedRESTfulApi {
 	@Path("/projects")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response importProjectsJSON(String entity) {
+		// Clean all data
+		cleanOldEzscrumData();
 		// Get Client
 		mClient = ClientBuilder.newClient();
 		// Import JSON Data
@@ -80,9 +85,9 @@ public class IntegratedRESTfulApi {
 				        .request()
 				        .post(Entity.text(projectJSON.toString()));
 				// TODO 紀錄結果
-				JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-				JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
-				long projectId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(ProjectEnum.ID);
+				JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+				JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+				long projectId = contentJSON.getLong(ProjectEnum.ID);
 
 				// Update ScrumRoles
 				JSONObject scrumRoleJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
@@ -106,7 +111,7 @@ public class IntegratedRESTfulApi {
 				// Create Tags
 				JSONArray tagJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.TAGS);
 				for (int j = 0; j < tagJSONArray.length(); j++) {
-					JSONObject tagJSON = projectRoleJSONArray.getJSONObject(j);
+					JSONObject tagJSON = tagJSONArray.getJSONObject(j);
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectId +
 					                "/tags")
@@ -123,10 +128,10 @@ public class IntegratedRESTfulApi {
 					                "/sprints")
 					        .request()
 					        .post(Entity.text(sprintJSON.toString()));
-					jsonResponse = new JSONObject(response.readEntity(String.class));
-					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					responseJSON = new JSONObject(response.readEntity(String.class));
+					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
-					long sprintId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(SprintEnum.ID);
+					long sprintId = contentJSON.getLong(SprintEnum.ID);
 					// Put new SprintId into JSON
 					sprintJSON.put(SprintJSONEnum.ID, sprintId);
 
@@ -136,14 +141,14 @@ public class IntegratedRESTfulApi {
 						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
 						response = mClient.target(BASE_URL)
 						        .path("projects/" + projectId +
-						                "/sprints" + sprintId +
+						                "/sprints/" + sprintId +
 						                "/stories")
 						        .request()
 						        .post(Entity.text(storyJSON.toString()));
-						jsonResponse = new JSONObject(response.readEntity(String.class));
-						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						responseJSON = new JSONObject(response.readEntity(String.class));
+						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
-						long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+						long storyId = contentJSON.getLong(StoryEnum.ID);
 						// Put new StoryId into JSON
 						storyJSON.put(SprintJSONEnum.ID, storyId);
 
@@ -153,7 +158,7 @@ public class IntegratedRESTfulApi {
 							JSONObject tagJSON = tagInStoryJSONArray.getJSONObject(l);
 							response = mClient.target(BASE_URL)
 							        .path("projects/" + projectId +
-							                "/sprints" + sprintId +
+							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
 							                "/tags")
 							        .request()
@@ -166,7 +171,7 @@ public class IntegratedRESTfulApi {
 							JSONObject attachFileJSON = attachFilesInStoryJSONArray.getJSONObject(l);
 							response = mClient.target(BASE_URL)
 							        .path("projects/" + projectId +
-							                "/sprints" + sprintId +
+							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
 							                "/attachfiles")
 							        .request()
@@ -179,15 +184,15 @@ public class IntegratedRESTfulApi {
 							JSONObject taskJSON = taskJSONArray.getJSONObject(m);
 							response = mClient.target(BASE_URL)
 							        .path("projects/" + projectId +
-							                "/sprints" + sprintId +
+							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
 							                "/tasks")
 							        .request()
 							        .post(Entity.text(taskJSON.toString()));
-							jsonResponse = new JSONObject(response.readEntity(String.class));
-							contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+							responseJSON = new JSONObject(response.readEntity(String.class));
+							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
-							long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+							long taskId = contentJSON.getLong(TaskEnum.ID);
 							// Put new TaskId into JSON
 							storyJSON.put(TaskJSONEnum.ID, taskId);
 
@@ -197,7 +202,7 @@ public class IntegratedRESTfulApi {
 								JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(n);
 								response = mClient.target(BASE_URL)
 								        .path("projects/" + projectId +
-								                "/sprints" + sprintId +
+								                "/sprints/" + sprintId +
 								                "/stories/" + storyId +
 								                "/tasks/" + taskId +
 								                "/attachfiles")
@@ -213,14 +218,14 @@ public class IntegratedRESTfulApi {
 						JSONObject unplanJSON = unplanJSONArray.getJSONObject(k);
 						response = mClient.target(BASE_URL)
 						        .path("projects/" + projectId +
-						                "/sprints" + sprintId +
+						                "/sprints/" + sprintId +
 						                "/unplans")
 						        .request()
 						        .post(Entity.text(unplanJSON.toString()));
-						jsonResponse = new JSONObject(response.readEntity(String.class));
-						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						responseJSON = new JSONObject(response.readEntity(String.class));
+						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new UnplanId
-						long unplanId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(UnplanEnum.ID);
+						long unplanId = contentJSON.getLong(UnplanEnum.ID);
 						// Put new UnplanId into JSON
 						unplanJSON.put(UnplanEnum.ID, unplanId);
 					}
@@ -231,7 +236,7 @@ public class IntegratedRESTfulApi {
 						JSONObject retrospectiveJSON = retrospectiveJSONArray.getJSONObject(k);
 						response = mClient.target(BASE_URL)
 						        .path("projects/" + projectId +
-						                "/sprints" + sprintId +
+						                "/sprints/" + sprintId +
 						                "/retrospectives")
 						        .request()
 						        .post(Entity.text(retrospectiveJSON.toString()));
@@ -258,10 +263,10 @@ public class IntegratedRESTfulApi {
 					                "/stories")
 					        .request()
 					        .post(Entity.text(droppedStoryJSON.toString()));
-					jsonResponse = new JSONObject(response.readEntity(String.class));
-					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					responseJSON = new JSONObject(response.readEntity(String.class));
+					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
-					long storyId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(StoryEnum.ID);
+					long storyId = contentJSON.getLong(StoryEnum.ID);
 					// Put new StoryId into JSON
 					droppedStoryJSON.put(StoryJSONEnum.ID, storyId);
 
@@ -299,17 +304,17 @@ public class IntegratedRESTfulApi {
 						                "/tasks")
 						        .request()
 						        .post(Entity.text(taskJSON.toString()));
-						jsonResponse = new JSONObject(response.readEntity(String.class));
-						contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+						responseJSON = new JSONObject(response.readEntity(String.class));
+						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new TaskId
-						long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+						long taskId = contentJSON.getLong(TaskEnum.ID);
 						// Put new TaskId into JSON
 						taskJSON.put(TaskJSONEnum.ID, taskId);
 
 						// Add AttachFiles to Task
-						JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
-						for (int l = 0; l < attachFilesInTaskJSONArray.length(); l++) {
-							JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(l);
+						JSONArray attachFileInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
+						for (int l = 0; l < attachFileInTaskJSONArray.length(); l++) {
+							JSONObject attachFileJSON = attachFileInTaskJSONArray.getJSONObject(l);
 							response = mClient.target(BASE_URL)
 							        .path("projects/" + projectId +
 							                "/stories/" + storyId +
@@ -330,17 +335,17 @@ public class IntegratedRESTfulApi {
 					                "/tasks")
 					        .request()
 					        .post(Entity.text(taskJSON.toString()));
-					jsonResponse = new JSONObject(response.readEntity(String.class));
-					contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+					responseJSON = new JSONObject(response.readEntity(String.class));
+					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
-					long taskId = contentJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).getLong(TaskEnum.ID);
+					long taskId = contentJSON.getLong(TaskEnum.ID);
 					// Put new TaskId into JSON
 					taskJSON.put(TaskJSONEnum.ID, taskId);
 
 					// Add AttachFiles to Task
-					JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
-					for (int k = 0; k < attachFilesInTaskJSONArray.length(); k++) {
-						JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(k);
+					JSONArray attachFileInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
+					for (int k = 0; k < attachFileInTaskJSONArray.length(); k++) {
+						JSONObject attachFileJSON = attachFileInTaskJSONArray.getJSONObject(k);
 						response = mClient.target(BASE_URL)
 						        .path("projects/" + projectId +
 						                "/tasks/" + taskId +
@@ -448,7 +453,7 @@ public class IntegratedRESTfulApi {
 							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
 							response = mClient.target(BASE_URL)
 							        .path("projects/" + projectId +
-							                "/sprints" + sprintId +
+							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
 							                "/histories")
 							        .request()
@@ -517,5 +522,15 @@ public class IntegratedRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
 		return ResponseFactory.getResponse(Response.Status.OK, "", "");
+	}
+	
+	private void cleanOldEzscrumData() {
+		Configuration config = new Configuration();
+		config.save();
+		InitialSQL ini = new InitialSQL(config);
+		ini.exe();
+		//	刪除外部檔案
+		ProjectManager projectManager = new ProjectManager();
+		projectManager.deleteAllProject();
 	}
 }
