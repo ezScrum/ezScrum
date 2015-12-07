@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class StatusTranslatorTest {
 	@Test
@@ -26,5 +27,15 @@ public class StatusTranslatorTest {
 		assertEquals(TaskObject.STATUS_CHECK, StatusTranslator.getTaskStatus("assigned"));
 		assertEquals(TaskObject.STATUS_DONE, StatusTranslator.getTaskStatus("closed"));
 		assertEquals(-1, StatusTranslator.getTaskStatus("resolved"));
+	}
+	
+	@Test
+	public void testGetUnplanStatus() {
+		assertEquals(-1, StatusTranslator.getUnplanStatus(""));
+		assertEquals(-1, StatusTranslator.getUnplanStatus(null));
+		assertEquals(UnplanObject.STATUS_UNCHECK, StatusTranslator.getUnplanStatus("new"));
+		assertEquals(UnplanObject.STATUS_CHECK, StatusTranslator.getUnplanStatus("assigned"));
+		assertEquals(UnplanObject.STATUS_DONE, StatusTranslator.getUnplanStatus("closed"));
+		assertEquals(-1, StatusTranslator.getUnplanStatus("resolved"));
 	}
 }

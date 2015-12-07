@@ -35,6 +35,9 @@ public class StatusTranslator {
 	}
 	
 	public static int getUnplanStatus(String statusName){
+		if (statusName == null || statusName.isEmpty()) {
+			return -1;
+		}
 		if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK)) {
 			return TaskObject.STATUS_UNCHECK;
 		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK)) {
