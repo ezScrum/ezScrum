@@ -1,49 +1,22 @@
 package ntut.csie.ezScrum.restful.dataMigration.support;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
 public class StatusTranslator {
-	/**
-	 * @param statusName from HistoryJSONEnum
-	 */
-	public static int getStoryStatus(String statusName){
-		if (statusName == null || statusName.isEmpty()) {
+	public static int getStatusByStatusString(String statusString) {
+		if (statusString == null || statusString.isEmpty()) {
 			return -1;
 		}
-		if (statusName.equals(HistoryJSONEnum.STORY_STATUS_UNCHECK)) {
-			return StoryObject.STATUS_UNCHECK;
-		} else if (statusName.equals(HistoryJSONEnum.STORY_STATUS_DONE)) {
-			return StoryObject.STATUS_DONE;
-		}
-		return -1;
-	}
-	
-	public static int getTaskStatus(String statusName){
-		if (statusName == null || statusName.isEmpty()) {
+		if (statusString == null || statusString.isEmpty()) {
 			return -1;
 		}
-		if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK)) {
-			return TaskObject.STATUS_UNCHECK;
-		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK)) {
-			return TaskObject.STATUS_CHECK;
-		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_DONE)) {
-			return TaskObject.STATUS_DONE;
-		}
-		return -1;
-	}
-	
-	public static int getUnplanStatus(String statusName){
-		if (statusName == null || statusName.isEmpty()) {
-			return -1;
-		}
-		if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK)) {
-			return TaskObject.STATUS_UNCHECK;
-		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK)) {
-			return TaskObject.STATUS_CHECK;
-		} else if (statusName.equals(HistoryJSONEnum.TASK_UNPLAN_STATUS_DONE)) {
-			return TaskObject.STATUS_DONE;
+		if (statusString.equals(HistoryJSONEnum.STATUS_NEW)) {
+			return StatusEnum.NEW;
+		} else if (statusString.equals(HistoryJSONEnum.STATUS_ASSIGNED)) {
+			return StatusEnum.ASSIGNED;
+		} else if (statusString.equals(HistoryJSONEnum.STATUS_CLOSED)) {
+			return StatusEnum.CLOSED;
 		}
 		return -1;
 	}

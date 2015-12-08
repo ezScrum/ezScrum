@@ -58,4 +58,10 @@ public class HistoryJSONEnum {
 	public final static String RETROSPECTIVE_STATUS_ASSIGNED = "assigned";
 	public final static String RETROSPECTIVE_STATUS_CLOSED = "closed";
 	public final static String RETROSPECTIVE_STATUS_RESOLVED = "resolved";
+	
+	// status
+	public final static String STATUS_NEW = "new";
+	public final static String STATUS_ASSIGNED = "assigned";
+	public final static String STATUS_CLOSED = "closed";
+	public final static String STATUS_RESOLVED = "resolved";
 }

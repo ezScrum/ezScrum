@@ -219,7 +219,7 @@ public class AccountObject implements IBaseObject {
 	public static AccountObject confirmAccount(String username, String password) {
 		// 從資料庫拿出來的密碼會是加密過的，所以這邊用長度判斷是否已經經過 MD5 加密，如果長度不符合 32 就用 MD5 hash 過一次
 		if (password.length() != 32) {
-			password = AccountDAO.getInstance().getMd5(password);
+			password = AccountDAO.getMd5(password);
 		}
 		return AccountDAO.getInstance().confirmAccount(username, password);
 	}

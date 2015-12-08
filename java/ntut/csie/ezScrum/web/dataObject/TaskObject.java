@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -18,9 +19,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class TaskObject implements IBaseObject {
-	public final static int STATUS_UNCHECK = 1;
-	public final static int STATUS_CHECK = 2;
-	public final static int STATUS_DONE = 3;
+	public final static int STATUS_UNCHECK = StatusEnum.NEW;
+	public final static int STATUS_CHECK = StatusEnum.ASSIGNED;
+	public final static int STATUS_DONE = StatusEnum.CLOSED;
 	public final static int NO_PARENT = -1;
 	private final static int DEFAULT_VALUE = -1;
 	private long mId = DEFAULT_VALUE;

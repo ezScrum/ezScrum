@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.dataMigration.support;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,21 +16,30 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.RetrospectiveJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
 public class JSONDecoderTest {
 	private Configuration mConfig;
@@ -331,35 +339,185 @@ public class JSONDecoderTest {
 		assertEquals(taskJSON.getInt(TaskJSONEnum.ACTUAL), task.getActual());
 		assertEquals(taskJSON.getString(TaskJSONEnum.NOTES), task.getNotes());
 		assertEquals(TaskObject.STATUS_CHECK, task.getStatus());
+		assertEquals(projectId, task.getProjectId());
+		assertEquals(storyId, task.getStoryId());
 	}
 	
 	@Test
-	public void testToUnplan() {
-		// TODO
-		assertTrue("todo", false);
+	public void testToUnplan() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		
+		AccountObject account1 = new AccountObject("account1");
+		account1.setNickName("account1");
+		account1.setPassword("account1");
+		account1.setEmail("account1@gmail.com");
+		account1.setEnable(true);
+		account1.save();
+		
+		AccountObject account2 = new AccountObject("account2");
+		account2.setNickName("account2");
+		account2.setPassword("account2");
+		account2.setEmail("account2@gmail.com");
+		account2.setEnable(true);
+		account2.save();
+		
+		JSONObject unplanJSON = new JSONObject();
+		unplanJSON.put(UnplanJSONEnum.NAME, "name");
+		unplanJSON.put(UnplanJSONEnum.HANDLER, "account1");
+		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 1);
+		unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
+		unplanJSON.put(UnplanJSONEnum.NOTES, "notes");
+		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
+		JSONArray partnerJSONArray = new JSONArray();
+		unplanJSON.put(TaskJSONEnum.PARTNERS, partnerJSONArray);
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, "account2");
+		partnerJSONArray.put(partnerJSON);
+		
+		UnplanObject unplan = JSONDecoder.toUnplan(projectId, sprintId, unplanJSON.toString());
+		assertEquals(unplanJSON.getString(UnplanJSONEnum.NAME), unplan.getName());
+		assertEquals(unplanJSON.getString(UnplanJSONEnum.HANDLER), unplan.getHandler().getUsername());
+		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ESTIMATE), unplan.getEstimate());
+		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
+		assertEquals(unplanJSON.getString(UnplanJSONEnum.NOTES), unplan.getNotes());
+		assertEquals(UnplanObject.STATUS_CHECK, unplan.getStatus());
+		assertEquals(projectId, unplan.getProjectId());
+		assertEquals(sprintId, unplan.getSprintId());
 	}
 	
 	@Test
-	public void testToHistory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testToHistory_StoryStatus_UncheckToDone() throws JSONException {
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_STORY;
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "closed");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		HistoryObject history = JSONDecoder.toHistory(issueId, issueType, historyJSON.toString());
+		assertEquals(HistoryTypeTranslator.getHistoryType(historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE)), history.getHistoryType());
+		assertEquals(String.valueOf(StoryObject.STATUS_UNCHECK), history.getOldValue());
+		assertEquals(String.valueOf(StoryObject.STATUS_DONE), history.getNewValue());
+		assertEquals(historyJSON.getLong(HistoryJSONEnum.CREATE_TIME), history.getCreateTime());
+		assertEquals(issueId, history.getIssueId());
+		assertEquals(issueType, history.getIssueType());
 	}
 	
 	@Test
-	public void testToRetrospective() {
-		// TODO
-		assertTrue("todo", false);
+	public void testToHistory_TaskStatus_UncheckToCheck() throws JSONException {
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_TASK;
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		HistoryObject history = JSONDecoder.toHistory(issueId, issueType, historyJSON.toString());
+		assertEquals(HistoryTypeTranslator.getHistoryType(historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE)), history.getHistoryType());
+		assertEquals(String.valueOf(TaskObject.STATUS_UNCHECK), history.getOldValue());
+		assertEquals(String.valueOf(TaskObject.STATUS_CHECK), history.getNewValue());
+		assertEquals(historyJSON.getLong(HistoryJSONEnum.CREATE_TIME), history.getCreateTime());
+		assertEquals(issueId, history.getIssueId());
+		assertEquals(issueType, history.getIssueType());
 	}
 	
 	@Test
-	public void testToAttachFileInfo() {
-		// TODO
-		assertTrue("todo", false);
+	public void testToHistory_TaskStatus_CheckToDone() throws JSONException {
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_TASK;
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "closed");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		HistoryObject history = JSONDecoder.toHistory(issueId, issueType, historyJSON.toString());
+		assertEquals(HistoryTypeTranslator.getHistoryType(historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE)), history.getHistoryType());
+		assertEquals(String.valueOf(TaskObject.STATUS_CHECK), history.getOldValue());
+		assertEquals(String.valueOf(TaskObject.STATUS_DONE), history.getNewValue());
+		assertEquals(historyJSON.getLong(HistoryJSONEnum.CREATE_TIME), history.getCreateTime());
+		assertEquals(issueId, history.getIssueId());
+		assertEquals(issueType, history.getIssueType());
 	}
 	
 	@Test
-	public void testToBase64BinaryString() {
-		// TODO
-		assertTrue("todo", false);
+	public void testToHistory_UnplanStatus_UncheckToCheck() throws JSONException {
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_UNPLAN;
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		HistoryObject history = JSONDecoder.toHistory(issueId, issueType, historyJSON.toString());
+		assertEquals(HistoryTypeTranslator.getHistoryType(historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE)), history.getHistoryType());
+		assertEquals(String.valueOf(UnplanObject.STATUS_UNCHECK), history.getOldValue());
+		assertEquals(String.valueOf(UnplanObject.STATUS_CHECK), history.getNewValue());
+		assertEquals(historyJSON.getLong(HistoryJSONEnum.CREATE_TIME), history.getCreateTime());
+		assertEquals(issueId, history.getIssueId());
+		assertEquals(issueType, history.getIssueType());
+	}
+	
+	@Test
+	public void testToHistory_UnplanStatus_CheckToDone() throws JSONException {
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_UNPLAN;
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "closed");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		HistoryObject history = JSONDecoder.toHistory(issueId, issueType, historyJSON.toString());
+		assertEquals(HistoryTypeTranslator.getHistoryType(historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE)), history.getHistoryType());
+		assertEquals(String.valueOf(UnplanObject.STATUS_CHECK), history.getOldValue());
+		assertEquals(String.valueOf(UnplanObject.STATUS_DONE), history.getNewValue());
+		assertEquals(historyJSON.getLong(HistoryJSONEnum.CREATE_TIME), history.getCreateTime());
+		assertEquals(issueId, history.getIssueId());
+		assertEquals(issueType, history.getIssueType());
+	}
+	
+	@Test
+	public void testToRetrospective() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_RESOLVED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToAttachFileInfo() throws JSONException {
+		String projectName = "project01";
+		long issueId = 1;
+		int issueType = IssueTypeEnum.TYPE_STORY;
+		JSONObject attachFileInfoJSON = new JSONObject();
+		attachFileInfoJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileInfoJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		AttachFileInfo attachFileInfo = JSONDecoder.toAttachFileInfo(projectName, issueId, issueType, attachFileInfoJSON.toString());
+		assertEquals(attachFileInfoJSON.getString(AttachFileJSONEnum.NAME), attachFileInfo.name);
+		assertEquals(attachFileInfoJSON.getString(AttachFileJSONEnum.CONTENT_TYPE), attachFileInfo.contentType);
+		assertEquals(projectName, attachFileInfo.projectName);
+		assertEquals(issueId, attachFileInfo.issueId);
+		assertEquals(issueType, attachFileInfo.issueType);
+	}
+	
+	@Test
+	public void testToBase64BinaryString() throws JSONException {
+		String base64StringData = "U3RvcnkwMQ==";
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, base64StringData);
+		String base64String = JSONDecoder.toBase64BinaryString(attachFileJSON.toString());
+		assertEquals(base64StringData, base64String);
 	}
 }

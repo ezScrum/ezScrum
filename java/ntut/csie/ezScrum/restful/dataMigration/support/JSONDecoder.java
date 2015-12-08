@@ -213,7 +213,7 @@ public class JSONDecoder {
 			// Create StoryObject
 			story = new StoryObject(projectId);
 			story.setName(name)
-			     .setStatus(StatusTranslator.getStoryStatus(status))
+			     .setStatus(StatusTranslator.getStatusByStatusString(status))
 			     .setEstimate(estimate)
 			     .setImportance(importance)
 			     .setValue(value)
@@ -256,7 +256,7 @@ public class JSONDecoder {
 			    .setRemains(remain)
 			    .setActual(actual)
 			    .setNotes(notes)
-			    .setStatus(StatusTranslator.getTaskStatus(status))
+			    .setStatus(StatusTranslator.getStatusByStatusString(status))
 			    .setStoryId(storyId);
 			if (!handler.isEmpty()) {
 				long handlerId = AccountObject.get(handler).getId();
@@ -299,7 +299,7 @@ public class JSONDecoder {
 			        .setEstimate(estimate)
 			        .setActual(actual)
 			        .setNotes(notes)
-			        .setStatus(StatusTranslator.getUnplanStatus(status));
+			        .setStatus(StatusTranslator.getStatusByStatusString(status));
 			if (!handler.isEmpty()) {
 				long handlerId = AccountObject.get(handler).getId();
 				unplan.setHandlerId(handlerId);
@@ -332,8 +332,8 @@ public class JSONDecoder {
 			       .setHistoryType(HistoryTypeTranslator.getHistoryType(type))
 			       .setCreateTime(createTime);
 			if (HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_STATUS) {
-				history.setOldValue(String.valueOf(StatusTranslator.getUnplanStatus(oldValue)))
-				       .setNewValue(String.valueOf(StatusTranslator.getUnplanStatus(newValue)));
+				history.setOldValue(String.valueOf(StatusTranslator.getStatusByStatusString(oldValue)))
+				       .setNewValue(String.valueOf(StatusTranslator.getStatusByStatusString(newValue)));
 			} else {
 				history.setOldValue(oldValue)
 			           .setNewValue(newValue);
