@@ -23,6 +23,7 @@
 	<classpathentry kind="lib" path="lib/test/jersey/jersey-container-jdk-http-2.22.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-core-2.22.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-provider-jdk-http-2.22.1.jar"/>
+	<classpathentry kind="lib" path="lib/test/rome-0.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.5">
 		<attributes>
 			<attribute name="owner.project.facets" value="#system#"/>
@@ -48,7 +49,7 @@
 	<classpathentry kind="lib" path="lib/aspectj/aspectjweaver.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/org.aspectj.matcher.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ezScrum_Plugin_Protocol.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_79">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

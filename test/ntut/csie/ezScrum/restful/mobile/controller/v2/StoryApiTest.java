@@ -25,13 +25,13 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
@@ -185,7 +185,7 @@ public class StoryApiTest extends JerseyTest {
 		assertEquals(storyJson.getInt("status"), responseJSON.getInt("status"));
 		assertEquals(storyJson.getLong("sprint_id"),
 				responseJSON.getLong("sprint_id"));
-		assertEquals(7, responseJSON.getJSONArray("histories").length());
+		assertEquals(8, responseJSON.getJSONArray("histories").length());
 		assertEquals(0, responseJSON.getJSONArray("tags").length());
 	}
 

@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.test.CreateData;
+package ntut.csie.ezScrum.issue.sql.service.core;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.jcis.core.util.CloseStreamUtil;
 
 import org.apache.commons.logging.Log;

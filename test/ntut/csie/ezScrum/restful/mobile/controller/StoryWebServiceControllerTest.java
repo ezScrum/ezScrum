@@ -24,13 +24,13 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -174,7 +174,7 @@ public class StoryWebServiceControllerTest extends JerseyTest {
 		JSONObject storyJson = new JSONObject();
 		storyJson.put("id", story.getId()).put("name", "顆顆").put("notes", "崩潰")
 				.put("how_to_demo", "做不完").put("importance", 99)
-				.put("value", 15).put("estimate", 21).put("status", 0)
+				.put("value", 15).put("estimate", 21).put("status", StoryObject.STATUS_DONE)
 				.put("sprint_id", -1).put("tags", "");
 		
 		Response response = mClient.target(BASE_URL)
@@ -195,7 +195,7 @@ public class StoryWebServiceControllerTest extends JerseyTest {
 		assertEquals(storyJson.getInt("estimate"), responseJSON.getInt("estimate"));
 		assertEquals(storyJson.getInt("status"), responseJSON.getInt("status"));
 		assertEquals(storyJson.getLong("sprint_id"), responseJSON.getLong("sprint_id"));
-		assertEquals(9, responseJSON.getJSONArray("histories").length());
+		assertEquals(10, responseJSON.getJSONArray("histories").length());
 		assertEquals(0, responseJSON.getJSONArray("tags").length());
 	}
 	

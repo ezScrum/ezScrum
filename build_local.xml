@@ -89,6 +89,12 @@
 		<fileset dir="${Local.Library.Dir}/test" casesensitive="yes">
 			<filename name="*.jar" />
 		</fileset>
+		<fileset dir="${Local.Library.Dir}/test/jersey" casesensitive="yes">
+			<filename name="*.jar" />
+		</fileset>
+		<fileset dir="${Local.Library.Dir}/aspectj" casesensitive="yes">
+			<filename name="*.jar" />
+		</fileset>
 		<fileset dir="${Local.Library.Dir}/test/http" casesensitive="yes">
 			<filename name="*.jar" />
 		</fileset>

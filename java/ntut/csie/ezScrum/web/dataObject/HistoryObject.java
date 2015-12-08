@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -11,6 +10,7 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
 public class HistoryObject implements IBaseObject {
 	public final static int TYPE_CREATE = 1;
@@ -140,22 +140,24 @@ public class HistoryObject implements IBaseObject {
 				return getHandlerDesc();
 			case TYPE_SPECIFIC_TIME:
 				return getNormalDesc();
-			case TYPE_NOTE:
-				return getQuoteDesc();
-			case TYPE_ADD:
-				return getAddChildDesc();
-			case TYPE_APPEND:
-				return getAppendParentDesc();
 			case TYPE_DROP:
 				return getDropChildDesc();
+			case TYPE_APPEND:
+				return getAppendParentDesc();
+			case TYPE_ADD:
+				return getAddChildDesc();
 			case TYPE_REMOVE:
 				return getRemoveParentDesc();
-			case TYPE_SPRINT_ID:
-				return getSprintDesc();
+			case TYPE_NOTE:
+				return getQuoteDesc();
+			case TYPE_HOW_TO_DEMO:
+				return getQuoteDesc();
 			case TYPE_ADD_PARTNER:
 				return getPartnerDesc();
 			case TYPE_REMOVE_PARTNER:
 				return getPartnerDesc();
+			case TYPE_SPRINT_ID:
+				return getSprintDesc();
 		}
 		return "";
 	}
@@ -182,14 +184,15 @@ public class HistoryObject implements IBaseObject {
 				return "Handler";
 			case TYPE_SPECIFIC_TIME:
 				return "Specific Time";
-			case TYPE_NOTE:
-				return "Note";
 			case TYPE_HOW_TO_DEMO:
 				return "How To Demo";
+			case TYPE_NOTE:
+				return "Note";
 			case TYPE_ADD_PARTNER:
 				return "Add Partner";
 			case TYPE_REMOVE_PARTNER:
 				return "Remove Partner";
+			
 		}
 		return "";
 	}
@@ -237,21 +240,24 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	private String getStatusDesc() {
-		HashMap<String, String> map = new HashMap<String, String>();
-		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
-		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			map.put(String.valueOf(StoryObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(StoryObject.STATUS_DONE), "Done");
-		} else {
-			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
+		String oldStatusString = getStatusString(Integer.parseInt(mOldValue));
+		String newStatusString = getStatusString(Integer.parseInt(mNewValue));
+		return oldStatusString + " => " + newStatusString;
+	}
+	
+	private String getStatusString(int status) {
+		final String NOT_CHECK_OUT = "Not Check Out";
+		final String CHECK_OUT = "Check Out";
+		final String DONE = "Done";
+		String statusString = "";
+		if (status == StatusEnum.NEW) {
+			statusString = NOT_CHECK_OUT;
+		} else if (status == StatusEnum.ASSIGNED) {
+			statusString = CHECK_OUT;
+		} else if (status == StatusEnum.CLOSED) {
+			statusString = DONE;
 		}
-
-		return map.get(mOldValue) + " => " + map.get(mNewValue);
+		return statusString;
 	}
 
 	private String getCreateDesc() {

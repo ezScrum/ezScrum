@@ -23,10 +23,10 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 public class AccountRESTfulApiTest extends JerseyTest {
@@ -99,7 +99,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userNickName = "TEST_USER_NICK_NAME";
 		String userPassword = "TEST_USER_PASSWORD";
 		String userEmail = "TEST_USER_EMAIL";
-		int enbale = 1;
+		boolean enbale = true;
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -132,7 +132,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userNickName = "TEST_USER_NICK_NAME";
 		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
 		String userEmail = "TEST_USER_EMAIL";
-		int enbale = 1;
+		boolean enbale = true;
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);

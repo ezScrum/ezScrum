@@ -6,9 +6,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import ntut.csie.ezScrum.dao.TokenDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 
 import org.junit.After;
 import org.junit.Before;

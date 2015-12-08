@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.test.CreateData;
+package ntut.csie.ezScrum.issue.sql.service.core;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

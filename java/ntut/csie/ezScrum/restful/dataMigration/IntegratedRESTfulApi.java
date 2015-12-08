@@ -1,5 +1,9 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -9,12 +13,14 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
@@ -23,8 +29,8 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -39,7 +45,7 @@ public class IntegratedRESTfulApi {
 	@POST
 	@Path("/projects")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response importProjectsJSON(String entity) {
+	public Response importProjectsJSON(String entity) throws IOException {
 		// Get Client
 		mClient = ClientBuilder.newClient();
 		// Import JSON Data
@@ -525,7 +531,7 @@ public class IntegratedRESTfulApi {
 		return ResponseFactory.getResponse(Response.Status.OK, "", "");
 	}
 	
-	private void cleanOldEzscrumData() {
+	private void cleanOldEzscrumData() throws IOException {
 		// Get Admin account
 		final String ADMIN_USER_NAME = "admin"; 
 		AccountObject adminAccount = AccountObject.get(ADMIN_USER_NAME);
@@ -533,9 +539,25 @@ public class IntegratedRESTfulApi {
 		config.save();
 		InitialSQL ini = new InitialSQL(config);
 		ini.exe();
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		// delete external files
+		deleteAllProject();
+		deleteAllAttachFiles();
 		adminAccount.save();
+	}
+	
+	private void deleteAllProject() throws IOException {
+		final String WORKSPACE_PATH = "./WebContent/Workspace/";
+		ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getAllProjects();
+		for (ProjectObject project : projects) {
+			File file = new File(WORKSPACE_PATH + project.getName());
+			FileUtils.deleteDirectory(file);
+		}
+	}
+	
+	private void deleteAllAttachFiles() throws IOException {
+		final String WORKSPACE_PATH = "./WebContent/Workspace/";
+		final String ATTACH_FILE_FOLDER_NAME = "AttachFile";
+		File file = new File(WORKSPACE_PATH + ATTACH_FILE_FOLDER_NAME);
+		FileUtils.deleteDirectory(file);
 	}
 }

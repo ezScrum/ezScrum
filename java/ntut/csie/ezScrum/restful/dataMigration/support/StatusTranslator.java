@@ -8,9 +8,6 @@ public class StatusTranslator {
 		if (statusString == null || statusString.isEmpty()) {
 			return -1;
 		}
-		if (statusString == null || statusString.isEmpty()) {
-			return -1;
-		}
 		if (statusString.equals(HistoryJSONEnum.STATUS_NEW)) {
 			return StatusEnum.NEW;
 		} else if (statusString.equals(HistoryJSONEnum.STATUS_ASSIGNED)) {
