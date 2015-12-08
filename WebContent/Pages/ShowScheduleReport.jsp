@@ -60,8 +60,8 @@
 				<select id="ShowSprint" onchange="show()" class="selectField">
 					<logic:iterate id="element" name="SprintPlans">
 						<c:choose>
-						<c:when test="${element.ID == report.iteration}"><option value="${ element.ID }" selected>Sprint ${ element.ID }</option></c:when>
-							<c:otherwise><option value="${ element.ID }">Sprint ${ element.ID }</option></c:otherwise>
+						<c:when test="${element.id == report.iteration}"><option value="${ element.id }" selected>Sprint ${ element.id }</option></c:when>
+							<c:otherwise><option value="${ element.id }">Sprint ${ element.id }</option></c:otherwise>
 						</c:choose>						
 					</logic:iterate>
 				</select>
