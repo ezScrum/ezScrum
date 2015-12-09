@@ -117,7 +117,7 @@ public class Translation {
 					Date date = new Date(attachFile.getCreateTime());
 					String attachTime = dateFormat.format(date);
 					ProjectObject project = ProjectObject.get(stories.get(i)
-							.getId());
+							.getProjectId());
 					jsonAttachFile.put("UploadDate", attachTime);
 					jsonAttachFile.put("FilePath",
 							"fileDownload.do?projectName=" + project.getName()
