@@ -26,6 +26,7 @@ import com.sun.net.httpserver.HttpServer;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -34,6 +35,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
@@ -172,9 +174,39 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateHistoryInUnplan() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateHistoryInUnplan() throws JSONException {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
+		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+		.setActual(0).save();
+		
+		// Check unplan's histories before create history
+		assertEquals(1, unplan.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, unplan.getHistories().get(0).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + unplan.getId() +
+		                "/histories")
+		        .request()
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(unplan.getHistories().get(1).toString(), responseContent);
 	}
 	
 	@Test

@@ -26,12 +26,14 @@ import com.sun.net.httpserver.HttpServer;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
@@ -163,13 +165,73 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void createHistoryInDroppedTask() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateHistoryInDroppedTask() throws JSONException {
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(task.getHistories().get(1).toString(), responseContent);
+	}
+	
+	@Test
+	public void testDeleteHistoryInTask() throws JSONException {
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .delete();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+		assertEquals(0, task.getHistories().size());
 	}
 
 	@Test
-	public void createAttachFileInDropped() {
+	public void testCreateAttachFileInDropped() {
 		// TODO
 		assertTrue("todo", false);
 	}

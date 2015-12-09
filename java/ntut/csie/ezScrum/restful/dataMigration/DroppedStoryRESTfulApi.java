@@ -182,7 +182,6 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/tasks/{taskId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInTask(@PathParam("projectId") long projectId,
-	                                 	@PathParam("sprintId") long sprintId,
 	                                 	@PathParam("storyId") long storyId,
 	                                 	@PathParam("taskId") long taskId,
 	                                 	String entity) {
