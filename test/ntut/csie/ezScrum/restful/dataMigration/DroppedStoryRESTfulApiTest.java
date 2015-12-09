@@ -11,6 +11,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -26,17 +27,20 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
-import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	private Configuration mConfig;
@@ -107,27 +111,141 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateDroppedStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateDroppedStory() throws JSONException {
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+		
+		// Call '/projects/{projectId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories")
+		        .request()
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		JSONObject responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		long storyId = responseContent.getLong(StoryEnum.ID);
+		assertTrue(storyId > 0);
+		StoryObject story = StoryObject.get(storyId);
+		assertEquals(story.toString(), responseContent.toString());
 	}
 
 	@Test
-	public void testCreateTagInDroppedStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateTagInDroppedStory() throws JSONException {
+		// Test Data
+		String tagName = "TEST_TAG_NAME";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = new StoryObject(project.getId());
+		story.save();
+		
+		// Create Tag
+		TagObject tag = new TagObject(tagName, project.getId());
+		tag.save();
+		
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/stories/{storyId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories/" + story.getId() + 
+		              "/tags")
+		        .request()
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(story.getTags().get(0).toString(), responseContent);
 	}
 
 	@Test
-	public void testCreateHistoryInDroppedStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateHistoryInDroppedStory() throws JSONException {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = new StoryObject(project.getId());
+		story.save();
+		
+		// Check story's histories before create history
+		assertEquals(1, story.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, story.getHistories().get(0).getHistoryType());
+				
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS")
+		           .put(HistoryJSONEnum.OLD_VALUE, "new")
+		           .put(HistoryJSONEnum.NEW_VALUE, "closed")
+		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .post(Entity.text(historyJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(story.getHistories().get(1).toString(), responseContent);
 	}
 	
 	@Test
-	public void testDeleteHistoryInDroppedStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testDeleteHistoryInDroppedStory() throws JSONException {
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = new StoryObject(project.getId());
+		story.save();
+		
+		// Check story's histories before create history
+		assertEquals(1, story.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, story.getHistories().get(0).getHistoryType());
+		
+		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .delete();
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+		assertEquals(0, story.getHistories().size());
 	}
 
 	@Test
@@ -137,9 +255,53 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateTaskInDroppedStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateTaskInDroppedStory() throws JSONException {
+		// Test Data
+		AccountObject account = mCA.getAccountList().get(0);
+		String name = "TEST_TASK_NAME";
+		String handler = account.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = new StoryObject(project.getId());
+		story.save();
+		
+		// Add Account to Project
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+		
+		// Call '/projects/{projectId}/stories/{storyId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories/" + story.getId() + 
+		              "/tasks")
+		        .request()
+		        .post(Entity.text(taskJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		JSONObject responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		long taskId = responseContent.getLong(StoryEnum.ID);
+		assertTrue(taskId > 0);
+		TaskObject task = TaskObject.get(taskId);
+		assertEquals(task.toString(), responseContent.toString());
 	}
 
 	@Test
