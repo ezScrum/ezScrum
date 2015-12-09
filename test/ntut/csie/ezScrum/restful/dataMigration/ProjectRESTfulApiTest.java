@@ -147,7 +147,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testUpdateScrumRoles() throws JSONException {
+	public void testUpdateScrumRolesInProject() throws JSONException {
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
 		String projectName = mCP.getAllProjects().get(0).getName();
@@ -343,7 +343,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateProjectRole() throws JSONException {
+	public void testCreateProjectRoleInProject() throws JSONException {
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
 		String projectName = mCP.getAllProjects().get(0).getName();

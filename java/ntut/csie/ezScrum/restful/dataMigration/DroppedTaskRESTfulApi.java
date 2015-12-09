@@ -81,7 +81,7 @@ public class DroppedTaskRESTfulApi {
 	@DELETE
 	@Path("/{taskId}/histories/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
+	public Response deleteHistoryInDroppedTask(@PathParam("projectId") long projectId,
 	        							@PathParam("taskId") long taskId,
 	        							String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
@@ -99,7 +99,7 @@ public class DroppedTaskRESTfulApi {
 	@POST
 	@Path("/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachFileInDropped(@PathParam("projectId") long projectId,
+	public Response createAttachFileInDroppedTask(@PathParam("projectId") long projectId,
 	        						  		   @PathParam("taskId") long taskId,
 	        						  		   String entity) throws IOException {
 		ResourceFinder resourceFinder = new ResourceFinder();

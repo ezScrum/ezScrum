@@ -113,25 +113,25 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateTagInStory() {
+	public void testCreateTagInDroppedStory() {
 		// TODO
 		assertTrue("todo", false);
 	}
 
 	@Test
-	public void testCreateHistoryInStory() {
+	public void testCreateHistoryInDroppedStory() {
 		// TODO
 		assertTrue("todo", false);
 	}
 	
 	@Test
-	public void testDeleteHistoryInStory() {
+	public void testDeleteHistoryInDroppedStory() {
 		// TODO
 		assertTrue("todo", false);
 	}
 
 	@Test
-	public void testCreateAttachFile() {
+	public void testCreateAttachFileInDroppedStory() {
 		// TODO
 		assertTrue("todo", false);
 	}

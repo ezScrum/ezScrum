@@ -133,7 +133,7 @@ public class StoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachFile(@PathParam("projectId") long projectId,
+	public Response createAttachFileInStory(@PathParam("projectId") long projectId,
 	        						  @PathParam("sprintId") long sprintId,
 	        						  @PathParam("storyId") long storyId,
 	        						  String entity) throws IOException {

@@ -81,7 +81,7 @@ public class UnplanRESTfulApi {
 	@DELETE
 	@Path("/{unplanId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
+	public Response deleteHistoryInUnplan(@PathParam("projectId") long projectId,
        	  								@PathParam("sprintId") long sprintId,
        	  								@PathParam("unplanId") long unplanId,
        	  								String entity) {

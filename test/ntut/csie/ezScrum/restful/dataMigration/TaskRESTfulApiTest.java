@@ -217,12 +217,6 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
 		assertEquals(task.getHistories().get(2).toString(), responseContent);
 	}
-
-	@Test
-	public void testCreateAttachFile() {
-		// TODO
-		assertTrue("todo", false);
-	}
 	
 	@Test
 	public void testDeleteHistoriesInTask() throws Exception {
@@ -248,5 +242,11 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertEquals(0, task.getHistories().size());
+	}
+
+	@Test
+	public void testCreateAttachFileInTask() {
+		// TODO
+		assertTrue("todo", false);
 	}
 }

@@ -201,7 +201,7 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testDeleteHistoryInTask() throws JSONException {
+	public void testDeleteHistoryInDroppedTask() throws JSONException {
 		// Create Test Data - Project
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
@@ -231,7 +231,7 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateAttachFileInDropped() {
+	public void testCreateAttachFileInDroppedTask() {
 		// TODO
 		assertTrue("todo", false);
 	}

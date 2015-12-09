@@ -55,7 +55,7 @@ public class DroppedStoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createTagInStory(@PathParam("projectId") long projectId,
+	public Response createTagInDroppedStory(@PathParam("projectId") long projectId,
 	        						 @PathParam("storyId") long storyId,
 	        						 String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
@@ -81,7 +81,7 @@ public class DroppedStoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createHistoryInStory(@PathParam("projectId") long projectId,
+	public Response createHistoryInDroppedStory(@PathParam("projectId") long projectId,
 	        							 @PathParam("storyId") long storyId,
 	        							 String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
@@ -106,7 +106,7 @@ public class DroppedStoryRESTfulApi {
 	@DELETE
 	@Path("/{storyId}/histories/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteHistoryInStory(@PathParam("projectId") long projectId,
+	public Response deleteHistoryInDroppedStory(@PathParam("projectId") long projectId,
 	        							 @PathParam("storyId") long storyId,
 	        							 String entity) {
 		ResourceFinder resourceFinder = new ResourceFinder();
@@ -125,7 +125,7 @@ public class DroppedStoryRESTfulApi {
 	@POST
 	@Path("/{storyId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachFile(@PathParam("projectId") long projectId,
+	public Response createAttachFileInDroppedStory(@PathParam("projectId") long projectId,
 	        						 @PathParam("storyId") long storyId,
 	        						 String entity) throws IOException {
 		ResourceFinder resourceFinder = new ResourceFinder();

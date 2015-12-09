@@ -197,7 +197,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateHistory() throws JSONException {
+	public void testCreateHistoryInStory() throws JSONException {
 		// Test Data
 		String type = "CREATE";
 		String oldValue = "";
@@ -237,12 +237,6 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateAttachFile() {
-		// TODO
-		assertTrue("todo", false);
-	}
-	
-	@Test
 	public void testDeleteHistoriesInStory() throws JSONException {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
@@ -260,5 +254,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertEquals(0, story.getHistories().size());
+	}
+	
+	@Test
+	public void testCreateAttachFileInStory() {
+		// TODO
+		assertTrue("todo", false);
 	}
 }

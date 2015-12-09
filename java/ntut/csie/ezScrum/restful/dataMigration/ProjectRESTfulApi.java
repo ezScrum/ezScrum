@@ -45,7 +45,7 @@ public class ProjectRESTfulApi {
 	@PUT
 	@Path("/{projectId}/scrumroles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateScrumRoles(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response updateScrumRolesInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
@@ -70,7 +70,7 @@ public class ProjectRESTfulApi {
 	@POST
 	@Path("/{projectId}/projectroles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createProjectRole(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response createProjectRoleInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {

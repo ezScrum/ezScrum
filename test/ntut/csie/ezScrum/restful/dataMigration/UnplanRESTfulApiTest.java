@@ -210,7 +210,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testDeleteHistoriesInUnplan() throws Exception {
+	public void testDeleteHistoryInUnplan() throws Exception {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 		

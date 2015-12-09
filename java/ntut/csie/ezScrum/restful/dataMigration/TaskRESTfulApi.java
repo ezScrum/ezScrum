@@ -116,7 +116,7 @@ public class TaskRESTfulApi {
 	@POST
 	@Path("/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAttachFile(@PathParam("projectId") long projectId,
+	public Response createAttachFileInTask(@PathParam("projectId") long projectId,
 	        						  @PathParam("sprintId") long sprintId,
 	        						  @PathParam("storyId") long storyId,
 	        						  @PathParam("taskId") long taskId,
