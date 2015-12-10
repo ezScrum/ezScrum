@@ -49,7 +49,7 @@
 	<classpathentry kind="lib" path="lib/aspectj/aspectjweaver.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/org.aspectj.matcher.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ezScrum_Plugin_Protocol.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_79">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
