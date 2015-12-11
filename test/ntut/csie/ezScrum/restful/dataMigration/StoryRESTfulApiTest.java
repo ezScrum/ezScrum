@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
@@ -24,6 +25,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
@@ -39,6 +41,7 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 
@@ -257,8 +260,44 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateAttachFileInStory() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateAttachFileInStory() throws JSONException {
+		// Test Data
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Check story attach files before create attach file
+		assertEquals(0, story.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "U3RvcnkwMQ==");
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/attachfiles")
+		        .request()
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		// Assert
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+		assertEquals(1, story.getAttachFiles().size());
+		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), story.getAttachFiles().get(0).getName());
+		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE), story.getAttachFiles().get(0).getContentType());
+		assertEquals(story.getId(), story.getAttachFiles().get(0).getIssueId());
+		assertEquals(IssueTypeEnum.TYPE_STORY, story.getAttachFiles().get(0).getIssueType());
+		
+		// clean test data
+		File file = new File(story.getAttachFiles().get(0).getPath());
+		file.delete();
 	}
 }

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
@@ -26,6 +27,7 @@ import com.sun.net.httpserver.HttpServer;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
@@ -36,6 +38,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 
@@ -231,8 +234,44 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testCreateAttachFileInDroppedTask() {
-		// TODO
-		assertTrue("todo", false);
+	public void testCreateAttachFileInDroppedTask() throws JSONException {
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+		assertEquals(1, task.getAttachFiles().size());
+		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), task.getAttachFiles().get(0).getName());
+		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE), task.getAttachFiles().get(0).getContentType());
+		assertEquals(task.getId(), task.getAttachFiles().get(0).getIssueId());
+		assertEquals(IssueTypeEnum.TYPE_TASK, task.getAttachFiles().get(0).getIssueType());
+		
+		// clean test data
+		File file = new File(task.getAttachFiles().get(0).getPath());
+		file.delete();
 	}
 }
