@@ -1,7 +1,5 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
-import static org.junit.Assert.assertTrue;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -13,11 +11,14 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.RetrospectiveJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 
 public class IntegratedRESTfulApiTest {
 	@Test
@@ -50,11 +51,12 @@ public class IntegratedRESTfulApiTest {
 		projectJSON.put(ProjectJSONEnum.COMMENT, "TEST_PROJECT_1_COMMENT");
 		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, "TEST_PROJECT_1_PRODUCT_OWNER");
 		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, 2);
-		projectJSON.put(ProjectJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		long project1CreateTime = System.currentTimeMillis();
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, project1CreateTime);
 		projectJSONArray.put(projectJSON);
 		entityJSON.put(ExportJSONEnum.PROJECTS, projectJSONArray);
 		// ScrumRole
-		JSONObject scrumRoleJSON = new JSONObject();
+		JSONObject scrumRolesJSON = new JSONObject();
 		JSONObject productOwnerJSON = new JSONObject();
 		productOwnerJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
 		productOwnerJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN, true);
@@ -65,7 +67,7 @@ public class IntegratedRESTfulApiTest {
 		productOwnerJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, true);
 		productOwnerJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, true);
 		productOwnerJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, true);
-		scrumRoleJSON.put(ScrumRoleJSONEnum.PRODUCT_OWNER, productOwnerJSON);
+		scrumRolesJSON.put(ScrumRoleJSONEnum.PRODUCT_OWNER, productOwnerJSON);
 		
 		JSONObject scrumMasterJSON = new JSONObject();
 		scrumMasterJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
@@ -77,7 +79,7 @@ public class IntegratedRESTfulApiTest {
 		scrumMasterJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, true);
 		scrumMasterJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, true);
 		scrumMasterJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, false);
-		scrumRoleJSON.put(ScrumRoleJSONEnum.SCRUM_MASTER, scrumMasterJSON);
+		scrumRolesJSON.put(ScrumRoleJSONEnum.SCRUM_MASTER, scrumMasterJSON);
 		
 		JSONObject scrumTeamJSON = new JSONObject();
 		scrumTeamJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
@@ -89,19 +91,19 @@ public class IntegratedRESTfulApiTest {
 		scrumTeamJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, true);
 		scrumTeamJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, false);
 		scrumTeamJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, false);
-		scrumRoleJSON.put(ScrumRoleJSONEnum.SCRUM_MASTER, scrumTeamJSON);
+		scrumRolesJSON.put(ScrumRoleJSONEnum.SCRUM_TEAM, scrumTeamJSON);
 		
-		JSONObject StakeholderJSON = new JSONObject();
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN, false);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_TASKBOARD, false);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG, true);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN, false);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE, false);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, false);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, true);
-		StakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, false);
-		scrumRoleJSON.put(ScrumRoleJSONEnum.SCRUM_MASTER, StakeholderJSON);
+		JSONObject stakeholderJSON = new JSONObject();
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN, false);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_TASKBOARD, false);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG, true);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN, false);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE, false);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, false);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, true);
+		stakeholderJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, false);
+		scrumRolesJSON.put(ScrumRoleJSONEnum.STAKEHOLDER, stakeholderJSON);
 		
 		JSONObject guestJSON = new JSONObject();
 		guestJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, true);
@@ -113,8 +115,8 @@ public class IntegratedRESTfulApiTest {
 		guestJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, false);
 		guestJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, false);
 		guestJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, false);
-		scrumRoleJSON.put(ScrumRoleJSONEnum.SCRUM_MASTER, guestJSON);
-		projectJSON.put(ProjectJSONEnum.SCRUM_ROLES, scrumRoleJSON);
+		scrumRolesJSON.put(ScrumRoleJSONEnum.GUEST, guestJSON);
+		projectJSON.put(ProjectJSONEnum.SCRUM_ROLES, scrumRolesJSON);
 		
 		// Project Role
 		JSONArray projectRoleJSONArray = new JSONArray();
@@ -125,12 +127,12 @@ public class IntegratedRESTfulApiTest {
 		
 		// Tags
 		JSONArray tagJSONArray = new JSONArray();
-		JSONObject tagJSON1 = new JSONObject();
-		tagJSON1.put(TagJSONEnum.NAME, "TEST_TAG_1");
-		JSONObject tagJSON2 = new JSONObject();
-		tagJSON2.put(TagJSONEnum.NAME, "TEST_TAG_2");
-		tagJSONArray.put(tagJSON1);
-		tagJSONArray.put(tagJSON2);
+		JSONObject projectTagJSON1 = new JSONObject();
+		projectTagJSON1.put(TagJSONEnum.NAME, "TEST_TAG_1");
+		JSONObject projectTagJSON2 = new JSONObject();
+		projectTagJSON2.put(TagJSONEnum.NAME, "TEST_TAG_2");
+		tagJSONArray.put(projectTagJSON1);
+		tagJSONArray.put(projectTagJSON2);
 		projectJSON.put(ProjectJSONEnum.TAGS, tagJSONArray);
 		
 		// Release
@@ -157,11 +159,11 @@ public class IntegratedRESTfulApiTest {
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
 		projectJSON.put(ProjectJSONEnum.SPRINTS, sprintJSONArray);
+		sprintJSONArray.put(sprintJSON);
 		
 		// Story
 		JSONArray storyJSONArray = new JSONArray();
 		JSONObject storyJSON = new JSONObject();
-		storyJSON.put(StoryJSONEnum.ID, 1);
 		storyJSON.put(StoryJSONEnum.NAME, "TEST_STORY_1");
 		storyJSON.put(StoryJSONEnum.STATUS, "new");
 		storyJSON.put(StoryJSONEnum.ESTIMATE, 3);
@@ -169,6 +171,7 @@ public class IntegratedRESTfulApiTest {
 		storyJSON.put(StoryJSONEnum.VALUE, 5);
 		storyJSON.put(StoryJSONEnum.NOTES, "TEST_STORY_1_NOTES");
 		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, "TEST_STORY_1_HOWTODEMO");
+		storyJSONArray.put(storyJSON);
 		sprintJSON.put(SprintJSONEnum.STORIES, storyJSONArray);
 		// Tag in Story
 		JSONArray tagInStoryJSONArray = new JSONArray();
@@ -182,7 +185,8 @@ public class IntegratedRESTfulApiTest {
 		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
 		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "");
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "");
-		historyJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		long storyCreateTime = System.currentTimeMillis();
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, storyCreateTime);
 		historyInStoryJSONArray.put(historyJSON);
 		storyJSON.put(StoryJSONEnum.HISTORIES, historyInStoryJSONArray);
 		// AttachFiles in Story
@@ -196,7 +200,6 @@ public class IntegratedRESTfulApiTest {
 		// Tasks
 		JSONArray taskInStoryJSONArray = new JSONArray();
 		JSONObject taskJSON = new JSONObject();
-		taskJSON.put(TaskJSONEnum.ID, 3);
 		taskJSON.put(TaskJSONEnum.NAME, "TEST_TASK_1");
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
@@ -218,7 +221,8 @@ public class IntegratedRESTfulApiTest {
 		historyInTaskJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
 		historyInTaskJSON.put(HistoryJSONEnum.OLD_VALUE, "");
 		historyInTaskJSON.put(HistoryJSONEnum.NEW_VALUE, "");
-		historyInTaskJSON.put(HistoryJSONEnum.CREATE_TIME, System.currentTimeMillis());
+		long taskCreateTime = System.currentTimeMillis();
+		historyInTaskJSON.put(HistoryJSONEnum.CREATE_TIME, taskCreateTime);
 		historyInTaskJSONArray.put(historyInTaskJSON);
 		taskJSON.put(TaskJSONEnum.HISTORIES, historyInTaskJSONArray);
 		// AttachFile in Task
@@ -228,6 +232,141 @@ public class IntegratedRESTfulApiTest {
 		attachfileInTaskJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
 		attachfileInTaskJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
 		attachfileInTaskJSONArray.put(attachfileInTaskJSON);
-		taskJSON.put(StoryJSONEnum.ATTACH_FILES, attachfileInTaskJSONArray);
+		taskJSON.put(TaskJSONEnum.ATTACH_FILES, attachfileInTaskJSONArray);
+		// Retrospectives in Sprint
+		JSONArray retrospectiveJSONArray = new JSONArray();
+		JSONObject goodJSON = new JSONObject();
+		goodJSON.put(RetrospectiveJSONEnum.NAME, "TEST_RETROSPECTIVE_GOOD");
+		goodJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "TEST_RETROSPECTIVE_GOOD_DESCRIPTION");
+		goodJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		goodJSON.put(RetrospectiveJSONEnum.STATUS, "new");
+		retrospectiveJSONArray.put(goodJSON);
+		JSONObject improvementJSON = new JSONObject();
+		improvementJSON.put(RetrospectiveJSONEnum.NAME, "TEST_RETROSPECTIVE_IMPROVEMENT");
+		improvementJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "TEST_RETROSPECTIVE_IMPROVEMENT_DESCRIPTION");
+		improvementJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		improvementJSON.put(RetrospectiveJSONEnum.STATUS, "closed");
+		retrospectiveJSONArray.put(improvementJSON);
+		sprintJSON.put(SprintJSONEnum.RETROSPECTIVES, retrospectiveJSONArray);
+		// Unplans in Sprint
+		JSONArray unplanJSONArray = new JSONArray();
+		JSONObject unplanJSON = new JSONObject();
+		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
+		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
+		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
+		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
+		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
+		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
+		JSONArray unplanHistoryJSONArray = new JSONArray();
+		JSONObject historyInUnplanJSON = new JSONObject();
+		historyInUnplanJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
+		historyInUnplanJSON.put(HistoryJSONEnum.OLD_VALUE, "");
+		historyInUnplanJSON.put(HistoryJSONEnum.NEW_VALUE, "");
+		long historyInUnplanCreateTime = System.currentTimeMillis();
+		historyInUnplanJSON.put(HistoryJSONEnum.CREATE_TIME, historyInUnplanCreateTime);
+		unplanHistoryJSONArray.put(historyInUnplanJSON);
+		unplanJSON.put(UnplanJSONEnum.HISTORIES, unplanHistoryJSONArray);
+		sprintJSON.put(SprintJSONEnum.UNPLANS, unplanJSONArray);
+		// Dropped Stories in Project
+		JSONArray droppedStoryJSONArray = new JSONArray();
+		JSONObject droppedStoryJSON = new JSONObject();
+		droppedStoryJSON.put(StoryJSONEnum.NAME, "TEST_DROPPED_STORY");
+		droppedStoryJSON.put(StoryJSONEnum.STATUS, "new");
+		droppedStoryJSON.put(StoryJSONEnum.ESTIMATE, 8);
+		droppedStoryJSON.put(StoryJSONEnum.IMPORTANCE, 85);
+		droppedStoryJSON.put(StoryJSONEnum.VALUE, 13);
+		droppedStoryJSON.put(StoryJSONEnum.NOTES, "TEST_DROPPED_STORY_NOTES");
+		droppedStoryJSON.put(StoryJSONEnum.HOW_TO_DEMO, "TEST_DROPPED_STORY_HOWTODEMO");
+		droppedStoryJSONArray.put(droppedStoryJSON);
+		projectJSON.put(ProjectJSONEnum.DROPPED_STORIES, droppedStoryJSONArray);
+		// Tag in Dropped Story
+		JSONArray tagInDroppedStoryJSONArray = new JSONArray();
+		JSONObject tagInDroppedStoryJSON = new JSONObject();
+		tagInDroppedStoryJSON.put(TagJSONEnum.NAME, "TEST_TAG_2");
+		tagInDroppedStoryJSONArray.put(tagInDroppedStoryJSON);
+		droppedStoryJSON.put(StoryJSONEnum.TAGS, tagInDroppedStoryJSONArray);
+		// History in Story
+		JSONArray historyInDroppedStoryJSONArray = new JSONArray();
+		JSONObject historyInDroppedStoryJSON = new JSONObject();
+		historyInDroppedStoryJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
+		historyInDroppedStoryJSON.put(HistoryJSONEnum.OLD_VALUE, "");
+		historyInDroppedStoryJSON.put(HistoryJSONEnum.NEW_VALUE, "");
+		long droppedStoryCreateTime = System.currentTimeMillis();
+		historyInDroppedStoryJSON.put(HistoryJSONEnum.CREATE_TIME, droppedStoryCreateTime);
+		historyInDroppedStoryJSONArray.put(historyInDroppedStoryJSON);
+		droppedStoryJSON.put(StoryJSONEnum.HISTORIES, historyInDroppedStoryJSONArray);
+		// AttachFiles in Story
+		JSONArray attachfileInDroppedStoryJSONArray = new JSONArray();
+		JSONObject attachfileInDroppedStoryJSON = new JSONObject();
+		attachfileInDroppedStoryJSON.put(AttachFileJSONEnum.NAME, "DroppedStory01.txt");
+		attachfileInDroppedStoryJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachfileInDroppedStoryJSON.put(AttachFileJSONEnum.BINARY, "RHJvcHBlZFN0b3J5MDE=");
+		attachfileInDroppedStoryJSONArray.put(attachfileInDroppedStoryJSON);
+		storyJSON.put(StoryJSONEnum.ATTACH_FILES, attachfileInDroppedStoryJSONArray);
+		// Tasks
+		JSONArray taskInDroppedStoryJSONArray = new JSONArray();
+		JSONObject taskInDroppedStoryJSON = new JSONObject();
+		taskInDroppedStoryJSON.put(TaskJSONEnum.NAME, "TEST_TASK_IN_DROPPED_STORY");
+		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
+		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
+		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
+		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
+		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
+		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
+		droppedStoryJSON.put(StoryJSONEnum.TASKS, taskInDroppedStoryJSONArray);
+		// Partners in Task
+		taskInDroppedStoryJSON.put(TaskJSONEnum.PARTNERS, new JSONArray());
+		// History in Task
+		JSONArray historyInTaskInDroppedStoryJSONArray = new JSONArray();
+		JSONObject historyInTaskInDroppedStoryJSON = new JSONObject();
+		historyInTaskInDroppedStoryJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
+		historyInTaskInDroppedStoryJSON.put(HistoryJSONEnum.OLD_VALUE, "");
+		historyInTaskInDroppedStoryJSON.put(HistoryJSONEnum.NEW_VALUE, "");
+		long taskInDroppedStoryCreateTime = System.currentTimeMillis();
+		historyInTaskInDroppedStoryJSON.put(HistoryJSONEnum.CREATE_TIME, taskInDroppedStoryCreateTime);
+		historyInTaskInDroppedStoryJSONArray.put(historyInTaskInDroppedStoryJSON);
+		taskInDroppedStoryJSON.put(TaskJSONEnum.HISTORIES, historyInTaskInDroppedStoryJSONArray);
+		// AttachFile in Task in Dropped Story
+		JSONArray attachfileInTaskInDroppedStoryJSONArray = new JSONArray();
+		JSONObject attachfileInTaskInDroppedStoryJSON = new JSONObject();
+		attachfileInTaskInDroppedStoryJSON.put(AttachFileJSONEnum.NAME, "TaskInDroppedStory01.txt");
+		attachfileInTaskInDroppedStoryJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachfileInTaskInDroppedStoryJSON.put(AttachFileJSONEnum.BINARY, "VGFza0luRHJvcHBlZFN0b3J5MDE=");
+		attachfileInTaskInDroppedStoryJSONArray.put(attachfileInTaskInDroppedStoryJSON);
+		taskInDroppedStoryJSON.put(StoryJSONEnum.ATTACH_FILES, attachfileInTaskInDroppedStoryJSONArray);
+		// Dropped Tasks in Project
+		JSONArray droppedTaskJSONArray = new JSONArray();
+		JSONObject droppedTaskJSON = new JSONObject();
+		droppedTaskJSON.put(TaskJSONEnum.NAME, "TEST_DROPPED_TASK");
+		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
+		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
+		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
+		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
+		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
+		// Partners in Task
+		droppedTaskJSON.put(TaskJSONEnum.PARTNERS, new JSONArray());
+		// History in Task
+		JSONArray historyInDroppedTaskJSONArray = new JSONArray();
+		JSONObject historyInDroppedTaskJSON = new JSONObject();
+		historyInDroppedTaskJSON.put(HistoryJSONEnum.HISTORY_TYPE, "CREATE");
+		historyInDroppedTaskJSON.put(HistoryJSONEnum.OLD_VALUE, "");
+		historyInDroppedTaskJSON.put(HistoryJSONEnum.NEW_VALUE, "");
+		long droppedTaskCreateTime = System.currentTimeMillis();
+		historyInDroppedTaskJSON.put(HistoryJSONEnum.CREATE_TIME, droppedTaskCreateTime);
+		historyInDroppedTaskJSONArray.put(historyInDroppedTaskJSON);
+		droppedTaskJSON.put(TaskJSONEnum.HISTORIES, historyInDroppedTaskJSONArray);
+		// AttachFile in Task
+		JSONArray attachfileInDroppedTaskJSONArray = new JSONArray();
+		JSONObject attachfileInDroppedTaskJSON = new JSONObject();
+		attachfileInDroppedTaskJSON.put(AttachFileJSONEnum.NAME, "DroppedTask01.txt");
+		attachfileInDroppedTaskJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachfileInDroppedTaskJSON.put(AttachFileJSONEnum.BINARY, "RHJvcHBlZFRhc2swMQ==");
+		attachfileInDroppedTaskJSONArray.put(attachfileInDroppedTaskJSON);
+		droppedTaskJSON.put(TaskJSONEnum.ATTACH_FILES, attachfileInDroppedTaskJSONArray);
+		droppedTaskJSONArray.put(droppedTaskJSON);
+		projectJSON.put(ProjectJSONEnum.DROPPED_TASKS, droppedTaskJSONArray);
 	}
 }
