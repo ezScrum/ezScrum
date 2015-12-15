@@ -104,12 +104,86 @@ public class RetrospectiveRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testCreateRetrospective() throws JSONException {
+	public void testCreateRetrospective_GoodWithStatusNew() throws JSONException {
 		// Test Data
 		String name = "TEST_RETROSPECTIVE_NAME";
 		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		String type = "Good";
 		String status = "new";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, name);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, description);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, type);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, status);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/retrospectives' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/retrospectives")
+		        .request()
+		        .post(Entity.text(retrospectiveJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertTrue(contentJSON.getLong(RetrospectiveEnum.ID) != -1);
+		RetrospectiveObject retrospective = RetrospectiveObject.get(contentJSON.getLong(RetrospectiveEnum.ID));
+		assertEquals(name, retrospective.getName());
+		assertEquals(description, retrospective.getDescription());
+		assertEquals(type, retrospective.getType());
+		assertEquals(status, retrospective.getStatus());
+	}
+	
+	@Test
+	public void testCreateRetrospective_ImprovementWithStatusNew() throws JSONException {
+		// Test Data
+		String name = "TEST_RETROSPECTIVE_NAME";
+		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
+		String type = "Improvement";
+		String status = "new";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, name);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, description);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, type);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, status);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/retrospectives' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/retrospectives")
+		        .request()
+		        .post(Entity.text(retrospectiveJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertTrue(contentJSON.getLong(RetrospectiveEnum.ID) != -1);
+		RetrospectiveObject retrospective = RetrospectiveObject.get(contentJSON.getLong(RetrospectiveEnum.ID));
+		assertEquals(name, retrospective.getName());
+		assertEquals(description, retrospective.getDescription());
+		assertEquals(type, retrospective.getType());
+		assertEquals(status, retrospective.getStatus());
+	}
+	
+	@Test
+	public void testCreateRetrospective_ImprovementWithStatusClosed() throws JSONException {
+		// Test Data
+		String name = "TEST_RETROSPECTIVE_NAME";
+		String description = "TEST_RETROSPECTIVE_DESCRIPTION";
+		String type = "Improvement";
+		String status = "closed";
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 

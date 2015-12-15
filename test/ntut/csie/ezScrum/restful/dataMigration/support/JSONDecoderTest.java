@@ -477,13 +477,139 @@ public class JSONDecoderTest {
 	}
 	
 	@Test
-	public void testToRetrospective() throws JSONException {
+	public void testToRetrospective_GoodWithStatusNew() throws JSONException {
 		long projectId = 1;
 		long sprintId = 2;
 		JSONObject retrospectiveJSON = new JSONObject();
 		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
 		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
 		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_NEW);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_GoodWithStatusAssigned() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_ASSIGNED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_GoodWithStatusClosed() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_CLOSED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_GoodWithStatusResolved() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_RESOLVED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_ImprovementWithStatusNew() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_NEW);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_ImprovementWithStatusAssigned() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_ASSIGNED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_ImprovementWithStatusClosed() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_CLOSED);
+		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), retrospective.getDescription());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.TYPE), retrospective.getType());
+		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.STATUS), retrospective.getStatus());
+		assertEquals(projectId, retrospective.getProjectId());
+		assertEquals(sprintId, retrospective.getSprintId());
+	}
+	
+	@Test
+	public void testToRetrospective_ImprovementWithStatusResolved() throws JSONException {
+		long projectId = 1;
+		long sprintId = 2;
+		JSONObject retrospectiveJSON = new JSONObject();
+		retrospectiveJSON.put(RetrospectiveJSONEnum.NAME, "name");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.DESCRIPTION, "description");
+		retrospectiveJSON.put(RetrospectiveJSONEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
 		retrospectiveJSON.put(RetrospectiveJSONEnum.STATUS, RetrospectiveObject.STATUS_RESOLVED);
 		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, retrospectiveJSON.toString());
 		assertEquals(retrospectiveJSON.getString(RetrospectiveJSONEnum.NAME), retrospective.getName());

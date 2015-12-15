@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
@@ -79,6 +81,10 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 	}
 
 	protected void tearDown() throws IOException, Exception {
+		// clean test project folder in Workspace
+		String testProjectPath = "./Workspace/" + mCP.getAllProjects().get(0).getName();
+		FileUtils.deleteDirectory(new File(testProjectPath));
+		
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
 

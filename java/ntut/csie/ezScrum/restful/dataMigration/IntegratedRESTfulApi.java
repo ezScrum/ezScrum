@@ -97,12 +97,12 @@ public class IntegratedRESTfulApi {
 				long projectId = contentJSON.getLong(ProjectEnum.ID);
 
 				// Update ScrumRoles
-				JSONObject scrumRoleJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
+				JSONObject scrumRolesJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectId +
 				                "/scrumroles")
 				        .request()
-				        .put(Entity.text(scrumRoleJSON.toString()));
+				        .put(Entity.text(scrumRolesJSON.toString()));
 
 				// Create ProjectRoles
 				JSONArray projectRoleJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.PROJECT_ROLES);
@@ -528,7 +528,7 @@ public class IntegratedRESTfulApi {
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
-		return ResponseFactory.getResponse(Response.Status.OK, "", "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 	
 	private void cleanOldEzscrumData() throws IOException {

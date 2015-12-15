@@ -84,6 +84,7 @@ public class RetrospectiveObjectTest {
 					 .setSprintId(sprintId)
 					 .setDescription(description)
 					 .setType(type)
+					 .setStatus(RetrospectiveObject.STATUS_NEW)
 					 .save();
 		
 		// Get RetrospectiveObject By DAO
@@ -184,6 +185,7 @@ public class RetrospectiveObjectTest {
 		             .setSprintId(sprintId)
 		             .setDescription(description)
 		             .setType(type)
+		             .setStatus(RetrospectiveObject.STATUS_NEW)
 		             .save();
 		
 		// Get JSON
