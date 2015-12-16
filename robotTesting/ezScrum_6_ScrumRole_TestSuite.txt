@@ -29,7 +29,7 @@ Resource          Global Define.txt
 ...               1    0    # only can view report
 @{tsAssignRole_Items}    ProductOwner    ScrumMaster    ScrumTeam    Stakeholder    Guest    # for Assign Role
 @{tsScrumRoleList}    Product Owner    Scrum Master    Scrum Team    Stakeholder    Guest    # for Scrum Role Management
-@{tsPermissionCheckList}    AccessProductBacklog    AccessReleasePlan    AccessSprintPlan    AccessSprintBacklog    AccessTaskboard    AccessRetrospective    AccessUnplanned
+@{tsPermissionCheckList}    AccessProductBacklog    AccessReleasePlan    AccessSprintPlan    AccessSprintBacklog    AccessTaskboard    AccessRetrospective    AccessUnplan
 ...               AccessReport    AccessEditProject    # for Scrum Role Management
 ${tsAccountID}    testAccount
 ${tsAccountEmail}    lab1321.com.tw    # @之後的位址
