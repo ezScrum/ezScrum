@@ -14,13 +14,20 @@ public class UnplanItemMapper {
 		mProject = project;
 	}
 	
+	public ProjectObject getProject() {
+		return mProject;
+	}
+	
 	public UnplanObject getUnplan(long unplanId) {
 		return UnplanObject.get(unplanId);
 	}
 
 	public ArrayList<UnplanObject> getUnplansInSprint(long sprintId) {
 		SprintObject sprint = SprintObject.get(sprintId);
-		ArrayList<UnplanObject> unplans = sprint.getUnplans();
+		ArrayList<UnplanObject> unplans = new ArrayList<>();
+		if (sprint != null) {
+			unplans = sprint.getUnplans();
+		}
 		return unplans;
 	}
 	
