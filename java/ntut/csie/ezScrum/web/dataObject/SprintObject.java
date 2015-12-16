@@ -16,11 +16,9 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class SprintObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
-
 	private long mId = DEFAULT_VALUE;
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
-
 	private int mInterval = 0;
 	private int mTeamSize = 0;
 	private int mAvailableHours = 0;
@@ -31,7 +29,6 @@ public class SprintObject implements IBaseObject {
 	private Date mDueDate = new Date();
 	private String mDemoPlace = "";
 	private String mDailyInfo = "";
-
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
 
@@ -173,19 +170,12 @@ public class SprintObject implements IBaseObject {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
 	}
 	
-	public ArrayList<RetrospectiveObject> getRetrospectiveByType(String type) {
-		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
-		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
-		for (RetrospectiveObject retrospective : retrospectives) {
-			if (retrospective.getType().equals(type)) {
-				filteredRetrospectives.add(retrospective);
-			}
-		}
-		return filteredRetrospectives;
+	public ArrayList<RetrospectiveObject> getGoods() {
+		return RetrospectiveDAO.getInstance().getGoodsBySprintId(mId);
 	}
 	
-	private ArrayList<RetrospectiveObject> getRetrospectives() {
-		return RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(mId);
+	public ArrayList<RetrospectiveObject> getImprovements() {
+		return RetrospectiveDAO.getInstance().getImprovementsBySprintId(mId);
 	}
 
     public ArrayList<UnplanObject> getUnplans() {

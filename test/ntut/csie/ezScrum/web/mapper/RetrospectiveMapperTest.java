@@ -41,7 +41,7 @@ public class RetrospectiveMapperTest {
 		mSprint.save();
 
 		// create retrospective mapper
-		mRetrospectiveMapper = new RetrospectiveMapper(mProject, mSprint.getId());
+		mRetrospectiveMapper = new RetrospectiveMapper(mProject);
 
 		// ============= release ==============
 		ini = null;

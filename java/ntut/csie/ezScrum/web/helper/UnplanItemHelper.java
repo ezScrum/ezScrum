@@ -11,7 +11,6 @@ import ntut.csie.ezScrum.web.mapper.UnplanItemMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 public class UnplanItemHelper {
-
 	private UnplanItemMapper mUnplanMapper;
 	private ProjectObject mProject;
 	

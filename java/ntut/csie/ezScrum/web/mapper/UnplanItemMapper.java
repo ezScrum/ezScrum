@@ -8,7 +8,6 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class UnplanItemMapper {
-	
 	private ProjectObject mProject;
 
 	public UnplanItemMapper(ProjectObject project) {
