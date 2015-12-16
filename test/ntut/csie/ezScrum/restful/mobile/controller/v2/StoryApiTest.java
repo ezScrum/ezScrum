@@ -2,60 +2,64 @@ package ntut.csie.ezScrum.restful.mobile.controller.v2;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-import com.sun.net.httpserver.HttpServer;
-
-public class StoryApiTest extends TestableApi {
-	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/api";
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/stories";
-	private static HttpServer mServer;
-	private HttpClient mClient;
+public class StoryApiTest extends JerseyTest {
+	private Configuration mConfig;
+	private CreateProject mCP;
+	private ResourceConfig mResourceConfig;
+	private Client mClient;
+	private HttpServer mHttpServer;
+	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/api";
+	private URI mBaseUri = URI.create(BASE_URL);
 	private long mAccountId;
 	private String mPlatformType;
 
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
 	private int mStoryCount = 5;
-	private CreateProject mCP;
 	private CreateProductBacklog mCPB;
 	private CreateSprint mCS;
 	private CreateAccount mCA;
-	private Configuration mConfig;
 	private ProjectObject mProject;
+	
+	@Override
+	protected Application configure() {
+		mResourceConfig = new ResourceConfig(StoryApi.class);
+		return mResourceConfig;
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -94,10 +98,10 @@ public class StoryApiTest extends TestableApi {
 		mProject = mCP.getAllProjects().get(0);
 		
 		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
-		mClient = HttpClientBuilder.create().build();
+		// Create Client
+		mClient = ClientBuilder.newClient();
 	}
 
 	@After
@@ -114,7 +118,7 @@ public class StoryApiTest extends TestableApi {
 		mConfig.save();
 		
 		// stop server
-		mServer.stop(0);
+		mHttpServer.stop(0);
 
 		// release
 		mCP = null;
@@ -124,11 +128,10 @@ public class StoryApiTest extends TestableApi {
 	}
 
 	@Test
-	public void testPost() throws Exception {
+	public void testPost() throws JSONException {
 		// 預設已經新增五個 stories
 		ArrayList<StoryObject> stories = mProject.getStories();
 		assertEquals(5, stories.size());
-
 		// initial request data
 		JSONObject storyJson = new JSONObject();
 		storyJson.put("name", "TEST_NAME").put("notes", "TEST_NOTES")
@@ -136,30 +139,24 @@ public class StoryApiTest extends TestableApi {
 				.put("value", 15).put("estimate", 21).put("status", 0)
 				.put("sprint_id", -1).put("tags", "")
 				.put("project_name", mProject.getName());
-
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString()
-				.getBytes("utf-8")));
-		entity.setContentEncoding("utf-8");
-		HttpPost httpPost = new HttpPost(API_URL);
-		httpPost.setEntity(entity);
-		setHeaders(httpPost, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpPost);
-		String result = EntityUtils.toString(httpResponse.getEntity());
-		JSONObject response = new JSONObject(result);
-
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("stories")
+                .request()
+                .headers(headersMap)
+                .post(Entity.text(storyJson.toString()));
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		// 新增一個 story，project 內的 story 要有六個
 		stories = mProject.getStories();
 		assertEquals(6, stories.size());
 		// 對回傳的 JSON 做 assert
-		assertEquals("SUCCESS", response.getString("status"));
+		assertEquals("SUCCESS", responseJSON.getString("status"));
 		assertEquals(stories.get(stories.size() - 1).getId(),
-				response.getLong("storyId"));
+				responseJSON.getLong("storyId"));
 	}
 
 	@Test
-	public void testPut() throws JSONException, ParseException,
-			ClientProtocolException, IOException {
+	public void testPut() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
 		// initial request data
 		JSONObject storyJson = new JSONObject();
@@ -168,73 +165,65 @@ public class StoryApiTest extends TestableApi {
 				.put("value", 15).put("estimate", 21).put("status", 0)
 				.put("sprint_id", -1).put("tags", "")
 				.put("project_name", mProject.getName());
-
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(storyJson.toString()
-				.getBytes("utf-8")));
-		entity.setContentEncoding("utf-8");
-		HttpPut httpPut = new HttpPut(API_URL + "/" + story.getId());
-		httpPut.setEntity(entity);
-		setHeaders(httpPut, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpPut);
-		String result = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
-		
-		System.out.println(result);
-		JSONObject response = new JSONObject(result);
-
-		assertEquals(storyJson.getLong("id"), response.getLong("id"));
-		assertEquals(storyJson.getString("name"), response.getString("name"));
-		assertEquals(storyJson.getString("notes"), response.getString("notes"));
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("stories/" + story.getId())
+                .request()
+                .headers(headersMap)
+                .put(Entity.text(storyJson.toString()));
+		// assert response msg
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		assertEquals(storyJson.getLong("id"), responseJSON.getLong("id"));
+		assertEquals(storyJson.getString("name"), responseJSON.getString("name"));
+		assertEquals(storyJson.getString("notes"), responseJSON.getString("notes"));
 		assertEquals(storyJson.getString("how_to_demo"),
-				response.getString("how_to_demo"));
+				responseJSON.getString("how_to_demo"));
 		assertEquals(storyJson.getInt("importance"),
-				response.getInt("importance"));
-		assertEquals(storyJson.getInt("value"), response.getInt("value"));
-		assertEquals(storyJson.getInt("estimate"), response.getInt("estimate"));
-		assertEquals(storyJson.getInt("status"), response.getInt("status"));
+				responseJSON.getInt("importance"));
+		assertEquals(storyJson.getInt("value"), responseJSON.getInt("value"));
+		assertEquals(storyJson.getInt("estimate"), responseJSON.getInt("estimate"));
+		assertEquals(storyJson.getInt("status"), responseJSON.getInt("status"));
 		assertEquals(storyJson.getLong("sprint_id"),
-				response.getLong("sprint_id"));
-		assertEquals(7, response.getJSONArray("histories").length());
-		assertEquals(0, response.getJSONArray("tags").length());
+				responseJSON.getLong("sprint_id"));
+		assertEquals(8, responseJSON.getJSONArray("histories").length());
+		assertEquals(0, responseJSON.getJSONArray("tags").length());
 	}
 
 	@Test
-	public void testGet() throws ParseException, ClientProtocolException,
-			IOException, JSONException {
+	public void testGet() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
-
-		HttpGet httpGet = new HttpGet(API_URL + "/" + story.getId()
-				+ "?project_name=abcd");
-		setHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
-
-		JSONObject storyJson = new JSONObject(response);
-		assertEquals(story.getId(), storyJson.getLong("id"));
-		assertEquals(story.getName(), storyJson.getString("name"));
-		assertEquals(story.getNotes(), storyJson.getString("notes"));
-		assertEquals(story.getHowToDemo(), storyJson.getString("how_to_demo"));
-		assertEquals(story.getImportance(), storyJson.getInt("importance"));
-		assertEquals(story.getValue(), storyJson.getInt("value"));
-		assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-		assertEquals(story.getStatus(), storyJson.getInt("status"));
-		assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("stories/" + story.getId())
+                .queryParam("project_name", mProject.getName())
+                .request()
+                .headers(headersMap)
+                .get();
+		
+		// assert data
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		assertEquals(story.getId(), responseJSON.getLong("id"));
+		assertEquals(story.getName(), responseJSON.getString("name"));
+		assertEquals(story.getNotes(), responseJSON.getString("notes"));
+		assertEquals(story.getHowToDemo(), responseJSON.getString("how_to_demo"));
+		assertEquals(story.getImportance(), responseJSON.getInt("importance"));
+		assertEquals(story.getValue(), responseJSON.getInt("value"));
+		assertEquals(story.getEstimate(), responseJSON.getInt("estimate"));
+		assertEquals(story.getStatus(), responseJSON.getInt("status"));
+		assertEquals(story.getSprintId(), responseJSON.getLong("sprint_id"));
 	}
 
 	@Test
-	public void testGetList() throws ParseException, ClientProtocolException,
-			IOException, JSONException {
-		HttpGet httpGet = new HttpGet(API_URL + "?project_name="
-				+ mProject.getName());
-		setHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
-
+	public void testGetList() throws JSONException {
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("stories")
+                .queryParam("project_name", mProject.getName())
+                .request()
+                .headers(headersMap)
+                .get();
 		ArrayList<StoryObject> stories = mCPB.getStories();
-
-		JSONObject storiesJson = new JSONObject(response);
+		JSONObject storiesJson = new JSONObject(response.readEntity(String.class));
 		for (int i = 0; i < stories.size(); i++) {
 			StoryObject story = stories.get(i);
 			JSONObject storyJson = storiesJson.getJSONArray("stories")
@@ -253,15 +242,16 @@ public class StoryApiTest extends TestableApi {
 	}
 
 	@Test
-	public void testDelete() throws ParseException, ClientProtocolException,
-			IOException, JSONException {
+	public void testDelete() throws JSONException {
 		StoryObject story = mCPB.getStories().get(0);
-		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + story.getId()
-				+ "?project_name=" + mProject.getName());
-		setHeaders(httpDelete, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpDelete);
-		
-		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+		        .path("stories/" + story.getId())
+		        .queryParam("project_name", mProject.getName())
+		        .request()
+		        .headers(headersMap)
+		        .delete();
+		assertEquals(200, response.getStatus());
 
 		story = StoryDAO.getInstance().get(story.getId());
 		assertEquals(null, story);

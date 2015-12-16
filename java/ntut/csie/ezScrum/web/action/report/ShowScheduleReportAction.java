@@ -62,7 +62,7 @@ public class ShowScheduleReportAction extends Action {
 		AccountObject account = session.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project,
 				account);
-		if (scrumRole.getReadReport()) {
+		if (scrumRole.getAccessReport()) {
 			return mapping.findForward("success");
 		} else {
 			String message = "System failure!";// "目前無法產生任何圖表"

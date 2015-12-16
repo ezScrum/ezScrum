@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -121,8 +121,8 @@ public class GetAddSprintTaskInfoActionTest extends MockStrutsTestCase {
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
 		StringBuilder mStringBuilder = new StringBuilder();
 		// set account into project
-		account.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
-		account2.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		account2.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
 		
 		// ================== set parameter info ====================
 		addRequestParameter("sprintId", String.valueOf(sprint.getId()));

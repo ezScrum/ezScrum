@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.Scanner;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 
 /*
  * For create data manually

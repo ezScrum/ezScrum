@@ -372,7 +372,8 @@ public class ProductBacklogHelper {
 
 		// move file from tmp folder to "AttachFile" folder
 		copyFile(file, targetFile);
-
+		// remove tmp file
+		file.delete();
 		return mProductBacklogMapper.addAttachFile(attachFileInfo);
 	}
 

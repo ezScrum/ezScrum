@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
@@ -83,7 +83,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();
@@ -130,7 +130,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.Guest);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.Guest);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();

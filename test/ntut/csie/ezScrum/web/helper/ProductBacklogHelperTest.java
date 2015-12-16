@@ -6,12 +6,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import org.aspectj.util.FileUtil;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -20,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
@@ -27,7 +31,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -55,9 +58,12 @@ public class ProductBacklogHelperTest {
 	private CreateProductBacklog mCPB;
 	private int ProjectCount = 2;
 	private Configuration mConfig;
+	private final String SOURCE_CONTENT = "TEST_TO_BASE64_BINARY";
+	private final String FILE_PATH = "./TestData/source.txt";
+	private File mSourceFile;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
@@ -85,8 +91,23 @@ public class ProductBacklogHelperTest {
 		mProductBacklogMapper1 = new ProductBacklogMapper(project1);
 		mProductBacklogMapper2 = new ProductBacklogMapper(project2);
 
+		initializeFile();
+		
 		// release
 		ini = null;
+	}
+	
+	private void initializeFile() throws IOException {
+		mSourceFile = new File(FILE_PATH);
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(FILE_PATH));
+			writer.write(SOURCE_CONTENT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
 	}
 
 	@After
@@ -101,6 +122,9 @@ public class ProductBacklogHelperTest {
 
 		mConfig.setTestMode(false);
 		mConfig.save();
+		
+		// delete test data file
+		mSourceFile.delete();
 
 		// release
 		ini = null;
@@ -655,26 +679,35 @@ public class ProductBacklogHelperTest {
 		mCPB.exe();
 
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
-		attachFileInfo.name = "initial_bk.sql";
+		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
-
-		File sqlFile = new File(mConfig.getInitialSQLPath());
-
+		attachFileInfo.path = mSourceFile.getPath();
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
-					sqlFile);
+					mSourceFile);
 			AttachFileObject attachFile = mProductBacklogHelper1
 					.getAttachFile(id);
 			File actualFile = new File(attachFile.getPath());
-			assertEquals(sqlFile.length(), actualFile.length());
+			assertFalse(mSourceFile.exists());
+			assertEquals(SOURCE_CONTENT, getStringFromFile(actualFile));
 			assertEquals(attachFileInfo.name, attachFile.getName());
 			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());
 		} catch (IOException e) {
 			System.out.println(e);
 			assertTrue(false);
 		}
+	}
+	
+	private String getStringFromFile(File sourceFile) {
+		String dataString = "";
+		try {
+			dataString = FileUtil.readAsString(sourceFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return dataString;
 	}
 
 	@Test
@@ -684,27 +717,24 @@ public class ProductBacklogHelperTest {
 		mCPB.exe();
 
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
-		attachFileInfo.name = "initial_bk.sql";
+		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
-
-		File sqlFile = new File(mConfig.getInitialSQLPath());
-
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
-					sqlFile);
+					mSourceFile);
 			AttachFileObject attachFile = mProductBacklogHelper1
 					.getAttachFile(id);
 			File actualFile = new File(attachFile.getPath());
-			assertEquals(sqlFile.length(), actualFile.length());
+			assertEquals(SOURCE_CONTENT, getStringFromFile(actualFile));
 			assertEquals(attachFileInfo.name, attachFile.getName());
 			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());
 
 			mProductBacklogHelper1.deleteAttachFile(attachFile.getId());
 			mProductBacklogHelper1.getAttachFile(id);
 			File deletedFile = new File(attachFile.getPath());
-			assertEquals(false, deletedFile.exists());
+			assertFalse(deletedFile.exists());
 		} catch (IOException e) {
 			System.out.println(e);
 			assertTrue(false);
@@ -807,7 +837,7 @@ public class ProductBacklogHelperTest {
 		CA.exe();
 
 		AccountObject account = CA.getAccountList().get(0);
-		account.createProjectRole(mCP.getAllProjects().get(0).getId(),
+		account.joinProjectWithScrumRole(mCP.getAllProjects().get(0).getId(),
 				RoleEnum.ScrumTeam);
 
 		boolean inProject = mProductBacklogHelper1.checkAccountInProject(

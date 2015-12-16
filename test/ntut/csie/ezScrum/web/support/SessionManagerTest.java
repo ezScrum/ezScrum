@@ -4,9 +4,9 @@ import java.io.File;
 
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
@@ -105,7 +105,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		account.save();
 		account.reload();
 		// create project role
-		boolean createRoleResult = account.createProjectRole(projectId, RoleEnum.ProductOwner);
+		boolean createRoleResult = account.joinProjectWithScrumRole(projectId, RoleEnum.ProductOwner);
 		assertTrue(createRoleResult);
 		
 		// create Scrum role
@@ -116,7 +116,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		ScrumRole role = SessionManager.getScrumRole(request, mProject, account);
 		
 		assertNotNull(role);
-		assertTrue(role.getEditProject());
+		assertTrue(role.getAccessEditProject());
 	}
 	
 	@Test

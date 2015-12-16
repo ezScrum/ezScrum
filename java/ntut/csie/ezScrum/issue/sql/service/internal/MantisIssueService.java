@@ -17,7 +17,7 @@ import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.iteration.core.IStory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.Story;
-import ntut.csie.ezScrum.iteration.support.TranslateSpecialChar;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

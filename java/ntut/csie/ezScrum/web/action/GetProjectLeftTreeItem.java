@@ -59,7 +59,7 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 		// members page
 		ProjectConfig.appendChild(new ChildrenSiidUI(this.Project_Configuration_Members_ID, this.Project_Configuration_Members_Text));
 		
-		if ( super.getScrumRole().getEditProject() || super.getScrumRole().isAdmin() ) {
+		if ( super.getScrumRole().getAccessEditProject() || super.getScrumRole().isAdmin() ) {
 			// project config page
 			ProjectConfig.appendChild(new ChildrenSiidUI(this.Project_Configuration_ModifyConfig_ID, this.Project_Configuration_ModifyConfig_Text));
 		}
@@ -126,7 +126,7 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 		}
 		
 		// scrum report page
-		if ( super.getScrumRole().getReadReport() || super.getScrumRole().isAdmin()) {
+		if ( super.getScrumRole().getAccessReport() || super.getScrumRole().isAdmin()) {
 			ProjectManagement.appendChild(new ChildrenSiidUI(this.Project_Management_ScrumReport_ID, this.Project_Management_ScrumReport_Text));
 		}
 

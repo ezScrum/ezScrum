@@ -12,10 +12,10 @@ import java.sql.ResultSet;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
@@ -219,7 +219,7 @@ public class AccountObjectTest{
 		account.save();
 		account.reload();
 		// create project role
-		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		boolean result = account.joinProjectWithScrumRole(project.getId(), RoleEnum.ProductOwner);
 		assertTrue(result);
 	}
 	
@@ -250,7 +250,7 @@ public class AccountObjectTest{
 		account.reload();
 		
 		// create project role
-		boolean result = account.createProjectRole(project.getId(), RoleEnum.ProductOwner);
+		boolean result = account.joinProjectWithScrumRole(project.getId(), RoleEnum.ProductOwner);
 		assertTrue(result);
 		
 		// delete project role

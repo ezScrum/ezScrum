@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -9,10 +10,10 @@ import org.codehaus.jettison.json.JSONObject;
 public class RetrospectiveObject implements IBaseObject {
 	public final static String TYPE_GOOD = "Good";
 	public final static String TYPE_IMPROVEMENT = "Improvement";
-	public final static String STATUS_NEW = "new";
-	public final static String STATUS_CLOSED = "closed";
-	public final static String STATUS_RESOLVED = "resolved";
-	public final static String STATUS_ASSIGNED = "assigned";
+	public final static String STATUS_NEW = StatusEnum.RETROSPECTIVE_NEW;
+	public final static String STATUS_CLOSED = StatusEnum.RETROSPECTIVE_CLOSED;
+	public final static String STATUS_RESOLVED = StatusEnum.RETROSPECTIVE_RESOLVED;
+	public final static String STATUS_ASSIGNED = StatusEnum.RETROSPECTIVE_ASSIGNED;
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;

@@ -16,10 +16,10 @@ import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -158,7 +158,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ProductOwner
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ProductOwner);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ProductOwner);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -184,7 +184,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumMaster
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumMaster);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumMaster);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -211,7 +211,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumTeam
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumTeam);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumTeam);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username

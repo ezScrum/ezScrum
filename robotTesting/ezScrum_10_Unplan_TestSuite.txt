@@ -7,10 +7,8 @@ Resource          keywords/Unplan/ezScrum_Unplan_SetupTeardown.txt
 *** Variables ***
 @{addUnplanList}    1    Test Unplanned    1    cutecool    henry;badhenry    99    This is Unplanned Notes
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
-@{editUnplanList1}    2    New Unplanned Name    2    badhenry    henry    50    New Unplanned Notes
+@{editUnplanList}    2    New Unplanned Name    2    badhenry    henry    50    New Unplanned Notes
 ...               30    assigned    ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
-@{editUnplanList2}    2    New Unplanned Name    2    henry    badhenry;cutecool    50    New Unplanned Notes
-...               30    closed    ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
 @{deleteUnplanList1}    3    Test Unplanned 1    1    badhenry    henry    99    This is Unplanned Notes 1
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
 @{deleteUnplanList2}    4    Test Unplanned 2    1    badhenry    henry    99    This is Unplanned Notes 2
@@ -48,10 +46,8 @@ Test Unplan - Add Unplan
 
 Test Unplan - Edit Unplan
     [Setup]    Test Unplan Edit Setup
-    ${id} =    Get Text    //div[@id="UnplannedItem_Panel"]//table/tbody/tr/td/div[text() = "${addUnplanList[1]}"]/../../td[1]/div
-    ${editUnplanList1[0]}    Set Variable    ${id}
     Select Unplan    1    ${addUnplanList[1]}
-    Edit Unplan    @{editUnplanList1}
+    Edit Unplan    @{editUnplanList}
     # get data
     ${actualId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']
     ${actualName} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
@@ -63,39 +59,15 @@ Test Unplan - Edit Unplan
     ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']
     ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-8']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
     # assert
-    Should Be Equal    ${editUnplanList1[0]}    ${actualId}
-    Should Be Equal    ${editUnplanList1[1]}    ${actualName}
-    Should Be Equal    ${editUnplanList1[2]}    ${actualSprintId}
-    Should Be Equal    ${editUnplanList1[3]}    ${actualHandler}
-    Should Be Equal    ${editUnplanList1[4]}    ${actualPartners}
-    Should Be Equal    ${editUnplanList1[5]}    ${actualEstimate}
-    Should Be Equal    ${editUnplanList1[6]}    ${actualNotes}
-    Should Be Equal    ${editUnplanList1[7]}    ${actualActual}
-    Should Be Equal    ${editUnplanList1[8]}    ${actualStatus}
-    ${id} =    Get Text    //div[@id="UnplannedItem_Panel"]//table/tbody/tr/td[1]/div
-    ${editUnplanList2[0]}    Set Variable    ${id}
-    Select Unplan    1    ${editUnplanList1[1]}
-    Edit Unplan    @{editUnplanList2}
-    # get data
-    ${actualId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-0']
-    ${actualName} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-1']
-    ${actualSprintId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
-    ${actualEstimate} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
-    ${actualStatus} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
-    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
-    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
-    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']
-    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-8']
-    # assert
-    Should Be Equal    ${editUnplanList2[0]}    ${actualId}
-    Should Be Equal    ${editUnplanList2[1]}    ${actualName}
-    Should Be Equal    ${editUnplanList2[2]}    ${actualSprintId}
-    Should Be Equal    ${editUnplanList2[3]}    ${actualHandler}
-    Should Be Equal    ${editUnplanList2[4]}    ${actualPartners}
-    Should Be Equal    ${editUnplanList2[5]}    ${actualEstimate}
-    Should Be Equal    ${editUnplanList2[6]}    ${actualNotes}
-    Should Be Equal    ${editUnplanList2[7]}    ${actualActual}
-    Should Be Equal    ${editUnplanList2[8]}    ${actualStatus}
+    Should Be Equal    ${editUnplanList[0]}    ${actualId}
+    Should Be Equal    ${editUnplanList[1]}    ${actualName}
+    Should Be Equal    ${editUnplanList[2]}    ${actualSprintId}
+    Should Be Equal    ${editUnplanList[3]}    ${actualHandler}
+    Should Be Equal    ${editUnplanList[4]}    ${actualPartners}
+    Should Be Equal    ${editUnplanList[5]}    ${actualEstimate}
+    Should Be Equal    ${editUnplanList[6]}    ${actualNotes}
+    Should Be Equal    ${editUnplanList[7]}    ${actualActual}
+    Should Be Equal    ${editUnplanList[8]}    ${actualStatus}
     [Teardown]    Test Unplan Edit Teardown
 
 Test Unplan - Delete Unplan

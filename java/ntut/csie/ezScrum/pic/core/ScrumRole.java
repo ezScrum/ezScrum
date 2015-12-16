@@ -1,6 +1,10 @@
 package ntut.csie.ezScrum.pic.core;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 
 public class ScrumRole {
 	private String mProjectName = "";
@@ -13,8 +17,8 @@ public class ScrumRole {
 	private Boolean mSprintBacklog = false;
 	private Boolean mUnplan = false;
 	private Boolean mRetrospective = false;
-	private Boolean mReport = false;
-	private Boolean mEditProject = false;
+	private Boolean mAccessReport = false;
+	private Boolean mAccessEditProject = false;
 
 	// add for guest permission
 	private Boolean mIsGuest = false;
@@ -33,8 +37,8 @@ public class ScrumRole {
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
 		setAccessUnplanItem(true);
-		setEditProject(true);
-		setReadReport(true);
+		setAccessEditProject(true);
+		setAccessReport(true);
 	}
 
 	public ScrumRole(String projectName, String roleName) {
@@ -73,8 +77,8 @@ public class ScrumRole {
 		setAccessSprintPlan(false);
 		setAccessTaskBoard(false);
 		setAccessUnplanItem(false);
-		setEditProject(false);
-		setReadReport(true);
+		setAccessEditProject(false);
+		setAccessReport(true);
     }
 
 	private void setScrumTeamRole() {
@@ -85,8 +89,8 @@ public class ScrumRole {
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
 		setAccessUnplanItem(true);
-		setEditProject(false);
-		setReadReport(true);
+		setAccessEditProject(false);
+		setAccessReport(true);
     }
 
 	private void setScrumMasterRole() {
@@ -97,8 +101,8 @@ public class ScrumRole {
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
 		setAccessUnplanItem(true);
-		setEditProject(true);
-		setReadReport(true);
+		setAccessEditProject(true);
+		setAccessReport(true);
     }
 
 	private void setProductOwnerRole() {
@@ -109,8 +113,8 @@ public class ScrumRole {
 		setAccessSprintPlan(true);
 		setAccessTaskBoard(true);
 		setAccessUnplanItem(true);
-		setEditProject(true);
-		setReadReport(true);
+		setAccessEditProject(true);
+		setAccessReport(true);
     }
 	
 	private void setGuestRole() {
@@ -121,9 +125,23 @@ public class ScrumRole {
 		setAccessSprintPlan(false);
 		setAccessTaskBoard(false);
 		setAccessUnplanItem(false);
-		setEditProject(false);
-		setReadReport(false);
+		setAccessEditProject(false);
+		setAccessReport(false);
     }
+	
+	public JSONObject toJSON() throws JSONException {
+		JSONObject scrumRoleJSON = new JSONObject();
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, mProductBacklog);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RELEASE_PLAN, mReleasePlan);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RETROSPECTIVE, mRetrospective);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, mSprintBacklog);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_PLAN, mSprintPlan);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_TASKBOARD, mTaskboard);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_UNPLAN, mUnplan);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_EDIT_PROJECT, mAccessEditProject);
+		scrumRoleJSON.put(ScrumRoleEnum.ACCESS_REPORT, mAccessReport);
+		return scrumRoleJSON;
+	}
 
 	public String getProjectName() {
 		return mProjectName;
@@ -162,12 +180,12 @@ public class ScrumRole {
 		return mRetrospective;
 	}
 
-	public Boolean getReadReport() {
-		return mReport;
+	public Boolean getAccessReport() {
+		return mAccessReport;
 	}
 
-	public Boolean getEditProject() {
-		return mEditProject;
+	public Boolean getAccessEditProject() {
+		return mAccessEditProject;
 	}
 
 	// add for guest permission
@@ -204,12 +222,12 @@ public class ScrumRole {
 		mRetrospective = permission;
 	}
 
-	public void setReadReport(Boolean permission) {
-		mReport = permission;
+	public void setAccessReport(Boolean permission) {
+		mAccessReport = permission;
 	}
 
-	public void setEditProject(Boolean permission) {
-		mEditProject = permission;
+	public void setAccessEditProject(Boolean permission) {
+		mAccessEditProject = permission;
 	}
 
 	public void setisGuest(Boolean permission) {

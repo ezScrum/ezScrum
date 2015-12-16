@@ -3,9 +3,9 @@ package ntut.csie.ezScrum.web.action.config;
 import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 
 import org.codehaus.jettison.json.JSONException;
 

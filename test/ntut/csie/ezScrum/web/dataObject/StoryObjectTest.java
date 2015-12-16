@@ -11,20 +11,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
-/**
- * 
- * @author samhuang 2015/03/12
- * 
- */
 public class StoryObjectTest {
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
@@ -163,8 +157,8 @@ public class StoryObjectTest {
 
 		history = histories.get(8);
 		assertEquals(HistoryObject.TYPE_STATUS, history.getHistoryType());
-		assertEquals("1", history.getOldValue());
-		assertEquals("0", history.getNewValue());
+		assertEquals("3", history.getOldValue());
+		assertEquals("1", history.getNewValue());
 
 		history = histories.get(9);
 		assertEquals(HistoryObject.TYPE_REMOVE, history.getHistoryType());

@@ -2,47 +2,50 @@ package ntut.csie.ezScrum.restful.mobile.controller.v2;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.TokenObject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
-public class ProjectApiTest extends TestableApi {
-	private static String SERVER_URL = "http://127.0.0.1:8080/ezScrum/api";
-	private static String API_URL = "http://127.0.0.1:8080/ezScrum/api/projects";
-	private static HttpServer mServer;
-	private HttpClient mClient;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TokenObject;
+
+public class ProjectApiTest extends JerseyTest {
+	private Configuration mConfig;
+	private CreateProject mCP;
+	private ResourceConfig mResourceConfig;
+	private Client mClient;
+	private HttpServer mHttpServer;
+	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/api";
+	private URI mBaseUri = URI.create(BASE_URL);
 	private long mAccountId;
 	private String mPlatformType;
 
-	private CreateProject mCP;
-//	private CreateAccount mCA;
-	private Configuration mConfig;
+	@Override
+	protected Application configure() {
+		mResourceConfig = new ResourceConfig(ProjectApi.class);
+		return mResourceConfig;
+	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -61,11 +64,11 @@ public class ProjectApiTest extends TestableApi {
 		TokenObject token = new TokenObject(mAccountId, mPlatformType);
 		token.save();
 		
-		// start server
-		mServer = HttpServerFactory.create(SERVER_URL);
-		mServer.start();
+		// Start Server
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
-		mClient = HttpClientBuilder.create().build();
+		// Create Client
+		mClient = ClientBuilder.newClient();
 	}
 	
 	@After
@@ -82,7 +85,7 @@ public class ProjectApiTest extends TestableApi {
 		mConfig.save();
 		
 		// stop server
-		mServer.stop(0);
+		mHttpServer.stop(0);
 
 		// release
 		mCP = null;
@@ -90,22 +93,22 @@ public class ProjectApiTest extends TestableApi {
 	}
 	
 	@Test
-	public void testGet() throws ClientProtocolException, IOException,
-			JSONException {
+	public void testGet() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
 		
 		// get data
 		ProjectObject project = mCP.getAllProjects().get(0);
-		HttpGet httpGet = new HttpGet(API_URL + "/" + project.getId());
-		setHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("projects/" + project.getId())
+                .request()
+                .headers(headersMap)
+                .get();
 		
 		// assert data
-		JSONObject projectJson = new JSONObject(response);
+		JSONObject projectJson = new JSONObject(response.readEntity(String.class));
 		assertEquals(project.getId(), projectJson.getLong("id"));
 		assertEquals(project.getName(), projectJson.getString("name"));
 		assertEquals(project.getDisplayName(), projectJson.getString("display_name"));
@@ -115,26 +118,25 @@ public class ProjectApiTest extends TestableApi {
 	}
 	
 	@Test
-	public void testGetList() throws ClientProtocolException, IOException,
-			JSONException {
+	public void testGetList() throws JSONException {
 		// create project
 		mCP = new CreateProject(3);
 		mCP.exeCreate();
 		
 		// get data
 		ArrayList<ProjectObject> projects = mCP.getAllProjects();
-		HttpGet httpGet = new HttpGet(API_URL + "/");
-		setHeaders(httpGet, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpGet);
-		String response = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("projects")
+                .request()
+                .headers(headersMap)
+                .get();
 		
 		// assert data
-		JSONObject projectsJson = new JSONObject(response);
+		JSONObject projectsJson = new JSONObject(response.readEntity(String.class));
 		for (int i = 0; i < 3; i++) {
 			ProjectObject project = projects.get(i);
-			JSONObject projectJson = projectsJson.getJSONArray("projects")
-					.getJSONObject(i);
+			JSONObject projectJson = projectsJson.getJSONArray("projects").getJSONObject(i);
 			assertEquals(project.getId(), projectJson.getLong("id"));
 			assertEquals(project.getName(), projectJson.getString("name"));
 			assertEquals(project.getDisplayName(), projectJson.getString("display_name"));
@@ -145,7 +147,7 @@ public class ProjectApiTest extends TestableApi {
 	}
 	
 	@Test
-	public void testPost() throws Exception {
+	public void testPost() throws JSONException {
 		JSONObject projectJson = new JSONObject();
 		projectJson.put("name", "TEST_NAME")
 				.put("display_name", "TEST_DISPLAYNAME")
@@ -153,27 +155,25 @@ public class ProjectApiTest extends TestableApi {
 				.put("product_owner", "TEST_PO")
 				.put("attach_max_size", 2);
 		
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(projectJson.toString()
-				.getBytes()));
-		entity.setContentEncoding("utf-8");
-		HttpPost httpPost = new HttpPost(API_URL);
-		httpPost.setEntity(entity);
-		setHeaders(httpPost, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpPost);
-		String result = EntityUtils.toString(httpResponse.getEntity());
-		JSONObject response = new JSONObject(result);
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		Response response = mClient.target(BASE_URL)
+                .path("projects")
+                .request()
+                .headers(headersMap)
+                .post(Entity.text(projectJson.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		
 		// check one project in database
 		ArrayList<ProjectObject> projects = ProjectObject.getAllProjects();
 		assertEquals(1, projects.size());
 		// assert response JSON string
-		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
-		assertEquals("ok", response.getString("msg"));
+		assertEquals(200, response.getStatus());
+		assertEquals("ok", responseJSON.getString("msg"));
 	}
 	
 	@Test
-	public void testPut() throws Exception {
+	public void testPut() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
@@ -188,25 +188,22 @@ public class ProjectApiTest extends TestableApi {
 				.put("product_owner", "TEST_PO")
 				.put("attach_max_size", 2);
 		
-		BasicHttpEntity entity = new BasicHttpEntity();
-		entity.setContent(new ByteArrayInputStream(projectJson.toString()
-				.getBytes()));
-		entity.setContentEncoding("utf-8");
-		HttpPut httpPut = new HttpPut(API_URL + "/" + project.getId());
-		httpPut.setEntity(entity);
-		setHeaders(httpPut, mAccountId, mPlatformType);
-		HttpResponse httpResponse = mClient.execute(httpPut);
-		String result = EntityUtils.toString(httpResponse.getEntity(),
-				"utf-8");
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+		
+		Response response = mClient.target(BASE_URL)
+                .path("projects/" + project.getId())
+                .request()
+                .headers(headersMap)
+                .put(Entity.text(projectJson.toString()));
 		
 		// assert response msg
-		JSONObject response = new JSONObject(result);
-		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
-		assertEquals("ok", response.getString("msg"));
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		assertEquals(200, response.getStatus());
+		assertEquals("ok", responseJSON.getString("msg"));
 	}
 	
 	@Test
-	public void testDelete() throws ClientProtocolException, IOException {
+	public void testDelete() {
 		mCP = new CreateProject(1);
 		mCP.exeCreateForDb();
 		
@@ -214,10 +211,15 @@ public class ProjectApiTest extends TestableApi {
 		assertEquals(1, projects.size());
 		long projectId = mCP.getAllProjects().get(0).getId();
 		
-		HttpDelete httpDelete = new HttpDelete(API_URL + "/" + projectId);
-		HttpResponse httpResponse = mClient.execute(httpDelete);
+		MultivaluedMap<String, Object> headersMap = TestableApi.getHeaders(mAccountId, mPlatformType);
+
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId)
+		        .request()
+		        .headers(headersMap)
+		        .delete();
 		
-		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+		assertEquals(200, response.getStatus());
 		
 		projects = ProjectObject.getAllProjects();
 		assertEquals(0, projects.size());

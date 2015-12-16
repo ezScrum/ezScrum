@@ -34,7 +34,7 @@ public class RetrospectiveDAO extends
 		valueSet.addInsertValue(RetrospectiveEnum.NAME, retrospective.getName());
 		valueSet.addInsertValue(RetrospectiveEnum.DESCRIPTION, retrospective.getDescription());
 		valueSet.addInsertValue(RetrospectiveEnum.TYPE, retrospective.getType());
-		valueSet.addInsertValue(RetrospectiveEnum.STATUS, RetrospectiveObject.STATUS_NEW); // 新增後的狀態為new
+		valueSet.addInsertValue(RetrospectiveEnum.STATUS, retrospective.getStatus()); // 新增後的狀態為new
 		valueSet.addInsertValue(RetrospectiveEnum.SPRINT_ID, retrospective.getSprintId());
 		valueSet.addInsertValue(RetrospectiveEnum.PROJECT_ID, retrospective.getProjectId());
 		valueSet.addInsertValue(RetrospectiveEnum.CREATE_TIME, retrospective.getCreateTime());

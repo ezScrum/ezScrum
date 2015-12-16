@@ -9,13 +9,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -120,7 +120,7 @@ public class TranslationTest {
 			storyInfo.howToDemo = "0";
 			storyInfo.sprintId = 0;
 			storyInfo.notes = "0";
-			storyInfo.status = 0;
+			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = "0";
 			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
 			
@@ -172,7 +172,7 @@ public class TranslationTest {
 			storyInfo.howToDemo = "TEST_STORY_HOWTODEMO";
 			storyInfo.sprintId = 1;
 			storyInfo.notes = "TEST_STORY_NOTES";
-			storyInfo.status = 1;
+			storyInfo.status = StoryObject.STATUS_DONE;
 			storyInfo.tags = tag.getName();
 			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
 			

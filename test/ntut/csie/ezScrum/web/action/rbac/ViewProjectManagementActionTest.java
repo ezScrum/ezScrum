@@ -3,11 +3,11 @@ package ntut.csie.ezScrum.web.action.rbac;
 import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import servletunit.struts.MockStrutsTestCase;
 
 // 一般使用者更新資料

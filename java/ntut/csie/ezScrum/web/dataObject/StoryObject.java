@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
@@ -18,8 +19,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class StoryObject implements IBaseObject {
-	public final static int STATUS_UNCHECK = 0;
-	public final static int STATUS_DONE = 1;
+	public final static int STATUS_UNCHECK = StatusEnum.NEW;
+	public final static int STATUS_DONE = StatusEnum.CLOSED;
 	public final static int NO_PARENT = -1;
 	public final static int DEFAULT_VALUE = -1;
 	
