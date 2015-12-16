@@ -143,6 +143,7 @@ ezScrum.EditRetrospectiveForm = Ext.extend(Ext.form.FormPanel, {
 					/* 初始化控制項為 Retrospective 原本的值 */
 					TypeCombo_EditRetrospective.setNewValue(record.data['Type']);
 					StatusCombo_EditRetrospective.setNewValue(record.data['Status']);
+					SprintCombo_EditRetrospective.setNewValue("Sprint #" + record.data['Id']);
 					
 					this.getForm().reset();
 					this.getForm().setValues({issueID:record.data['Id'], Name : record.data['Name'], Description : record.data['Description']});

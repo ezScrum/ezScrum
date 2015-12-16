@@ -98,7 +98,7 @@ public class UnplanItemHelperTest {
 		selectSprint = String.valueOf(sprintId);
 
 		String expected = genXML(selectSprint, unplans);
-		String actualed = mUnplanHelper.getListXML("").toString();
+		String actualed = mUnplanHelper.getListXML(selectSprint).toString();
 		assertEquals(expected, actualed);
 	}
 
@@ -154,27 +154,30 @@ public class UnplanItemHelperTest {
 		assertEquals(expected, actualed);
 	}
 
-	private String genXML(String selectSprint, ArrayList<UnplanObject> unplans) {
+	private String genXML(String sprintIdString, ArrayList<UnplanObject> unplans) {
+		// write stories to XML format
 		StringBuilder result = new StringBuilder();
+
 		result.append("<UnplannedItems><Sprint>")
-		        .append("<Id>").append(selectSprint).append("</Id>")
-		        .append("<Name>Sprint ").append(selectSprint).append("</Name>")
-		        .append("</Sprint>");
+			.append("<Id>").append(sprintIdString).append("</Id>")
+			.append("<Name>Sprint ").append(sprintIdString).append("</Name>")
+			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
-			result.append("<UnplannedItem>")
-			        .append("<Id>").append(unplan.getId()).append("</Id>")
-			        .append("<Link></Link>")
-			        .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
-			        .append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>")
-			        .append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>")
-			        .append("<Status>").append(unplan.getStatusString()).append("</Status>")
-			        .append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")
-			        .append("<Handler>").append(unplan.getHandlerName()).append("</Handler>")
-			        .append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>")
-			        .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>")
-			        .append("</UnplannedItem>");
+			result.append("<UnplannedItem>");
+			result.append("<Id>").append(unplan.getId()).append("</Id>");
+			result.append("<Link></Link>");
+			result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>");
+			result.append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>");
+			result.append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>");
+			result.append("<Status>").append(unplan.getStatusString()).append("</Status>");
+			result.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>");
+			result.append("<Handler>").append(unplan.getHandlerName()).append("</Handler>");
+			result.append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>");
+			result.append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>");
+			result.append("</UnplannedItem>");
 		}
 		result.append("</UnplannedItems>");
+
 		return result.toString();
 	}
 }

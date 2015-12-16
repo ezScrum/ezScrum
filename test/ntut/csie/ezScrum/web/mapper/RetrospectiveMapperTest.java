@@ -77,6 +77,7 @@ public class RetrospectiveMapperTest {
 		retrospectiveInfo.description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		retrospectiveInfo.type = RetrospectiveObject.TYPE_GOOD;
 		retrospectiveInfo.status = RetrospectiveObject.STATUS_NEW;
+		retrospectiveInfo.sprintId = mSprint.getId();
 		long retrospectiveId = mRetrospectiveMapper.addRetrospective(retrospectiveInfo);
 		assertTrue(retrospectiveId > 0);
 		RetrospectiveObject retrospective = RetrospectiveObject.get(retrospectiveId);
