@@ -67,7 +67,7 @@ public class UnplanItemHelper {
 		 */ 
 		ArrayList<UnplanObject> unplans = new ArrayList<UnplanObject>();
 		final String specialSprintId = "ALL"; 
-		if (sprintIdString.equals(specialSprintId)) {
+		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
 			unplans = mUnplanMapper.getAllUnplans();
 		} else {
 			long sprintId = -1;

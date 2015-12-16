@@ -135,7 +135,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確(sprintID = -1)
-    	String expected = "<Retrospectives><Sprint><Id>1</Id><Name>Sprint #1</Name></Sprint></Retrospectives>";
+    	String expected = "<Retrospectives><Sprint><Id>null</Id><Name>Sprint #null</Name></Sprint></Retrospectives>";
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}		
 	

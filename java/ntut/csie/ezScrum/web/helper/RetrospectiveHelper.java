@@ -75,7 +75,7 @@ public class RetrospectiveHelper {
 		ArrayList<RetrospectiveObject> improvements = new ArrayList<RetrospectiveObject>();
 		final String specialSprintId = "ALL"; // 這個特殊的sprintID主要是為了抓出所有 good 和
 											  // improve(待改善) 的 retrospective 
-		if (sprintIdString.equals(specialSprintId)) {
+		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
 			goods = mRetrospectiveMapper.getAllGoods();
 			improvements = mRetrospectiveMapper.getAllImprovements();
 		} else {
