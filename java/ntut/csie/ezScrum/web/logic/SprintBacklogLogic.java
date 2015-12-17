@@ -6,15 +6,14 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SprintBacklogLogic {
 	private ProjectObject mProject;

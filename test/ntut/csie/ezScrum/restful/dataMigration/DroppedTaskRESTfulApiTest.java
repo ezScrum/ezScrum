@@ -157,14 +157,7 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertTrue(contentJSON.getLong(TaskEnum.ID) != -1);
 		TaskObject task = TaskObject.get(contentJSON.getLong(TaskEnum.ID));
-		assertEquals(name, task.getName());
-		assertEquals(handler, task.getHandler().getUsername());
-		assertEquals(estimate, task.getEstimate());
-		assertEquals(remain, task.getRemains());
-		assertEquals(actual, task.getActual());
-		assertEquals(notes, task.getNotes());
-		assertEquals(status, task.getStatusString());
-		assertEquals(partner, task.getPartnersUsername());
+		assertEquals(task.toString(), contentJSON.toString());
 	}
 
 	@Test

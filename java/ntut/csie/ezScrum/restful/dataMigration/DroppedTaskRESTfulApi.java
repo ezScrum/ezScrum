@@ -25,6 +25,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 
 @Path("projects/{projectId}/tasks")
 public class DroppedTaskRESTfulApi {
@@ -47,9 +48,12 @@ public class DroppedTaskRESTfulApi {
 		TaskObject task = JSONDecoder.toTask(projectId, storyId, entity);
 		int remain = task.getRemains();
 		task.save();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
+		sprintBacklogHelper.dropTask(task.getId());
 		// Update Remain
 		task.setRemains(remain);
 		TaskDAO.getInstance().update(task);
+		task = TaskObject.get(task.getId());
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, task.toString());
 	}
 	

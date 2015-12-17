@@ -117,7 +117,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	public void testCreateDroppedStory() throws JSONException {
 		// Test Data
 		String name = "TEST_STORY_NAME";
-		String status = "new";
+		String status = "closed";
 		int estimate = 3;
 		int importance = 98;
 		int value = 20;

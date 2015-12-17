@@ -99,8 +99,9 @@ public class ProductBacklogLogic {
 	 */
 	public void dropStoryFromSprint(long storyId) {
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
-		story.setSprintId(-1);
-		story.save();
+		story.setSprintId(StoryObject.NO_PARENT)
+		     .setStatus(StoryObject.STATUS_UNCHECK)
+		     .save();
 	}
 
 	/**
