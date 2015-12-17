@@ -48,9 +48,9 @@ public class DroppedStoryRESTfulApi {
 		// Create Story
 		long sprintId = -1;
 		StoryObject story = JSONDecoder.toStory(projectId, sprintId, entity);
-		story.save();
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
-		productBacklogHelper.dropStoryFromSprint(story.getId());
+		story.setSprintId(StoryObject.NO_PARENT)
+	     	 .setStatus(StoryObject.STATUS_UNCHECK)
+	     	 .save();
 		story = StoryObject.get(story.getId());
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, story.toString());
 	}

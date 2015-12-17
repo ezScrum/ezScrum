@@ -47,7 +47,9 @@ public class DroppedTaskRESTfulApi {
 		long storyId = -1;
 		TaskObject task = JSONDecoder.toTask(projectId, storyId, entity);
 		int remain = task.getRemains();
-		task.save();
+		task.setStoryId(TaskObject.NO_PARENT)
+			.setStatus(TaskObject.STATUS_UNCHECK)
+			.save();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 		sprintBacklogHelper.dropTask(task.getId());
 		// Update Remain
