@@ -49,7 +49,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		Ext.MessageBox
 				.show({
 					title : 'Confirm to Import?',
-					msg : 'Watch out! </br></br> All Project data will be removed and replaced by the imported data.',
+					msg : 'Watch out! </br></br> If import data conflict with local data!<br>(Project)<br>The project will be renamed.<br>(Account)<br>Local account data will be reserved.',
 					buttons : Ext.MessageBox.YESNO,
 					icon : Ext.MessageBox.QUESTION,
 					fn : function(btn) {
