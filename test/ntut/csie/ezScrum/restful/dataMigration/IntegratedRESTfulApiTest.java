@@ -675,13 +675,13 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(IssueTypeEnum.TYPE_TASK, attachFilesInTask.get(0).getIssueType());
 		
 		// Assert Retrospectives in Sprint
-		ArrayList<RetrospectiveObject> goodsInSprint = sprint.getGoods();
+		ArrayList<RetrospectiveObject> goodsInSprint = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_GOOD);
 		assertEquals(1, goodsInSprint.size());
 		assertEquals(goodJSON.getString(RetrospectiveJSONEnum.NAME), goodsInSprint.get(0).getName());
 		assertEquals(goodJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), goodsInSprint.get(0).getDescription());
 		assertEquals(goodJSON.getString(RetrospectiveJSONEnum.TYPE), goodsInSprint.get(0).getType());
 		assertEquals(goodJSON.getString(RetrospectiveJSONEnum.STATUS), goodsInSprint.get(0).getStatus());
-		ArrayList<RetrospectiveObject> improvementsInSprint = sprint.getImprovements();
+		ArrayList<RetrospectiveObject> improvementsInSprint = sprint.getRetrospectiveByType(RetrospectiveObject.TYPE_IMPROVEMENT);
 		assertEquals(1, improvementsInSprint.size());
 		assertEquals(improvementJSON.getString(RetrospectiveJSONEnum.NAME), improvementsInSprint.get(0).getName());
 		assertEquals(improvementJSON.getString(RetrospectiveJSONEnum.DESCRIPTION), improvementsInSprint.get(0).getDescription());
