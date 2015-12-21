@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.web.dataInfo.RetrospectiveInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.mapper.RetrospectiveMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
@@ -14,10 +15,6 @@ public class RetrospectiveHelper {
 
 	public RetrospectiveHelper(ProjectObject project) {
 		mRetrospectiveMapper = new RetrospectiveMapper(project);
-	}
-
-	public RetrospectiveHelper(ProjectObject project, long sprintId) {
-		mRetrospectiveMapper = new RetrospectiveMapper(project, sprintId);
 	}
 
 	public RetrospectiveObject getRetrospective(long retrospectiveId) {
@@ -73,52 +70,58 @@ public class RetrospectiveHelper {
 	}
 
 	// 前端XML格式定義在: ShowRetrospective.jsp 之 變數 retrospectiveStore
-	public StringBuilder getListXML(String sprintId) throws SQLException {
-		
-		// Good Retrospective 封裝成 XML 給 Ext 使用
-		ArrayList<RetrospectiveObject> goods = mRetrospectiveMapper.getRetrospectivesByType(RetrospectiveObject.TYPE_GOOD);
-
-		StringBuilder result = new StringBuilder();
-
-		result.append("<Retrospectives><Sprint><Id>" + sprintId + "</Id><Name>Sprint #" + sprintId + "</Name></Sprint>");
-
-		String specialSprintId = "All";// 這個特殊的sprintID主要是為了抓出所有 good 和
-										// improve(待改善) 的 retrospective
-		for (int i = 0; i < goods.size(); i++) {
-			RetrospectiveObject good = goods.get(i);
-			// 如果sprintID是All則立即加入該筆retrospective如果不是則轉換到檢查good retrospectives
-			// 裡是否存在屬於該sprintID的retrospective
-			if (sprintId.equalsIgnoreCase(specialSprintId) || String.valueOf(good.getSprintId()).compareTo(sprintId) == 0) {
-				result.append("<Retrospective>");
-				result.append("<Id>" + good.getId() + "</Id>");
-				result.append("<Link></Link>");
-				result.append("<SprintID>" + good.getSprintId() + "</SprintID>");
-				result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
-				result.append("<Type>" + good.getType() + "</Type>");
-				result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
-				result.append("<Status>" + good.getStatus() + "</Status>");
-				result.append("</Retrospective>");
+	public StringBuilder getListXML(String sprintIdString) throws SQLException {
+		ArrayList<RetrospectiveObject> goods = new ArrayList<RetrospectiveObject>();
+		ArrayList<RetrospectiveObject> improvements = new ArrayList<RetrospectiveObject>();
+		final String specialSprintId = "ALL"; // 這個特殊的sprintID主要是為了抓出所有 good 和
+											  // improve(待改善) 的 retrospective 
+		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
+			goods = mRetrospectiveMapper.getAllGoods();
+			improvements = mRetrospectiveMapper.getAllImprovements();
+		} else {
+			long sprintId = -1;
+			try {
+				sprintId = Long.parseLong(sprintIdString);
+			} catch (Exception e) {
+				SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mRetrospectiveMapper.getProjct());
+				// if there is not current sprint, then get latest sprint
+				SprintObject sprint = sprintPlanHelper.getCurrentSprint();
+				// The project has no any sprint
+				if (sprint != null) {
+					sprintId = sprint.getId();
+				}
 			}
+			goods = mRetrospectiveMapper.getGoodsInSprint(sprintId);
+			improvements = mRetrospectiveMapper.getImprovementsInSprint(sprintId);
+		}
+		
+		StringBuilder result = new StringBuilder();
+		result.append("<Retrospectives><Sprint><Id>" + sprintIdString + "</Id><Name>Sprint #" + sprintIdString + "</Name></Sprint>");
+
+		// Good Retrospective 封裝成 XML 給 Ext 使用
+		for (RetrospectiveObject good : goods) {
+			result.append("<Retrospective>");
+			result.append("<Id>" + good.getId() + "</Id>");
+			result.append("<Link></Link>");
+			result.append("<SprintID>" + good.getSprintId() + "</SprintID>");
+			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
+			result.append("<Type>" + good.getType() + "</Type>");
+			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
+			result.append("<Status>" + good.getStatus() + "</Status>");
+			result.append("</Retrospective>");
 		}
 		
 		// Improvement Retrospective 封裝成 XML 給 Ext 使用
-		ArrayList<RetrospectiveObject> improvements = mRetrospectiveMapper.getRetrospectivesByType(RetrospectiveObject.TYPE_IMPROVEMENT);
-
-		for (int i = 0; i < improvements.size(); i++) {
-			RetrospectiveObject improvement = improvements.get(i);
-			// 如果sprintID是All則立即加入該筆retrospective如果不是則轉換到檢查improve(待改善)
-			// retrospectives 裡是否存在屬於該sprintID的retrospective
-			if (sprintId.equalsIgnoreCase(specialSprintId) || String.valueOf(improvement.getSprintId()).compareTo(sprintId) == 0) {
-				result.append("<Retrospective>");
-				result.append("<Id>" + improvement.getId() + "</Id>");
-				result.append("<Link></Link>");
-				result.append("<SprintID>" + improvement.getSprintId() + "</SprintID>");
-				result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
-				result.append("<Type>" + improvement.getType() + "</Type>");
-				result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");
-				result.append("<Status>" + improvement.getStatus() + "</Status>");
-				result.append("</Retrospective>");
-			}
+		for (RetrospectiveObject improvement : improvements) {
+			result.append("<Retrospective>");
+			result.append("<Id>" + improvement.getId() + "</Id>");
+			result.append("<Link></Link>");
+			result.append("<SprintID>" + improvement.getSprintId() + "</SprintID>");
+			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
+			result.append("<Type>" + improvement.getType() + "</Type>");
+			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");
+			result.append("<Status>" + improvement.getStatus() + "</Status>");
+			result.append("</Retrospective>");
 		}
 		result.append("</Retrospectives>");
 		return result;

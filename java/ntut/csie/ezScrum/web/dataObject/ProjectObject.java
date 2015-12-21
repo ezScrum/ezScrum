@@ -8,6 +8,7 @@ import java.util.Date;
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.ReleaseDAO;
+import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
@@ -178,6 +179,16 @@ public class ProjectObject implements IBaseObject {
 	//get all unplans
 	public ArrayList<UnplanObject> getUnplans() {
 		return UnplanDAO.getInstance().getUnplansByProjectId(mId);
+	}
+	
+	//get all goods
+	public ArrayList<RetrospectiveObject> getGoods() {
+		return RetrospectiveDAO.getInstance().getGoodsByProjectId(mId);
+	}
+	
+	//get all improvements
+	public ArrayList<RetrospectiveObject> getImprovements() {
+		return RetrospectiveDAO.getInstance().getImprovementsByProjectId(mId);
 	}
 
 	public ArrayList<TaskObject> getDroppedTasks() {

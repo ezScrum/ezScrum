@@ -9,32 +9,22 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class RetrospectiveMapper {
 	private ProjectObject mProject;
-	private SprintObject mSprint;
 	
 	public RetrospectiveMapper(ProjectObject project) {
 		mProject = project;
-		mSprint = mProject.getCurrentSprint();
 	}
 	
-	public RetrospectiveMapper(ProjectObject project, long sprintId) {
-		mProject = project;
-		mSprint = SprintObject.get(sprintId);
-		if (mSprint == null) {
-			throw new RuntimeException("Sprint#" + sprintId + " is not existed.");
-		}
+	public ProjectObject getProjct() {
+		return mProject;
 	}
 	
 	public long addRetrospective(RetrospectiveInfo retrospectiveInfo) {
-		long sprintId = -1;
-		if (mSprint != null) {
-			sprintId = mSprint.getId();
-		}
-		RetrospectiveObject retrospective = new RetrospectiveObject(mSprint.getProjectId());
+		RetrospectiveObject retrospective = new RetrospectiveObject(mProject.getId());
 		retrospective.setName(retrospectiveInfo.name)
 					 .setDescription(retrospectiveInfo.description)
 					 .setType(retrospectiveInfo.type)
 					 .setStatus(retrospectiveInfo.status)
-					 .setSprintId(sprintId)
+					 .setSprintId(retrospectiveInfo.sprintId)
 					 .save();
 		return retrospective.getId();
 	}
@@ -42,12 +32,31 @@ public class RetrospectiveMapper {
 	public RetrospectiveObject getRetrospective(long retrospectiveId) {
 		return RetrospectiveObject.get(retrospectiveId);
 	}	
-
-	public ArrayList<RetrospectiveObject> getRetrospectivesByType(String type) {
-		if (mSprint == null) {
+	
+	public ArrayList<RetrospectiveObject> getAllGoods() {
+		return mProject.getGoods();
+	}
+	
+	public ArrayList<RetrospectiveObject> getAllImprovements() {
+		return mProject.getImprovements();
+	}
+	
+	public ArrayList<RetrospectiveObject> getGoodsInSprint(long sprintId) {
+		SprintObject sprint = SprintObject.get(sprintId);
+		if (sprint == null) {
 			return new ArrayList<RetrospectiveObject>();
+		} else {
+			return sprint.getGoods();
 		}
-		return mSprint.getRetrospectiveByType(type);
+	}
+
+	public ArrayList<RetrospectiveObject> getImprovementsInSprint(long sprintId) {
+		SprintObject sprint = SprintObject.get(sprintId);
+		if (sprint == null) {
+			return new ArrayList<RetrospectiveObject>();
+		} else {
+			return sprint.getImprovements();
+		}
 	}
 	
 	public void updateRetrospective(RetrospectiveInfo retrospectiveInfo) {

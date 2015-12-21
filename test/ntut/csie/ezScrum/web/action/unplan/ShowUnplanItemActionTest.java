@@ -12,6 +12,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
+import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +22,6 @@ import org.junit.Test;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowUnplanItemActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateUnplanItem mCUI;
@@ -122,8 +123,8 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 		
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
-		String selectedSprint = "";
 		long sprintId = mCS.getSprintsId().get(0);
+		String selectedSprint = "";
 		
 		// ================== set parameter info ====================
 		addRequestParameter("SprintID", selectedSprint);
@@ -141,9 +142,8 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 		verifyForward(null);
 		verifyNoActionErrors();
 
-		// 比對資料是否正確 (default sprintId = 1)
 		ArrayList<UnplanObject> unplans = SprintObject.get(sprintId).getUnplans();
-		String expected = genXML(String.valueOf(sprintId), unplans);
+		String expected = genXML(selectedSprint, unplans);
 		String actualed = response.getWriterBuffer().toString();
 		assertEquals(expected, actualed);
 	}
@@ -410,31 +410,30 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 
 	// 產生某一個 sprint 下的所有 unplan item(s)
 	private String genXML(String selectedSprint, ArrayList<UnplanObject> unplans) {
+
+		// write stories to XML format
 		StringBuilder result = new StringBuilder();
 
-		result.append("<UnplannedItems>");
-		// sprint
-		result.append("<Sprint>");
-		result.append("<Id>").append(selectedSprint).append("</Id>");
-		result.append("<Name>Sprint ").append(selectedSprint).append("</Name>");
-		result.append("</Sprint>");
-		// unplan item
+		result.append("<UnplannedItems><Sprint>")
+			.append("<Id>").append(selectedSprint).append("</Id>")
+			.append("<Name>Sprint ").append(selectedSprint).append("</Name>")
+			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
 			result.append("<UnplannedItem>");
 			result.append("<Id>").append(unplan.getId()).append("</Id>");
 			result.append("<Link></Link>");
-			result.append("<Name>").append(unplan.getName()).append("</Name>");
+			result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>");
 			result.append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>");
 			result.append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>");
 			result.append("<Status>").append(unplan.getStatusString()).append("</Status>");
 			result.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>");
 			result.append("<Handler>").append(unplan.getHandlerName()).append("</Handler>");
 			result.append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>");
-			result.append("<Notes>").append(unplan.getNotes()).append("</Notes>");
+			result.append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>");
 			result.append("</UnplannedItem>");
 		}
-		//
 		result.append("</UnplannedItems>");
+
 		return result.toString();
 	}
 

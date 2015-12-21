@@ -11,13 +11,10 @@ import ntut.csie.ezScrum.web.mapper.UnplanItemMapper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 public class UnplanItemHelper {
-
 	private UnplanItemMapper mUnplanMapper;
-	private ProjectObject mProject;
 	
 	public UnplanItemHelper(ProjectObject project) {
 		mUnplanMapper = new UnplanItemMapper(project);
-		mProject = project;
 	}
 	
 	public long addUnplan(String handlerUsername, String partnersUsername,
@@ -51,58 +48,49 @@ public class UnplanItemHelper {
 	}
 	
 	public ArrayList<UnplanObject> getUnplansInSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
-		ArrayList<UnplanObject> unplans = new ArrayList<>();
-		if (sprint != null) {
-			unplans = sprint.getUnplans();
-		}
-		return unplans;
+		return mUnplanMapper.getUnplansInSprint(sprintId);
 	}
 	
 	public ArrayList<UnplanObject> getAllUnplans() {
-		return mProject.getUnplans();
+		return mUnplanMapper.getAllUnplans();
 	}
 
 	/*
 	 * 以下為 Response 給前端之資料格式轉換函式
 	 */
 	
-	public StringBuilder getListXML(String selectedSprint) {
-		ArrayList<UnplanObject> unplans = null;
+	public StringBuilder getListXML(String sprintIdString) {
 		/**
 		 * 如果沒有指定 sprint 的 id，則以目前的 sprint 為準
 		 * 如果也沒有的話，則以最後一個 sprint 為準
 		 * 如果一個 sprint 都沒有的話，則回傳空的 unplan list
 		 */ 
-		// Get all unplans
-		if (selectedSprint.equals("ALL")) {
-			unplans = getAllUnplans();
-		}
-		// Get current sprint unplans
-		else if (selectedSprint.equals("")) {
-			SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mProject);
-			// if there is not current sprint, then get latest sprint
-			SprintObject sprint = sprintPlanHelper.getCurrentSprint();
-			// The project has no any sprint
-			if (sprint == null) {
-				unplans = new ArrayList<UnplanObject>();
-				selectedSprint = "-1";
-			} else {
-				unplans = getUnplansInSprint(sprint.getId());
-				selectedSprint = String.valueOf(sprint.getId());
+		ArrayList<UnplanObject> unplans = new ArrayList<UnplanObject>();
+		final String specialSprintId = "ALL"; 
+		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
+			unplans = mUnplanMapper.getAllUnplans();
+		} else {
+			long sprintId = -1;
+			try {
+				sprintId = Long.parseLong(sprintIdString);
+			} catch (Exception e) {
+				SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mUnplanMapper.getProject());
+				// if there is not current sprint, then get latest sprint
+				SprintObject sprint = sprintPlanHelper.getCurrentSprint();
+				// The project has no any sprint
+				if (sprint != null) {
+					sprintId = sprint.getId();
+				}
 			}
-		}
-		// Get select sprint unplans
-		else {
-			unplans = getUnplansInSprint(Long.parseLong(selectedSprint));
+			unplans = mUnplanMapper.getUnplansInSprint(sprintId);
 		}
 
 		// write stories to XML format
 		StringBuilder result = new StringBuilder();
 
 		result.append("<UnplannedItems><Sprint>")
-			.append("<Id>").append(selectedSprint).append("</Id>")
-			.append("<Name>Sprint ").append(selectedSprint).append("</Name>")
+			.append("<Id>").append(sprintIdString).append("</Id>")
+			.append("<Name>Sprint ").append(sprintIdString).append("</Name>")
 			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
 			result.append("<UnplannedItem>");

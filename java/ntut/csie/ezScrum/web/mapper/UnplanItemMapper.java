@@ -8,11 +8,14 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class UnplanItemMapper {
-	
 	private ProjectObject mProject;
 
 	public UnplanItemMapper(ProjectObject project) {
 		mProject = project;
+	}
+	
+	public ProjectObject getProject() {
+		return mProject;
 	}
 	
 	public UnplanObject getUnplan(long unplanId) {
@@ -21,7 +24,10 @@ public class UnplanItemMapper {
 
 	public ArrayList<UnplanObject> getUnplansInSprint(long sprintId) {
 		SprintObject sprint = SprintObject.get(sprintId);
-		ArrayList<UnplanObject> unplans = sprint.getUnplans();
+		ArrayList<UnplanObject> unplans = new ArrayList<>();
+		if (sprint != null) {
+			unplans = sprint.getUnplans();
+		}
 		return unplans;
 	}
 	
