@@ -245,8 +245,11 @@ public class JSONDecoder {
 			for (int i = 0; i < partnerJSONArray.length(); i++) {
 				JSONObject partnerJSON = partnerJSONArray.getJSONObject(i);
 				String partnerName = partnerJSON.getString(AccountJSONEnum.USERNAME);
-				long partnerId = AccountObject.get(partnerName).getId();
-				partnersId.add(partnerId);
+				AccountObject account = AccountObject.get(partnerName);
+				if (account != null) {
+					long partnerId = account.getId();
+					partnersId.add(partnerId);
+				}
 			}
 
 			// Create StoryObject
@@ -259,8 +262,11 @@ public class JSONDecoder {
 			    .setStatus(StatusTranslator.getStatusByStatusString(status))
 			    .setStoryId(storyId);
 			if (!handler.isEmpty()) {
-				long handlerId = AccountObject.get(handler).getId();
-				task.setHandlerId(handlerId);
+				AccountObject account = AccountObject.get(handler);
+				if (account != null) {
+					long handlerId = account.getId();
+					task.setHandlerId(handlerId);
+				}
 			}
 			if (!partnersId.isEmpty()) {
 				task.setPartnersId(partnersId);
@@ -289,8 +295,11 @@ public class JSONDecoder {
 			for (int i = 0; i < partnerJSONArray.length(); i++) {
 				JSONObject partnerJSON = partnerJSONArray.getJSONObject(i);
 				String partnerName = partnerJSON.getString(AccountJSONEnum.USERNAME);
-				long partnerId = AccountObject.get(partnerName).getId();
-				partnersId.add(partnerId);
+				AccountObject account = AccountObject.get(partnerName);
+				if (account != null) {
+					long partnerId = account.getId();
+					partnersId.add(partnerId);
+				}
 			}
 
 			// Create UnplanObject
@@ -301,8 +310,11 @@ public class JSONDecoder {
 			        .setNotes(notes)
 			        .setStatus(StatusTranslator.getStatusByStatusString(status));
 			if (!handler.isEmpty()) {
-				long handlerId = AccountObject.get(handler).getId();
-				unplan.setHandlerId(handlerId);
+				AccountObject account = AccountObject.get(handler);
+				if (account != null) {
+					long handlerId = account.getId();
+					unplan.setHandlerId(handlerId);
+				}
 			}
 			if (!partnersId.isEmpty()) {
 				unplan.setPartnersId(partnersId);
