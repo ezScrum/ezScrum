@@ -22,8 +22,13 @@ public class AccountRESTfulApi {
 		if (!message.isEmpty()) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
-		//Create Account
+		// Create Account
 		AccountObject account = JSONDecoder.toAccount(entity);
+		// Check for existing account
+		AccountObject existedAccount = AccountObject.get(account.getUsername());
+		if (existedAccount != null) {
+			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_NOT_RESOURCE_EXISTED, "");
+		}
 		account.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, account.toString());
 	}

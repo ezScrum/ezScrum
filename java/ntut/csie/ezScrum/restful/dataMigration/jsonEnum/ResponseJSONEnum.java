@@ -9,4 +9,5 @@ public class ResponseJSONEnum {
 	public static final String SUCCESS_MEESSAGE = "success";
 	public static final String ERROR_BAD_REQUEST_MEESSAGE = "fail due to bad request";
 	public static final String ERROR_NOT_FOUND_MEESSAGE = "fail due to resource not found";
+	public static final String ERROR_NOT_RESOURCE_EXISTED = "fail duo to existing resource";
 }

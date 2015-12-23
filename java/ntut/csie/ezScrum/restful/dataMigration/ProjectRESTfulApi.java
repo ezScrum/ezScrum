@@ -38,6 +38,11 @@ public class ProjectRESTfulApi {
 		}
 		// Create Project
 		ProjectObject project = JSONDecoder.toProject(entity);
+		// Check for existing Project
+		ProjectObject existedProject = ProjectObject.get(project.getName());
+		if (existedProject != null) {
+			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_NOT_RESOURCE_EXISTED, "");
+		}
 		project.save(project.getCreateTime());
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, project.toString());
 	}
@@ -112,6 +117,11 @@ public class ProjectRESTfulApi {
 		
 		// Create tag
 		TagObject tag = JSONDecoder.toTag(projectId, entity);
+		// Check for existing tag
+		TagObject existingTag = TagObject.get(tag.getName());
+		if (existingTag != null) {
+			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_NOT_RESOURCE_EXISTED, "");
+		}
 		tag.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, entity);
 	}
