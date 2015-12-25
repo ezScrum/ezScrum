@@ -27,7 +27,7 @@ public class AccountRESTfulApi {
 		// Check for existing account
 		AccountObject existedAccount = AccountObject.get(account.getUsername());
 		if (existedAccount != null) {
-			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_NOT_RESOURCE_EXISTED, "");
+			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_RESOURCE_EXIST_MESSAGE, "");
 		}
 		account.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, account.toString());

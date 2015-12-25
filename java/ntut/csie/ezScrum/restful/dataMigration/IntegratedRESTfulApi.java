@@ -86,9 +86,7 @@ public class IntegratedRESTfulApi {
 				// TODO 紀錄結果
 				// 處理專案名稱重複的問題
 				if (response.getStatus() == Response.Status.CONFLICT.getStatusCode()) {
-					Calendar calendar = Calendar.getInstance();
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("_yyyyMMddHHmmss");
-					String newProjectName = projectJSON.getString(ProjectJSONEnum.NAME) + simpleDateFormat.format(calendar.getTime());
+					String newProjectName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.NAME));
 					projectJSON.put(ProjectJSONEnum.NAME, newProjectName);
 					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectName);
 					// Create Project
@@ -542,5 +540,11 @@ public class IntegratedRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+	}
+	
+	private String getNewProjectName(String projectName) {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("_yyyyMMddHHmmss");
+		return projectName + simpleDateFormat.format(calendar.getTime());
 	}
 }

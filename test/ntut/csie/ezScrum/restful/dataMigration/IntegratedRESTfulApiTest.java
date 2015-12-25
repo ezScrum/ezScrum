@@ -20,6 +20,7 @@ import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +57,7 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
 public class IntegratedRESTfulApiTest extends JerseyTest {
@@ -1145,6 +1147,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSONArray.put(droppedTaskJSON);
 		projectJSON.put(ProjectJSONEnum.DROPPED_TASKS, droppedTaskJSONArray);
 		
+		assertEquals(0, ProjectObject.getAllProjects().size());
+		
 		// Call '/dataMigration/projects' API
 		Response response = mClient.target(BASE_URL)
 		        .path("dataMigration/projects")
@@ -1152,6 +1156,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		        .post(Entity.text(entityJSON.toString()));
 		
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, ProjectObject.getAllProjects().size());
+		assertEquals(projectJSON.getString(ProjectEnum.NAME), ProjectObject.getAllProjects().get(0).getName());
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getString(ResponseJSONEnum.JSON_KEY_CONTENT);
@@ -1169,7 +1175,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		ProjectObject latestProject = ProjectObject.getAllProjects().get(1);
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertTrue(latestProject != null);
-		assertTrue(!latestProject.getName().equals("TEST_PROJECT_1"));
-		assertTrue(!latestProject.getDisplayName().equals("TEST_PROJECT_1"));
+		Assert.assertNotSame("TEST_PROJECT_1", latestProject.getName());
+		Assert.assertNotSame("TEST_PROJECT_1", latestProject.getDisplayName());
 	}
 }
