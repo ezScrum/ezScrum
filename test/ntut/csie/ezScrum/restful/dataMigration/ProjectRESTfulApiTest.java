@@ -147,6 +147,34 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
+	public void testCreateExistedProject() throws JSONException {
+		// Test Data
+		String projectName = mCP.getAllProjects().get(0).getName();
+		String projectDisplayName = mCP.getAllProjects().get(0).getDisplayName();
+		String projectComment = mCP.getAllProjects().get(0).getComment();
+		String projectProductOwner = mCP.getAllProjects().get(0).getManager();
+		int projectMaxAttachFileSize = (int) mCP.getAllProjects().get(0).getAttachFileSize();
+		long createTime = mCP.getAllProjects().get(0).getCreateTime();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .post(Entity.text(projectJSON.toString()));
+		
+		// Assert
+		assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
 	public void testUpdateScrumRolesInProject() throws JSONException {
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
@@ -392,5 +420,39 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertEquals(1, tags.size());
 		assertEquals(tagName, tags.get(0).getName());
+	}
+	
+	@Test
+	public void testCreateExistedTagInProject() throws JSONException {
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .post(Entity.text(tagJSON.toString()));
+
+		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, tags.size());
+		assertEquals(tagName, tags.get(0).getName());
+		
+		// Call '/projects/{projectId}/tags' API again
+		response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		                "/tags")
+		        .request()
+		        .post(Entity.text(tagJSON.toString()));
+
+		// Assert
+		assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
 	}
 }

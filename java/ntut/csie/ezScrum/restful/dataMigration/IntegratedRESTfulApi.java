@@ -1,8 +1,8 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,14 +13,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
@@ -29,8 +25,6 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -56,8 +50,6 @@ public class IntegratedRESTfulApi {
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}
-		// Clean all data
-		cleanOldEzscrumData();
 		// 檢查 Checksum
 		// TODO
 		// 檢查版本號
@@ -74,7 +66,6 @@ public class IntegratedRESTfulApi {
 				        .request()
 				        .post(Entity.text(accountJSON.toString()));
 				// TODO 紀錄結果
-
 			}
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
@@ -87,12 +78,25 @@ public class IntegratedRESTfulApi {
 			//// Create Project
 			for (int i = 0; i < projectJSONArray.length(); i++) {
 				JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+				// Create Project
 				Response response = mClient.target(BASE_URL)
 				        .path("projects")
 				        .request()
 				        .post(Entity.text(projectJSON.toString()));
 				// TODO 紀錄結果
-				JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+				// 處理專案名稱重複的問題
+				if (response.getStatus() == Response.Status.CONFLICT.getStatusCode()) {
+					String newProjectName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.NAME));
+					projectJSON.put(ProjectJSONEnum.NAME, newProjectName);
+					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectName);
+					// Create Project
+					response = mClient.target(BASE_URL)
+					        .path("projects")
+					        .request()
+					        .post(Entity.text(projectJSON.toString()));
+				}
+				String responseString = response.readEntity(String.class);
+				JSONObject responseJSON = new JSONObject(responseString);
 				JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 				long projectId = contentJSON.getLong(ProjectEnum.ID);
 
@@ -135,7 +139,8 @@ public class IntegratedRESTfulApi {
 					                "/sprints")
 					        .request()
 					        .post(Entity.text(sprintJSON.toString()));
-					responseJSON = new JSONObject(response.readEntity(String.class));
+					responseString = response.readEntity(String.class);
+					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
 					long sprintId = contentJSON.getLong(SprintEnum.ID);
@@ -152,7 +157,8 @@ public class IntegratedRESTfulApi {
 						                "/stories")
 						        .request()
 						        .post(Entity.text(storyJSON.toString()));
-						responseJSON = new JSONObject(response.readEntity(String.class));
+						responseString = response.readEntity(String.class);
+						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
 						long storyId = contentJSON.getLong(StoryEnum.ID);
@@ -196,7 +202,8 @@ public class IntegratedRESTfulApi {
 							                "/tasks")
 							        .request()
 							        .post(Entity.text(taskJSON.toString()));
-							responseJSON = new JSONObject(response.readEntity(String.class));
+							responseString = response.readEntity(String.class);
+							responseJSON = new JSONObject(responseString);
 							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
 							long taskId = contentJSON.getLong(TaskEnum.ID);
@@ -229,7 +236,8 @@ public class IntegratedRESTfulApi {
 						                "/unplans")
 						        .request()
 						        .post(Entity.text(unplanJSON.toString()));
-						responseJSON = new JSONObject(response.readEntity(String.class));
+						responseString = response.readEntity(String.class);
+						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new UnplanId
 						long unplanId = contentJSON.getLong(UnplanEnum.ID);
@@ -270,7 +278,8 @@ public class IntegratedRESTfulApi {
 					                "/stories")
 					        .request()
 					        .post(Entity.text(droppedStoryJSON.toString()));
-					responseJSON = new JSONObject(response.readEntity(String.class));
+					responseString = response.readEntity(String.class);
+					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
 					long storyId = contentJSON.getLong(StoryEnum.ID);
@@ -311,7 +320,8 @@ public class IntegratedRESTfulApi {
 						                "/tasks")
 						        .request()
 						        .post(Entity.text(taskJSON.toString()));
-						responseJSON = new JSONObject(response.readEntity(String.class));
+						responseString = response.readEntity(String.class);
+						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new TaskId
 						long taskId = contentJSON.getLong(TaskEnum.ID);
@@ -342,7 +352,8 @@ public class IntegratedRESTfulApi {
 					                "/tasks")
 					        .request()
 					        .post(Entity.text(taskJSON.toString()));
-					responseJSON = new JSONObject(response.readEntity(String.class));
+					responseString = response.readEntity(String.class);
+					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
 					long taskId = contentJSON.getLong(TaskEnum.ID);
@@ -531,33 +542,9 @@ public class IntegratedRESTfulApi {
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
 	}
 	
-	private void cleanOldEzscrumData() throws IOException {
-		// Get Admin account
-		final String ADMIN_USER_NAME = "admin"; 
-		AccountObject adminAccount = AccountObject.get(ADMIN_USER_NAME);
-		Configuration config = new Configuration();
-		config.save();
-		InitialSQL ini = new InitialSQL(config);
-		ini.exe();
-		// delete external files
-		deleteAllProject();
-		deleteAllAttachFiles();
-		adminAccount.save();
-	}
-	
-	private void deleteAllProject() throws IOException {
-		final String WORKSPACE_PATH = "./WebContent/Workspace/";
-		ArrayList<ProjectObject> projects = ProjectDAO.getInstance().getAllProjects();
-		for (ProjectObject project : projects) {
-			File file = new File(WORKSPACE_PATH + project.getName());
-			FileUtils.deleteDirectory(file);
-		}
-	}
-	
-	private void deleteAllAttachFiles() throws IOException {
-		final String WORKSPACE_PATH = "./WebContent/Workspace/";
-		final String ATTACH_FILE_FOLDER_NAME = "AttachFile";
-		File file = new File(WORKSPACE_PATH + ATTACH_FILE_FOLDER_NAME);
-		FileUtils.deleteDirectory(file);
+	private String getNewProjectName(String projectName) {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("_yyyyMMddHHmmss");
+		return projectName + simpleDateFormat.format(calendar.getTime());
 	}
 }

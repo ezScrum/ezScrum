@@ -157,4 +157,46 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		assertEquals(userEmail, account.getEmail());
 		assertEquals(true, account.getEnable());
 	}
+	
+	@Test
+	public void testCreateExistingAccount() throws JSONException {
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userNickName = "TEST_USER_NICK_NAME";
+		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
+		String userEmail = "TEST_USER_EMAIL";
+		boolean enbale = true;
+
+		JSONObject accountJSON = new JSONObject();
+		accountJSON.put(AccountJSONEnum.USERNAME, userName);
+		accountJSON.put(AccountJSONEnum.NICK_NAME, userNickName);
+		accountJSON.put(AccountJSONEnum.PASSWORD, userPassword);
+		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
+		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
+
+		// Call '/accounts' API
+		Response response = mClient.target(BASE_URL)
+		        .path("accounts")
+		        .request()
+		        .post(Entity.text(accountJSON.toString()));
+
+		AccountObject account = AccountObject.get(userName);
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(userName, account.getUsername());
+		assertEquals(userNickName, account.getNickName());
+		assertEquals(userPassword, account.getPassword());
+		assertEquals(userEmail, account.getEmail());
+		assertEquals(true, account.getEnable());
+		
+		// Call '/accounts' API again
+		response = mClient.target(BASE_URL)
+		        .path("accounts")
+		        .request()
+		        .post(Entity.text(accountJSON.toString()));
+		
+		// Assert
+		assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+	}
 }
