@@ -1,8 +1,8 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -812,6 +812,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(IssueTypeEnum.TYPE_TASK, attachFilesInDroppedTask.get(0).getIssueType());
 	}
 	
+	@Test
 	public void testImportExistedProjectJSON() throws JSONException {
 		// Test Data
 		JSONObject entityJSON = new JSONObject();
@@ -1174,8 +1175,59 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Assert
 		ProjectObject latestProject = ProjectObject.getAllProjects().get(1);
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertTrue(latestProject != null);
+		assertNotNull(latestProject);
 		Assert.assertNotSame("TEST_PROJECT_1", latestProject.getName());
 		Assert.assertNotSame("TEST_PROJECT_1", latestProject.getDisplayName());
+	}
+	
+	@Test
+	public void testImportExistedAccountJSON() throws JSONException {
+		// Test Data
+		String userName = "TEST_ACCOUNT_USERNAME";
+		String nickName = "TEST_ACCOUNT_NICKNAME";
+		String password = "TEST_ACCOUNT_PASSWORD";
+		String email = "TEST_ACCOUNT_EMAIL";
+		boolean enable = true;
+		
+		AccountObject existedAccount = new AccountObject(userName);
+		existedAccount.setNickName(nickName);
+		existedAccount.setPassword(password);
+		existedAccount.setEmail(email);
+		existedAccount.setEnable(enable);
+		existedAccount.save();
+		
+		assertNotNull(AccountObject.get(userName));
+		
+		JSONObject entityJSON = new JSONObject();
+		//// Accounts
+		JSONArray accountJSONArray = new JSONArray();
+		entityJSON.put(ExportJSONEnum.ACCOUNTS, accountJSONArray);
+		entityJSON.put(ExportJSONEnum.PROJECTS, new JSONArray());
+		JSONObject accountJSON = new JSONObject();
+		accountJSON.put(AccountJSONEnum.USERNAME, userName);
+		accountJSON.put(AccountJSONEnum.NICK_NAME, nickName + "_NEW");
+		accountJSON.put(AccountJSONEnum.PASSWORD, password + "_NEW");
+		accountJSON.put(AccountJSONEnum.EMAIL, email + "_NEW");
+		accountJSON.put(AccountJSONEnum.ENABLE, false);
+		accountJSONArray.put(accountJSON);
+		
+		assertEquals(2, AccountObject.getAllAccounts().size());
+		assertEquals(userName, AccountObject.getAllAccounts().get(1).getUsername());
+		
+		// Import existed project
+		// Call '/dataMigration/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("dataMigration/projects")
+		        .request()
+		        .post(Entity.text(entityJSON.toString()));
+		
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(2, AccountObject.getAllAccounts().size());
+		assertEquals(userName, AccountObject.getAllAccounts().get(1).getUsername());
+		assertEquals(nickName, AccountObject.getAllAccounts().get(1).getNickName());
+		assertEquals(AccountDAO.getMd5(password), AccountObject.getAllAccounts().get(1).getPassword());
+		assertEquals(email, AccountObject.getAllAccounts().get(1).getEmail());
+		assertEquals(enable, AccountObject.getAllAccounts().get(1).getEnable());
 	}
 }
