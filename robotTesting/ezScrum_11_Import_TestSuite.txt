@@ -1,0 +1,13 @@
+*** Settings ***
+Suite Setup
+Suite Teardown
+Force Tags        Import
+Resource          keywords/Import/ezScrum_Import.txt
+
+*** Test Cases ***
+Test Import - check Project
+    [Setup]    Test Import Setup
+    # 驗證 Project
+    Page Should Contain    Project01
+    Page Should Contain    Project02
+    [Teardown]

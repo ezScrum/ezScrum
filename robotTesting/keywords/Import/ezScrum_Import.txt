@@ -1,0 +1,28 @@
+*** Settings ***
+Resource          ../ezScrum_Login.txt
+
+*** Keywords ***
+Test Import Setup
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData\\golden_answer_project01_project02.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
+    # 等待匯出成功
+    Wait Until Page Contains    Project Import successfully.
+    Click Element    xpath=//button[text()="OK"]
+    #回到Projcet List
+    Click Element    xpath=//td[text()="ProjectList"]
+
+Test Import Teardown
+    Close Browser
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
