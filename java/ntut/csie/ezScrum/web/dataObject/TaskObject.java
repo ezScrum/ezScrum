@@ -5,6 +5,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
@@ -12,11 +17,6 @@ import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class TaskObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = StatusEnum.NEW;
@@ -54,7 +54,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setName(String name) {
-		mName = handleSpecialChar(name);
+		mName = name;
 		return this;
 	}
 
@@ -79,7 +79,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setNotes(String notes) {
-		mNotes = handleSpecialChar(notes);
+		mNotes = notes;
 		return this;
 	}
 
@@ -625,12 +625,5 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
 		history.save();
-	}
-	
-	private String handleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
 	}
 }
