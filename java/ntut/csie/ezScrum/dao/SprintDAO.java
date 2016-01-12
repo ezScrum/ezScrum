@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
@@ -143,7 +144,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	
 	public long getNextSprintId() {
 		// Get next sprint id for action GetOneSprintPlanAction (when project has no sprint)
-		String query = "show table status from ezscrum where Name = 'sprint'";
+		Configuration config = new Configuration();
+		String query = "show table status from " + config.getDBName() + " where Name = 'sprint'";
 		ResultSet result = mControl.executeQuery(query);
 		long nextSprintId = 0;
 		try {
