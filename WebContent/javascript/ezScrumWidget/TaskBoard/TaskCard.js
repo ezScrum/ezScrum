@@ -115,7 +115,6 @@ function createTaskCard(task, storyID) {
 		updateData_AttachFile : function(attachFileList) {
 			var data = this.data;
 			data.AttachFileList = attachFileList;
-            console.log(data);
         	this.items.get(0).update(createTaskContent(data));
 		},
 		updateName : function(name) {

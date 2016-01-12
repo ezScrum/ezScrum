@@ -45,7 +45,7 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 		var h=0;
 		for(var i=0;i<this.items.length;i++)
 		{
-			h+=this.items.get(i).getHeight();
+			h+=this.get(i).getHeight();
 		}
 		return h;
 	}
@@ -75,7 +75,7 @@ function createStoryStatusPanel(storyID) {
 		        h=0;
 		    }
 			for ( var i = 0; i < this.items.length; i++) {
-				var h2 = this.items.get(i).getAllElementHeight();
+				var h2 = this.get(i).getAllElementHeight();
 				if (h2 > h)
 					h = h2;
 			}
