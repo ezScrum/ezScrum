@@ -44,7 +44,7 @@ var Story = Ext.data.Record.create([
 
 /* 定義 Task 資料欄位 */
 var Task = Ext.data.Record.create([
-   {name:'Id', sortType:'asInt'}, 'Link', 'Name', 'Status', {name:'Estimate', sortType:'asFloat'}, 'Actual', 'Handler', 'Partners', 'Notes', 'Actors', 'Remains'
+   {name:'Id', sortType:'asInt'}, 'Link', 'Name', 'Status', {name:'Estimate', sortType:'asFloat'}, 'Actual', 'Handler', 'Partners', 'Notes', 'Actors', 'Remains', 'AttachFileList'
 ]);
 
 /* 定義 Issue Tag 資料欄位 */
@@ -100,6 +100,13 @@ var jsonStoryReader = new Ext.data.JsonReader({
    id : 'Id',
    totalProperty: 'Total'
 }, Story);
+
+var jsonTaskReader = new Ext.data.JsonReader({
+	   root: 'Tasks',
+	   idProperty : 'Id',
+	   id : 'Id',
+	   totalProperty: 'Total'
+}, Task);
 
 /* Task XML Parser */
 var taskReader = new Ext.data.XmlReader({

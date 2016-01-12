@@ -27,7 +27,6 @@ function renderTaskContext(record) {
 function renderAttachFile(record) {
 	var taskId = record.Id;
 	var fileList = record.AttachFileList;
-
 	if (fileList.length == 0)
 		return "";
 

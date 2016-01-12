@@ -19,10 +19,8 @@ function renderStoryHeader(record, edit, history, upload) {
 // 顯示Story的Attach File
 function renderStoryAttachFile(record) {
 	// <p><b>Attach Files:</b><br /><a href="{0}" target="_blank">{1}</a>
-	
 	var storyId = record.get('Id');
 	var fileList = record.get('AttachFileList');
-
 	if (fileList.length == 0)
 		return "";
 
