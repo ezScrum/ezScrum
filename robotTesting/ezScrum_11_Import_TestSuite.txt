@@ -5,13 +5,13 @@ Force Tags        Import
 Resource          keywords/Import/ezScrum_Import.txt
 
 *** Test Cases ***
-Test Import - check Project
+Test Import - Check Project
     [Setup]    Test Import Setup
     # 驗證 Project
     Page Should Contain    Project01
     Page Should Contain    Project02
     # 進入 Project01
-    Click Element    //div[text()="Project01"]
+    Click Element    xpath=//div[text()="Project01"]
     #進入Prodouct Backlog
     Select Node Product    Product Backlog
     #測試是否有Story02
@@ -19,6 +19,7 @@ Test Import - check Project
     #Get tag name
     ${tagname}    Get text    xpath=//div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
     Should be equal    ${tagname}    tag02
-    ${story02name}    Get text    xpath=//div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]
-    Should Be Equal    ${story02name}    Name: Story02
-    [Teardown]
+    Click Element    xpath=//div[text()="Story02"]/../../../../../div
+    Comment    ${story02name}    Get text    xpath=//div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]
+    Comment    Should Be Equal    ${story02name}    Name: Story02
+    [Teardown]    Test Import Teardown

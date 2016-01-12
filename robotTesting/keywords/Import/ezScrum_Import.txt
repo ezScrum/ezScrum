@@ -10,7 +10,7 @@ Test Import Setup
     # 點選 Import 頁面
     Click Element    xpath=//u[text()="Import"]
     # 取得 JSON 完整路徑
-    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData\\golden_answer_project01_project02.json
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    golden_answer_project01_project02.json
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Click Element    xpath=//button[text()="Import"]
@@ -25,4 +25,4 @@ Test Import Setup
 Test Import Teardown
     Close Browser
     # clean DB
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
