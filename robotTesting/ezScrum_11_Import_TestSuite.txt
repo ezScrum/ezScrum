@@ -13,13 +13,9 @@ Test Import - Check Project
     # 進入 Project01
     Click Element    xpath=//div[text()="Project01"]
     #進入Prodouct Backlog
-    Select Node Product    Product Backlog
-    #測試是否有Story02
-    Page Should Contain Element    xpath=//div[text()="Story02"]
-    #Get tag name
-    ${tagname}    Get text    xpath=//div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
-    Should be equal    ${tagname}    tag02
-    Click Element    xpath=//div[text()="Story02"]/../../../../../div
-    Comment    ${story02name}    Get text    xpath=//div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]
-    Comment    Should Be Equal    ${story02name}    Name: Story02
+    Comment    Assert ProductBacklog story
+    #進入Release Plan
+    Comment    Assert ReleasePlan
+    #進入Sprint Plan
+    Comment    Assert SprintBacklog
     [Teardown]    Test Import Teardown

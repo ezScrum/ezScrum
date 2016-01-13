@@ -6,23 +6,80 @@ Test Import Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
     # 進入 Management 頁面
-    Click Element    xpath=//td[text()="Management"]
+    Comment    Click Element    xpath=//td[text()="Management"]
     # 點選 Import 頁面
-    Click Element    xpath=//u[text()="Import"]
+    Comment    Click Element    xpath=//u[text()="Import"]
     # 取得 JSON 完整路徑
-    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    golden_answer_project01_project02.json
+    Comment    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    golden_answer_project01_project02.json
     #點選 Browse 按鈕
-    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
-    Click Element    xpath=//button[text()="Import"]
+    Comment    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Comment    Click Element    xpath=//button[text()="Import"]
     # 點選YES
-    Click Element    xpath=//button[text()="Yes"]
+    Comment    Click Element    xpath=//button[text()="Yes"]
     # 等待匯出成功
-    Wait Until Page Contains    Project Import successfully.
-    Click Element    xpath=//button[text()="OK"]
+    Comment    Wait Until Page Contains    Project Import successfully.
+    Comment    Click Element    xpath=//button[text()="OK"]
     #回到Projcet List
-    Click Element    xpath=//td[text()="ProjectList"]
+    Comment    Click Element    xpath=//td[text()="ProjectList"]
 
 Test Import Teardown
     Close Browser
     # clean DB
     Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Assert ProductBacklog story
+    Select Node Product    Product Backlog
+    #測試是否有Story02
+    Page Should Contain Element    xpath=//div[text()="Story01"]
+    Page Should Contain Element    xpath=//div[text()="Story02"]
+    #Get tag name
+    ${tag01name}    Get text    xpath=//div[text()="Story01"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
+    ${tag02name}    Get text    xpath=//div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
+    Should be equal    ${tag01name}    tag01
+    Should be equal    ${tag02name}    tag02
+    #點開+的符號
+    Mouse Down    //div[text()="Story02"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    Mouse Down    //div[text()="Story02"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    Mouse Down    //div[text()="Story01"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    Mouse Down    //div[text()="Story01"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    #測試影藏的內容
+    ${story02name}    Get text    xpath=//div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]
+    Should Be Equal    ${story02name}    Name:\nStory02
+    ${png}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[4]
+    Should Be Equal    ${png}    Attach Files:\npng測試.png [Delete]
+    ${pdf}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[5]
+    Should Be Equal    ${pdf}    Attach Files:\npdf測試.pdf [Delete]
+    ${jpeg}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[6]
+    Should Be Equal    ${jpeg}    Attach Files:\njpeg測試.jpg [Delete]
+    ${doc}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[7]
+    Should Be Equal    ${doc}    Attach Files:\ndoc測試.doc [Delete]
+    ${docx}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[8]
+    Should Be Equal    ${docx}    Attach Files:\ndocx測試.docx [Delete]
+
+Assert ReleasePlan
+    Select Node Product    Release Plan
+    Wait Until Page Contains    Release & Sprint List
+    Click Element    //div[text()="Release01"]
+    Click Element    //button[text()="Edit Release Plan"]
+    Wait Until Page Contains    Edit Release #
+    Compare Field Content    //input[@name="Name"]    Release01
+    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+
+Assert SprintBacklog
+    Select Node Product    Sprint Plan
+    Wait Until Page Contains    Sprint Plan List
+    #測 Sprint01 的資料
+    Click Element    //div[text()="Sprint01"]
+    Click Element    //button[text()="Edit Sprint"]
+    Wait Until Page Contains    Edit Sprint #
+    Compare Field Content    //textarea[@name="Goal"]    Sprint01
+    Compare Field Content    //input[@name="DemoPlace"]    Lab1321
+    Compare Field Content    //input[@name="DailyScrum"]    17:00@Lab1321
+    Click Element    //button[text()="Cancel"]
+    #測 Sprint02 的資料
+    Click Element    //div[text()="Sprint02"]
+    Click Element    //button[text()="Edit Sprint"]
+    Wait Until Page Contains    Edit Sprint #
+    Compare Field Content    //textarea[@name="Goal"]    Sprint02
+    Compare Field Content    //input[@name="DemoPlace"]    Lab1321
+    Compare Field Content    //input[@name="DailyScrum"]    17:00@Lab1321
