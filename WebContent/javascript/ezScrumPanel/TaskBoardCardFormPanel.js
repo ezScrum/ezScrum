@@ -314,7 +314,7 @@ var RE_OpenIssueWindow = new ezScrum.window.ReOpenIssueWindow({
 			 * Story Re-Open 需調整 Sprint Desc. and Burndown Chart的資訊
 			 *  Task Re-Open 目前的機制是不要復原 Remain Hour, 所以 move card 就好
 			 */
-			if(this.issueCard.issueType == 'story') {
+			if(this.issueCard.issueType == 'Story') {
 				var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
 				Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
 				Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
