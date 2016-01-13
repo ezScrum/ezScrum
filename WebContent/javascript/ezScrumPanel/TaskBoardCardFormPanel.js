@@ -166,7 +166,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var title = 'Attach File';
 		if(success) {
 			Ext.example.msg(title, 'Success.');
-			
 			// update Task Card Info
 			var issueId = record.data['Id'];
 			var issueType = record.issueType;
@@ -421,7 +420,7 @@ function deleteTaskAttachFile(file_Id, issue_Id) {
 				success : function(response) {
 					Ext.example.msg('Delete File', 'Success.');
 					
-					var records = jsonStoryReader.read(response);
+					var records = jsonTaskReader.read(response);
 					
 					if(records.success && records.totalRecords > 0) {
 						var record = records.records[0];

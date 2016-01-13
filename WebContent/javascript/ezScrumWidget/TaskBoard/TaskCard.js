@@ -27,7 +27,6 @@ function renderTaskContext(record) {
 function renderAttachFile(record) {
 	var taskId = record.Id;
 	var fileList = record.AttachFileList;
-
 	if (fileList.length == 0)
 		return "";
 
@@ -116,7 +115,6 @@ function createTaskCard(task, storyID) {
 		updateData_AttachFile : function(attachFileList) {
 			var data = this.data;
 			data.AttachFileList = attachFileList;
-            console.log(data);
         	this.items.get(0).update(createTaskContent(data));
 		},
 		updateName : function(name) {
