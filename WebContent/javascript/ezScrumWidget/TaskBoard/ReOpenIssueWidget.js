@@ -75,7 +75,6 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				}
 			} ]
 		}
-
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.ReOpenForm.superclass.initComponent.apply(this, arguments);
 
