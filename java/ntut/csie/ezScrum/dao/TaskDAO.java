@@ -6,8 +6,10 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
@@ -233,6 +235,29 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			return true;
 		}
 		return false;
+	}
+
+	public ArrayList<HistoryObject> getRemainsHistoriesBeforeSpecificTime(long taskId, long lastSecondOfTheDate) {
+		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(HistoryEnum.TABLE_NAME);
+		valueSet.addLessOrEqualCondition(HistoryEnum.CREATE_TIME, lastSecondOfTheDate);
+		valueSet.addEqualCondition(HistoryEnum.HISTORY_TYPE, HistoryObject.TYPE_REMAIMS);
+		valueSet.addEqualCondition(HistoryEnum.ISSUE_ID, taskId);
+		valueSet.addEqualCondition(HistoryEnum.ISSUE_TYPE, IssueTypeEnum.TYPE_TASK);
+		valueSet.setOrderBy(HistoryEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		try {
+			while (result.next()) {
+				remainsHistories.add(HistoryDAO.convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return remainsHistories;
 	}
 
 	public static TaskObject convert(ResultSet result) throws SQLException {

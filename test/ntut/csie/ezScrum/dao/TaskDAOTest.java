@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,10 +22,12 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.jcis.core.util.DateUtil;
 
 public class TaskDAOTest {
 	private MySQLControl mControl = null;
@@ -221,7 +224,7 @@ public class TaskDAOTest {
 	}
 
 	@Test
-	public void testGetTasksByStory() throws SQLException {
+	public void testGetTasksByStory() {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			TaskObject task = new TaskObject(sProjectId);
@@ -245,7 +248,7 @@ public class TaskDAOTest {
 	}
 	
 	@Test
-	public void testGetDroppedTasks() throws SQLException {
+	public void testGetDroppedTasks() {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			TaskObject task = new TaskObject(sProjectId);
@@ -496,7 +499,101 @@ public class TaskDAOTest {
 		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
 		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
 	}
-
+	
+	@Test
+	public void testGetRemainsHistoriesBeforeSpecificTime() {
+		// create a task
+		TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
+		task.setName("TEST_NAME")
+		        .setEstimate(10)
+		        .setActual(0)
+		        .save();
+		// check task status before test
+		Date firstDate = DateUtil.dayFillter("2016/01/13", DateUtil._8DIGIT_DATE_1);
+		assertEquals(10, task.getRemains(firstDate));
+		// create a update task remains history1
+		Date changeRemainsDate1 = DateUtil.dayFillter("2016/01/14", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+		        .setHistoryType(HistoryObject.TYPE_REMAIMS)
+		        .setOldValue(String.valueOf(10))
+		        .setNewValue(String.valueOf(9))
+		        .setCreateTime(changeRemainsDate1.getTime());
+		history1.save();
+		// create a update task remains history2
+		Date changeRemainsDate2 = DateUtil.dayFillter("2016/01/15", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+		        .setHistoryType(HistoryObject.TYPE_REMAIMS)
+		        .setOldValue(String.valueOf(9))
+		        .setNewValue(String.valueOf(8))
+		        .setCreateTime(changeRemainsDate2.getTime());
+		history2.save();
+		// create a update task remains history3
+		Date changeRemainsDate3 = DateUtil.dayFillter("2016/01/16", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history3 = new HistoryObject();
+		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+		        .setHistoryType(HistoryObject.TYPE_REMAIMS)
+		        .setOldValue(String.valueOf(8))
+		        .setNewValue(String.valueOf(7))
+		        .setCreateTime(changeRemainsDate3.getTime());
+		history3.save();
+		// create a update task remains history4
+		Date changeRemainsDate4 = DateUtil.dayFillter("2016/01/17", DateUtil._8DIGIT_DATE_1);
+		HistoryObject history4 = new HistoryObject();
+		history4.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+		        .setHistoryType(HistoryObject.TYPE_REMAIMS)
+		        .setOldValue(String.valueOf(7))
+		        .setNewValue(String.valueOf(6))
+		        .setCreateTime(changeRemainsDate4.getTime());
+		history4.save();
+		// First Date
+		ArrayList<HistoryObject> remainsHistoriesBeforeFirstDate = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(task.getId(), firstDate.getTime());
+		assertEquals(0, remainsHistoriesBeforeFirstDate.size());
+		// ChangeRemainsDate1
+		ArrayList<HistoryObject> remainsHistoriesBeforeChangeRemainsDate1 = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(task.getId(), changeRemainsDate1.getTime());
+		assertEquals(1, remainsHistoriesBeforeChangeRemainsDate1.size());
+		assertEquals("10", remainsHistoriesBeforeChangeRemainsDate1.get(0).getOldValue());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate1.get(0).getNewValue());
+		assertEquals(changeRemainsDate1.getTime(), remainsHistoriesBeforeChangeRemainsDate1.get(0).getCreateTime());
+		// ChangeRemainsDate2
+		ArrayList<HistoryObject> remainsHistoriesBeforeChangeRemainsDate2 = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(task.getId(), changeRemainsDate2.getTime());
+		assertEquals(2, remainsHistoriesBeforeChangeRemainsDate2.size());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate2.get(0).getOldValue());
+		assertEquals("8", remainsHistoriesBeforeChangeRemainsDate2.get(0).getNewValue());
+		assertEquals(changeRemainsDate2.getTime(), remainsHistoriesBeforeChangeRemainsDate2.get(0).getCreateTime());
+		assertEquals("10", remainsHistoriesBeforeChangeRemainsDate2.get(1).getOldValue());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate2.get(1).getNewValue());
+		assertEquals(changeRemainsDate1.getTime(), remainsHistoriesBeforeChangeRemainsDate2.get(1).getCreateTime());
+		// ChangeRemainsDate3
+		ArrayList<HistoryObject> remainsHistoriesBeforeChangeRemainsDate3 = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(task.getId(), changeRemainsDate3.getTime());
+		assertEquals(3, remainsHistoriesBeforeChangeRemainsDate3.size());
+		assertEquals("8", remainsHistoriesBeforeChangeRemainsDate3.get(0).getOldValue());
+		assertEquals("7", remainsHistoriesBeforeChangeRemainsDate3.get(0).getNewValue());
+		assertEquals(changeRemainsDate3.getTime(), remainsHistoriesBeforeChangeRemainsDate3.get(0).getCreateTime());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate3.get(1).getOldValue());
+		assertEquals("8", remainsHistoriesBeforeChangeRemainsDate3.get(1).getNewValue());
+		assertEquals(changeRemainsDate2.getTime(), remainsHistoriesBeforeChangeRemainsDate3.get(1).getCreateTime());
+		assertEquals("10", remainsHistoriesBeforeChangeRemainsDate3.get(2).getOldValue());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate3.get(2).getNewValue());
+		assertEquals(changeRemainsDate1.getTime(), remainsHistoriesBeforeChangeRemainsDate3.get(2).getCreateTime());
+		// ChangeRemainsDate4
+		ArrayList<HistoryObject> remainsHistoriesBeforeChangeRemainsDate4 = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(task.getId(), changeRemainsDate4.getTime());
+		assertEquals(4, remainsHistoriesBeforeChangeRemainsDate4.size());
+		assertEquals("7", remainsHistoriesBeforeChangeRemainsDate4.get(0).getOldValue());
+		assertEquals("6", remainsHistoriesBeforeChangeRemainsDate4.get(0).getNewValue());
+		assertEquals(changeRemainsDate4.getTime(), remainsHistoriesBeforeChangeRemainsDate4.get(0).getCreateTime());
+		assertEquals("8", remainsHistoriesBeforeChangeRemainsDate4.get(1).getOldValue());
+		assertEquals("7", remainsHistoriesBeforeChangeRemainsDate4.get(1).getNewValue());
+		assertEquals(changeRemainsDate3.getTime(), remainsHistoriesBeforeChangeRemainsDate4.get(1).getCreateTime());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate4.get(2).getOldValue());
+		assertEquals("8", remainsHistoriesBeforeChangeRemainsDate4.get(2).getNewValue());
+		assertEquals(changeRemainsDate2.getTime(), remainsHistoriesBeforeChangeRemainsDate4.get(2).getCreateTime());
+		assertEquals("10", remainsHistoriesBeforeChangeRemainsDate4.get(3).getOldValue());
+		assertEquals("9", remainsHistoriesBeforeChangeRemainsDate4.get(3).getNewValue());
+		assertEquals(changeRemainsDate1.getTime(), remainsHistoriesBeforeChangeRemainsDate4.get(3).getCreateTime());
+	}
+	
 	private void closeResultSet(ResultSet result) {
 		if (result != null) {
 			try {
