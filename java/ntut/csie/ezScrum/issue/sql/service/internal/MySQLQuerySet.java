@@ -128,6 +128,11 @@ public class MySQLQuerySet implements IQueryValueSet {
 		if (name.contains(".")) name = name.replace(".", "`.`");
 		this._conditionList.add("`" + name + "` < " + value);
 	}
+	
+	public void addLessOrEqualCondition(String name, long value) {
+		if (name.contains(".")) name = name.replace(".", "`.`");
+		this._conditionList.add("`" + name + "` <= " + value);
+	}
 
 	public void addBigCondition(String name, String value) {
 		if (name.contains(".")) name = name.replace(".", "`.`");

@@ -257,17 +257,8 @@ public class HistoryDAOTest {
 			idList.add(id);
 		}
 
-		assertEquals(
-				5,
-				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
-						IssueTypeEnum.TYPE_STORY).size());
-
-		mHistoryDao
-				.deleteByIssue(ISSUE_ID, IssueTypeEnum.TYPE_STORY);
-
-		assertEquals(
-				0,
-				mHistoryDao.getHistoriesByIssue(ISSUE_ID,
-						IssueTypeEnum.TYPE_STORY).size());
+		assertEquals(5, mHistoryDao.getHistoriesByIssue(ISSUE_ID, IssueTypeEnum.TYPE_STORY).size());
+		mHistoryDao.deleteByIssue(ISSUE_ID, IssueTypeEnum.TYPE_STORY);
+		assertEquals(0, mHistoryDao.getHistoriesByIssue(ISSUE_ID, IssueTypeEnum.TYPE_STORY).size());
 	}
 }
