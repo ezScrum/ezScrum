@@ -232,7 +232,7 @@ public class TaskObject implements IBaseObject {
 
 	public double getRemains(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
-		int remains = mRemains;
+		int remains = mEstimate; // origin remains equal to estimate
 		// Get remain histories before specific time
 		ArrayList<HistoryObject> remainsHistories = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(mId, lastSecondOfTheDate);
 		if (!remainsHistories.isEmpty()) {
