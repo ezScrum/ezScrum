@@ -65,7 +65,7 @@ Assert ReleasePlan
     Compare Field Content    //input[@name="Name"]    Release01
     Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
 
-Assert SprintBacklog
+Assert SprintPlan
     Select Node Product    Sprint Plan
     Wait Until Page Contains    Sprint Plan List
     #測 Sprint01 的資料
@@ -83,3 +83,39 @@ Assert SprintBacklog
     Compare Field Content    //textarea[@name="Goal"]    Sprint02
     Compare Field Content    //input[@name="DemoPlace"]    Lab1321
     Compare Field Content    //input[@name="DailyScrum"]    17:00@Lab1321
+
+Assert SprintBacklog
+    Select Node Product    Sprint Backlog
+    Wait Until Page Contains    Story & Task List
+    Click Element    //div[text()="Story01"]
+    Click Element    //button[text()="Edit Story"]
+    Wait Until Page Contains    Edit Story #
+    Compare Field Content    //textarea[@name="Name"]    Story01
+    Compare Field Content    //input[@name="Estimate"]    13
+    Compare Field Content    //input[@name="Importance"]    80
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Compare Field Content    //input[@name="Tags"]    tag01
+    Compare Field Content    //textarea[@name="HowToDemo"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click Element    //button[text()="Cancel"]
+    Click Element    //div[text()="Task01"]
+    Click Element    //button[text()="Edit Task"]
+    Compare Field Content    //input[@name="Name"]    Task01
+    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    account3
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+
+Assert Retrospective
+    Select Node Product    Retrospective
+    Wait Until Page Contains    Retrospective List
+    Click Element    //div[text()="Good01"]
+    Click Element    //button[text()="Edit Retrospective"]
+    Compare Field Content    //input[@name="Name"]    Good01
+    Compare Field Content    //input[@name="Type"]    Good
+    Compare Field Content    //input[@name="Status"]    new
+    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click Element    //button[text()="Cancel"]
+    Click Element    //div[text()="Improvement"]
+    Click Element    //button[text()="Edit Retrospective"]
+    Compare Field Content    //input[@name="Name"]    Improvement
+    Compare Field Content    //input[@name="Type"]    Improvement
+    Compare Field Content    //input[@name="Status"]    closed
+    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f

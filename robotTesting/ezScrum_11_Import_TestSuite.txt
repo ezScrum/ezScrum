@@ -17,5 +17,26 @@ Test Import - Check Project
     #進入Release Plan
     Comment    Assert ReleasePlan
     #進入Sprint Plan
+    Comment    Assert SprintPlan
+    #進入Sprint Backlog
     Comment    Assert SprintBacklog
+    #r進入 Retrospective
+    Comment    Assert Retrospective
+    #進入Uplanned
+    Select Node Product    Unplanned
+    Wait Until Page Contains    Unplanned Item List
+    Click Element    //div[text()="Unplan01"]
+    Click Element    //button[text()="Edit Unplanned Item"]
+    Compare Field Content    //input[@name="Name"]    Unplan01
+    Compare Field Content    //input[@name="Handler"]    account3
+    Compare Field Content    //input[@name="Status"]    assigned
+    Compare Field Content    //input[@name="Estimate"]    3
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click Element    //button[text()="Cancel"]
+    Click Element    //div[text()="Unplan02"]
+    Click Element    //button[text()="Edit Unplanned Item"]
+    Compare Field Content    //input[@name="Name"]    Unplan02
+    Compare Field Content    //input[@name="Status"]    new
+    Compare Field Content    //input[@name="Estimate"]    8
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
     [Teardown]    Test Import Teardown
