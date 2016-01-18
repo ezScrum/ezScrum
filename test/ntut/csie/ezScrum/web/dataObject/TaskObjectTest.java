@@ -872,13 +872,7 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history
 		Date changeStatusDate = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history = new HistoryObject();
-		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(task.getRemains()))
-				.setNewValue(String.valueOf(5))
-				.setCreateTime(changeStatusDate.getTime());
-		history.save();
+		task.setRemains(5).save(changeStatusDate.getTime());
 		// check task remains after add a update task remains history
 		assertEquals(5, task.getRemains(specificDate));
 	}
@@ -894,22 +888,10 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(task.getRemains()))
-				.setNewValue(String.valueOf(5))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(5).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/04-16:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(5))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(8).save(changeRemainsDate2.getTime());
 		// check task remains after add two change remains histories
 		assertEquals(8, task.getRemains(specificDate));
 	}
@@ -925,40 +907,16 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(firstDate));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(10))
-				.setNewValue(String.valueOf(9))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(9).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(9))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(8).save(changeRemainsDate2.getTime());
 		// create a update task remains history3
 		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/07", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history3 = new HistoryObject();
-		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(8))
-				.setNewValue(String.valueOf(7))
-				.setCreateTime(changeRemainsDate3.getTime());
-		history3.save();
+		task.setRemains(7).save(changeRemainsDate3.getTime());
 		// create a update task remains history4
 		Date changeRemainsDate4 = DateUtil.dayFillter("2015/02/08", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history4 = new HistoryObject();
-		history4.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(7))
-				.setNewValue(String.valueOf(6))
-				.setCreateTime(changeRemainsDate4.getTime());
-		history4.save();
+		task.setRemains(6).save(changeRemainsDate4.getTime());
 		// check task remains after add five change remains histories
 		assertEquals(10, task.getRemains(firstDate));
 		assertEquals(9, task.getRemains(changeRemainsDate1));
@@ -977,31 +935,13 @@ public class TaskObjectTest {
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/03", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(13))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(8).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(8))
-				.setNewValue(String.valueOf(6))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(6).save(changeRemainsDate2.getTime());
 		// create a update task remains history3
 		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history3 = new HistoryObject();
-		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(6))
-				.setNewValue(String.valueOf(3))
-				.setCreateTime(changeRemainsDate3.getTime());
-		history3.save();
+		task.setRemains(3).save(changeRemainsDate3.getTime());
 		// check task remains after add three change remains histories
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/02", DateUtil._8DIGIT_DATE_1)));
