@@ -18,11 +18,16 @@ Test TaskBoard_AttachFile - Teardown
     #Delete Attached file in Story
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[@onclick]/img
     click element    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[@onclick]/img
-    Wait Until Element Is Visible    //button[text()="Yes"]
-    click button    //button[text()="Yes"]
+    Wait Until Element Is Visible    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
+    click button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test TaskBoard_AttachFile - Teardown on task
+    log    teardown
     #Delete Attached file in Task
-    Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick]/img
-    click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick]/img
-    Wait Until Element Is Visible    //button[text()="Yes"]
-    click button    //button[text()="Yes"]
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Wait Until Page Contains Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick="deleteTaskAttachFile(1, 2); false;"]
+    click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick="deleteTaskAttachFile(1, 2); false;"]
+    Wait Until Page Contains Element    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
+    click button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
