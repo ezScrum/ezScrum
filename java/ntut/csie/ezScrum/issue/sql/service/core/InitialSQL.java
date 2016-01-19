@@ -77,54 +77,6 @@ public class InitialSQL {
 	private List<String> get_clean_Tables_of_MySQL_Instruction() {
 		List<String> sqlIns = new ArrayList<String>();
 
-		// clean DoD
-		sqlIns.add("TRUNCATE `buildresult`");
-		sqlIns.add("TRUNCATE `commit_log`");
-		sqlIns.add("TRUNCATE `commit_story_relation`");
-		sqlIns.add("TRUNCATE `query`");
-
-		// clean ezTrack
-		sqlIns.add("TRUNCATE `eztrack_combofield`");
-		sqlIns.add("TRUNCATE `eztrack_issuerelation`");
-		sqlIns.add("TRUNCATE `eztrack_issuetype`");
-		sqlIns.add("TRUNCATE `eztrack_report`");
-		sqlIns.add("TRUNCATE `eztrack_typefield`");
-		sqlIns.add("TRUNCATE `eztrack_typefieldvalue`");
-
-		// clean ezScrum
-		sqlIns.add("TRUNCATE `ezscrum_story_relation`;");
-		sqlIns.add("TRUNCATE `ezscrum_tag_relation`;");
-		sqlIns.add("TRUNCATE `ezscrum_tag_table`;");
-
-		// clean Mantis
-		sqlIns.add("TRUNCATE `mantis_bugnote_table`;");
-		sqlIns.add("TRUNCATE `mantis_bugnote_text_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_file_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_history_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_monitor_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_relationship_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_tag_table`;");
-		sqlIns.add("TRUNCATE `mantis_bug_text_table`;");
-		sqlIns.add("TRUNCATE `mantis_custom_field_project_table`;");
-		sqlIns.add("TRUNCATE `mantis_custom_field_string_table`;");
-		sqlIns.add("TRUNCATE `mantis_custom_field_table`;");
-		sqlIns.add("TRUNCATE `mantis_email_table`;");
-		sqlIns.add("TRUNCATE `mantis_filters_table`;");
-		sqlIns.add("TRUNCATE `mantis_news_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_category_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_file_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_hierarchy_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_user_list_table`;");
-		sqlIns.add("TRUNCATE `mantis_project_version_table`;");
-		sqlIns.add("TRUNCATE `mantis_sponsorship_table`;");
-		sqlIns.add("TRUNCATE `mantis_tag_table`;");
-		sqlIns.add("TRUNCATE `mantis_user_pref_table`;");
-		sqlIns.add("TRUNCATE `mantis_user_print_pref_table`;");
-		sqlIns.add("TRUNCATE `mantis_user_profile_table`;");
-		sqlIns.add("DELETE `mantis_user_table`;");
-
 		// ezScrum v1.8 table
 		sqlIns.add("TRUNCATE `account`;");
 		sqlIns.add("TRUNCATE `project_role`;");

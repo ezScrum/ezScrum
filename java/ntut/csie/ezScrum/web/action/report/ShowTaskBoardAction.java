@@ -23,10 +23,8 @@ import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.AccountLogic;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ShowTaskBoardAction extends Action {
 
@@ -68,15 +66,16 @@ public class ShowTaskBoardAction extends Action {
 
 		// backlog = null 代表取得 sprintBackLog 發生問題，所以進入防錯處理，塞入假資料
 		if (backlog != null) {
-			IProject iProject = new ProjectMapper().getProjectByID(project
-					.getName());
-			List<String> actorList = (new ProjectMapper())
-					.getProjectScrumWorkerList(userSession, iProject);
+			// get team members' username who can access Task Board
+			ArrayList<AccountObject> members = project.getProjectMembers();
+			ArrayList<String> memberUsernames = new ArrayList<>();
+			for (AccountObject member : members) {
+				memberUsernames.add(member.getUsername());
+			}
+			// add ALL to show all teammate related tasks
+			memberUsernames.add(0, "ALL");
 
-			actorList.remove(0);
-			actorList.add(0, "ALL");
-
-			request.setAttribute("ActorList", actorList);
+			request.setAttribute("ActorList", memberUsernames);
 			request.setAttribute("SprintPlans", sprints);
 
 			TaskBoard board = null;
