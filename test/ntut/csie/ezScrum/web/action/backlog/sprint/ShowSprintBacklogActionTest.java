@@ -16,7 +16,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;

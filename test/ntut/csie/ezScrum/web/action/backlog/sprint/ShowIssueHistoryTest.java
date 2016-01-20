@@ -29,7 +29,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowIssueHistoryTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateUnplanItem mCUI;
