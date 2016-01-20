@@ -13,21 +13,23 @@ Test TaskBoard_AttachFile - Setup
     load database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     login page    ${LOGIN_URL}
 
-Test TaskBoard_AttachFile - Teardown
-    log    teardown
+Test TaskBoard_AttachFile - Teardown on Story
+    select node product    Retrospective
+    select node product    TaskBoard
     #Delete Attached file in Story
-    Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[@onclick]/img
-    click element    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[@onclick]/img
+    Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
+    click element    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
     Wait Until Element Is Visible    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     click button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
-Test TaskBoard_AttachFile - Teardown on task
-    log    teardown
+Test TaskBoard_AttachFile - Teardown on Task
+    select node product    Retrospective
+    select node product    TaskBoard
     #Delete Attached file in Task
-    Wait Until Page Contains Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick="deleteTaskAttachFile(1, 2); false;"]
-    click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@onclick="deleteTaskAttachFile(1, 2); false;"]
+    Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]
+    click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]
     Wait Until Page Contains Element    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     click button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
