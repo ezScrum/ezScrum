@@ -8,7 +8,6 @@ Library           ../lib/DatabaseHandler.py
 
 *** Keywords ***
 Test TaskBoard_AttachFile - Setup
-    log    setup
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Test_TaskBoard_AttachFile.sql
     load database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     login page    ${LOGIN_URL}

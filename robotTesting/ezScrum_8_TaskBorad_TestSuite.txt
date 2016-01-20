@@ -220,7 +220,6 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
 
 Test TaskBoard - Attach File on Story
     [Setup]    Test TaskBoard_AttachFile - Setup
-    log    meow
     Page Should Contain    TestProject01
     click element    //div[text()="TestProject01"]
     select node product    TaskBoard
@@ -237,7 +236,6 @@ Test TaskBoard - Attach File on Story
 
 Test TaskBoard - Attach File on Task
     [Setup]    Test TaskBoard_AttachFile - Setup
-    log    meow
     Page Should Contain    TestProject01
     click element    //div[text()="TestProject01"]
     select node product    TaskBoard
