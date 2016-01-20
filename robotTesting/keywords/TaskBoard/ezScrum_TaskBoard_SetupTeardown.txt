@@ -7,7 +7,7 @@ Resource          ../SprintBacklog/ezScrum_SprintBacklog_Task.txt
 
 *** Keywords ***
 Test TaskBoard - Setup
-    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Comment    Open Browser    ${LOGIN_URL}    ${BROWSER}
 
 Test TaskBoard - Teardown
     Close Browser
