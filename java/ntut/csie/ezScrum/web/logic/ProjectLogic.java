@@ -13,24 +13,23 @@
  */
 
 package ntut.csie.ezScrum.web.logic;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.ProjectComparator;
-import ntut.csie.jcis.core.ISystemPropertyEnum;
 import ntut.csie.jcis.resource.core.IProject;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ProjectLogic {
 	private static Log log = LogFactory.getLog(ProjectLogic.class);
@@ -130,31 +129,5 @@ public class ProjectLogic {
 			}
 		}
 		return map;
-	}
-
-	/**
-	 * ezScrum v1.8 不需要這個 檢查 metadata 有需要初始化的檔案，複製一份到專案設定檔內。
-	 */
-	public void cloneDefaultFile() {
-		String[] checkFilesName = {"ScrumRole.xml"};
-
-		String workspace_matadata = System.getProperty(ISystemPropertyEnum.WORKSPACE_PATH) + File.separator + "_metadata" + File.separator;
-
-		List<IProject> projects = this.getAllProjects();
-
-		for (IProject p : projects) {
-			String project_path = p.getFullPath().getPathString();
-			for (String filename : checkFilesName) {
-				String checkfile = project_path + File.separator + "_metadata" + File.separator + filename;
-				String clonefile = workspace_matadata + filename;
-				try {
-					ProjectMapper projectMapper = new ProjectMapper();
-					projectMapper.checkAndClone(checkfile, clonefile);
-				} catch (IOException e) {
-					log.debug("clonefile path = " + clonefile + " is not exist");
-					log.debug("exception " + e.toString());
-				}
-			}
-		}
 	}
 }

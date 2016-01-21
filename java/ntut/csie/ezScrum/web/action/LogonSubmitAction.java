@@ -38,7 +38,6 @@ import ch.ethz.ssh2.crypto.Base64;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.ProjectInfoCenter;
 import ntut.csie.ezScrum.web.form.LogonForm;
-import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.support.AccessPermissionManager;
 
 /**
@@ -75,8 +74,6 @@ public class LogonSubmitAction extends Action {
 		// 為了要讓插件中可以使用session的中使用者的密碼，所以將原本利用MD5加密的密碼轉換成利用Base64加密。如此加密的密碼才可逆
 		request.getSession().setAttribute("passwordForPlugin", encodedPassword);
 
-		ProjectLogic projectLogic = new ProjectLogic();
-		projectLogic.cloneDefaultFile();
 		String defaultForwardName = "success";
 		return mapping.findForward(defaultForwardName);
 	}

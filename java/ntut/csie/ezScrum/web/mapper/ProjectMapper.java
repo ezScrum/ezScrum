@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.iteration.iternal.MantisProjectManager;
 import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.control.MantisAccountManager;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -27,9 +29,6 @@ import ntut.csie.jcis.resource.core.IResource;
 import ntut.csie.jcis.resource.core.IWorkspace;
 import ntut.csie.jcis.resource.core.IWorkspaceRoot;
 import ntut.csie.jcis.resource.core.ResourceFacade;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ProjectMapper {
 	private static Log log = LogFactory.getLog(ProjectMapper.class);
@@ -259,78 +258,6 @@ public class ProjectMapper {
 
 		IProject project = root.getProject(projectID);
 		return project;
-	}
-
-	/**
-	 * 取的專案存於外部檔案的資料
-	 * 
-	 * @param project
-	 * @return
-	 */
-	@Deprecated
-	public ProjectInfoForm getProjectInfoForm(ProjectObject project) {
-		IProject iProject = getProjectByID(project.getName());
-		IProjectDescription desc = iProject.getProjectDesc();
-
-		ProjectInfoForm form = new ProjectInfoForm();
-		String fileSize = desc.getAttachFileSize();
-		if (fileSize == null || fileSize.compareTo("") == 0) form.setAttachFileSize("2");
-		else form.setAttachFileSize(desc.getAttachFileSize());
-		form.setName(desc.getName());
-		form.setDisplayName(desc.getDisplayName());
-		form.setComment(desc.getComment());
-		form.setCreateDate(desc.getCreateDate());
-		form.setProjectManager(desc.getProjectManager());
-		form.setOutputPath(desc.getOutput().getPathString());
-		form.setProjectManager(desc.getProjectManager());
-		form.setState(desc.getState());
-		form.setVersion(desc.getVersion());
-
-		ICVS cvs = desc.getCVS();
-		form.setServerType(cvs.getServerType());
-		form.setCvsConnectionType(cvs.getConnectionType());
-		form.setCvsHost(cvs.getHost());
-		form.setCvsUserID(cvs.getUserID());
-		form.setCvsRepositoryPath(cvs.getRepositoryPath() + "/" + cvs.getModuleName());
-		form.setCvsPassword(cvs.getPassword());
-		form.setSvnHook(cvs.getSvnHook());
-
-		log.info("Version:" + form.getVersion());
-
-		form.setSourcePaths(getSourceStrings(desc.getSrc()));
-
-		log.info("External Library length:"
-		        + desc.getExternalReferences().length);
-
-		log.info("Proejct Reference length:"
-		        + desc.getProjectReferences().length);
-		log.info("Source Path length:" + desc.getProjectReferences().length);
-
-		return form;
-	}
-
-	/**
-	 * 回傳此專案的Scrum Team 內可以存取 TaskBoard 權限的人，代表可以領取工作者
-	 * 
-	 * @param userSession
-	 * @param project
-	 */
-	@Deprecated
-	public List<String> getProjectScrumWorkerList(IUserSession userSession, IProject project) {
-		MantisAccountManager mantisAccountManager = new MantisAccountManager(userSession);
-		List<String> scrumWorkers = mantisAccountManager.getScrumWorkers(project);
-		return scrumWorkers;
-	}
-
-	@Deprecated
-	private static String[] getSourceStrings(IPath[] paths) {
-		String[] sourceArray = new String[paths.length];
-
-		for (int i = 0; i < paths.length; i++) {
-			sourceArray[i] = paths[i].getPathString();
-		}
-
-		return sourceArray;
 	}
 
 	/**
