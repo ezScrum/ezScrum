@@ -11,11 +11,11 @@ import java.util.Scanner;
 
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
+import ntut.csie.ezScrum.web.databaseEnum.TabalesNameEnum;
 
 public class TableCreater {
-
 	public static boolean isAllTableExist(ISQLControl checker) {
-		boolean exist = true;
+		boolean isExisting = true;
 		List<String> nameList = new ArrayList<String>();
 
 		checker.connect();
@@ -26,23 +26,21 @@ public class TableCreater {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			checker.close();
 		}
-
-		//資料表格如果沒有到44個表示Table有缺少
-		if(nameList.size() < 43)
-		{
-			exist = false;
+		
+		ArrayList<String> tablesName = TabalesNameEnum.getAllTablesName();
+		if (nameList.size() != tablesName.size()) {
+			return false;
 		}
-		/*-----------------------------------------------------------
-		 *	檢查Table是否存在
-		-------------------------------------------------------------*/
-//		createEzScrumTables(nameList, checker);
-//		createEzTrackTables(nameList, checker);
-//		createEzKanbanTables(nameList, checker);
-//		createDoDTables(nameList, checker);
-
-		checker.close();
-		return exist;
+		for (String tableName : nameList) {
+			if (!tablesName.contains(tableName)) {
+				isExisting = false;
+				break;
+			}
+		}
+		return isExisting;
 	}
 
 	/************************************************************
