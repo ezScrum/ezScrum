@@ -80,60 +80,7 @@ var CreateProjectWindow = new ezScrum.window.CreateProjectWindow({
 		CreateFailure:function(win, form, response){
 			// Create Project Error
 			alert("Create project on ITS failed. Please check the information of ITS and Project");
-		},
-		// 資料庫需要進行初始化的動作
-		InitDatabase:function(win,form,response)
-		{
-			// Show a dialog using config options:
-			Ext.Msg.show({
-			   title:'The Database need be initialized',
-			   msg: 'The Database <b>'+response.dbName+'</b> at <b>'+response.ip+'</b> will be initiated , and all data of the database will be clean',
-			   buttons: Ext.Msg.YESNO,
-			   fn: function(btn){
-					// 如果同意那就呼叫InitialDB的Action
-					if(btn == 'yes')
-					{
-						Ext.Ajax.request( {
-							url : 'initialDatabase.do',
-							success : function(response) {
-								Ext.MessageBox.alert("Initial DataBase",'Initial DataBase Success, press Submit to continue.');
-							},
-							failure : function(response) {
-								Ext.MessageBox.alert("Initial DataBase",'Initial DataBase Failure.');
-							},
-							params : form.getValues()
-						});
-					}
-			},
-			   icon: Ext.MessageBox.WARNING
-			});	
-		} ,
-        CreateDatabase:function(win,form,response)
-        {
-            // Show a dialog using config options:
-            Ext.Msg.show({
-               title:'The Database need be created',
-               msg: 'The Database <b>'+response.dbName+'</b> at <b>'+response.ip+'</b> will be created.',
-               buttons: Ext.Msg.YESNO,
-               fn: function(btn){
-                    // 如果同意那就呼叫InitialDB的Action
-                    if(btn == 'yes')
-                    {
-                        Ext.Ajax.request( {
-                            url : 'createDatabase.do',
-                            success : function(response) {
-                                Ext.MessageBox.alert("Success!",'The Database has be created，please click the submit to next step ');
-                            },
-                            failure : function(response) {
-                                alert("Create Database Falilure");
-                            },
-                            params : form.getValues()
-                        });
-                    }
-               },
-               icon: Ext.MessageBox.WARNING
-            }); 
-        }
+		}
 	}
 });
 

@@ -347,8 +347,6 @@
 		<!-- Issue Detail Information page -->
         <action path="/showIssueInformation" forward="project.IssueInformation" />
 
-		<action path="/initialDatabase" type="ntut.csie.ezScrum.web.action.InitDatabaseAction" />
-		<action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
         <!--    *********************
                 *		other		*
                 *********************
