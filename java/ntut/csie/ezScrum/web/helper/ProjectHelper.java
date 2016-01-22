@@ -9,20 +9,18 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.AccessPermissionManager;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ProjectHelper {
 
@@ -93,17 +91,11 @@ public class ProjectHelper {
 			if (fromPage.equals("createProject")) {
 				sb.append("<CreateProjectResult>");
 
-				IProject iproject = null;
 				ProjectObject project = null;
 				try {
-					// 轉換格式
-					ProjectInfoForm projectInfoForm = convertProjectInfo(projectInfo);
-
-					iproject = mProjectMapper.createProject(userSession, projectInfoForm);
 
 					// 重新設定權限, 當專案被建立時, 重新讀取此 User 的權限資訊
 					SessionManager sessionManager = new SessionManager(request);
-					sessionManager.setProject(iproject);
 					AccessPermissionManager.setupPermission(request, userSession);
 					
 					// -- ezScrum v1.8 --
@@ -129,33 +121,6 @@ public class ProjectHelper {
 	// ezScrum v1.8
 	public ArrayList<AccountObject> getProjectMemberList(ProjectObject project) {
 		return mProjectMapper.getProjectMembers(project.getId());
-	}
-
-	private ProjectInfoForm convertProjectInfo(ProjectInfo projectInfo) {
-		String name = projectInfo.name;
-		String displayName = projectInfo.displayName;
-		String comment = projectInfo.common;
-		String manager = projectInfo.manager;
-		long attachFileSize = projectInfo.attachFileSize;
-
-		ProjectInfoForm saveProjectInfoForm = new ProjectInfoForm();
-		// 塞入假資料
-		saveProjectInfoForm.setServerType("SVN");
-		saveProjectInfoForm.setCvsConnectionType("pserver");
-		saveProjectInfoForm.setSvnHook("Close");
-		saveProjectInfoForm.setOutputPath("/");
-		saveProjectInfoForm.setSourcePathString("/");
-		// 塞入使用者輸入的資料
-		saveProjectInfoForm.setName(name);
-		saveProjectInfoForm.setDisplayName(displayName);
-		saveProjectInfoForm.setComment(comment);
-		saveProjectInfoForm.setProjectManager(manager);
-		saveProjectInfoForm.setAttachFileSize(String.valueOf(attachFileSize));
-		// log info
-		log.info("saveProjectInfoForm.getOutputPath()=" + saveProjectInfoForm.getOutputPath());
-		log.info("saveProjectInfoForm.getSourcePaths().length=" + saveProjectInfoForm.getSourcePaths().length);
-
-		return saveProjectInfoForm;
 	}
 	
 	/**
