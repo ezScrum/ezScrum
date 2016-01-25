@@ -5,21 +5,22 @@ Resource          ../ezScrum_Login.txt
 Test Import Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
-    # 進入 Management 頁面
+    Comment    # 進入 Management 頁面
     Comment    Click Element    xpath=//td[text()="Management"]
-    # 點選 Import 頁面
+    Comment    # 點選 Import 頁面
     Comment    Click Element    xpath=//u[text()="Import"]
-    # 取得 JSON 完整路徑
-    Comment    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    golden_answer_project01_project02.json
-    #點選 Browse 按鈕
+    Comment    # 取得 JSON 完整路徑
+    Comment    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import
+    ...    golden_answer_project01_project02.json
+    Comment    #點選 Browse 按鈕
     Comment    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Comment    Click Element    xpath=//button[text()="Import"]
-    # 點選YES
+    Comment    # 點選YES
     Comment    Click Element    xpath=//button[text()="Yes"]
-    # 等待匯出成功
+    Comment    # 等待匯出成功
     Comment    Wait Until Page Contains    Project Import successfully.
     Comment    Click Element    xpath=//button[text()="OK"]
-    #回到Projcet List
+    Comment    #回到Projcet List
     Comment    Click Element    xpath=//td[text()="ProjectList"]
 
 Test Import Teardown
@@ -64,44 +65,43 @@ Assert ReleasePlan
     Wait Until Page Contains    Edit Release #
     Compare Field Content    //input[@name="Name"]    Release01
     Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click Element    //button[text()="Cancel"]
 
 Assert SprintPlan
     Select Node Product    Sprint Plan
     Wait Until Page Contains    Sprint Plan List
     #測 Sprint01 的資料
-    Click Element    //div[text()="Sprint01"]
-    Click Element    //button[text()="Edit Sprint"]
-    Wait Until Page Contains    Edit Sprint #
-    Compare Field Content    //textarea[@name="Goal"]    Sprint01
-    Compare Field Content    //input[@name="DemoPlace"]    Lab1321
-    Compare Field Content    //input[@name="DailyScrum"]    17:00@Lab1321
-    Click Element    //button[text()="Cancel"]
+    ${firstSprint}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]/div
+    Should Be Equal    Sprint01    ${firstSprint}
+    ${firstSprintPlace}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[11]/div
+    Should Be Equal    Lab1321    ${firstSprintPlace}
+    ${firstSprintDaily}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[10]/div
+    Should Be Equal    17:00@Lab1321    ${firstSprintDaily}
     #測 Sprint02 的資料
-    Click Element    //div[text()="Sprint02"]
-    Click Element    //button[text()="Edit Sprint"]
-    Wait Until Page Contains    Edit Sprint #
-    Compare Field Content    //textarea[@name="Goal"]    Sprint02
-    Compare Field Content    //input[@name="DemoPlace"]    Lab1321
-    Compare Field Content    //input[@name="DailyScrum"]    17:00@Lab1321
+    ${secondSprint}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[2]/div
+    Should Be Equal    Sprint02    ${secondSprint}
+    ${secondSprintPlace}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[11]/div
+    Should Be Equal    Lab1321    ${secondSprintPlace}
+    ${secondSprintDaily}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[10]/div
+    Should Be Equal    17:00@Lab1321    ${secondSprintDaily}
 
 Assert SprintBacklog
     Select Node Product    Sprint Backlog
     Wait Until Page Contains    Story & Task List
-    Click Element    //div[text()="Story01"]
-    Click Element    //button[text()="Edit Story"]
-    Wait Until Page Contains    Edit Story #
-    Compare Field Content    //textarea[@name="Name"]    Story01
-    Compare Field Content    //input[@name="Estimate"]    13
-    Compare Field Content    //input[@name="Importance"]    80
-    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Compare Field Content    //input[@name="Tags"]    tag01
-    Compare Field Content    //textarea[@name="HowToDemo"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Click Element    //button[text()="Cancel"]
-    Click Element    //div[text()="Task01"]
-    Click Element    //button[text()="Edit Task"]
-    Compare Field Content    //input[@name="Name"]    Task01
-    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    account3
-    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click element    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div/div/table/tbody/tr/td/table/tbody/tr/td[2]/div
+    Comment    Compare Field Content    //textarea[@name="Name"]    Story01
+    Comment    Compare Field Content    //input[@name="Estimate"]    13
+    Comment    Compare Field Content    //input[@name="Importance"]    80
+    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Comment    Compare Field Content    //input[@name="Tags"]    tag01
+    Comment    Compare Field Content    //textarea[@name="HowToDemo"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Comment    Click Element    //button[text()="Cancel"]
+    Comment    Click Element    //div[text()="Task01"]
+    Comment    Click Element    //button[text()="Edit Task"]
+    Comment    Compare Field Content    //input[@name="Name"]    Task01
+    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    account3
+    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Comment    Click Element    //button[text()="Cancel"]
 
 Assert Retrospective
     Select Node Product    Retrospective
@@ -119,3 +119,39 @@ Assert Retrospective
     Compare Field Content    //input[@name="Type"]    Improvement
     Compare Field Content    //input[@name="Status"]    closed
     Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+
+Assert Unplanned
+    Select Node Product    Unplanned
+    Wait Until Page Contains    Unplanned Item List
+    Click Element    //div[text()="Unplan01"]
+    Click Element    //button[text()="Edit Unplanned Item"]
+    Compare Field Content    //input[@name="Name"]    Unplan01
+    Compare Field Content    //input[@name="Handler"]    account3
+    Compare Field Content    //input[@name="Status"]    assigned
+    Compare Field Content    //input[@name="Estimate"]    3
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Click Element    //button[text()="Cancel"]
+    Click Element    //div[text()="Unplan02"]
+    Click Element    //button[text()="Edit Unplanned Item"]
+    Compare Field Content    //input[@name="Name"]    Unplan02
+    Compare Field Content    //input[@name="Status"]    new
+    Compare Field Content    //input[@name="Estimate"]    8
+    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+
+Test Import Same name Setup
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    golden_answer_new_project01_account01.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
+    # 等待匯出成功
+    Wait Until Page Contains    Project Import successfully.
+    Click Element    xpath=//button[text()="OK"]
