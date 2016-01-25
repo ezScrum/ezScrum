@@ -1,16 +1,11 @@
 package ntut.csie.ezScrum.web.mapper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.internal.MantisService;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -21,12 +16,9 @@ import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 
 public class ProductBacklogMapper {
 	private ProjectObject mProject;
-	private MantisService mMantisService;
 
 	public ProductBacklogMapper(ProjectObject project) {
 		mProject = project;
-		Configuration config = new Configuration();
-		mMantisService = new MantisService(config);
 	}
 	
 	public ArrayList<StoryObject> getUnclosedStories() {
@@ -191,27 +183,29 @@ public class ProductBacklogMapper {
 	}
 
 	public long addAttachFile(AttachFileInfo attachFileInfo) {
-		mMantisService.openConnect();
-		long id = mMantisService.addAttachFile(attachFileInfo);
-		mMantisService.closeConnect();
-		return id;
+		AttachFileObject attachFile = new AttachFileObject();
+        attachFile.setIssueId(attachFileInfo.issueId)
+                  .setIssueType(attachFileInfo.issueType)
+                  .setName(attachFileInfo.name)
+                  .setContentType(attachFileInfo.contentType)
+                  .setPath(attachFileInfo.path)
+                  .save();
+		return attachFile.getId();
 	}
 
 	// for ezScrum v1.8
 	public void deleteAttachFile(long fileId) {
-		mMantisService.openConnect();
-		mMantisService.deleteAttachFile(fileId);
-		mMantisService.closeConnect();
+		AttachFileObject attachFile = AttachFileObject.get(fileId);
+		if (attachFile != null) {
+			attachFile.delete();
+		}
 	}
 
 	/**
 	 * 抓取attach file for ezScrum v1.8
 	 */
 	public AttachFileObject getAttachfile(long fileId) {
-		mMantisService.openConnect();
-		AttachFileObject attachFiles = mMantisService.getAttachFile(fileId);
-		mMantisService.closeConnect();
-		return attachFiles;
+		return AttachFileObject.get(fileId);
 	}
 	
 	private ArrayList<Long> getTagsIdByTagsName(String originTagsName){
@@ -230,79 +224,5 @@ public class ProductBacklogMapper {
 	
 	public ArrayList<StoryObject> getStories() {
 		return mProject.getStories();
-	}
-	
-	// will remove
-	@ Deprecated
-	public IIssue[] getIssues(String category) throws SQLException {
-		mMantisService.openConnect();
-		IIssue[] issues = mMantisService.getIssues(mProject.getName(), category);
-		mMantisService.closeConnect();
-		return issues;
-	}
-	
-	// will remove
-	@ Deprecated
-	public void updateIssueValue(IIssue newIssue, boolean addHistory) {
-		long issueId = newIssue.getIssueID();
-		IIssue oldIssue = getIssue(issueId);
-		
-		if (addHistory) {
-			if (!newIssue.getSummary().equals(oldIssue.getSummary())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_NAME,
-						oldIssue.getSummary(), newIssue.getSummary());
-			}
-			if (!newIssue.getValue().equals(oldIssue.getValue())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_VALUE,
-						oldIssue.getValue(), newIssue.getValue());
-			}
-			if (!newIssue.getImportance().equals(oldIssue.getImportance())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_IMPORTANCE,
-						oldIssue.getImportance(), newIssue.getImportance());
-			}
-			if (!newIssue.getEstimated().equals(oldIssue.getEstimated())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_ESTIMATE,
-						oldIssue.getEstimated(), newIssue.getEstimated());
-			}
-			if (!newIssue.getHowToDemo().equals(oldIssue.getHowToDemo())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_HOW_TO_DEMO,
-						oldIssue.getHowToDemo(), newIssue.getHowToDemo());
-			}
-			if (!newIssue.getNotes().equals(oldIssue.getNotes())) {
-				addHistory(issueId, newIssue.getIssueType(), HistoryObject.TYPE_NOTE,
-						oldIssue.getNotes(), newIssue.getNotes());
-			}
-		}
-		mMantisService.openConnect();
-		mMantisService.updateBugNote(newIssue);
-		mMantisService.closeConnect();
-	}
-	
-	// will remove
-	@ Deprecated
-	public void addHistory(long issueId, int issueType, int historyType,
-			String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(issueId, issueType, historyType,
-				oldValue, newValue, System.currentTimeMillis());
-		history.save();
-	}
-	
-	// will remove
-	@ Deprecated
-	public IIssue getIssue(long id) {
-		mMantisService.openConnect();
-		IIssue issue = mMantisService.getIssue(id);
-		mMantisService.closeConnect();
-		return issue;
-	}
-	
-	// will remove
-	@ Deprecated
-	public void updateStoryRelation(long issueId, String releaseId,
-			String sprintId, String estimate, String importance, Date date) {
-		mMantisService.openConnect();
-		mMantisService.updateStoryRelationTable(issueId, mProject.getName(),
-				releaseId, sprintId, estimate, importance, date);
-		mMantisService.closeConnect();
 	}
 }

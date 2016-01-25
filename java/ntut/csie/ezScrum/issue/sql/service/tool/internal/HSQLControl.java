@@ -9,7 +9,6 @@ import ntut.csie.jcis.resource.core.ResourceFacade;
 
 public class HSQLControl extends AbstractSQLControl {
 	private String DEFAULTDB_NAME = "DefaultDB_H2.h2.db";
-	private String DEFAULTDB_TRACE_NAME = "DefaultDB_H2.trace.db";
 	@Override
 	protected String getURL() {
 		// TODO Auto-generated method stub

@@ -15,7 +15,6 @@ import org.codehaus.jettison.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedHashTreeMap;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -29,6 +28,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
@@ -358,9 +358,9 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(String.valueOf(story.getImportance()), storyList.get(i).get("Importance"));
 			assertEquals("", storyList.get(i).get("Tag"));
 			if (i == 0) {
-				assertEquals(ITSEnum.CLOSED, storyList.get(i).get("Status"));
+				assertEquals(StatusEnum.CLOSED, storyList.get(i).get("Status"));
 			} else {
-				assertEquals(ITSEnum.S_NEW_STATUS, storyList.get(i).get("Status"));
+				assertEquals(StatusEnum.NEW, storyList.get(i).get("Status"));
 			}
 			assertEquals(story.getNotes(), storyList.get(i).get("Notes"));
 			assertEquals(story.getHowToDemo(), storyList.get(i).get("HowToDemo"));
@@ -376,10 +376,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 				assertEquals(task.getAttachFiles(), taskList.get(j).get("AttachFileList"));
 				assertEquals(false, taskList.get(j).get("Attach"));
 				if (i == 0) {
-					assertEquals(ITSEnum.CLOSED, taskList.get(j).get("Status"));
+					assertEquals(StatusEnum.CLOSED, taskList.get(j).get("Status"));
 					assertEquals("0", taskList.get(j).get("RemainHours"));
 				} else {
-					assertEquals(ITSEnum.ASSIGNED, taskList.get(j).get("Status"));
+					assertEquals(StatusEnum.ASSIGNED, taskList.get(j).get("Status"));
 					assertEquals(String.valueOf(task.getRemains()), taskList.get(j).get("RemainHours"));
 				}
 				assertEquals(task.getPartnersUsername(), taskList.get(j).get("Partners"));

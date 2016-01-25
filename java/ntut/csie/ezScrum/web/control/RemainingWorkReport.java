@@ -10,11 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
@@ -37,7 +33,6 @@ public class RemainingWorkReport {
 	private Date mChartStartDate = null;
 	private Date mChartEndDate = null;
 	private int mInterval = 1;
-	private IITSService mIITS;
 	private String mCategory;
 	private Configuration mConfiguration;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
@@ -67,7 +62,6 @@ public class RemainingWorkReport {
 			createStoryDataBySprint();
 		} else {
 			init();
-			createIssueData();
 		}
 		drawGraph();
 	}
@@ -87,7 +81,6 @@ public class RemainingWorkReport {
 			createStoryDataBySprint();
 		} else {
 			init();
-			createIssueData();
 		}
 		drawGraph();
 	}
@@ -226,70 +219,6 @@ public class RemainingWorkReport {
 			}
 			if (!flag) nonCount++;
 			flag = false;
-		}
-		Date dateKey = new Date(date.getTime());
-		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);
-		mDoneMap.put(dateKey, doneCount);
-		mAssignedMap.put(dateKey, assignCount + doneCount);
-		saveQuantity(nonCount, doneCount, assignCount);
-	}
-	
-	private void createIssueData() {
-		mIITS = ITSServiceFactory.getInstance().getService(
-		        ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
-		mIITS.openConnect();
-		IIssue[] issues = mIITS.getIssues(mProject.getName());
-		mIITS.closeConnect();
-		List<IIssue> tempIssues = new ArrayList<IIssue>();
-		for (IIssue issue : issues) {
-			if (issue.getCategory().equals(mCategory)) {
-				tempIssues.add(issue);
-			}
-		}
-		Date timeStamp = new Date(mChartStartDate.getTime());
-		while (timeStamp.getTime() <= mToday.getTime()) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateString = format.format(timeStamp);
-			Date date;
-			try {
-				date = format.parse(dateString);
-				countIssueStatusChange(tempIssues, date);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
-		}
-	}
-	
-	private void countIssueStatusChange(List<IIssue> issues, Date date) {
-		int doneCount = 0, assignCount = 0, nonCount = 0;
-		if (date.getTime() != mToday.getTime()) {
-			// 當日期不為當天時，要做處理
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateFormat = format.format(date);
-			try {
-				date = format.parse(dateFormat);	// 去除分秒格式
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
-		}
-		if (issues != null) {
-			for (IIssue issue : issues) {
-				switch (issue.getDateStatus(date)) {
-					case ITSEnum.NEW_STATUS:
-						nonCount++;
-						break;
-					case ITSEnum.ASSIGNED_STATUS:
-						assignCount++;
-						break;
-					case ITSEnum.CLOSED_STATUS:
-						doneCount++;
-						break;
-					default:
-						break;
-				}
-			}
 		}
 		Date dateKey = new Date(date.getTime());
 		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);

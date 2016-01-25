@@ -81,7 +81,6 @@ public abstract class AbstractSQLControl implements ISQLControl{
 			Statement _statement = _connection.createStatement();
 			if(return_keys)
 			{
-				boolean result = _statement.execute(query,Statement.RETURN_GENERATED_KEYS);
 				ResultSet keys = _statement.getGeneratedKeys();
 				
 				//取出所回傳的自動Key值
