@@ -1,5 +1,8 @@
 *** Settings ***
 Resource          ../ezScrum_Login.txt
+Resource          ../common_resource.txt
+Resource          ../ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          ../SprintPlan/ezScrum_SprintPlan_Sprint.txt
 
 *** Keywords ***
 Test Import Setup
@@ -26,7 +29,7 @@ Test Import Setup
 Test Import Teardown
     Close Browser
     # clean DB
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Assert ProductBacklog story
     Select Node Product    Product Backlog
@@ -155,3 +158,27 @@ Test Import Same name Setup
     # 等待匯出成功
     Wait Until Page Contains    Project Import successfully.
     Click Element    xpath=//button[text()="OK"]
+
+Test Import - Check Permission Normal User Setup
+    # admin Login
+    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains    Accounts List
+    #Create normal user    Creating normal user for further testing
+    Click Element    xpath=//button[text()="Add Account"]
+    #Fill the fields
+    Focus AND Input Text    //input[@name='account']    test
+    Focus AND Input Text    //input[@name='name']    testName
+    Focus AND Input Text    //input[@name="passwd"]    test
+    Focus AND Input Text    //input[@name="reenter"]    test
+    Focus AND Input Text    //input[@name="mail"]    test@test.com
+    #Save
+    ${svBtn}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${svBtn}
+    #Logout
+    Logout ezScrum System
+
+Test Import - Check Permission Teardown
+    Exit ezScrum System
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

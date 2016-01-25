@@ -45,7 +45,7 @@ Test Import - Find duplicated \ accounts and projects
     Click Element    xpath=//td[text()="ProjectList"]
     Log    " answer is = "
     #測試
-    ${originPattern}     Set Variable    [Project01]{1,9}[_]{1}[0-9]{14}
+    ${originPattern}    Set Variable    [Project01]{1,9}[_]{1}[0-9]{14}
     Comment    ${pattern} =    Regexp Escape    ${originPattern}
     ${PROJECTNAME}=    Get Text    xpath=//div[text()="Project01"]/../../../../../../div[2]/table/tbody/tr/td[1]/div
     Log    ${PROJECTNAME}
@@ -65,3 +65,19 @@ Test Import - Find duplicated \ accounts and projects
     ${testAccount02email}    Get Text    //div[text()="account02"]/../../td[3]/div
     Should Be Equal    ${testAccount02email}    account02_Info@gmail.com
     [Teardown]    Test Import Teardown
+
+Test Import - Check Permission Administrator
+    [Setup]    Login Page    ${LOGIN_URL}
+    #Management
+    Click Element    xpath=//td[text()="Management"]
+    Page Should Contain    Import
+    Click Element    xpath=//u[text()="Import"]    #Only admin can see this
+    [Teardown]    Test Import - Check Permission Teardown
+
+Test Import - Check Permission Normal User
+    [Setup]    Test Import - Check Permission Normal User Setup
+    #Login with newly created account
+    Login Page With Account In The Same Browser    test    test
+    Click Element    xpath=//td[text()="Management"]
+    Page Should Not Contain    Import
+    [Teardown]    Test Import - Check Permission Teardown
