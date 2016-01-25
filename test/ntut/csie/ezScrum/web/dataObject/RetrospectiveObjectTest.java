@@ -4,20 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import ntut.csie.ezScrum.dao.RetrospectiveDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.dao.RetrospectiveDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 public class RetrospectiveObjectTest {
 	private MySQLControl mControl = null;
@@ -42,7 +42,7 @@ public class RetrospectiveObjectTest {
 		
 		// create a project
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// create sprint
 		mCS = new CreateSprint(mSPRINT_COUNT, mCP);
@@ -53,10 +53,6 @@ public class RetrospectiveObjectTest {
 	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -66,7 +62,6 @@ public class RetrospectiveObjectTest {
 		mCP = null;
 		mCS = null;
 		ini = null;
-		projectManager = null;
 	}
 
 	@Test

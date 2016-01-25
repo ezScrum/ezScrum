@@ -10,7 +10,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -65,7 +64,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
@@ -83,10 +82,6 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -94,7 +89,6 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCA = null;
 		mAccountMapper = null;

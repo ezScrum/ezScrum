@@ -13,10 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -56,7 +54,7 @@ public class TaskBoardTest {
 
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增Sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
@@ -82,11 +80,7 @@ public class TaskBoardTest {
 	@After
 	public void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -98,7 +92,6 @@ public class TaskBoardTest {
 		mASTS = null;
 		mATTS = null;
 		mTaskBoard = null;
-		projectManager = null;
 		mConfig = null;
 		mSprintBacklogLogic = null;
 		mSprintBacklogMapper = null;

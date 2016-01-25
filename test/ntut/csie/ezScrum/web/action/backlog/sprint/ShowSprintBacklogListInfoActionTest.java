@@ -8,7 +8,6 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -41,7 +40,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 		
 		mCS = new CreateSprint(2, mCP);
@@ -62,10 +61,6 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -73,7 +68,6 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
 	}

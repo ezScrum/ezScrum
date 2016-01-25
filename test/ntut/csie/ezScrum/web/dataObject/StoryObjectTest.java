@@ -15,7 +15,6 @@ import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
@@ -35,7 +34,7 @@ public class StoryObjectTest {
 		ini.exe();
 
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProjectId = mCP.getAllProjects().get(0).getId();
 	}
@@ -44,10 +43,6 @@ public class StoryObjectTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

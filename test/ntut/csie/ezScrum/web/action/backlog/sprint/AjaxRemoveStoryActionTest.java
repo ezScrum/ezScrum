@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -15,11 +14,9 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private Configuration mConfig;
@@ -39,7 +36,7 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create release plan
 		mCR = new CreateRelease(1, mCP);
@@ -60,16 +57,11 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCR = null;
 		mConfig = null;
@@ -80,8 +72,7 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 	 * 測試 drop story 後，story 要從 release 跟 sprint 的關係中切除
 	 */
 	public void testRemoveStory() throws Exception {
-		IProject iProject = mCP.getProjectList().get(0);
-		ProjectObject project = new ProjectObject(iProject.getName());
+		ProjectObject project = mCP.getAllProjects().get(0);
 		AddSprintToRelease ASR = new AddSprintToRelease(5, mCR, mCP);
 		ASR.exe();
 
@@ -114,8 +105,8 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		// 設定 Session 資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", iProject);
-		request.setHeader("Referer", "?PID=" + iProject.getName());
+		request.getSession().setAttribute("Project", project);
+		request.setHeader("Referer", "?PID=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -125,7 +116,7 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		stories = productBacklogLogic.getStories();
 		for (StoryObject story : stories) {
 			if (story.getId() == 1) {
-				assertEquals(0, story.getSprintId());
+				assertTrue(story.getSprintId() <= 0);
 			} else {
 				// 因為1個 sprint 有1個 story 所以 id 是對應的，因此拿來確認 story 所對應 sprint 有無錯誤
 				assertEquals(story.getId(), story.getSprintId());

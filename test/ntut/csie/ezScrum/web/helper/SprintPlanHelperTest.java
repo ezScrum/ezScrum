@@ -7,17 +7,16 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintPlanHelperTest {
 	private SprintPlanHelper mSprintPlanHelper;
@@ -34,10 +33,10 @@ public class SprintPlanHelperTest {
 		mConfig.save();
 
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
+		ini.exe();
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(mSprintCount, mCP);
 		mCS.exe();
@@ -49,11 +48,7 @@ public class SprintPlanHelperTest {
 	@After
 	public void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
@@ -62,7 +57,6 @@ public class SprintPlanHelperTest {
 		// release
 		mCP = null;
 		mCS = null;
-		projectManager = null;
 		mConfig = null;
 	}
 

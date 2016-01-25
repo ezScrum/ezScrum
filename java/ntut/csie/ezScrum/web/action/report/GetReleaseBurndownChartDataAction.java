@@ -28,7 +28,6 @@ public class GetReleaseBurndownChartDataAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-	
 		ProjectObject project = SessionManager.getProjectObject(request);
 		String releaseIdString = request.getParameter("ReleaseID");			// get release ID
 		long releaseId = Long.parseLong(releaseIdString);

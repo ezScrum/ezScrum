@@ -9,7 +9,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -22,11 +21,9 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowRemainingReportActionTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private ProjectObject mProject;
 	private Configuration mConfig;
@@ -48,7 +45,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProject = mCP.getAllProjects().get(0);
 
@@ -67,10 +64,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -115,7 +108,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		CreateSprint CS = new CreateSprint(1, mCP);
 		CS.exe(); 	// 新增兩個 Sprint
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// 新增帳號
 		CreateAccount CA = new CreateAccount(1);
 		CA.exe();
@@ -197,7 +190,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 
 	/**
@@ -256,7 +248,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 
 	/**
@@ -305,7 +296,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 
 	/**
@@ -364,7 +354,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 	
 	/**
@@ -416,7 +405,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals(false, request.getAttribute("OutofSprint"));
 		assertEquals("", request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 
 	/**
@@ -473,7 +461,6 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 	
 	/**
@@ -532,6 +519,5 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		assertEquals(String.valueOf(CS.getSprintsId().get(0)), request.getAttribute("iteration").toString());
 		assertEquals("OutOfDay", request.getAttribute("OutofSprint"));
 		assertEquals(expectedDate, request.getAttribute("setDate"));
-		assertEquals("./Workspace/TEST_PROJECT_1/_metadata/RemainingWork/Report/RemainingWork1.png", report.getRemainingWorkChartPath());
 	}
 }

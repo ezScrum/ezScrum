@@ -5,16 +5,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.iteration.core.IStory;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class NullFilterTest {
 	
@@ -32,7 +30,7 @@ public class NullFilterTest {
 		ini.exe();
 		
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mData = new StoryDataForFilter();
 	}
@@ -41,9 +39,6 @@ public class NullFilterTest {
 	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -18,7 +17,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	
 	private ArrayList<RetrospectiveObject> mGoodRetrospectives;
 	private ArrayList<RetrospectiveObject> mImprovementRetrospectives;
 	
@@ -35,7 +33,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 		
 		// Initial ArrayList
 		mGoodRetrospectives = new ArrayList<RetrospectiveObject>();
@@ -55,11 +53,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -72,7 +66,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;

@@ -3,11 +3,13 @@ package ntut.csie.ezScrum.web.action.project;
 import java.io.File;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -18,11 +20,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.jcis.resource.core.IProject;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
@@ -72,7 +69,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
@@ -87,10 +84,6 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -110,7 +103,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * response text : {"Points":[],"success":true}
 	 */
 	public void testAdminGetSprintBurndownChartDataAction_Story(){
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
@@ -143,7 +136,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * response text : {"Points":[],"success":true}
 	 */
 	public void testAdminGetSprintBurndownChartDataAction_Task(){
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
@@ -176,7 +169,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * response text : {"Points":[],"success":true}
 	 */
 	public void testUserGetSprintBurndownChartDataAction_Story(){
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
@@ -209,7 +202,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 	 * response text : {"Points":[],"success":true}
 	 */
 	public void testUserGetSprintBurndownChartDataAction_Task(){
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================

@@ -23,7 +23,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
@@ -60,7 +59,6 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		return mResourceConfig;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		// Set Test Mode
@@ -74,7 +72,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 
 		// Create Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// Create Release
 		mCR = new CreateRelease(2, mCP);
@@ -108,10 +106,6 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

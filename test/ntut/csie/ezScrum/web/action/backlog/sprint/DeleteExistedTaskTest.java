@@ -4,7 +4,6 @@ import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -15,7 +14,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class DeleteExistedTaskTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASS;
@@ -40,7 +38,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// create sprint
@@ -66,10 +64,6 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();

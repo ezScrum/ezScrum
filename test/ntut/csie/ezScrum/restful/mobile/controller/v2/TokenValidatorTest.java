@@ -1,18 +1,18 @@
 package ntut.csie.ezScrum.restful.mobile.controller.v2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.security.MessageDigest;
-
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateAccount;
-import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
+import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
 public class TokenValidatorTest {
 	private Configuration mConfig = null;
@@ -44,10 +44,6 @@ public class TokenValidatorTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);

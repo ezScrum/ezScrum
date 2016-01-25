@@ -9,7 +9,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -51,7 +50,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// 新增1個 project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1個 sprint
@@ -72,9 +71,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -85,7 +81,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		mCS = null;
 		mCUI = null;
 		mConfig = null;
-		projectManager = null;
 	}
 
 	public void testShowSprintBacklogTreeListInfo() throws Exception {

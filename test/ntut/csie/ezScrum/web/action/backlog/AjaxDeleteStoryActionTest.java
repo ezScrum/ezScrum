@@ -2,19 +2,17 @@ package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
@@ -41,7 +39,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(1, mCP);
@@ -68,10 +66,6 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -80,8 +74,6 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCPB = null;
 		mConfig = null;
-		projectManager = null;
-		
 		super.tearDown();
 	}
 	

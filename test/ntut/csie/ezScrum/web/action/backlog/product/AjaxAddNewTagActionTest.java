@@ -7,13 +7,11 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
@@ -36,7 +34,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		super.setUp();
 		
@@ -54,24 +52,19 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
 	}
 	
 	//測試 tag 名稱中含 "," ，會不會顯示 not allowed 的訊息
 	public void testAddComma() throws Exception{//comma = ","
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String tag = ",";
 		String compareMsg = "<Message>TagName: \",\" is not allowed</Message>";
 		

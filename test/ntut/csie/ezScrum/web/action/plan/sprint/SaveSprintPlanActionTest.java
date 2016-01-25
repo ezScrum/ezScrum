@@ -7,18 +7,17 @@ import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private Configuration mConfig;
 	private final String mActionPath = "/saveSprintPlan";
-	private IProject mProject;
+	private ProjectObject mProject;
 	
 	public SaveSprintPlanActionTest(String testMethod) {
         super(testMethod);
@@ -35,8 +34,8 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		
 		//	新增一個測試專案
     	mCP = new CreateProject(1);
-    	mCP.exeCreate();
-    	mProject = mCP.getProjectList().get(0);
+    	mCP.exeCreateForDb();
+    	mProject = mCP.getAllProjects().get(0);
     	
     	super.setUp();
     	
@@ -53,10 +52,6 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
     	
@@ -64,7 +59,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	ini = null;
     	mCP = null;
     	mConfig = null;
-    	
+    		
     	super.tearDown();
     }
     

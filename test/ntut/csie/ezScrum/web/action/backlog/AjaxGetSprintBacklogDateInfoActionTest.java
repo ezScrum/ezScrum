@@ -5,10 +5,9 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
@@ -29,7 +28,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCS = new CreateSprint(3, mCP);
 		mCS.exe(); // 新增三筆Sprint Plan
@@ -46,10 +45,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); 	// 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -65,7 +61,7 @@ public class AjaxGetSprintBacklogDateInfoActionTest extends MockStrutsTestCase {
 	
 	public void testExecute() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// ================ set initial data =======================
 		
 		// ================ set session info ========================

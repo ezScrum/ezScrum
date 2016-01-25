@@ -1,10 +1,15 @@
 package ntut.csie.ezScrum.restful.mobilel.service;
 
 import static org.junit.Assert.assertEquals;
+
+import org.codehaus.jettison.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.SprintBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -20,11 +25,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
-
-import org.codehaus.jettison.json.JSONException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintBacklogWebServiceTest {
 	private int mProjectCount = 1;
@@ -51,7 +51,7 @@ public class SprintBacklogWebServiceTest {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
@@ -70,10 +70,6 @@ public class SprintBacklogWebServiceTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

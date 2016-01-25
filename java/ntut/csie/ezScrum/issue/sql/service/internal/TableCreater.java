@@ -66,6 +66,8 @@ public class TableCreater {
 		} finally {
 			if (st != null)
 				st.close();
+			if (s != null)
+				s.close();
 		}
 	}
 

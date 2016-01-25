@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -15,7 +14,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class CheckOutTaskActionTest extends MockStrutsTestCase {
@@ -40,7 +38,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 		ini.exe();											// 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate();								// 新增一測試專案
+		mCP.exeCreateForDb();								// 新增一測試專案
 
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();										// 新增一個 Sprint
@@ -66,10 +64,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -196,7 +191,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testWrongParameter2() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "py2k; oph; taoyu;";
 		TaskObject task = mATTS.getTasks().get(0); // 取得Task資訊
 		Long taskId = task.getId();
@@ -233,7 +228,7 @@ public class CheckOutTaskActionTest extends MockStrutsTestCase {
 	 */
 	public void testWrongParameter3() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		String partners = "py2k; oph; taoyu;";
 		
 		// ================== set parameter info ====================

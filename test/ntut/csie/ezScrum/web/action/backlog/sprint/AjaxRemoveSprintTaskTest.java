@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -16,7 +15,6 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
@@ -38,7 +36,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(2, mCP);
@@ -59,16 +57,12 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
 	}

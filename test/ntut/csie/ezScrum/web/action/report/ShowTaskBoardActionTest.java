@@ -14,7 +14,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
@@ -53,7 +52,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe(); // 新增兩個 Sprint
@@ -86,10 +85,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		FileUtils.deleteDirectory(new File(testProjectPath));
 		
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -342,61 +338,6 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		actualSprints = null;
 		actualTaskBoard = null;
 	}
-
-	// // 待修改: ShowTaskBoardAction.java #86 未處理好產生 null pointer
-	// // 測試代入超出範圍的 Sprint 參數
-	// public void testWrongParameter3() throws Exception {
-	// // ================ set initial data =======================
-	// IProject project = mCP.getProjectList().get(0);
-	// // ================ set initial data =======================
-	//
-	// // ================== set parameter info ====================
-	// addRequestParameter("sprintID", "XXX"); // 代入超出範圍的 Sprint ID
-	// addRequestParameter("UserID", "ALL"); // 沒有指定User ID資料
-	// // ================== set parameter info ====================
-	//
-	// // ================ set session info ========================
-	// request.getSession().setAttribute("UserSession",
-	// mConfig.getUserSession());
-	// request.getSession().setAttribute("Project", project);
-	// // ================ set session info ========================
-	// request.setHeader("Referer", "?PID=" + project.getName()); //
-	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-	//
-	// actionPerform(); // 執行 action
-	//
-	// // 驗證回傳 path
-	// verifyForwardPath("/Layout/SubLayout.jsp");
-	// verifyForward("success");
-	// verifyNoActionErrors();
-	//
-	// // 測試回傳物件為 null
-	// TaskBoard actualTaskBoard = (TaskBoard) getMockRequest().getAttribute(
-	// "TaskBoard");
-	// assertNull(actualTaskBoard);
-	//
-	// // 測試其餘 request
-	// ISprintPlanDesc[] ActualPlans = (ISprintPlanDesc[]) getMockRequest()
-	// .getAttribute("SprintPlans");
-	// assertEquals(mCS.getSprintCount(), ActualPlans.length);
-	//
-	// List<String> ExpectedActorList = new LinkedList<String>();
-	// List<String> ActualActorList = (List<String>) getMockRequest()
-	// .getAttribute("ActorList");
-	// ExpectedActorList.add("ALL");
-	// for (int i = 0; i < ExpectedActorList.size(); i++) {
-	// assertEquals(ExpectedActorList.get(i), ActualActorList.get(i));
-	// }
-	//
-	// assertEquals("ALL", getMockRequest().getAttribute("User"));
-	//
-	// // ============= release ==============
-	// project = null;
-	// ActualActorList = null;
-	// ActualPlans = null;
-	// actualTaskBoard = null;
-	// ExpectedActorList = null;
-	// }
 
 	// 測試移動兩筆 Task 到 Check-Out 並且驗證點數
 	public void testMoveTask1() throws Exception {

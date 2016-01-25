@@ -1,8 +1,3 @@
-/**
- * the new ezScrum 1.8 table
- * re design the table because old tables is a shit and isn't easy to maintain
- */
-
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

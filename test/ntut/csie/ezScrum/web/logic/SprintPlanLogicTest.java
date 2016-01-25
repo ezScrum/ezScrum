@@ -4,18 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintPlanLogicTest {
 	private SprintPlanLogic mSprintPlanLogic = null;
@@ -43,7 +42,7 @@ public class SprintPlanLogicTest {
 		String STORY_COLUMNBESET = "EST";
 
 		mCP = new CreateProject(PROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
@@ -61,10 +60,6 @@ public class SprintPlanLogicTest {
 	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

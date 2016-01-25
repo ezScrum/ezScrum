@@ -25,7 +25,6 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
@@ -77,10 +76,6 @@ public class ProjectApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -96,7 +91,7 @@ public class ProjectApiTest extends JerseyTest {
 	public void testGet() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// get data
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -121,7 +116,7 @@ public class ProjectApiTest extends JerseyTest {
 	public void testGetList() throws JSONException {
 		// create project
 		mCP = new CreateProject(3);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// get data
 		ArrayList<ProjectObject> projects = mCP.getAllProjects();
@@ -176,7 +171,7 @@ public class ProjectApiTest extends JerseyTest {
 	public void testPut() throws JSONException {
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
 		JSONObject projectJson = new JSONObject();

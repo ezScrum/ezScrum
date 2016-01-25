@@ -215,21 +215,6 @@ public class ProjectMapper {
 	}
 
 	/**
-	 * 更新專案資訊
-	 * 
-	 * @param saveProjectInfoForm
-	 * @return
-	 */
-	@Deprecated
-	public IProject updateProject(ProjectInfoForm saveProjectInfoForm) {
-		IProject project = saveProjectInformation(saveProjectInfoForm);
-		if (project.exists()) {
-			project.save();
-		}
-		return project;
-	}
-
-	/**
 	 * 取得所有專案列表
 	 * 
 	 * @return

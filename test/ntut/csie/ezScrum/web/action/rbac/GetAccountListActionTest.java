@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -16,7 +15,6 @@ import ntut.csie.jcis.account.core.LogonException;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetAccountListActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateAccount mCA;
 	private int mProjectCount = 1;
@@ -40,7 +38,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mAccountMapper = new AccountMapper();
 
@@ -63,10 +61,6 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -77,7 +71,6 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCA = null;
 		mAccountMapper = null;
-		projectManager = null;
 		mConfig = null;
 	}
 
@@ -87,7 +80,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -123,7 +116,7 @@ public class GetAccountListActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",

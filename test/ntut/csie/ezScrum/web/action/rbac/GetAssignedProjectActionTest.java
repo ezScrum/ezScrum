@@ -6,7 +6,6 @@ import java.util.HashMap;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -40,7 +39,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增 User
 		mCA = new CreateAccount(mAccountCount);
@@ -70,10 +69,6 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -81,7 +76,6 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCA = null;
 		mAccountMapper = null;
@@ -94,7 +88,7 @@ public class GetAssignedProjectActionTest extends MockStrutsTestCase {
 		mAUTR.exe_PO();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		long accountId = mCA.getAccountList().get(0).getId();
 
 		// ================== set parameter info ====================

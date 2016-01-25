@@ -3,9 +3,10 @@ package ntut.csie.ezScrum.web.action.report;
 import java.io.File;
 import java.io.IOException;
 
+import com.google.gson.Gson;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -16,10 +17,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import servletunit.struts.MockStrutsTestCase;
 
-import com.google.gson.Gson;
-
 public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private ProjectObject mProject;
@@ -41,7 +39,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
@@ -63,10 +61,6 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

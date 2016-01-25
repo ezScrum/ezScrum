@@ -3,25 +3,22 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 import java.io.File;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.jcis.resource.core.IProject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private final String mActionPath = "/GetSprintsComboInfo";
 
 	public GetSprintPlanComboInfoActionTest(String testName) {
@@ -39,13 +36,13 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 		super.setUp();
 
 		// ================ set action info ========================
@@ -61,28 +58,23 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
-		mIProject = null;
+		mProject = null;
 	}
 
 	public void testGetSprintPlanComboInfo() throws JSONException {
 		ArrayList<Long> idList = mCS.getSprintsId();
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
+		String projectName = mProject.getName();
 		request.setHeader("Referer", "?PID=" + projectName);
 		addRequestParameter("SprintID", String.valueOf(idList.get(0)));
 

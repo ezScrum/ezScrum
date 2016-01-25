@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
@@ -37,7 +36,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCR = new CreateRelease(1, mCP);
 		mCR.exe(); // 新增一筆Release Plan
@@ -56,10 +55,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	@After
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

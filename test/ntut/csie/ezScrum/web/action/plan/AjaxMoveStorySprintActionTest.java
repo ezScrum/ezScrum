@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -35,7 +34,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCR = new CreateRelease(1, this.mCP);
 		mCR.exe(); // 新增一筆Release Plan
@@ -53,9 +52,6 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe(); // 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

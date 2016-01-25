@@ -3,22 +3,19 @@ package ntut.csie.ezScrum.web.action.unplan;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowUnplanItemActionTest extends MockStrutsTestCase {
@@ -44,7 +41,7 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		super.setUp();
 
@@ -62,10 +59,6 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -78,7 +71,6 @@ public class ShowUnplanItemActionTest extends MockStrutsTestCase {
 		mCS = null;
 		mCUI = null;
 		mConfig = null;
-		projectManager = null;
 	}
 
 	// case 1: No sprint

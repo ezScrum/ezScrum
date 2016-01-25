@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -74,7 +73,7 @@ public class ProductBacklogHelperTest {
 
 		// 新增 Project
 		mCP = new CreateProject(ProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
@@ -115,10 +114,6 @@ public class ProductBacklogHelperTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -682,7 +677,7 @@ public class ProductBacklogHelperTest {
 		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
-		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
 		attachFileInfo.path = mSourceFile.getPath();
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
@@ -720,7 +715,7 @@ public class ProductBacklogHelperTest {
 		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
-		attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
+		attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
 					mSourceFile);

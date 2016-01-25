@@ -31,7 +31,6 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -62,7 +61,6 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		return mResourceConfig;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		// Set Test Mode
@@ -76,7 +74,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Create Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// Create Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -99,10 +97,6 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -112,7 +106,6 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
 		mCP = null;
 		mCS = null;
 		mHttpServer = null;

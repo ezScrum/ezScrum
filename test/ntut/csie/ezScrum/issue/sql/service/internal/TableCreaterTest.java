@@ -9,6 +9,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
@@ -16,12 +20,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_STORY_R
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_RELATION_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.internal.TableCreater.EZSCRUM_TAG_TABLE;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TableCreaterTest {
 	private ISQLControl mISQLControl;
@@ -40,7 +39,7 @@ public class TableCreaterTest {
 		
 		// 新增Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create service control info.
 		MantisService Service = new MantisService(mConfig);
@@ -63,10 +62,6 @@ public class TableCreaterTest {
 				e.printStackTrace();
 			}
     	}
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();	
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

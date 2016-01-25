@@ -9,10 +9,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedHashTreeMap;
+
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -27,19 +32,9 @@ import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.FileUtil;
-import ntut.csie.jcis.resource.core.IPath;
-import ntut.csie.jcis.resource.core.IProject;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
 import servletunit.struts.MockStrutsTestCase;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedHashTreeMap;
-
 public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
@@ -61,7 +56,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
@@ -83,10 +78,6 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	 	// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -415,9 +406,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// attach file
 		final String FILE_NAME = "ezScrumTestFile";
-		IProject iProject = mCP.getProjectList().get(0);
-		IPath fullPath = iProject.getFullPath();
-		String targetPath = fullPath.getPathString() + File.separator + FILE_NAME;
+		String targetPath = "." + File.separator + "TestData" + File.separator + FILE_NAME;
 		File file = new File(targetPath);
         BufferedWriter output = new BufferedWriter(new FileWriter(file));
         output.write("hello i am test");
@@ -428,12 +417,14 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
-        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
+        attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
         
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
-		long attachFileId = productBacklogHelper.addAttachFile(attachFileInfo, file);
+        ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
+		productBacklogHelper.addAttachFile(attachFileInfo, file);
+		
 		StoryObject expectedStory = productBacklogHelper.getStory(storyId);
-
+		expectedStory.reload();
+		
 		try {
 			FileUtil.delete(targetPath);
 		} catch (IOException e) {
@@ -488,7 +479,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		AddStoryToSprint ASTS = new AddStoryToSprint(storyCount, 1, mCS, mCP, "EST");
 		ASTS.exe();
 		StoryObject story = ASTS.getStories().get(0);
-		long stroyId = story.getId();
+		long storyId = story.getId();
 		
 		// 每個 Story 加入1個 task
 		AddTaskToStory ATTS = new AddTaskToStory(taskCount, 1, ASTS, mCP);
@@ -499,9 +490,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		
 		// attach file
 		final String FILE_NAME = "ezScrumTestFile";
-		IProject iProject = mCP.getProjectList().get(0);
-		IPath fullPath = iProject.getFullPath();
-		String targetPath = fullPath.getPathString() + File.separator + "ezScrumTestFile";
+		String targetPath = "." + File.separator + "TestData" + File.separator + FILE_NAME;
 		File file = new File(targetPath);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write("hello i am test");
@@ -512,12 +501,12 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
         attachFileInfo.issueType = IssueTypeEnum.TYPE_TASK;
         attachFileInfo.name = FILE_NAME;
         attachFileInfo.contentType = "text/plain";
-        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
+        attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
 		
-		StoryObject expectedStory = productBacklogHelper.getStory(stroyId);
+		StoryObject expectedStory = productBacklogHelper.getStory(storyId);
 		task.reload();
 		
 		try {
