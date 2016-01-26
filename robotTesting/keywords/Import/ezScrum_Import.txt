@@ -148,8 +148,8 @@ Assert Retrospective
     should be equal    ${Improvement_Status}    closed
     #Go to Sprint #2
     click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
-    Wait Until Page Contains    All
-    Click Element    //div[text()="Sprint #2"]
+    Wait Until Page Contains    ALL
+    click element    //div[text()="Sprint #2"]
     #Sprint 2 Good
     ${sp2Good}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div
     should be equal    ${sp2Good}    Good02
@@ -186,23 +186,23 @@ Assert Unplanned
     Select Node Product    Unplanned
     Wait Until Page Contains    Unplanned Item List
     Click Element    xpath=//span[text()="Unplanned Item List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
-    Comment    Wait Until Page Contains    Sprint #1
-    click element    //div[text()="Sprint #1"]
+    Wait Until Page Contains Element    //div[@class='x-layer x-combo-list' and contains(@style, visible)]
+    Click Element    //div[@class='x-combo-list-inner']/div[text()='Sprint #1']
     Wait Until Page Contains    Unplan01
-    Click Element    //div[text()="Unplan01"]
-    Click Element    //button[text()="Edit Unplanned Item"]
-    Compare Field Content    //input[@name="Name"]    Unplan01
-    Compare Field Content    //input[@name="Handler"]    account3
-    Compare Field Content    //input[@name="Status"]    assigned
-    Compare Field Content    //input[@name="Estimate"]    3
-    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Click Element    //button[text()="Cancel"]
-    Click Element    //div[text()="Unplan02"]
-    Click Element    //button[text()="Edit Unplanned Item"]
-    Compare Field Content    //input[@name="Name"]    Unplan02
-    Compare Field Content    //input[@name="Status"]    new
-    Compare Field Content    //input[@name="Estimate"]    8
-    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Comment    Click Element    //div[text()="Unplan01"]
+    Comment    Click Element    //button[text()="Edit Unplanned Item"]
+    Comment    Compare Field Content    //input[@name="Name"]    Unplan01
+    Comment    Compare Field Content    //input[@name="Handler"]    account3
+    Comment    Compare Field Content    //input[@name="Status"]    assigned
+    Comment    Compare Field Content    //input[@name="Estimate"]    3
+    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Comment    Click Element    //button[text()="Cancel"]
+    Comment    Click Element    //div[text()="Unplan02"]
+    Comment    Click Element    //button[text()="Edit Unplanned Item"]
+    Comment    Compare Field Content    //input[@name="Name"]    Unplan02
+    Comment    Compare Field Content    //input[@name="Status"]    new
+    Comment    Compare Field Content    //input[@name="Estimate"]    8
+    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
 
 Test Import Same name Setup
     # 登入ezScrum
