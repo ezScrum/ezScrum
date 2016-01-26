@@ -75,7 +75,7 @@ var CreateProjectWindow = new ezScrum.window.CreateProjectWindow({
 		CreateSuccess:function(win, form, projectID){			
 	 		this.hide();
 	 		alert('Create success. Redirect to view project summary.');
-	 		document.location.href = "./viewProject.do?PID=" + projectID;
+	 		document.location.href = "./viewProject.do?projectName=" + projectID;
 		},
 		CreateFailure:function(win, form, response){
 			// Create Project Error
@@ -115,8 +115,7 @@ ProjectsGird.getSelectionModel().on({'selectionchange':{buffer:10, fn:function()
 	var single = this.getCount() == 1;
 	if(single) {
 		var record = this.getSelected();
-		replaceURL( "./viewProject.do?PID=" + record.data['ID'] );
-		//document.location.href = "./viewProject.do?PID=" + record.data['ID'];
+		replaceURL( "./viewProject.do?projectName=" + record.data['ID'] );
 	}
 }}});
 

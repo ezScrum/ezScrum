@@ -34,7 +34,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 	        ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// get session info
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info

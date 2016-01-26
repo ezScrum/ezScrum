@@ -30,7 +30,7 @@ public class ShowRemainingReportAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 

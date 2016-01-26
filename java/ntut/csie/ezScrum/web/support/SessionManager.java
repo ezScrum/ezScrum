@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jettison.json.JSONException;
+
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -14,9 +16,6 @@ import ntut.csie.ezScrum.web.form.ProjectInfoForm;
 import ntut.csie.ezScrum.web.iternal.IProjectSummaryEnum;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.resource.core.IProject;
-
-import org.codehaus.jettison.json.JSONException;
 
 /**
  * @author franklin
@@ -49,13 +48,13 @@ public class SessionManager {
 	 * @param request client端傳上來的request
 	 * @time 2014/2/24
 	 */
-	public static final ProjectObject getProjectObject(HttpServletRequest request) {
+	public static final ProjectObject getProject(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		// 拿到 request header 的 URL parameter
-		String projectName = getURLParameter(request, "PID");
+		String projectName = getURLParameter(request, "projectName");
 		if (projectName != null) {
 			// 拿 session 裡的 project 資料
-			ProjectObject project = (ProjectObject) session.getAttribute(projectName + "_new");	// 當IProject完全改完，把new拿掉
+			ProjectObject project = (ProjectObject) session.getAttribute(projectName);	// 當IProject完全改完，把new拿掉
 			/**
 			 * 如果 session 拿不到 project 的資料，則往 DB 找
 			 */
@@ -66,7 +65,7 @@ public class SessionManager {
 						project.toJSON().toString();
 					} catch (JSONException e) {
 					}
-					session.setAttribute(projectName + "_new", project);	// 當IProject完全改完，把new拿掉
+					session.setAttribute(projectName, project);	// 當IProject完全改完，把new拿掉
 				}
 			}
 			return project;
@@ -85,8 +84,8 @@ public class SessionManager {
 	 */
 	public void setProjectObject(HttpServletRequest request, ProjectObject project) {
 		HttpSession session = request.getSession();
-		session.removeAttribute(project.getName() + "_new");		// 當IProject完全改完，把new拿掉
-		session.setAttribute(project.getName() + "_new", project);	// 當IProject完全改完，把new拿掉
+		session.removeAttribute(project.getName());
+		session.setAttribute(project.getName(), project);
 	}
 
 	/**

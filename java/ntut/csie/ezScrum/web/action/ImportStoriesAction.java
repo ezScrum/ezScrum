@@ -47,7 +47,7 @@ public class ImportStoriesAction extends PermissionAction {
 		log.info("Import Stories in ImportStoriesAction.");
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// 處理上傳附件所新增的form bean
 		// get parameter info

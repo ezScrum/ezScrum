@@ -31,7 +31,7 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		long retrospectiveId = Long.valueOf(request.getParameter("issueID"));

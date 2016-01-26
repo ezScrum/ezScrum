@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -23,8 +20,6 @@ import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 public class ProjectHelper {
-
-	private static Log log = LogFactory.getLog(ProjectHelper.class);
 	private ProjectMapper mProjectMapper;
 	private ProjectLogic mProjectLogic;
 
@@ -119,8 +114,10 @@ public class ProjectHelper {
 	}
 	
 	// ezScrum v1.8
-	public ArrayList<AccountObject> getProjectMemberList(ProjectObject project) {
-		return mProjectMapper.getProjectMembers(project.getId());
+	public ArrayList<AccountObject> getProjectMembers(ProjectObject project) {
+		long projectId = project.getId();
+		ArrayList<AccountObject> projectMembers = mProjectMapper.getProjectMembers(projectId);
+		return projectMembers;
 	}
 	
 	/**

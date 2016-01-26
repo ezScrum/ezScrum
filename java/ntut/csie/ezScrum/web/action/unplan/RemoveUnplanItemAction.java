@@ -29,7 +29,7 @@ public class RemoveUnplanItemAction extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		// get parameter info
 		long unplanId = Long.parseLong(request.getParameter("issueID"));
 

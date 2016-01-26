@@ -89,7 +89,8 @@ public class ProjectMapper {
 	 * @return AccountObject list
 	 */
 	public ArrayList<AccountObject> getProjectMembers(long projectId) {
-		return ProjectObject.get(projectId).getProjectMembers();
+		ProjectObject project = ProjectObject.get(projectId);
+		return project.getProjectMembers();
 	}
 
 	/**

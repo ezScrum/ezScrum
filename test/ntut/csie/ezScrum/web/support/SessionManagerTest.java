@@ -58,7 +58,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 	public void testGetProjectObject() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
 		actionPerform();
@@ -68,7 +68,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		request.getSession().setAttribute(projectName, mProject);
 		mSessionManager = new SessionManager(request);
 
-		ProjectObject projectObject =  SessionManager.getProjectObject(request);
+		ProjectObject projectObject =  SessionManager.getProject(request);
 		assertNotNull(projectObject);
 	}
 	
@@ -77,7 +77,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		long projectId = mProject.getId();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
 		actionPerform();
@@ -117,7 +117,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 	public void testSetProjectObject(){
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		actionPerform();

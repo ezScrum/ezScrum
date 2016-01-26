@@ -27,7 +27,7 @@ public class AjaxRemoveSprintTaskAction extends PermissionAction {
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		//  get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));

@@ -30,7 +30,7 @@ public class ShowSprintInformationAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		/*

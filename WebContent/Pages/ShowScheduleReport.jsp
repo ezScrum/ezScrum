@@ -21,8 +21,8 @@
 <script type="text/javascript">
 	function show() {
 		var sprintID = document.getElementById("ShowSprint").value;
-		var pid = getURLParameter("PID");
-		document.location.href = "<html:rewrite action="/showScheduleReport" />?sprintID="+sprintID+"&PID="+pid;
+		var pid = getURLParameter("projectName");
+		document.location.href = "<html:rewrite action="/showScheduleReport" />?sprintID="+sprintID+"&projectName=" + pid;
 	}
 </script>
 

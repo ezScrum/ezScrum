@@ -29,7 +29,7 @@ public class ShowUnplanItemAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String selectedSprint = request.getParameter("SprintID");
 
 		UnplanItemHelper unplanItemHelper = new UnplanItemHelper(project);

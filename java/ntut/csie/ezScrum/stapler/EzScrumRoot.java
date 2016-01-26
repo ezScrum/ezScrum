@@ -130,7 +130,7 @@ public class EzScrumRoot {
 	}
 
 	public Object getDynamic(String token, StaplerRequest request, StaplerResponse response) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		if (token.equals("project")) {
 			return project;
