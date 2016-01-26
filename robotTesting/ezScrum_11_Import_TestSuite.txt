@@ -16,13 +16,13 @@ Test Import - Check Project
     #進入Prodouct Backlog
     Comment    Assert ProductBacklog story
     #進入Release Plan
-    Assert ReleasePlan
+    Comment    Assert ReleasePlan
     #進入Sprint Plan
     Assert SprintPlan
     #進入Sprint Backlog
     Assert SprintBacklog
-    Comment    #r進入 Retrospective
-    Comment    Assert Retrospective
+    #r進入 Retrospective
+    Assert Retrospective
     Comment    #進入Uplanned
     Comment    Assert Unplanned
     [Teardown]    Test Import Teardown
