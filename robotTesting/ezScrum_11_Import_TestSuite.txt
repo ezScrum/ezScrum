@@ -19,8 +19,8 @@ Test Import - Check Project
     Comment    Assert ReleasePlan
     Comment    #進入Sprint Plan
     Comment    Assert SprintPlan
-    Comment    #進入Sprint Backlog
-    Comment    Assert SprintBacklog
+    #進入Sprint Backlog
+    Assert SprintBacklog
     #r進入 Retrospective
     Assert Retrospective
     #進入Uplanned
