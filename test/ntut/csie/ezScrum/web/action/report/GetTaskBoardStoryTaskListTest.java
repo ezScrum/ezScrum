@@ -17,6 +17,7 @@ import com.google.gson.internal.LinkedHashTreeMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -152,6 +153,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	 * - 第1個 sprint
 	 * - 所有人 ALL
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void testGetTaskBoardStoryTaskList_2() throws Exception {
 		// Sprint 加入10個 Story
 		int storyCount = 10;
@@ -284,6 +286,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	 * - 第1個 sprint
 	 * - TEST_ACCOUNT_ID_1
 	 */
+	@SuppressWarnings("unchecked")
 	public void testGetTaskBoardStoryTaskList_4() throws Exception {
 		int storyCount = 5;
 		int taskCount = 1;
@@ -358,9 +361,9 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 			assertEquals(String.valueOf(story.getImportance()), storyList.get(i).get("Importance"));
 			assertEquals("", storyList.get(i).get("Tag"));
 			if (i == 0) {
-				assertEquals(StatusEnum.CLOSED, storyList.get(i).get("Status"));
+				assertEquals(HistoryJSONEnum.STATUS_CLOSED, storyList.get(i).get("Status"));
 			} else {
-				assertEquals(StatusEnum.NEW, storyList.get(i).get("Status"));
+				assertEquals(HistoryJSONEnum.STATUS_NEW, storyList.get(i).get("Status"));
 			}
 			assertEquals(story.getNotes(), storyList.get(i).get("Notes"));
 			assertEquals(story.getHowToDemo(), storyList.get(i).get("HowToDemo"));
@@ -376,10 +379,10 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 				assertEquals(task.getAttachFiles(), taskList.get(j).get("AttachFileList"));
 				assertEquals(false, taskList.get(j).get("Attach"));
 				if (i == 0) {
-					assertEquals(StatusEnum.CLOSED, taskList.get(j).get("Status"));
+					assertEquals(StatusEnum.STATUS_CLOSED_STRING, taskList.get(j).get("Status"));
 					assertEquals("0", taskList.get(j).get("RemainHours"));
 				} else {
-					assertEquals(StatusEnum.ASSIGNED, taskList.get(j).get("Status"));
+					assertEquals(StatusEnum.STATUS_ASSIGNED_STRING, taskList.get(j).get("Status"));
 					assertEquals(String.valueOf(task.getRemains()), taskList.get(j).get("RemainHours"));
 				}
 				assertEquals(task.getPartnersUsername(), taskList.get(j).get("Partners"));
@@ -395,6 +398,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 	 * - 第1個 sprint
 	 * - TEST_ACCOUNT_ID_1
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void testGetTaskBoardStoryTaskList_AttachFile_Story() throws Exception {
 		// Sprint 加入1個 Story
 		int storyCount = 1;
