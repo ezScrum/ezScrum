@@ -128,6 +128,7 @@ Assert Retrospective
     click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     wait until page contains    Sprint #1
     click element    //div[text()="Sprint #1"]
+    #Good
     ${Good_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div
     should be equal    ${Good_Name}    Good01
     ${Good_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div
@@ -136,6 +137,15 @@ Assert Retrospective
     should be equal    ${Good_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
     ${Good_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div
     should be equal    ${Good_Status}    new
+    #Improvement
+    ${Improvement_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div
+    should be equal    ${Improvement_Name}    Improvement
+    ${Improvement_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div
+    should be equal    ${Improvement_SprintID}    1
+    ${Improvement_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div
+    should be equal    ${Improvement_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    ${Improvement_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div
+    should be equal    ${Improvement_Status}    closed
     Comment    Click Element    //div[text()="Good01"]
     Comment    Click Element    //button[text()="Edit Retrospective"]
     Comment    Compare Field Content    //input[@name="Name"]    Good01
