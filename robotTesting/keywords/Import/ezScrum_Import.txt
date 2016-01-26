@@ -8,7 +8,7 @@ Resource          ../SprintPlan/ezScrum_SprintPlan_Sprint.txt
 Test Import Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
-    Comment    # 進入 Management 頁面
+    # 進入 Management 頁面
     Comment    Click Element    xpath=//td[text()="Management"]
     Comment    # 點選 Import 頁面
     Comment    Click Element    xpath=//u[text()="Import"]
@@ -146,6 +146,28 @@ Assert Retrospective
     should be equal    ${Improvement_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
     ${Improvement_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div
     should be equal    ${Improvement_Status}    closed
+    #Go to Sprint #2
+    click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
+    Wait Until Page Contains    All
+    Click Element    //div[text()="Sprint #2"]
+    #Sprint 2 Good
+    ${sp2Good}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div
+    should be equal    ${sp2Good}    Good02
+    ${sp2Good_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div
+    should be equal    ${sp2Good_SprintID}    2
+    ${sp2Good_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[5]/div
+    should be equal    ${sp2Good_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    ${sp2Good_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div
+    should be equal    ${sp2Good_Status}    resolved
+    #Sprint 2 Improvement
+    ${sp2Improvement_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div
+    should be equal    ${sp2Improvement_Name}    Improvement02
+    ${sp2Improvement_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div
+    should be equal    ${sp2Improvement_SprintID}    2
+    ${sp2Improvement_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div
+    should be equal    ${sp2Improvement_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    ${sp2Improvement_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div
+    should be equal    ${sp2Improvement_Status}    assigned
     Comment    Click Element    //div[text()="Good01"]
     Comment    Click Element    //button[text()="Edit Retrospective"]
     Comment    Compare Field Content    //input[@name="Name"]    Good01
@@ -163,6 +185,10 @@ Assert Retrospective
 Assert Unplanned
     Select Node Product    Unplanned
     Wait Until Page Contains    Unplanned Item List
+    Click Element    xpath=//span[text()="Unplanned Item List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
+    Comment    Wait Until Page Contains    Sprint #1
+    click element    //div[text()="Sprint #1"]
+    Wait Until Page Contains    Unplan01
     Click Element    //div[text()="Unplan01"]
     Click Element    //button[text()="Edit Unplanned Item"]
     Compare Field Content    //input[@name="Name"]    Unplan01

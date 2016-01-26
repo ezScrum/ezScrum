@@ -13,18 +13,18 @@ Test Import - Check Project
     Page Should Contain    Project02
     # 進入 Project01
     Click Element    xpath=//div[text()="Project01"]
-    #進入Prodouct Backlog
+    Comment    #進入Prodouct Backlog
     Comment    Assert ProductBacklog story
-    #進入Release Plan
+    Comment    #進入Release Plan
     Comment    Assert ReleasePlan
-    #進入Sprint Plan
-    Assert SprintPlan
-    #進入Sprint Backlog
-    Assert SprintBacklog
+    Comment    #進入Sprint Plan
+    Comment    Assert SprintPlan
+    Comment    #進入Sprint Backlog
+    Comment    Assert SprintBacklog
     #r進入 Retrospective
     Assert Retrospective
-    Comment    #進入Uplanned
-    Comment    Assert Unplanned
+    #進入Uplanned
+    Assert Unplanned
     [Teardown]    Test Import Teardown
 
 Test Import - Find duplicated \ accounts and projects
