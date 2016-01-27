@@ -9,27 +9,26 @@ Test Import Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
     # 進入 Management 頁面
-    Comment    Click Element    xpath=//td[text()="Management"]
-    Comment    # 點選 Import 頁面
-    Comment    Click Element    xpath=//u[text()="Import"]
-    Comment    # 取得 JSON 完整路徑
-    Comment    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import
-    ...    golden_answer_project01_project02.json
-    Comment    #點選 Browse 按鈕
-    Comment    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
-    Comment    Click Element    xpath=//button[text()="Import"]
-    Comment    # 點選YES
-    Comment    Click Element    xpath=//button[text()="Yes"]
-    Comment    # 等待匯出成功
-    Comment    Wait Until Page Contains    Project Import successfully.
-    Comment    Click Element    xpath=//button[text()="OK"]
-    Comment    #回到Projcet List
-    Comment    Click Element    xpath=//td[text()="ProjectList"]
+    Click Element    xpath=//td[text()="Management"]
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    golden_answer_project01_project02.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
+    # 等待匯出成功
+    Wait Until Page Contains    Project Import successfully.
+    Click Element    xpath=//button[text()="OK"]
+    #回到Projcet List
+    Click Element    xpath=//td[text()="ProjectList"]
 
 Test Import Teardown
     Close Browser
     # clean DB
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Assert ProductBacklog story
     Select Node Product    Product Backlog
@@ -37,28 +36,20 @@ Assert ProductBacklog story
     Page Should Contain Element    xpath=//div[text()="Story01"]
     Page Should Contain Element    xpath=//div[text()="Story02"]
     #Get tag name
-    ${tag01name}    Get text    xpath=//div[text()="Story01"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
-    ${tag02name}    Get text    xpath=//div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div
-    Should be equal    ${tag01name}    tag01
-    Should be equal    ${tag02name}    tag02
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div    tag01
+    Compare Text In Specific Xpath    //div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div    tag02
     #點開+的符號
     Mouse Down    //div[text()="Story02"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    //div[text()="Story02"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    //div[text()="Story01"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     Mouse Down    //div[text()="Story01"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     #測試影藏的內容
-    ${story02name}    Get text    xpath=//div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]
-    Should Be Equal    ${story02name}    Name:\nStory02
-    ${png}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[4]
-    Should Be Equal    ${png}    Attach Files:\npng測試.png [Delete]
-    ${pdf}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[5]
-    Should Be Equal    ${pdf}    Attach Files:\npdf測試.pdf [Delete]
-    ${jpeg}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[6]
-    Should Be Equal    ${jpeg}    Attach Files:\njpeg測試.jpg [Delete]
-    ${doc}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[7]
-    Should Be Equal    ${doc}    Attach Files:\ndoc測試.doc [Delete]
-    ${docx}    Get text    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[8]
-    Should Be Equal    ${docx}    Attach Files:\ndocx測試.docx [Delete]
+    Compare Text In Specific Xpath    //div[text()="Story02"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[1]    Name:\nStory02
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[4]    Attach Files:\npng測試.png [Delete]
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[5]    Attach Files:\npdf測試.pdf [Delete]
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[6]    Attach Files:\njpeg測試.jpg [Delete]
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[7]    Attach Files:\ndoc測試.doc [Delete]
+    Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[8]    Attach Files:\ndocx測試.docx [Delete]
 
 Assert ReleasePlan
     Select Node Product    Release Plan
@@ -74,53 +65,28 @@ Assert SprintPlan
     Select Node Product    Sprint Plan
     Wait Until Page Contains    Sprint Plan List
     #測 Sprint01 的資料
-    ${firstSprint}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]/div
-    Should Be Equal    Sprint01    ${firstSprint}
-    ${firstSprintPlace}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[11]/div
-    Should Be Equal    Lab1321    ${firstSprintPlace}
-    ${firstSprintDaily}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[10]/div
-    Should Be Equal    17:00@Lab1321    ${firstSprintDaily}
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]/div    Sprint01
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[11]/div    Lab1321
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[10]/div    17:00@Lab1321
     #測 Sprint02 的資料
-    ${secondSprint}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[2]/div
-    Should Be Equal    Sprint02    ${secondSprint}
-    ${secondSprintPlace}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[11]/div
-    Should Be Equal    Lab1321    ${secondSprintPlace}
-    ${secondSprintDaily}=    Get text    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[10]/div
-    Should Be Equal    17:00@Lab1321    ${secondSprintDaily}
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[2]/div    Sprint02
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[11]/div    Lab1321
+    Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[10]/div    17:00@Lab1321
 
 Assert SprintBacklog
     Select Node Product    Sprint Backlog
     Wait Until Page Contains    Story & Task List
     Click element    //div[@id="SprintBacklog_Page"]/div/div/div/div[2]/div/div/table/tbody/tr/td//table/tbody/tr[2]/td[2]/em/button
-    ${tagText}=    get text    xpath=//span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[2]
-    Should be equal    ${tagText}    tag01
-    ${nameText}=    get text    xpath=//span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[3]
-    Should be equal    ${nameText}    Story01
-    ${nameImportance}=    get text    xpath=//span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[4]
-    Should be equal    ${nameImportance}    80
-    ${nameEstimate}=    get text    xpath=//span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[6]
-    Should be equal    ${nameEstimate}    13
-    ${nameTaskNm}=    get text    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[3]/div
-    Should be equal    ${nameTaskNm}    Task01
-    ${nameTaskEst}=    get text    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[6]/div
-    Should be equal    ${nameTaskEst}    3
-    ${textHandler}=    get text    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[7]/div
-    Should be equal    ${textHandler}    account3
-    ${textClosed}=    get text    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[8]/div
-    Should be equal    ${textClosed}    closed
-    Comment    Compare Field Content    //textarea[@name="Name"]    Story01
-    Comment    Compare Field Content    //input[@name="Estimate"]    13
-    Comment    Compare Field Content    //input[@name="Importance"]    80
-    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Comment    Compare Field Content    //input[@name="Tags"]    tag01
-    Comment    Compare Field Content    //textarea[@name="HowToDemo"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Comment    Click Element    //button[text()="Cancel"]
-    Comment    Click Element    //div[text()="Task01"]
-    Comment    Click Element    //button[text()="Edit Task"]
-    Comment    Compare Field Content    //input[@name="Name"]    Task01
-    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    account3
-    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Comment    Click Element    //button[text()="Cancel"]
+    #Assert Story01
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[2]    tag01
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[3]    Story01
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[4]    80
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr/td[6]    13
+    #Assert Task01
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[3]/div    Task01
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[6]/div    3
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[7]/div    account3
+    Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[8]/div    closed
 
 Assert Retrospective
     Select Node Product    Retrospective
@@ -128,59 +94,30 @@ Assert Retrospective
     click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     wait until page contains    Sprint #1
     click element    //div[text()="Sprint #1"]
-    #Good
-    ${Good_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div
-    should be equal    ${Good_Name}    Good01
-    ${Good_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div
-    should be equal    ${Good_SprintID}    1
-    ${Good_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[5]/div
-    should be equal    ${Good_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
-    ${Good_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div
-    should be equal    ${Good_Status}    new
-    #Improvement
-    ${Improvement_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div
-    should be equal    ${Improvement_Name}    Improvement
-    ${Improvement_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div
-    should be equal    ${Improvement_SprintID}    1
-    ${Improvement_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div
-    should be equal    ${Improvement_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
-    ${Improvement_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div
-    should be equal    ${Improvement_Status}    closed
+    #Sprint 1 Good
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div    Good01
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div    1
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div    new
+    #Sprint 1 Improvement
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div    Improvement
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div    1
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div    closed
     #Go to Sprint #2
     click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     Wait Until Page Contains    ALL
-    Click Element    //div[text()="Sprint #2"]
+    click element    //div[text()="Sprint #2"]
     #Sprint 2 Good
-    ${sp2Good}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div
-    should be equal    ${sp2Good}    Good02
-    ${sp2Good_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div
-    should be equal    ${sp2Good_SprintID}    2
-    ${sp2Good_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[5]/div
-    should be equal    ${sp2Good_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
-    ${sp2Good_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div
-    should be equal    ${sp2Good_Status}    resolved
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[3]/div    Good02
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[2]/div    2
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/table/tbody/tr/td[6]/div    resolved
     #Sprint 2 Improvement
-    ${sp2Improvement_Name}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div
-    should be equal    ${sp2Improvement_Name}    Improvement02
-    ${sp2Improvement_SprintID}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div
-    should be equal    ${sp2Improvement_SprintID}    2
-    ${sp2Improvement_Description}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div
-    should be equal    ${sp2Improvement_Description}    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
-    ${sp2Improvement_Status}=    get text    xpath=//span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div
-    should be equal    ${sp2Improvement_Status}    assigned
-    Comment    Click Element    //div[text()="Good01"]
-    Comment    Click Element    //button[text()="Edit Retrospective"]
-    Comment    Compare Field Content    //input[@name="Name"]    Good01
-    Comment    Compare Field Content    //input[@name="Type"]    Good
-    Comment    Compare Field Content    //input[@name="Status"]    new
-    Comment    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Comment    Click Element    //button[text()="Cancel"]
-    Comment    Click Element    //div[text()="Improvement"]
-    Comment    Click Element    //button[text()="Edit Retrospective"]
-    Comment    Compare Field Content    //input[@name="Name"]    Improvement
-    Comment    Compare Field Content    //input[@name="Type"]    Improvement
-    Comment    Compare Field Content    //input[@name="Status"]    closed
-    Comment    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[3]/div    Improvement02
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[2]/div    2
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div    assigned
 
 Assert Unplanned
     Select Node Product    Unplanned
@@ -189,20 +126,19 @@ Assert Unplanned
     Wait Until Page Contains    ALL
     Click Element    //div[@class="x-combo-list-item x-combo-selected"]/../div[text()="Sprint #1"]
     Wait Until Page Contains    Unplan01
-    Comment    Click Element    //div[text()="Unplan01"]
-    Comment    Click Element    //button[text()="Edit Unplanned Item"]
-    Comment    Compare Field Content    //input[@name="Name"]    Unplan01
-    Comment    Compare Field Content    //input[@name="Handler"]    account3
-    Comment    Compare Field Content    //input[@name="Status"]    assigned
-    Comment    Compare Field Content    //input[@name="Estimate"]    3
-    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Comment    Click Element    //button[text()="Cancel"]
-    Comment    Click Element    //div[text()="Unplan02"]
-    Comment    Click Element    //button[text()="Edit Unplanned Item"]
-    Comment    Compare Field Content    //input[@name="Name"]    Unplan02
-    Comment    Compare Field Content    //input[@name="Status"]    new
-    Comment    Compare Field Content    //input[@name="Estimate"]    8
-    Comment    Compare Field Content    //textarea[@name="Notes"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
+    #Compare Unplan01
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[2]    Unplan01
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]    1
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[4]    3
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[5]    assigned
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[7]    account3
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[9]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    #Compare Unplan02
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]    Unplan02
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[3]    1
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[4]    8
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[5]    new
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[9]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
 
 Test Import Same name Setup
     # 登入ezScrum

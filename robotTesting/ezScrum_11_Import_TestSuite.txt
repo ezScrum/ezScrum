@@ -13,12 +13,12 @@ Test Import - Check Project
     Page Should Contain    Project02
     # 進入 Project01
     Click Element    xpath=//div[text()="Project01"]
-    Comment    #進入Prodouct Backlog
-    Comment    Assert ProductBacklog story
-    Comment    #進入Release Plan
-    Comment    Assert ReleasePlan
-    Comment    #進入Sprint Plan
-    Comment    Assert SprintPlan
+    #進入Prodouct Backlog
+    Assert ProductBacklog story
+    #進入Release Plan
+    Assert ReleasePlan
+    #進入Sprint Plan
+    Assert SprintPlan
     #進入Sprint Backlog
     Assert SprintBacklog
     #r進入 Retrospective
