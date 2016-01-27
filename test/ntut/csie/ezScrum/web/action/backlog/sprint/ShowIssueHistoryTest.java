@@ -92,8 +92,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
-		Thread.sleep(1000);
-
 		int taskCount = 1;
 		int taskEst = 2;
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst,
@@ -625,19 +623,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(1000);
 
 		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
-		Thread.sleep(1000);
 
 		EditUnplanItem EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_CHECKOUT();
-		Thread.sleep(1000);
 
 		String sprintId = String.valueOf(mCS.getSprintsId().get(0));
 		String unplanId = String.valueOf(mCUI.getUnplansId().get(0));
@@ -680,24 +674,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(1000);
 
 		// 新增一個UnplanItem
 		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
-		Thread.sleep(1000);
 
 		EditUnplanItem EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_CHECKOUT();
-		Thread.sleep(1000);
 
 		EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_DONE();
-		Thread.sleep(1000);
 
 		String issueId = String.valueOf(mCUI.getUnplansId().get(0));
 

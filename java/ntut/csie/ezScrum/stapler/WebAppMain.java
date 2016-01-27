@@ -21,8 +21,6 @@ import ntut.csie.ezScrum.issue.sql.service.internal.TestConnectException;
 import ntut.csie.ezScrum.issue.sql.service.tool.ISQLControl;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.web.databaseEnum.TabalesNameEnum;
-import ntut.csie.jcis.resource.core.IProject;
-import ntut.csie.jcis.resource.core.ResourceFacade;
 
 public class WebAppMain implements ServletContextListener {
 	Configuration mConfig = new Configuration();
@@ -142,7 +140,7 @@ public class WebAppMain implements ServletContextListener {
     private boolean initiateDB() throws SQLException {
 		mControl.connect();
 		Connection connection = mControl.getconnection();
-		String defaultFile = ResourceFacade.getWorkspace().getRoot().getFolder(IProject.METADATA).getFullPath() + File.separator + INITIATE_SQL_FILE;
+		String defaultFile = mConfig.getWorkspacePath() + File.separator + "_metadata" + File.separator + INITIATE_SQL_FILE;
 		try {
 			importSQL(connection, new FileInputStream(defaultFile));
 		} catch (FileNotFoundException e) {

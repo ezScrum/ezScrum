@@ -70,7 +70,6 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		 *	        由於時間太快可能導致此爛位的時間一模一樣，會讓取讀錯誤的資料。
 		 *	Sol: 使用sleep確保時間有差距。
 		 */
-		Thread.sleep(1000);	
 		
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?projectName=" + projectName);

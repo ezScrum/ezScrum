@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.jcis.resource.core.IProject;
-import ntut.csie.jcis.resource.core.IWorkspace;
-import ntut.csie.jcis.resource.core.IWorkspaceRoot;
-import ntut.csie.jcis.resource.core.ResourceFacade;
 
 public class ProjectMapper {
 	public ProjectMapper() {
@@ -110,20 +106,5 @@ public class ProjectMapper {
 			projectWorkersUsername.add(projectWorker.getUsername());
 		}
 		return projectWorkersUsername;
-	}
-
-	/**
-	 * 透過projectID取得Project information
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@Deprecated
-	public IProject getProjectByID(String projectID) {
-		IWorkspace workspace = ResourceFacade.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-
-		IProject project = root.getProject(projectID);
-		return project;
 	}
 }

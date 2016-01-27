@@ -52,8 +52,6 @@ public class UnplanItemMapperTest {
 		sProjectId = mProject.getId();
 		sSprintId = mCS.getSprints().get(0).getId();
 		
-		// 為了使 Story 建立時間與修改時間分開而停下
-		Thread.sleep(1000);
 		// ============= release ==============
 		ini = null;
 	}

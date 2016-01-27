@@ -96,7 +96,6 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 
 		// 增加 delay 時間，因為新增 release 與刪除 release 的秒速過近，會造成系統抓錯資料導致 assert 錯誤
 		// (系統抓資料抓到秒，但是新增到 actionPerfome 回來刪掉 release 可能只花費毫秒，因此秒的單位會一樣)
-		Thread.sleep(1000);
 
 		// ================ set request info ========================
 		addRequestParameter("issueID", "1");

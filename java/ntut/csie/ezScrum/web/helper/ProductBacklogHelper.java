@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -364,7 +365,8 @@ public class ProductBacklogHelper {
 
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
 		// create folder to put file
-		String folderPath = "." + File.separator + "WebContent" + File.separator + "Workspace" + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		Configuration configuration = new Configuration();
+		String folderPath = configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
 		String fileName = System.currentTimeMillis() + "_" + attachFileInfo.name;
 		String relativeFilePath = folderPath + File.separator + fileName;
 		String absoluteFilePath = new File(relativeFilePath).getAbsolutePath();

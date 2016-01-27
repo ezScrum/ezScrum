@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
@@ -20,10 +21,8 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.ChartUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class RemainingWorkReport {
 	final private String mNAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
@@ -248,12 +247,10 @@ public class RemainingWorkReport {
 	}
 
 	private void nowExistReport() {
-		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
-		String chartPath1 = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		Configuration configuration = new Configuration();
+		String chartPath1 = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE1;
-		String chartPath2 = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath2 = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE2;
 		File f1 = new File(chartPath1);
 		File f2 = new File(chartPath2);
@@ -269,19 +266,17 @@ public class RemainingWorkReport {
 	}
 
 	private String getReportPath() {
-		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
-		// 圖片儲存的真正路徑
+		Configuration configuration = new Configuration();
 		// workspace/project/_metadata/RemainingWork/
-		String chartPath = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + "_metadata" + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + mChartPath;
 		return chartPath;
 	}
 
 	public String getRemainingWorkChartPath() {
+		Configuration configuration = new Configuration();
 		// web用的路徑
-		String link = "./Workspace/" + mProject.getName() + "/"
-		        + IProject.METADATA + "/" + mNAME + "/Report" + "/" + mChartPath;
+		String link = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + "_metadata" + File.separator + mNAME + File.separator + "Report" + File.separator + mChartPath;
 		return link;
 	}
 

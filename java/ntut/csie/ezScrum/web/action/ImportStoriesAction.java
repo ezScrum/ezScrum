@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
@@ -18,14 +24,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.FileUtil;
-import ntut.csie.jcis.resource.core.IPath;
-import ntut.csie.jcis.resource.core.ResourceFacade;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 
 public class ImportStoriesAction extends PermissionAction {
 	private static Log log = LogFactory.getLog(ImportStoriesAction.class);
@@ -59,10 +57,10 @@ public class ImportStoriesAction extends PermissionAction {
 
 		// 有附件檔案時
 		if (file_size > 0) {
+			Configuration configuration = new Configuration();
 			// 將檔案從暫存區移動至專案底下的資料夾
 			String fileName = file.getFileName();
-			IPath fullPath = ResourceFacade.createPath(new Configuration().getWorkspacePath());
-			String targetPath = fullPath.getPathString() + "/" + fileName;
+			String targetPath = configuration.getWorkspacePath() + File.separator + fileName;
 			copy(file, targetPath);
 			
 			// 利用jxl讀取xls中的檔案

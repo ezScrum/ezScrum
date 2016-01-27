@@ -71,9 +71,6 @@ public class TranslationTest {
 
 		mProject = mCP.getAllProjects().get(0);
 
-		// 為了不讓 SQL 跑太快而沒有正確更新值進去
-		Thread.sleep(500);
-
 		// ============= release ==============
 		ini = null;
 	}

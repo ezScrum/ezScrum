@@ -70,11 +70,7 @@ public class TaskBoardTest {
 
 		mSprintBacklogLogic = new SprintBacklogLogic(mCP.getAllProjects().get(0), mCS.getSprintsId().get(0));
 		mSprintBacklogMapper = mSprintBacklogLogic.getSprintBacklogMapper();
-		
 		mTaskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
-
-		// 為了使 Story 建立時間與修改時間分開而停下
-		Thread.sleep(1000);
 	}
 
 	@After

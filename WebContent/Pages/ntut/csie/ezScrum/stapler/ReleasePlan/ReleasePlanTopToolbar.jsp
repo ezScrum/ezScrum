@@ -16,7 +16,7 @@
 		if (project != null) {
 			projectID = project.getName();
 		}
-		ReleasePlan releasePlan = new ReleasePlan(projectID);
+		ReleasePlan releasePlan = new ReleasePlan();
 	%>
 
 	<script type="text/javascript">
