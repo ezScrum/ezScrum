@@ -54,12 +54,8 @@ Assert ProductBacklog story
 Assert ReleasePlan
     Select Node Product    Release Plan
     Wait Until Page Contains    Release & Sprint List
-    Click Element    //div[text()="Release01"]
-    Click Element    //button[text()="Edit Release Plan"]
-    Wait Until Page Contains    Edit Release #
-    Compare Field Content    //input[@name="Name"]    Release01
-    Compare Field Content    //textarea[@name="Description"]    \\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f
-    Click Element    //button[text()="Cancel"]
+    Compare Text In Specific Xpath    //span[text()="Release & Sprint List"]/../../div[2]/div/div/div[2]/table/tbody/tr/td[2]/div    Release01
+    Compare Text In Specific Xpath    //span[text()="Release & Sprint List"]/../../div[2]/div/div/div[2]/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
 
 Assert SprintPlan
     Select Node Product    Sprint Plan
