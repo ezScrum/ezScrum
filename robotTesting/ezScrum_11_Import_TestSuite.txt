@@ -1,0 +1,83 @@
+*** Settings ***
+Suite Setup
+Suite Teardown
+Force Tags        Import
+Resource          keywords/Import/ezScrum_Import.txt
+Library           String
+
+*** Test Cases ***
+Test Import - Check Project
+    [Setup]    Test Import Setup
+    # 驗證 Project
+    Page Should Contain    Project01
+    Page Should Contain    Project02
+    # 進入 Project01
+    Click Element    xpath=//div[text()="Project01"]
+    #進入Prodouct Backlog
+    Assert ProductBacklog story
+    #進入Release Plan
+    Assert ReleasePlan
+    #進入Sprint Plan
+    Assert SprintPlan
+    #進入Sprint Backlog
+    Assert SprintBacklog
+    #r進入 Retrospective
+    Assert Retrospective
+    #進入Uplanned
+    Assert Unplanned
+    [Teardown]    Test Import Teardown
+
+Test Import - Find duplicated \ accounts and projects
+    [Setup]    Test Import Same name Setup
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    golden_answer_new_project01_account01_account02.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
+    # 等待匯出成功
+    Wait Until Page Contains    Project Import successfully.
+    Click Element    xpath=//button[text()="OK"]
+    #回到Projcet List
+    Click Element    xpath=//td[text()="ProjectList"]
+    Log    " answer is = "
+    #測試
+    ${originPattern}    Set Variable    [Project01]{1,9}[_]{1}[0-9]{14}
+    Comment    ${pattern} =    Regexp Escape    ${originPattern}
+    ${PROJECTNAME}=    Get Text    xpath=//div[text()="Project01"]/../../../../../../div[2]/table/tbody/tr/td[1]/div
+    Log    ${PROJECTNAME}
+    Should Match Regexp    ${PROJECTNAME}    ${originPattern}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    # account01
+    Page Should Contain    account01
+    ${testAccount01}    Get Text    //div[text()="account01"]/../../td[2]/div
+    Should Be Equal    ${testAccount01}    account01_oldInfo
+    ${testAccount01email}    Get Text    //div[text()="account01"]/../../td[3]/div
+    Should Be Equal    ${testAccount01email}    account01_oldInfo@gmail.com
+    # account02
+    Page Should Contain    account02
+    ${testAccount02}    Get Text    //div[text()="account02"]/../../td[2]/div
+    Should Be Equal    ${testAccount02}    account02_Info
+    ${testAccount02email}    Get Text    //div[text()="account02"]/../../td[3]/div
+    Should Be Equal    ${testAccount02email}    account02_Info@gmail.com
+    [Teardown]    Test Import Teardown
+
+Test Import - Check Permission Administrator
+    [Setup]    Login Page    ${LOGIN_URL}
+    #Management
+    Click Element    xpath=//td[text()="Management"]
+    Page Should Contain    Import
+    Click Element    xpath=//u[text()="Import"]    #Only admin can see this
+    [Teardown]    Test Import - Check Permission Teardown
+
+Test Import - Check Permission Normal User
+    [Setup]    Test Import - Check Permission Normal User Setup
+    #Login with newly created account
+    Login Page With Account In The Same Browser    test    test
+    Click Element    xpath=//td[text()="Management"]
+    Page Should Not Contain    Import
+    [Teardown]    Test Import - Check Permission Teardown

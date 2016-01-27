@@ -87,8 +87,9 @@ public class IntegratedRESTfulApi {
 				// 處理專案名稱重複的問題
 				if (response.getStatus() == Response.Status.CONFLICT.getStatusCode()) {
 					String newProjectName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.NAME));
+					String newProjectDisplayName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.DISPLAY_NAME));
 					projectJSON.put(ProjectJSONEnum.NAME, newProjectName);
-					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectName);
+					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectDisplayName);
 					// Create Project
 					response = mClient.target(BASE_URL)
 					        .path("projects")

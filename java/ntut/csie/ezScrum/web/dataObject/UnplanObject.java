@@ -2,17 +2,17 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
  * @author AllenHuang 2015/08/21
@@ -74,7 +74,7 @@ public class UnplanObject implements IBaseObject {
 	}
 	
 	public UnplanObject setNotes(String notes) {
-		mNotes = handleSpecialChar(notes);
+		mNotes = notes;
 		return this;
 	}
 
@@ -449,12 +449,5 @@ public class UnplanObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_UNPLAN,
 				type, oldValue, newValue, specificTime);
 		history.save();
-	}
-	
-	private String handleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
 	}
 }
