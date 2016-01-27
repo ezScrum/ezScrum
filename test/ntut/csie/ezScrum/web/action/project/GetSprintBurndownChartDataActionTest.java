@@ -107,7 +107,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "0");
@@ -140,7 +140,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "0");
@@ -173,7 +173,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "0");
@@ -206,7 +206,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "0");
@@ -255,7 +255,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		addTaskToStory.exe();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint
@@ -320,7 +320,7 @@ public class GetSprintBurndownChartDataActionTest extends MockStrutsTestCase {
 		addTaskToStory.exe();
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint

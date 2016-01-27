@@ -80,7 +80,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
@@ -117,7 +117,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
@@ -173,7 +173,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

@@ -78,7 +78,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("selects", selects);
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
@@ -113,7 +113,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("selects", selects);
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseID);
@@ -141,7 +141,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 		response.reset();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 
 		// ================ set session info ========================

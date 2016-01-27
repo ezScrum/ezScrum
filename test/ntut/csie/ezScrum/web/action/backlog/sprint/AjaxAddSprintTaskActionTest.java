@@ -83,7 +83,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 設定 Session 資訊
 		request.getSession().setAttribute("UserSession",
@@ -143,7 +143,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		// 設定 Session 資訊
 		request.getSession().setAttribute("UserSession",

@@ -84,7 +84,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintDueDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), today);
 
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("isCreate", "True");
 		addRequestParameter("Id", sprintID);
 		addRequestParameter("Goal", sprintGoal);
@@ -144,7 +144,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintDueDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), date);
     	
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("isCreate", "false");
 		addRequestParameter("Id", sprintID);
 		addRequestParameter("Goal", sprintGoal);
@@ -188,7 +188,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("lastsprint", String.valueOf(isLastsprint));
 		addRequestParameter("SprintID", sprintID);
 		

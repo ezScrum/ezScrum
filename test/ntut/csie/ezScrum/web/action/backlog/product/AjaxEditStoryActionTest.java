@@ -73,7 +73,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		Thread.sleep(1000);	
 		
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		String expectedStoryName = "UT for Update Story for Name";
 		String expectedStoryImportance = "5";
 		String expectedStoryEstimation = "5";

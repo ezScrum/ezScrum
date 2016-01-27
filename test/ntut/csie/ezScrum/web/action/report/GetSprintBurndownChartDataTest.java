@@ -99,7 +99,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		Object[] idealPointArray = ideal.keySet().toArray();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
@@ -151,7 +151,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getName(), "", "");
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID",  String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
@@ -196,7 +196,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
@@ -260,7 +260,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		sprintBacklogLogic.closeTask(ATTS.getTasksId().get(0), ATTS.getTasks().get(0).getName(), "", 0, "");
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 

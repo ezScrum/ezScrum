@@ -106,7 +106,7 @@ public class AjaxRemoveStoryActionTest extends MockStrutsTestCase {
 		// 設定 Session 資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();

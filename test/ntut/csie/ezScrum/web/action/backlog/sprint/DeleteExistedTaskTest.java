@@ -90,7 +90,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", tasksId);
 
@@ -129,7 +129,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(mSprintId));
 		addRequestParameter("selected", tasksId);
 
@@ -175,7 +175,7 @@ public class DeleteExistedTaskTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession",
 				mConfig.getUserSession());

@@ -90,7 +90,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", mProject);
 		
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		
 		// 執行 action
 		actionPerform();
@@ -111,7 +111,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", mProject);
 		
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		
 		// 執行 action
 		actionPerform();
@@ -134,7 +134,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", mProject);
 		
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		
 		// 執行 action
 		actionPerform();

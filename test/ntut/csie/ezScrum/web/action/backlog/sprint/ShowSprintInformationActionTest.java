@@ -81,7 +81,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String sprintId = "1";
 		String projectName = mProject.getName();
 		
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 
 		// ================ set session info ========================
@@ -108,7 +108,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -180,7 +180,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -264,7 +264,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -307,7 +307,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================

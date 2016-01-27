@@ -93,7 +93,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		String projectID = mCP.getAllProjects().get(0).getName();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -121,7 +121,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		AccountObject account = mCA.getAccountList().get(0);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(account));
@@ -147,7 +147,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		addUserToRole.exe_ST();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccount(account.getUsername())));
@@ -192,7 +192,7 @@ public class AjaxGetTaskBoardDescriptionActionTest extends MockStrutsTestCase {
 		addTaskToStory.exe();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccount(account.getUsername())));

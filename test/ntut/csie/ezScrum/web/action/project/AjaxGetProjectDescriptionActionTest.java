@@ -35,14 +35,6 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	}
 
 	/**
-	 * clean previous action info
-	 */
-	/*	private void cleanActionInformation(){
-			clearRequestParameters();
-			response.reset();
-		}*/
-
-	/**
 	 * 取得一般使用者的UserSession
 	 * 
 	 * @param account
@@ -101,7 +93,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -134,7 +126,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		AccountObject account = mCA.getAccountList().get(0);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(account));
@@ -163,7 +155,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		addUserToRole.exe_ST();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccount(account.getUsername())));

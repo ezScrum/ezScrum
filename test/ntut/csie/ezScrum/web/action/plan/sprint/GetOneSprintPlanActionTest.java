@@ -73,7 +73,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	public void testShowSprint_1() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("SprintID",
 				String.valueOf(mCS.getSprintsId().get(0)));
 
@@ -123,7 +123,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	public void testShowSprint_2() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("lastsprint", String.valueOf(true));
 
 		// ================ set session info ========================

@@ -116,7 +116,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + pid);
+		request.setHeader("Referer", "?projectName=" + pid);
 
 		// 執行 action
 		actionPerform();
@@ -166,7 +166,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -228,7 +228,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ 執行 add user action ======================
 		actionPerform();
@@ -360,7 +360,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================== set parameter info ====================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// ================ 執行 view project action ======================
 		actionPerform();
@@ -397,7 +397,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ 執行 add user action ======================
 		actionPerform();
@@ -474,7 +474,7 @@ public class AddUserActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + pid);
+		request.setHeader("Referer", "?projectName=" + pid);
 
 		// ================ 執行 add user action ======================
 		actionPerform();

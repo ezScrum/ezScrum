@@ -68,7 +68,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 	
 	public void testGetAllTagList(){
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mCP.getAllProjects().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

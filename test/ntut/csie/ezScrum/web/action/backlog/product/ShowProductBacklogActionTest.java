@@ -65,7 +65,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	public void testShowProductBacklogAction_NoStory() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		addRequestParameter("FilterType", "");
 
@@ -94,7 +94,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CPB.exe();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		addRequestParameter("FilterType", "");
 
@@ -150,7 +150,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		ArrayList<StoryObject> stories = CPB.getStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "BACKLOG";
 		addRequestParameter("FilterType", filterType);
@@ -223,7 +223,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "DONE";
 		addRequestParameter("FilterType", filterType);
@@ -295,7 +295,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CIS.exeCloseStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "DETAIL";
 		addRequestParameter("FilterType", filterType);

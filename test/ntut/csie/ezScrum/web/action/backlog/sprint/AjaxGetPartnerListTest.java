@@ -89,7 +89,7 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		String issueId = String.valueOf(CPB.getStoryIds().get(0));
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		addRequestParameter("issueID", issueId);
 

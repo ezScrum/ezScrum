@@ -69,7 +69,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 	public void testAddNewStory_1(){
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
@@ -131,7 +131,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
 		String expectedStoryEstimation= "0";
@@ -195,7 +195,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
 		String expectedStoryEstimation = "0";
@@ -263,7 +263,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		String expectedStoryName = "UT for Add New Story for Name";
 		String expectedStoryImportance = "0";
 		String expectedStoryEstimation = "0";

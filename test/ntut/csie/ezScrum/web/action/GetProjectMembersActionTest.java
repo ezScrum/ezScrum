@@ -92,7 +92,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = this.mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -123,7 +123,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = this.mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -160,7 +160,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = this.mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -192,7 +192,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = this.mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================

@@ -68,7 +68,7 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 	public void testDeleteTag(){
 		// ================ set request info ========================
 		ArrayList<TagObject> tags = mCT.getTagList();
-		request.setHeader("Referer", "?PID=" + mCP.getAllProjects().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

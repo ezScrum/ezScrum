@@ -73,7 +73,7 @@ public class GetAddNewRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -109,7 +109,7 @@ public class GetAddNewRetrospectiveInfoActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 

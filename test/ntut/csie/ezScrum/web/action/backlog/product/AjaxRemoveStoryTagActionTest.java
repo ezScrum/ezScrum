@@ -89,7 +89,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		ArrayList<Long> storyIds = mCPB.getStoryIds();
 		ArrayList<TagObject> tags = mCT.getTagList();
 		
-		request.setHeader("Referer", "?PID=" + mCP.getAllProjects().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIds.get(0)));
 		String expectedStoryName = mCPB.getStories().get(0).getName();

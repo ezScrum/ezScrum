@@ -84,7 +84,7 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);	
@@ -125,7 +125,7 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);	

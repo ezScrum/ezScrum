@@ -75,7 +75,7 @@ public class GetSprintPlanComboInfoActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("SprintID", String.valueOf(idList.get(0)));
 
 		// ================ set session info ========================

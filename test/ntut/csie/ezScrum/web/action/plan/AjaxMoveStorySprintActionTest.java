@@ -98,7 +98,7 @@ public class AjaxMoveStorySprintActionTest extends MockStrutsTestCase {
 			-------------------------------------------------------------*/
 			if (story.getSprintId() != 1) {
 				clearRequestParameters();
-				request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+				request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 				addRequestParameter("issueID", String.valueOf(story.getSprintId()));
 				addRequestParameter("moveID", "1");
 				addRequestParameter("type", "sprint");

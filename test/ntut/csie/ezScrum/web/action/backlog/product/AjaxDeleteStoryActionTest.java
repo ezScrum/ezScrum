@@ -70,7 +70,7 @@ public class AjaxDeleteStoryActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		String issueID = String.valueOf(CPB.getStoryIds().get(1));
 		addRequestParameter("issueID", issueID);
 		

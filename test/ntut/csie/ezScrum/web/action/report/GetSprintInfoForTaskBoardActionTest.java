@@ -88,7 +88,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 
 		// ================ set session info ========================
@@ -135,7 +135,7 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("SprintID", "1");
 
 		// ================ set session info ========================

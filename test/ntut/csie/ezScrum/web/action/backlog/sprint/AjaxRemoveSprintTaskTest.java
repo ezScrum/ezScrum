@@ -87,7 +87,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintIdList.get(0)));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", parentId);
@@ -137,7 +137,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(expectedSprintId));
 		addRequestParameter("issueID", issueId);
 		addRequestParameter("parentID", expectedStoryId);
@@ -175,7 +175,7 @@ public class AjaxRemoveSprintTaskTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);	

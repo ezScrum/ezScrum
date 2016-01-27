@@ -92,7 +92,7 @@ public class AjaxAddNewStoryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 		
 		actionPerform(); // 執行 action
 		verifyNoActionErrors();

@@ -79,7 +79,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
    	
     	actionPerform();		// 執行 action
     	
@@ -116,7 +116,7 @@ public class RemoveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
     	
 		actionPerform();		// 執行 action
     	

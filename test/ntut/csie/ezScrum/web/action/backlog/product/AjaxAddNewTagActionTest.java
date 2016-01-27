@@ -71,7 +71,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		//設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		addRequestParameter("newTagName", tag);	
 		
@@ -91,7 +91,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		//設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		new ProductBacklogHelper(project).addNewTag(tagDB);
 		
@@ -119,7 +119,7 @@ public class AjaxAddNewTagActionTest extends MockStrutsTestCase {
 		//設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		String expectedResponseText = "";
 		String actualResponseText = "";

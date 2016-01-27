@@ -118,7 +118,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -209,7 +209,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager
+		request.setHeader("Referer", "?projectName=" + project.getName()); // SessionManager
 																	// 會對URL的參數作分析
 																	// ,未帶入此參數無法存入session
 
@@ -311,7 +311,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -388,7 +388,7 @@ public class ShowTaskBoardActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager
+		request.setHeader("Referer", "?projectName=" + project.getName()); // SessionManager
 																	// 會對URL的參數作分析
 																	// ,未帶入此參數無法存入session
 

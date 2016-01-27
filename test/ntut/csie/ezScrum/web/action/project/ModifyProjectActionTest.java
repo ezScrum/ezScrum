@@ -66,7 +66,7 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 		
 		ProjectObject testProject = mCP.getAllProjects().get(0);
 		String projectName = testProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, testProject);

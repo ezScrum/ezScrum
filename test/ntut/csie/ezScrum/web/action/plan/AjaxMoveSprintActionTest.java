@@ -65,7 +65,7 @@ public class AjaxMoveSprintActionTest extends MockStrutsTestCase {
     public void testAjaxMoveSprintAction() {
     	// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

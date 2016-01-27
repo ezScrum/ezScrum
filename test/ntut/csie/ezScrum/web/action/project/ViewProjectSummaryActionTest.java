@@ -162,7 +162,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 action
 		actionPerform();
@@ -219,7 +219,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 add user action
 		actionPerform();
@@ -348,7 +348,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -389,7 +389,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -433,7 +433,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1"); // -1代表離現在時間最近的 Sprint
@@ -485,7 +485,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1"); // -1:代表離現在時間最近的 Sprint
@@ -545,7 +545,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================== set parameter info ====================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 view project action
 		actionPerform();
@@ -594,7 +594,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", notExistedProjectName);
+		addRequestParameter("projectName", notExistedProjectName);
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -618,7 +618,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", existedProjectName);
+		addRequestParameter("projectName", existedProjectName);
 
 		// 執行 view Project action
 		actionPerform();
@@ -653,7 +653,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 view Project action
 		actionPerform();
@@ -679,7 +679,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// ================ 執行 action ======================
 		actionPerform();

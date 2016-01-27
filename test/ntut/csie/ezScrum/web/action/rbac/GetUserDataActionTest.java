@@ -87,7 +87,7 @@ public class GetUserDataActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();

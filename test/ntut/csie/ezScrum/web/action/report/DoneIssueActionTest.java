@@ -105,7 +105,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -159,7 +159,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();

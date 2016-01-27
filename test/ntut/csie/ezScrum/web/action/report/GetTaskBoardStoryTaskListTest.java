@@ -109,7 +109,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", "ALL");
 		addRequestParameter("sprintID", "1");
 
@@ -162,7 +162,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", "ALL");
 		addRequestParameter("sprintID", "1");
 
@@ -229,7 +229,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", "ALL");
 		addRequestParameter("sprintID", "");
 
@@ -318,7 +318,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", CA.getAccount_ID(1));
 		addRequestParameter("sprintID", "1");
 
@@ -437,7 +437,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", "ALL");
 		addRequestParameter("sprintID", "1");
 
@@ -521,7 +521,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("UserID", "ALL");
 		addRequestParameter("sprintID", "1");
 		
