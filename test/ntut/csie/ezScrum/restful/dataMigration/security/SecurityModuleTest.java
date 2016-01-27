@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.dataMigration.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +16,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 public class SecurityModuleTest {
 	private Configuration mConfig;
 	private CreateProject mCP;
+	
 	@Before
 	public void setUp(){
 		// Set Test Mode
@@ -29,7 +31,6 @@ public class SecurityModuleTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		createAcoount();
 	}
 	
 	@After
@@ -48,30 +49,15 @@ public class SecurityModuleTest {
 	}
 	
 	@Test
-	public void testUserNotExist(){
-		String accountName = "Mike";
-		String accountPassword = "1234";
-		boolean checkUser = SecurityModule.checkAccount(accountName, accountPassword);
-		assertEquals(false, checkUser);
+	public void testIsAccountValid_UserNotExist(){
+		String accountName = "";
+		String accountPassword = "";
+		boolean isAccountValid = SecurityModule.isAccountValid(accountName, accountPassword);
+		assertFalse(isAccountValid);
 	}
 	
 	@Test
-	public void testUserNotCorrect(){
-		String accountName = "Jimmy";
-		String accountPassword = "1234";
-		boolean checkUser = SecurityModule.checkAccount(accountName, accountPassword);
-		assertEquals(false, checkUser);
-	}
-	
-	@Test
-	public void testUserIsCorrect(){
-		String accountName = "Jimmy";
-		String accountPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
-		boolean checkUser = SecurityModule.checkAccount(accountName, accountPassword);
-		assertEquals(true, checkUser);
-	}
-	
-	private void createAcoount(){
+	public void testIsAccountValid_UserNotAdmin(){
 		String userName = "Jimmy";
 		String userNickName = "TEST_USER_NICK_NAME";
 		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
@@ -81,5 +67,14 @@ public class SecurityModuleTest {
 		  	   .setNickName(userNickName)
 		  	   .setPassword(userPassword)
 		  	   .save();
+		boolean isAccountValid = SecurityModule.isAccountValid(userName, userPassword);
+		assertFalse(isAccountValid);
+	}
+	
+	@Test
+	public void testIsAccountValid_UserIsCorrect(){
+		AccountObject admin = AccountObject.get("admin");
+		boolean checkUser = SecurityModule.isAccountValid(admin.getUsername(), admin.getPassword());
+		assertEquals(true, checkUser);
 	}
 }

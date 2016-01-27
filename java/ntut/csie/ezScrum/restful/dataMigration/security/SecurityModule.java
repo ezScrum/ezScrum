@@ -1,17 +1,17 @@
 package ntut.csie.ezScrum.restful.dataMigration.security;
 
-import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 public class SecurityModule {
-	public static boolean checkAccount(String username, String password) {
-		AccountObject account = AccountDAO.getInstance().get(username);
-
+	public static boolean isAccountValid(String username, String password) {
+		AccountObject account = AccountObject.get(username);
+		final String ADMIN_USERNAME = "admin";
+		AccountObject admin = AccountObject.get(ADMIN_USERNAME);
 		if (account == null) {
 			return false;
 		} else {
-			String checkPassword = account.getPassword();
-			if (password.equals(checkPassword)) {
+			String adminPassword = admin.getPassword();
+			if ((username.equals(ADMIN_USERNAME))&&(password.equals(adminPassword))) {
 				return true;
 			}
 		}
