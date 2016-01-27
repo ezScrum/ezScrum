@@ -32,9 +32,9 @@ Test Import Teardown
 
 Assert ProductBacklog story
     Select Node Product    Product Backlog
-    #測試是否有Story02
-    Page Should Contain Element    xpath=//div[text()="Story01"]
-    Page Should Contain Element    xpath=//div[text()="Story02"]
+    #測試是否有Story01, Story02
+    Page Should Contain Element    //div[@id="productBacklogGridPanel"]//div[text()="Story01"]
+    Page Should Contain Element    //div[@id="productBacklogGridPanel"]//div[text()="Story02"]
     #Get tag name
     Compare Text In Specific Xpath    //div[text()="Story01"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div    tag01
     Compare Text In Specific Xpath    //div[text()="Story02"]/../../td[@class="x-grid3-col x-grid3-cell x-grid3-td-2 "]/div    tag02
