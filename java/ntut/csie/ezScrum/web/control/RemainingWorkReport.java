@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
@@ -34,7 +33,6 @@ public class RemainingWorkReport {
 	private Date mChartEndDate = null;
 	private int mInterval = 1;
 	private String mCategory;
-	private Configuration mConfiguration;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
 	private final static String REMAININGWORK_CHART_FILE2 = "RemainingWork2.png";
 	private String mChartPath = "";
@@ -51,7 +49,6 @@ public class RemainingWorkReport {
 	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid) {
 		mSprintId = sprintid;
 		mProject = project;
-		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
 		if (mCategory.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
@@ -69,7 +66,6 @@ public class RemainingWorkReport {
 	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid, Date setDate) {
 		mSprintId = sprintid;
 		mProject = project;
-		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		mToday = setDate;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
