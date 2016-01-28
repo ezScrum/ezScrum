@@ -62,8 +62,10 @@ public class SecurityModuleTest {
 	
 	@Test
 	public void testIsAccountValid_UserIsCorrect(){
-		AccountObject admin = AccountObject.get("admin");
-		boolean isAccountValid = SecurityModule.isAccountValid(admin.getUsername(), admin.getPassword());
+		final String ADMIN_USERNAME = "admin";
+		final String ADMIN_MD5_ENCODING_USERNAME = "21232f297a57a5a743894a0e4a801fc3";
+		AccountObject admin = AccountObject.get(ADMIN_USERNAME);
+		boolean isAccountValid = SecurityModule.isAccountValid(ADMIN_MD5_ENCODING_USERNAME, admin.getPassword());
 		assertTrue(isAccountValid);
 	}
 }
