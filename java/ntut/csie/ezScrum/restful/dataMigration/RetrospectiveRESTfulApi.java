@@ -24,8 +24,8 @@ public class RetrospectiveRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createRetrospective(@PathParam("projectId") long projectId, 
                                         @PathParam("sprintId") long sprintId,
-                                        @HeaderParam("username") String username,
-                                        @HeaderParam("password") String password,
+                                        @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+                                        @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
                                         String entity
                                         ) {
 		if (!SecurityModule.isAccountValid(username, password)) {
