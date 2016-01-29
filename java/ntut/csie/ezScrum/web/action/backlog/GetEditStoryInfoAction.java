@@ -32,7 +32,7 @@ public class GetEditStoryInfoAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Edit Story Information in GetEditStoryInfoAction.");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		long issueId = Long.parseLong(request.getParameter("issueID"));

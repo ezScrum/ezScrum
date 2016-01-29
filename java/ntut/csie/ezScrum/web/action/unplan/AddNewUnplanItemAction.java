@@ -35,7 +35,7 @@ public class AddNewUnplanItemAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		// get parameter info
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");

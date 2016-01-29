@@ -33,7 +33,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 
 		// get parameter info
 		String isCreate = request.getParameter("isCreate");

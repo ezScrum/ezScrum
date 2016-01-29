@@ -10,8 +10,8 @@
 	<%@page import="ntut.csie.ezScrum.web.dataObject.ProjectObject"%>
 	<%@page import="ntut.csie.ezScrum.stapler.Project"%>
 	<%
-		String projectID = request.getParameter("PID");
-		ProjectObject projectObject = SessionManager.getProjectObject(request);
+		String projectID = request.getParameter("projectName");
+		ProjectObject projectObject = SessionManager.getProject(request);
 		
 		if (projectObject != null) {
 			projectID = projectObject.getName();

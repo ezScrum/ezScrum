@@ -40,7 +40,7 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
 		StringBuilder result = new StringBuilder(setReleaseToJSon(RPhelper));
 		return result;

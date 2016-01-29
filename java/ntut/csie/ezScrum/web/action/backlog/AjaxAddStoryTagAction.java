@@ -33,7 +33,7 @@ public class AjaxAddStoryTagAction extends PermissionAction {
 		log.info("Ajax Add Story Tag in AjaxAddStoryTagAction.");
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		long storyId = Long.parseLong(request.getParameter("storyId"));
 		long tagId = Long.parseLong(request.getParameter("tagId"));

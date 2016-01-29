@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -364,12 +365,14 @@ public class ProductBacklogHelper {
 
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
 		// create folder to put file
-		String folderPath = System.getProperty("ntut.csie.jcis.resource.WorkspaceRoot") + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		Configuration configuration = new Configuration();
+		String folderPath = configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		String fileName = System.currentTimeMillis() + "_" + attachFileInfo.name;
+		String relativeFilePath = folderPath + File.separator + fileName;
+		String absoluteFilePath = new File(relativeFilePath).getAbsolutePath();
+		attachFileInfo.path = relativeFilePath;
 		new File(folderPath).mkdirs();
-
-		attachFileInfo.path = folderPath + File.separator + System.currentTimeMillis() + "_" + attachFileInfo.name;
-		File targetFile = new File(attachFileInfo.path);
-
+		File targetFile = new File(absoluteFilePath);
 		// move file from tmp folder to "AttachFile" folder
 		copyFile(file, targetFile);
 		// remove tmp file
@@ -379,7 +382,6 @@ public class ProductBacklogHelper {
 
 	public void deleteAttachFile(long fileId) {
 		AttachFileObject attachFile = getAttachFile(fileId);
-
 		File file = new File(attachFile.getPath());
 		file.delete();
 		attachFile.delete();

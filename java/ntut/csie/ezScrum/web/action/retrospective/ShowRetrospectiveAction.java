@@ -30,7 +30,7 @@ public class ShowRetrospectiveAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// ger parameter info
 		String sprintId = request.getParameter("sprintID");

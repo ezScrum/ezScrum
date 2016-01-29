@@ -37,7 +37,7 @@ public class AjaxAttachFileAction extends Action {
 		log.info(" Attach File. ");
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		StringBuilder result = new StringBuilder("");
 		if (project == null) {

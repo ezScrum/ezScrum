@@ -5,6 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 import ntut.csie.ezScrum.plugin.util.PluginModifier;
 import ntut.csie.ezScrum.pluginLoader.PluginManager;
 import ntut.csie.ezScrum.pluginLoader.PluginWrapper;
@@ -13,12 +19,6 @@ import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.PluginUI;
 import ntut.csie.ui.protocol.UIConfig;
-
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FilenameUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 public class EzScrumRoot {
 	public static EzScrumRoot ezScrumRoot = new EzScrumRoot();
@@ -130,7 +130,7 @@ public class EzScrumRoot {
 	}
 
 	public Object getDynamic(String token, StaplerRequest request, StaplerResponse response) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		if (token.equals("project")) {
 			return project;

@@ -2,17 +2,14 @@ package ntut.csie.ezScrum.web.action.plan.sprint;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
@@ -20,7 +17,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private final String mActionPath = "/GetSprintPlan";
-	private IProject mProject;
+	private ProjectObject mProject;
 
 	public GetOneSprintPlanActionTest(String testMethod) {
 		super(testMethod);
@@ -37,8 +34,8 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 
 		// 新增一個測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mCP.exeCreateForDb();
+		mProject = mCP.getAllProjects().get(0);
 
 		// 新增兩個Sprint
 		mCS = new CreateSprint(2, mCP);
@@ -61,10 +58,6 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -80,7 +73,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	public void testShowSprint_1() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("SprintID",
 				String.valueOf(mCS.getSprintsId().get(0)));
 
@@ -130,7 +123,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 	public void testShowSprint_2() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("lastsprint", String.valueOf(true));
 
 		// ================ set session info ========================

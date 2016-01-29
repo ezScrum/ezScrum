@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -29,7 +28,7 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 		ini.exe();
 		
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 		
 		super.setUp();
 	}
@@ -38,10 +37,6 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -71,7 +66,7 @@ public class ModifyProjectActionTest extends MockStrutsTestCase{
 		
 		ProjectObject testProject = mCP.getAllProjects().get(0);
 		String projectName = testProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, testProject);

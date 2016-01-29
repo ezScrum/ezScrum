@@ -2,14 +2,14 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
 
 public class TagObjectTest {
 	private Configuration mConfig = null;
@@ -27,7 +27,7 @@ public class TagObjectTest {
 		ini.exe();
 
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mProjectId = mCP.getAllProjects().get(0).getId();
 	}
@@ -36,10 +36,6 @@ public class TagObjectTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);

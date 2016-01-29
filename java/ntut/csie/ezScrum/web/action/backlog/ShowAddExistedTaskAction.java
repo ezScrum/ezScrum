@@ -36,7 +36,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 		log.info("Show dropped Tasks in ShowAddExistedTaskAction");
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		ArrayList<TaskObject> existingTasks = null;

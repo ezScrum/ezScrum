@@ -28,7 +28,6 @@ import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -75,7 +74,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 
 		// create a new project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, "EST");
 		mCPB.exe();
@@ -100,11 +99,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

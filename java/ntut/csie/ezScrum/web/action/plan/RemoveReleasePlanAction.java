@@ -34,7 +34,7 @@ public class RemoveReleasePlanAction extends PermissionAction {
 		log.info(" Remove Release Plan. ");
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		String releaseIdString = request.getParameter("releaseID");

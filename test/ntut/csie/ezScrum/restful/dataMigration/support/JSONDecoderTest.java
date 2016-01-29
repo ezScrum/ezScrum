@@ -15,7 +15,6 @@ import org.junit.Test;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
@@ -58,10 +57,6 @@ public class JSONDecoderTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

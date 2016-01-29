@@ -25,14 +25,14 @@ Test Project - Create Project
     [Teardown]    Exit ezScrum System
 
 Test Project - Permission Denied
-    [Documentation]    新增A, B兩個專案和一個test帳號, 將test帳號assign到A專案上, 透過test帳號登入進入A專案後, 直接透過網址列改PID存取B專案.    # Speed = 0.05 failed -> 待加入同步機制
+    [Documentation]    新增A, B兩個專案和一個test帳號, 將test帳號assign到A專案上, 透過test帳號登入進入A專案後, 直接透過網址列改projectName存取B專案.    # Speed = 0.05 failed -> 待加入同步機制
     [Setup]    Test Project - Test Permission Denied Setup
     # 透過test帳號進入擁有權限的專案
     Login Page With Account    ${LOGIN_URL}    ${tsAccountId}    ${tsAccountId}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName_A
     Select Project    ${PROJECT_NAME}DisplayName_A
-    # 透過網址列直接修改PID進入專案
-    Go To    ${LOGIN_URL}/viewProject.do?PID=${PROJECT_NAME}_B
+    # 透過網址列直接修改projectName進入專案
+    Go To    ${LOGIN_URL}/viewProject.do?projectName=${PROJECT_NAME}_B
     # Permission Denied
     Xpath Should Match X Times    //span[text()="Permission Denied"]    1
     Close Browser

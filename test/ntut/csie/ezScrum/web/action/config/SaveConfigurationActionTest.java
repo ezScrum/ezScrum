@@ -2,13 +2,11 @@ package ntut.csie.ezScrum.web.action.config;
 
 import java.io.File;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-
 import org.codehaus.jettison.json.JSONException;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class SaveConfigurationActionTest extends MockStrutsTestCase {
@@ -31,7 +29,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		super.setUp();
 		
@@ -49,10 +47,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -60,7 +54,6 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		ini = null;
 		mCP = null;
 		mConfig = null;
-
 		super.tearDown();
 	}
 

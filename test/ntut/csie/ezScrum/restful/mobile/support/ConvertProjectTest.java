@@ -5,18 +5,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 
 public class ConvertProjectTest {
 	private CreateProject mCP;
@@ -37,7 +36,7 @@ public class ConvertProjectTest {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProjects = mCP.getAllProjects();
 		mConvertProject = new ConvertProject();
@@ -52,10 +51,6 @@ public class ConvertProjectTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -63,7 +58,6 @@ public class ConvertProjectTest {
 		// ============= release ==============
 		ini = null;
 		mCP = null;
-		projectManager = null;
 		mConfig = null;
 	}
 

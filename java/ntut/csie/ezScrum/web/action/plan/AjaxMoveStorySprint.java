@@ -33,7 +33,7 @@ public class AjaxMoveStorySprint extends PermissionAction {
 		*	從Request中取得要變更的資訊
 		-------------------------------------------------------------*/
 		//Project
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		long storyId = Long.parseLong(request.getParameter("issueID"));
 		String targetSprintId = request.getParameter("moveID");	//	Sprint ID

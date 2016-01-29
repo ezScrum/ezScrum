@@ -65,7 +65,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		request.getSession().setAttribute("UserSession", this.config.getAdminSession());
 		
 		// ================ set request info ========================
-		addRequestParameter("PID", this.expectedProjectID);
+		addRequestParameter("projectName", this.expectedProjectID);
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -138,7 +138,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
     	request.getSession().setAttribute("UserSession", adminSession );
     	
     	// ================== set parameter info ====================
-    	addRequestParameter("PID", expectedProjectID);
+    	addRequestParameter("projectName", expectedProjectID);
     	
     	// ================ 執行 view project action ======================
     	actionPerform();
@@ -248,7 +248,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
     	request.getSession().setAttribute("UserSession", adminSession );
     	
     	// ================== set parameter info ====================
-    	addRequestParameter("PID", expectedProjectID);
+    	addRequestParameter("projectName", expectedProjectID);
     	
     	// ================ 執行 view project action ======================
     	actionPerform();
@@ -277,11 +277,11 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
     }
 	
     /**
-     * 比對資料庫中是否存在此專案的PID
+     * 比對資料庫中是否存在此專案的projectName
      * 1. assert 不存在
      * 2. assert 存在
      */
-    public void testPIDIsExisted(){
+    public void testProjectNameIsExisted(){
     	IUserSession adminSession = this.config.getAdminSession();
     	
 		/**
@@ -299,7 +299,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		request.getSession().setAttribute("UserSession", adminSession);
 		
 		// ================ set request info ========================
-		addRequestParameter("PID", notexistedProjectID);
+		addRequestParameter("projectName", notexistedProjectID);
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -321,7 +321,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		request.getSession().setAttribute("UserSession", adminSession);
 		
 		// ================ set request info ========================
-		addRequestParameter("PID", existedProjectID);
+		addRequestParameter("projectName", existedProjectID);
 		
 		// ================ 執行 action ======================
 		actionPerform();
@@ -400,7 +400,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/GetProjectDescription");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);
@@ -434,7 +434,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/GetTaskBoardDescription");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);
@@ -464,7 +464,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo(actionPath);
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint
@@ -497,7 +497,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/getSprintBurndownChartData");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + this.expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1");	//	-1:代表離現在時間最近的Sprint
@@ -532,7 +532,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/AjaxGetHandlerList");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);
@@ -562,7 +562,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/AjaxGetSprintBacklogDateInfo");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set request parameter ========================
 		addRequestParameter("sprintID", "");
@@ -588,7 +588,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/AjaxGetTagList");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);
@@ -611,7 +611,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/AjaxGetCustomIssueType");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);
@@ -642,7 +642,7 @@ public class ViewSummaryProjectActionGAETest extends MockStrutsTestCase{
 		setRequestPathInfo("/GetTopTitleInfo");
 		
     	// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + expectedProjectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", adminSession);

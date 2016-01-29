@@ -5,7 +5,6 @@ import java.io.File;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
@@ -35,7 +34,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 
 		// create one project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		super.setUp();
 
@@ -52,10 +51,6 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -68,7 +63,6 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		mCS = null;
 		mCUI = null;
 		mConfig = null;
-		projectManager = null;
 	}
 
 	// case 1: One sprint with 1 Unplan item
@@ -91,7 +85,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -131,7 +125,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -163,7 +157,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -203,7 +197,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -235,7 +229,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -275,7 +269,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -307,7 +301,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -339,7 +333,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();
@@ -371,7 +365,7 @@ public class RemoveUnplanItemActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// 執行 action
 		actionPerform();

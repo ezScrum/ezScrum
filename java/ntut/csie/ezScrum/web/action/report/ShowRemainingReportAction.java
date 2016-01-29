@@ -26,12 +26,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowRemainingReportAction extends Action {
-
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 

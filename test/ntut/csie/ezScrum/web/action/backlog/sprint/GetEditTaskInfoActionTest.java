@@ -5,23 +5,21 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private final String mActionPath = "/getEditTaskInfo";
-	private IProject mIProject;
+	private ProjectObject mProject;
 
 	public GetEditTaskInfoActionTest(String testName) {
 		super(testName);
@@ -38,13 +36,13 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 		super.setUp();
 
 		// ================ set action info ========================
@@ -60,25 +58,20 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
-		mIProject = null;
+		mProject = null;
 	}
 
 	public void testGetEditTaskInfo() throws Exception {
 		ArrayList<Long> sprintIds = mCS.getSprintsId();
-		long sprintId = sprintIds.get(0);
 		int storyCount = 1;
 		int storyEst = 2;
 		AddStoryToSprint ASS = new AddStoryToSprint(storyCount, storyEst,
@@ -95,8 +88,8 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 		String taskId = String.valueOf(ATS.getTasksId().get(0));
 
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintIds.get(0)));
 		addRequestParameter("issueID", taskId);
 

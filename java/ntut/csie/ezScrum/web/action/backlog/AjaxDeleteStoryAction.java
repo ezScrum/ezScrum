@@ -32,7 +32,7 @@ public class AjaxDeleteStoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Delete Story in AjaxDeleteStoryAction.");
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		long storyId;

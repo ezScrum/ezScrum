@@ -33,7 +33,7 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		log.info(" Show Story From Release. ");
 		
 		// get session info
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		
 		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
 		

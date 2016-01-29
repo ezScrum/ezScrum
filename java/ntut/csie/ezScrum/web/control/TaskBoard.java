@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -292,16 +290,6 @@ public class TaskBoard {
 
 		// 產生圖表
 		chartUtil.createChart(chartPath);
-	}
-
-	public Map<Integer, String> getResolutionMap() {
-		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
-		map.put(ITSEnum.FIXED_RESOLUTION, ITSEnum.S_FIXED_RESOLUTION);
-		map.put(ITSEnum.UNABLE_TO_REPRODUCE_RESOLUTION, ITSEnum.S_UNABLE_TO_REPRODUCE_RESOLUTION);
-		map.put(ITSEnum.NOT_FIXABLE_RESOLUTION, ITSEnum.S_NOT_FIXABLE_RESOLUTION);
-		map.put(ITSEnum.DUPLICATE_RESOLUTION, ITSEnum.S_DUPLICATE_RESOLUTION);
-		map.put(ITSEnum.WONT_FIX_RESOLUTION, ITSEnum.S_WONT_FIX_RESOLUTION);
-		return map;
 	}
 
 	public String getGeneratedTime() {

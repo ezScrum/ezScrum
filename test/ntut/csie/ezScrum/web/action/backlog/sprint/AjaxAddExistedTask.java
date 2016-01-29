@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -39,7 +38,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(1, mCP);
@@ -61,17 +60,12 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
@@ -96,7 +90,7 @@ public class AjaxAddExistedTask extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 設定 Session 資訊
 		request.getSession().setAttribute("UserSession",mConfig.getUserSession());

@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -33,10 +32,6 @@ public class ResourceFinderTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

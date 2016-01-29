@@ -32,7 +32,7 @@ public class AjaxGetTaskBoardDescriptionAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Task Board Description. In Project Summary Page.");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();

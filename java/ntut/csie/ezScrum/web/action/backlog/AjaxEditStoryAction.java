@@ -36,7 +36,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		log.info("Edit Story in AjaxEditStoryAction.");
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		long id = Long.parseLong(request.getParameter("issueID"));

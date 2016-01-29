@@ -36,7 +36,7 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
 		StringBuilder result = new StringBuilder(setSprintToJSon(SPhelper));
 		return result;

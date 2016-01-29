@@ -10,21 +10,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProjectDAOTest {
 	private MySQLControl mControl = null;
@@ -48,10 +47,6 @@ public class ProjectDAOTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// ============= release ==============
 		ini = null;
