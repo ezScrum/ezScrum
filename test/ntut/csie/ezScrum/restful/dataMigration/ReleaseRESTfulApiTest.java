@@ -162,15 +162,12 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 
 		// Assert
 		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
-		assertTrue(contentJSON.getLong(ReleaseEnum.ID) != -1);
-		ReleaseObject release = ReleaseObject.get(contentJSON.getLong(ReleaseEnum.ID));
-		assertEquals(name, release.getName());
-		assertEquals(description, release.getDescription());
-		assertEquals(startDate, release.getStartDateString());
-		assertEquals(dueDate, release.getDueDateString());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 	
 	@Test
@@ -202,15 +199,12 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 
 		// Assert
 		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
-		assertTrue(contentJSON.getLong(ReleaseEnum.ID) != -1);
-		ReleaseObject release = ReleaseObject.get(contentJSON.getLong(ReleaseEnum.ID));
-		assertEquals(name, release.getName());
-		assertEquals(description, release.getDescription());
-		assertEquals(startDate, release.getStartDateString());
-		assertEquals(dueDate, release.getDueDateString());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 	
 	@Test
@@ -242,14 +236,11 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 
 		// Assert
 		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
-		assertTrue(contentJSON.getLong(ReleaseEnum.ID) != -1);
-		ReleaseObject release = ReleaseObject.get(contentJSON.getLong(ReleaseEnum.ID));
-		assertEquals(name, release.getName());
-		assertEquals(description, release.getDescription());
-		assertEquals(startDate, release.getStartDateString());
-		assertEquals(dueDate, release.getDueDateString());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 }
