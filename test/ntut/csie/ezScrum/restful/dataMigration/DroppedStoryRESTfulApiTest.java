@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.apphosting.utils.config.AppYaml.Handler.Security;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
@@ -32,6 +33,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -139,6 +141,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + project.getId() +
 		              "/stories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(storyJSON.toString()));
 
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -175,6 +179,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/tags")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(tagJSON.toString()));
 
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -210,6 +216,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -238,6 +246,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -271,6 +281,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/attachfiles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(attachFileJSON.toString()));
 
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -325,6 +337,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/tasks")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(taskJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -369,6 +383,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -401,6 +417,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -437,6 +455,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/attachfiles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(attachFileJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -454,5 +474,134 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// clean test data
 		File file = new File(task.getAttachFiles().get(0).getPath());
 		file.delete();
+	}
+	
+	@Test
+	public void testCreateDroppedStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+		
+		// Call '/projects/{projectId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateDroppedStory_AccountIsNull() throws JSONException {
+		String invalidUsername = null;
+		String invalidPassword = null;
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+		
+		// Call '/projects/{projectId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateDroppedStory_AccountIsEmpty() throws JSONException {
+		String invalidUsername = "";
+		String invalidPassword = "";
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+		
+		// Call '/projects/{projectId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 }

@@ -4,16 +4,19 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.soap.AddressingFeature.Responses;
 
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
@@ -32,7 +35,13 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 public class DroppedStoryRESTfulApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createDroppedStory(@PathParam("projectId") long projectId, String entity) {
+	public Response createDroppedStory(@PathParam("projectId") long projectId, 
+								       @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+								       @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+									   String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		if (project == null) {
@@ -56,8 +65,13 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTagInDroppedStory(@PathParam("projectId") long projectId,
-	        						 @PathParam("storyId") long storyId,
-	        						 String entity) {
+			        						@PathParam("storyId") long storyId,
+			        						@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+										    @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+			        						String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -82,8 +96,13 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInDroppedStory(@PathParam("projectId") long projectId,
-	        							 @PathParam("storyId") long storyId,
-	        							 String entity) {
+			        							@PathParam("storyId") long storyId,
+			        							@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+												@HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+			        							String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -107,8 +126,13 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/histories/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteHistoryInDroppedStory(@PathParam("projectId") long projectId,
-	        							 @PathParam("storyId") long storyId,
-	        							 String entity) {
+			        							@PathParam("storyId") long storyId,
+			        							@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+												@HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+			        							String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -126,8 +150,13 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createAttachFileInDroppedStory(@PathParam("projectId") long projectId,
-	        						 @PathParam("storyId") long storyId,
-	        						 String entity) throws IOException {
+					        					   @PathParam("storyId") long storyId,
+					        					   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+												   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+					        					   String entity) throws IOException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject droppedStory = resourceFinder.findDroppedStory(storyId);
@@ -155,7 +184,12 @@ public class DroppedStoryRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTaskInDroppedStory(@PathParam("projectId") long projectId,
                                				 @PathParam("storyId") long storyId,
+                               				 @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+										     @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
                                				 String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject story = resourceFinder.findDroppedStory(storyId);
@@ -184,7 +218,12 @@ public class DroppedStoryRESTfulApi {
 	public Response createHistoryInTask(@PathParam("projectId") long projectId,
 	                                 	@PathParam("storyId") long storyId,
 	                                 	@PathParam("taskId") long taskId,
+	                                 	@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+									    @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 	String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject story = resourceFinder.findDroppedStory(storyId);
@@ -211,7 +250,12 @@ public class DroppedStoryRESTfulApi {
 	public Response deleteHistoryInTask(@PathParam("projectId") long projectId,
 	        							@PathParam("storyId") long storyId,
 	        							@PathParam("taskId") long taskId,
+	        							@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+									    @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	        							String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject story = resourceFinder.findDroppedStory(storyId);
@@ -231,7 +275,12 @@ public class DroppedStoryRESTfulApi {
 	public Response createAttachFileInTask(@PathParam("projectId") long projectId,
 	        						  	   @PathParam("storyId") long storyId,
 	        						  	   @PathParam("taskId") long taskId,
-	                                  String entity) throws IOException {
+	        						  	   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+										   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+										   String entity) throws IOException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		StoryObject story = resourceFinder.findDroppedStory(storyId);

@@ -4,15 +4,20 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.soap.AddressingFeature.Responses;
+
+import org.apache.xml.resolver.apps.resolver;
 
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
@@ -33,7 +38,12 @@ public class StoryRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createStory(@PathParam("projectId") long projectId, 
 			                    @PathParam("sprintId") long sprintId,
+			                    @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+			                    @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 			                    String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -59,7 +69,12 @@ public class StoryRESTfulApi {
 	public Response createTagInStory(@PathParam("projectId") long projectId,
 	                                 @PathParam("sprintId") long sprintId, 
 	                                 @PathParam("storyId") long storyId,
+	                                 @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	 			                     @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -86,9 +101,14 @@ public class StoryRESTfulApi {
 	@Path("/{storyId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInStory(@PathParam("projectId") long projectId,
-	                                 	@PathParam("sprintId") long sprintId,
-	                                 	@PathParam("storyId") long storyId,
-	                                 	String entity) {
+	                                 	 @PathParam("sprintId") long sprintId,
+	                                 	 @PathParam("storyId") long storyId,
+	                                 	 @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	    			                     @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	                                 	 String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -116,7 +136,12 @@ public class StoryRESTfulApi {
 	public Response deleteHistoryInStory(@PathParam("projectId") long projectId,
 	        							 @PathParam("sprintId") long sprintId,
 	        							 @PathParam("storyId") long storyId,
+	        							 @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	     			                     @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	        							 String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -134,9 +159,14 @@ public class StoryRESTfulApi {
 	@Path("/{storyId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createAttachFileInStory(@PathParam("projectId") long projectId,
-	        						  @PathParam("sprintId") long sprintId,
-	        						  @PathParam("storyId") long storyId,
-	        						  String entity) throws IOException {
+	        						  		@PathParam("sprintId") long sprintId,
+	        						  		@PathParam("storyId") long storyId,
+	        						  		@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        						  		@HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	        						  		String entity) throws IOException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
