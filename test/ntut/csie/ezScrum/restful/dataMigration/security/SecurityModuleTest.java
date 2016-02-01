@@ -38,14 +38,6 @@ public class SecurityModuleTest {
 	}
 	
 	@Test
-	public void testIsAccountValid_UserNotExist(){
-		String accountName = "";
-		String accountPassword = "";
-		boolean isAccountValid = SecurityModule.isAccountValid(accountName, accountPassword);
-		assertFalse(isAccountValid);
-	}
-	
-	@Test
 	public void testIsAccountValid_UserNotAdmin(){
 		String userName = "Jimmy";
 		String userNickName = "TEST_USER_NICK_NAME";
@@ -67,5 +59,17 @@ public class SecurityModuleTest {
 		AccountObject admin = AccountObject.get(ADMIN_USERNAME);
 		boolean isAccountValid = SecurityModule.isAccountValid(ADMIN_MD5_ENCODING_USERNAME, admin.getPassword());
 		assertTrue(isAccountValid);
+	}
+	
+	@Test
+	public void testIsAccountValid_UserIsNull(){
+		boolean isAccountValid = SecurityModule.isAccountValid(null, null);
+		assertFalse(isAccountValid);
+	}
+	
+	@Test
+	public void testIsAccountValid_UserIsEmpty(){
+		boolean isAccountValid = SecurityModule.isAccountValid("", "");
+		assertFalse(isAccountValid);
 	}
 }

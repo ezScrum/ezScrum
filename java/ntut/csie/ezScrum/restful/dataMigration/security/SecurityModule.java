@@ -13,7 +13,9 @@ public class SecurityModule {
 		final String ADMIN_MD5_ENCODING_USERNAME = "21232f297a57a5a743894a0e4a801fc3";
 		AccountObject admin = AccountObject.get(ADMIN_USERNAME);
 		String md5AdminEncodingPassword = admin.getPassword();
-		if ((md5EncodingUsername.equals(ADMIN_MD5_ENCODING_USERNAME)) && (md5EncodingPassword.equals(md5AdminEncodingPassword))) {
+		if ( md5EncodingUsername != null &&  md5EncodingPassword != null 
+				&& (md5EncodingUsername.equals(ADMIN_MD5_ENCODING_USERNAME)) 
+				&& (md5EncodingPassword.equals(md5AdminEncodingPassword))) {
 			return true;
 		}
 		return false;
