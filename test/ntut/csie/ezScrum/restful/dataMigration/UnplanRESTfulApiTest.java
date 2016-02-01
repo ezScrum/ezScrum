@@ -29,6 +29,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -156,6 +157,8 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		                "/sprints/" + sprint.getId() +
 		                "/unplans")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(unplanJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -199,6 +202,8 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		                "/unplans/" + unplan.getId() +
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -225,11 +230,178 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		                "/unplans/" + mCUI.getUnplansId().get(0) +
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 		UnplanObject unplan = UnplanObject.get(mCUI.getUnplansId().get(0));
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertEquals(0, unplan.getHistories().size());
+	}
+	
+	@Test
+	public void testCreateUnplan_AccountIsInvalid() throws JSONException {
+		String wrongAdminUsername = "test";
+		String wrongAdminPassword = "test";
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(0);
+		String name = "TEST_UNPLAN_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int actual = 2;
+		String notes = "TEST_CREATE_UNPLAN";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject unplanJSON = new JSONObject();
+		unplanJSON.put(UnplanJSONEnum.NAME, name);
+		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
+		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
+		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
+		unplanJSON.put(UnplanJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		unplanJSON.put(UnplanJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(unplanJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateUnplan_AccountIsNull() throws JSONException {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(0);
+		String name = "TEST_UNPLAN_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int actual = 2;
+		String notes = "TEST_CREATE_UNPLAN";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject unplanJSON = new JSONObject();
+		unplanJSON.put(UnplanJSONEnum.NAME, name);
+		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
+		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
+		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
+		unplanJSON.put(UnplanJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		unplanJSON.put(UnplanJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(unplanJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateUnplan_AccountIsEmpty() throws JSONException {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(0);
+		String name = "TEST_UNPLAN_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int actual = 2;
+		String notes = "TEST_CREATE_UNPLAN";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject unplanJSON = new JSONObject();
+		unplanJSON.put(UnplanJSONEnum.NAME, name);
+		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
+		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
+		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
+		unplanJSON.put(UnplanJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		unplanJSON.put(UnplanJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(unplanJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 }
