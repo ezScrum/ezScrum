@@ -30,6 +30,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
@@ -164,6 +165,8 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		                "/stories/" + story.getId() + 
 		                "/tasks")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(taskJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -181,7 +184,158 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals(notes, task.getNotes());
 		assertEquals(status, task.getStatusString());
 	}
+
+	@Test
+	public void testCreateTask_AccountIsInvalid() throws JSONException {
+		String wrongAdminUsername = "wrongAdminUsername";
+		String wrongAdminPassword = "wrongAdminPassword";
+		// Test Data
+		AccountObject account = mCA.getAccountList().get(0);
+		String name = "TEST_TASK_NAME";
+		String handler = account.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Add Account to Project
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
 	
+	@Test
+	public void testCreateTask_AccountIsNull() throws JSONException {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		// Test Data
+		AccountObject account = mCA.getAccountList().get(0);
+		String name = "TEST_TASK_NAME";
+		String handler = account.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Add Account to Project
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
+	
+	@Test
+	public void testCreateTask_AccountIsEmpty() throws JSONException {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		// Test Data
+		AccountObject account = mCA.getAccountList().get(0);
+		String name = "TEST_TASK_NAME";
+		String handler = account.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Add Account to Project
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
+	
+
 	@Test
 	public void testCreateHistoryInTask() throws JSONException {
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -211,6 +365,8 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -221,6 +377,135 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals(task.getHistories().get(2).toString(), responseContent);
 	}
 	
+	@Test
+	public void testCreateHistoryInTask_AccountIsInvalid() throws JSONException {
+		String wrongAdminUsername = "wrongAdminUsername";
+		String wrongAdminPassword = "wrongAdminPassword";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task histories before create history
+		assertEquals(2, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateHistoryInTask_AccountIsNull() throws JSONException {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task histories before create history
+		assertEquals(2, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateHistoryInTask_AccountIsEmpty() throws JSONException {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task histories before create history
+		assertEquals(2, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		assertEquals(HistoryObject.TYPE_APPEND, task.getHistories().get(1).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+
 	@Test
 	public void testDeleteHistoriesInTask() throws Exception {
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -239,6 +524,8 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + mCT.getTaskIDList().get(0) + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 		TaskObject task = TaskObject.get(mCT.getTaskIDList().get(0));
 		
@@ -246,7 +533,91 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertEquals(0, task.getHistories().size());
 	}
-
+	
+	@Test
+	public void testDeleteHistoriesInTask_AccountIsInvalid() throws Exception {
+		String wrongAdminUsername = "wrongAdminUsername";
+		String wrongAdminPassword = "wrongAdminPassword";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Task
+		mCT = new CreateTask(1, 8, story.getId(), mCP);
+		mCT.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + mCT.getTaskIDList().get(0) + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testDeleteHistoriesInTask_AccountIsNull() throws Exception {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Task
+		mCT = new CreateTask(1, 8, story.getId(), mCP);
+		mCT.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + mCT.getTaskIDList().get(0) + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testDeleteHistoriesInTask_AccountIsEmpty() throws Exception {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Task
+		mCT = new CreateTask(1, 8, story.getId(), mCP);
+		mCT.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + mCT.getTaskIDList().get(0) + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
 	@Test
 	public void testCreateAttachFileInTask() throws JSONException {
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -272,6 +643,8 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/attachfiles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(attachFileJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -289,5 +662,122 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// clean test data
 		File file = new File(task.getAttachFiles().get(0).getPath());
 		file.delete();
+	}
+	
+	@Test
+	public void testCreateAttachFileInTask_AccountIsInvalid() throws JSONException {
+		String wrongAdminUsername = "wrongAdminUsername";
+		String wrongAdminPassword = "wrongAdminPassword";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+		
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateAttachFileInTask_AccountIsNull() throws JSONException {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+		
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateAttachFileInTask_AccountIsEmpty() throws JSONException {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").setStoryId(story.getId()).save();
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+		
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
 	}
 }
