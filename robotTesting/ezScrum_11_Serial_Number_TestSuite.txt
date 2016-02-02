@@ -1,0 +1,115 @@
+*** Settings ***
+Force Tags        Serial Number
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Resource          keywords/ezScrum_Login.txt
+Library           keywords/lib/Selenium2Improved.py
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/common_resource.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource          keywords/Unplan/ezScrum_Unplan.txt
+Resource          keywords/SerialNumber/ezScrum_SerialNumber.txt
+
+*** Test Cases ***
+Test Serial Number - Check Sprint ID
+    [Setup]    SetUp Data Base
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Sprint Plan
+    Create Sprint    second sprint1    2    4    100    100
+    Create Sprint    second sprint2    2    4    100    100
+    Compare Field Text    //div[text() ="second sprint1"]/../../td[1]/div    1
+    Compare Field Text    //div[text() ="second sprint2"]/../../td[1]/div    2
+    Delete Sprint
+    Create Sprint    second sprint3    2    4    100    100
+    Compare Field Text    //div[text() ="second sprint3"]/../../td[1]/div    3
+    [Teardown]    Exit ezScrum System
+
+Test Serial Number - Check Story ID
+    [Setup]    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Product Backlog
+    Add A New Story With Story Name And Value    story1    10
+    Add A New Story With Story Name And Value    story2    10
+    Compare Field Text    //div[text()="story1"]/../../td[2]/div    1
+    Compare Field Text    //div[text()="story2"]/../../td[2]/div    2
+    Delete Story
+    Add A New Story With Story Name And Value    story3    10
+    Compare Field Text    //div[text()="story3"]/../../td[2]/div    3
+    [Teardown]    Exit ezScrum System
+
+Test Serial Number - Check Task ID
+    [Setup]    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//button[text()="Add Existing Stories"]
+    Wait Until Page Contains    Add Existing Stories
+    Mouse Down    xpath=//div[@class='x-grid3-hd-checker']    # click check box header
+    Mouse Up    xpath=//div[@class='x-grid3-hd-checker']
+    Click Element    xpath=//button[text()="Add Existed Stories"]
+    Wait Until Page Contains    Add Existing Stories
+    Add Task With Arguments    1    task1    10    note
+    Add Task With Arguments    3    task2    10    note
+    Compare Field Text    //div[text()="task1"]/../../td[1]/a/span    1
+    Compare Field Text    //div[text()="task2"]/../../td[1]/a/span    2
+    Drop Task With Arguments    task2
+    Add Task With Arguments    3    task3    10    note
+    Compare Field Text    //div[text()="task3"]/../../td[1]/a/span    3
+    Click Element    xpath=//tr[@class="x-toolbar-left-row"]/td[2]/div/input
+    Compare Field Text    //div[text()="Sprint #1"]/../div[1]    Sprint #3
+    Compare Field Text    //div[text()="Sprint #1"]/../div[2]    Sprint #1
+    [Teardown]    Exit ezScrum System
+
+Test Serial Number - Check Release Plan ID
+    [Setup]    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Sprint Plan
+    ${Sprint_end}=    Get text    xpath=//div[text()="second sprint1" and contains(@class, "cell")]/../../td[5]/div
+    Add A New Release Plan    ${Sprint_end}
+    Compare Field Text    //div[text()="first release"]/../../td[1]/a/span    1
+    Compare Field Text    //div[text()="second sprint1"]/../../td[1]/a/span    1
+    Compare Field Text    //div[text()="second sprint3"]/../../td[1]/a/span    2
+    Click Element    //div[text()="first release"]/../../td[1]/a/span
+    Compare Field Text    //div[text()="story1"]/../../td[1]/div    1
+    Compare Field Text    //div[text()="story3"]/../../td[1]/div    3
+    [Teardown]    Exit ezScrum System
+
+Test Serial Number - Check Unplan Item ID
+    [Setup]    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Unplanned
+    Add A New Unplanned Item    unplanned1
+    Add A New Unplanned Item    unplanned2
+    Click Element    //div[text()="unplanned2"]
+    Click Element    xpath=//button[text()="Delete Unplanned Item"]
+    ${xpathDeleteUnplanned}=    Find Current Window Element    Delete Unplanned Item    Delete
+    Click Element    xpath=${xpathDeleteUnplanned}
+    Wait Until Page Contains    Success.
+    Add A New Unplanned Item    unplanned3
+    Compare Field Text    //div[text()="unplanned1"]/../../td[1]/div    1
+    Compare Field Text    //div[text()="unplanned3"]/../../td[1]/div    3
+    Click Element    //input[@id='SprintCombo_UnplannedToolBar']
+    Compare Field Text    //div[text()='ALL']/../div[2]    Sprint #3
+    Compare Field Text    //div[text()='ALL']/../div[3]    Sprint #1
+    [Teardown]    Exit ezScrum System
+
+Test Serial Number - Check Restrosapective ID
+    [Setup]    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Retrospective
+    Add A New Restrospective    retrospective1
+    Add A New Restrospective    retrospective2
+    Click Element    //div[text()="retrospective2"]
+    Click Element    xpath=//button[text()="Delete Retrospective"]
+    ${xpathDeleteUnplanned}=    Find Current Window Element    Delete Retrospective    Delete
+    Click Element    xpath=${xpathDeleteUnplanned}
+    Wait Until Page Contains    Success.
+    Add A New Restrospective    retrospective3
+    Compare Field Text    //div[text()="retrospective1"]/../../td[1]/div    1
+    Compare Field Text    //div[text()="retrospective3"]/../../td[1]/div    3
+    Click Element    //input[@id="SprintCombo_RetrospectiveToolBar"]
+    Compare Field Text    //div[text()='ALL']/../div[2]    Sprint #3
+    Compare Field Text    //div[text()='ALL']/../div[3]    Sprint #1
+    [Teardown]    Exit ezScrum System
+
+*** Keywords ***

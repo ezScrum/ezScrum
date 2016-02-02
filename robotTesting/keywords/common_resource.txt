@@ -132,3 +132,8 @@ Clean DB
     [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     [Documentation]    GAE 清除資料庫的方式稍後再補上
     Run Keyword if    "${VERSION}"=="Web"    clean database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Compare Field Text
+    [Arguments]    ${xpath}    ${correctValue}
+    ${testValue}=    Get Text    xpath=${xpath}
+    Should Be Equal    ${correctValue}    ${testValue}
