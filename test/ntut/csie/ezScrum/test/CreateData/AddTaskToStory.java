@@ -17,7 +17,7 @@ public class AddTaskToStory {
 			CreateProject CP) {
 		mTaskCount = count;
 		mStoryCount = ASTS.getStories().size() / ASTS.getSprintCount();
-		mProjectCount = CP.getProjectList().size();
+		mProjectCount = CP.getAllProjects().size();
 		mSprintCount = ASTS.getSprintCount();
 
 		mEstValue = EstValue;

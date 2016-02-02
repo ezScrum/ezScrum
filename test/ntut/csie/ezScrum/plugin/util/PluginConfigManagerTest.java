@@ -1,23 +1,26 @@
 package ntut.csie.ezScrum.plugin.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
-import ntut.csie.protocal.PluginConfig;
-
+import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
+import ntut.csie.protocal.PluginConfig;
+
 public class PluginConfigManagerTest {
-	
 	private final String folderNamePath = "./WebContent/Workspace";
 	private final String projectName = "/PluginForTest";
 	private final String metadataFolderName = "/_metadata";
@@ -35,7 +38,7 @@ public class PluginConfigManagerTest {
 		mPluginConfigfileContent = PluginMockDataHelper.createPluginConfigFile();
 	}
 
-	@Test
+	@After
 	public void tearDown() throws Exception {
 		mPluginConfigManager = null;
 		
@@ -116,6 +119,7 @@ public class PluginConfigManagerTest {
 	/**
 	 * 測試 pluginConfig.conf 的資料轉成 PluginConfig 的數量
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetPluginConfigList(){
 		try {
@@ -165,11 +169,11 @@ public class PluginConfigManagerTest {
 		return content;
 	}
 	
-	private void deletePluginConfigMockFile(){
+	private void deletePluginConfigMockFile() throws IOException{
 		String folderPath = folderNamePath + projectName;
-		File file = new File( folderPath );
+		File file = new File(folderPath);
 		PluginMockDataHelper.isMockFileExisted( file );
+		FileUtils.deleteDirectory(file);
 		file = null;
 	}
-	
 }

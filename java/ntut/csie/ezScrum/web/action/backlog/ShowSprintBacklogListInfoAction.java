@@ -25,7 +25,7 @@ public class ShowSprintBacklogListInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog List Information in ShowSprintBacklogListInfo.");
 
-		ProjectObject projectObject = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject projectObject = (ProjectObject) SessionManager.getProject(request);
 		String sprintIdString = request.getParameter("sprintID");
 		long sprintId;
 		if (sprintIdString == null) {

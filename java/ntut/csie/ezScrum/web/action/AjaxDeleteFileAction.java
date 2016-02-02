@@ -36,7 +36,7 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		
 		// 取得刪除file前需要的資料
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 
 		// get parameter info
 		long issueId = Integer.parseInt(request.getParameter("issueId"));

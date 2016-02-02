@@ -1,18 +1,16 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.io.File;
-import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class GetProjectMembersActionTest extends MockStrutsTestCase {
@@ -20,7 +18,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private Configuration mConfig;
 	private final String mACTION_PATH = "/getProjectMembers";
-	private IProject mIProject;
+	private ProjectObject mProject;
 
 	public GetProjectMembersActionTest(String testName) {
 		super(testName);
@@ -37,8 +35,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
-		mIProject = mCP.getProjectList().get(0);
+		mCP.exeCreateForDb();
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 
@@ -55,20 +53,15 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
-		mIProject = null;
+		mProject = null;
 	}
 
 	private String getExpectedProjectMember(AccountObject user) {
@@ -98,8 +91,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		addUserToRole.exe_SM();
 
 		// ================ set request info ========================
-		String projectName = this.mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = this.mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -129,8 +122,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		addUserToRole.exe_SM();
 
 		// ================ set request info ========================
-		String projectName = this.mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = this.mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -166,8 +159,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		AUTR.exe_SM();
 
 		// ================ set request info ========================
-		String projectName = this.mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = this.mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================
@@ -198,8 +191,8 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		AUTR.setEnable(CA, 0, false);
 
 		// ================ set request info ========================
-		String projectName = this.mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = this.mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		// ================ set session info ========================

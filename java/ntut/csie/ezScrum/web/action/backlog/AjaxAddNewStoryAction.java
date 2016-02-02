@@ -33,7 +33,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Add New Story in AjaxAddNewStoryAction.");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		String name = request.getParameter("Name");
 		String importance = request.getParameter("Importance");

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.mapper.ReleasePlanMapper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class CreateRelease {
 	private static Log mlog = LogFactory.getLog(CreateRelease.class);
@@ -21,11 +21,7 @@ public class CreateRelease {
 
 	public String TEST_RELEASE_NAME = "TEST_RELEASE_"; // Release Name
 	public int RELEASE_DURATION = 180; // Release duration days
-	public String TEST_RELEASE_DESC = "This is Release Description - "; // This
-																		// is
-																		// Release
-																		// Description
-																		// - X
+	public String TEST_RELEASE_DESC = "This is Release Description - "; // This is Release Description - X
 	private String StartDate = "";
 	private String DueDate = "";
 
@@ -62,7 +58,7 @@ public class CreateRelease {
 	public void exe() {
 		Calendar cal = Calendar.getInstance();
 
-		for (int i = 0; i < mCP.getProjectList().size(); i++) {
+		for (int i = 0; i < mCP.getAllProjects().size(); i++) {
 			mToday = cal.getTime(); // get Today
 			ProjectObject project = mCP.getAllProjects().get(i); // get Project
 

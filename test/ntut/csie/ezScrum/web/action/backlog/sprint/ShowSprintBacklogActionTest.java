@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -36,7 +35,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		ini.exe();
 		
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 		mProject = mCP.getAllProjects().get(0);
 		
 		mCS = new CreateSprint(2, mCP);
@@ -57,10 +56,6 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -68,7 +63,6 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
@@ -82,7 +76,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -118,7 +112,6 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	 */
 	public void testShowSprintBacklog_2() throws Exception{
 		ArrayList<Long> sprintsId = mCS.getSprintsId();
-		long sprintID = sprintsId.get(0);
 		int storyCount = 1;
 		int storyEst = 5;
 		AddStoryToSprint addStoryToSprint = new AddStoryToSprint(storyCount, storyEst, sprintsId.size(), mCP, CreateProductBacklog.COLUMN_TYPE_EST);
@@ -131,7 +124,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================

@@ -29,7 +29,7 @@ public class AddStoryToSprint {
 	public AddStoryToSprint(int storyCount, int columnValue, CreateSprint CS,
 			CreateProject CP, String columnBeSet) {
 		mStoryCount = storyCount;
-		mProjectCount = CP.getProjectList().size();
+		mProjectCount = CP.getAllProjects().size();
 		mSprintCount = CS.getSprintCount();
 		mCP = CP;
 		createStories(columnValue, columnBeSet);

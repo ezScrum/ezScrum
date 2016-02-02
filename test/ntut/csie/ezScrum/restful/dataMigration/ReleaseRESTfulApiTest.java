@@ -26,7 +26,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
@@ -47,7 +46,6 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		return mResourceConfig;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		// Set Test Mode
@@ -61,7 +59,7 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 
 		// Create Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -76,10 +74,6 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -89,7 +83,6 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
 		mCP = null;
 		mHttpServer = null;
 		mClient = null;

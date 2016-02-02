@@ -7,7 +7,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -38,7 +37,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe(); // 新增一個 Sprint
@@ -61,10 +60,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project(); // 刪除測試檔案
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -73,7 +69,6 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
 		mCP = null;
 		mCS = null;
 		mASTS = null;
@@ -98,7 +93,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName()); // SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
 		// 先設定Task為assigned的狀態 在測試

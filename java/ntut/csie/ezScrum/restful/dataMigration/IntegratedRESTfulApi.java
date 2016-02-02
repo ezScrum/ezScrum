@@ -61,10 +61,11 @@ public class IntegratedRESTfulApi {
 			// Create Account
 			for (int i = 0; i < accountJSONArray.length(); i++) {
 				JSONObject accountJSON = accountJSONArray.getJSONObject(i);
-				mClient.target(BASE_URL)
+				Response response = mClient.target(BASE_URL)
 				        .path("accounts")
 				        .request()
 				        .post(Entity.text(accountJSON.toString()));
+				response.close();
 				// TODO 紀錄結果
 			}
 		} catch (JSONException e) {
@@ -87,8 +88,9 @@ public class IntegratedRESTfulApi {
 				// 處理專案名稱重複的問題
 				if (response.getStatus() == Response.Status.CONFLICT.getStatusCode()) {
 					String newProjectName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.NAME));
+					String newProjectDisplayName = getNewProjectName(projectJSON.getString(ProjectJSONEnum.DISPLAY_NAME));
 					projectJSON.put(ProjectJSONEnum.NAME, newProjectName);
-					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectName);
+					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectDisplayName);
 					// Create Project
 					response = mClient.target(BASE_URL)
 					        .path("projects")
@@ -96,6 +98,7 @@ public class IntegratedRESTfulApi {
 					        .post(Entity.text(projectJSON.toString()));
 				}
 				String responseString = response.readEntity(String.class);
+				response.close();
 				JSONObject responseJSON = new JSONObject(responseString);
 				JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 				long projectId = contentJSON.getLong(ProjectEnum.ID);
@@ -107,7 +110,7 @@ public class IntegratedRESTfulApi {
 				                "/scrumroles")
 				        .request()
 				        .put(Entity.text(scrumRolesJSON.toString()));
-
+				response.close();
 				// Create ProjectRoles
 				JSONArray projectRoleJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.PROJECT_ROLES);
 				for (int j = 0; j < projectRoleJSONArray.length(); j++) {
@@ -117,6 +120,7 @@ public class IntegratedRESTfulApi {
 					                "/projectroles")
 					        .request()
 					        .post(Entity.text(projectRoleJSON.toString()));
+					response.close();
 				}
 
 				// Create Tags
@@ -128,6 +132,7 @@ public class IntegratedRESTfulApi {
 					                "/tags")
 					        .request()
 					        .post(Entity.text(tagJSON.toString()));
+					response.close();
 				}
 
 				//// Create Sprints
@@ -140,6 +145,7 @@ public class IntegratedRESTfulApi {
 					        .request()
 					        .post(Entity.text(sprintJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
@@ -158,6 +164,7 @@ public class IntegratedRESTfulApi {
 						        .request()
 						        .post(Entity.text(storyJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
@@ -176,6 +183,7 @@ public class IntegratedRESTfulApi {
 							                "/tags")
 							        .request()
 							        .post(Entity.text(tagJSON.toString()));
+							response.close();
 						}
 
 						// Add AttachFiles to Story
@@ -189,6 +197,7 @@ public class IntegratedRESTfulApi {
 							                "/attachfiles")
 							        .request()
 							        .post(Entity.text(attachFileJSON.toString()));
+							response.close();
 						}
 
 						//// Create Tasks
@@ -203,6 +212,7 @@ public class IntegratedRESTfulApi {
 							        .request()
 							        .post(Entity.text(taskJSON.toString()));
 							responseString = response.readEntity(String.class);
+							response.close();
 							responseJSON = new JSONObject(responseString);
 							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
@@ -222,6 +232,7 @@ public class IntegratedRESTfulApi {
 								                "/attachfiles")
 								        .request()
 								        .post(Entity.text(attachFileJSON.toString()));
+								response.close();
 							}
 						}
 					}
@@ -237,6 +248,7 @@ public class IntegratedRESTfulApi {
 						        .request()
 						        .post(Entity.text(unplanJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new UnplanId
@@ -255,6 +267,7 @@ public class IntegratedRESTfulApi {
 						                "/retrospectives")
 						        .request()
 						        .post(Entity.text(retrospectiveJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -267,6 +280,7 @@ public class IntegratedRESTfulApi {
 					                "/releases")
 					        .request()
 					        .post(Entity.text(releaseJSON.toString()));
+					response.close();
 				}
 
 				//// Create Dropped Stories
@@ -279,6 +293,7 @@ public class IntegratedRESTfulApi {
 					        .request()
 					        .post(Entity.text(droppedStoryJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
@@ -296,6 +311,7 @@ public class IntegratedRESTfulApi {
 						                "/tags")
 						        .request()
 						        .post(Entity.text(tagJSON.toString()));
+						response.close();
 					}
 
 					// Add AttachFiles to Story
@@ -308,6 +324,7 @@ public class IntegratedRESTfulApi {
 						                "/attachfiles")
 						        .request()
 						        .post(Entity.text(attachFileJSON.toString()));
+						response.close();
 					}
 
 					//// Create Tasks in DroppedStory
@@ -321,6 +338,7 @@ public class IntegratedRESTfulApi {
 						        .request()
 						        .post(Entity.text(taskJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new TaskId
@@ -339,6 +357,7 @@ public class IntegratedRESTfulApi {
 							                "/attachfiles")
 							        .request()
 							        .post(Entity.text(attachFileJSON.toString()));
+							response.close();
 						}
 					}
 				}
@@ -353,6 +372,7 @@ public class IntegratedRESTfulApi {
 					        .request()
 					        .post(Entity.text(taskJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
@@ -370,6 +390,7 @@ public class IntegratedRESTfulApi {
 						                "/attachfiles")
 						        .request()
 						        .post(Entity.text(attachFileJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -385,6 +406,7 @@ public class IntegratedRESTfulApi {
 					                "/histories")
 					        .request()
 					        .delete();
+					response.close();
 					// Add Histories to Story
 					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
@@ -395,6 +417,7 @@ public class IntegratedRESTfulApi {
 						                "/histories")
 						        .request()
 						        .post(Entity.text(historyJSON.toString()));
+						response.close();
 					}
 
 					// Create Histories in Task
@@ -410,6 +433,7 @@ public class IntegratedRESTfulApi {
 						                "/histories")
 						        .request()
 						        .delete();
+						response.close();
 						// Add Histories to Story
 						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
@@ -421,6 +445,7 @@ public class IntegratedRESTfulApi {
 							                "/histories")
 							        .request()
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 					}
 				}
@@ -436,6 +461,7 @@ public class IntegratedRESTfulApi {
 					                "/histories")
 					        .request()
 					        .delete();
+					response.close();
 					// Add Histories to Story
 					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
@@ -446,6 +472,7 @@ public class IntegratedRESTfulApi {
 						                "/histories")
 						        .request()
 						        .post(Entity.text(historyJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -465,6 +492,7 @@ public class IntegratedRESTfulApi {
 						                "/histories")
 						        .request()
 						        .delete();
+						response.close();
 						// Add History to Story
 						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
@@ -476,6 +504,7 @@ public class IntegratedRESTfulApi {
 							                "/histories")
 							        .request()
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 
 						// Create Histories in Task
@@ -492,6 +521,7 @@ public class IntegratedRESTfulApi {
 							                "/histories")
 							        .request()
 							        .delete();
+							response.close();
 							// Add History to Task
 							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 							for (int m = 0; m < historyInTaskJSONArray.length(); m++) {
@@ -504,6 +534,7 @@ public class IntegratedRESTfulApi {
 								                "/histories")
 								        .request()
 								        .post(Entity.text(historyJSON.toString()));
+								response.close();
 							}
 						}
 					}
@@ -521,6 +552,7 @@ public class IntegratedRESTfulApi {
 						                "/histories")
 						        .request()
 						        .delete();
+						response.close();
 						// Add History to Unplan
 						JSONArray historyInUnplanJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInUnplanJSONArray.length(); l++) {
@@ -532,10 +564,12 @@ public class IntegratedRESTfulApi {
 							                "/histories")
 							        .request()
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 					}
 				}
 			}
+			mClient.close();
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}

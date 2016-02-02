@@ -37,7 +37,7 @@ public class AjaxGetHandlerListAction extends PermissionAction {
 		log.info("Get Handler List in the Summary Page.");
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		List<AccountObject> users = (new ProjectHelper()).getProjectScrumWorkersForDb(userSession, project);
 

@@ -2,20 +2,18 @@ package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
@@ -42,7 +40,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(1, mCP);
@@ -69,10 +67,6 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -81,8 +75,6 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCPB = null;
 		mConfig = null;
-		projectManager = null;
-		
 		super.tearDown();
 	}
 	
@@ -106,7 +98,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		
 		actionPerform(); // 執行 action
 		verifyNoActionErrors();
@@ -131,7 +123,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 
 		// 執行 action
 		actionPerform();

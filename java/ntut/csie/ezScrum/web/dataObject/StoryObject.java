@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class StoryObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = StatusEnum.NEW;
@@ -59,17 +59,17 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public StoryObject setName(String name) {
-		mName = handleSpecialChar(name);
+		mName = name;
 		return this;
 	}
 	
 	public StoryObject setNotes(String notes) {
-		mNotes = handleSpecialChar(notes);
+		mNotes = notes;
 		return this;
 	}
 	
 	public StoryObject setHowToDemo(String howToDemo) {
-		mHowToDemo = handleSpecialChar(howToDemo);
+		mHowToDemo = howToDemo;
 		return this;
 	}
 	
@@ -561,12 +561,5 @@ public class StoryObject implements IBaseObject {
 			mCacheTagsId = new ArrayList<Long>();
 			mUpdateTags = false;
 		}
-	}
-	
-	private String handleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
 	}
 }

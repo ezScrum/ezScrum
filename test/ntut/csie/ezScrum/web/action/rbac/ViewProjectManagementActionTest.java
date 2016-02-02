@@ -6,13 +6,10 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import servletunit.struts.MockStrutsTestCase;
 
-// 一般使用者更新資料
 public class ViewProjectManagementActionTest extends MockStrutsTestCase {
-
 	private CreateAccount mCA;
 	private int mAccountCount = 1;
 	private String mActionPath = "/viewManagement";
@@ -51,10 +48,6 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -64,11 +57,9 @@ public class ViewProjectManagementActionTest extends MockStrutsTestCase {
     	ini = null;
     	mCA = null;
     	mUserSession = null;
-    	projectManager = null;
     	mConfig = null;
     }
     
-    // 
     public void testViewProjectManagementAction_admin() { 	    			
     	// ================ set session info ========================
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());

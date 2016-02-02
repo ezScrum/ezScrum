@@ -2,22 +2,20 @@ package ntut.csie.ezScrum.web.action.config;
 
 import java.io.File;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.jcis.resource.core.IProject;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowConfigurationActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private final String mActionPath = "/showConfiguration";
 	private Configuration mConfig;
-	private IProject mProject;
+	private ProjectObject mProject;
 
 	public ShowConfigurationActionTest(String testMethod) {
 		super(testMethod);
@@ -34,8 +32,8 @@ public class ShowConfigurationActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mCP.exeCreateForDb();
+		mProject = mCP.getAllProjects().get(0);
 		
 		super.setUp();
 
@@ -51,10 +49,6 @@ public class ShowConfigurationActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -63,14 +57,13 @@ public class ShowConfigurationActionTest extends MockStrutsTestCase {
 		ini = null;
 		mCP = null;
 		mConfig = null;
-
 		super.tearDown();
 	}
 
 	public void testShowConfigurationAction() throws JSONException {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

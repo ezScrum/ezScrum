@@ -23,7 +23,7 @@ public class AjaxGetUnplanItemPermissionAction extends Action {
 		
 		try{
 			//取得專案名稱
-			ProjectObject project = SessionManager.getProjectObject(request);
+			ProjectObject project = SessionManager.getProject(request);
 			String projrctName = project.getName();
 			
 			@SuppressWarnings("unchecked")

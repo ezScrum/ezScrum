@@ -14,7 +14,6 @@
 
 package ntut.csie.ezScrum.web.logic;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,8 +27,6 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.support.ProjectComparator;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ProjectLogic {
 	private static Log log = LogFactory.getLog(ProjectLogic.class);
@@ -38,36 +35,12 @@ public class ProjectLogic {
 	public ProjectLogic() {}
 
 	/**
-	 * 透過Project Mapper取得所有專案
-	 * 
-	 * @return
-	 */
-	private List<IProject> getAllProjectList() {
-		ProjectMapper projectMapper = new ProjectMapper();
-		return projectMapper.getAllProjectList();
-	}
-
-	/**
 	 * get all projects use DAO
 	 * @return all project list
 	 */
 	public ArrayList<ProjectObject> getProjects() {
 		ProjectMapper projectMapper = new ProjectMapper();
 		return projectMapper.getAllProjects();
-	}
-
-	/**
-	 * 有排序過的所有專案資訊。
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<IProject> getAllProjects() {
-		List<IProject> list = this.getAllProjectList();
-
-		Collections.sort(list, new ProjectComparator(ProjectComparator.COMPARE_TYPE_NAME));
-
-		return list;
 	}
 
 	/**

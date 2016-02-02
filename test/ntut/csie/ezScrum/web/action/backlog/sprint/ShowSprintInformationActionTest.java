@@ -8,7 +8,6 @@ import java.util.Date;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -44,7 +43,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		//	新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
@@ -61,10 +60,6 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -86,7 +81,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String sprintId = "1";
 		String projectName = mProject.getName();
 		
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 
 		// ================ set session info ========================
@@ -113,7 +108,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -185,7 +180,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -269,7 +264,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -312,7 +307,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================

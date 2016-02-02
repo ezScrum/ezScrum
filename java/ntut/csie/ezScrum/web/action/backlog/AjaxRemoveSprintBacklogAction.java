@@ -32,7 +32,7 @@ public class AjaxRemoveSprintBacklogAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Remove Sprint Backlog. ");
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		long issueId = Long.parseLong(request.getParameter("issueID"));

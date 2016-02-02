@@ -6,19 +6,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintBacklogTreeStructureTest {
 	private StoryObject mStory;
@@ -43,7 +42,7 @@ public class SprintBacklogTreeStructureTest {
 		
 		// create project
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProjectId = mCP.getAllProjects().get(0).getId();
 		// create story
 		mStory = new StoryObject(mProjectId);
@@ -63,10 +62,6 @@ public class SprintBacklogTreeStructureTest {
 	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);

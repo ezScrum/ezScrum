@@ -33,7 +33,7 @@ public class AjaxDeleteTagAction extends PermissionAction {
 		log.info("Delete Tag in AjaxDeleteTagAction.");
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
     	// get parameter info
     	long tagId = Long.parseLong(request.getParameter("tagId"));

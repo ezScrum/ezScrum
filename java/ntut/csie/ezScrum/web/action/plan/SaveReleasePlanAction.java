@@ -33,7 +33,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		String releaseIdString = request.getParameter("Id");

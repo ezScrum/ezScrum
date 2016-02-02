@@ -10,11 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IITSService;
-import ntut.csie.ezScrum.issue.sql.service.core.ITSServiceFactory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertRemainingWorkReport;
@@ -25,10 +21,8 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.iternal.ISummaryEnum;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.ChartUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class RemainingWorkReport {
 	final private String mNAME = ISummaryEnum.REMAININGWORK_SUMMARY_NAME;
@@ -37,9 +31,7 @@ public class RemainingWorkReport {
 	private Date mChartStartDate = null;
 	private Date mChartEndDate = null;
 	private int mInterval = 1;
-	private IITSService mIITS;
 	private String mCategory;
-	private Configuration mConfiguration;
 	private final static String REMAININGWORK_CHART_FILE1 = "RemainingWork1.png";
 	private final static String REMAININGWORK_CHART_FILE2 = "RemainingWork2.png";
 	private String mChartPath = "";
@@ -56,7 +48,6 @@ public class RemainingWorkReport {
 	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid) {
 		mSprintId = sprintid;
 		mProject = project;
-		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
 		if (mCategory.equals(ScrumEnum.TASK_ISSUE_TYPE)) {
@@ -67,7 +58,6 @@ public class RemainingWorkReport {
 			createStoryDataBySprint();
 		} else {
 			init();
-			createIssueData();
 		}
 		drawGraph();
 	}
@@ -75,7 +65,6 @@ public class RemainingWorkReport {
 	public RemainingWorkReport(ProjectObject project, IUserSession userSession, String category, long sprintid, Date setDate) {
 		mSprintId = sprintid;
 		mProject = project;
-		mConfiguration = new Configuration(userSession);
 		mCategory = category;
 		mToday = setDate;
 		// 如果category==task或story,就依sprint來取資料,若是其他則show出所有的資料
@@ -87,7 +76,6 @@ public class RemainingWorkReport {
 			createStoryDataBySprint();
 		} else {
 			init();
-			createIssueData();
 		}
 		drawGraph();
 	}
@@ -233,70 +221,6 @@ public class RemainingWorkReport {
 		mAssignedMap.put(dateKey, assignCount + doneCount);
 		saveQuantity(nonCount, doneCount, assignCount);
 	}
-	
-	private void createIssueData() {
-		mIITS = ITSServiceFactory.getInstance().getService(
-		        ITSEnum.MANTIS_SERVICE_ID, mConfiguration);
-		mIITS.openConnect();
-		IIssue[] issues = mIITS.getIssues(mProject.getName());
-		mIITS.closeConnect();
-		List<IIssue> tempIssues = new ArrayList<IIssue>();
-		for (IIssue issue : issues) {
-			if (issue.getCategory().equals(mCategory)) {
-				tempIssues.add(issue);
-			}
-		}
-		Date timeStamp = new Date(mChartStartDate.getTime());
-		while (timeStamp.getTime() <= mToday.getTime()) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateString = format.format(timeStamp);
-			Date date;
-			try {
-				date = format.parse(dateString);
-				countIssueStatusChange(tempIssues, date);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			timeStamp = new Date(timeStamp.getTime() + mInterval * mOneDay);
-		}
-	}
-	
-	private void countIssueStatusChange(List<IIssue> issues, Date date) {
-		int doneCount = 0, assignCount = 0, nonCount = 0;
-		if (date.getTime() != mToday.getTime()) {
-			// 當日期不為當天時，要做處理
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			String dateFormat = format.format(date);
-			try {
-				date = format.parse(dateFormat);	// 去除分秒格式
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			date = new Date(date.getTime() + 24 * 3599999);		// 當天日期加上 23:59:59，這樣計算出來的報表才是當日所有
-		}
-		if (issues != null) {
-			for (IIssue issue : issues) {
-				switch (issue.getDateStatus(date)) {
-					case ITSEnum.NEW_STATUS:
-						nonCount++;
-						break;
-					case ITSEnum.ASSIGNED_STATUS:
-						assignCount++;
-						break;
-					case ITSEnum.CLOSED_STATUS:
-						doneCount++;
-						break;
-					default:
-						break;
-				}
-			}
-		}
-		Date dateKey = new Date(date.getTime());
-		mNonAssignMap.put(dateKey, nonCount + doneCount + assignCount);
-		mDoneMap.put(dateKey, doneCount);
-		mAssignedMap.put(dateKey, assignCount + doneCount);
-		saveQuantity(nonCount, doneCount, assignCount);
-	}
 
 	private void saveQuantity(int nonAssign, int done, int Assigned) {
 		mDoneQuantity = done;
@@ -323,12 +247,10 @@ public class RemainingWorkReport {
 	}
 
 	private void nowExistReport() {
-		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
-		String chartPath1 = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		Configuration configuration = new Configuration();
+		String chartPath1 = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE1;
-		String chartPath2 = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath2 = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + REMAININGWORK_CHART_FILE2;
 		File f1 = new File(chartPath1);
 		File f2 = new File(chartPath2);
@@ -344,19 +266,17 @@ public class RemainingWorkReport {
 	}
 
 	private String getReportPath() {
-		IProject mIProject = new ProjectMapper().getProjectByID(mProject.getName());
-		// 圖片儲存的真正路徑
+		Configuration configuration = new Configuration();
 		// workspace/project/_metadata/RemainingWork/
-		String chartPath = mIProject.getFolder(IProject.METADATA).getFullPath()
-		        + File.separator + mNAME + File.separator + "Report"
+		String chartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + "_metadata" + File.separator + mNAME + File.separator + "Report"
 		        + File.separator + mChartPath;
 		return chartPath;
 	}
 
 	public String getRemainingWorkChartPath() {
+		Configuration configuration = new Configuration();
 		// web用的路徑
-		String link = "./Workspace/" + mProject.getName() + "/"
-		        + IProject.METADATA + "/" + mNAME + "/Report" + "/" + mChartPath;
+		String link = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + "_metadata" + File.separator + mNAME + File.separator + "Report" + File.separator + mChartPath;
 		return link;
 	}
 

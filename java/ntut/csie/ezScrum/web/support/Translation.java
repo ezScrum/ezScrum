@@ -7,17 +7,16 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class Translation {
 
@@ -192,28 +191,6 @@ public class Translation {
 		} catch (JSONException e) {
 		}
 		return new JSONObject().toString();
-	}
-
-	// for Taskboard, CO data, include Handler + Partners
-	public static String translateTaskboardIssueToJson(IIssue issue) {
-		JSONObject responseText = new JSONObject();
-		try {
-			responseText.put("success", true);
-
-			JSONObject jsonIssue = new JSONObject();
-			// 若需要其他欄位請再新增
-			jsonIssue.put("Id", issue.getIssueID());
-			jsonIssue.put("Link",
-					TranslateSpecialChar.TranslateJSONChar(issue.getIssueLink()));
-			jsonIssue.put("Name",
-					TranslateSpecialChar.TranslateJSONChar((issue.getSummary())));
-			jsonIssue.put("Handler", issue.getAssignto());
-			jsonIssue.put("Partners", issue.getPartners());
-			responseText.put("Issue", jsonIssue);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return responseText.toString();
 	}
 
 	public static String translateTaskboardStoryToJson(StoryObject story) {

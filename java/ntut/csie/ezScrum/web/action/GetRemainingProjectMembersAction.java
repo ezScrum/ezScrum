@@ -7,19 +7,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.support.SessionManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.mapper.AccountMapper;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 public class GetRemainingProjectMembersAction extends Action {
 	private static Log log = LogFactory.getLog(GetRemainingProjectMembersAction.class);
@@ -29,8 +28,7 @@ public class GetRemainingProjectMembersAction extends Action {
 		log.info("Get Remaining Project Members in GetRemainingProjectMembersAction.java");
 
 		// get project member list
-		ProjectObject project = SessionManager.getProjectObject(request);
-		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// ezScrum v1.8
 		// get total member list

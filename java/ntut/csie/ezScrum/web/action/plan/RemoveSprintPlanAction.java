@@ -37,7 +37,7 @@ public class RemoveSprintPlanAction extends PermissionAction {
 		log.info(" Remove SprintPlan. ");
 		
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		String sprintId = request.getParameter("sprintID");

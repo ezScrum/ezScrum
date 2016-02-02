@@ -32,7 +32,7 @@ public class CheckReleaseDateAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		// get session info
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 
 		// get parameter info
 		String releaseIdString = request.getParameter("Id");

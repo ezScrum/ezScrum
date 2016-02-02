@@ -30,7 +30,7 @@ public class ShowSprintBacklogAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog in ShowSprintBacklogAction.");
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		StringBuilder result = new StringBuilder(new SprintBacklogHelper(project, sprintId).getShowSprintBacklogText());

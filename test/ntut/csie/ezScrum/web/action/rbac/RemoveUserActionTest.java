@@ -9,7 +9,6 @@ import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
@@ -63,7 +62,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
@@ -84,10 +83,6 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -96,7 +91,6 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCA = null;
 		mAccountMapper = null;
@@ -117,7 +111,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		// ================ set initial data =======================
 		long accountId = account.getId();
-		long projectId = mAUTR.getNowProjectObject().getId();
+		long projectId = mAUTR.getNowProject().getId();
 		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		boolean isExisted = false;
@@ -191,7 +185,7 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 		// ================ set initial data =======================
 		long id = 1;	 			// admin
 		String username = "admin"; 	// admin
-		long projectId = mAUTR.getNowProjectObject().getId();
+		long projectId = mAUTR.getNowProject().getId();
 		String scrumRole = ScrumEnum.SCRUMROLE_PRODUCTOWNER;
 
 		// ================== set parameter info ====================
@@ -225,8 +219,8 @@ public class RemoveUserActionTest extends MockStrutsTestCase {
 
 		// ================ set initial data =======================
 		long accountId = 1;
-		long projectId = mAUTR.getNowProjectObject().getId();
-		String projectName = mAUTR.getNowProjectObject().getName();
+		long projectId = mAUTR.getNowProject().getId();
+		String projectName = mAUTR.getNowProject().getName();
 		String scrumRole = ScrumEnum.SCRUMROLE_ADMIN;
 
 		// ================== set parameter info ====================

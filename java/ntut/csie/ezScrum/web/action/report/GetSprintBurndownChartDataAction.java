@@ -24,7 +24,7 @@ public class GetSprintBurndownChartDataAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Sprint Burndown Chart Data. In Project Summary Page.");
 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		long sprintId = Long.parseLong(request.getParameter("SprintID"));
 		String type = request.getParameter("Type");
 		// 拿出 SprintBurndownChart 的資料

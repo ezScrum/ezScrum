@@ -3,16 +3,16 @@ package ntut.csie.ezScrum.web.action.project;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -33,14 +33,6 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(actionPath);
 	}
-
-	/**
-	 * clean previous action info
-	 */
-	/*	private void cleanActionInformation(){
-			clearRequestParameters();
-			response.reset();
-		}*/
 
 	/**
 	 * 取得一般使用者的UserSession
@@ -64,7 +56,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
@@ -79,10 +71,6 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -105,7 +93,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		String projectID = project.getName();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -134,11 +122,11 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 	 * 測試一般使用者在沒有加入該專案下，是否會回傳權限不足的警告訊息。 response text:{"PermissionAction":{"ActionCheck":"false", "Id":0}}
 	 */
 	public void testUserAjaxGetProjectDescriptionAction_NotInProject() {
-		String projectID = mCP.getProjectList().get(0).getName();
+		String projectID = mCP.getAllProjects().get(0).getName();
 		AccountObject account = mCA.getAccountList().get(0);
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(account));
@@ -167,7 +155,7 @@ public class AjaxGetProjectDescriptionActionTest extends MockStrutsTestCase {
 		addUserToRole.exe_ST();
 
 		// ================ set URL parameter ========================
-		request.setHeader("Referer", "?PID=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectID);	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", getUserSession(new AccountMapper().getAccount(account.getUsername())));

@@ -27,7 +27,7 @@ public class GetAddSprintTaskInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Add Sprint Task Information in GetAddSprintTaskInfoAction");
 		
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		//所有 Sprint 封裝成 XML 給 Ext(ComboBox) 使用
 		StringBuilder stringBuilder = new StringBuilder();

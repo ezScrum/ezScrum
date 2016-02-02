@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -20,7 +19,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ReopenIssueActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -44,7 +42,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增一個 Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -75,9 +73,6 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -115,7 +110,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession",
 				mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager
+		request.setHeader("Referer", "?projectName=" + project.getName()); // SessionManager
 																	// 會對URL的參數作分析
 																	// ,未帶入此參數無法存入session
 
@@ -174,7 +169,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession",
 				mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?PID=" + project.getName()); // SessionManager
+		request.setHeader("Referer", "?projectName=" + project.getName()); // SessionManager
 																	// 會對URL的參數作分析
 																	// ,未帶入此參數無法存入session
 

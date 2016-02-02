@@ -4,9 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
@@ -14,12 +17,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 public class UnplanItemHelperTest {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateUnplanItem mCUI;
@@ -39,7 +37,7 @@ public class UnplanItemHelperTest {
 
 		// 新增 Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProject = mCP.getAllProjects().get(0);
 		mUnplanHelper = new UnplanItemHelper(mProject);
@@ -53,10 +51,6 @@ public class UnplanItemHelperTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();

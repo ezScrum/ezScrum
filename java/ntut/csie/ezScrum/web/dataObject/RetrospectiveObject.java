@@ -10,10 +10,10 @@ import org.codehaus.jettison.json.JSONObject;
 public class RetrospectiveObject implements IBaseObject {
 	public final static String TYPE_GOOD = "Good";
 	public final static String TYPE_IMPROVEMENT = "Improvement";
-	public final static String STATUS_NEW = StatusEnum.RETROSPECTIVE_NEW;
-	public final static String STATUS_CLOSED = StatusEnum.RETROSPECTIVE_CLOSED;
-	public final static String STATUS_RESOLVED = StatusEnum.RETROSPECTIVE_RESOLVED;
-	public final static String STATUS_ASSIGNED = StatusEnum.RETROSPECTIVE_ASSIGNED;
+	public final static String STATUS_NEW = StatusEnum.STATUS_NEW_STRING;
+	public final static String STATUS_CLOSED = StatusEnum.STATUS_CLOSED_STRING;
+	public final static String STATUS_RESOLVED = StatusEnum.STATUS_RESOLVED_STRING;
+	public final static String STATUS_ASSIGNED = StatusEnum.STATUS_ASSIGNED_STRING;
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;

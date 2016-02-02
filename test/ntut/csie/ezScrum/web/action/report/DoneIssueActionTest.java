@@ -4,7 +4,6 @@ import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -18,7 +17,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
 
 public class DoneIssueActionTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -42,7 +40,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增一個 Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -73,10 +71,6 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -85,7 +79,6 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mASTS = null;
@@ -112,7 +105,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();
@@ -148,10 +141,6 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		task = null;
 	}
 
-	/**
-	 * 測試 Story 拉到 Done 時的狀況
-	 * TODO: 此 test case 需重寫!!!
-	 */
 	public void testDoneIssue_Story() {
 		// ================ set initial data =======================
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -170,7 +159,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 
 		// ================ 執行 action ==============================
 		actionPerform();

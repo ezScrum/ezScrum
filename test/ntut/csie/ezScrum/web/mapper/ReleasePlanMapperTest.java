@@ -3,13 +3,6 @@ package ntut.csie.ezScrum.web.mapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,12 +10,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
+
 public class ReleasePlanMapperTest {
 	private static Log mlog = LogFactory.getLog(SprintPlanMapperTest.class);
 	private CreateProject mCP;
-
 	private int mProjectCount = 1;
-
 	private ReleasePlanMapper mReleasePlanMapper = null;
 	private Configuration mConfig = null;
 
@@ -38,7 +36,7 @@ public class ReleasePlanMapperTest {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 建立 SprintPlanMapper 物件
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -55,10 +53,6 @@ public class ReleasePlanMapperTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -67,7 +61,6 @@ public class ReleasePlanMapperTest {
 		ini = null;
 		mCP = null;
 		mReleasePlanMapper = null;
-		projectManager = null;
 		mConfig = null;
 	}
 

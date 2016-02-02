@@ -41,20 +41,17 @@ public class Configuration {
 
 	public Configuration() {
 		init();
-		init_workspacepath();
 	}
 
 	public Configuration(IUserSession userSession) {
 		m_userSession = userSession;
 		init();
-		init_workspacepath();
 	}
 
 	public Configuration(ProjectObject project, IUserSession userSession) {
 		mProject = project;
 		m_userSession = userSession;
 		init();
-		init_workspacepath();
 	}
 
 	/**
@@ -236,6 +233,7 @@ public class Configuration {
 	 * return TestWorkspace path
 	 */
 	public String getWorkspacePath() {
+		init_workspacepath();
 		return workspacePath;
 	}
 	
@@ -243,6 +241,7 @@ public class Configuration {
 	 * return TestData path
 	 */
 	public String getDataPath() {
+		init_workspacepath();
 		return dataPath;
 	}
 	
@@ -250,6 +249,7 @@ public class Configuration {
 	 * return InitialSQL file path
 	 */
 	public String getInitialSQLPath() {
+		init_workspacepath();
 		return initialSQLPath;
 	}
 

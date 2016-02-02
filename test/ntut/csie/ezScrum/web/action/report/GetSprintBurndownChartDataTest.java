@@ -8,9 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedHashTreeMap;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -22,11 +24,7 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import servletunit.struts.MockStrutsTestCase;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedHashTreeMap;
-
 public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private ProjectObject mProject;
@@ -48,7 +46,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1筆 Sprint Plan
@@ -70,10 +68,6 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 	 	// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -105,7 +99,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		Object[] idealPointArray = ideal.keySet().toArray();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
@@ -157,7 +151,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), ASTS.getStories().get(0).getName(), "", "");
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID",  String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "story");
 
@@ -202,7 +196,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		ATTS.exe();
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 
@@ -266,7 +260,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		sprintBacklogLogic.closeTask(ATTS.getTasksId().get(0), ATTS.getTasks().get(0).getName(), "", 0, "");
 
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 		addRequestParameter("SprintID", String.valueOf(mCS.getSprintsId().get(0)));
 		addRequestParameter("Type", "task");
 

@@ -36,7 +36,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintId"));

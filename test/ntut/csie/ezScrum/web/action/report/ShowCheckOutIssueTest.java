@@ -4,7 +4,6 @@ import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -14,11 +13,9 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.jcis.resource.core.IProject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowCheckOutIssueTest extends MockStrutsTestCase {
-	
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
@@ -41,7 +38,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增1個Sprint到專案內
 		mCS = new CreateSprint(1, mCP);
@@ -67,14 +64,10 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
-
 		super.tearDown();
 
 		// ============= release ==============
@@ -89,14 +82,14 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 	// 測試Issue為Task的CheckOut
 	public void testShowCheckOutIssue_Task() throws Exception {
 		// ================ set initial data =======================
-		IProject project = mCP.getProjectList().get(0);
+		ProjectObject project = mCP.getAllProjects().get(0);
 		long taskId = mATTS.getTasksId().get(0);
 		TaskObject task = TaskObject.get(taskId);
 
 		// ================ set request info ========================
 		String projectName = project.getName();
 		// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);
@@ -134,7 +127,7 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = project.getName();
-		request.setHeader("Referer", "?PID=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + projectName);// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", project);

@@ -33,7 +33,7 @@ public class AddExistedTaskAction extends PermissionAction {
 		log.info("Add dropped tasks in AddExistedTaskAction");
 		
 		// get parameter info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String[] selectedTaskIds = request.getParameterValues("selected");
 		long sprintId, storyId;
 		

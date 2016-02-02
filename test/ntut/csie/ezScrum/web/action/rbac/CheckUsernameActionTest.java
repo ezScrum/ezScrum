@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.jcis.account.core.LogonException;
@@ -13,7 +12,6 @@ import servletunit.struts.MockStrutsTestCase;
 
 // admin 新增使用者之前會先做此檢查
 public class CheckUsernameActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateAccount mCA;
 	private int mProjectCount = 1;
@@ -36,7 +34,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		super.setUp();
 
@@ -57,10 +55,6 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -71,7 +65,6 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCA = null;
 		mConfig = null;
-		projectManager = null;
 	}
 
 	// 測試欲新增加的帳號已重複
@@ -81,7 +74,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = mCA.getAccount_ID(1);
 
 		// ================== set parameter info ====================
@@ -92,7 +85,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		
 		// ================ set URL parameter ========================
 
@@ -112,7 +105,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 	public void testCheckUsernameAction_New() throws LogonException {
 
 		// ================ set initial data =======================
-		String projectName = this.mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = "testNewID";
 
 		// ================== set parameter info ====================
@@ -124,7 +117,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -142,7 +135,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 	public void testCheckUsernameAction_New1() {
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = "";
 
 		// ================== set parameter info ====================
@@ -153,7 +146,7 @@ public class CheckUsernameActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對 URL 的參數作分析，未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();

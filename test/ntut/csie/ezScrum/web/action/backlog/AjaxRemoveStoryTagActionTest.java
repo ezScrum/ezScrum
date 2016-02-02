@@ -2,20 +2,18 @@ package ntut.csie.ezScrum.web.action.backlog;
 
 import java.io.File;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
@@ -41,7 +39,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create story
 		mCPB = new CreateProductBacklog(mStoriesCount, mCP);
@@ -64,10 +62,6 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -76,8 +70,6 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		mCP = null;
 		mCPB = null;
 		mConfig = null;
-		projectManager = null;
-
 		super.tearDown();
 	}
 	
@@ -104,7 +96,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 
 		// ================ set session info ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 
 		// 執行 action
 		actionPerform();
