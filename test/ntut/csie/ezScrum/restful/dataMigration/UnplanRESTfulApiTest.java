@@ -404,4 +404,229 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		assertEquals(new JSONObject().toString(), contentJSON.toString());
 		assertEquals("", message);
 	}
+	
+	@Test
+	public void testCreateHistoryInUnplan_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
+		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+		.setActual(0).save();
+		
+		// Check unplan's histories before create history
+		assertEquals(1, unplan.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, unplan.getHistories().get(0).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + unplan.getId() +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateHistoryInUnplan_AccountIsNull() throws JSONException {
+		String invalidUsername = null;
+		String invalidPassword = null;
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
+		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+		.setActual(0).save();
+		
+		// Check unplan's histories before create history
+		assertEquals(1, unplan.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, unplan.getHistories().get(0).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + unplan.getId() +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testCreateHistoryInUnplan_AccountIsEmpty() throws JSONException {
+		String invalidUsername = "";
+		String invalidPassword = "";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
+		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
+		.setActual(0).save();
+		
+		// Check unplan's histories before create history
+		assertEquals(1, unplan.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, unplan.getHistories().get(0).getHistoryType());
+		
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + unplan.getId() +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testDeleteHistoryInUnplan_AccountIsInvalid() throws Exception {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Create Unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
+		mCUI.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + mCUI.getUnplansId().get(0) +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .delete();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testDeleteHistoryInUnplan_AccountIsNull() throws Exception {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Create Unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
+		mCUI.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + mCUI.getUnplansId().get(0) +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .delete();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
+	
+	@Test
+	public void testDeleteHistoryInUnplan_AccountIsEmpty() throws Exception {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		
+		// Create Unplan
+		mCUI = new CreateUnplanItem(1, mCP, mCS);
+		mCUI.exe();
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/unplans/" + mCUI.getUnplansId().get(0) +
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .delete();
+		
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		//Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), responseContent.toString());
+		assertEquals("", responseMessage);
+	}
 }
