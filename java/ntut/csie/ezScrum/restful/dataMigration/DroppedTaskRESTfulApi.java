@@ -67,7 +67,12 @@ public class DroppedTaskRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInDroppedTask(@PathParam("projectId") long projectId,
 	                                 		   @PathParam("taskId") long taskId,
+	                                 		   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	    									   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 		   String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
@@ -91,8 +96,13 @@ public class DroppedTaskRESTfulApi {
 	@Path("/{taskId}/histories/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteHistoryInDroppedTask(@PathParam("projectId") long projectId,
-	        							@PathParam("taskId") long taskId,
-	        							String entity) {
+	        								   @PathParam("taskId") long taskId,
+	        								   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        								   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	        								   String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
@@ -109,8 +119,13 @@ public class DroppedTaskRESTfulApi {
 	@Path("/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createAttachFileInDroppedTask(@PathParam("projectId") long projectId,
-	        						  		   @PathParam("taskId") long taskId,
-	        						  		   String entity) throws IOException {
+	        						  		      @PathParam("taskId") long taskId,
+	        						  		      @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        						  		      @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	        						  		      String entity) throws IOException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
