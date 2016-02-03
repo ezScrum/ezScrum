@@ -32,6 +32,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -58,7 +59,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private static String BASE_URL = BaseUrlDistributor.TEST_MODE_BASE_URL;
 	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override

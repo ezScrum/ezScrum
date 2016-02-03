@@ -21,6 +21,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -48,7 +49,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	private Client mClient;
 	private HttpServer mHttpServer;
 	private ResourceConfig mResourceConfig;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource";
+	private static String BASE_URL = BaseUrlDistributor.TEST_MODE_BASE_URL;
 	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override

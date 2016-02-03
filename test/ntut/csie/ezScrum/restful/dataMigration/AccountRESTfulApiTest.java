@@ -25,6 +25,7 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -34,7 +35,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private static String BASE_URL = BaseUrlDistributor.TEST_MODE_BASE_URL;
 	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override
