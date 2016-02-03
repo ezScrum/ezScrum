@@ -52,7 +52,7 @@ public class TaskApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/api";
+	private static String BASE_URL = "http://localhost:9527/ezScrum/api";
 	private URI mBaseUri = URI.create(BASE_URL);
 	private long mAccountId;
 	private String mPlatformType;

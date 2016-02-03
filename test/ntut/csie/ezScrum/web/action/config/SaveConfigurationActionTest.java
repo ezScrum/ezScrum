@@ -69,7 +69,7 @@ public class SaveConfigurationActionTest extends MockStrutsTestCase {
 		String originDBType= mConfig.getDBType();
 		
 		// ================ set request info ========================
-		String actualServerUrl = "127.0.0.1";
+		String actualServerUrl = "localhost";
 		String actualDBAccount = "test";
 		String actualDBPassword = "1234";
 		String actualDBType = "MySQL";
